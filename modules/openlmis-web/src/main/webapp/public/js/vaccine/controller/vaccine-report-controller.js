@@ -9,9 +9,24 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineUsageTrend, Period, messageService) {
+function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineUsageTrend, Period, messageService, VaccineReportLegendContent) {
+
+
+    VaccineReportLegendContent.get({}, function(data){
+        $scope.definitions = data.vaccineLegend;
+        if(!isUndefined($scope.definitions)){
+           $scope.consumptionLegend = _.findWhere($scope.definitions, {"name":"consumption.graph.legend"});
+            $scope.sohLegend = _.findWhere($scope.definitions,{name:'soh.graph.legend'});
+        }
+    });
+
 
     $scope.OnFilterChanged = function() {
+
+      /*  if(isUndefined($scope.filter.period) || $scope.filter.period == 0){
+            $scope.filter.period = $scope.filter.defaultPeriodId;
+
+        }*/
         // clear old data if there was any
         $scope.data = $scope.datarows = [];
         $scope.filter.max = 10000;
@@ -61,10 +76,10 @@ function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineU
             $scope.amcChartData = _.pairs(_.object(_.range($scope.trendingData.length), _.pluck($scope.trendingData,'quantity_issued')));
             $scope.sohChartData = _.pairs(_.object(_.range($scope.trendingData.length), _.pluck($scope.trendingData,'closing_balance')));
 
-            $scope.amcChartOption = generateBarsOption($scope.periodTicks,'AMC');
-            $scope.sohChartOption = generateBarsOption($scope.periodTicks,'SOH');
+            $scope.amcChartOption = generateBarsOption($scope.periodTicks, messageService.get('label.consumption'));
+            $scope.sohChartOption = generateBarsOption($scope.periodTicks, messageService.get('label.stock.on.hand'));
             $scope.amcChart = [{
-                label:"AMC",
+                label: messageService.get('label.consumption'),
                 data:  $scope.amcChartData,
                 color: "#faa732",
                 bars: {
@@ -84,7 +99,7 @@ function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineU
 
             $scope.sohChart = [
                 {
-                    label: "SOH",
+                    label: messageService.get('label.stock.on.hand'),
                     data:  $scope.sohChartData,
                     color: "#5eb95e",
                     bars: {
