@@ -38,6 +38,7 @@
     background: linear-gradient(to bottom, #f9f9f9 0%, #e0e0e0 100%) !important;
     }
     input[type="number"]{width:130px !important;margin-bottom:2px !important;margin:2px 3px !important}
+    span.adj-error{color:#FF0000 !important}
 
 </style>
 <div>
@@ -121,7 +122,7 @@
                     ng-class="{'disabled':c.lotsOnHand[0].isSkipped,'':!c.lotsOnHand[0].isSkipped, 'last-row':c.lotsOnHand.length===1}">
                     <select style="max-width:130px !important;min-width:130px !important" ui-select2
                             ng-options="i.value as i.name for i in vvmStatuses" name="vvm_0"
-                            ng-disabled="c.lotsOnHand[0].isSkipped" ng-model="c.lotsOnHand[0].vvmStatus" maxlength="8"
+                            ng-disabled="c.lotsOnHand[0].isSkipped" ng-model="c.lotsOnHand[0].customProps.vvmstatus" maxlength="8"
                             type="text">
                         <option value="" openlmis-message="placeholder.select.vvmstatus"></option>
                     </select>
@@ -143,13 +144,16 @@
                     <a ng-if="c.lotsOnHand.length >0" ng-hide="c.lotsOnHand[0].isSkipped" href
                        id="lossesAndAdjustmentLink_0"
                        ng-click="showAdjustmentReason(c.lotsOnHand[0])" class="rnr-adjustment">
-                        <span class="adjustment-value" ng-bind="c.lotsOnHand[0].totalAdjustments"></span>
+                        <span class="adjustment-value" ng-bind="c.lotsOnHand[0].totalAdjustments"
+                              ng-class="{'adj-error':((!c.lotsOnHand[0].isSkipped && (c.lotsOnHand[0].quantity !==undefined && c.lotsOnHand[0].quantity !==''))   &&  ((c.lotsOnHand[0].quantity !=='' || c.lotsOnHand[0].quantity != undefined)  && ((c.lotsOnHand[0].adjustmentReasons.length ===0 || c.lotsOnHand[0].adjustmentReasons ===undefined ) || c.lotsOnHand[0].totalAdjustments != (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand))))}"></span>
+
                     </a>
 
                     <a ng-if="c.lotsOnHand.length === 0" ng-hide="c.isSkipped" href id="lossesAndAdjustmentLink_"
                        ng-click="showAdjustmentReason(c)" class="rnr-adjustment">
                         <span ng-init="c.totalAdjustments=0" class="adjustment-value"
-                              ng-bind="c.totalAdjustments"></span>
+                              ng-bind="c.totalAdjustments"
+                                ng-class="{'adj-error':((!c.isSkipped && (c.quantity !==undefined && c.quantity !=='')) && (((c.quantity !=='' || c.quantity != undefined)  && ((c.adjustmentReasons.length ===0 || c.adjustmentReasons ===undefined ) ||   c.totalAdjustments != (c.quantity - c.totalQuantityOnHand)))))}"></span>
                     </a>
                 </td>
                 <td class="col-affected cell-input col-general number cell-text disabled"
@@ -160,21 +164,21 @@
                 <td class="col-validation cell-input disabled" ng-class="{'last-row':c.lotsOnHand.length <=1}">
                     <div ng-if="c.lotsOnHand.length >0"
                          ng-show="!c.lotsOnHand[0].isSkipped && (c.lotsOnHand[0].quantity !==undefined && c.lotsOnHand[0].quantity !=='')">
-                        <span ng-show="c.lotsOnHand[0].quantity != undefined && (c.lotsOnHand[0].totalAdjustments === (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand))"
+                        <span ng-show="c.lotsOnHand[0].quantity != undefined && (c.lotsOnHand[0].adjustmentReasons.length >0 && (c.lotsOnHand[0].totalAdjustments === (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand)))"
                               class="icon-ok-sign green" style="margin-left:20px"></span>
-                        <span ng-show='((c.lotsOnHand[0].quantity !=="" || c.lotsOnHand[0].quantity != undefined)  && (c.lotsOnHand[0].totalAdjustments != (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand)))'
+                        <span ng-show='((c.lotsOnHand[0].quantity !=="" || c.lotsOnHand[0].quantity != undefined)  && ((c.lotsOnHand[0].adjustmentReasons.length ===0 || c.lotsOnHand[0].adjustmentReasons ===undefined ) || c.lotsOnHand[0].totalAdjustments != (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand)))'
                               class="icon-remove red" style="margin-left:20px"></span>
                         <input ng-model="c.lotsOnHand[0].valid" name="validator_{{c.$index}}_0" type="hidden"
-                               ng-required="!c.lotsOnHand[0].isSkipped && ((c.lotsOnHand[0].quantity !=='' || c.lotsOnHand[0].quantity !== undefined)  && (c.lotsOnHand[0].totalAdjustments !== (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand)))"/>
+                               ng-required="!c.lotsOnHand[0].isSkipped && ((c.lotsOnHand[0].quantity !=='' || c.lotsOnHand[0].quantity !== undefined)  && ((c.lotsOnHand[0].adjustmentReasons.length ===0 || c.lotsOnHand[0].adjustmentReasons ===undefined ) || c.lotsOnHand[0].totalAdjustments !== (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand)))"/>
                     </div>
                     <div ng-if="c.lotsOnHand.length === 0"
                          ng-show="!c.isSkipped && (c.quantity !==undefined && c.quantity !=='')">
-                        <span ng-show="c.quantity != undefined && (c.totalAdjustments === (c.quantity - c.totalQuantityOnHand))"
+                        <span ng-show="c.quantity != undefined && ( c.adjustmentReasons.length >0 && (c.totalAdjustments === (c.quantity - c.totalQuantityOnHand)))"
                               class="icon-ok-sign green" style="margin-left:20px"></span>
-                        <span ng-show='((c.quantity !=="" || c.quantity != undefined)  && (c.totalAdjustments != (c.quantity - c.totalQuantityOnHand)))'
+                        <span ng-show='((c.quantity !=="" || c.quantity != undefined)  && ((c.adjustmentReasons.length ===0 || c.adjustmentReasons ===undefined ) ||   c.totalAdjustments != (c.quantity - c.totalQuantityOnHand)))'
                               class="icon-remove red" style="margin-left:20px"></span>
                         <input ng-model="c.valid" name="validator_{{c.$index}}_" type="hidden"
-                               ng-required="!c.isSkipped && ((c.quantity !=='' || c.quantity !== undefined)  && (c.totalAdjustments !== (c.quantity - c.totalQuantityOnHand)))"/>
+                               ng-required="!c.isSkipped && ((c.quantity !=='' || c.quantity !== undefined)  && ((c.adjustmentReasons.length ===0 || c.adjustmentReasons ===undefined ) || c.totalAdjustments !== (c.quantity - c.totalQuantityOnHand)))"/>
                     </div>
 
                 </td>
@@ -195,7 +199,7 @@
                     <select style="max-width:130px !important;min-width:130px !important" ui-select2
                             ng-options="i.value as i.name for i in vvmStatuses" name="vvm_{{lot.$index}}"
                             ng-disabled="lot.isSkipped"
-                            ng-model="lot.vvmStatus" maxlength="5" type="text">
+                            ng-model="lot.customProps.vvmstatus" maxlength="5" type="text">
                         <option value="">--VVM Status--</option>
                     </select>
                 </td>
@@ -207,7 +211,9 @@
                     <a ng-hide="lot.isSkipped" href id="lossesAndAdjustmentLink_{{$index}}"
                        ng-click="showAdjustmentReason(lot)" class="rnr-adjustment">
                         <span ng-init="lot.totalAdjustments=0" class="adjustment-value"
-                              ng-bind="lot.totalAdjustments"></span>
+                              ng-bind="lot.totalAdjustments"
+                              ng-class="{'adj-error':((!lot.isSkipped && (lot.quantity !==undefined && lot.quantity !==''))   &&  ((lot.quantity !=='' || lot.quantity != undefined)  && ((lot.adjustmentReasons.length ===0 || lot.adjustmentReasons ===undefined ) || lot.totalAdjustments != (lot.quantity - lot.quantityOnHand))))}"
+                                ></span>
                     </a>
                 </td>
                 <td class="col-affected cell-input number cell-text disabled" ng-class="{'last-row':($last)}">
@@ -215,12 +221,12 @@
                 </td>
                 <td class="col-validation cell-input cell-text disabled" ng-class="{'last-row':$last}">
                     <div ng-show="!lot.isSkipped && (lot.quantity !==undefined && lot.quantity !=='')">
-                        <span ng-show="lot.totalAdjustments === (lot.quantity - lot.quantityOnHand)"
+                        <span ng-show="lot.adjustmentReasons.length >0 && lot.totalAdjustments === (lot.quantity - lot.quantityOnHand)"
                               class="icon-ok-sign green" style="margin-left:20px"></span>
-                        <span ng-show="!(lot.totalAdjustments === (lot.quantity - lot.quantityOnHand))"
+                        <span ng-show="(lot.adjustmentReasons.length ===0 || lot.adjustmentReasons ===undefined ) || !(lot.totalAdjustments === (lot.quantity - lot.quantityOnHand))"
                               class="icon-remove red" style="margin-left:20px"></span>
                         <input ng-model="lot.valid" name="validator_{{$index}}_0" type="hidden"
-                               ng-required="!lot.isSkipped && ((lot.quantity !=='' || lot.quantity !== undefined)  && (lot.totalAdjustments !== (lot.quantity - lot.quantityOnHand)))"/>
+                               ng-required="!lot.isSkipped && ((lot.quantity !=='' || lot.quantity !== undefined)  && ((lot.adjustmentReasons.length ===0 || lot.adjustmentReasons ===undefined ) || lot.totalAdjustments !== (lot.quantity - lot.quantityOnHand)))"/>
                     </div>
                 </td>
             </tr>

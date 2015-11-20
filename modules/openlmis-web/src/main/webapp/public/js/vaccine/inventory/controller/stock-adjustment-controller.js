@@ -16,7 +16,7 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
     $scope.userPrograms=programs;
     $scope.adjustmentTypes=adjustmentTypes;
     $scope.adjustmentReason={};
-    $scope.vvmStatuses=[{"value":1,"name":" 1 "},{"value":2,"name":" 2 "}];
+    $scope.vvmStatuses=[{"value":"1","name":" 1 "},{"value":"2","name":" 2 "}];
     $scope.productsConfiguration=productsConfiguration;
     var AdjustmentReasons=[];
 
@@ -106,7 +106,6 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
             var events=[];
             $scope.stockCardsToDisplay.forEach(function(st){
                 st.stockCards.forEach(function(s){
-                 console.log(JSON.stringify(s));
                     if(s.lotsOnHand !==undefined && s.lotsOnHand.length>0){
                         s.lotsOnHand.forEach(function(l){
                             if(l.quantity !== undefined)
@@ -118,10 +117,15 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
                                         event.quantity=reason.quantity;
                                         event.lotId=l.lot.id;
                                         event.reasonName=reason.name;
+                                        if(l.customProps.vvmstatus !==undefined)
+                                        {
+                                            event.customProps={"vvmStatus":l.customProps.vvmstatus};
+                                        }
                                         events.push(event);
                                     });
                             }
                         });
+                        console.log(JSON.stringify(events));
                     }
                     else{
                      if(s.quantity !==undefined && s.quantity >0)
