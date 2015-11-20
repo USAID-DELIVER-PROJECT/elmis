@@ -16,7 +16,9 @@ import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.mapper.ColdChainTemperaturesReportMapper;
 import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.params.ColdChainTemperatureReportParam;
 import org.openlmis.report.util.SelectedFilterHelper;
+import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,22 +37,56 @@ public class ColdChainTemperatureDataProvider extends ReportDataProvider {
     private SelectedFilterHelper filterHelper;
 
     @Override
-    protected List<? extends ReportData> getResultSetReportData(Map<String, String[]> filterCriteria) {
-        RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-        return reportMapper.getReportData(filterCriteria, rowBounds, this.getUserId());
+    protected List<? extends ReportData> getResultSet(Map<String, String[]> params) {
+        return getReportBody(params, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
     }
 
     @Override
     @Transactional
-    public List<? extends ReportData> getMainReportData(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+    public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-        return reportMapper.getReportData(filterCriteria, rowBounds, this.getUserId());
+        return reportMapper.getReportData(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
+    }
+
+    public ColdChainTemperatureReportParam getReportFilterData(Map<String, String[]> filterCriteria) {
+
+        ColdChainTemperatureReportParam ccTParams = new ColdChainTemperatureReportParam();
+
+        ccTParams.setZoneId(StringHelper.isBlank(filterCriteria, "zone") ? 0: Long.parseLong(filterCriteria.get("zone")[0]));
+        ccTParams.setYear(StringHelper.isBlank(filterCriteria, "year") ? 0: Long.parseLong(filterCriteria.get("year")[0]));
+        ccTParams.setRegionSelected(StringHelper.isBlank(filterCriteria, "regionSelected") ? false : Boolean.parseBoolean(filterCriteria.get("regionSelected")[0]));
+        return ccTParams;
+    }
+
+    @Transactional
+    public List<? extends ReportData> getMainReportMinMaxAggregate(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+        RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
+        return reportMapper.getMainReportMinMaxAggregate(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
+    }
+
+    @Transactional
+    public List<? extends ReportData> getMainReportAggregateMinMaxTempRecorded(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+        RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
+        return reportMapper.getMainReportAggregateMinMaxTempRecorded(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
+    }
+
+    @Transactional
+    public List<? extends ReportData> getMainReportAggregateTotal(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+        RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
+        return reportMapper.getMainReportAggregateTotal(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
+    }
+
+
+    @Transactional
+    public List<? extends ReportData> getSubReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+        RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
+        return reportMapper.getSubReportData(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
     }
 
     @Transactional
     public List<? extends ReportData> getSubReportData(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-        return reportMapper.getSubReportData(filterCriteria, rowBounds, this.getUserId());
+        return reportMapper.getSubReportData(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
     }
 
     @Override

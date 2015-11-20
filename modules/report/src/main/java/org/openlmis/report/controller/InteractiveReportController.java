@@ -600,13 +600,27 @@ public class InteractiveReportController extends BaseController {
         ColdChainTemperatureDataProvider provider = (ColdChainTemperatureDataProvider)report.getReportDataProvider();
 
         List<ColdChainTemperature> reportData =
-                (List<ColdChainTemperature>) provider.getMainReportData(request.getParameterMap(), request.getParameterMap(), page, max);
+                (List<ColdChainTemperature>) provider.getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
 
+        List<ColdChainTemperature> mainReportMinMaxAggregate =
+                (List<ColdChainTemperature>) provider.getMainReportMinMaxAggregate(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        List<ColdChainTemperature> mainReportMinMaxTempRecorded =
+                (List<ColdChainTemperature>) provider.getMainReportAggregateMinMaxTempRecorded(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        List<ColdChainTemperature> mainReportTotalTemp =
+                (List<ColdChainTemperature>) provider.getMainReportAggregateTotal(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        //Sub report data
         List<ColdChainTemperature> subReportData =
                 (List<ColdChainTemperature>) provider.getSubReportData(request.getParameterMap(), request.getParameterMap(), page, max);
 
         Map<String, Pages> multiPages = new HashMap<String, Pages>();
         multiPages.put("coldchainreportdata", new Pages(page, max, reportData));
+        multiPages.put("coldchainreportminmaxaggregate", new Pages(page, max, mainReportMinMaxAggregate));
+        multiPages.put("coldchainreportminmaxtemprecorded", new Pages(page, max, mainReportMinMaxTempRecorded));
+        multiPages.put("coldchainreporttotaltemprecorded", new Pages(page, max, mainReportTotalTemp));
+
         multiPages.put("coldchainSubreportdata", new Pages(page, max, subReportData));
 
         return multiPages;

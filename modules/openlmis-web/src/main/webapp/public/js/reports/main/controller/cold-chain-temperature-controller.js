@@ -18,18 +18,32 @@ function ColdChainTemperatureController($scope, $log, ColdChainTemperaturesRepor
     });
 
 
-    ColdChainTemperaturesReport.get(
-        {
-            page: $scope.page,
-            max: 900000,
-            filter: $scope.filter
-        } ,
-        function (data)
-        {
-            $scope.coldchainreportDataRows = $scope.coldchainReportDatarows = data.coldchainreportdata.rows;
-            $scope.coldchainsubreportDataRows = $scope.coldchainSubReportDatarows = data.coldchainSubreportdata.rows;
-        }
-    )
+
+    $scope.OnFilterChanged = function(){
+        $scope.data = $scope.datarows = [];
+        $scope.filter.page = 1;
+        $scope.filter.max = 10000;
+
+        ColdChainTemperaturesReport.get(
+            $scope.getSanitizedParameter(),
+            function (data)
+            {
+                $scope.coldchainreportDataRows = $scope.coldchainReportDatarows = data.coldchainreportdata.rows;
+                $scope.coldchainsubreportDataRows = data.coldchainSubreportdata.rows;
+                $scope.ccrminmaxaggregateDataRows = data.coldchainreportminmaxaggregate.rows[0];
+                $scope.ccrminmaxtemprecordeddataRows = data.coldchainreportminmaxtemprecorded.rows[0];
+                $scope.ccrtotaltemprecorded = data.coldchainreporttotaltemprecorded.rows[0];
+
+                setTimeout(function(){
+                    $("#fixTable").tableHeadFixer({"foot":true, "head":true, left:4});
+                }, 0);
+            }
+        )
+
+
+
+    };
+
 
 
 
