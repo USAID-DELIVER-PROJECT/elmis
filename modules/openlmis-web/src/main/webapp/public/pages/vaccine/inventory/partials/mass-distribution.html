@@ -36,7 +36,7 @@
     input[type="number"].ng-invalid-max{border:1px solid #F00 !important}
 </style>
 
-<div class="rnr-table" style="background-color: #f9f9f9; padding: 5px">
+<div >
     <div class="row-fluid">
         <div class="span12">
             <div class="info-box padding2px">
@@ -55,12 +55,6 @@
                                     <strong id='emergencyLabel'
                                             openlmis-message="label.vaccine.stock.emergency"> </strong>:&nbsp;
                                 </div>
-
-                                <!--<div class="span3">-->
-                                <!--<strong id='periodLabel' openlmis-message="label.vaccine.stock.period"> </strong>:&nbsp;-->
-                                <!--<span id='period' ng-bind="period"></span>-->
-                                <!--</div>-->
-
                                 <div class="span3">
                                     <strong id='facilityLabel' openlmis-message="label.facility"> </strong>:&nbsp;
                                     <span id='facility' ng-bind="facilityDisplayName"></span>
@@ -73,10 +67,17 @@
                 </div>
             </div>
         </div>
+        <br/>
+        <div class="rnr-table" style="background-color: #f9f9f9; padding: 5px">
+        <input ng-show="distributionType==='ROUTINE'" id="searchProduct" class="search-query" type="text" ng-model="query"
+               ng-change="updateCurrentRoutineFacilities()"
+               openlmis-message="placeholder.filter.facility"/>
+        <br/>
         <div ng-show="distributionType==='ROUTINE' && routineFacilities.length === 0"
              openlmis-message="label.vaccine.stock.no.routine.facilities"></div>
         <div ng-show="distributionType==='ROUTINE' && routineFacilities.length >0" adjust-height bottom-offset="180"
              ng-show="true" tab-scroll>
+
             <div class="float-left left-table parent">
 
                 <table class="table table-bordered" fixed-table-header id="fullSupplyFrozenTable">
@@ -171,8 +172,6 @@
         </div>
 
         <div ng-show="distributionType==='EMERGENCY'">
-            <br/>
-            <br/>
             <select style="min-width:300px !important" ui-select2
                     ng-click="loadEmergencyFacility()"
                     ng-disabled="productToAdd.lots.length >0" ng-model="emergencyFacilityId"
@@ -252,7 +251,7 @@
 
 
     </div>
-
+    </div>
     <div id="popupModel" modal="lotsModal">
         <div class="modal-header">
             <h3 openlmis-message="label.vaccine.stock.select.batch.and.quantity.to.issue"></h3>
@@ -281,7 +280,7 @@
                 <tr ng-repeat="lot in currentProduct.lots">
                     <td ng-bind="lot.lotCode"></td>
                     <td ng-bind="lot.expirationDate"></td>
-                    <td ng-bind="lot.vvm"></td>
+                    <td ng-bind="lot.vvmStatus"></td>
                     <td>
                         <span ng-bind="lot.quantityOnHand"></span>
                         <span ng-show="lotsForm.lotQuantity{{$index}}.$invalid" data-toggle="tooltip" title=""
@@ -319,24 +318,16 @@
             <div class="row-fluid ">
                 <div class="info-box span12">
                     <div class="span4">
-                        <strong id='issue-voucher-label'
-                                openlmis-message="label.stock.issue.voucher"> </strong>:&nbsp;
-                        <input type="text" name="voucherNumber" ng-required="true"
-                               ng-model="facilityToIssue.issueVoucher"/>
-                    </div>
-                    <div class="span4">
-                        <strong id="received-date-label"
-                                openlmis-message="Issuedate"> </strong>:&nbsp;
+                        <strong id="received-date-label" openlmis-message="Issuedate"> </strong>:&nbsp;
                         <input ng-required="true" id="receivingDate" name="issueDate" type="text"
                                ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
                                ng-model="facilityToIssue.issueDate"/>
-
                     </div>
-                    <div class="span2">
+                    <div class="span4">
                         <strong id='facilityLabel2' openlmis-message="label.facility"> </strong>:&nbsp;
                         <span id='facility2' ng-bind="facilityToIssue.name"></span>
                     </div>
-                    <div class="span2">
+                    <div class="span4">
                         <strong id='issueTypeLabel' openlmis-message="label.type"> </strong>:&nbsp;
                         <span id='issueType' ng-bind="facilityToIssue.type"></span>
                     </div>

@@ -24,6 +24,7 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
          FacilitiesWithProducts.get(programId,facilityId).then(function(data){
 
                 $scope.allRoutineFacilities =data.routine;
+                $scope.allRoutineFacilitiesCopy=$scope.allRoutineFacilities;
                 $scope.allEmergencyFacilities =data.emergency;
                 $scope.numberOfPages = Math.ceil( $scope.allRoutineFacilities.length / $scope.pageSize) || 1;
                 $scope.page();
@@ -173,7 +174,7 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
             distribution.fromFacilityId = homeFacility.id;
             distribution.toFacilityId= $scope.facilityToIssue.id;
             distribution.distributionDate = $scope.facilityToIssue.issueDate;
-            distribution.voucherNumber = $scope.facilityToIssue.issueVoucher;
+            //distribution.voucherNumber = $scope.facilityToIssue.issueVoucher;
             distribution.lineItems=[];
             distribution.distributionType=$scope.facilityToIssue.type;
             distribution.status="PENDING";
@@ -181,12 +182,7 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                 if(product.quantity >0)
                 {
                     var list = {};
-                    var event ={};
 
-                    event.type="ISSUE";
-                    event.productCode =product.productCode;
-                    event.facilityId=$scope.facilityToIssue.id;
-                    event.customProps={"occurred":$scope.facilityToIssue.issueDate};
 
                     list.productId = product.productId;
                     list.quantity=product.quantity;
@@ -198,8 +194,15 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                             if(l.quantity !==null && l.quantity >0)
                             {
                                 var lot = {};
+                                var event ={};
+                                event.type="ISSUE";
+                                event.productCode =product.productCode;
+                                event.facilityId=$scope.facilityToIssue.id;
+                                event.customProps={};
+                                event.customProps.occurred=$scope.facilityToIssue.issueDate;
                                 event.lotId=l.lotId;
                                 event.quantity=l.quantity;
+
                                 lot.lotId = l.lotId;
                                 lot.vvmStatus=l.vvmStatus;
                                 lot.quantity = l.quantity;
@@ -210,6 +213,12 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                          });
                     }
                     else{
+                        var event ={};
+                        event.type="ISSUE";
+                        event.productCode =product.productCode;
+                        event.facilityId=$scope.facilityToIssue.id;
+                        event.customProps={};
+                        event.customProps.occurred=$scope.facilityToIssue.issueDate;
                         event.quantity=product.quantity;
                         events.push(event);
                     }
@@ -313,6 +322,24 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                     return (hasAtLeastOne && !hasError);
         }
 
+     };
+     $scope.updateCurrentRoutineFacilities = function () {
+         $scope.allRoutineFacilities = [];
+         $scope.query = $scope.query.trim();
+
+         if (!$scope.query.length) {
+           $scope.allRoutineFacilities = $scope.allRoutineFacilitiesCopy;
+            $scope.page();
+           return;
+         }
+
+         $($scope.allRoutineFacilitiesCopy).each(function (index, facility) {
+           var searchString = $scope.query.toLowerCase();
+           if (facility.name.toLowerCase().indexOf(searchString) >= 0) {
+             $scope.allRoutineFacilities.push(facility);
+           }
+         });
+         $scope.page();
      };
 
 }
