@@ -25,7 +25,6 @@ services.factory('StockCardsByCategory', function($resource,StockCards,$q, $time
 
                                  StockCards.get({facilityId:fId},function(data){
                                         var stockCards=data.stockCards;
-
                                         stockCards.forEach(function(s){
                                               s.displayOrder=s.product.form.displayOrder;
                                               var product= _.filter(programProducts, function(obj) {
@@ -130,10 +129,12 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                                           lotOnHand.quantity=(distributedLot === undefined || facility.status==="RECEIVED" )?0:distributedLot.quantity;
                                                           lotOnHand.lineItemLotId=(distributedLot === undefined)?null:distributedLot.id;
                                                           lotOnHand.initialQuantity=(distributedLot === undefined)?null:distributedLot.quantity;
-                                                          lotOnHand.vvmStatus=lot.vvmStatus;
+                                                          lotOnHand.vvmStatus=lot.customProps.vvmstatus;
                                                           lotOnHand.expirationDate=lot.lot.expirationDate;
                                                           product.lots.push(lotOnHand);
                                                       });
+                                                      var lotAsc=_.sortBy(product.lots,'vvmStatus');
+                                                      product.lots=lotAsc.reverse();
                                                  }
 
                                                  facility.productsToIssue.push(product);

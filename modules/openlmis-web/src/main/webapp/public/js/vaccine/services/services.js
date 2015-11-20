@@ -99,7 +99,7 @@ services.factory('VaccineDiscardingReasons', function($resource){
 });
 
 services.factory('StockCards', function($resource){
-   return $resource('/api/v2/facilities/:facilityId/stockCards.json', {facilityId: '@facilityId'}, {});
+   return $resource('/api/v2/facilities/:facilityId/stockCards?includeEmptyLots=false', {facilityId: '@facilityId'}, {});
 });
 
 services.factory('Forecast', function($resource){
@@ -265,4 +265,8 @@ services.factory('EquipmentNonFunctional',function($resource){
 
 services.factory('OneLevelSupervisedFacilities',function($resource){
     return $resource('/vaccine/inventory/distribution/supervised-facilities',{},{});
+});
+
+services.factory('Distribution', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/by-voucher-number/', {}, {});
 });
