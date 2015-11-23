@@ -5,7 +5,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
-import org.openlmis.core.domain.FacilityType;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.repository.mapper.FacilityMapper;
 import org.openlmis.core.service.FacilityService;
@@ -28,9 +27,10 @@ import static com.google.common.collect.FluentIterable.from;
 @NoArgsConstructor
 public class FacilityProductsReportDataProvider {
 
-    public static final String HEALTH_FACILITY = "health_facility";
     public static final String DISTRICT_CODE = "district";
     public static final String PROVINCE_CODE = "province";
+    private static final String DDM_CODE = "DDM";
+    private static final String DPM_CODE = "DPM";
     @Autowired
     private FacilityService facilityService;
     @Autowired
@@ -47,6 +47,7 @@ public class FacilityProductsReportDataProvider {
     public List<FacilityProductReportEntry> getReportData(final Long geographicZoneId, final Long productId, final Date endTime) {
         List<Facility> facilities = getAllHealthFacilities();
         final GeographicZone geographicZone = geographicZoneService.getById(geographicZoneId);
+
         if (geographicZone != null) {
 
             facilities = from(facilities).filter(new Predicate<Facility>() {
@@ -56,14 +57,21 @@ public class FacilityProductsReportDataProvider {
                 }
             }).toList();
         }
+
         return fillReportEntryList(productId, endTime, facilities);
     }
 
     public List<FacilityProductReportEntry> getReportData(Long facilityId, final Date endTime) {
         List<StockCard> stockCards = stockCardService.getStockCards(facilityId);
-        return from(stockCards).transform(getReportEntry(endTime)).toList();
+        final Facility facility = facilityService.getById(facilityId);
+        return from(stockCards).transform(getReportEntry(endTime)).transform(new Function<FacilityProductReportEntry, FacilityProductReportEntry>() {
+            @Override
+            public FacilityProductReportEntry apply(FacilityProductReportEntry input) {
+                input.setFacilityName(facility.getName());
+                return input;
+            }
+        }).toList();
     }
-
 
     protected static boolean inGeographicZone(GeographicZone geographicZone, Facility facility) {
         if (DISTRICT_CODE.equalsIgnoreCase(geographicZone.getLevel().getCode())) {
@@ -106,7 +114,17 @@ public class FacilityProductsReportDataProvider {
 
     @Transactional
     protected List<Facility> getAllHealthFacilities() {
-        FacilityType type = facilityService.getFacilityTypeByCode(new FacilityType(HEALTH_FACILITY));
-        return facilityMapper.getFacilitiesListForAFacilityType(type.getId());
+        List<Facility> allReportFacilities = facilityMapper.getAllReportFacilities();
+
+        return from(allReportFacilities).filter(new Predicate<Facility>() {
+            @Override
+            public boolean apply(Facility input) {
+                return isHealthFacility(input);
+            }
+        }).toList();
+    }
+
+    private boolean isHealthFacility(Facility input) {
+        return !input.getFacilityType().getCode().equalsIgnoreCase(DDM_CODE) && !input.getFacilityType().getCode().equalsIgnoreCase(DPM_CODE);
     }
 }

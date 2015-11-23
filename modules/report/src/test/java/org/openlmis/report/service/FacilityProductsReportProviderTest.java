@@ -7,16 +7,15 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.openlmis.core.domain.Facility;
-import org.openlmis.core.domain.GeographicLevel;
-import org.openlmis.core.domain.GeographicZone;
-import org.openlmis.core.domain.Product;
+import org.openlmis.core.domain.*;
+import org.openlmis.core.repository.mapper.FacilityMapper;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.report.model.dto.FacilityProductReportEntry;
 import org.openlmis.stockmanagement.domain.StockCard;
 import org.openlmis.stockmanagement.domain.StockCardEntry;
+import org.openlmis.stockmanagement.domain.StockCardEntryKV;
 import org.openlmis.stockmanagement.service.StockCardService;
 
 import java.util.ArrayList;
@@ -41,6 +40,9 @@ public class FacilityProductsReportProviderTest {
     @Mock
     GeographicZoneService geographicZoneService;
 
+    @Mock
+    FacilityMapper facilityMapper;
+
     @InjectMocks
     FacilityProductsReportDataProvider facilityProductsReportDataProvider;
 
@@ -63,11 +65,15 @@ public class FacilityProductsReportProviderTest {
         product.setId(1L);
         product.setPrimaryName("Product Test Name");
         stockCard.setProduct(product);
-        List<StockCardEntry> entries = new ArrayList<>();
+
         StockCardEntry stockCardEntry = new StockCardEntry();
         stockCardEntry.setQuantity(100L);
         stockCardEntry.setCreatedDate(new Date());
+        ArrayList<StockCardEntryKV> keyValues = new ArrayList<>();
+        keyValues.add(new StockCardEntryKV(FacilityProductReportEntry.EXPIRATION_DATES,null, null));
+        stockCardEntry.setKeyValues(keyValues);
 
+        List<StockCardEntry> entries = new ArrayList<>();
         entries.add(stockCardEntry);
         stockCard.setEntries(entries);
         stockCards.add(stockCard);
@@ -97,5 +103,24 @@ public class FacilityProductsReportProviderTest {
 
         assertThat(FacilityProductsReportDataProvider.inGeographicZone(district, facility), is(true));
         assertThat(FacilityProductsReportDataProvider.inGeographicZone(province, facility), is(true));
+    }
+
+    @Test
+    public void shouldGetAllHealthFacilities(){
+        List<Facility> facilities = new ArrayList<>();
+
+        Facility healthFacility = new Facility(1L,"HF","facility1",null,null,new FacilityType("HF"),false);
+        Facility DDMFacility = new Facility(1L,"DDM","facility2",null,null,new FacilityType("DDM"),false);
+        Facility DPMFacility = new Facility(1L,"DPM","facility3",null,null,new FacilityType("DPM"),false);
+
+        facilities.add(healthFacility);
+        facilities.add(DDMFacility);
+        facilities.add(DPMFacility);
+
+        when(facilityMapper.getAllReportFacilities()).thenReturn(facilities);
+
+        List<Facility> allHealthFacilities = facilityProductsReportDataProvider.getAllHealthFacilities();
+        assertThat(allHealthFacilities.size(),is(1));
+        assertThat(allHealthFacilities.get(0).getFacilityType().getCode(),is("HF"));
     }
 }

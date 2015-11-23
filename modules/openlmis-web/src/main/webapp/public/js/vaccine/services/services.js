@@ -266,6 +266,10 @@ services.factory('EquipmentNonFunctional',function($resource){
 services.factory('OneLevelSupervisedFacilities',function($resource){
     return $resource('/vaccine/inventory/distribution/supervised-facilities',{},{});
 });
+services.factory('ViewBundledDistributionVaccinationSupplies', function ($resource) {
+    alert("here");
+    return $resource('/vaccine/report/view-bundled-distribution-vaccination-supplies/:year/:productId.json', {year: '@year', productId: '@productId'}, {});
+});
 
 services.factory('Distribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/by-voucher-number/', {}, {});
