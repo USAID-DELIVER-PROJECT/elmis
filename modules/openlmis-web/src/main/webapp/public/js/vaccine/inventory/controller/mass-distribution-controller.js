@@ -174,7 +174,6 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
             distribution.fromFacilityId = homeFacility.id;
             distribution.toFacilityId= $scope.facilityToIssue.id;
             distribution.distributionDate = $scope.facilityToIssue.issueDate;
-            //distribution.voucherNumber = $scope.facilityToIssue.issueVoucher;
             distribution.lineItems=[];
             distribution.distributionType=$scope.facilityToIssue.type;
             distribution.status="PENDING";
@@ -182,8 +181,6 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                 if(product.quantity >0)
                 {
                     var list = {};
-
-
                     list.productId = product.productId;
                     list.quantity=product.quantity;
                     if(product.lots !==undefined && product.lots.length >0)
@@ -200,6 +197,7 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                                 event.facilityId=$scope.facilityToIssue.id;
                                 event.customProps={};
                                 event.customProps.occurred=$scope.facilityToIssue.issueDate;
+                                event.customProps.issuedto=$scope.facilityToIssue.name;
                                 event.lotId=l.lotId;
                                 event.quantity=l.quantity;
 
@@ -219,6 +217,7 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                         event.facilityId=$scope.facilityToIssue.id;
                         event.customProps={};
                         event.customProps.occurred=$scope.facilityToIssue.issueDate;
+                        event.customProps.issuedto=$scope.facilityToIssue.name;
                         event.quantity=product.quantity;
                         events.push(event);
                     }
