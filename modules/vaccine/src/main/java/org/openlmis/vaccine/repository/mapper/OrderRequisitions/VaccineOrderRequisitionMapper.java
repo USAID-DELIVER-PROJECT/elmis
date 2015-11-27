@@ -7,7 +7,6 @@ import org.openlmis.core.domain.Product;
 import org.openlmis.core.domain.Program;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.stockmanagement.domain.LotOnHand;
-import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
@@ -129,21 +128,15 @@ public interface VaccineOrderRequisitionMapper {
             @Result(property = "id", column = "id"),
             @Result(property = "product", column = "productId", javaType = Product.class,
                     one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getById")),
+            @Result(property = "keyValues", column = "id", javaType = List.class,
+                    one = @One(select = "org.openlmis.stockmanagement.repository.mapper.StockCardMapper.getStockCardKeyValues")),
+            @Result(property = "entries", column = "id", javaType = List.class,
+                    many = @Many(select = "org.openlmis.stockmanagement.repository.mapper.StockCardMapper.getEntries")),
             @Result(property = "lotsOnHand", column = "id", javaType = List.class,
-                    many = @Many(select = "getLotsOnHand"))
+                    many = @Many(select = "org.openlmis.stockmanagement.repository.mapper.StockCardMapper.getLotsOnHand"))
 
     })
     List<OrderRequisitionStockCardDTO> getAllByFacilityAndProgram(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
-
-    @Select("SELECT loh.*" +
-            " FROM lots_on_hand loh" +
-            " WHERE loh.stockcardid = #{stockCardId}")
-    @Results({
-            @Result(
-                    property = "lot", column = "lotId", javaType = Lot.class,
-                    one = @One(select = "org.openlmis.stockmanagement.repository.mapper.LotMapper.getById"))
-    })
-    List<LotOnHand> getLotsOnHand(@Param("stockCardId") Long stockCardId);
 
 }
 

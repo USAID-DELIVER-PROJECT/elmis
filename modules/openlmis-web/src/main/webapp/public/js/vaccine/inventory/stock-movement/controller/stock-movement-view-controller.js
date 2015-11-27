@@ -46,7 +46,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                 $scope.numberOfPages = Math.ceil(pageLineItems.length / $scope.pageSize) || 1;
                 $scope.currentPage = (utils.isValidPage($routeParams.page, $scope.numberOfPages)) ? parseInt($routeParams.page, 10) : 1;
                 $scope.stockCardsByCategory = $scope.pageLineItems.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
-
+              // console.log(JSON.stringify($scope.stockCardsByCategory));
             });
         }
 
@@ -109,25 +109,22 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                 distribution.distributionDate = $scope.stockCardsByCategory[0].issueDate;
                 distribution.periodId = periodId;
                 distribution.orderId = orderId;
-                distribution.voucherNumber = $scope.stockCardsByCategory[0].issueVoucher;
                 distribution.lineItems=[];
-                distribution.distributionType="ROUTINE";
+                distribution.distributionType="SCHEDULED";
                 distribution.status="PENDING";
 
                 $scope.stockCardsByCategory.forEach(function (st) {
 
                     st.stockCards.forEach(function (s) {
 
-                        var list = {};
+                           var lineItem = {};
 
-                           list.productId = s.product.id;
-
+                           lineItem.productId = s.product.id;
                            if(s.lotsOnHand.length >0)
                            {
-                           list.lots = [];
+                           lineItem.lots = [];
                            var lotSum = 0;
                            s.lotsOnHand.forEach(function (l) {
-
 
                                if( l.quantity >0)
                                {
@@ -138,19 +135,17 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                                    event.facilityId=toFacilityId;
                                    event.lotId= l.lot.id;
                                    event.quantity= l.quantity;
-                                   event.customPros={"occurred":st.issueDate};
+                                   event.customProps={"occurred":st.issueDate};
                                    events.push(event);
 
                                    lot.lotId = l.lot.id;
                                    lot.quantity = l.quantity;
-                                   list.lots.push(lot);
+                                   lot.vvmStatus=l.customProps.vvmstatus;
+                                   lineItem.lots.push(lot);
                                    lotSum = lotSum + l.quantity;
                                }
-
-
                               });
-                               list.quantity = lotSum;
-                               distribution.lineItems.push(list);
+                               lineItem.quantity = lotSum;
 
                            }
                         else{
@@ -164,7 +159,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
                            }
 
-                        distribution.lineItems.push(list);
+                       distribution.lineItems.push(lineItem);
 
                     });
 
