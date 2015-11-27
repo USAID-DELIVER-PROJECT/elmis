@@ -119,7 +119,7 @@ services.factory('SaveVaccineInventoryAdjustment',function($resource){
 });
 
 services.factory('VaccineAdjustmentReasons',function($resource){
-    return $resource('/api/v2/stockManagement/adjustmentReasons.json',{},{});
+    return $resource('/api/v2/stockManagement/adjustmentReasons.json',{programId:'@programId'},{});
 });
 
 services.factory('VaccineProgramProducts', function ($resource) {
