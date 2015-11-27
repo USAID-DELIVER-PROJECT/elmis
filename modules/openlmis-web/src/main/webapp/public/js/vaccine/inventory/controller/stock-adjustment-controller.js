@@ -117,7 +117,7 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
                                         event.quantity=reason.quantity;
                                         event.lotId=l.lot.id;
                                         event.reasonName=reason.name;
-                                        if(l.customProps.vvmstatus !==undefined)
+                                        if(l.customProps !==null && l.customProps.vvmstatus !==undefined)
                                         {
                                             event.customProps={"vvmStatus":l.customProps.vvmstatus};
                                         }
@@ -207,7 +207,7 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
                 return config[0].vvmTracked;
              }
              else{
-                return false;
+                return true;
              }
           };
 
