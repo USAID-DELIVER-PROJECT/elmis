@@ -15,6 +15,7 @@ import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.Program;
 import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.MessageService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
@@ -42,6 +43,14 @@ public class VaccineInventoryDistributionService {
     @Autowired
     FacilityService facilityService;
 
+    @Autowired
+    MessageService messageService;
+
+    public  static  final String cvsRegionCode="label.vaccine.voucher.number.region.for.cvs";
+
+    public  static  final String cvsDistrictCode="label.vaccine.voucher.number.district.for.cvs";
+
+    public  static  final String rvsDistrictCode="label.vaccine.voucher.number.district.for.rvs";
 
     public List<Facility> getFacilities(Long userId) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
@@ -118,16 +127,30 @@ public class VaccineInventoryDistributionService {
         else{
             newSerial=1L;
         }
-
         String[] nationalCodes=voucherNumberCode.getNational().split("\\s+");
         String nationalCode=(nationalCodes.length >1)?(nationalCodes[0].substring(0,2).toUpperCase()+nationalCodes[1].substring(0, 1).toUpperCase()): (nationalCodes[0].substring(0, 3).toUpperCase());
 
-        String[] regionCodes=voucherNumberCode.getRegion().split("\\s+");
-        String regionCode=(regionCodes.length >1)?(regionCodes[0].substring(0,2).toUpperCase()+regionCodes[1].substring(0, 1).toUpperCase()): (regionCodes[0].substring(0, 3).toUpperCase());
+        String regionCode="";
+        if(voucherNumberCode.getRegion().equalsIgnoreCase("cvs-region-code")){
+            regionCode=messageService.message(cvsRegionCode);
+        }
+        else {
+            String[] regionCodes = voucherNumberCode.getRegion().split("\\s+");
+            regionCode = (regionCodes.length > 1) ? (regionCodes[0].substring(0, 2).toUpperCase() + regionCodes[1].substring(0, 1).toUpperCase()) : (regionCodes[0].substring(0, 3).toUpperCase());
+        }
+        String districtCode="";
+        if(voucherNumberCode.getDistrict().equalsIgnoreCase("cvs-district-code"))
+        {
 
-        String[] districtCodes = voucherNumberCode.getDistrict().split("\\s+");
-        String districtCode =(districtCodes.length >1)?(districtCodes[0].substring(0,2).toUpperCase()+districtCodes[1].substring(0, 1).toUpperCase()): (districtCodes[0].substring(0, 3).toUpperCase());
-
+            districtCode=messageService.message(cvsDistrictCode);
+        }
+        else if(voucherNumberCode.getDistrict().equalsIgnoreCase("rvs-district-code")){
+            districtCode=messageService.message(rvsDistrictCode);
+        }
+        else {
+            String[] districtCodes = voucherNumberCode.getDistrict().split("\\s+");
+            districtCode = (districtCodes.length > 1) ? (districtCodes[0].substring(0, 2).toUpperCase() + districtCodes[1].substring(0, 1).toUpperCase()) : (districtCodes[0].substring(0, 3).toUpperCase());
+        }
         newVoucherNumber = nationalCode+"/"+regionCode+"/"+districtCode+"/" + year +"/" + newSerial;
         return newVoucherNumber;
     }
@@ -136,7 +159,7 @@ public class VaccineInventoryDistributionService {
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long facilityId = homeFacility.getId();
         List<Program> programs = programService.getAllIvdPrograms();
-        Long programId = programs.get(0).getId();
+        Long programId =(programs ==null)?null: programs.get(0).getId();
 
         ProcessingPeriod period = getCurrentPeriod(facilityId, programId, new Date());
         if (period != null) {

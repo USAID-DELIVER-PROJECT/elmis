@@ -80,7 +80,7 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select("SELECT *" +
             " FROM vaccine_distributions " +
-            " WHERE distributiontype='ROUTINE' AND EXTRACT(MONTH FROM distributionDate) = #{month} AND EXTRACT(YEAR FROM distributionDate = #{year});"
+            " WHERE distributiontype='SCHEDULED' AND EXTRACT(MONTH FROM distributionDate) = #{month} AND EXTRACT(YEAR FROM distributionDate) = #{year};"
     )
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
@@ -89,7 +89,7 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select("SELECT *" +
             " FROM vaccine_distributions " +
-            "WHERE periodId=#{periodId} AND distributiontype='ROUTINE'")
+            " WHERE periodId=#{periodId} AND distributiontype='SCHEDULED'")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
                     many = @Many(select = "getLineItems"))})
@@ -143,12 +143,14 @@ public interface VaccineInventoryDistributionMapper {
             "WHERE tofacilityid=#{facilityId} AND vouchernumber=#{voucherNumber} AND status='PENDING' LIMIT 1")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
-                    many = @Many(select = "getLineItems"))})
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "fromFacility", column = "fromFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
     VaccineDistribution getDistributionByVoucherNumber(@Param("facilityId") Long facilityId,@Param("voucherNumber") String voucherNumber);
 
     @Select("SELECT vouchernumber FROM vaccine_distributions WHERE vouchernumber LIKE '%/%/'||EXTRACT(YEAR FROM NOW())||'/%' ORDER BY createddate DESC LIMIT 1;")
     String getLastVoucherNumber();
 
-    @Select("Select * from vw_vaccine_distribution_voucher_number WHERE facilityid=#{facilityId}")
+    @Select("Select * from vw_vaccine_distribution_voucher_no_fields WHERE facilityid=#{facilityId}")
     VoucherNumberCode getFacilityVoucherNumberCode(@Param("facilityId") Long facilityId);
 }
