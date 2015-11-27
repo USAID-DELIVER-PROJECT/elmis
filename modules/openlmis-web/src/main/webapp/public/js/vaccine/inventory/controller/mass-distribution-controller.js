@@ -16,23 +16,23 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
      $scope.userPrograms=programs;
      $scope.facilityDisplayName=homeFacility.name;
      $scope.toIssue=[];
-     $scope.distributionType='ROUTINE';
+     $scope.distributionType='SCHEDULED';
      $scope.pageSize =8;
      $scope.currentPage=1;
-     $scope.emergencyFacility=undefined;
+     $scope.UnScheduledFacility=undefined;
      $scope.loadSupervisedFacilities=function(programId,facilityId){
          FacilitiesWithProducts.get(programId,facilityId).then(function(data){
 
-                $scope.allRoutineFacilities =data.routine;
-                $scope.allRoutineFacilitiesCopy=$scope.allRoutineFacilities;
-                $scope.allEmergencyFacilities =data.emergency;
-                $scope.numberOfPages = Math.ceil( $scope.allRoutineFacilities.length / $scope.pageSize) || 1;
+                $scope.allScheduledFacilities =data.scheduled;
+                $scope.allScheduledFacilitiesCopy=$scope.allScheduledFacilities;
+                $scope.allUnScheduledFacilities =data.unscheduled;
+                $scope.numberOfPages = Math.ceil( $scope.allScheduledFacilities.length / $scope.pageSize) || 1;
                 $scope.page();
          });
      };
 
-    $scope.loadEmergencyFacility=function(){
-          $scope.emergencyFacility=_.findWhere($scope.allEmergencyFacilities,{id:$scope.emergencyFacilityId});
+    $scope.loadUnScheduledFacility=function(){
+          $scope.UnScheduledFacility=_.findWhere($scope.allUnScheduledFacilities,{id:$scope.UnScheduledFacilityId});
     };
 
      $scope.showLots=function(facility,product)
@@ -84,9 +84,9 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
           $scope.currentProduct.quantity=totalLots;
      }
      $scope.page=function(){
-        if($scope.allRoutineFacilities !== undefined)
+        if($scope.allScheduledFacilities !== undefined)
         {
-            $scope.routineFacilities = $scope.allRoutineFacilities.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
+            $scope.ScheduledFacilities = $scope.allScheduledFacilities.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
         }
      };
      if($scope.userPrograms.length > 1)
@@ -120,23 +120,26 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
      $scope.showPODModal=function(facility){
 
         $scope.podModal=true;
-        $scope.facilityPOD=_.findWhere($scope.routineFacilities, {id:facility.id});
+        $scope.facilityPOD=_.findWhere($scope.ScheduledFacilities, {id:facility.id});
 
      };
 
      $scope.updatePOD=function(){
          var distribution={};
+       //  console.log(JSON.stringify($scope.facilityPOD));
          distribution.id=$scope.facilityPOD.distributionId;
          distribution.status="RECEIVED";
          distribution.lineItems=[];
-
+         var events =[];
          $scope.facilityPOD.productsToIssue.forEach(function(product){
             if(product.quantity >0)
             {
                 var list = {};
+
                 list.productId = product.productId;
                 list.quantity=product.quantity;
                 list.id=product.lineItemId;
+
                 if(product.lots !==undefined && product.lots.length >0)
                 {
                     list.lots = [];
@@ -144,6 +147,30 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                     {
                          if(l.quantity !==null && l.quantity >0)
                          {
+                             if(l.quantity !== l.originalIssueQuantity)
+                             {
+                                  var event={};
+                                  event.productCode =product.productCode;
+                                  event.facilityId=$scope.facilityPOD.id;
+                                  event.customProps={};
+                                  event.customProps.occurred=$scope.facilityPOD.issueDate;
+                                  event.lotId=l.lotId;
+                                  if(l.quantity > l.originalIssueQuantity)  {
+                                    event.type='ISSUE';
+                                    event.quantity=l.quantity-l.originalIssueQuantity;
+                                    event.customProps.issuedto=$scope.facilityPOD.name;
+                                    if((l.quantity -l.originalIssueQuantity) <= l.quantityOnHand)
+                                    {
+                                        events.push(event);
+                                    }
+                                  }
+                                  else if(l.quantity < l.originalIssueQuantity){
+                                    event.type='RECEIPT';
+                                    event.quantity=l.originalIssueQuantity-l.quantity;
+                                    events.push(event);
+                                  }
+
+                             }
                              var lot = {};
                              lot.lotId = l.lotId;
                              lot.id=l.lineItemLotId;
@@ -154,12 +181,22 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
 
                     });
                 }
+                else{
+
+                }
                 distribution.lineItems.push(list);
             }
          });
+         console.log(JSON.stringify(events));
          $scope.podModal=false;
          SaveDistribution.save(distribution,function(data){
-               $scope.loadSupervisedFacilities($scope.userPrograms[0].id,homeFacility.id);
+            if(events.length >0)
+            {
+               StockEvent.save({facilityId:homeFacility.id},events, function (data) {
+                    $scope.message=data.success;
+               });
+            }
+           $scope.loadSupervisedFacilities($scope.userPrograms[0].id,homeFacility.id);
          });
      };
      $scope.closePODModal=function(){
@@ -231,8 +268,8 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                      $scope.issueModal=false;
                      $scope.message=data.success;
                      SaveDistribution.save(distribution,function(distribution){
-                              $scope.emergencyFacilityId=undefined;
-                              $scope.emergencyFacility=undefined;
+                              $scope.UnScheduledFacilityId=undefined;
+                              $scope.UnScheduledFacility=undefined;
                               $scope.loadSupervisedFacilities($scope.userPrograms[0].id,homeFacility.id);
                               print(distribution.distributionId);
 
@@ -297,8 +334,8 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
            }
 
      };
-     $scope.loadEmergencyFacilities=function(){
-        $scope.emergencyFacilities=_.where($scope.allEmergencyFacilities,{name:$scope.facilityQuery});
+     $scope.loadUnScheduledFacilities=function(){
+        $scope.UnScheduledFacilities=_.where($scope.allUnScheduledFacilities,{name:$scope.facilityQuery});
      };
      $scope.hasProductToIssue=function(facility)
      {
@@ -322,20 +359,20 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
         }
 
      };
-     $scope.updateCurrentRoutineFacilities = function () {
-         $scope.allRoutineFacilities = [];
+     $scope.updateCurrentScheduledFacilities = function () {
+         $scope.allScheduledFacilities = [];
          $scope.query = $scope.query.trim();
 
          if (!$scope.query.length) {
-           $scope.allRoutineFacilities = $scope.allRoutineFacilitiesCopy;
+           $scope.allScheduledFacilities = $scope.allScheduledFacilitiesCopy;
             $scope.page();
            return;
          }
 
-         $($scope.allRoutineFacilitiesCopy).each(function (index, facility) {
+         $($scope.allScheduledFacilitiesCopy).each(function (index, facility) {
            var searchString = $scope.query.toLowerCase();
            if (facility.name.toLowerCase().indexOf(searchString) >= 0) {
-             $scope.allRoutineFacilities.push(facility);
+             $scope.allScheduledFacilities.push(facility);
            }
          });
          $scope.page();
