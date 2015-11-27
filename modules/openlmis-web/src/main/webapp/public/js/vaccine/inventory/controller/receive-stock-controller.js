@@ -76,11 +76,16 @@ function ReceiveStockController($scope,programs,$timeout,$window,$dialog,homeFac
                         event.facilityId=homeFacility.id;
                         event.productCode=p.product.code;
                         event.quantity=l.quantity;
-                        event.lotId=l.lot.id;
+                        event.lot={};
+                        event.lot.lotCode=l.lot.lotCode;
+                        event.lot.manufacturerName=l.lot.manufacturerName;
+                        event.lot.expirationDate=l.lot.expirationDate;
+                        event.customProps={};
                         if(l.vvmStatus !==undefined)
                         {
-                            event.customProps={"vvmStatus":l.vvmStatus};
+                            event.customProps.vvmStatus=l.vvmStatus;
                         }
+                        event.customProps.receivedFrom=$scope.distribution.fromFacility.name;
                         events.push(event);
                     });
                 }
