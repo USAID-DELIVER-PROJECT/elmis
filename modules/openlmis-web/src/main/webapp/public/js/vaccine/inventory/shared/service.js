@@ -392,7 +392,7 @@ services.factory('StockCardsByCategoryAndRequisition', function ($resource, Stoc
     };
 });
 
-services.factory('StockCardsForProgramByCategory', function ($resource, VaccineOrderRequisitionReport, RequisitionForFacility, $q, $timeout, VaccineOrderRequisitionProgramProduct) {
+services.factory('StockCardsForProgramByCategory', function ($resource,StockCards, VaccineOrderRequisitionReport, RequisitionForFacility, $q, $timeout, VaccineOrderRequisitionProgramProduct) {
 
     var programProducts = [];
     var programId;
@@ -415,7 +415,7 @@ services.factory('StockCardsForProgramByCategory', function ($resource, VaccineO
 
                             quantityRequested = data.requisitionList;
 
-                            VaccineOrderRequisitionReport.get({facilityId: fId, programId: pId}, function (data) {
+                            StockCards.get({facilityId: fId}, function (data) {
                                 var stockCards = data.stockCards;
                                 stockCards.forEach(function (s) {
 
@@ -469,7 +469,7 @@ services.factory('StockCardsForProgramByCategory', function ($resource, VaccineO
             }
             else {
                 var stockCardsToDisplay = [];
-                VaccineOrderRequisitionReport.get({facilityId: fId, programId: pId}, function (data) {
+                StockCards.get({facilityId: fId}, function (data) {
                     var stockCards = data.stockCards;
                     if (stockCards.length > 0) {
                         stockCardsToDisplay = [{"productCategory": "no-category", "stockCards": stockCards}];

@@ -164,6 +164,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                     });
 
                 });
+                console.log(JSON.stringify(events));
               StockEvent.save({facilityId:homeFacility.id},events,function(data){
                    SaveDistribution.save(distribution,function(distribution) {
                         UpdateOrderRequisitionStatus.update({orderId: orderId}, function () {
