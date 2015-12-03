@@ -1115,7 +1115,7 @@ app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographi
         $scope.filterZone = 0;
         $scope.program = 0;
         $scope.user_geo_level = messageService.get('vaccine.report.filter.all.geographic.zones');
-        if (!angular.isUndefined($scope.faccilitySelection) && $scope.faccilitySelection == true) {
+        if (!angular.isUndefined($scope.faccilitySelection) && $scope.faccilitySelection === true) {
           $scope.faccilityShow = true;
         }
         //categoriseZoneBySupervisoryNode($scope);

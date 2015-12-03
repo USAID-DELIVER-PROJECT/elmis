@@ -181,5 +181,5 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,  PerformanceBy
                 }
             }
         }
-    };
+    }
 }
