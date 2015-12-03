@@ -13,6 +13,7 @@
 package org.openlmis.vaccine.domain.reports;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ import org.openlmis.core.domain.BaseModel;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.ProgramProduct;
+import org.openlmis.core.serializer.DateDeserializer;
 import org.openlmis.demographics.domain.AnnualFacilityEstimateEntry;
 import org.openlmis.vaccine.domain.VaccineDisease;
 import org.openlmis.vaccine.domain.VaccineProductDose;
@@ -28,8 +30,7 @@ import org.openlmis.vaccine.domain.Vitamin;
 import org.openlmis.vaccine.domain.VitaminSupplementationAgeGroup;
 import org.openlmis.vaccine.domain.config.VaccineIvdTabVisibility;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @Getter
@@ -51,6 +52,9 @@ public class VaccineReport extends BaseModel {
   private Long outreachImmunizationSessions;
   private Long outreachImmunizationSessionsCanceled;
 
+  @JsonDeserialize(using = DateDeserializer.class)
+  private Date submissionDate;
+
   private List<VaccineIvdTabVisibility> tabVisibilitySettings;
 
   private List<LogisticsLineItem> logisticsLineItems;
@@ -69,8 +73,14 @@ public class VaccineReport extends BaseModel {
   private List<ReportStatusChange> reportStatusChanges;
 
 
-  public void initializeLogisticsLineItems(List<ProgramProduct> programProducts) {
+  public void initializeLogisticsLineItems(List<ProgramProduct> programProducts, VaccineReport previousReport) {
     logisticsLineItems = new ArrayList<>();
+    Map<String, LogisticsLineItem> previousLineItemMap = new HashMap<>();
+    if(previousReport != null){
+      for(LogisticsLineItem lineItem : previousReport.getLogisticsLineItems()){
+        previousLineItemMap.put(lineItem.getProductCode(), lineItem);
+      }
+    }
     for (ProgramProduct pp : programProducts) {
       LogisticsLineItem item = new LogisticsLineItem();
 
@@ -82,6 +92,12 @@ public class VaccineReport extends BaseModel {
       item.setProductCategory(pp.getProductCategory().getName());
       item.setDisplayOrder(pp.getDisplayOrder());
 
+      if(previousReport != null){
+        LogisticsLineItem lineitem = previousLineItemMap.get(item.getProductCode());
+        if(lineitem != null){
+          item.setOpeningBalance(lineitem.getClosingBalance());
+        }
+      }
       logisticsLineItems.add(item);
     }
 
