@@ -317,7 +317,7 @@ public class PerformanceByDropoutRateByDistrictService {
         PerformanceByDropoutRateParam filterParam = null;
         if (filterCriteria != null) {
             filterParam = new PerformanceByDropoutRateParam();
-            filterParam.setFacility_id(StringUtils.isBlank(filterCriteria.get("facilityId")[0]) ? 0 : Long.parseLong(filterCriteria.get("facilityId")[0])); //defaults to 0
+            filterParam.setFacility_id(filterCriteria.get("facility")==null ||filterCriteria.get("facility").length<=0||StringUtils.isBlank(filterCriteria.get("facility")[0]) ? 0 : Long.parseLong(filterCriteria.get("facility")[0])); //defaults to 0
             filterParam.setGeographic_zone_id(filterCriteria.get("geographicZoneId") == null || StringUtils.isBlank(filterCriteria.get("geographicZoneId")[0]) ? 0 : Long.parseLong(filterCriteria.get("geographicZoneId")[0]));
             filterParam.setPeriod_end_date(StringUtils.isBlank(filterCriteria.get("periodEnd")[0]) ? null : filterCriteria.get("periodEnd")[0]);
 

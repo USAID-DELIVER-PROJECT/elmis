@@ -31,53 +31,23 @@
             <div class="app-form " style="padding: 5px;">
 
                 <form ng-submit="filterGrid()" name="filterForm" novalidate>
-                    <div filter-container class="clearfix">
+                    <div   class="clearfix">
+<!-- include facility and zone allgeographic zone  while district get selected facillity will be displayed on
+ other dropdown and also include layout option for vertical and horizontal-->
 
+                        <!--<vaccine-zone-filter facilityid="filter.facility" faccility="true" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone"  ></vaccine-zone-filter>-->
+                        <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="true" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone"  ></vaccine-zone-filter>
 
-                        <vaccine-zone-filter class="form-cell horizontalFilters" stand-alone="true" required="true">*</vaccine-zone-filter>
-
-                        <vaccine-dropout-filter class="form-cell horizontalFilters" >
+                        <vaccine-dropout-filter class="horizontalFilters form-cell" filterproduct="filter.product"  >
 
                         </vaccine-dropout-filter>
+                        <static-period-filter  range="range" startdate="filter.periodStart" enddate="filter.periodEnd" rangemax="10" error="perioderror"></static-period-filter>
 
-                        <div class="form-cell horizontalFilters">
-                            <label class="labels" openlmis-message="label.period"> <span
-                                    class="label-required">*</span></label>
-
-                            <div>
-                                <select ui-select2 class="input-large" ng-change="OnFilterChanged()"
-                                        ng-model="filter.periodType">
-                                    <option value="1">Current Period</option>
-                                    <option value="2">Last 3 Months</option>
-                                    <option value="3">Last 6 Months</option>
-                                    <option value="4">Last 1 Year</option>
-                                    <option value="5">Custom Range</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-cell horizontalFilters" ng-show="filter.periodType==5">
-                            <label class="labels"> Period Start:</label>
-
-                            <div>
-                                <input class="input-large" ng-change="OnFilterChanged()" ng-model="filter.periodStart"
-                                       ui-date-format="yy-mm-dd" ui-date/>
-                            </div>
-                        </div>
-                        <div class="form-cell horizontalFilters" ng-show="filter.periodType==5">
-                            <label class="labels"> Period End:</label>
-
-                            <div>
-                                <input class="input-large" ng-change="OnFilterChanged()" ng-model="filter.periodEnd"
-                                       ui-date-format="yy-mm-dd" ui-date/>
-                            </div>
-                        </div>
-                    </div>
                     <br/>
-
+                    </div>
                     <p style="font-size: .8em"> Period Start: {{filter.periodStart| date:'MMM dd, yyyy'}} &nbsp;&nbsp;Period End: {{filter.periodEnd| date:'MMM dd, yyyy'}}</p>
 
-                    <p style="font-size: .8em; color: red"> {{error_message}}</p>
+                    <p style="font-size: .8em; color: red"> {{perioderror}}</p>
 
                 </form>
             </div>

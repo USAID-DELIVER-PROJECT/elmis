@@ -1040,3 +1040,218 @@ app.directive('vaccineFacilityLevelFilter',['FacilitiesByLevel','VaccineInventor
 
       }]
 );
+app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographicZoneList', 'TreeGeographicZoneListByProgram', 'GetUserUnassignedSupervisoryNode', 'messageService', 'VaccineSupervisedIvdPrograms',
+  function (FacilitiesByGeographicZone, TreeGeographicZoneList, TreeGeographicZoneListByProgram, GetUserUnassignedSupervisoryNode, messageService, VaccineSupervisedIvdPrograms) {
+    var onPgCascadedVarsChanged1 = function ($scope) {
+
+      //if (!$routeParams.facility) {
+      //    $scope.facilities = [{
+      //        name: messageService.get('report.filter.select.facility')
+      //    }];
+      //}
+
+      var zone = ( angular.isDefined($scope.filterZone)) ? $scope.filterZone : 0;
+      // load facilities
+      FacilitiesByGeographicZone.get({
+        geoId: zone
+      }, function (data) {
+        $scope.facilities = data.facilities;
+        if (isUndefined($scope.facilities)) {
+          $scope.facilities = [];
+        }
+        $scope.facilities.unshift({
+          name: messageService.get('report.filter.all.facilities')
+        });
+      });
+    };
+
+    var onCascadedVarsChanged = function ($scope) {
+
+
+      VaccineSupervisedIvdPrograms.get({}, function (data) {
+
+        $scope.program = data.programs[0].id;
+
+        TreeGeographicZoneListByProgram.get({
+          program: $scope.program
+        }, function (data) {
+          $scope.zones = data.zone;
+
+
+        });
+
+      });
+
+
+    };
+
+    var categoriseZoneBySupervisoryNode = function ($scope) {
+
+
+      GetUserUnassignedSupervisoryNode.get({
+        program: $scope.program
+      }, function (data) {
+        $scope.user_geo_level = messageService.get('vaccine.report.filter.all.geographic.zones');
+        if (!angular.isUndefined(data.supervisory_nodes)) {
+          if (data.supervisory_nodes === 0)
+            $scope.user_geo_level = messageService.get('label.vaccine.geographic.zone');
+        }
+      });
+    };
+
+    return {
+      restrict: 'E',
+      scope: {
+        filterZone: '=val',
+        zones: '=zones',
+        program: '=pro',
+        faccilitySelection: '=faccility',
+        facilityId: '=facilityid'
+
+
+      },
+      controller: function ($scope, $routeParams, $location) {
+
+        $scope.filterZone = 0;
+        $scope.program = 0;
+        $scope.user_geo_level = messageService.get('vaccine.report.filter.all.geographic.zones');
+        if (!angular.isUndefined($scope.faccilitySelection) && $scope.faccilitySelection == true) {
+          $scope.faccilityShow = true;
+        }
+        //categoriseZoneBySupervisoryNode($scope);
+        var onParamsChanged = function () {
+
+          onCascadedVarsChanged($scope);
+        };
+
+        onParamsChanged();
+        $scope.$watch('filterZone', function (newValues, oldValues) {
+
+          onPgCascadedVarsChanged1($scope);
+          $scope.$parent.OnFilterChanged();
+        });
+        $scope.$watch('facilityId', function (newValues, oldValues) {
+
+
+          $scope.$parent.OnFilterChanged();
+        });
+      },
+
+      //require: '^filterContainer',
+      link: function (scope, elm, attr) {
+
+      },
+
+      templateUrl: 'filter-zone-template'
+    };
+  }
+]);
+app.directive('vaccineDropoutFilter', ['DropoutProducts', 'messageService',
+  function (DropoutProducts, messageService) {
+
+
+    return {
+      restrict: 'E',
+      scope: {
+        filterProduct: '=filterproduct'
+      },
+      controller: function ($scope, $routeParams, $location) {
+        DropoutProducts.get({}, function (data) {
+          $scope.dropoutProductsList = data.dropoutProductsList;
+
+        });
+        $scope.filterProduct=0;
+        $scope.$watch('filterProduct', function (newValues, oldValues) {
+
+
+          $scope.$parent.OnFilterChanged();
+        });
+      },
+      link: function (scope, elm, attr) {
+
+
+
+      },
+      templateUrl: 'filter-vaccine-dropout-template'
+    };
+  }
+]);
+
+app.directive('staticPeriodFilter', [ function() {
+
+  return {
+    restrict: 'E',
+    scope: {
+      periodRange: '=range',
+      periodStartdate: '=startdate',
+      periodEnddate: '=enddate',
+      periodRangeMax: '=rangemax',
+      perioderror: '=error'
+    },
+
+    controller: function($scope, $routeParams, $location) {
+      $scope.periodRange = 0;
+      $scope.periodStartdate = $scope.periodEnddate = "";
+      $scope.periods = [
+        {key:1, value:'Current Period'},
+        {key:2, value:'Last 3 Months'},
+        {key:3, value:'Last 6 Months'},
+        {key:4, value:'Last 1 Year'},
+        {key:5, value:'Custom Range'}
+      ];
+
+      $scope.$watch('periodRange', function(newValues, oldValues){
+
+        if ($scope.periodRange < 5 && $scope.periodRange >= 0) {
+          $scope.showCustomeDateInputs = false;
+          $scope.periodStartdate = $scope.periodEnddate = null;
+          if($scope.periodRange != 0)
+            $scope.$parent.OnFilterChanged() ;
+        }
+
+        else if ($scope.periodRange == 5)
+          $scope.showCustomeDateInputs = true;
+
+        $scope.perioderror = "";
+      });
+
+      $scope.$watchCollection('[periodStartdate, periodEnddate]', function(newValues, oldValues){
+        if(!((angular.isUndefined(newValues[0]) || newValues[0] === null) ||
+            (angular.isUndefined(newValues[1]) || newValues[1] === null))){
+
+          var datediff = differenceInDays();
+
+          if(!angular.isUndefined($scope.periodRangeMax) && datediff < 0)
+            $scope.perioderror = 'Period start date must be before or equal to end date';
+
+          else  if(!angular.isUndefined($scope.periodRangeMax) && datediff > $scope.periodRangeMax)
+            $scope.perioderror = 'Period start and end date selection are out of range';
+
+          else {
+            $scope.perioderror = "";
+            $scope.$parent.OnFilterChanged();
+          }
+        }
+      });
+
+      var differenceInDays = function() {
+
+        var one = new Date($scope.periodStartdate),
+            two = new Date($scope.periodEnddate);
+
+        var millisecondsPerDay = 1000 * 60 * 60 * 24;
+        var millisBetween = two.getTime() - one.getTime();
+        var days = millisBetween / millisecondsPerDay;
+
+        return Math.floor(days);
+      };
+
+    },
+    link: function(scope, elm, attr) {
+
+
+    },
+    templateUrl: 'filter-static-period'
+  };
+}]);
+
