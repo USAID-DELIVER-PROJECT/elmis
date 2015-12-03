@@ -23,7 +23,7 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
             StockCardsByCategory.get(programId,facilityId).then(function(data){
                 $scope.stockCardsToDisplay=data;
                 VaccineAdjustmentReasons.get({programId:programId},function(data){
-                       $scope.adjustmentTypes.data.adjustmentReasons;
+                       $scope.adjustmentTypes=data.adjustmentReasons;
                 });
             });
         };
