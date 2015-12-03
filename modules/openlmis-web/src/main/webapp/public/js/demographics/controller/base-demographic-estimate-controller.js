@@ -13,6 +13,10 @@
 
 function BaseDemographicEstimateController($scope, rights, categories, programs , years, $filter) {
 
+  //TODO: read this configuration from backend. 
+  $scope.enableAutoCalculate = false;
+
+
   $scope.currentPage = 1;
   $scope.pageSize = 10;
 

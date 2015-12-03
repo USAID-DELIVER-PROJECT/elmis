@@ -19,7 +19,7 @@
   <div openlmis-message="header.demographic.estimates.facility.page.info"></div>
   <div class="clearfix padding2px"></div>
   <div class="form-inline">
-    <div class="pull-right checkbox">
+    <div class="pull-right checkbox" ng-show="enableAutoCalculate">
       <label>
         <input ng-model="autoCalculate" type="checkbox">
         <span openlmis-message="label.demographic.estimate.auto.calculate"></span>
