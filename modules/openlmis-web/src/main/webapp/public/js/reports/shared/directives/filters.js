@@ -1205,7 +1205,7 @@ app.directive('staticPeriodFilter', [ function() {
         if ($scope.periodRange < 5 && $scope.periodRange >= 0) {
           $scope.showCustomeDateInputs = false;
           $scope.periodStartdate = $scope.periodEnddate = null;
-          if($scope.periodRange != 0)
+          if($scope.periodRange !== 0)
             $scope.$parent.OnFilterChanged() ;
         }
 
