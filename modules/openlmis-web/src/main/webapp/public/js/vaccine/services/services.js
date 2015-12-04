@@ -270,3 +270,15 @@ services.factory('ViewBundledDistributionVaccinationSupplies', function ($resour
     alert("here");
     return $resource('/vaccine/report/view-bundled-distribution-vaccination-supplies/:year/:productId.json', {year: '@year', productId: '@productId'}, {});
 });
+
+services.factory('VaccineDashboardSummary', function($resource){
+   return $resource('/vaccine/dashboard/summary.json',{},{});
+});
+
+services.factory('VaccineDashboardCoverage', function($resource){
+    return $resource('/vaccine/dashboard/coverage.json',{},{});
+});
+
+services.factory('VaccineDashboardWastage', function($resource){
+    return $resource('/vaccine/dashboard/wastage.json',{},{});
+});
