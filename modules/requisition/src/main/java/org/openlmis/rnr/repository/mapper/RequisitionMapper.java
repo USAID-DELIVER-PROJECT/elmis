@@ -55,7 +55,9 @@ public interface RequisitionMapper {
       @Result(property = "equipmentLineItems", javaType = List.class, column = "id",
           many = @Many(select = "org.openlmis.rnr.repository.mapper.EquipmentLineItemMapper.getEquipmentLineItemsByRnrId")),
       @Result(property = "patientQuantifications", javaType = List.class, column = "id",
-          many = @Many(select = "org.openlmis.rnr.repository.mapper.PatientQuantificationLineItemMapper.getPatientQuantificationLineItemsByRnrId"))
+          many = @Many(select = "org.openlmis.rnr.repository.mapper.PatientQuantificationLineItemMapper.getPatientQuantificationLineItemsByRnrId")),
+      @Result(property = "rnrSignatures", column = "id", javaType = List.class,
+          many = @Many(select = "org.openlmis.rnr.repository.mapper.RequisitionMapper.getRnrSignaturesByRnrId"))
   })
   Rnr getById(Long rnrId);
 
@@ -248,7 +250,6 @@ public interface RequisitionMapper {
   @Insert("INSERT INTO requisition_signatures(signatureId, rnrId) VALUES " +
       "(#{signature.id}, #{rnr.id})")
   void insertRnrSignature(@Param("rnr") Rnr rnr, @Param("signature") Signature signature);
-
   @Select("SELECT * FROM requisition_signatures " +
       "JOIN signatures " +
       "ON signatures.id = requisition_signatures.signatureId " +

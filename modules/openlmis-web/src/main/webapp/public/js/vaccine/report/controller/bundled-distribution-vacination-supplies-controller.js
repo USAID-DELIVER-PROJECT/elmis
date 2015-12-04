@@ -28,7 +28,7 @@ $scope.product=[];
 
             $scope.product = data.productDTO.product;
 
-alert($scope.product.id);
+
 
         });
     ViewBundledDistributionVaccinationSupplies.get({

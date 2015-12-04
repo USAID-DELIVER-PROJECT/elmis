@@ -267,9 +267,15 @@ services.factory('OneLevelSupervisedFacilities',function($resource){
     return $resource('/vaccine/inventory/distribution/supervised-facilities',{},{});
 });
 services.factory('ViewBundledDistributionVaccinationSupplies', function ($resource) {
-    alert("here");
+
     return $resource('/vaccine/report/view-bundled-distribution-vaccination-supplies/:year/:productId.json', {year: '@year', productId: '@productId'}, {});
 });
+services.factory('PerformanceByDropoutRateByDistrict', function ($resource) {
+    return $resource('/vaccine/report/performanceByDropoutRateByDistrict.json', {}, {});
+});
+services.factory('DropoutProducts', function ($resource) {
+    return $resource('/vaccine/report/dropoutProducts.json', {}, {});
+});});
 
 services.factory('VaccineDashboardSummary', function($resource){
    return $resource('/vaccine/dashboard/summary.json',{},{});

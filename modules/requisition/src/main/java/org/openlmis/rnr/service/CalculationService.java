@@ -196,4 +196,13 @@ public class CalculationService {
       requisition.addToFullSupplyCost(lineItem.calculateCost());
     }
   }
+
+  public void skipAllLineItems(Rnr requisition) {
+    for(RnrLineItem lineItem: requisition.getFullSupplyLineItems()){
+      lineItem.setSkipped(true);
+    }
+    for(RegimenLineItem lineItem: requisition.getRegimenLineItems()){
+      lineItem.setSkipped(true);
+    }
+  }
 }
