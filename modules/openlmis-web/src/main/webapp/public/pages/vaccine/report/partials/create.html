@@ -49,7 +49,7 @@
                 <strong id='submittedDate' openlmis-message="label.facility.submitted.date"></strong>:&nbsp;
                 <input type="text" style="width: 100px;"
                        ng-model="report.submissionDate"
-                       ui-date="{dateFormat: 'dd/mm/yy', maxDate: 'today', changeYear: true}"
+                       ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"
                        ui-date-format="yy-mm-dd"
                        readonly
                        ng-required="true"

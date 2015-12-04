@@ -24,6 +24,7 @@ public class ConfigurationSettingKey {
   public static final String LOGIN_SUCCESS_DEFAULT_LANDING_PAGE = "LOGIN_SUCCESS_DEFAULT_LANDING_PAGE";
   public static final String EMAIL_SUBJECT_APPROVAL = "EMAIL_SUBJECT_APPROVAL";
   public static final String EMAIL_TEMPLATE_APPROVAL = "EMAIL_TEMPLATE_APPROVAL";
+  public static final String RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR = "RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR";
 
   private ConfigurationSettingKey(){
 
