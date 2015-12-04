@@ -12,7 +12,11 @@
 
 package org.openlmis.vaccine.repository.reports;
 
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.openlmis.core.domain.GeographicLevel;
 import org.openlmis.core.domain.GeographicZone;
+import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.vaccine.domain.reports.*;
 import org.openlmis.vaccine.dto.ReportStatusDTO;
 import org.openlmis.vaccine.repository.mapper.reports.VaccineReportMapper;
@@ -20,8 +24,7 @@ import org.openlmis.vaccine.service.reports.VaccineLineItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class VaccineReportRepository {
@@ -31,6 +34,9 @@ public class VaccineReportRepository {
 
   @Autowired
   VaccineLineItemService lineItemService;
+
+    @Autowired
+    GeographicZoneService geographicZoneService;
 
 
   public void insert(VaccineReport report){
@@ -162,7 +168,32 @@ public class VaccineReportRepository {
     return mapper.getNationalZone();
   }
 
+
   public Long findLastReportBeforePeriod(Long facilityId, Long programId, Long periodId) {
     return mapper.findPreviousReport(facilityId, programId, periodId);
   }
+
+
+    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId){
+        return mapper.getPerformanceCoverageMainReportDataByRegionAggregate(startDate, endDate, districtId, productId);
+    }
+
+    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId){
+        return mapper.getPerformanceCoverageSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId);
+    }
+
+    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId){
+        return  mapper.getPerformanceCoverageMainReportDataByDistrict(startDate, endDate, districtId, productId);
+    }
+
+    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId){
+        return mapper.getPerformanceCoverageSummaryReportDataByDistrict(startDate, endDate, districtId, productId);
+    }
+    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId){
+        return mapper.getPerformanceCoverageMainReportDataByRegion(startDate, endDate, districtId, productId);
+    }
+    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId){
+        return  mapper.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId);
+    }
+
 }

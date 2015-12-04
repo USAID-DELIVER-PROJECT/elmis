@@ -276,3 +276,7 @@ services.factory('PerformanceByDropoutRateByDistrict', function ($resource) {
 services.factory('DropoutProducts', function ($resource) {
     return $resource('/vaccine/report/dropoutProducts.json', {}, {});
 });
+
+services.factory('PerformanceCoverage', function ($resource) {
+    return $resource('/vaccine/report/performanceCoverage.json', {}, {});
+});

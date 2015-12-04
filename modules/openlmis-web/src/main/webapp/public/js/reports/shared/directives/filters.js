@@ -1040,6 +1040,7 @@ app.directive('vaccineFacilityLevelFilter',['FacilitiesByLevel','VaccineInventor
 
       }]
 );
+
 app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographicZoneList', 'TreeGeographicZoneListByProgram', 'GetUserUnassignedSupervisoryNode', 'messageService', 'VaccineSupervisedIvdPrograms',
   function (FacilitiesByGeographicZone, TreeGeographicZoneList, TreeGeographicZoneListByProgram, GetUserUnassignedSupervisoryNode, messageService, VaccineSupervisedIvdPrograms) {
     var onPgCascadedVarsChanged1 = function ($scope) {
@@ -1179,79 +1180,80 @@ app.directive('vaccineDropoutFilter', ['DropoutProducts', 'messageService',
 
 app.directive('staticPeriodFilter', [ function() {
 
-  return {
-    restrict: 'E',
-    scope: {
-      periodRange: '=range',
-      periodStartdate: '=startdate',
-      periodEnddate: '=enddate',
-      periodRangeMax: '=rangemax',
-      perioderror: '=error'
-    },
+    return {
+        restrict: 'E',
+        scope: true,
+        scope: {
+            periodRange: '=range',
+            formateddate: '=formateddate',
+            periodStartdate: '=startdate',
+            periodEnddate: '=enddate',
+            periodRangeMax: '=rangemax',
+            perioderror: '=error'
+        },
 
-    controller: function($scope, $routeParams, $location) {
-      $scope.periodRange = 0;
-      $scope.periodStartdate = $scope.periodEnddate = "";
-      $scope.periods = [
-        {key:1, value:'Current Period'},
-        {key:2, value:'Last 3 Months'},
-        {key:3, value:'Last 6 Months'},
-        {key:4, value:'Last 1 Year'},
-        {key:5, value:'Custom Range'}
-      ];
+        controller: function($scope, SettingsByKey){
+            $scope.periodRange = 0;
+            $scope.periodStartdate = $scope.periodEnddate = "";
 
-      $scope.$watch('periodRange', function(newValues, oldValues){
+            SettingsByKey.get({key:'VACCINE_LATE_REPORTING_DAYS'}, function(data, er){$scope.$parent.cutoffdate =  data.settings.value;});
 
-        if ($scope.periodRange < 5 && $scope.periodRange >= 0) {
-          $scope.showCustomeDateInputs = false;
-          $scope.periodStartdate = $scope.periodEnddate = null;
-          if($scope.periodRange !== 0)
-            $scope.$parent.OnFilterChanged() ;
-        }
+            $scope.$watch('periodRange', function(newValues, oldValues){
 
-        else if ($scope.periodRange == 5)
-          $scope.showCustomeDateInputs = true;
+                if ($scope.periodRange < 5 && $scope.periodRange >= 0) {
+                    $scope.$parent.OnFilterChanged();
+                    $scope.showCustomeDateInputs = false;
+                }
 
-        $scope.perioderror = "";
-      });
+                else if ($scope.periodRange == 5)
+                    $scope.showCustomeDateInputs = true;
 
-      $scope.$watchCollection('[periodStartdate, periodEnddate]', function(newValues, oldValues){
-        if(!((angular.isUndefined(newValues[0]) || newValues[0] === null) ||
-            (angular.isUndefined(newValues[1]) || newValues[1] === null))){
+                $scope.perioderror = "";
+            });
 
-          var datediff = differenceInDays();
+            $scope.$watchCollection('[periodStartdate, periodEnddate]', function(newValues, oldValues){
+                if(!((angular.isUndefined(newValues[0]) || newValues[0] === null) ||
+                    (angular.isUndefined(newValues[1]) || newValues[1] === null)) && $scope.periodRange == 5 && $scope.periodRange > 0){
 
-          if(!angular.isUndefined($scope.periodRangeMax) && datediff < 0)
-            $scope.perioderror = 'Period start date must be before or equal to end date';
+                    var datediff = differenceInDays();
 
-          else  if(!angular.isUndefined($scope.periodRangeMax) && datediff > $scope.periodRangeMax)
-            $scope.perioderror = 'Period start and end date selection are out of range';
+                    if(!angular.isUndefined($scope.periodRangeMax) && datediff < 0)
+                        $scope.perioderror = 'Period start date must be before or equal to end date';
 
-          else {
-            $scope.perioderror = "";
-            $scope.$parent.OnFilterChanged();
-          }
-        }
-      });
+                    else  if(!angular.isUndefined($scope.periodRangeMax) && datediff > $scope.periodRangeMax)
+                        $scope.perioderror = 'Period start and end date selection are out of range';
 
-      var differenceInDays = function() {
+                    else {
+                        $scope.perioderror = "";
+                        $scope.$parent.OnFilterChanged();
+                    }
+                }
+            });
 
-        var one = new Date($scope.periodStartdate),
-            two = new Date($scope.periodEnddate);
+            var differenceInDays = function() {
 
-        var millisecondsPerDay = 1000 * 60 * 60 * 24;
-        var millisBetween = two.getTime() - one.getTime();
-        var days = millisBetween / millisecondsPerDay;
+                var one = new Date($scope.periodStartdate),
+                    two = new Date($scope.periodEnddate);
 
-        return Math.floor(days);
-      };
+                var millisecondsPerDay = 1000 * 60 * 60 * 24;
+                var millisBetween = two.getTime() - one.getTime();
+                var days = millisBetween / millisecondsPerDay;
 
-    },
-    link: function(scope, elm, attr) {
+                return Math.floor(days);
+            };
+        },
 
-
-    },
-    templateUrl: 'filter-static-period'
-  };
+        link: function(scope, elm, attr) {
+            scope.periods = [
+                {key:1, value:'Current Period'},
+                {key:2, value:'Last 3 Months'},
+                {key:3, value:'Last 6 Months'},
+                {key:4, value:'Last 1 Year'},
+                {key:5, value:'Custom Range'}
+            ];
+        },
+        templateUrl: 'filter-static-period'
+    };
 }]);
+
 

@@ -355,8 +355,34 @@
             </select>
         </div>
     </div>
+</script>
 
+<script type="text/ng-template" id="filter-static-period">
+    <div>
+        <div class="horizontalFilters form-cell">
+            <label for="static-period" class="labels" openlmis-message="label.period"><span class="label-required">*</span></label>
+            <div>
+                <select id="static-period" ui-select2 class="input-large" ng-model="periodRange"  >
+                    <option ng-value="0" ng-selected="periodRange == 0">---Select period---</option>
+                    <option ng-repeat="period in periods" ng-value="{{ period.key }}">{{ period.value }}</option>
+                </select>
+            </div>
+        </div>
 
+        <div class="horizontalFilters form-cell" ng-show="showCustomeDateInputs">
+            <label for="product" class="labels" ><span openlmis-message="label.start.date"></span></label>
+            <div>
+                <input ng-model="periodStartdate" ui-date-format="yy-mm-dd" ui-date />
+            </div>
+        </div>
+
+        <div class="horizontalFilters form-cell" ng-show="showCustomeDateInputs">
+            <label for="product" class="labels" ><span openlmis-message="label.end.date"></span></label>
+            <div>
+                <input ng-model="periodEnddate" ui-date-format="yy-mm-dd" ui-date />
+            </div>
+        </div>
+    </div>
 </script>
 <script type="text/ng-template" id="filter-zone-template">
     <div>
