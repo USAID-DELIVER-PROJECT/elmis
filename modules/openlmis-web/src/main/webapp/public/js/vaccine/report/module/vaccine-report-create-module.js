@@ -40,7 +40,10 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
                 controller: ViewPerformanceByDropoutRateByDistrictController,
                 templateUrl: 'partials/view/performance-by-dropout-rate-by-district.html',reloadOnSearch:false
             }).
-
+            when('/trend-min-max-cold-range', {
+                controller: TrendMinMaxColdRangeController,
+                templateUrl: 'partials/view/trend-of-min-max-cold-rane.html',reloadOnSearch:false
+            }).
             otherwise({redirectTo: '/list'});
     }]).config(function (angularCombineConfigProvider) {
         angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');

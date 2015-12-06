@@ -40,6 +40,14 @@ public class TrendOfMinMaxColdChainTempratureReport extends BaseModel {
     private boolean disrictReport;
     private boolean regionReport;
     private List<Date> columnNames;
+    private float mintemp;
+    private float maxtemp;
+    private float minepisodetemp;
+    private float maxepisodetemp;
+    private  Long targetpopulation;
     private List<TrendOfMinMaxColdChainTempratureDetail> chainTempratureDetailReportTree;
+    private List<TrendOfMinMaxColdChainTempratureDetail> chainTempratureDetailRegionReportTree;
+    private List<TrendMinMaxColdChainColumnRangeValues> regionSummaryColumnList;
+    private  List<TrendMinMaxColdChainColumnRangeValues> districtFacilitySummaryColumnList;
 
 }

@@ -12,7 +12,7 @@
  *
  */
 
-package org.openlmis.vaccine.domain.reports;/*
+package org.openlmis.vaccine.repository.reports;/*
  * This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
@@ -22,46 +22,38 @@ package org.openlmis.vaccine.domain.reports;/*
  * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
  */
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.openlmis.core.domain.BaseModel;
+import org.openlmis.vaccine.domain.reports.TrendOfMinMaxColdChainTempratureDetail;
+import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
+import org.openlmis.vaccine.repository.mapper.reports.TrendOfMinMaxColdChainRangeMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class TrendOfMinMaxColdChainTempratureDetail extends BaseModel {
-    private Long period_id;
-    private String region_name;
-    private String district_name;
-    private Date period_name;
-    private Date period_start_date;
-    private Date period_end_date;
-    private Long geographic_zone_id;
-    private String geographic_zone_name;
-    private Long level_id;
-    private Long parent_id;
-    private Long facility_id;
-    private Long targetpopulation;
-    private String facility_code;
-    private String facility_name;
-    private Long report_id;
-    private Long programid;
-    private Date reported_date;
-    private String equipment_name;
-    private String model;
-    private Long yearofinstallation;
-    private String equipment_type_name;
-    private float mintemp;
-    private float maxtemp;
-    private float minepisodetemp;
-    private float maxepisodetemp;
-    private String energy_source;
-    private String status;
-    List<TrendOfMinMaxColdChainTempratureDetail> children;
+@Component
+public class TrendMinMaxColdRangeRepository {
+    @Autowired
+    private TrendOfMinMaxColdChainRangeMapper mapper;
+    public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainTempratureReports(
+            PerformanceByDropoutRateParam filterCriteria
+    ){
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
+        coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureReports(filterCriteria);
+        return  coldChainTempratureDetailList;
+    }
+    public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainDistrictTempratureReports(
+            PerformanceByDropoutRateParam filterCriteria
+    ){
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
+        coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureDisrictReports(filterCriteria);
+        return  coldChainTempratureDetailList;
+    }
+    public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainTempratureRegionReports(
+            PerformanceByDropoutRateParam filterCriteria
+    ){
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
+        coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureRegionReports(filterCriteria);
+        return  coldChainTempratureDetailList;
+    }
 }

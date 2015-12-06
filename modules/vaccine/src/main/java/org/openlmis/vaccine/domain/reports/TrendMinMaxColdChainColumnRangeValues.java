@@ -22,8 +22,15 @@ package org.openlmis.vaccine.domain.reports;/*
  * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
  */
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.List;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TrendMinMaxColdChainColumnRangeValues {
     private String rangeName;
     private List<TrendOfMinMaxColdRangeColumn> coldRangeColumnValues;
