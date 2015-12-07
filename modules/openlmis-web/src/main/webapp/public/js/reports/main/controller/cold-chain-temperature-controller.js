@@ -38,7 +38,7 @@ function ColdChainTemperatureController($scope, $log, ColdChainTemperaturesRepor
                     $("#fixTable").tableHeadFixer({"foot":true, "head":true, left:4});
                 }, 0);
             }
-        )
+        );
 
 
 

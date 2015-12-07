@@ -1182,7 +1182,6 @@ app.directive('staticPeriodFilter', [ function() {
 
     return {
         restrict: 'E',
-        scope: true,
         scope: {
             periodRange: '=range',
             formateddate: '=formateddate',

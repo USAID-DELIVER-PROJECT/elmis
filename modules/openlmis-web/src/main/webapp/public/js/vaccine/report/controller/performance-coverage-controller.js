@@ -38,8 +38,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
         // prevent first time loading
         if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.filter.zone)  ||
-            utils.isEmpty(periods) || utils.isEmpty(periods.startdate) || utils.isEmpty(periods.enddate)
-            || !utils.isEmpty($scope.perioderror))
+            utils.isEmpty(periods) || utils.isEmpty(periods.startdate) || utils.isEmpty(periods.enddate) || !utils.isEmpty($scope.perioderror))
             return;
 
         $scope.pStartDate = periods.startdate;
@@ -84,17 +83,17 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                      var uniquePeriods = _.chain($scope.summary).indexBy("period").values().value();
                      $scope.sortedPeriods = _.sortBy(uniquePeriods, function (up) {
                          return up.row;
-                     })
+                     });
 
 
-                     if($scope.summary != null) {
+                     if($scope.summary !== null) {
                          $scope.g1 = pivotResultSet($scope.summary, "G1");
                          $scope.g2 = pivotResultSet($scope.summary, "G2");
                          $scope.g3 = pivotResultSet($scope.summary, "G3");
                          $scope.g4 = pivotResultSet($scope.summary, "G4");
                      }
 
-                     if($scope.summaryRegionAggregate != null) {
+                     if($scope.summaryRegionAggregate !== null) {
                          $scope.gAll1 = pivotResultSet($scope.summaryRegionAggregate, "G1");
                          $scope.gAll2 = pivotResultSet($scope.summaryRegionAggregate, "G2");
                          $scope.gAll3 = pivotResultSet($scope.summaryRegionAggregate, "G3");
@@ -103,7 +102,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                  }
 
             });
-    }
+    };
 
     $scope.colors = {color_ninty_percent: '', color_80_percent:'', color_50_percent_above:'', color_50_percent_below:''};
 
@@ -111,13 +110,13 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
           _.each(data.settings.list, function(item) {
 
-              if(item.key === "VACCINE_COVERAGE_PERFORMANCE_GREATER_THAN_NINTY_PERCENT_COLOR")
+              if(item.key === "VCP_GREATER_THAN_NINTY_PERCENT_COLOR")
                   $scope.colors.color_ninty_percent = item.value;
-              else if (item.key === "VACCINE_COVERAGE_PERFORMANCE_GREATER_THAN_OR_EQUAL_EIGHTY_PERCENT_COLOR")
+              else if (item.key === "VCP_GREATER_THAN_OR_EQUAL_EIGHTY_PERCENT_COLOR")
                   $scope.colors.color_80_percent = item.value;
-              else if( item.key === "VACCINE_COVERAGE_PERFORMANCE_GREATER_THAN_OR_EQUAL_FIFTY_PERCENT_COLOR")
+              else if( item.key === "VCP_GREATER_THAN_OR_EQUAL_FIFTY_PERCENT_COLOR")
                   $scope.colors.color_50_percent_above = item.value;
-              else if (item.key ===  "VACCINE_COVERAGE_PERFORMANCE_LESS_THAN_FIFTY_PERCENT_COLOR")
+              else if (item.key ===  "VCP_LESS_THAN_FIFTY_PERCENT_COLOR")
                   $scope.colors.color_50_percent_below = item.value;
           });
         });
@@ -127,12 +126,12 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         if(percentageCoverage > 90)
             return $scope.colors.color_ninty_percent;
         else if(percentageCoverage >= 80)
-            return $scope.colors.color_80_percent
+            return $scope.colors.color_80_percent;
         else if(percentageCoverage >= 50)
             return $scope.colors.color_50_percent_above;
 
         return $scope.colors.color_50_percent_below;
-    }
+    };
 
     function populateCalculatedAggregateValues(){
         var targetTotal = 0, vaccinationTotal = 0, coverage = 0, ctoatlCoverage = 0, ctotalVaccination = 0;
@@ -145,17 +144,17 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         });
 
         $scope.targetTotal = targetTotal;
-        $scope.vaccinationTotal = vaccinationTotal
-        $scope.coverage = Math.round((targetTotal == 0 ? 0 : (vaccinationTotal/targetTotal)*100) * 100) / 100;
+        $scope.vaccinationTotal = vaccinationTotal;
+        $scope.coverage = Math.round((targetTotal === 0 ? 0 : (vaccinationTotal/targetTotal)*100) * 100) / 100;
         $scope.ctotalVaccination = ctotalVaccination;
-        $scope.ctoatlCoverage = Math.round((targetTotal == 0 ? 0 : (ctotalVaccination/targetTotal)*100) * 100) / 100;
+        $scope.ctoatlCoverage = Math.round((targetTotal === 0 ? 0 : (ctotalVaccination/targetTotal)*100) * 100) / 100;
     }
 
     function populateCumulativeColumns(){
 
         var pdistric_id = 0,facilityName= '',regionName= '', runningTotal = 0;
 
-        if($scope.dataRowsRegionAggregate != null){
+        if($scope.dataRowsRegionAggregate !== null){
 
             _.each($scope.dataRowsRegionAggregate, function(item) {
                 if (angular.equals(regionName, item.region_name))
@@ -165,14 +164,14 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
                 regionName = item.region_name;
                 item.cumulativeVacinated = runningTotal;
-                item.cumulativeCoverage =  Math.round((item.target == 0 ? 0 : (runningTotal/ (item.target*item.month) )*100) * 100) / 100;
+                item.cumulativeCoverage =  Math.round((item.target === 0 ? 0 : (runningTotal/ (item.target*item.month) )*100) * 100) / 100;
             });
         }
 
         _.each($scope.datarows, function(item){
 
             if($scope.regionSelected) {
-                if (pdistric_id == item.district_id)
+                if (pdistric_id === item.district_id)
                     runningTotal += item.vaccinated;
                 else
                     runningTotal = item.vaccinated;
@@ -188,7 +187,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
                 facilityName = item.facility_name;
             }
-            item.cumulativeCoverage =  Math.round((item.target == 0 ? 0 : (runningTotal/(item.target*item.month))*100) * 100) / 100;
+            item.cumulativeCoverage =  Math.round((item.target === 0 ? 0 : (runningTotal/(item.target*item.month))*100) * 100) / 100;
             item.cumulativeVacinated = runningTotal;
         });
     }
@@ -224,12 +223,12 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
             for(i=0; i<summary.length; i++)
             {
 
-                if(summary[i].group === group && item.year == summary[i].year && item.month === summary[i].month) {
+                if(summary[i].group === group && item.year === summary[i].year && item.month === summary[i].month) {
                     temp.push({row:item.row, period:summary[i].period, group:group, total:summary[i].total});
                     break;
                 }
                 // if no match is found add a dummy object as a place holder
-                else if(i+1 == $scope.summary.length) {
+                else if(i+1 === $scope.summary.length) {
                     temp.push({row:item.row, period: item.monthString+" "+item.year, group:group, total:'-'});
                 }
             }
