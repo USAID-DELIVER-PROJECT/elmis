@@ -349,9 +349,9 @@
                         </td>
                         <td
                             class="col-vvmstatus cell-text"
-                            ng-class="{'last-row':product.lots.length===1,'skip':product.lots[0].vvmStatus ===undefined}">
+                            ng-class="{'last-row':product.lots.length===1,'skip':product.lots[0].vvmStatus ===undefined || product.lots[0].vvmStatus ===null}">
                             <!--<span ng-if="product.lots.length > 0" ng-bind="product.lots[0].vvmStatus"></span>-->
-                            <select ng-show="product.lots[0].vvmStatus !== undefined"  style="max-width:130px !important;min-width:130px !important" ui-select2
+                            <select ng-show="(product.lots.length >0 && product.lots[0].vvmStatus !== null ) || (product.lots.length ===0 && product.vvmStatus !== null)"  style="max-width:130px !important;min-width:130px !important" ui-select2
                                     ng-options="i.value as i.name for i in vvmStatuses" name="vvmToAdd"
                                     ng-model="product.lots[0].vvmStatus">
                                 <option value="" openlmis-message="placeholder.select.vvmstatus"></option>
