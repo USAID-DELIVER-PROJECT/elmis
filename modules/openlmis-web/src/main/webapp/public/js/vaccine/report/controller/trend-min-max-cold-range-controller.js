@@ -12,7 +12,24 @@
  *
  */
 
-function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange){
+function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsByKey){
+    $scope.minTemp;
+    $scope.maxTemp;
+    $scope.minEpisode;
+    $scope.maxEpisode;
+    SettingsByKey.get('TREND_TEMP_MIN_VALUE',function(data){
+        $scope.minTemp=data.settings.value;
+    });
+    SettingsByKey.get('TREND_TEMP_MAX_VALUE',function(data){
+        $scope.maxTemp=data.settings.value;
+    });
+    SettingsByKey.get('TREND_MIN_EPISODE_VALUE',function(data){
+        $scope.minEpisode=data.settings.value;
+    });
+    SettingsByKey.get('TREND_MAX_EPISODE_VALUE',function(data){
+        $scope.total_sessions=data.settings.value;
+    });
+
     $scope.OnFilterChanged = function () {
 
         $scope.data = $scope.datarows = [];
