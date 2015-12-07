@@ -275,7 +275,7 @@ services.factory('PerformanceByDropoutRateByDistrict', function ($resource) {
 });
 services.factory('DropoutProducts', function ($resource) {
     return $resource('/vaccine/report/dropoutProducts.json', {}, {});
-});});
+});
 
 services.factory('VaccineDashboardSummary', function($resource){
    return $resource('/vaccine/dashboard/summary.json',{},{});
