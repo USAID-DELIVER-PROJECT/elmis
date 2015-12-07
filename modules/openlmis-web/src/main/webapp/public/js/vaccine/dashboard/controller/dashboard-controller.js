@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function VaccineDashboardController($scope,$timeout,programs,ReportProductsByProgram, VaccineDashboardSummary,VaccineDashboardCoverage,VaccineDashboardWastage,SettingsByKey) {
+function VaccineDashboardController($scope,$timeout,ReportProductsByProgram, VaccineDashboardSummary,VaccineDashboardCoverage,VaccineDashboardWastage,SettingsByKey) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -21,7 +21,7 @@ function VaccineDashboardController($scope,$timeout,programs,ReportProductsByPro
     $scope.supplying = {};
     $scope.investigating = {};
 $scope.filterd ={};
-    $scope.filter ={program: programs[0].id};
+    $scope.filter ={program: 82};
 
     ReportProductsByProgram.get({
         programId: $scope.filter.program
@@ -36,6 +36,7 @@ $scope.filterd ={};
 
        //alert("pggg "+JSON.stringify($scope.filter.pggg))
       alert("periodStartdate "+$scope.filterd.periodStartDate );
+     // alert("productdropout "+$scope.filterd.dropout );
      // alert("programie2 "+$scope.filter.programie2);
         $scope.data = $scope.datarows = [];
        // $scope.filter.max = 10000;
@@ -86,7 +87,7 @@ $scope.filterd ={};
 
 }
 VaccineDashboardController.resolve = {
-    programs: function ($q, $timeout, VaccineSupervisedIvdPrograms) {
+   /* programs: function ($q, $timeout, VaccineSupervisedIvdPrograms) {
         var deferred = $q.defer();
 
         $timeout(function () {
@@ -96,5 +97,5 @@ VaccineDashboardController.resolve = {
         }, 100);
 
         return deferred.promise;
-    }
+    }*/
 };
