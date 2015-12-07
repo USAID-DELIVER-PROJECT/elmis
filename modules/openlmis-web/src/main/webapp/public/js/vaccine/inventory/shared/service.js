@@ -81,6 +81,7 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                 StockCards.get({facilityId:fId},function(s){
                                     DistributedFacilities.get(function(d){
                                         allSupervisedFacilities=f.facilities;stockCards=s.stockCards;distributions=d.Distributions;
+//                                        console.log(JSON.stringify(angular.extend(allSupervisedFacilities,distributions,stockCards)));
                                         allSupervisedFacilities.forEach(function(facility){
                                              facility.productsToIssue=[];
                                              var facilityDistribution=_.findWhere(distributions,{toFacilityId:facility.id});
@@ -120,6 +121,7 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                                           lotOnHand.lotId=lot.lot.id;
                                                           lotOnHand.lotCode=lot.lot.lotCode;
                                                           lotOnHand.quantityOnHand=lot.quantityOnHand;
+                                                          lotOnHand.quantityOnHand2=lot.quantityOnHand;
                                                           lotOnHand.quantity=(distributedLot === undefined || facility.status==="RECEIVED" )?0:distributedLot.quantity;
                                                           lotOnHand.originalIssueQuantity=lotOnHand.quantity;
                                                           lotOnHand.lineItemLotId=(distributedLot === undefined)?null:distributedLot.id;

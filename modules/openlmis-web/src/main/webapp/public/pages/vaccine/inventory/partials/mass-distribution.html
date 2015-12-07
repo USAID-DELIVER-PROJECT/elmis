@@ -45,7 +45,7 @@
                         <div class="span12" style="padding: 10px;">
                             <div class="row-fluid">
                                 <div class="span3">
-                                    <input type="radio" name="type" ng-checked="true" value="SCHEDULED"
+                                    <input type="radio" name="type" ng-checked="true" ng-click="clearUnscheduled()" value="SCHEDULED"
                                            ng-model="distributionType"></span>
                                     <strong id='routineLabel' openlmis-message="label.vaccine.stock.scheduled"> </strong>:&nbsp;
                                 </div>
@@ -106,7 +106,7 @@
                             <input ng-show="facility.status === undefined || facility.status !=='PENDING'"
                                    ng-disabled="!hasProductToIssue(facility)"
                                    ng-click="showIssueModal(facility,'SCHEDULED')"
-                                   type="submit" class="btn btn-primary" value="ISSUE">
+                                   type="submit" class="btn btn-primary" openlmis-message="button.save">
                             <input ng-show="facility.status === 'PENDING'" ng-click="showPODModal(facility)"
                                    type="submit"
                                    class="btn btn-primary" value="POD" openlmis-message="button.vaccine.stock.pod">
@@ -206,8 +206,8 @@
                                 <input ng-show="facility.status === undefined || facility.status !=='PENDING'"
                                        ng-disabled="!hasProductToIssue(UnScheduledFacility)"
                                        ng-click="showIssueModal(UnScheduledFacility,'UNSCHEDULED')"
-                                       type="submit" class="btn btn-primary" value="ISSUE"
-                                       openlmis-message="button.vaccine.stock.issue">
+                                       type="submit" class="btn btn-primary"
+                                       openlmis-message="button.save">
 
                             </td>
                         </tr>
@@ -288,7 +288,7 @@
                     </td>
                     <td>
                         <input max="{{lot.quantityOnHand}}" name="lotQuantity{{$index}}" ng-model="lot.quantity"
-                               ng-change="updateCurrentTotal()" style="width:100%" numeric-validator="positiveInteger"
+                               ng-change="updateCurrentTotal(currentProduct,lot)" style="width:100%" numeric-validator="positiveInteger"
                                maxlength="8" type="number"/>
                     </td>
                 </tr>
@@ -318,7 +318,8 @@
             <div class="row-fluid ">
                 <div class="info-box span12">
                     <div class="span4">
-                        <strong id="received-date-label" openlmis-message="label.vaccine.issue.date"> </strong>:&nbsp;
+                        <strong id="received-date-label" openlmis-message="label.vaccine.issue.date"> </strong>
+                        <span class="label-required">*</span>:&nbsp;
                         <input ng-required="true" id="receivingDate" name="issueDate" type="text"
                                ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
                                ng-model="facilityToIssue.issueDate"/>

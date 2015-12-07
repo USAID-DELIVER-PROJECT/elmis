@@ -22,10 +22,10 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
      $scope.UnScheduledFacility=undefined;
      $scope.loadSupervisedFacilities=function(programId,facilityId){
          FacilitiesWithProducts.get(programId,facilityId).then(function(data){
-
                 $scope.allScheduledFacilities =data.scheduled;
-                $scope.allScheduledFacilitiesCopy=$scope.allScheduledFacilities;
+                $scope.allScheduledFacilitiesCopy=angular.copy($scope.allScheduledFacilities);
                 $scope.allUnScheduledFacilities =data.unscheduled;
+                $scope.allUnScheduledFacilitiesCopy=angular.copy($scope.allUnScheduledFacilities);
                 $scope.numberOfPages = Math.ceil( $scope.allScheduledFacilities.length / $scope.pageSize) || 1;
                 $scope.page();
          });
@@ -33,6 +33,11 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
 
     $scope.loadUnScheduledFacility=function(){
           $scope.UnScheduledFacility=_.findWhere($scope.allUnScheduledFacilities,{id:$scope.UnScheduledFacilityId});
+    };
+    $scope.clearUnscheduled=function(){
+        $scope.allUnScheduledFacilities=$scope.allUnScheduledFacilitiesCopy;
+        $scope.UnScheduledFacility=undefined;
+        $scope.UnScheduledFacilityId='';
     };
 
      $scope.showLots=function(facility,product)
@@ -52,10 +57,11 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
      };
      $scope.saveLots=function(){
            evaluateTotal($scope.currentProduct);
+           evaluateSOH($scope.currentProduct);
            $scope.currentFacility=undefined;
            $scope.lotsModal=false;
      };
-     $scope.updateCurrentTotal=function(){
+     $scope.updateCurrentTotal=function(_product,_lot){
            var totalCurrentLots = 0;
            $($scope.currentProduct.lots).each(function (index, lotObject) {
                if(lotObject.quantity !== undefined){
@@ -82,6 +88,35 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
 
           });
           $scope.currentProduct.quantity=totalLots;
+     }
+     function getLotSum(_product,_lot){
+        var total=0;
+        ($scope.allScheduledFacilities).forEach(function(facility){
+             var product=_.find(facility.productsToIssue,function(p){
+                    return p.productId ===_product.productId;
+             });
+
+             var lot=_.find(product.lots,function(l){
+                   return l.lotId === _lot.lotId;
+             });
+             if(lot)
+             {
+                   total=total+lot.quantity;
+             }
+
+         });
+         return total;
+     }
+     function evaluateSOH(_product)
+     {
+        ($scope.allScheduledFacilities).forEach(function(facility){
+           facility.productsToIssue.forEach(function(product){
+                product.lots.forEach(function(lot){
+                    lot.quantityOnHand=lot.quantityOnHand2-getLotSum(product,lot);
+                });
+           });
+
+        });
      }
      $scope.page=function(){
         if($scope.allScheduledFacilities !== undefined)
@@ -126,7 +161,6 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
 
      $scope.updatePOD=function(){
          var distribution={};
-       //  console.log(JSON.stringify($scope.facilityPOD));
          distribution.id=$scope.facilityPOD.distributionId;
          distribution.status="RECEIVED";
          distribution.lineItems=[];
@@ -187,7 +221,6 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                 distribution.lineItems.push(list);
             }
          });
-         console.log(JSON.stringify(events));
          $scope.podModal=false;
          SaveDistribution.save(distribution,function(data){
             if(events.length >0)
