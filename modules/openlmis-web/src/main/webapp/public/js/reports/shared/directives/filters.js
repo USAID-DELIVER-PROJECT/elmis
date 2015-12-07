@@ -1143,7 +1143,7 @@ app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographi
 
       },
 
-      templateUrl: 'filter-zone-template'
+      templateUrl: 'filter-vaccine-zone-template'
     };
   }
 ]);
