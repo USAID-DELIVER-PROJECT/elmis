@@ -35,5 +35,7 @@ import java.util.Date;
 
 public class TrendOfMinMaxColdRangeColumn {
     private Date columnName;
-    private Long value;
+    private Float value;
+    private float min_temp;
+    private float max_temp;
 }

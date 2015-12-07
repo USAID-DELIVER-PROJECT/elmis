@@ -67,6 +67,7 @@ public class TrendOfMinMaxColdRangeBuilder {
         JOIN(" vw_districts d ON tr.geographic_zone_id = d.district_id");
         JOIN(" geographic_zones gz ON gz.id = d.district_id");
 //        JOIN(" vaccine_facility_targets vt ON tr.facility_id =  vt.facilityid");
+        WHERE("tr.status= 'Functional'");
         writePredicates(filter);
 
         ORDER_BY("        tr.geographic_zone_name, tr.facility_name,  to_date(tr.period_name, 'Mon YYYY')");

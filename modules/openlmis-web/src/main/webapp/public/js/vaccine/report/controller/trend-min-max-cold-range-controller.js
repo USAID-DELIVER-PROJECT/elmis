@@ -44,16 +44,14 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange){
             }
         });
     };
-    $scope.getBackGroundColorSummary=function(value) {
+    $scope.getBackGroundColorForTd=function(value) {
         var bgColor='blue';
-        if(value=='4_dropoutGreaterThanHigh'){
-            bgColor='red';
-        }else if(value=='3_droOputBetweenMidAndHigh'){
+        if(value<2){
             bgColor='lightblue';
-        }else if(value=='2_dropOutBetweenMidAndMin'){
-            bgColor='yellow';
+        }else if(value>8){
+            bgColor='red';
         }else{
-            bgColor='lightgreen';
+            bgColor='white';
         }
         return bgColor;
     };
@@ -75,6 +73,23 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange){
             bgColor='Districts with t min < 2';
         }
 
+        return bgColor;
+    };
+    $scope.getBackGroundColorSummary=function(value) {
+        var bgColor='blue';
+        if(value=='6_alarm_episode_greater_min'){
+            bgColor='red';
+        }else if(value=='5_alarm_episode_less_min'){
+            bgColor='lightblue';
+        }else if(value=='4_max_temp_recorded'){
+            bgColor='white';
+        }else if(value=='3_min_temp_recorded'){
+            bgColor='white';
+        }else if(value=='2_temp_min_greater'){
+            bgColor='lightblue';
+        }else{
+            bgColor='red';
+        }
         return bgColor;
     };
 }
