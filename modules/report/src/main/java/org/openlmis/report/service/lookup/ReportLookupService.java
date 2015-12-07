@@ -691,9 +691,13 @@ public class ReportLookupService {
 
         Set<String> years = new HashSet<>();
         Set<Schedule> schedules = new HashSet<>();
+        Set<Integer> scheduleIds = new HashSet<>();
         for (YearSchedulePeriodTree periodTree : yearSchedulePeriodTree) {
             years.add(periodTree.getYear());
-            schedules.add(new Schedule(periodTree.getGroupid(), periodTree.getGroupname(), null, null));
+            if (!scheduleIds.contains(periodTree.getGroupid())){
+                scheduleIds.add(periodTree.getGroupid());
+                schedules.add(new Schedule(periodTree.getGroupid(), periodTree.getGroupname(), null, null));
+            }
         }
 
         List<YearSchedulePeriodTree> yearList = new ArrayList<>();
