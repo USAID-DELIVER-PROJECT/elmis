@@ -17,19 +17,26 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
     $scope.maxTemp;
     $scope.minEpisode;
     $scope.maxEpisode;
-    SettingsByKey.get('TREND_TEMP_MIN_VALUE',function(data){
+    $scope.minColorCode;
+    $scope.maxColorCode;
+    SettingsByKey.get({key:'TREND_TEMP_MIN_VALUE'},function(data){
         $scope.minTemp=data.settings.value;
     });
-    SettingsByKey.get('TREND_TEMP_MAX_VALUE',function(data){
+    SettingsByKey.get({key:'TREND_TEMP_MAX_VALUE'},function(data){
         $scope.maxTemp=data.settings.value;
     });
-    SettingsByKey.get('TREND_MIN_EPISODE_VALUE',function(data){
+    SettingsByKey.get({key:'TREND_MIN_EPISODE_VALUE'},function(data){
         $scope.minEpisode=data.settings.value;
     });
-    SettingsByKey.get('TREND_MAX_EPISODE_VALUE',function(data){
-        $scope.total_sessions=data.settings.value;
+    SettingsByKey.get({key:'TREND_MAX_EPISODE_VALUE'},function(data){
+        $scope.maxEpisode=data.settings.value;
     });
-
+    SettingsByKey.get({key:'VCP_RED'},function(data){
+        $scope.minColorCode=data.settings.value;
+    });
+    SettingsByKey.get({key:'VCP_BLUE'},function(data){
+        $scope.maxColorCode=data.settings.value;
+    });
     $scope.OnFilterChanged = function () {
 
         $scope.data = $scope.datarows = [];
@@ -63,10 +70,10 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
     };
     $scope.getBackGroundColorForTd=function(value) {
         var bgColor='blue';
-        if(value<2){
-            bgColor='lightblue';
-        }else if(value>8){
-            bgColor='red';
+        if(value< $scope.minTemp){
+            bgColor=$scope.minColorCode;
+        }else if(value>$scope.maxTemp){
+            bgColor= $scope.maxColorCode;
         }else{
             bgColor='white';
         }
@@ -95,17 +102,17 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
     $scope.getBackGroundColorSummary=function(value) {
         var bgColor='blue';
         if(value=='6_alarm_episode_greater_min'){
-            bgColor='red';
+            bgColor=$scope.maxColorCode;
         }else if(value=='5_alarm_episode_less_min'){
-            bgColor='lightblue';
+            bgColor=$scope.minColorCode;
         }else if(value=='4_max_temp_recorded'){
             bgColor='white';
         }else if(value=='3_min_temp_recorded'){
             bgColor='white';
         }else if(value=='2_temp_min_greater'){
-            bgColor='lightblue';
+            bgColor=$scope.minColorCode;
         }else{
-            bgColor='red';
+            bgColor=$scope.maxColorCode;
         }
         return bgColor;
     };
