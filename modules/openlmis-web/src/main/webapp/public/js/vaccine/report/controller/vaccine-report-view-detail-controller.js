@@ -26,9 +26,6 @@ function ViewVaccineReportDetailController($scope, $location, $filter, report, d
 
 
   $scope.showAdverseEffect = function (effect, editMode) {
-    effect.date = $filter('date')(new Date(effect.date), 'yyyy-MM-dd');
-    effect.expiry = $filter('date')(new Date(effect.expiry), 'yyyy-MM-dd');
-
     $scope.currentEffect = effect;
     $scope.currentEffectMode = editMode;
 
@@ -41,10 +38,7 @@ function ViewVaccineReportDetailController($scope, $location, $filter, report, d
   };
 
   $scope.showCampaignForm = function (campaign, editMode) {
-
-    campaign.startDate = $filter('date')(new Date(campaign.startDate), 'yyyy-MM-dd');
-    campaign.endDate = $filter('date')(new Date(campaign.endDate), 'yyyy-MM-dd');
-
+    
     $scope.currentCampaign = campaign;
     $scope.currentCampaignMode = editMode;
 
