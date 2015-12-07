@@ -12,20 +12,16 @@
 package org.openlmis.report.model.report;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.openlmis.report.model.ReportData;
 
-import javax.persistence.Column;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class PipelineExportReport implements ReportData {
 
-    //@Column( name="line")
     private String line;
     private String id;
     private String code;

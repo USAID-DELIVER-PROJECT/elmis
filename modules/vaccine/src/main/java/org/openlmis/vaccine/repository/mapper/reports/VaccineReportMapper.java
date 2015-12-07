@@ -13,21 +13,25 @@
 package org.openlmis.vaccine.repository.mapper.reports;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.ResultSetType;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.vaccine.domain.reports.*;
 import org.openlmis.vaccine.dto.ReportStatusDTO;
+import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceCoverageQueryBuilder;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface VaccineReportMapper {
 
-  @Insert("INSERT into vaccine_reports (periodId, programId, facilityId, status, supervisoryNodeId, majorImmunizationActivities, fixedImmunizationSessions, outreachImmunizationSessions,outreachImmunizationSessionsCanceled, createdBy, createdDate, modifiedBy, modifiedDate) " +
-    " values (#{periodId}, #{programId}, #{facilityId}, #{status}, #{supervisoryNodeId}, #{majorImmunizationActivities}, #{fixedImmunizationSessions}, #{outreachImmunizationSessions}, #{outreachImmunizationSessionsCanceled}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
+  @Insert("INSERT into vaccine_reports (periodId, programId, facilityId, status, supervisoryNodeId, majorImmunizationActivities, fixedImmunizationSessions, outreachImmunizationSessions,outreachImmunizationSessionsCanceled, submissionDate, createdBy, createdDate, modifiedBy, modifiedDate) " +
+    " values (#{periodId}, #{programId}, #{facilityId}, #{status}, #{supervisoryNodeId}, #{majorImmunizationActivities}, #{fixedImmunizationSessions}, #{outreachImmunizationSessions}, #{outreachImmunizationSessionsCanceled}, #{submissionDate}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
   @Options(useGeneratedKeys = true)
   Integer insert(VaccineReport report);
 
@@ -79,6 +83,7 @@ public interface VaccineReportMapper {
       " fixedImmunizationSessions = #{fixedImmunizationSessions}, " +
       " outreachImmunizationSessions = #{outreachImmunizationSessions}, " +
       " outreachImmunizationSessionsCanceled = #{outreachImmunizationSessionsCanceled}, " +
+      " submissionDate = #{submissionDate}, " +
       " modifiedBy = #{modifiedBy}, " +
       " modifiedDate = NOW() " +
     "where id = #{id}")
@@ -112,6 +117,15 @@ public interface VaccineReportMapper {
           "from vw_vaccine_disease_surveillance \n" +
           "where report_id = #{reportId}")
   List<DiseaseLineItem> getDiseaseSurveillance(@Param("reportId")Long reportId);
+
+  @Select("SELECT id FROM vaccine_reports " +
+      "WHERE " +
+        "periodId < #{periodId} " +
+        "AND facilityId = #{facilityId} " +
+        "AND programId = #{programId} " +
+      "ORDER BY " +
+      "periodId DESC limit 1")
+  Long findPreviousReport(@Param("facilityId") Long facilityId, @Param("programId") Long programId, @Param("periodId") Long periodId);
 
   @Select("select disease_name as diseaseName,\n" +
           "SUM(COALESCE(cum_cases,0)) cumulative,\n" +
@@ -156,37 +170,52 @@ public interface VaccineReportMapper {
           "group by product_code")
   List<AdverseEffectLineItem> getAdverseEffectAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
-  @Select("select product_name,display_name, COALESCE(within_male, 0) within_male, COALESCE(within_female,0) within_female, COALESCE(within_total,0) within_total, COALESCE(within_coverage, 0) within_coverage, \n" +
-          "COALESCE(outside_male, 0) outside_male, COALESCE(outside_female,0) outside_female, COALESCE(outside_total, 0) outside_total,\n" +
-          "COALESCE(within_outside_total, 0) within_outside_total, COALESCE(within_outside_coverage,0) within_outside_coverage,\n" +
-          " COALESCE(cum_within_total,0) cum_within_total, COALESCE(cum_within_coverage,0) cum_within_coverage,\n" +
-          "  COALESCE(cum_outside_total,0) cum_outside_total, COALESCE(cum_within_outside_total,0) cum_within_outside_total,\n" +
-          "   COALESCE(cum_within_outside_coverage ,0) cum_within_outside_coverage\n" +
-          "from vw_vaccine_coverage \n" +
-          "where report_id = #{reportId}")
+  @Select("select \n" +
+          "product_name,\n" +
+          "display_name, \n" +
+          "COALESCE(within_male, 0) within_male, \n" +
+          "COALESCE(within_female,0) within_female, \n" +
+          "COALESCE(within_total,0) within_total, \n" +
+          "COALESCE(within_coverage, 0) within_coverage,  \n" +
+          "COALESCE(outside_male, 0) outside_male, \n" +
+          "COALESCE(outside_female,0) outside_female, COALESCE(outside_total, 0) outside_total, \n" +
+          "COALESCE(within_outside_total, 0) within_outside_total, \n" +
+          "COALESCE(within_outside_coverage,0) within_outside_coverage, \n" +
+          "COALESCE(cum_within_total,0) cum_within_total, \n" +
+          "COALESCE(cum_within_coverage,0) cum_within_coverage, \n" +
+          "COALESCE(cum_outside_total,0) cum_outside_total, \n" +
+          "COALESCE(cum_within_outside_total,0) cum_within_outside_total, \n" +
+          "COALESCE(cum_within_outside_coverage ,0) cum_within_outside_coverage, \n" +
+          "case when dtp_1 > 0 then ((dtp_1 - dtp_3)::double precision / dtp_1::double precision) * 100 else 0 end dtp_dropout, \n" +
+          "case when bcg_1 > 0 then ((bcg_1 - mr_1)::double precision / bcg_1::double precision) * 100 else 0 end bcg_mr_dropout \n" +
+          "  from vw_vaccine_coverage  \n" +
+          "  where report_id = #{reportId}")
   List<HashMap<String, Object>> getVaccineCoverageReport(@Param("reportId")Long reportId);
 
-   @Select("select MAX(product_name) product_name,\n" +
-           "MAX(display_name) display_name, \n" +
-           "MAX(display_order) display_order, \n" +
-           "SUM(COALESCE(within_male, 0)) within_male, \n" +
-           "SUM(COALESCE(within_female,0)) within_female, \n" +
-           "SUM(COALESCE(within_total,0)) within_total, \n" +
-           "SUM(COALESCE(within_coverage, 0)) within_coverage, \n" +
-           "SUM(COALESCE(outside_male, 0)) outside_male, \n" +
-           "SUM(COALESCE(outside_female,0)) outside_female,\n" +
-           "SUM(COALESCE(outside_total, 0)) outside_total,\n" +
-           "SUM(COALESCE(within_outside_total, 0)) within_outside_total, \n" +
-           "SUM(COALESCE(within_outside_coverage,0)) within_outside_coverage,\n" +
-           "SUM(COALESCE(cum_within_total,0)) cum_within_total, \n" +
-           "SUM(COALESCE(cum_within_coverage,0)) cum_within_coverage,\n" +
-           "SUM(COALESCE(cum_outside_total,0)) cum_outside_total, \n" +
-           "SUM(COALESCE(cum_within_outside_total,0)) cum_within_outside_total,\n" +
-           "SUM(COALESCE(cum_within_outside_coverage ,0)) cum_within_outside_coverage\n" +
-           "from vw_vaccine_coverage \n" +
-           "INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id\n" +
+   @Select("select \n" +
+           "MAX(product_name) product_name,\n" +
+           "MAX(display_name) display_name,  \n" +
+           "MAX(display_order) display_order,  \n" +
+           "SUM(COALESCE(within_male, 0)) within_male,  \n" +
+           "SUM(COALESCE(within_female,0)) within_female,  \n" +
+           "SUM(COALESCE(within_total,0)) within_total,  \n" +
+           "SUM(COALESCE(within_coverage, 0)) within_coverage,  \n" +
+           "SUM(COALESCE(outside_male, 0)) outside_male,  \n" +
+           "SUM(COALESCE(outside_female,0)) outside_female, \n" +
+           "SUM(COALESCE(outside_total, 0)) outside_total, \n" +
+           "SUM(COALESCE(within_outside_total, 0)) within_outside_total,  \n" +
+           "SUM(COALESCE(within_outside_coverage,0)) within_outside_coverage, \n" +
+           "SUM(COALESCE(cum_within_total,0)) cum_within_total,  \n" +
+           "SUM(COALESCE(cum_within_coverage,0)) cum_within_coverage, \n" +
+           "SUM(COALESCE(cum_outside_total,0)) cum_outside_total,  \n" +
+           "SUM(COALESCE(cum_within_outside_total,0)) cum_within_outside_total, \n" +
+           "SUM(COALESCE(cum_within_outside_coverage ,0)) cum_within_outside_coverage, \n" +
+           "SUM(COALESCE(case when dtp_1 > 0 then ((dtp_1 - dtp_3)::double precision / dtp_1::double precision) * 100 else 0 end)) dtp_dropout, \n" +
+           "SUM(COALESCE(case when bcg_1 > 0 then ((bcg_1 - mr_1)::double precision / bcg_1::double precision) * 100 else 0 end)) bcg_mr_dropout \n" +
+           "from vw_vaccine_coverage  \n" +
+           "INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
            "where period_id = #{periodId} and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )\n" +
-           "group by product_code\n" +
+           "group by product_code \n" +
            "order by display_order" )
   List<HashMap<String, Object>> getVaccineCoverageAggregateReportByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
@@ -294,7 +323,82 @@ public interface VaccineReportMapper {
           "order by pp.id asc")
   List<HashMap<String, Object>>vaccineUsageTrendByGeographicZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("productCode") String productCode);
 
+  @Select("select\n" +
+          "product_code, \n" +
+          "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
+          "'BCG - MR ' \n" +
+          "else \n" +
+          "'DTP-HepB-Hib1/DTP-HepB-Hib3' \n" +
+          "end indicator,\n" +
+          "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
+          " case when sum(bcg_1) > 0 then round((sum(bcg_1) - sum(mr_1))::double precision /sum(bcg_1)::double precision) * 100 else 0 end   \n" +
+          "else \n" +
+          " case when sum(dtp_1) > 0 then round((sum(dtp_1) - sum(dtp_3))::double precision /sum(dtp_3)::double precision) * 100 else 0 end  \n" +
+          "end dropout\n" +
+          "from vw_vaccine_coverage i\n" +
+          "join vw_districts d on i.geographic_zone_id = d.district_id\n" +
+          "join vaccine_reports vr on i.report_id = vr.id\n" +
+          "JOIN program_products pp ON pp.programid = vr.programid AND pp.productid = i.product_id\n" +
+          "JOIN product_categories pg ON pp.productcategoryid = pg.id\n" +
+          "where \n" +
+          " product_code in (select value from configuration_settings \n" +
+          " where key in ('VACCINE_DROPOUT_BCG','VACCINE_DROPOUT_MR','VACCINE_DROPOUT_DTP'))\n" +
+          "and i.period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} )\n" +
+          "group by 1\n" +
+          "order by 1,2")
+  List<HashMap<String, Object>> getAggregateDropOuts(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+  @Select("select product_code, \n" +
+          "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
+          "'BCG - MR ' \n" +
+          "else \n" +
+          "'DTP-HepB-Hib1/DTP-HepB-Hib3' \n" +
+          "end indicator,\n" +
+          "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
+          " case when sum(bcg_1) > 0 then round((sum(bcg_1) - sum(mr_1))::double precision /sum(bcg_1)::double precision) * 100 else 0 end   \n" +
+          "else \n" +
+          " case when sum(dtp_1) > 0 then round((sum(dtp_1) - sum(dtp_3))::double precision /sum(dtp_3)::double precision) * 100 else 0 end  \n" +
+          "end dropout\n" +
+          "from vw_vaccine_coverage i\n" +
+          "join vw_districts d on i.geographic_zone_id = d.district_id\n" +
+          "join vaccine_reports vr on i.report_id = vr.id\n" +
+          "JOIN program_products pp ON pp.programid = vr.programid AND pp.productid = i.product_id\n" +
+          "JOIN product_categories pg ON pp.productcategoryid = pg.id\n" +
+          "where \n" +
+          " product_code in (select value from configuration_settings \n" +
+          " where key in ('VACCINE_DROPOUT_BCG','VACCINE_DROPOUT_MR','VACCINE_DROPOUT_DTP'))\n" +
+          "and report_id = #{reportId}\n" +
+          "group by 1\n" +
+          "order by 1,2")
+  List<HashMap<String, Object>> getDropOuts(@Param("reportId") Long reportId);
+
     @Select("select * from geographic_zones where parentid is null")
     GeographicZone getNationalZone();
 
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getPerformanceCoverageMainReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
+                                                            @Param("productId") Long productId);
+
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageSummaryReportDataByDistrict")
+    List<Map<String,Object>> getPerformanceCoverageSummaryReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
+                                                                  @Param("productId") Long productId);
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByRegion")
+    List<Map<String,Object>> getPerformanceCoverageMainReportDataByRegion(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
+                                                            @Param("productId") Long productId);
+
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageSummaryReportDataByRegion")
+    List<Map<String,Object>> getPerformanceCoverageSummaryReportDataByRegion(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
+                                                                  @Param("productId") Long productId);
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByRegionAggregate")
+    List<Map<String,Object>> getPerformanceCoverageMainReportDataByRegionAggregate(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
+                                                                              @Param("productId") Long productId);
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageSummaryReportDataByRegionAggregate")
+    List<Map<String,Object>> getPerformanceCoverageSummaryReportDataByRegionAggregate(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
+                                                                                    @Param("productId") Long productId);
+
 }
+

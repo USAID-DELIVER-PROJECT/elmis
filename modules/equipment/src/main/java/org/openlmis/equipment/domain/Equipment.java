@@ -12,23 +12,23 @@
 
 package org.openlmis.equipment.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import org.openlmis.core.domain.BaseModel;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.openlmis.core.domain.BaseModel;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="equipmentTypeName")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "equipmentTypeName")
 @JsonSubTypes({@JsonSubTypes.Type(value = ColdChainEquipment.class, name = "coldChainEquipment"),
-               @JsonSubTypes.Type(value = Equipment.class, name = "equipment")
-                })
-public class Equipment extends BaseModel{
+    @JsonSubTypes.Type(value = Equipment.class, name = "equipment")
+})
+public class Equipment extends BaseModel {
 
   private String name;
 

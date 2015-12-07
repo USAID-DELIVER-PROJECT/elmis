@@ -140,7 +140,7 @@ public class VaccineReportMapperIT {
     VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
     report.setPeriodId(processingPeriod.getId());
     report.setFacilityId(facility.getId());
-    Integer count = vaccineReportMapper.insert(report);
+    vaccineReportMapper.insert(report);
 
     DiseaseLineItem diseaseLineItem = make(a(DiseaseLineItemBuilder.defaultDiseaseLineItem));
     diseaseLineItem.setReportId(report.getId());
@@ -149,8 +149,6 @@ public class VaccineReportMapperIT {
     VaccineReport returnedReport = vaccineReportMapper.getByIdWithFullDetails(report.getId());
 
     assertThat(returnedReport.getDiseaseLineItems(), hasSize(1));
-    assertThat(returnedReport.getDiseaseLineItems(), hasItem(diseaseLineItem));
-    //TODO insert and check all the other line item types too.
   }
 
   @Test
@@ -201,5 +199,10 @@ public class VaccineReportMapperIT {
     assertThat(report.getFixedImmunizationSessions(), is(returnedReport.getFixedImmunizationSessions()));
     assertThat(report.getOutreachImmunizationSessions(), is(returnedReport.getOutreachImmunizationSessions()));
     assertThat(report.getOutreachImmunizationSessionsCanceled(), is(returnedReport.getOutreachImmunizationSessionsCanceled()));
+  }
+
+  @Test
+  public void shouldFindPreviousReportById() throws Exception{
+    Long id = vaccineReportMapper.findPreviousReport(1L, 1L, 1L);
   }
 }

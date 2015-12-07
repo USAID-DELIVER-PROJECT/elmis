@@ -13,28 +13,23 @@
 package org.openlmis.demographics.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class AnnualDistrictEstimateEntry extends BaseModel {
 
   private Integer year;
-
   private Long districtId;
-
   private Long programId;
-
   private Boolean isFinal;
-
   private Long demographicEstimateId;
-
   private Double conversionFactor;
-
   private Long value;
+
 }

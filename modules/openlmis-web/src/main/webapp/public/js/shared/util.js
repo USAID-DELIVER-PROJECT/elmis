@@ -53,6 +53,56 @@ var utils = {
       }
     });
     return sum;
+  },
+
+ getVaccineCustomDateRange: function(periodRange, _startDate, _endDate, _cutoffDate) {
+      var er = 0;
+
+      if (periodRange != 5) {
+
+          var currentDate = new Date();
+          var endDate;
+          var startDate;
+          var months = 0;
+          var monthBack = 0;
+          var currentDays = currentDate.getDate();
+
+          if(periodRange === 0)
+              return {startdate: null, enddate: null};
+
+          else if(periodRange !== 0 && utils.isEmpty(_cutoffDate)) {
+              console.error("Vaccine period Late reporting date is not defined");
+              return {startdate: null, enddate: null};
+          }
+
+          else if (currentDays <= _cutoffDate) {
+              monthBack = 1;
+          }
+
+          endDate   = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
+          startDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1);
+
+          switch (periodRange) {
+              case '1':
+                  months = startDate.getMonth() - 1;
+                  break;
+              case '2':
+                  months = startDate.getMonth() - 3;
+                  break;
+              case '3':
+                  months = startDate.getMonth() - 6;
+                  break;
+              case '4':
+                  months = startDate.getMonth() - 12;
+                  break;
+              default :
+                  months = 0;
+          }
+          startDate.setMonth(months);
+          return {startdate:  startDate.toISOString().substring(0, 10),  enddate: endDate.toISOString().substring(0, 10)};
+      }
+      else
+          return {startdate:  _startDate, enddate: _endDate};
   }
 
 };

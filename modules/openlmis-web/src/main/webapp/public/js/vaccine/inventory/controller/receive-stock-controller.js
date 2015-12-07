@@ -11,7 +11,7 @@
  */
 
 
-function ReceiveStockController($scope,programs,$timeout,homeFacility,VaccineProgramProducts,productsConfiguration, ProductLots,SaveVaccineInventoryReceived,localStorageService,$location, $anchorScroll) {
+function ReceiveStockController($scope,programs,$timeout,$window,$dialog,homeFacility,SaveDistribution,VaccineProgramProducts,productsConfiguration,Distribution, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
 
     $scope.userPrograms=programs;
     $scope.facilityDisplayName=homeFacility.name;
@@ -20,6 +20,7 @@ function ReceiveStockController($scope,programs,$timeout,homeFacility,VaccinePro
     $scope.productToAdd={};
     $scope.productToAdd.lots=[];
     $scope.lotToAdd={};
+    $scope.noVoucherNumber=false;
     $scope.vvmStatuses=[{"value":1,"name":" 1 "},{"value":2,"name":" 2 "}];
     $scope.productsConfiguration=productsConfiguration;
     $scope.loadProducts=function(programId){
@@ -58,43 +59,79 @@ function ReceiveStockController($scope,programs,$timeout,homeFacility,VaccinePro
 
          }
     };
-    $scope.submit=function()
+    $scope.receive=function()
     {
-        var transaction={};
-        transaction.transactionList=[];
-        $scope.receivedProducts.forEach(function(s){
-            var list={};
-            list.productId=s.product.id;
-            list.quantity=s.quantity;
-            if(s.lots !==undefined && s.lots.length)
-            {
-                list.lots=[];
-                s.lots.forEach(function(l){
-                    var lot={};
-                    lot.lotId=l.lot.id;
-                    lot.quantity=l.quantity;
-                    lot.vvmStatus=l.vvmStatus;
-                 //   lot.adjustmentReasons=l.adjustmentReasons;
-                    list.lots.push(lot);
-                });
-            }
-            transaction.transactionList.push(list);
-    });
 
-    SaveVaccineInventoryReceived.update(transaction,function(data)
+        var callBack=function(result)
         {
-             if(data.success !==null)
-             {
-                  $scope.message=data.success;
-                  $timeout(function(){
-                     $location.path('/stock-on-hand');
-                  },100);
-              }
+            if(result)
+            {
+                var events=[];
+                $scope.distribution.lineItems.forEach(function(p){
+                if(p.lots !==undefined && p.lots.length >0)
+                {
+                    p.lots.forEach(function(l){
+                        var event={};
+                        event.type="RECEIPT";
+                        event.facilityId=homeFacility.id;
+                        event.productCode=p.product.code;
+                        event.quantity=l.quantity;
+                        event.lot={};
+                        event.lot.lotCode=l.lot.lotCode;
+                        event.lot.manufacturerName=l.lot.manufacturerName;
+                        event.lot.expirationDate=l.lot.expirationDate;
+                        event.customProps={};
+                        if(l.vvmStatus !==undefined)
+                        {
+                            event.customProps.vvmStatus=l.vvmStatus;
+                        }
+                        event.customProps.receivedFrom=$scope.distribution.fromFacility.name;
+                        events.push(event);
+                    });
+                }
+                else{
+                        var event={};
+                        event.type="RECEIPT";
+                        event.facilityId=homeFacility.id;
+                        event.productCode=p.product.code;
+                        event.quantity=p.quantity;
+                        if(p.vvmStatus !==undefined)
+                        {
+                            event.customProps={"vvmStatus":p.vvmStatus};
+                        }
+                        events.push(event);
+                }
 
-        });
+             });
+             console.log(JSON.stringify(events));
+
+            StockEvent.update({facilityId:homeFacility.id},events, function (data) {
+                 if(data.success)
+                 {
+                     $scope.message=true;
+                      $scope.distribution.status='RECEIVED';
+                     SaveDistribution.save($scope.distribution,function(distribution){
+                         $timeout(function(){
+                               $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                         },900);
+                     });
+
+                 }
+            });
+
+            }
+        };
+
+        var options = {
+                    id: "confirmDialog",
+                    header: "label.confirm.receive.stock.action",
+                    body: "msg.question.receive.stock.confirmation"
+                };
+        OpenLmisDialog.newDialog(options, callBack, $dialog);
+
     };
     $scope.cancel=function(){
-       $location.path('/stock-on-hand');
+       $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
     };
     if($scope.userPrograms.length > 1)
     {
@@ -182,12 +219,30 @@ function ReceiveStockController($scope,programs,$timeout,homeFacility,VaccinePro
             return false;
       };
 
-     $scope.sumLots = function(lots) {
+     $scope.sumLots = function(product) {
             var total=0;
-            angular.forEach(lots , function(lot){
+            angular.forEach(product.lots , function(lot){
               total+= parseInt(lot.quantity,10);
             });
+            product.quantity=total;
             return total;
+     };
+     $scope.loadDistribution=function(){
+        $scope.noVoucherNumber=false;
+        Distribution.get({voucherNumber:$scope.receivedProducts.voucherNumber},function(data){
+            if(data.distribution !==null){
+                $scope.distribution=data.distribution;
+            }
+            else{
+                $scope.noVoucherNumber=true;
+            }
+        });
+
+     };
+
+     $scope.clear=function(){
+        $scope.noVoucherNumber=false;
+        $scope.distribution=undefined;
      };
 
 }

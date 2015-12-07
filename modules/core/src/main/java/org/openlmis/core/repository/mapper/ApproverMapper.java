@@ -30,7 +30,7 @@ public interface ApproverMapper {
           "on ra.userid = u.id and ra.programid = r.programid " +
           "and roleid in (select roleid from role_rights where rightname = 'AUTHORIZE_REQUISITION') \n" +
       "where r.id = #{RnrID} and u.active = true")
-  List<User> getFacilityBasedAuthorizers( @Param(value = "RnrID") Long RnrID );
+  List<User> getFacilityBasedAuthorizers( @Param(value = "RnrID") Long rnrID );
 
   @Select("select distinct u.* from requisitions r " +
       "join ( select * from role_assignments " +
@@ -42,6 +42,6 @@ public interface ApproverMapper {
       " join users u " +
       "   on u.id = ra.userId " +
       "where r.id = #{RnrID} and u.active = true")
-  List<User> getNextSupervisors( @Param(value = "RnrID") Long RnrID );
+  List<User> getNextSupervisors( @Param(value = "RnrID") Long rnrID );
 
 }

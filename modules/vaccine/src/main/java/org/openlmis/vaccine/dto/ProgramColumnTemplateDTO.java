@@ -12,12 +12,14 @@
 
 package org.openlmis.vaccine.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.openlmis.vaccine.domain.reports.LogisticsColumn;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class ProgramColumnTemplateDTO {
 
   Long programId;

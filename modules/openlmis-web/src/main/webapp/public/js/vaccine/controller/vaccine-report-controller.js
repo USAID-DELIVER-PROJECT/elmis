@@ -28,6 +28,7 @@ function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineU
 
         }*/
         // clear old data if there was any
+
         $scope.data = $scope.datarows = [];
         $scope.filter.max = 10000;
 
@@ -38,8 +39,11 @@ function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineU
         if(isUndefined($scope.filter.zone) || messageService.get('report.filter.all.geographic.zones') == $scope.filter.zone){
             $scope.filter.zone = -1;
         }
-        if(isUndefined($scope.filter.facility)){
+        if(isUndefined($scope.filter.facility) || $scope.filter.facility === ""){
             $scope.filter.facility = 0;
+            $scope.showOtherActivities = false;
+        }else if($scope.filter.facility !== 0 ){
+            $scope.showOtherActivities = true;
         }
 
         if($scope.filter.period !== null && $scope.filter.period !== 0
@@ -58,6 +62,7 @@ function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineU
                     $scope.vitamins = $scope.data.vitamins;
                     $scope.targetPopulation = $scope.data.targetPopulation;
                     $scope.vitaminSupplementation = $scope.data.vitaminSupplementation;
+                    $scope.dropOuts = $scope.data.dropOuts;
                 }
             });
 

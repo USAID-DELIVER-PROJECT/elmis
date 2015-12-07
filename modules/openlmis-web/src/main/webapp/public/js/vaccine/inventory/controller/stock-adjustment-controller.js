@@ -8,21 +8,23 @@
  * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
  */
 
-function StockAdjustmentController($scope, $timeout,$location,$routeParams,programs,StockCardsByCategory,productsConfiguration,SaveVaccineInventoryAdjustment,localStorageService,homeFacility,adjustmentTypes,UserFacilityList) {
+function StockAdjustmentController($scope, $timeout,$window,$routeParams,programs,StockCardsByCategory,productsConfiguration,StockEvent,localStorageService,homeFacility,VaccineAdjustmentReasons,UserFacilityList) {
 
     //Get Home Facility
     $scope.currentStockLot = undefined;
     $scope.adjustmentReasonsDialogModal = false;
     $scope.userPrograms=programs;
-    $scope.adjustmentTypes=adjustmentTypes;
     $scope.adjustmentReason={};
-    $scope.vvmStatuses=[{"value":1,"name":" 1 "},{"value":2,"name":" 2 "}];
+    $scope.vvmStatuses=[{"value":"1","name":" 1 "},{"value":"2","name":" 2 "}];
     $scope.productsConfiguration=productsConfiguration;
     var AdjustmentReasons=[];
 
     var loadStockCards=function(programId, facilityId){
             StockCardsByCategory.get(programId,facilityId).then(function(data){
                 $scope.stockCardsToDisplay=data;
+                VaccineAdjustmentReasons.get({programId:programId},function(data){
+                       $scope.adjustmentTypes=data.adjustmentReasons;
+                });
             });
         };
     if(homeFacility){
@@ -103,42 +105,57 @@ function StockAdjustmentController($scope, $timeout,$location,$routeParams,progr
 
      };
      $scope.updateStock=function(){
-            var transaction={};
-            transaction.transactionList=[];
-
+            var events=[];
             $scope.stockCardsToDisplay.forEach(function(st){
                 st.stockCards.forEach(function(s){
-                     var list={};
-                     list.productId=s.product.id;
-                     list.quantity=s.quantity;
-                     list.lots=[];
-                    s.lotsOnHand.forEach(function(l){
-                        var lot={};
-                        lot.lotId=l.lot.id;
-                        lot.quantity=l.quantity;
-                        lot.vvmStatus=l.vvmStatus;
-                        lot.adjustmentReasons=l.adjustmentReasons;
-                        list.lots.push(lot);
-                    });
-                   transaction.transactionList.push(list);
+                    if(s.lotsOnHand !==undefined && s.lotsOnHand.length>0){
+                        s.lotsOnHand.forEach(function(l){
+                            if(l.quantity !== undefined)
+                            {
+                                    l.adjustmentReasons.forEach(function(reason){
+                                        var event={};
+                                        event.type= "ADJUSTMENT";
+                                        event.productCode=s.product.code;
+                                        event.quantity=reason.quantity;
+                                        event.lotId=l.lot.id;
+                                        event.reasonName=reason.name;
+                                        if(l.customProps !==null && l.customProps.vvmstatus !==undefined)
+                                        {
+                                            event.customProps={"vvmStatus":l.customProps.vvmstatus};
+                                        }
+                                        events.push(event);
+                                    });
+                            }
+                        });
+                        console.log(JSON.stringify(events));
+                    }
+                    else{
+                     if(s.quantity !==undefined && s.quantity >0)
+                     {
+                        s.adjustmentReasons.forEach(function(reason){
+                            var event={};
+                            event.type= "ADJUSTMENT";
+                            event.productCode=s.product.code;
+                            event.quantity=reason.quantity;
+                            event.reasonName=reason.name;
+                            events.push(event);
+                        });
+                     }
+                    }
                 });
-
             });
-            SaveVaccineInventoryAdjustment.update(transaction,function(data)
-            {
+           StockEvent.save({facilityId:homeFacility.id},events, function (data) {
                if(data.success !==null)
                {
                      $scope.message=data.success;
                      $timeout(function(){
-                         $location.path('/stock-on-hand');
+                       $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
                      },900);
                }
-
             });
-
      };
      $scope.cancel=function(){
-        $location.path('/stock-on-hand');
+        $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
      };
 
 
@@ -191,7 +208,7 @@ function StockAdjustmentController($scope, $timeout,$location,$routeParams,progr
                 return config[0].vvmTracked;
              }
              else{
-                return false;
+                return true;
              }
           };
 
@@ -212,17 +229,7 @@ StockAdjustmentController.resolve = {
             }, 100);
             return deferred.promise;
          },
-         adjustmentTypes: function ($q, $timeout,VaccineAdjustmentReasons ) {
-                     var deferred = $q.defer();
 
-                     $timeout(function () {
-                              //Load Adjustment reasons
-                              VaccineAdjustmentReasons.get({},function(data){
-                                     deferred.resolve(data.adjustmentReasons);
-                              });
-                     }, 100);
-                     return deferred.promise;
-        },
         programs:function ($q, $timeout, VaccineInventoryPrograms) {
                     var deferred = $q.defer();
                     var programs={};

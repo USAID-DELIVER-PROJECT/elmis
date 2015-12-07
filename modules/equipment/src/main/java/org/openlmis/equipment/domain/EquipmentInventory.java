@@ -14,19 +14,19 @@ package org.openlmis.equipment.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EquipmentInventory extends BaseModel {
 
@@ -56,7 +56,7 @@ public class EquipmentInventory extends BaseModel {
     return DateUtil.getFormattedDate(this.dateLastAssessed, "yyyy-MM-dd");
   }
 
-  public String getDateDecommissionedString(){
+  public String getDateDecommissionedString() {
     return DateUtil.getFormattedDate(this.dateDecommissioned, "yyyy-MM-dd");
   }
 

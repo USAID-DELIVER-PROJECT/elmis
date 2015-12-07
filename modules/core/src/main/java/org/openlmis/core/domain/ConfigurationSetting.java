@@ -12,18 +12,18 @@
 
 package org.openlmis.core.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import java.lang.String;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.NON_NULL;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @JsonSerialize(include = NON_NULL)
-public class ConfigurationSetting {
+public class ConfigurationSetting extends BaseModel {
 
   private String key;
   private String value;
@@ -33,4 +33,5 @@ public class ConfigurationSetting {
   private String valueOptions;
   private String displayOrder;
   private String groupName;
+
 }

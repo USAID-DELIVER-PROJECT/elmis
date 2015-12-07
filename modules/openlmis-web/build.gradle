@@ -53,7 +53,7 @@ task jsHint(type: GruntTask) {
 
 task karmaRun(type: Exec) {
     description = 'Runs jasmine specs and publishes js tests coverage report'
-    commandLine 'karma', 'start', 'karma.config.js', '--singleRun'
+    commandLine 'karma', 'start', 'karma.config.js'
 }
 
 task lesslint(type: GruntTask) {
@@ -167,7 +167,6 @@ dependencies {
             project(':modules:reporting'),
             project(':modules:report'),
             project(':modules:distribution'),
-            project(':modules:odk-api'),
             project(':modules:equipment'),
             project(':modules:demographics'),
             project(':modules:vaccine'),

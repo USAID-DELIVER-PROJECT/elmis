@@ -14,17 +14,17 @@ package org.openlmis.equipment.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MaintenanceRequest extends BaseModel {
 
@@ -48,13 +48,12 @@ public class MaintenanceRequest extends BaseModel {
   // end of hack
 
 
-  public String getRequestedDateString()  {
+  public String getRequestedDateString() {
     return getFormattedDate(this.requestDate);
   }
 
-  public String getRecommendedDateString()  {
+  public String getRecommendedDateString() {
     return getFormattedDate(this.recommendedDate);
   }
-
 
 }

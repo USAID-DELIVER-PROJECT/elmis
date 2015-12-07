@@ -13,35 +13,29 @@
 package org.openlmis.demographics.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class AnnualFacilityEstimateEntry extends BaseModel {
 
   private Integer year;
-
   private Long facilityId;
-
   private Long programId;
-
   private Boolean isFinal;
-
   private Long demographicEstimateId;
-
   private EstimateCategory category;
-
   private Double conversionFactor;
-
   private Long value;
 
-  public void calculateAndSetValue(Long populationValue){
+  public void calculateAndSetValue(Long populationValue) {
     Double calculatedValue = conversionFactor * populationValue / 100;
     value = calculatedValue.longValue();
   }
+
 }

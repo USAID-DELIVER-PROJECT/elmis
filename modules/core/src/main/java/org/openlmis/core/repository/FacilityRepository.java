@@ -80,7 +80,8 @@ public class FacilityRepository {
     private void validateAndSetPriceScheduleCategory(Facility facility) {
 
         PriceSchedule priceSchedule = facility.getPriceSchedule();
-        if (priceSchedule == null || priceSchedule.getId() != null) return;
+        if (priceSchedule == null || priceSchedule.getId() != null)
+          return;
 
         priceSchedule = priceScheduleService.getByCode(facility.getPriceSchedule().getCode());
         facility.setPriceSchedule(priceSchedule);
@@ -160,6 +161,10 @@ public class FacilityRepository {
 
   public List<Facility> getAllInRequisitionGroups(List<RequisitionGroup> requisitionGroups) {
     return mapper.getAllInRequisitionGroups(commaSeparator.commaSeparateIds(requisitionGroups));
+  }
+
+  public List<Facility> getAllByFacilityTypeCode(String typeCode) {
+    return mapper.getAllByFacilityTypeCode(typeCode);
   }
 
   public Long getIdForCode(String code) {

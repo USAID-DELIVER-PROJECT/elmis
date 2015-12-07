@@ -13,14 +13,16 @@
 package org.openlmis.demographics.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.demographics.domain.AnnualDistrictEstimateEntry;
 import org.openlmis.demographics.domain.AnnualFacilityEstimateEntry;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class EstimateFormLineItem {
@@ -38,6 +40,5 @@ public class EstimateFormLineItem {
   private List<AnnualFacilityEstimateEntry> facilityEstimates;
 
   private List<AnnualDistrictEstimateEntry> districtEstimates;
-
 
 }

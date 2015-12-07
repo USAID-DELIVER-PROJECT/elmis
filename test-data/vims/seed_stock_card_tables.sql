@@ -13,7 +13,6 @@ VALUES(1,'Product','Product Name','Product','P',1,TRUE,1,'2015-09-20 00:00:00',1
 (5,'Amount Required','Amount Required','Amount Required','A',5,TRUE,1,'2015-09-20 00:00:00',1,'2015-09-20 00:00:00');
 
 
-
   INSERT INTO lots (productid, lotnumber, manufacturername, manufacturedate, expirationdate)
   VALUES ((SELECT id FROM products WHERE primaryname = 'BCG'),'A1','Manufacturer 1','2015-05-01 00:00:00','2016-05-01 00:00:00')
     ,((SELECT id FROM products WHERE primaryname = 'BCG'),'B1','Manufacturer 2','2015-06-01 00:00:00','2016-06-01 00:00:00')
@@ -136,6 +135,25 @@ VALUES(1,'Product','Product Name','Product','P',1,TRUE,1,'2015-09-20 00:00:00',1
     ,((SELECT id FROM stock_cards WHERE notes = 'Test stock card for OPV at Karatu DVS'),(SELECT loh.id FROM lots_on_hand loh JOIN stock_cards sc ON sc.id = loh.stockcardid JOIN lots l ON l.id = loh.lotid WHERE sc.notes = 'Test stock card for OPV at Karatu DVS' AND l.lotnumber = 'B2'),'DEBIT',10)
   ;
 
+  INSERT INTO roles (name)
+  VALUES ('Stock Viewer')
+    ,('Stock Manager')
+  ;
+
+  INSERT INTO role_rights (roleid, rightname)
+  VALUES ((SELECT id FROM roles WHERE name = 'Stock Manager'), 'MANAGE_STOCK')
+    ,((SELECT id FROM roles WHERE name = 'Stock Manager'), 'VIEW_STOCK_ON_HAND')
+    ,((SELECT id FROM roles WHERE name = 'Stock Viewer'), 'VIEW_STOCK_ON_HAND')
+  ;
+
+  INSERT INTO role_assignments (userid, roleid, programid, supervisorynodeid)
+  VALUES ((SELECT id FROM users where username = 'vims-admin'),(SELECT id FROM roles WHERE name = 'Stock Manager'),(SELECT id FROM programs WHERE code = 'Vaccine'),NULL)
+      ,((SELECT id FROM users where username = 'vims-admin'),(SELECT id FROM roles WHERE name = 'Stock Viewer'),(SELECT id FROM programs WHERE code = 'Vaccine'),(SELECT id FROM supervisory_nodes WHERE name = 'Tanzania CVS'))
+      ,((SELECT id FROM users where username = 'vims-rivo'),(SELECT id FROM roles WHERE name = 'Stock Manager'),(SELECT id FROM programs WHERE code = 'Vaccine'),NULL)
+      ,((SELECT id FROM users where username = 'vims-rivo'),(SELECT id FROM roles WHERE name = 'Stock Viewer'),(SELECT id FROM programs WHERE code = 'Vaccine'),(SELECT id FROM supervisory_nodes WHERE name = 'Arusha RVS'))
+      ,((SELECT id FROM users where username = 'vims-divo'),(SELECT id FROM roles WHERE name = 'Stock Manager'),(SELECT id FROM programs WHERE code = 'Vaccine'),NULL)
+      ,((SELECT id FROM users where username = 'vims-divo'),(SELECT id FROM roles WHERE name = 'Stock Manager'),(SELECT id FROM programs WHERE code = 'Vaccine'),(SELECT id FROM supervisory_nodes WHERE name = 'Karatu DVS'))
+  ;
 
 END;
 $$

@@ -1555,6 +1555,34 @@ public class RequisitionServiceTest {
     assertThat(lineItem, is(expectedLineItem));
   }
 
+  @Test
+  public void shouldUpdateClientSubmittedFields() throws Exception {
+    Rnr rnr = new Rnr();
+    requisitionService.updateClientFields(rnr);
+    verify(requisitionRepository).updateClientFields(rnr);
+  }
+
+  @Test
+  public void shouldInsertPatientQuantificationLineItems() throws Exception {
+    Rnr rnr = new Rnr();
+    requisitionService.insertPatientQuantificationLineItems(rnr);
+    verify(requisitionRepository).insertPatientQuantificationLineItems(rnr);
+  }
+
+  @Test
+  public void shouldInsertRnRSignature(){
+    Rnr rnr = new Rnr();
+    requisitionService.insertRnrSignatures(rnr);
+    verify(requisitionRepository).insertRnrSignatures(rnr);
+  }
+
+  @Test
+  public void shouldGetRequisitionsByFacility() {
+    Facility facility = new Facility();
+    requisitionService.getRequisitionsByFacility(facility);
+    verify(requisitionRepository).getRequisitionDetailsByFacility(facility);
+  }
+
   private void setupForInitRnr() {
     when(requisitionPermissionService.hasPermission(USER_ID, FACILITY, PROGRAM, CREATE_REQUISITION)).thenReturn(true);
     when(rnrTemplateService.fetchProgramTemplateForRequisition(PROGRAM.getId())).thenReturn(

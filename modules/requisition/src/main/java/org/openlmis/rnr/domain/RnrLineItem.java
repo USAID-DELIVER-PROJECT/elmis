@@ -50,13 +50,20 @@ public class RnrLineItem extends LineItem {
   public static final BigDecimal NUMBER_OF_DAYS = new BigDecimal(30);
 
   public static final MathContext MATH_CONTEXT = new MathContext(12, HALF_UP);
-  private static Logger logger = LoggerFactory.getLogger(RnrLineItem.class);
+  public static final String DISPENSED_PLUS_NEW_PATIENTS = "DISPENSED_PLUS_NEW_PATIENTS";
+  public static final String DISPENSED_X_90 = "DISPENSED_X_90";
+  public static final String DEFAULT = "DEFAULT";
+  public static final String DISPENSED_X_2 = "DISPENSED_X_2";
+  public static final String CONSUMPTION_X_2 = "CONSUMPTION_X_2";
+  private static final Logger LOGGER = LoggerFactory.getLogger(RnrLineItem.class);
   //TODO : hack to display it on UI. This is concatenated string of Product properties like name, strength, form and dosage unit
   private String product;
   private Integer productDisplayOrder;
   private String productCode;
+  private String productPrimaryName;
   private String productCategory;
   private Integer productCategoryDisplayOrder;
+  private String productStrength;
   private Boolean roundToZero;
   private Integer packRoundingThreshold;
   private Integer packSize;
@@ -121,6 +128,7 @@ public class RnrLineItem extends LineItem {
       this.stockOutDays = null;
       this.newPatientCount = null;
       this.quantityRequested = null;
+      this.quantityApproved = null;
       this.reasonForRequestedQuantity = null;
       this.normalizedConsumption = null;
       this.periodNormalizedConsumption = null;
@@ -128,7 +136,9 @@ public class RnrLineItem extends LineItem {
       this.remarks = null;
       this.expirationDate = null;
     }
-    quantityApproved = (quantityRequested == null) ? calculatedOrderQuantity : quantityRequested;
+    if(quantityApproved == null){
+      quantityApproved = (quantityRequested == null) ? calculatedOrderQuantity : quantityRequested;
+    }
   }
 
   public void setBeginningBalanceWhenPreviousStockInHandAvailable(RnrLineItem previousLineItem,
@@ -257,13 +267,13 @@ public class RnrLineItem extends LineItem {
 
   public void calculateMaxStockQuantity( ProgramRnrTemplate template) {
     RnrColumn column = template.getRnrColumnsMap().get("maxStockQuantity");
-    String columnOption = "DEFAULT";
+    String columnOption = DEFAULT;
     if(column != null){
       columnOption = column.getCalculationOption();
     }
-    if(columnOption.equalsIgnoreCase("CONSUMPTION_X_2")){
+    if(CONSUMPTION_X_2.equalsIgnoreCase(columnOption)){
       maxStockQuantity = this.normalizedConsumption * 2;
-    }else if(columnOption.equalsIgnoreCase("DISPENSED_X_2")){
+    }else if(DISPENSED_X_2.equalsIgnoreCase(columnOption)){
       maxStockQuantity = this.quantityDispensed * 2;
     } else{
       // apply the default calculation if there was no other calculation that works here
@@ -281,21 +291,17 @@ public class RnrLineItem extends LineItem {
 
     prepareFieldsForCalculation();
     RnrColumn column = template.getRnrColumnsMap().get("normalizedConsumption");
-    String columnOption = "DEFAULT";
+    String selectedColumnOption = DEFAULT;
     if (column != null) {
-      columnOption = column.getCalculationOption();
+      selectedColumnOption = column.getCalculationOption();
     }
-    if (columnOption.equalsIgnoreCase("DISPENSED_PLUS_NEW_PATIENTS")) {
-      // what appears to have happened is the direct translation of the column name
-      // on new patient is (number of additional units required)
-      // essentially wrong usage of the column.
+    if (DISPENSED_PLUS_NEW_PATIENTS.equalsIgnoreCase(selectedColumnOption)) {
       normalizedConsumption = quantityDispensed + newPatientCount;
-    } else if (columnOption.equalsIgnoreCase("DISPENSED_X_90")) {
+    } else if (DISPENSED_X_90.equalsIgnoreCase(selectedColumnOption)) {
       if (stockOutDays < 90) {
-        normalizedConsumption = (new BigDecimal(
-            (90 * quantityDispensed))
+        normalizedConsumption = (new BigDecimal(90 * quantityDispensed)
             .divide(
-                new BigDecimal((90 - stockOutDays))
+                new BigDecimal(90 - stockOutDays)
                 , MATH_CONTEXT)
         ).intValue();
       } else {
@@ -419,7 +425,7 @@ public class RnrLineItem extends LineItem {
       Field field = this.getClass().getDeclaredField(fieldName);
       field.set(this, field.get(lineItem));
     } catch (Exception e) {
-      logger.error("Error in copying RnrLineItem's field", e);
+      LOGGER.error("Error in copying RnrLineItem's field", e);
     }
   }
 
@@ -456,7 +462,7 @@ public class RnrLineItem extends LineItem {
       Field field = this.getClass().getDeclaredField(fieldName);
       value = field.get(this);
     } catch (Exception e) {
-      logger.error("Error in reading RnrLineItem's field", e);
+      LOGGER.error("Error in reading RnrLineItem's field", e);
     }
     return value;
   }

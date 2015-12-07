@@ -15,6 +15,9 @@ package org.openlmis.report.service.lookup;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.RowBounds;
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.format.DateTimeFormat;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.domain.GeographicLevel;
 import org.openlmis.core.repository.RegimenRepository;
@@ -158,6 +161,12 @@ public class ReportLookupService {
 
     @Autowired
     private CommaSeparator commaSeparator;
+
+    @Autowired
+    ConfigurationSettingService configurationSettingService;
+
+    private static final String VACCINE_DATE_FORMAT = "yyyy-MM-dd";
+    private static final String VACCINE_DATE_FORMAT_FOR_RANGE = "MMM-dd-yyyy";
 
     public List<Product> getAllProducts() {
         return productMapper.getAll();
@@ -327,7 +336,6 @@ public class ReportLookupService {
         return scheduleMapper.getAll();
     }
 
-    //TODO: implement this method
     public List<org.openlmis.report.model.dto.GeographicZone> getAllZones() {
         return geographicZoneMapper.getAll();
     }
@@ -769,5 +777,63 @@ public class ReportLookupService {
     }
 
 //End new
+
+    public Map<String,Object> getCustomPeriodDates(Long period) {
+
+
+        Map<String, Object> dates = new HashMap<String, Object>();
+
+        if(period != null && period < 5 && period > 0)
+        {
+            DateTime
+                    sDate = periodStartDate(period),
+                    eDate = periodEndDate();
+
+            String startDate = sDate.toString(VACCINE_DATE_FORMAT);
+            String endDate = eDate.toString(VACCINE_DATE_FORMAT);
+            String startDateString = sDate.toString(VACCINE_DATE_FORMAT_FOR_RANGE);
+            String endDateString = eDate.toString(VACCINE_DATE_FORMAT_FOR_RANGE);
+
+            if(startDate != null && endDate != null) {
+                dates.put("startDate", startDate);
+                dates.put("endDate", endDate);
+                dates.put("startDateString", startDateString);
+                dates.put("endDateString", endDateString);
+            }
+        }
+
+        return dates;
+    }
+
+    public DateTime periodEndDate(){
+
+        int currentDay = new DateTime().getDayOfMonth();
+
+        Integer cutOffDays = configurationSettingService.getConfigurationIntValue("VACCINE_LATE_REPORTING_DAYS");
+
+        boolean dateBeforeCutoff = cutOffDays != null && currentDay < cutOffDays;
+
+        if(dateBeforeCutoff)
+            return new DateTime().withDayOfMonth(1).minusMonths(1).minusDays(1);
+        else
+            return new DateTime().withDayOfMonth(1).minusDays(1);
+    }
+
+    public DateTime periodStartDate(Long range){
+
+        DateTime periodEndDate = periodEndDate();
+
+        if(range == 1)
+            return periodEndDate.withDayOfMonth(1);
+        else if(range == 2)
+            return periodEndDate.minusMonths(2).withDayOfMonth(1);
+        else if(range == 3)
+            return periodEndDate.minusMonths(5).withDayOfMonth(1);
+        else if(range == 4)
+            return periodEndDate.minusYears(1).withDayOfMonth(1);
+
+        return null;
+
+    }
 
 }

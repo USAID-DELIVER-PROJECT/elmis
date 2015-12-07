@@ -13,26 +13,27 @@
 package org.openlmis.report.model.params;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.openlmis.report.model.ReportData;
+import lombok.Setter;
 
-import java.text.DateFormat;
-import java.util.Date;
-
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseParam  {
+public abstract class BaseParam {
 
-    private Long userId;
+  @Getter @Setter
+  private Long userId;
 
-    private Long page;
+  @Getter @Setter
+  private Long page;
 
-    private Long pageSize;
+  @Getter @Setter
+  private Long pageSize;
 
-    private Long max;
+  @Getter @Setter
+  private Long max;
 
-    private String acceptedRnrStatuses;
+  @Getter @Setter
+  private String acceptedRnrStatuses;
 
 }

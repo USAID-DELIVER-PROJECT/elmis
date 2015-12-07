@@ -3,21 +3,21 @@ package org.openlmis.equipment.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 import org.openlmis.equipment.dto.ContractDetail;
 
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ServiceContract extends BaseModel{
+public class ServiceContract extends BaseModel {
 
   private Long vendorId;
   private String identifier;
@@ -33,18 +33,16 @@ public class ServiceContract extends BaseModel{
   private List<ContractDetail> equipments;
 
 
-  public String getStartDateString()  {
+  public String getStartDateString() {
     return getFormattedDate(this.startDate);
   }
 
-  public String getEndDateString()  {
+  public String getEndDateString() {
     return getFormattedDate(this.endDate);
   }
 
-  public String getContractDateString()  {
+  public String getContractDateString() {
     return getFormattedDate(this.contractDate);
   }
-
-
 
 }

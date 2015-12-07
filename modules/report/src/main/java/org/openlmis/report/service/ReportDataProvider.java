@@ -12,29 +12,30 @@
 
 package org.openlmis.report.service;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.openlmis.report.DataSourceType;
 import org.openlmis.report.model.ReportData;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@Data
 public abstract class ReportDataProvider {
 
+  @Getter @Setter
   private Long userId;
 
   public final List<? extends ReportData> getReportDataByFilterCriteria(Map<String, String[]> params, DataSourceType dataSourceType){
-    return getResultSetReportData(params);
+    return getResultSet(params);
   }
 
-  protected abstract List<? extends ReportData> getResultSetReportData(Map<String, String[]> params);
+  protected abstract List<? extends ReportData> getResultSet(Map<String, String[]> params);
 
-  public abstract List<? extends ReportData> getMainReportData(Map<String, String[]> filter, Map<String, String[]> sorter, int page, int pageSize);
+  public abstract List<? extends ReportData> getReportBody(Map<String, String[]> filter, Map<String, String[]> sorter, int page, int pageSize);
 
-  public HashMap<String,String> getAdditionalReportData(Map params){
-      return null;
+  public Map<String,String> getExtendedHeader(Map params){
+      return Collections.emptyMap();
   }
 
   public String getFilterSummary(Map<String, String[]> params){

@@ -17,7 +17,7 @@ import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.User;
 import org.openlmis.report.builder.OrderSummaryQueryBuilder;
-import org.openlmis.report.model.ReportParameter;
+import org.openlmis.report.model.params.OrderReportParam;
 import org.openlmis.report.model.report.OrderSummaryReport;
 import org.openlmis.rnr.domain.RequisitionStatusChange;
 import org.springframework.stereotype.Repository;
@@ -28,19 +28,19 @@ import java.util.Map;
 @Repository
 public interface OrderSummaryReportMapper {
 
-  @SelectProvider(type = OrderSummaryQueryBuilder.class, method = "SelectFilteredSortedPagedRecords")
+  @SelectProvider(type = OrderSummaryQueryBuilder.class, method = "getQuery")
   @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
   public List<OrderSummaryReport> getOrderSummaryReport(
-    @Param("filterCriteria") ReportParameter filterCriteria,
-    @Param("sortCriteria") Map params,
-    @Param("RowBounds") RowBounds rowBounds
+      @Param("filterCriteria") OrderReportParam filterCriteria,
+      @Param("sortCriteria") Map params,
+      @Param("RowBounds") RowBounds rowBounds
   );
 
   @Select("select * from requisition_status_changes where rnrid = #{rnrId} and status = #{status} order by id desc")
   @Results(value = {@Result(property = "createdBy", column = "createdBy", javaType = User.class,
       one = @One(select = "org.openlmis.core.repository.mapper.UserMapper.getById"))})
-  public List<RequisitionStatusChange> getLastUsersWhoActedOnRnr(@Param("rnrId")Long rnrid,
-                                                                  @Param("status")String status);
+  public List<RequisitionStatusChange> getLastUsersWhoActedOnRnr(@Param("rnrId") Long rnrid,
+                                                                 @Param("status") String status);
 
   @Select("select max(id) from requisitions where facilityId = #{facilityId} and programId = #{programId} and periodId = #{periodId}")
   public Long getRequisitionId(@Param("facilityId") Long facilityId,

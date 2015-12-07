@@ -13,7 +13,6 @@
 function EquipmentTypeController($scope, EquipmentTypes) {
 
   EquipmentTypes.get(function (data) {
-    $scope.equipment_types = data.equipment_type;
+    $scope.equipment_types = data.equipment_types;
   });
-  
 }

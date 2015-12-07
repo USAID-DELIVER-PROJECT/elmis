@@ -10,7 +10,6 @@
 
 package org.openlmis.order.helper;
 
-import lombok.NoArgsConstructor;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -21,7 +20,6 @@ import org.openlmis.order.dto.OrderFileTemplateDTO;
 import org.openlmis.rnr.domain.LineItemComparator;
 import org.openlmis.rnr.domain.RnrLineItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -41,16 +39,17 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 public class OrderCsvHelper {
 
 
-  String lineSeparator = "\r\n";
+  public static final String STRING = "string";
+  public static final String LINE_NO = "line_no";
+  public static final String ORDER = "order";
 
-  Boolean apply_quotes_setting = false;
+  private String lineSeparator = "\r\n";
 
-  Boolean initated = false;
-
+  private Boolean encloseValuesWithQuotes = false;
   @Autowired
   ConfigurationSettingService configSettingService;
 
-  public OrderCsvHelper(){
+  public OrderCsvHelper() {
 
   }
 
@@ -90,48 +89,72 @@ public class OrderCsvHelper {
   }
 
   private void writeLineItems(Order order, List<RnrLineItem> fullSupplyLineItems, List<OrderFileColumn> orderFileColumns, Writer writer) throws IOException {
+
+    // allow the user to control what line separator to use from the administrative pages
+    // this value was different between a windows and linux target systems.
+    // this could have been written better.
+    lineSeparator = StringEscapeUtils.unescapeJava(configSettingService.getConfigurationStringValue("CSV_LINE_SEPARATOR"));
+    // setting to enclose or not to enclose values in quotes.
+    encloseValuesWithQuotes = configSettingService.getBoolValue("CSV_APPLY_QUOTES");
+
     int counter = 1;
     for (RnrLineItem rnrLineItem : fullSupplyLineItems) {
-      writeCsvLineItem(order, rnrLineItem, orderFileColumns, writer, counter ++);
+      writeCsvLineItem(order, rnrLineItem, orderFileColumns, writer, counter++);
       writer.write(lineSeparator);
     }
   }
 
   private void writeCsvLineItem(Order order, RnrLineItem rnrLineItem, List<OrderFileColumn> orderFileColumns, Writer writer, int counter) throws IOException {
-    if(!initated){
-      lineSeparator = StringEscapeUtils.unescapeJava(configSettingService.getConfigurationStringValue("CSV_LINE_SEPARATOR"));
-      apply_quotes_setting = configSettingService.getBoolValue("CSV_APPLY_QUOTES");
-      initated = true;
-    }
+
     JXPathContext orderContext = JXPathContext.newContext(order);
     JXPathContext lineItemContext = JXPathContext.newContext(rnrLineItem);
     for (OrderFileColumn orderFileColumn : orderFileColumns) {
       if (orderFileColumn.getNested() == null || orderFileColumn.getNested().isEmpty()) {
-        if (orderFileColumns.indexOf(orderFileColumn) < orderFileColumns.size() - 1)
-          writer.write(",");
+        writeValue(writer, "");
+        writeSeparator(orderFileColumns, writer, orderFileColumn);
         continue;
       }
-      Object columnValue;
+      Object columnValue = getColumnValue(counter, orderContext, lineItemContext, orderFileColumn);
 
-      if(orderFileColumn.getNested().equals("string")){
-        columnValue = orderFileColumn.getKeyPath();
-      }else if (orderFileColumn.getNested().equals("line_no")) {
-        columnValue = counter;
-      }else if (orderFileColumn.getNested().equals("order")) {
-        columnValue = orderContext.getValue(orderFileColumn.getKeyPath());
-      } else {
-        columnValue = lineItemContext.getValue(orderFileColumn.getKeyPath());
-      }
       if (columnValue instanceof Date) {
         columnValue = forPattern(orderFileColumn.getFormat()).print(((Date) columnValue).getTime());
       }
-      if(apply_quotes_setting) {
-        writer.write("\"" + (columnValue).toString() + "\"");
-      }else{
-        writer.write((columnValue).toString());
-      }
-      if (orderFileColumns.indexOf(orderFileColumn) < orderFileColumns.size() - 1)
-        writer.write(",");
+      writeValue(writer, columnValue);
+      writeSeparator(orderFileColumns, writer, orderFileColumn);
     }
+  }
+
+  private void writeSeparator(List<OrderFileColumn> orderFileColumns, Writer writer, OrderFileColumn orderFileColumn) throws IOException {
+    if (orderFileColumns.indexOf(orderFileColumn) < orderFileColumns.size() - 1) {
+      writer.write(",");
+    }
+  }
+
+  private void writeValue(Writer writer, Object columnValue) throws IOException {
+    if (encloseValuesWithQuotes) {
+      writer.write("\"" + (columnValue).toString() + "\"");
+    } else {
+      writer.write((columnValue).toString());
+    }
+  }
+
+  private Object getColumnValue(int counter, JXPathContext orderContext, JXPathContext lineItemContext, OrderFileColumn orderFileColumn) {
+    Object columnValue;
+
+    switch (orderFileColumn.getNested()) {
+      case STRING:
+        columnValue = orderFileColumn.getKeyPath();
+        break;
+      case LINE_NO:
+        columnValue = counter;
+        break;
+      case ORDER:
+        columnValue = orderContext.getValue(orderFileColumn.getKeyPath());
+        break;
+      default:
+        columnValue = lineItemContext.getValue(orderFileColumn.getKeyPath());
+        break;
+    }
+    return columnValue;
   }
 }

@@ -23,8 +23,7 @@ import org.openlmis.report.mapper.lookup.FacilityTypeReportMapper;
 import org.openlmis.report.model.params.MailingLabelReportParam;
 import org.openlmis.report.model.report.MailingLabelReport;
 import org.openlmis.report.model.ReportData;
-import org.openlmis.report.model.sorter.MailingLabelReportSorter;
-import org.openlmis.report.util.StringHelper;
+import org.openlmis.report.util.ParameterAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,9 +58,9 @@ public class MailingLabelReportDataProvider extends ReportDataProvider {
   }
 
   @Override
-  protected List<? extends ReportData> getResultSetReportData(Map<String, String[]> params) {
+  protected List<? extends ReportData> getResultSet(Map<String, String[]> params) {
 
-    return getMainReportData(params, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
+    return getReportBody(params, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
 
   }
 
@@ -79,60 +78,13 @@ public class MailingLabelReportDataProvider extends ReportDataProvider {
   }
 
   @Override
-  public List<? extends ReportData> getMainReportData(Map<String, String[]> filterCriteria, Map<String, String[]> sorterCriteria, int page, int pageSize) {
-
+  public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sorterCriteria, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-
-    MailingLabelReportSorter mailingLabelReportSorter = null;
-
-    if (sorterCriteria != null) {
-      mailingLabelReportSorter = new MailingLabelReportSorter();
-      mailingLabelReportSorter.setFacilityName(sorterCriteria.get("facilityName") == null ? "" : sorterCriteria.get("facilityName")[0]);
-      mailingLabelReportSorter.setCode(sorterCriteria.get("code") == null ? "" : sorterCriteria.get("code")[0]);
-      mailingLabelReportSorter.setFacilityType(sorterCriteria.get("facilityType") == null ? "ASC" : sorterCriteria.get("facilityType")[0]);
-    }
     return mailingLabelReportMapper.SelectFilteredSortedPagedFacilities(getReportFilterData(filterCriteria), rowBounds);
   }
 
   public MailingLabelReportParam getReportFilterData(Map<String, String[]> filterCriteria) {
-    if (filterCriteria != null) {
-      mailingLabelReportParam = new MailingLabelReportParam();
-      mailingLabelReportParam.setFacilityType((StringHelper.isBlank(filterCriteria, "facilityType") ? 0 : Long.parseLong(filterCriteria.get("facilityType")[0])));
-      mailingLabelReportParam.setZone((StringHelper.isBlank(filterCriteria, "zone") ? 0 : Long.parseLong(filterCriteria.get("zone")[0])));
-      mailingLabelReportParam.setStatus((StringHelper.isBlank(filterCriteria, "status") ? null : Boolean.parseBoolean(filterCriteria.get("status")[0])));
-      mailingLabelReportParam.setOrderBy(StringHelper.isBlank(filterCriteria, "sortBy") ? "" : filterCriteria.get("sortBy")[0]);
-      mailingLabelReportParam.setSortOrder(StringHelper.isBlank(filterCriteria, "order") ? "" : filterCriteria.get("order")[0]);
-      mailingLabelReportParam.setProgramId(StringHelper.isBlank(filterCriteria, "program") ? 0 :Integer.parseInt(filterCriteria.get("program")[0]));
-
-      StringBuffer header = new StringBuffer();
-
-        if(mailingLabelReportParam.getProgramId() == 0)
-            header.append("Program: All");
-        else
-            header.append("Program: ").append(programService.getById(new Long(mailingLabelReportParam.getProgramId())).getName());
-
-        if(mailingLabelReportParam.getZone() != 0)
-            header.append("\nGeographic Zone: ").append(geographicZoneMapper.getWithParentById(mailingLabelReportParam.getZone()).getName());
-        else
-            header.append("\nGeographic Zone: All");
-
-        if(mailingLabelReportParam.getFacilityType() != 0)
-            header.append("\nFacility Type: " + facilityTypeMapper.getById(mailingLabelReportParam.getFacilityType()).getName());
-        else
-            header.append("\nFacility Type: All");
-
-        if(mailingLabelReportParam.getStatus() == null)
-            header.append("\nStatus : All");
-        else if(mailingLabelReportParam.getStatus() == true)
-            header.append("\nStatus : Active");
-        else
-            header.append("\nStatus : Inactive");
-
-        mailingLabelReportParam.setHeader(header.toString());
-
-    }
-
-    return mailingLabelReportParam;
+    return ParameterAdaptor.parse(filterCriteria, MailingLabelReportParam.class);
   }
 
   @Override

@@ -11,16 +11,16 @@
  */
 package org.openlmis.equipment.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 import org.openlmis.core.domain.User;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class VendorUser extends BaseModel{
+public class VendorUser extends BaseModel {
   private Vendor vendor;
   private User user;
 }

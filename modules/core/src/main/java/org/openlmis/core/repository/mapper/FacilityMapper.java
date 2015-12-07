@@ -55,6 +55,14 @@ public interface FacilityMapper {
   @Select("SELECT id, code, name FROM facilities")
   List<Facility> getAll();
 
+  @Select("SELECT * FROM facilities")
+  @Results(value = {
+          @Result(property = "geographicZone", column = "geographicZoneId", javaType = Integer.class,
+          one = @One(select = "org.openlmis.core.repository.mapper.GeographicZoneMapper.getWithParentById")),
+          @Result(property = "facilityType", column = "typeId", javaType = Long.class,
+          one = @One(select = "getFacilityTypeById"))})
+  List<Facility> getAllReportFacilities();
+
   @Select("SELECT * FROM users U, facilities F " +
     "WHERE U.facilityId = F.id AND U.id = #{userId} AND f.active = TRUE AND f.virtualFacility = FALSE")
   @Results(value = {@Result(property = "id", column = "facilityId")})
@@ -142,7 +150,8 @@ public interface FacilityMapper {
     "AND rgps.requisitionGroupId = ANY(#{requisitionGroupIds}::INTEGER[]) " +
     "AND f.active = TRUE " +
     "AND ps.active = TRUE " +
-    "AND f.virtualFacility = FALSE ")
+    "AND f.virtualFacility = FALSE " +
+      " ORDER BY f.name ")
   List<Facility> getFacilitiesBy(@Param(value = "programId") Long programId,
                                  @Param(value = "requisitionGroupIds") String requisitionGroupIds);
 
@@ -168,6 +177,18 @@ public interface FacilityMapper {
       one = @One(select = "getFacilityOperatorById"))
   })
   List<Facility> getAllInRequisitionGroups(@Param("requisitionGroupIds") String requisitionGroupIds);
+
+  @Select("SELECT f.* FROM facilities f JOIN facility_types ft " +
+          "ON f.typeid = ft.id " +
+          "WHERE LOWER(ft.code) = LOWER(#{typeCode}) ")
+  @Results(value = {
+          @Result(property = "facilityType", column = "typeId", javaType = Long.class,
+                  one = @One(select = "getFacilityTypeById")),
+          @Result(property = "operatedBy", column = "operatedById", javaType = Long.class,
+                  one = @One(select = "getFacilityOperatorById"))
+  })
+  List<Facility> getAllByFacilityTypeCode(String typeCode);
+
 
   @Select(
     {"SELECT DISTINCT F.geographicZoneId, F.name, F.code, F.id, F.catchmentPopulation FROM facilities F INNER JOIN delivery_zone_members DZM ON F.id = DZM.facilityId",
@@ -199,7 +220,7 @@ public interface FacilityMapper {
             "ORDER BY facilities.code, facilities.name")
     @Results(value = {
             @Result(property = "geographicZone", column = "geographicZoneId", javaType = Integer.class,
-                    one = @One(select = "org.openlmis.core.repository.mapper.GeographicZoneMapperExtension.getGeographicZoneById_Ext")),
+                    one = @One(select = "org.openlmis.core.repository.mapper.GeographicZoneMapper.getWithParentById")),
             @Result(property = "facilityType", column = "typeId", javaType = Integer.class, one = @One(select = "getFacilityTypeById")),
             @Result(property = "operatedBy", column = "operatedById", javaType = Integer.class, one = @One(select = "getFacilityOperatorById"))
     })

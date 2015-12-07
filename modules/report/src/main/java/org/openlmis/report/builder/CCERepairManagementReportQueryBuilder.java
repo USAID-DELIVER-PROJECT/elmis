@@ -1,7 +1,7 @@
 /*
  * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+ * Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -141,6 +141,15 @@ public class CCERepairManagementReportQueryBuilder {
         if(filter.getWorkingStatus().equalsIgnoreCase("functional_not_installed")){
             workingStatus="functional but not installed";
         }
+        if(filter.getWorkingStatus().equalsIgnoreCase("Waiting_For_Spare_Parts")){
+            workingStatus="waiting for spare parts";
+        }
+        if(filter.getWorkingStatus().equalsIgnoreCase("Waiting_For_Repair")){
+            workingStatus="waiting for repair";
+        }
+        if(filter.getWorkingStatus().equalsIgnoreCase("Obsolete")){
+            workingStatus="obsolete";
+        }
 
         BEGIN();
        String equipmentSql="SELECT " +
@@ -177,13 +186,48 @@ public class CCERepairManagementReportQueryBuilder {
                 "     WHERE et.iscoldchain IS TRUE " +
                 "     AND f.id IN ("+filter.getFacilityIds()+") ";
 
+        String equipmentNonFunctionalSql="SELECT " +
+                "  ei.facilityid as facility_id " +
+                ", ei.programid as program_id " +
+                ", f.typeid as type_id " +
+                ", vwd.region_name as region " +
+                ", vwd.district_name as district " +
+                ", f.name as facility_name " +
+                ", ft.name as facility_type " +
+                ", eos.name as working_status " +
+                ", brkd.break_down as break_down " +
+                ", e.manufacturer as manufacturer " +
+                ", e.model as model " +
+                ", COALESCE(cce.refrigeratorcapacity,0) as capacity "+
+                "FROM equipment_inventories ei " +
+                "     JOIN equipment_inventory_statuses eis ON eis.id = (( SELECT eisb.id " +
+                "           FROM equipment_inventory_statuses eisb " +
+                "          WHERE eisb.inventoryid = ei.id " +
+                "          ORDER BY eisb.createddate DESC " +
+                "         LIMIT 1))" +
+                "     JOIN equipment_operational_status eos ON eis.notfunctionalstatusid = eos.id" +
+                "     JOIN equipments e ON ei.equipmentid = e.id" +
+                "     JOIN equipment_cold_chain_equipments cce ON cce.equipmentid = e.id"+
+                "     JOIN equipment_types et ON e.equipmenttypeid = et.id" +
+                "     JOIN facilities f ON f.id = ei.facilityid" +
+                "     JOIN facility_types ft ON ft.id = f.typeid" +
+                "     JOIN vw_districts vwd ON vwd.district_id=f.geographiczoneid" +
+                "     LEFT JOIN (Select eis.inventoryid as id ,count(eis.id) as break_down from equipment_inventory_statuses eis" +
+                "     LEFT JOIN equipment_operational_status eos on eos.id=eis.statusid" +
+                "     WHERE eos.name='Not Functional'" +
+                "     GROUP BY eis.inventoryid) as brkd ON brkd.id=ei.id" +
+                "     LEFT JOIN equipment_energy_types eet ON e.energytypeid = eet.id" +
+                "     WHERE et.iscoldchain IS TRUE " +
+                "     AND f.id IN ("+filter.getFacilityIds()+") ";
+
+
         String program=" AND ei.programid="+filter.getProgramId();
         String status=" AND LOWER(eos.name) IN('"+workingStatus+"') ";
         String level=null;
         String facilityId=" AND f.id="+filter.getFacilityId();
 
         String facilityLevel = filter.getFacilityLevel();
-        sql=equipmentSql;
+        sql=(filter.isNonFunctional())?equipmentNonFunctionalSql: equipmentSql;
         if (filter.getProgramId() != 0L) {
             sql=sql+program;
         }

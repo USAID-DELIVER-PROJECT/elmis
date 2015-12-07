@@ -146,8 +146,11 @@ public class RequisitionService {
 
     calculationService.fillFieldsForInitiatedRequisition(requisition, rnrTemplate, regimenTemplate);
     calculationService.fillReportingDays(requisition);
-    if(configurationSettingsService.getBoolValue("RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR")) {
+    if(!emergency && configurationSettingsService.getBoolValue(ConfigurationSettingKey.RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR)) {
       calculationService.copySkippedFieldFromPreviousPeriod(requisition);
+    }
+    if(emergency && program.getHideSkippedProducts()){
+      calculationService.skipAllLineItems(requisition);
     }
     // if program supports equipments, initialize it here.
     if(program.getIsEquipmentConfigured()){
@@ -399,12 +402,7 @@ public class RequisitionService {
 
     Long periodIdOfLastRequisitionToEnterPostSubmitFlow = lastRequisitionToEnterThePostSubmitFlow == null ? null : lastRequisitionToEnterThePostSubmitFlow.getPeriod().getId();
 
-    if (periodIdOfLastRequisitionToEnterPostSubmitFlow != null) {
-      ProcessingPeriod currentPeriod = processingScheduleService.getCurrentPeriod(facilityId, programId, programStartDate);
-//      if (currentPeriod != null && periodIdOfLastRequisitionToEnterPostSubmitFlow.equals(currentPeriod.getId())) {
-//        throw new DataException("error.current.rnr.already.post.submit");
-//      }
-    }
+
     List<ProcessingPeriod> periods = processingScheduleService.getAllPeriodsAfterDateAndPeriod(facilityId, programId, programStartDate, periodIdOfLastRequisitionToEnterPostSubmitFlow);
 
     List<ProcessingPeriod> rejected = processingScheduleService.getOpenPeriods(facilityId, programId, periodIdOfLastRequisitionToEnterPostSubmitFlow);
@@ -493,7 +491,10 @@ public class RequisitionService {
       requisitionEventService.notifyForStatusChange(requisition);
     }
 
-    sendRequisitionStatusChangeMail(requisition);
+    // the function call above (notify for status implements sending of notificaiton email.
+    // the benefit of the above call is that the email template is being taken from the administrative settings.
+    // a call to the following method will do the same thing but takes the message template from the messages.properties file.
+    //send RequisitionStatusChangeMail ( requisition );
   }
 
   private void sendRequisitionStatusChangeMail(Rnr requisition) {
@@ -514,9 +515,9 @@ public class RequisitionService {
       }
     }
 
-//    ArrayList<User> activeUsersWithRight = userService.filterForActiveUsers(userList);
-//    statusChangeEventService.notifyUsers(activeUsersWithRight, requisition.getId(), requisition.getFacility(),
-//      requisition.getProgram(), requisition.getPeriod(), requisition.getStatus().toString());
+    ArrayList<User> activeUsersWithRight = userService.filterForActiveUsers(userList);
+    statusChangeEventService.notifyUsers(activeUsersWithRight, requisition.getId(), requisition.getFacility(),
+        requisition.getProgram(), requisition.getPeriod(), requisition.getStatus().toString());
   }
 
   private void insert(Rnr requisition) {
@@ -623,32 +624,37 @@ public class RequisitionService {
     return requisitionRepository.deleteRnR(rnrId);
   }
 
-  public void skipRnR(Long rnrId) {
+  public void skipRnR(Long rnrId, Long userId) {
     Rnr rnr = this.getFullRequisitionById(rnrId);
     for(RnrLineItem li : rnr.getFullSupplyLineItems()){
       li.setSkipped(true);
     }
+    rnr.setModifiedBy(userId);
     rnr.setStatus(RnrStatus.SKIPPED);
     this.save(rnr);
     requisitionRepository.update(rnr);
+    logStatusChangeAndNotify(rnr, false, RnrStatus.SKIPPED.toString());
   }
 
 
-  public void reOpenRnR(Long rnrId) {
+  public void reOpenRnR(Long rnrId, Long userId) {
     Rnr rnr = this.getFullRequisitionById(rnrId);
+    rnr.setModifiedBy(userId);
     for(RnrLineItem li : rnr.getFullSupplyLineItems()){
       li.setSkipped(false);
     }
     rnr.setStatus(RnrStatus.INITIATED);
-
     requisitionRepository.update(rnr);
     this.save(rnr);
+    logStatusChangeAndNotify(rnr, false, RnrStatus.INITIATED.toString());
   }
 
-  public void rejectRnR(Long rnrId) {
+  public void rejectRnR(Long rnrId, Long userId) {
     Rnr rnr = this.getFullRequisitionById(rnrId);
+    rnr.setModifiedBy(userId);
     rnr.setStatus(RnrStatus.INITIATED);
     requisitionRepository.update(rnr);
+    logStatusChangeAndNotify(rnr, false, RnrStatus.INITIATED.toString());
   }
 
   public Integer findM(ProcessingPeriod period) {
@@ -657,6 +663,26 @@ public class RequisitionService {
 
   public Long getProgramId(Long rnrId) {
     return requisitionRepository.getProgramId(rnrId);
+  }
+
+  @Transactional
+  public void updateClientFields(Rnr rnr) {
+    requisitionRepository.updateClientFields(rnr);
+  }
+
+  @Transactional
+  public void insertPatientQuantificationLineItems(Rnr rnr) {
+    requisitionRepository.insertPatientQuantificationLineItems(rnr);
+  }
+
+
+  public List<Rnr> getRequisitionsByFacility(Facility facility) {
+    return requisitionRepository.getRequisitionDetailsByFacility(facility);
+  }
+
+  @Transactional
+  public void insertRnrSignatures(Rnr rnr) {
+    requisitionRepository.insertRnrSignatures(rnr);
   }
 }
 
