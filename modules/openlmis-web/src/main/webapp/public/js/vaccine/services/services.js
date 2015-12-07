@@ -99,7 +99,7 @@ services.factory('VaccineDiscardingReasons', function($resource){
 });
 
 services.factory('StockCards', function($resource){
-   return $resource('/api/v2/facilities/:facilityId/stockCards.json', {facilityId: '@facilityId'}, {});
+   return $resource('/api/v2/facilities/:facilityId/stockCards?includeEmptyLots=false', {facilityId: '@facilityId'}, {});
 });
 
 services.factory('Forecast', function($resource){
@@ -119,7 +119,7 @@ services.factory('SaveVaccineInventoryAdjustment',function($resource){
 });
 
 services.factory('VaccineAdjustmentReasons',function($resource){
-    return $resource('/api/v2/stockManagement/adjustmentReasons.json',{},{});
+    return $resource('/api/v2/stockManagement/adjustmentReasons.json',{programId:'@programId'},{});
 });
 
 services.factory('VaccineProgramProducts', function ($resource) {
@@ -279,4 +279,8 @@ services.factory('DropoutProducts', function ($resource) {
 
 services.factory('PerformanceCoverage', function ($resource) {
     return $resource('/vaccine/report/performanceCoverage.json', {}, {});
+});
+
+services.factory('Distribution', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/by-voucher-number/', {}, {});
 });

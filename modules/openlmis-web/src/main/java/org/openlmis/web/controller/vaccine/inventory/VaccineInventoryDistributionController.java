@@ -12,6 +12,7 @@
 package org.openlmis.web.controller.vaccine.inventory;
 
 
+import org.apache.ibatis.annotations.Param;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -57,6 +59,13 @@ public class VaccineInventoryDistributionController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getOneLevelSupervisedFacilities(HttpServletRequest request) {
         Long userId = loggedInUserId(request);
         return OpenLmisResponse.response("facilities", service.getFacilities(userId));
+    }
+
+    @RequestMapping(value = "by-voucher-number", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getDistributionByVoucherNumber(@Param("voucherNumber") String voucherNumber,
+                                                                           HttpServletRequest request) {
+        Long userId = loggedInUserId(request);
+        return OpenLmisResponse.response("distribution", service.getDistributionByVoucherNumber(userId,voucherNumber));
     }
 
 }

@@ -3,6 +3,7 @@ BEGIN
 DROP VIEW IF EXISTS vw_cce_repair_management_not_functional;
 CREATE OR REPLACE VIEW vw_cce_repair_management_not_functional AS
  SELECT notfunctional.facilityid AS facilityId,
+    notfunctional.facilityid AS fid,
 	notfunctional.pid AS programId,
 	notfunctional.model AS model,
 	notfunctional.name AS operationalstatus,

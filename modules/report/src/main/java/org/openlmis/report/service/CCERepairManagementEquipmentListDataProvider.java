@@ -1,7 +1,7 @@
 /*
  * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+ * Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -9,7 +9,6 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
@@ -65,6 +64,7 @@ public class CCERepairManagementEquipmentListDataProvider extends ReportDataProv
       Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
       CCERepairManagementEquipmentListParam.setProgramId(programId);
       CCERepairManagementEquipmentListParam.setFacilityLevel(filterCriteria.get("facilityLevel")[0]);
+      CCERepairManagementEquipmentListParam.setNonFunctional(StringHelper.isBlank(filterCriteria, "nonFunctional") ? Boolean.FALSE : Boolean.valueOf(filterCriteria.get("nonFunctional")[0]));
 
       // List of facilities includes supervised and home facility
       List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), programId, MANAGE_EQUIPMENT_INVENTORY);

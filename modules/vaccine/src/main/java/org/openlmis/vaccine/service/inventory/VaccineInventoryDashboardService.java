@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
+
 
 /**
  * Exposes the services for handling stock cards.
@@ -38,11 +40,19 @@ public class VaccineInventoryDashboardService {
     FacilityService facilityService;
 
     @Autowired
+    ProgramService programService;
+
+    @Autowired
     VaccineInventoryDistributionService distributionService;
 
     public List<EquipmentAlert> getNonFunctionalAlerts(Long userId) {
 
-        List<Facility> facilities = distributionService.getFacilities(userId);
+        Facility homeFacility = facilityService.getHomeFacility(userId);
+        Long facilityId = homeFacility.getId();
+        List<Program> programs = programService.getAllIvdPrograms();
+        Long programId = programs.get(0).getId();
+
+        List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, MANAGE_EQUIPMENT_INVENTORY);
         StringBuilder str = new StringBuilder();
         str.append("(");
         for (Facility f : facilities) {

@@ -7,6 +7,7 @@ import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItem;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItemLot;
+import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
 import org.openlmis.vaccine.repository.mapper.inventory.VaccineInventoryDistributionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -66,5 +67,19 @@ public class VaccineInventoryDistributionRepository {
 
     public List<Lot> getLotsByProductId(Long productId) {
         return mapper.getLotsByProductId(productId);
+    }
+
+    public VaccineDistribution getDistributionByVoucherNumber(Long facilityId,String voucherNumber){
+        return mapper.getDistributionByVoucherNumber(facilityId,voucherNumber);
+    }
+
+    public String getLastVoucherNumber()
+    {
+        return mapper.getLastVoucherNumber();
+    }
+
+    public VoucherNumberCode getFacilityVoucherNumberCode(Long facilityId)
+    {
+        return mapper.getFacilityVoucherNumberCode(facilityId);
     }
 }

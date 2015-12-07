@@ -3,10 +3,12 @@ package org.openlmis.vaccine.repository.mapper.inventory;
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
+import org.openlmis.core.domain.Product;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItem;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItemLot;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
+import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -78,7 +80,7 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select("SELECT *" +
             " FROM vaccine_distributions " +
-            " WHERE distributiontype='ROUTINE' AND EXTRACT(MONTH FROM distributionDate) = #{month} AND EXTRACT(YEAR FROM distributionDate = #{year});"
+            " WHERE distributiontype='SCHEDULED' AND EXTRACT(MONTH FROM distributionDate) = #{month} AND EXTRACT(YEAR FROM distributionDate) = #{year};"
     )
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
@@ -87,25 +89,37 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select("SELECT *" +
             " FROM vaccine_distributions " +
-            "WHERE periodId=#{periodId} AND distributiontype='ROUTINE'")
+            " WHERE periodId=#{periodId} AND distributiontype='SCHEDULED'")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
                     many = @Many(select = "getLineItems"))})
     List<VaccineDistribution> getDistributedFacilitiesByPeriod(@Param("periodId") Long periodId);
 
-    @Select("SELECT *" +
-            " FROM vaccine_distribution_line_items" +
-            " WHERE distributionid = #{distributionId}"
-    )
+//    @Select("SELECT *" +
+//            " FROM vaccine_distribution_line_items" +
+//            " WHERE distributionid = #{distributionId}"
+//    )
+    @Select("Select li.*,oli.quantityRequested from vaccine_distribution_line_items li " +
+            " left outer JOIN vaccine_order_requisitions o ON o.id = (select orderid from vaccine_distributions where id=#{distributionId} limit 1) " +
+            " left outer join Vaccine_order_requisition_line_items oli ON o.id=oli.orderId AND li.productId = oli.productId" +
+            " where li.distributionid=#{distributionId}")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lots", column = "id", javaType = List.class,
-                    many = @Many(select = "getLineItemsLots"))})
+                    many = @Many(select = "getLineItemsLots")),
+            @Result(property = "productId", column = "productId"),
+            @Result(property = "product", column = "productId", javaType = Product.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getById"))})
     List<VaccineDistributionLineItem> getLineItems(@Param("distributionId") Long distributionId);
 
     @Select("SELECT *" +
             " FROM vaccine_distribution_line_item_lots" +
             " WHERE distributionlineitemid = #{distributionLineItemId}"
     )
+    @Results({@Result(property = "lotId", column = "lotId"),
+            @Result(
+                    property = "lot", column = "lotId", javaType = Lot.class,
+                    one = @One(select = "org.openlmis.stockmanagement.repository.mapper.LotMapper.getById"))
+    })
     List<VaccineDistributionLineItemLot> getLineItemsLots(@Param("distributionLineItemId") Long distributionLineItemId);
 
     @Select("SELECT *" +
@@ -123,4 +137,20 @@ public interface VaccineInventoryDistributionMapper {
             @Result(property = "lotCode", column = "lotnumber"),
     })
     List<Lot> getLotsByProductId(@Param("productId") Long productId);
+
+    @Select("SELECT *" +
+            " FROM vaccine_distributions " +
+            "WHERE tofacilityid=#{facilityId} AND vouchernumber=#{voucherNumber} AND status='PENDING' LIMIT 1")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "fromFacility", column = "fromFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    VaccineDistribution getDistributionByVoucherNumber(@Param("facilityId") Long facilityId,@Param("voucherNumber") String voucherNumber);
+
+    @Select("SELECT vouchernumber FROM vaccine_distributions WHERE vouchernumber LIKE '%/%/'||EXTRACT(YEAR FROM NOW())||'/%' ORDER BY createddate DESC LIMIT 1;")
+    String getLastVoucherNumber();
+
+    @Select("Select * from vw_vaccine_distribution_voucher_no_fields WHERE facilityid=#{facilityId}")
+    VoucherNumberCode getFacilityVoucherNumberCode(@Param("facilityId") Long facilityId);
 }
