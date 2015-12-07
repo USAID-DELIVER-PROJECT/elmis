@@ -277,6 +277,10 @@ services.factory('DropoutProducts', function ($resource) {
     return $resource('/vaccine/report/dropoutProducts.json', {}, {});
 });
 
+services.factory('PerformanceCoverage', function ($resource) {
+    return $resource('/vaccine/report/performanceCoverage.json', {}, {});
+});
+
 services.factory('Distribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/by-voucher-number/', {}, {});
 });

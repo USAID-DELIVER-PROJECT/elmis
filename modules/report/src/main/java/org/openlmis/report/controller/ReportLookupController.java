@@ -82,6 +82,7 @@ public class ReportLookupController extends BaseController {
   public static final String TIMELINESS_STATUS_DATA = "timelinessStatusData";
   public static final String REPORTING_DATES = "reportingDates";
   public static final String LAST_PERIODS = "lastPeriods";
+  public static final String VACCINE_CUSTOM_PERIODS = "vaccineCustomPeriods";
 
   @Autowired
   private ReportLookupService reportLookupService;
@@ -571,6 +572,14 @@ public class ReportLookupController extends BaseController {
         List<FacilityLevelTree> facilityLevelTrees = reportLookupService.getFacilityByLevel(programId, loggedInUserId(request));
         return OpenLmisResponse.response(FACILITY_LEVELS, facilityLevelTrees);
 
+    }
+
+    @RequestMapping(value = "/customePeriod", method = GET, headers = BaseController.ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getCustomPeriod(@RequestParam("period") Long period){
+
+        Map<String, Object> customerPeriodDates = reportLookupService.getCustomPeriodDates(period);
+
+        return OpenLmisResponse.response(VACCINE_CUSTOM_PERIODS, customerPeriodDates);
     }
 
 }

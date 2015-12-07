@@ -13,12 +13,18 @@
 package org.openlmis.vaccine.service.reports;
 
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Months;
+import org.joda.time.format.DateTimeFormat;
+import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.ProgramProduct;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
-import org.openlmis.core.service.ProgramProductService;
-import org.openlmis.core.service.ProgramService;
+import org.openlmis.core.service.*;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.vaccine.domain.VaccineDisease;
 import org.openlmis.vaccine.domain.VaccineProductDose;
 import org.openlmis.vaccine.domain.Vitamin;
@@ -86,6 +92,17 @@ public class VaccineReportService {
 
   @Autowired
   AnnualFacilityDemographicEstimateService annualFacilityDemographicEstimateService;
+
+  @Autowired
+  MessageService messageService;
+
+  @Autowired
+  ConfigurationSettingService configurationSettingService;
+
+  @Autowired
+  GeographicZoneService geographicZoneService;
+
+  private static final String DATE_FORMAT = "yyyy-MM-dd";
 
   @Transactional
   public VaccineReport initialize(Long facilityId, Long programId, Long periodId, Long userId) {
@@ -342,4 +359,96 @@ public class VaccineReportService {
     return repository.getNationalZone().getId();
   }
 
+  public Map<String, List<Map<String, Object>>> getPerformanceCoverageReportData(String periodStart, String periodEnd, Long range,
+                                                         Long districtId, Long productId) {
+
+      Date startDate = null, endDate = null;
+
+      startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
+      endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
+
+      Map<String, List<Map<String, Object>>> result =  new HashMap<String, List<Map<String, Object>>>();
+
+      GeographicZone zone = geographicZoneService.getById(districtId);
+
+      if(districtId == 0){
+          result.put("mainreportRegionAggregate", repository.getPerformanceCoverageMainReportDataByRegionAggregate(startDate, endDate, districtId, productId));
+          result.put("summaryRegionAggregate",    repository.getPerformanceCoverageSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId));
+      }
+
+      if(zone != null && zone.getLevel().getCode().equals("dist")) {
+          result.put("mainreport", repository.getPerformanceCoverageMainReportDataByDistrict(startDate, endDate, districtId, productId));
+          result.put("summary",    repository.getPerformanceCoverageSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
+      }
+      else{
+          result.put("mainreport", repository.getPerformanceCoverageMainReportDataByRegion(startDate, endDate, districtId, productId));
+          result.put("summary",    repository.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId));
+      }
+
+      result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
+
+      return result;
+
+   }
+
+    private List<Map<String,Object>> getSummaryPeriodList(Date startDate, Date endDate) {
+
+        DateTime periodStart = new DateTime(startDate);
+        DateTime periodEnd = new DateTime(endDate);
+
+
+        int monthDiff = Months.monthsBetween(periodStart.withDayOfMonth(1), periodEnd.withDayOfMonth(1)).getMonths();
+
+        DateTime temp = periodStart.withDayOfMonth(1);
+
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+
+        while( monthDiff >=0 ){
+
+            Map<String, Object> period = new HashMap<String, Object>();
+            period.put("year", temp.getYear());
+            period.put("month", temp.getMonthOfYear());
+            period.put("monthString", temp.toString("MMM"));
+
+            monthDiff--;
+
+            list.add(period);
+            temp = temp.plusMonths(1);
+
+        }
+
+        return list;
+    }
+
+   /*public DateTime periodEndDate(){
+
+        int currentDay = new DateTime().getDayOfMonth();
+
+        Integer cutOffDays = configurationSettingService.getConfigurationIntValue("VACCINE_LATE_REPORTING_DAYS");
+
+        boolean dateBeforeCutoff = currentDay < cutOffDays;
+
+        if(dateBeforeCutoff)
+            return new DateTime().withDayOfMonth(1).minusMonths(1).minusDays(1);
+        else
+            return new DateTime().withDayOfMonth(1).minusDays(1);
+    }
+
+    public DateTime periodStartDate(Long range){
+
+        DateTime periodEndDate = periodEndDate();
+
+        if(range == 1)
+            return periodEndDate.withDayOfMonth(1);
+        else if(range == 2)
+            return periodEndDate.minusMonths(2).withDayOfMonth(1);
+        else if(range == 3)
+            return periodEndDate.minusMonths(5).withDayOfMonth(1);
+        else if(range == 4)
+            return periodEndDate.minusYears(1).withDayOfMonth(1);
+
+        return null;
+
+    }*/
 }

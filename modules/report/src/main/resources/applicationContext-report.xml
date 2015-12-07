@@ -384,6 +384,15 @@
                     <property name="version" value="1.0"/>
                 </bean>
 
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="cold_chain_temperature"/>
+                    <property name="template" value="vaccine_temperature.jasper"/>
+                    <property name="reportDataProvider" ref="coldChainTemperatureDataProvider"/>
+                    <property name="id" value="RP-cold_chain_temperature"/>
+                    <property name="name" value="Trend of mini and maxi cold chain temperatures and temperature alarms"/>
+                    <property name="title" value="report.title.cold.chain.min.max.trend"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>
