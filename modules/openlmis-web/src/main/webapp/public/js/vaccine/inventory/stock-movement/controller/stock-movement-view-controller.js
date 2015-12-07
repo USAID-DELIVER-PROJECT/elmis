@@ -87,11 +87,11 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
     var printTest = false;
 
     $scope.submit = function () {
-//        if ($scope.orderRequisitionForm.$error.required) {
-//            $scope.showError = true;
-//            $scope.error = "The form you submitted is invalid. Please revise and try again.";
-//            return;
-//        }
+        if ($scope.orderRequisitionForm.$error.required) {
+            $scope.showError = true;
+            $scope.error = "The form you submitted is invalid. Please revise and try again.";
+            return;
+        }
 
         var transaction = {};
         transaction.transactionList = [];
@@ -164,7 +164,6 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                     });
 
                 });
-                console.log(JSON.stringify(events));
               StockEvent.save({facilityId:homeFacility.id},events,function(data){
                    SaveDistribution.save(distribution,function(distribution) {
                         UpdateOrderRequisitionStatus.update({orderId: orderId}, function () {
