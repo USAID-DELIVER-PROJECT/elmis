@@ -38,7 +38,7 @@ function ViewVaccineReportDetailController($scope, $location, $filter, report, d
   };
 
   $scope.showCampaignForm = function (campaign, editMode) {
-    
+
     $scope.currentCampaign = campaign;
     $scope.currentCampaignMode = editMode;
 

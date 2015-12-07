@@ -77,14 +77,24 @@
             <span openlmis-message="label.vaccine.campaign.start.date"></span>
             <span class="label-required"> *</span>
           </label>
-          <input required type="date" ng-model="currentCampaign.startDate"/>
+          <input required type="text"
+                 ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"
+                 ui-date-format="yy-mm-dd"
+                 readonly
+                 ng-required="true"
+                 ng-model="currentCampaign.startDate"/>
         </div>
         <div class="span6">
           <label>
             <span openlmis-message="label.vaccine.campaign.end.date"></span>
             <span class="label-required"> *</span>
           </label>
-          <input required type="date" ng-model="currentCampaign.endDate"/>
+          <input required type="text"
+                 ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"
+                 ui-date-format="yy-mm-dd"
+                 readonly
+                 ng-required="true"
+                 ng-model="currentCampaign.endDate"/>
         </div>
       </div>
 
