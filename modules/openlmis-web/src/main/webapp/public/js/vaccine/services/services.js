@@ -273,6 +273,10 @@ services.factory('ViewBundledDistributionVaccinationSupplies', function ($resour
 services.factory('PerformanceByDropoutRateByDistrict', function ($resource) {
     return $resource('/vaccine/report/performanceByDropoutRateByDistrict.json', {}, {});
 });
+services.factory('TrendOfMinMasColdRange', function ($resource) {
+
+    return $resource('/vaccine/report/trendOfMinMaxColdRange.json', {}, {});
+});
 services.factory('DropoutProducts', function ($resource) {
     return $resource('/vaccine/report/dropoutProducts.json', {}, {});
 });
