@@ -9,6 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.dialog']).
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
@@ -44,11 +45,13 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
                 controller: TrendMinMaxColdRangeController,
                 templateUrl: 'partials/view/trend-of-min-max-cold-rane.html',reloadOnSearch:false
             }).
+            when('/performance-coverage', {
+            controller: PerformanceCoverageReportController,
+            templateUrl:'partials/view/performance-coverage.html'
+            }).
+
             otherwise({redirectTo: '/list'});
     }]).config(function (angularCombineConfigProvider) {
         angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');
-
-
-    }).config(function (angularCombineConfigProvider) {
-
     });
+

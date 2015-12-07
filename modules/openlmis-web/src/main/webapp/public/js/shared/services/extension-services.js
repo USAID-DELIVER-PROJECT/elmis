@@ -1329,6 +1329,7 @@ services.factory('FacilitiesByLevel', function($resource){
     return $resource('/reports/facility-By-level.json',{},{});
 });
 
+
 services.factory('RequisitionReportService', function($resource){
     return $resource('/reports/requisition-report.json',{},{});
 });
@@ -1356,6 +1357,10 @@ services.factory('FacilityService',function($resource){
             return $resource('/rest-api/lookup/facility-types', {}, {});
         }
     };
+});
+
+services.factory('ColdChainTemperaturesReport', function($resource){
+    return $resource('/reports/reportdata/vaccineTemperature.json',{},{});
 });
 
 services.factory('GeographicZoneService',function($resource){

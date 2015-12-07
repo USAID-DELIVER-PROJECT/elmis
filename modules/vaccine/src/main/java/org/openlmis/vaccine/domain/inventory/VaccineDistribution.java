@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.openlmis.core.domain.BaseModel;
+import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.Product;
 import org.openlmis.core.serializer.DateDeserializer;
 
@@ -20,6 +21,8 @@ public class VaccineDistribution extends BaseModel {
     Long toFacilityId;
 
     Long fromFacilityId;
+
+    Facility fromFacility;
 
     String voucherNumber;
 

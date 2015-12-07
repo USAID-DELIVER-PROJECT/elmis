@@ -1,7 +1,7 @@
 /*
  * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+ * Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -78,7 +78,7 @@ function RepairManagementController($scope,ngTableParams,messageService,CCERepai
              var waitForRepair = row.waiting_For_Repair;
              var waitingForSpareParts = row.waiting_For_Spare_Parts;
              var notFunctionalColors=['#005e00','#5e0000','#5e5e00'];
-             notFunctionalPieChartData = [{label:'Obsolete',total:obsolete},{label:'Waiting For Repair',total:waitForRepair},{label:'Waiting For Spare Parts',total:waitingForSpareParts}];
+             notFunctionalPieChartData = [{label:'Obsolete',total:obsolete},{label:'Waiting_For_Repair',total:waitForRepair},{label:'Waiting_For_Spare_Parts',total:waitingForSpareParts}];
 
                  for(var j =0; j<notFunctionalPieChartData.length;j++){
                      $scope.RepairManagementNotFunctionalPieChartData [j]={
@@ -105,14 +105,16 @@ function RepairManagementController($scope,ngTableParams,messageService,CCERepai
         $scope.pieChart=false;
     };
    $scope.repairManagementChartClickHandler = function (event, pos, item) {
-      $scope.equipmentDialogModal = true;
+
       var facilityType=$scope.filter.facilityType;
       var facilityId=$scope.selectedData.facility_id;
       var aggregate=$scope.filter.aggregate;
       var workingStatus=item.series.label;
+      var nonFunctional="FALSE";
 
       $scope.filter.workingStatus=workingStatus;
       $scope.filter.facilityId=facilityId;
+      $scope.filter.nonFunctional=nonFunctional;
       $scope.$apply();
       CCERepairManagementEquipmentList.get($scope.filter, function(data) {
             if (data.pages !== undefined && data.pages.rows !== undefined && data.pages.rows[0]!==null) {
@@ -129,7 +131,39 @@ function RepairManagementController($scope,ngTableParams,messageService,CCERepai
                  $scope.equipments=[];
               }
               });
+         $scope.equipmentDialogModal = true;
          $scope.$apply();
+    };
+
+    $scope.repairManagementNonFunctionalChartClickHandler = function (event, pos, item) {
+          //alert(item.series.label);
+          var facilityType=$scope.filter.facilityType;
+          var facilityId=$scope.selectedData.facility_id;
+          var aggregate=$scope.filter.aggregate;
+          var workingStatus=item.series.label;
+          var nonFunctional="TRUE";
+
+          $scope.filter.workingStatus=workingStatus;
+          $scope.filter.facilityId=facilityId;
+          $scope.filter.nonFunctional=nonFunctional;
+          $scope.$apply();
+          CCERepairManagementEquipmentList.get($scope.filter, function(data) {
+                if (data.pages !== undefined && data.pages.rows !== undefined && data.pages.rows[0]!==null) {
+                     $scope.equipments = data.pages;
+                     // Capacity by functionality
+                        var groups = _(data.pages.rows).groupBy('working_status');
+                        $scope.capacity = _(groups).map(function(g, key) {
+                          return { status: key,
+                                   totalCapacity: _(g).reduce(function(m,x) { return m + x.capacity; }, 0) };
+                        });
+
+                  }
+                  else{
+                     $scope.equipments=[];
+                  }
+                  });
+             $scope.equipmentDialogModal = true;
+             $scope.$apply();
     };
 
 
@@ -240,6 +274,7 @@ function RepairManagementController($scope,ngTableParams,messageService,CCERepai
                         };
         };
     bindChartEvent("#repair-management", "plotclick", $scope.repairManagementChartClickHandler);
+    bindChartEvent("#repair-management-non-functional", "plotclick", $scope.repairManagementNonFunctionalChartClickHandler);
      //  bindChartEvent("#order-fill-rate-summary", flotChartHoverCursorHandler);
 
 
