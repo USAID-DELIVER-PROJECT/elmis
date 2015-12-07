@@ -29,7 +29,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -583,6 +586,44 @@ public class InteractiveReportController extends BaseController {
         List<CCEInventoryReportDatum> reportData =
                 (List<CCEInventoryReportDatum>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
         return new Pages(page, max, reportData);
+    }
+
+    @RequestMapping(value = "/reportdata/vaccineTemperature", method = GET, headers = BaseController.ACCEPT_JSON)
+    ///@PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_COLD_CHAIN_EQUIPMENT_LIST_REPORT')")
+    public Map<String, Pages> getVaccineTemperatureReport(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                       HttpServletRequest request
+    ) {
+        Report report = reportManager.getReportByKey("cold_chain_temperature");
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+
+        ColdChainTemperatureDataProvider provider = (ColdChainTemperatureDataProvider)report.getReportDataProvider();
+
+        List<ColdChainTemperature> reportData =
+                (List<ColdChainTemperature>) provider.getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        List<ColdChainTemperature> mainReportMinMaxAggregate =
+                (List<ColdChainTemperature>) provider.getMainReportMinMaxAggregate(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        List<ColdChainTemperature> mainReportMinMaxTempRecorded =
+                (List<ColdChainTemperature>) provider.getMainReportAggregateMinMaxTempRecorded(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        List<ColdChainTemperature> mainReportTotalTemp =
+                (List<ColdChainTemperature>) provider.getMainReportAggregateTotal(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        //Sub report data
+        List<ColdChainTemperature> subReportData =
+                (List<ColdChainTemperature>) provider.getSubReportData(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        Map<String, Pages> multiPages = new HashMap<String, Pages>();
+        multiPages.put("coldchainreportdata", new Pages(page, max, reportData));
+        multiPages.put("coldchainreportminmaxaggregate", new Pages(page, max, mainReportMinMaxAggregate));
+        multiPages.put("coldchainreportminmaxtemprecorded", new Pages(page, max, mainReportMinMaxTempRecorded));
+        multiPages.put("coldchainreporttotaltemprecorded", new Pages(page, max, mainReportTotalTemp));
+
+        multiPages.put("coldchainSubreportdata", new Pages(page, max, subReportData));
+
+        return multiPages;
     }
 
 }
