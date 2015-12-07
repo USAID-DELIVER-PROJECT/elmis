@@ -13,7 +13,6 @@ package org.openlmis.order.helper;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.openlmis.core.domain.ConfigurationSettingKey;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.order.domain.Order;
 import org.openlmis.order.domain.OrderFileColumn;
@@ -46,12 +45,11 @@ public class OrderCsvHelper {
 
   private String lineSeparator = "\r\n";
 
-  private Boolean configurationLoaded = false;
-
+  private Boolean encloseValuesWithQuotes = false;
   @Autowired
   ConfigurationSettingService configSettingService;
 
-  public OrderCsvHelper(){
+  public OrderCsvHelper() {
 
   }
 
@@ -91,30 +89,29 @@ public class OrderCsvHelper {
   }
 
   private void writeLineItems(Order order, List<RnrLineItem> fullSupplyLineItems, List<OrderFileColumn> orderFileColumns, Writer writer) throws IOException {
+
+    // allow the user to control what line separator to use from the administrative pages
+    // this value was different between a windows and linux target systems.
+    // this could have been written better.
+    lineSeparator = StringEscapeUtils.unescapeJava(configSettingService.getConfigurationStringValue("CSV_LINE_SEPARATOR"));
+    // setting to enclose or not to enclose values in quotes.
+    encloseValuesWithQuotes = configSettingService.getBoolValue("CSV_APPLY_QUOTES");
+
     int counter = 1;
     for (RnrLineItem rnrLineItem : fullSupplyLineItems) {
-      writeCsvLineItem(order, rnrLineItem, orderFileColumns, writer, counter ++);
+      writeCsvLineItem(order, rnrLineItem, orderFileColumns, writer, counter++);
       writer.write(lineSeparator);
     }
   }
 
   private void writeCsvLineItem(Order order, RnrLineItem rnrLineItem, List<OrderFileColumn> orderFileColumns, Writer writer, int counter) throws IOException {
-    boolean encloseValuesWithQuotes = false;
-    if(!configurationLoaded){
-      // allow the user to control what line separator to use from the administrative pages
-      // this value was different between a windows and linux target systems.
-      // this could have been written better.
-      lineSeparator = StringEscapeUtils.unescapeJava(configSettingService.getConfigurationStringValue(ConfigurationSettingKey.CSV_LINE_SEPARATOR));
-      // setting to enclose or not to enclose values in quotes.
-      encloseValuesWithQuotes = configSettingService.getBoolValue(ConfigurationSettingKey.CSV_APPLY_QUOTES);
-      configurationLoaded = true;
-    }
+
     JXPathContext orderContext = JXPathContext.newContext(order);
     JXPathContext lineItemContext = JXPathContext.newContext(rnrLineItem);
     for (OrderFileColumn orderFileColumn : orderFileColumns) {
       if (orderFileColumn.getNested() == null || orderFileColumn.getNested().isEmpty()) {
-        if (orderFileColumns.indexOf(orderFileColumn) < orderFileColumns.size() - 1)
-          writer.write(",");
+        writeValue(writer, "");
+        writeSeparator(orderFileColumns, writer, orderFileColumn);
         continue;
       }
       Object columnValue = getColumnValue(counter, orderContext, lineItemContext, orderFileColumn);
@@ -122,13 +119,22 @@ public class OrderCsvHelper {
       if (columnValue instanceof Date) {
         columnValue = forPattern(orderFileColumn.getFormat()).print(((Date) columnValue).getTime());
       }
-      if(encloseValuesWithQuotes) {
-        writer.write("\"" + (columnValue).toString() + "\"");
-      }else{
-        writer.write((columnValue).toString());
-      }
-      if (orderFileColumns.indexOf(orderFileColumn) < orderFileColumns.size() - 1)
-        writer.write(",");
+      writeValue(writer, columnValue);
+      writeSeparator(orderFileColumns, writer, orderFileColumn);
+    }
+  }
+
+  private void writeSeparator(List<OrderFileColumn> orderFileColumns, Writer writer, OrderFileColumn orderFileColumn) throws IOException {
+    if (orderFileColumns.indexOf(orderFileColumn) < orderFileColumns.size() - 1) {
+      writer.write(",");
+    }
+  }
+
+  private void writeValue(Writer writer, Object columnValue) throws IOException {
+    if (encloseValuesWithQuotes) {
+      writer.write("\"" + (columnValue).toString() + "\"");
+    } else {
+      writer.write((columnValue).toString());
     }
   }
 

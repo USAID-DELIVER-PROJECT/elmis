@@ -146,8 +146,11 @@ public class RequisitionService {
 
     calculationService.fillFieldsForInitiatedRequisition(requisition, rnrTemplate, regimenTemplate);
     calculationService.fillReportingDays(requisition);
-    if(configurationSettingsService.getBoolValue("RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR")) {
+    if(!emergency && configurationSettingsService.getBoolValue(ConfigurationSettingKey.RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR)) {
       calculationService.copySkippedFieldFromPreviousPeriod(requisition);
+    }
+    if(emergency && program.getHideSkippedProducts()){
+      calculationService.skipAllLineItems(requisition);
     }
     // if program supports equipments, initialize it here.
     if(program.getIsEquipmentConfigured()){

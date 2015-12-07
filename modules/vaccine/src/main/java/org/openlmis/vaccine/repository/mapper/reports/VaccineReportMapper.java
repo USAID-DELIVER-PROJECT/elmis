@@ -26,8 +26,8 @@ import java.util.List;
 @Repository
 public interface VaccineReportMapper {
 
-  @Insert("INSERT into vaccine_reports (periodId, programId, facilityId, status, supervisoryNodeId, majorImmunizationActivities, fixedImmunizationSessions, outreachImmunizationSessions,outreachImmunizationSessionsCanceled, createdBy, createdDate, modifiedBy, modifiedDate) " +
-    " values (#{periodId}, #{programId}, #{facilityId}, #{status}, #{supervisoryNodeId}, #{majorImmunizationActivities}, #{fixedImmunizationSessions}, #{outreachImmunizationSessions}, #{outreachImmunizationSessionsCanceled}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
+  @Insert("INSERT into vaccine_reports (periodId, programId, facilityId, status, supervisoryNodeId, majorImmunizationActivities, fixedImmunizationSessions, outreachImmunizationSessions,outreachImmunizationSessionsCanceled, submissionDate, createdBy, createdDate, modifiedBy, modifiedDate) " +
+    " values (#{periodId}, #{programId}, #{facilityId}, #{status}, #{supervisoryNodeId}, #{majorImmunizationActivities}, #{fixedImmunizationSessions}, #{outreachImmunizationSessions}, #{outreachImmunizationSessionsCanceled}, #{submissionDate}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
   @Options(useGeneratedKeys = true)
   Integer insert(VaccineReport report);
 
@@ -79,6 +79,7 @@ public interface VaccineReportMapper {
       " fixedImmunizationSessions = #{fixedImmunizationSessions}, " +
       " outreachImmunizationSessions = #{outreachImmunizationSessions}, " +
       " outreachImmunizationSessionsCanceled = #{outreachImmunizationSessionsCanceled}, " +
+      " submissionDate = #{submissionDate}, " +
       " modifiedBy = #{modifiedBy}, " +
       " modifiedDate = NOW() " +
     "where id = #{id}")
@@ -112,6 +113,15 @@ public interface VaccineReportMapper {
           "from vw_vaccine_disease_surveillance \n" +
           "where report_id = #{reportId}")
   List<DiseaseLineItem> getDiseaseSurveillance(@Param("reportId")Long reportId);
+
+  @Select("SELECT id FROM vaccine_reports " +
+      "WHERE " +
+        "periodId < #{periodId} " +
+        "AND facilityId = #{facilityId} " +
+        "AND programId = #{programId} " +
+      "ORDER BY " +
+      "periodId DESC limit 1")
+  Long findPreviousReport(@Param("facilityId") Long facilityId, @Param("programId") Long programId, @Param("periodId") Long periodId);
 
   @Select("select disease_name as diseaseName,\n" +
           "SUM(COALESCE(cum_cases,0)) cumulative,\n" +
@@ -359,5 +369,6 @@ public interface VaccineReportMapper {
 
     @Select("select * from geographic_zones where parentid is null")
     GeographicZone getNationalZone();
+
 
 }

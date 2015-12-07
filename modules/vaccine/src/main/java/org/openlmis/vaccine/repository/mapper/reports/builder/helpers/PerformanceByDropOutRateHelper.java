@@ -41,7 +41,7 @@ public class PerformanceByDropOutRateHelper {
         return String.format("%s >= to_date(#{filterCriteria.period_start_date}::text, 'YYYY-MM-DD')", field);
     }
     public static String isFilteredPeriodEndDate(String field) {
-        return String.format("%s <=to_date(#{filterCriteria.period_end_date}::text, 'YYYY-MM-DD')", field);
+        return String.format("%s < (to_date(#{filterCriteria.period_end_date}::text, 'YYYY-MM-DD')) +  interval '1' day", field);
     }
     public static String isFilteredPeriodId(String field) {
         return String.format("%s = #{filterCriteria.period_id}::INT ", field);

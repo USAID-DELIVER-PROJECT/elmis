@@ -44,7 +44,7 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
             otherwise({redirectTo: '/list'});
     }]).config(function (angularCombineConfigProvider) {
         angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');
-        angularCombineConfigProvider. addConf(/filter2-/, '/public/pages/vaccine/shared/vaccine-filter.html');
+
 
     }).config(function (angularCombineConfigProvider) {
 

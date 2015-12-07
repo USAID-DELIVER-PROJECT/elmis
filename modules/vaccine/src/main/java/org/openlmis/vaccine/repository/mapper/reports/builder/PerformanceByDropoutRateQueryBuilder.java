@@ -55,9 +55,9 @@ public class PerformanceByDropoutRateQueryBuilder {
         WHERE(" i.program_id = (SELECT id FROM programs p WHERE p.enableivdform = TRUE )");
         WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodStartDate("i.period_start_date"));
         WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodEndDate("i.period_end_date"));
-//        if (param.getFacility_id() != null && !param.getFacility_id().equals(0)) {
-//            WHERE(PerformanceByDropOutRateHelper.isFilteredFacilityId("i.facility_id"));
-//        }
+        if (param.getFacility_id() != null && param.getFacility_id()!=0l) {
+            WHERE(PerformanceByDropOutRateHelper.isFilteredFacilityId("i.facility_id"));
+        }
         WHERE(PerformanceByDropOutRateHelper.isFilteredProductId("i.product_id"));
         WHERE(PerformanceByDropOutRateHelper.isFilteredGeographicZoneId("d.parent", "d.region_id", "d.district_id"));
 

@@ -150,7 +150,8 @@ public interface FacilityMapper {
     "AND rgps.requisitionGroupId = ANY(#{requisitionGroupIds}::INTEGER[]) " +
     "AND f.active = TRUE " +
     "AND ps.active = TRUE " +
-    "AND f.virtualFacility = FALSE ")
+    "AND f.virtualFacility = FALSE " +
+      " ORDER BY f.name ")
   List<Facility> getFacilitiesBy(@Param(value = "programId") Long programId,
                                  @Param(value = "requisitionGroupIds") String requisitionGroupIds);
 

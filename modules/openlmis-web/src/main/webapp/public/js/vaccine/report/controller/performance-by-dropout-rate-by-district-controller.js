@@ -26,23 +26,16 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,  PerformanceBy
 
 
     $scope.OnFilterChanged = function () {
+
         $scope.data = $scope.datarows = [];
         $scope.filter.facilityId='' ;
         $scope.filter.geographicZoneId = $scope.filter.zone;
         $scope.filter.productId = $scope.filter.product;
         $scope.filter.periodId = 0;
         $scope.filter.programId = $scope.filter.program;
-
-        $scope.getStartDate();
         $scope.reportType=false;
 
-        var sd= new Date($scope.filter.periodStart);
-        var ed= new Date($scope.filter.periodEnd);
-        var monthsDifference=0;
      var param=   $scope.filter;
-       if(sd.getTime() <ed.getTime()) {
-           monthsDifference=monthDiff(sd,ed);
-           if(monthsDifference<=12){
 
            $scope.error_message='';
            PerformanceByDropoutRateByDistrict.get(param, function (data) {
@@ -59,13 +52,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,  PerformanceBy
 
 
                }
-           });}
-           else{
-               $scope.error_message=' Month Difference between Start and End Cannot be more than 12 !!';
-           }
-       }else{
-           $scope.error_message=' End date Should be Greater than start date !!';
-       }
+           });
     };
     function monthDiff(d1, d2) {
         var months;
@@ -139,7 +126,6 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,  PerformanceBy
             endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
             startDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1);
 
-            //endDate.set
             switch ($scope.filter.periodType) {
                 case '1':
                     months = startDate.getMonth() - 1;
@@ -172,5 +158,28 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,  PerformanceBy
         $scope.filter.periodEnd = $.datepicker.formatDate("yy-mm-dd", endDate1);
 
     };
+    function getStyle(className_) {
 
+        var styleSheets = window.document.styleSheets;
+        var styleSheetsLength = styleSheets.length;
+        for (var i = 0; i < styleSheetsLength; i++) {
+            var classes = styleSheets[i].rules || styleSheets[i].cssRules;
+            var classesLength = classes.length;
+            for (var x = 0; x < classesLength; x++) {
+
+                if (classes[x].selectorText == className_) {
+                    var ret;
+                    if (classes[x].cssText) {
+                        ret = classes[x].cssText;
+                    } else {
+                        ret = classes[x].style.cssText;
+                    }
+                    if (ret.indexOf(classes[x].selectorText) == -1) {
+                        ret = classes[x].selectorText + "{" + ret + "}";
+                    }
+                    return ret;
+                }
+            }
+        }
+    }
 }
