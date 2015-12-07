@@ -88,6 +88,7 @@
           <th openlmis-message="label.equipment.region"></th>
           <th openlmis-message="label.equipment.district"></th>
           <th openlmis-message="label.equipment.facility"></th>
+          <th openlmis-message="label.equipment.designation"></th>
           <th><span openlmis-message="label.equipment.manufacturer"></span> /
             <span openlmis-message="label.equipment.model"></span></th>
           <th openlmis-message="label.equipment.fridge.freezer.capacity"></th>
@@ -103,8 +104,11 @@
           <td>{{item.facility.geographicZone.parent.name}}</td>
           <td>{{item.facility.geographicZone.name}}</td>
           <td>{{item.facility.name}}</td>
+          <td>{{item.equipment.designation.name}}</td>
           <td><a ng-href="#/edit/{{selectedType}}/{{item.programId}}/{{selectedEquipmentType.id}}/{{item.id}}/{{currentPage}}">{{item.equipment.manufacturer}} / {{item.equipment.model}}</a></td>
-          <td>{{item.equipment.refrigeratorCapacity ? item.equipment.refrigeratorCapacity : 0}} / {{item.equipment.freezerCapacity ? item.equipment.freezerCapacity : 0}}</td>
+          <td>{{item.equipment.refrigeratorCapacity ? item.equipment.refrigeratorCapacity : 0}} /
+            {{item.equipment.freezerCapacity ? item.equipment.freezerCapacity : 0}}
+            {{item.equipment.capacity ? item.equipment.capacity : null}}</td>
           <td>
             <select ui-select2 ng-model="item.operationalStatusId" ng-change="updateStatus(item)">
               <option value="{{status.id}}" ng-repeat="status in operationalStatusList | orderBy: 'displayOrder'"
