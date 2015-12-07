@@ -103,6 +103,7 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                                  product.productCode=stockCard.product.code;
                                                  product.displayOrder=stockCard.product.id;
                                                  product.totalQuantityOnHand=stockCard.totalQuantityOnHand;
+                                                 product.totalQuantityOnHand2=product.totalQuantityOnHand;
                                                  product.quantity=(distributedProduct===undefined || facility.status==="RECEIVED")?0:distributedProduct.quantity;
                                                  product.originalIssueQuantity=product.quantity;
                                                  product.unScheduledQuantity=0;
