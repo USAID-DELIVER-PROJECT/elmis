@@ -279,7 +279,7 @@ services.factory('DropoutProducts', function ($resource) {
 
 services.factory('PerformanceCoverage', function ($resource) {
     return $resource('/vaccine/report/performanceCoverage.json', {}, {});
-});});
+});
 
 services.factory('VaccineDashboardSummary', function($resource){
    return $resource('/vaccine/dashboard/summary.json',{},{});

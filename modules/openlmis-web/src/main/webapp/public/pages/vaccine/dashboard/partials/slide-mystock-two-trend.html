@@ -1,4 +1,14 @@
+<div class="app-form " style="padding: 5px;">
+    <form ng-submit="filterGrid()" name="filterForm" novalidate>
+        <div  class="clearfix">
+            <!--<program-filter class="form-cell horizontalFilters" required="true"></program-filter>-->
+            <static-period-filter range="filterd.range2" startdate="filterd.startDate2" enddate="filterd.endDate2" rangemax="10" error="perioderror"></static-period-filter>
+            <vaccine-dropout-filter filterproduct="filterd.dropout" class="form-cell horizontalFilters" required="true"></vaccine-dropout-filter>
 
+
+        </div>
+    </form>
+</div>
 <div>My Stock</div>
 <c3chart bindto-id="{{product.name}}_mystock_two_chart">
     <chart-tooltip value-format-function="formatValue" />
