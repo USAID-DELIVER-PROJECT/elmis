@@ -90,7 +90,12 @@
               <span openlmis-message="label.vaccine.adverse.effect.date"></span>
               <span class="label-required"> *</span>
             </label>
-            <input disabled id="date" required type="date" ng-model="currentEffect.date"/>
+            <input disabled  id="date" required type="text"
+                   ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"
+                   ui-date-format="yy-mm-dd"
+                   readonly
+                   ng-required="true"
+                   ng-model="currentEffect.date" />
           </div>
         </div>
         <div class="row-fluid">
@@ -121,15 +126,30 @@
           <div class="span6">
             <label>
               <span openlmis-message="label.vaccine.adverse.effect.expiry.date"></span>
-              <span class="label-required"> *</span>
             </label>
 
             <input disabled required type="date" ng-model="currentEffect.expiry"/>
           </div>
+        </div>
+        <div class="row-fluid">
           <div class="span6">
             <label><span openlmis-message="label.vaccine.adverse.effect.investigation.yes.no"></span></label>
             <input disabled type="checkbox" ng-model="currentEffect.isInvestigated"/>
           </div>
+          <div class="span6">
+            <label for="date">
+              <span openlmis-message="label.vaccine.adverse.effect.investigation.date"></span>
+              <span ng-show="currentEffect.isInvestigated" class="label-required"> *</span>
+            </label>
+            <input id="investigationDate" required type="text"
+                   ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"
+                   ui-date-format="yy-mm-dd"
+                   readonly
+                   disabled
+                   ng-required="{{currentEffect.isInvestigated}}"
+                   ng-model="currentEffect.investigationDate"/>
+          </div>
+
         </div>
         <div class="row-fluid">
           <div class="span12">
