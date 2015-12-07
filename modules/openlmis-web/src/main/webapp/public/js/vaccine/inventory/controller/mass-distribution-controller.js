@@ -140,7 +140,7 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
                      });
                 }
                 else{
-                    product.totalQuantityOnHand=product.totalQuantityOnHand2-getLotSum(product,undefined)
+                    product.totalQuantityOnHand=product.totalQuantityOnHand2-getLotSum(product,undefined);
                 }
 
            });
