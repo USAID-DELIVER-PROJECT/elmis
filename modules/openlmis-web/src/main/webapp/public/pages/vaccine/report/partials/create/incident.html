@@ -97,7 +97,12 @@
               <span openlmis-message="label.vaccine.adverse.effect.date"></span>
               <span class="label-required"> *</span>
             </label>
-            <input id="date" required type="date" ng-model="currentEffect.date"/>
+            <input id="date" required type="text"
+                   ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"
+                   ui-date-format="yy-mm-dd"
+                   readonly
+                   ng-required="true"
+                   ng-model="currentEffect.date"/>
           </div>
         </div>
         <div class="row-fluid">
@@ -116,7 +121,7 @@
               <span openlmis-message="label.vaccine.adverse.effect.manufacturer"></span>
               <span class="label-required"> *</span>
             </label>
-            <select id="manufacturer" ng-model="currentEffect.manufacturer">
+            <select required id="manufacturer" ng-model="currentEffect.manufacturer">
               <option ng-selected="currentEffect.manufacturer == m.id" value="{{m.id}}" ng-repeat="m in manufacturers">
                 {{m.name}}
               </option>
@@ -130,18 +135,37 @@
         </div>
         <div class="row-fluid">
           <div class="span6">
-
             <label for="expiryDate"><span openlmis-message="label.vaccine.adverse.effect.expiry.date"></span>
-              <span class="label-required"> *</span>
             </label>
-            <input id="expiryDate" required type="date" ng-model="currentEffect.expiry"/>
+            <input id="expiryDate" required type="text"
+                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                   ui-date-format="yy-mm-dd"
+                   readonly
+                   ng-required="true"
+                   ng-model="currentEffect.expiry"/>
           </div>
+
+        </div>
+        <div class="row-fluid">
+
           <div class="span6">
             <label for="isInvestigated">
-              <span openlmis-message="label.vaccine.adverse.effect.investigation.yes.no"></span>
-              <input id="isInvestigated" type="checkbox" ng-model="currentEffect.isInvestigated"/>
+              <div openlmis-message="label.vaccine.adverse.effect.investigation.yes.no"></div>
+              <input  id="isInvestigated" type="checkbox" ng-model="currentEffect.isInvestigated"/>
             </label>
+          </div>
 
+          <div class="span6">
+            <label for="date">
+              <span openlmis-message="label.vaccine.adverse.effect.investigation.date"></span>
+              <span ng-show="currentEffect.isInvestigated" class="label-required"> *</span>
+            </label>
+            <input id="investigationDate" required type="text"
+                   ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"
+                   ui-date-format="yy-mm-dd"
+                   readonly
+                   ng-required="{{currentEffect.isInvestigated}}"
+                   ng-model="currentEffect.investigationDate"/>
           </div>
         </div>
         <div class="row-fluid">

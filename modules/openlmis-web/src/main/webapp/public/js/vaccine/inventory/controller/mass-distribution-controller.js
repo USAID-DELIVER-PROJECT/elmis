@@ -52,23 +52,31 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
      $scope.closeModal=function(){
           $scope.currentProduct.lots=$scope.oldProductLots;
           evaluateTotal($scope.currentProduct);
+          evaluateSOH($scope.currentProduct);
           $scope.currentFacility=undefined;
           $scope.lotsModal=false;
      };
-     $scope.saveLots=function(){
+     $scope.saveCurrent=function(){
            evaluateTotal($scope.currentProduct);
            evaluateSOH($scope.currentProduct);
            $scope.currentFacility=undefined;
            $scope.lotsModal=false;
      };
-     $scope.updateCurrentTotal=function(_product,_lot){
+     $scope.updateCurrentTotal=function(){
            var totalCurrentLots = 0;
-           $($scope.currentProduct.lots).each(function (index, lotObject) {
-               if(lotObject.quantity !== undefined){
-                     totalCurrentLots = totalCurrentLots + parseInt(lotObject.quantity,10);
-               }
-           });
-           $scope.currentLotsTotal=totalCurrentLots;
+           if($scope.currentProduct.lots !== undefined)
+           {
+            $($scope.currentProduct.lots).each(function (index, lotObject) {
+                           if(lotObject.quantity !== undefined){
+                                 totalCurrentLots = totalCurrentLots + parseInt(lotObject.quantity,10);
+                           }
+                       });
+               $scope.currentLotsTotal=totalCurrentLots;
+           }
+           else{
+               $scope.currentLotsTotal=$scope.currentProduct.quantity;
+           }
+
      };
      $scope.updateCurrentPOD=function(product){
            var totalCurrentLots = 0;
@@ -81,13 +89,20 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
      };
      function evaluateTotal(product){
            var totalLots = 0;
-           $(product.lots).each(function (index, lotObject) {
-                if(lotObject.quantity !== undefined){
-                    totalLots = totalLots + parseInt(lotObject.quantity,10);
-                 }
+           if(product.lots !== undefined)
+           {
+            $(product.lots).each(function (index, lotObject) {
+                            if(lotObject.quantity !== undefined){
+                                totalLots = totalLots + parseInt(lotObject.quantity,10);
+                             }
 
-          });
-          $scope.currentProduct.quantity=totalLots;
+                      });
+                      $scope.currentProduct.quantity=totalLots;
+           }
+           else{
+            //$scope.currentProduct.quantity=totalLots;
+           }
+
      }
      function getLotSum(_product,_lot){
         var total=0;
@@ -95,13 +110,20 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
              var product=_.find(facility.productsToIssue,function(p){
                     return p.productId ===_product.productId;
              });
+             if(product.lots !== undefined){
+                var lot=_.find(product.lots,function(l){
+                                   return l.lotId === _lot.lotId;
+                             });
+                             if(lot && lot.quantity !==undefined)
+                             {
+                                   total=total+parseInt(lot.quantity,10);
+                             }
+             }
+             else{
+                if(product.quantity !== undefined){
+                    total=total+parseInt(product.quantity,10);
+                }
 
-             var lot=_.find(product.lots,function(l){
-                   return l.lotId === _lot.lotId;
-             });
-             if(lot)
-             {
-                   total=total+lot.quantity;
              }
 
          });
@@ -111,9 +133,16 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
      {
         ($scope.allScheduledFacilities).forEach(function(facility){
            facility.productsToIssue.forEach(function(product){
-                product.lots.forEach(function(lot){
-                    lot.quantityOnHand=lot.quantityOnHand2-getLotSum(product,lot);
-                });
+                if(product.lots !== undefined)
+                {
+                     product.lots.forEach(function(lot){
+                           lot.quantityOnHand=lot.quantityOnHand2-getLotSum(product,lot);
+                     });
+                }
+                else{
+                    product.totalQuantityOnHand=product.totalQuantityOnHand2-getLotSum(product,undefined);
+                }
+
            });
 
         });

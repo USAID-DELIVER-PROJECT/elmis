@@ -69,25 +69,25 @@
                     <span ng-bind="item.productName" id="productName{{$index}}" class="cell-text"></span>
                 </td>
                 <td class="cell-input col-maximumStock">
-                        <span ng-bind="item.annualNeed | number" id="item.isaCoefficients.annualNeed{{$index}}"
+                        <span ng-bind="item.annualNeed | number" id="item.annualNeed{{$index}}"
                               class="cell-text"></span>
                 </td>
                 <td class="cell-input">
-                        <span ng-bind="item.quarterlyNeed | number"  id="item.isaCoefficients.quarterlyNeed{{$index}}"
+                        <span ng-bind="item.quarterlyNeed | number"  id="item.quarterlyNeed{{$index}}"
                               class="cell-text"></span>
                 </td>
                 <td class="cell-input">
-                        <span ng-bind="item.ReorderLevel" id="item.ReorderLevel{{$index}}"
+                        <span ng-bind="item.reorderLevel" id="item.reorderLevel{{$index}}"
                               class="cell-text"></span>
                 </td>
 
                 <td class="cell-input col-bufferStock">
-                        <span ng-bind="item.MinimumStock | number" id="bufferStock{{$index}}"
+                        <span ng-bind="item.minimumStock | number" id="bufferStock{{$index}}"
                               class="cell-text"></span>
                 </td>
 
-                <td class="cell-input col-MaximumStock">
-                        <span ng-bind="item.MaximumStock | number" id="maximumStock{{$index}}"
+                <td class="cell-input col-maximumStock">
+                        <span ng-bind="item.maximumStock | number" id="maximumStock{{$index}}"
                               class="cell-text"></span>
                 </td>
 

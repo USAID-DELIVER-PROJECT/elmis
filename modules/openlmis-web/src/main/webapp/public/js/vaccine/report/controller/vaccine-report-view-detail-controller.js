@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function ViewVaccineReportDetailController($scope, $location, $filter, report, discardingReasons) {
+function ViewVaccineReportDetailController($scope, $location, report, discardingReasons, operationalStatuses) {
 
   // initial state of the display
   $scope.report = new VaccineReport(report);
@@ -24,11 +24,9 @@ function ViewVaccineReportDetailController($scope, $location, $filter, report, d
     $location.path('/');
   };
 
+  $scope.operationalStatuses = operationalStatuses;
 
   $scope.showAdverseEffect = function (effect, editMode) {
-    effect.date = $filter('date')(new Date(effect.date), 'yyyy-MM-dd');
-    effect.expiry = $filter('date')(new Date(effect.expiry), 'yyyy-MM-dd');
-
     $scope.currentEffect = effect;
     $scope.currentEffectMode = editMode;
 
@@ -41,9 +39,6 @@ function ViewVaccineReportDetailController($scope, $location, $filter, report, d
   };
 
   $scope.showCampaignForm = function (campaign, editMode) {
-
-    campaign.startDate = $filter('date')(new Date(campaign.startDate), 'yyyy-MM-dd');
-    campaign.endDate = $filter('date')(new Date(campaign.endDate), 'yyyy-MM-dd');
 
     $scope.currentCampaign = campaign;
     $scope.currentCampaignMode = editMode;
@@ -92,5 +87,16 @@ ViewVaccineReportDetailController.resolve = {
       });
     }, 100);
     return deferred.promise;
+  },
+  operationalStatuses : function ($q, $timeout, $route, ColdChainOperationalStatus) {
+    var deferred = $q.defer();
+
+    $timeout(function () {
+      ColdChainOperationalStatus.get(function (data) {
+        deferred.resolve(data.status);
+      });
+    }, 100);
+    return deferred.promise;
   }
+
 };

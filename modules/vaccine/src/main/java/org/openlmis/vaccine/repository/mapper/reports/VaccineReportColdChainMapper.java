@@ -23,9 +23,9 @@ public interface VaccineReportColdChainMapper {
 
 
   @Insert("INSERT INTO vaccine_report_cold_chain_line_items " +
-    "(reportId, equipmentInventoryId, minTemp, maxTemp, minEpisodeTemp, maxEpisodeTemp, remarks, createdBy, createdDate, modifiedBy, modifiedDate) " +
+    "(reportId, equipmentInventoryId, minTemp, maxTemp, minEpisodeTemp, maxEpisodeTemp, operationalStatusId , remarks, createdBy, createdDate, modifiedBy, modifiedDate) " +
     " values " +
-    "( #{reportId}, #{equipmentInventoryId}, #{minTemp}, #{maxTemp}, #{minEpisodeTemp}, #{maxEpisodeTemp}, #{remarks}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
+    "( #{reportId}, #{equipmentInventoryId}, #{minTemp}, #{maxTemp}, #{minEpisodeTemp}, #{maxEpisodeTemp}, #{operationalStatusId} , #{remarks}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
   @Options(useGeneratedKeys = true)
   void insert(ColdChainLineItem lineItem);
 
@@ -37,6 +37,7 @@ public interface VaccineReportColdChainMapper {
       " , maxTemp = #{maxTemp} " +
       " , minEpisodeTemp = #{minEpisodeTemp}" +
       " , maxEpisodeTemp = #{maxEpisodeTemp}" +
+      " , operationalStatusId = #{operationalStatusId}" +
       " , remarks = #{remarks}" +
       " , modifiedBy = #{modifiedBy}" +
       " , modifiedDate = NOW() " +

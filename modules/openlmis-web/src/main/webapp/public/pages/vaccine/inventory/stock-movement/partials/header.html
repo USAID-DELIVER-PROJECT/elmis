@@ -28,10 +28,12 @@
                         <span id="visitDateContainer">
                             <strong for="issueDate2" openlmis-message="label.vaccine.issue.date"></strong>
                             <span class="label-required">*</span>
-                             <input required id="issueDate2" type="text" ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
-                                    ui-date-format="dd-mm-yy"
-                                    readonly ng-model="stockCardsByCategory[0].issueDate"
-                                    />
+                             <!--<input required id="issueDate2" type="text" ui-date="{dateFormat: 'dd/mm/yyyy', changeYear: true}"-->
+                                     <!--ng-model="stockCardsByCategory[0].issueDate"-->
+                                    <!--/>-->
+                            <input ng-required="true" id="receivingDate" name="issueDate" type="text"
+                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                                   ng-model="stockCardsByCategory[0].issueDate"/>
                         </span>
 
                     </div>

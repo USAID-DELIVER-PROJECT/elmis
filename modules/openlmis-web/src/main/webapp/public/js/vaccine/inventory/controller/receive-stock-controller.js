@@ -103,7 +103,7 @@ function ReceiveStockController($scope,programs,$timeout,$window,$dialog,homeFac
                 }
 
              });
-             console.log(JSON.stringify(events));
+
 
             StockEvent.update({facilityId:homeFacility.id},events, function (data) {
                  if(data.success)
@@ -232,6 +232,7 @@ function ReceiveStockController($scope,programs,$timeout,$window,$dialog,homeFac
         Distribution.get({voucherNumber:$scope.receivedProducts.voucherNumber},function(data){
             if(data.distribution !==null){
                 $scope.distribution=data.distribution;
+                 console.log(JSON.stringify($scope.distribution));
             }
             else{
                 $scope.noVoucherNumber=true;

@@ -87,11 +87,11 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
     var printTest = false;
 
     $scope.submit = function () {
-        if ($scope.orderRequisitionForm.$error.required) {
-            $scope.showError = true;
-            $scope.error = "The form you submitted is invalid. Please revise and try again.";
-            return;
-        }
+//        if ($scope.orderRequisitionForm.$error.required) {
+//            $scope.showError = true;
+//            $scope.error = "The form you submitted is invalid. Please revise and try again.";
+//            return;
+//        }
 
         var transaction = {};
         transaction.transactionList = [];
@@ -122,30 +122,29 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                            lineItem.productId = s.product.id;
                            if(s.lotsOnHand.length >0)
                            {
-                           lineItem.lots = [];
-                           var lotSum = 0;
-                           s.lotsOnHand.forEach(function (l) {
+                               lineItem.lots = [];
+                               var lotSum = 0;
+                               s.lotsOnHand.forEach(function (l) {
 
-                               if( l.quantity >0)
-                               {
-                                   var lot = {};
-                                   var event={};
-                                   event.type="ISSUE";
-                                   event.productCode= s.product.code;
-                                   event.facilityId=toFacilityId;
-                                   event.lotId= l.lot.id;
-                                   event.quantity= l.quantity;
-                                   event.customProps={"occurred":st.issueDate};
-                                   events.push(event);
+                                   if( l.quantity >0)
+                                   {
+                                       var lot = {};
+                                       var event={};
+                                       event.type="ISSUE";
+                                       event.productCode= s.product.code;
+                                       event.facilityId=toFacilityId;
+                                       event.lotId= l.lot.id;
+                                       event.quantity= l.quantity;
+                                       event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
 
-                                   lot.lotId = l.lot.id;
-                                   lot.quantity = l.quantity;
-                                   lot.vvmStatus=l.customProps.vvmstatus;
-                                   lineItem.lots.push(lot);
-                                   lotSum = lotSum + l.quantity;
-                               }
-                              });
-                               lineItem.quantity = lotSum;
+                                       lot.lotId = l.lot.id;
+                                       lot.quantity = l.quantity;
+                                       lot.vvmStatus=l.customProps.vvmstatus;
+                                       lineItem.lots.push(lot);
+                                       lotSum = lotSum + l.quantity;
+                                   }
+                                  });
+                                   lineItem.quantity = lotSum;
 
                            }
                         else{
@@ -153,9 +152,10 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                                event.type="ISSUE";
                                event.productCode= s.product.code;
                                event.facilityId=toFacilityId;
-                               event.quantity= st.quantity;
-                               event.customPros={"occurred":st.issueDate};
+                               event.quantity= s.quantity;
+                               event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
                                events.push(event);
+                               lineItem.quantity=s.quantity;
 
                            }
 
@@ -164,6 +164,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                     });
 
                 });
+                console.log(JSON.stringify(events));
               StockEvent.save({facilityId:homeFacility.id},events,function(data){
                    SaveDistribution.save(distribution,function(distribution) {
                         UpdateOrderRequisitionStatus.update({orderId: orderId}, function () {

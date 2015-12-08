@@ -127,7 +127,8 @@
                 </td>
 
                 <td class="col-available cell-input number disabled" ng-class="{'last-row':c.lotsOnHand.length===1}">
-                    <span class="cell-text" ng-bind="c.lotsOnHand[0].quantityOnHand | number "></span>
+                    <span ng-if="c.lotsOnHand.length > 0" class="cell-text" ng-bind="c.lotsOnHand[0].quantityOnHand | number "></span>
+                    <span ng-if="c.lotsOnHand.length === 0" class="cell-text" ng-bind="c.totalQuantityOnHand | number "></span>
                 </td>
 
                 <td rowspan="{{c.lotsOnHand.length}}" class="col-available cell-input number disabled"
@@ -183,7 +184,7 @@
                 </td>
 
                 <td class="col-available cell-input col-general number disabled" ng-class="{'last-row':$last}">
-                    <span class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
+                    <span   class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
                 </td>
 
                 <td ng-class="{'last-row':$last} " class="col-count cell-input col-general number disabled">

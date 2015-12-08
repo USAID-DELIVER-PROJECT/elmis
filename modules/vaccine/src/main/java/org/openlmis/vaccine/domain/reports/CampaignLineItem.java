@@ -12,6 +12,7 @@
 
 package org.openlmis.vaccine.domain.reports;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,13 @@ public class CampaignLineItem extends BaseModel {
   private Long reportId;
   private String name;
   private String venue;
+
+  @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   private Date startDate;
+
+  @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   private Date endDate;
+
   private Long childrenVaccinated;
   private Long pregnantWomanVaccinated;
   private String otherObjectives;

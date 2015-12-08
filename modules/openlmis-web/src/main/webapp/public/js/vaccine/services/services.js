@@ -273,6 +273,10 @@ services.factory('ViewBundledDistributionVaccinationSupplies', function ($resour
 services.factory('PerformanceByDropoutRateByDistrict', function ($resource) {
     return $resource('/vaccine/report/performanceByDropoutRateByDistrict.json', {}, {});
 });
+services.factory('TrendOfMinMasColdRange', function ($resource) {
+
+    return $resource('/vaccine/report/trendOfMinMaxColdRange.json', {}, {});
+});
 services.factory('DropoutProducts', function ($resource) {
     return $resource('/vaccine/report/dropoutProducts.json', {}, {});
 });
@@ -295,4 +299,9 @@ services.factory('VaccineDashboardWastage', function($resource){
 
 services.factory('Distribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/by-voucher-number/', {}, {});
+});
+
+
+services.factory('ColdChainOperationalStatus', function ($resource) {
+  return $resource('/equipment/type/operational-status.json', {}, {});
 });
