@@ -1041,8 +1041,8 @@ app.directive('vaccineFacilityLevelFilter',['FacilitiesByLevel','VaccineInventor
       }]
 );
 
-app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographicZoneList', 'TreeGeographicZoneListByProgram', 'GetUserUnassignedSupervisoryNode', 'messageService', 'VaccineSupervisedIvdPrograms',
-  function (FacilitiesByGeographicZone, TreeGeographicZoneList, TreeGeographicZoneListByProgram, GetUserUnassignedSupervisoryNode, messageService, VaccineSupervisedIvdPrograms) {
+app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographicZoneList', 'TreeGeographicTreeByProgramNoZones', 'GetUserUnassignedSupervisoryNode', 'messageService', 'VaccineSupervisedIvdPrograms',
+  function (FacilitiesByGeographicZone, TreeGeographicZoneList, TreeGeographicTreeByProgramNoZones, GetUserUnassignedSupervisoryNode, messageService, VaccineSupervisedIvdPrograms) {
     var onPgCascadedVarsChanged1 = function ($scope) {
 
       //if (!$routeParams.facility) {
@@ -1073,10 +1073,11 @@ app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographi
 
         $scope.program = data.programs[0].id;
 
-        TreeGeographicZoneListByProgram.get({
+        TreeGeographicTreeByProgramNoZones.get({
           program: $scope.program
         }, function (data) {
           $scope.zones = data.zone;
+          alert('here'+$scope.zones.name );
 
 
         });

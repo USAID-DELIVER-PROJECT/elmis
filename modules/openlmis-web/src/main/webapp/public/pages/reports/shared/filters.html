@@ -402,7 +402,7 @@
                             <option ng-selected="filterZone == value.id" value="{{value.id}}"><b class="green"> -- All of
                                 {{value.name}}</b></option>
                             <option ng-repeat-start="v in value.children" ng-selected="filterZone == v.id" value="{{v.id}}">
-                                {{v.name}}
+                                &nbsp; &nbsp; {{v.name}}
                             </option>
                             <option ng-repeat-end ng-repeat="d in v.children" ng-selected="filterZone == d.id"
                                     value="{{d.id}}"> &nbsp; &nbsp; {{d.name}}
