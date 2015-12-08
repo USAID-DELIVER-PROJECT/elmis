@@ -1231,8 +1231,9 @@ app.directive('staticPeriodFilter', [ function() {
       $scope.periodStartdate = $scope.periodEnddate = "";
 
       $scope.notifyFilterChanged = function(){
-        console.log('filter changed is notified')
-        $scope.$parent.OnFilterChanged();
+        $timeout(function(){
+          $scope.$parent.OnFilterChanged();
+        },10);
       };
 
       SettingsByKey.get({key:'VACCINE_LATE_REPORTING_DAYS'}, function(data, er){$scope.$parent.cutoffdate = $scope.cutofd =  data.settings.value;});
@@ -1248,6 +1249,7 @@ app.directive('staticPeriodFilter', [ function() {
           $scope.periodEnddate = periods.enddate;
 
           $scope.showCustomeDateInputs = false;
+          $scope.notifyFilterChanged();
         }
 
         else if ($scope.periodRange == 5)
@@ -1255,16 +1257,14 @@ app.directive('staticPeriodFilter', [ function() {
 
         $scope.perioderror = "";
       });
-      $scope.$watch('periodStartdate', function(newValues, oldValues){
+     /* $scope.$watch('periodStartdate', function(newValues, oldValues){
 
-        console.log("start"+$scope.periodStartdate +" end "+$scope.periodEnddate);
         $scope.$parent.OnFilterChanged();
       });
       $scope.$watch('periodEnddate', function(newValues, oldValues){
 
-        console.log("start"+$scope.periodStartdate +" end "+$scope.periodEnddate);
         $scope.$parent.OnFilterChanged();
-      });
+      });*/
       $scope.$watchCollection('[periodStartdate, periodEnddate]', function(newValues, oldValues){
        /* $timeout(function(){
           $scope.$parent.OnFilterChanged();
