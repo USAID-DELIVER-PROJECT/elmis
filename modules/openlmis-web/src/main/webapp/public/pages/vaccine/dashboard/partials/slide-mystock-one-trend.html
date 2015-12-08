@@ -1,11 +1,13 @@
-<div class="app-form " style="padding: 5px;">
+<div class="app-form vaccine-form-filter">
     <form ng-submit="filterGrid()" name="filterForm" novalidate>
         <div  class="clearfix">
             <!--<program-filter class="form-cell horizontalFilters" required="true"></program-filter>-->
-            <static-period-filter range="range" startdate="startDate" enddate="endDate" rangemax="10" error="perioderror"></static-period-filter>
-            <static-period-filter range="range3" startdate="startDate3" enddate="endDate3" rangemax="10" error="perioderror"></static-period-filter>
+            <static-period-filter range="filterd.range" startdate="filterd.startDate" enddate="filterd.endDate" rangemax="10" error="perioderror"></static-period-filter>
+            <static-period-filter range="filterd.range3" startdate="filterd.startDate3" enddate="filterd.endDate3" rangemax="10" error="perioderror"></static-period-filter>
 
-          <!--  <vaccine-product-filter cm-model="filterd.vaccineProduct" class="form-cell horizontalFilters" required="true" />-->
+            <vaccine-product-filter cm-model="filterd.vaccineProduct" class="form-cell horizontalFilters" required="true"></vaccine-product-filter>
+            <vaccine-product-filter cm-model="filterd.vaccineProduct2" class="form-cell horizontalFilters" required="true"></vaccine-product-filter>
+
 
 
         </div>

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function VaccineDashboardController($scope,$timeout,programs,ReportProductsByProgram, VaccineDashboardSummary,VaccineDashboardCoverage,VaccineDashboardWastage,SettingsByKey) {
+function VaccineDashboardController($scope,VaccineDashboardSummary,VaccineDashboardCoverage,VaccineDashboardWastage,SettingsByKey) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -21,26 +21,15 @@ function VaccineDashboardController($scope,$timeout,programs,ReportProductsByPro
     $scope.supplying = {};
     $scope.investigating = {};
 $scope.filterd ={};
-    $scope.filter ={program: programs[0].id};
 
- /*   ReportProductsByProgram.get({
-        programId: $scope.filter.program
-
-    }, function(data) {
-        $scope.products = data.productList;
-
-    });*/
 
     $scope.periods = [{id:1, name:'custom'},{id:2, name:'last 3 months'}, {id:3, name: 'last 6 months'}, {id:4, name:'last 1 year'}, {id:5, name:'current period'}];
     $scope.OnFilterChanged = function() {
 
-/*
-
-        console.log("start date "+$scope.filterd.startDate +" and end date "+$scope.filterd.endDate);
-        console.log("start date3 "+$scope.filterd.startDate3 +" and end date3 "+$scope.filterd.endDate3);*/
-
-        console.log("start date "+$scope.startDate +" and end date "+$scope.endDate);
-        console.log("start date3 "+$scope.startDate3 +" and end date3 "+$scope.endDate3);
+      /*  console.log("start date "+$scope.filterd.startDate +" and end date "+$scope.filterd.endDate);
+        console.log("start date3 "+$scope.filterd.startDate3 +" and end date3 "+$scope.filterd.endDate3);
+        console.log("vaccine product "+$scope.filterd.vaccineProduct)
+        console.log("vaccine product2 "+$scope.filterd.vaccineProduct2)*/
         $scope.data = $scope.datarows = [];
        // $scope.filter.max = 10000;
     };
@@ -84,7 +73,6 @@ $scope.filterd ={};
     VaccineDashboardWastage.get({}, function(data){
        $scope.wastageMonthly = data.wastage.wastageMonthly;
        $scope.wastageDistrict = data.wastage.wastageDistrict;
-       // alert('wastage monthly '+JSON.stringify($scope.wastageMonthly))
 
     });
 
