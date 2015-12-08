@@ -160,14 +160,14 @@
                             <td ng-bind="subRow.period_name| date:'MMM-yyyy'"
                                 ng-style="{'background-color':getBackGroundColor(subRow.bcg_mr_dropout) ,'text-align':'right'}"/>
 
-                            <td ng-bind="subRow.target"
+                            <td ng-bind="subRow.target| number"
                                 ng-style="{'background-color':getBackGroundColor(subRow.bcg_mr_dropout) ,'text-align':'right'}"/>
 
-                            <td ng-bind="subRow.bcg_vaccinated"
+                            <td ng-bind="subRow.bcg_vaccinated| number"
                                 ng-style="{'background-color':getBackGroundColor(subRow.bcg_mr_dropout) ,'text-align':'right'}"/>
 
 
-                            <td ng-bind="subRow.mr_vaccinated"
+                            <td ng-bind="subRow.mr_vaccinated| number"
                                 ng-style="{'background-color':getBackGroundColor(subRow.bcg_mr_dropout) ,'text-align':'right'}"/>
 
 
@@ -190,10 +190,10 @@
 
                         <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="report.total_target| number"></td>
 
-                        <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="report.total_bcg_vaccinated"></td>
-                        <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="report.total_mr_vaccinated"></td>
+                        <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="report.total_bcg_vaccinated| number"></td>
+                        <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="report.total_mr_vaccinated| number"></td>
                         <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; "><span
-                                ng-bind="calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)"/>%
+                                ng-bind="calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)| number"/>%
                         </td>
                         </tr>
                         </tfoot>
@@ -349,10 +349,10 @@
 
                         <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="report.total_target| number"></td>
 
-                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="report.total_bcg_vaccinated"></td>
-                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="report.total_mr_vaccinated"></td>
+                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="report.total_bcg_vaccinated| number"></td>
+                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="report.total_mr_vaccinated| number"></td>
                         <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"><span
-                                ng-bind="calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)"/>%
+                                ng-bind="calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)| number"/>%
                         </td>
 
                         </tfoot>

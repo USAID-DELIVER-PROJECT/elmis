@@ -513,7 +513,9 @@ public class ReportLookupService {
         GeoZoneTree tree = geographicZoneMapper.getParentZoneTree();
         List<GeoZoneTree> zoneList = this.loadZoneList(tree, allGeozones);
         List<GeoZoneTree> regions = this.loadZoneChildren(zoneList, allGeozones);
-        for (int i=0;i<regions.size();i++) {
+        order(regions);
+
+        for (int i = 0; i < regions.size(); i++) {
             populateChildren(regions.get(i), allGeozones);
         }
         tree.setChildren(regions);
@@ -521,6 +523,19 @@ public class ReportLookupService {
     }
 
 
+    private static void order(List<GeoZoneTree> zoneList) {
+
+        Collections.sort(zoneList, new Comparator() {
+            public int compare(Object o1, Object o2) {
+
+                String x1 = ((GeoZoneTree) o1).getName();
+                String x2 = ((GeoZoneTree) o2).getName();
+
+                return x1.compareTo(x2);
+            }
+
+        });
+    }
 
     public List<GeoZoneTree> loadZoneChildren(List<GeoZoneTree> zoneList, List<GeoZoneTree> geoSourceList) {
         List<GeoZoneTree> children = new ArrayList<>();
@@ -561,7 +576,7 @@ public class ReportLookupService {
                 children.add(t);
             }
         }
-
+        order(children);
         tree.setChildren(children);
 
         for (GeoZoneTree zone : tree.getChildren()) {
@@ -733,7 +748,7 @@ public class ReportLookupService {
         Set<Integer> scheduleIds = new HashSet<>();
         for (YearSchedulePeriodTree periodTree : yearSchedulePeriodTree) {
             years.add(periodTree.getYear());
-            if (!scheduleIds.contains(periodTree.getGroupid())){
+            if (!scheduleIds.contains(periodTree.getGroupid())) {
                 scheduleIds.add(periodTree.getGroupid());
                 schedules.add(new Schedule(periodTree.getGroupid(), periodTree.getGroupname(), null, null));
             }

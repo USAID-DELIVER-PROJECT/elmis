@@ -189,21 +189,21 @@
                     <td ng-bind="subRow.period_name| date:'MMM-yyyy'"
                         ng-style="{'text-align':'right'}"/>
 
-                    <td ng-bind="subRow.targetpopulation"
+                    <td ng-bind="subRow.targetpopulation| number"
                         ng-style="{'text-align':'right'}"/>
 
-                    <td ng-bind="subRow.mintemp"
+                    <td ng-bind="subRow.mintemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.mintemp)  ,'text-align':'right'}"/>
 
 
-                    <td ng-bind="subRow.maxtemp"
+                    <td ng-bind="subRow.maxtemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.maxtemp)  ,'text-align':'right'}"/>
 
 
-                    <td ng-bind="subRow.minepisodetemp"
+                    <td ng-bind="subRow.minepisodetemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.minepisodetemp)  ,'text-align':'right'}"/>
 
-                    <td ng-bind="subRow.maxepisodetemp"
+                    <td ng-bind="subRow.maxepisodetemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.maxepisodetemp)  ,'text-align':'right'}"/>
 
                 </tr>
@@ -226,16 +226,16 @@
                         style="text-align:right; " ng-bind="report.targetpopulation| number"></td>
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; " ng-bind="report.mintemp"></td>
+                        style="text-align:right; " ng-bind="report.mintemp| number"></td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; "  ng-bind="report.maxtemp"></td>
+                        style="text-align:right; "  ng-bind="report.maxtemp| number"></td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; "><span
-                            ng-bind="report.minepisodetemp" />
+                            ng-bind="report.minepisodetemp| number" />
                     </td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; "><span
-                            ng-bind="report.maxepisodetemp" />
+                            ng-bind="report.maxepisodetemp| number" />
                     </td>
                 </tr>
                 </tfoot>
@@ -366,21 +366,21 @@
                     <td ng-bind="subRow.period_name| date:'MMM-yyyy'"
                         ng-style="{'text-align':'right'}"/>
 
-                    <td ng-bind="subRow.targetpopulation"
+                    <td ng-bind="subRow.targetpopulation| number"
                         ng-style="{'text-align':'right'}"/>
 
-                    <td ng-bind="subRow.mintemp"
+                    <td ng-bind="subRow.mintemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.mintemp)  ,'text-align':'right'}"/>
 
 
-                    <td ng-bind="subRow.maxtemp"
+                    <td ng-bind="subRow.maxtemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.maxtemp)  ,'text-align':'right'}"/>
 
 
-                    <td ng-bind="subRow.minepisodetemp"
+                    <td ng-bind="subRow.minepisodetemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.minepisodetemp)  ,'text-align':'right'}"/>
 
-                    <td ng-bind="subRow.maxepisodetemp"
+                    <td ng-bind="subRow.maxepisodetemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.maxepisodetemp)  ,'text-align':'right'}"/>
 
                 </tr>
@@ -403,16 +403,16 @@
                         style="text-align:right; " ng-bind="report.targetpopulation| number"></td>
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; " ng-bind="report.mintemp"></td>
+                        style="text-align:right; " ng-bind="report.mintemp| number"></td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; "  ng-bind="report.maxtemp"></td>
+                        style="text-align:right; "  ng-bind="report.maxtemp| number"></td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; "><span
-                            ng-bind="report.minepisodetemp" />
+                            ng-bind="report.minepisodetemp| number" />
                     </td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; "><span
-                            ng-bind="report.maxepisodetemp" />
+                            ng-bind="report.maxepisodetemp| number" />
                     </td>
                 </tr>
                 </tfoot>
@@ -549,19 +549,19 @@
                             ></td>
                     <td ng-bind="row.period_name| date:'MMM-yyyy'"
                         ng-style="{'text-align':'right'}"/>
-                    <td ng-bind="row.targetpopulation"
+                    <td ng-bind="row.targetpopulation| number"
                         ng-style="{'text-align':'right'}"/>
-                    <td ng-bind="row.mintemp"
+                    <td ng-bind="row.mintemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(row.mintemp)  ,'text-align':'right'}"/>
 
 
-                    <td ng-bind="row.maxtemp"
+                    <td ng-bind="row.maxtemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(row.maxtemp)  ,'text-align':'right'}"/>
 
 
-                    <td ng-bind="row.minepisodetemp"
+                    <td ng-bind="row.minepisodetemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(row.minepisodetemp)  ,'text-align':'right'}"/>
-                    <td ng-bind="row.maxepisodetemp"
+                    <td ng-bind="row.maxepisodetemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(row.maxepisodetemp)  ,'text-align':'right'}"/>
 
 
@@ -583,16 +583,16 @@
                         style="text-align:right; " ng-bind="report.targetpopulation| number"></td>
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; " ng-bind="report.mintemp"></td>
+                        style="text-align:right; " ng-bind="report.mintemp| number"></td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; "  ng-bind="report.maxtemp"></td>
+                        style="text-align:right; "  ng-bind="report.maxtemp| number"></td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; "><span
-                            ng-bind="report.minepisodetemp" />
+                            ng-bind="report.minepisodetemp| number" />
                     </td>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; "><span
-                            ng-bind="report.maxepisodetemp" />
+                            ng-bind="report.maxepisodetemp| number" />
                     </td>
                 </tr>
                 </tfoot>
