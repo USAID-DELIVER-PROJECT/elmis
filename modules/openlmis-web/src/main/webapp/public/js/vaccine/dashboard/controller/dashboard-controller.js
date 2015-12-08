@@ -26,7 +26,7 @@ $scope.filterd ={};
     $scope.periods = [{id:1, name:'custom'},{id:2, name:'last 3 months'}, {id:3, name: 'last 6 months'}, {id:4, name:'last 1 year'}, {id:5, name:'current period'}];
     $scope.OnFilterChanged = function() {
 
-      /*  console.log("start date "+$scope.filterd.startDate +" and end date "+$scope.filterd.endDate);
+    /*    console.log("start date "+$scope.filterd.startDate +" and end date "+$scope.filterd.endDate);
         console.log("start date3 "+$scope.filterd.startDate3 +" and end date3 "+$scope.filterd.endDate3);
         console.log("vaccine product "+$scope.filterd.vaccineProduct)
         console.log("vaccine product2 "+$scope.filterd.vaccineProduct2)*/
