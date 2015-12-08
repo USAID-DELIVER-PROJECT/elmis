@@ -38,7 +38,7 @@
                         <vaccine-dropout-filter class="horizontalFilters form-cell" filterproduct="filter.product"  >
 
                         </vaccine-dropout-filter>
-                        <static-period-filter  range="range" startdate="filter.periodStart" enddate="filter.periodEnd" rangemax="10" error="perioderror"></static-period-filter>
+                        <static-period-filter style="max-width: 100px"  range="range" startdate="filter.periodStart" enddate="filter.periodEnd" rangemax="10" error="perioderror"></static-period-filter>
 
                     <br/>
                     </div>
@@ -214,8 +214,8 @@
                         </tr>
                         </thead>
 
-                        <tbody ng-repeat="row in colValueList">
-                        <tr ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
+                        <tbody >
+                        <tr ng-repeat="row in colValueList" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
                             <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ><label>{{getColumnNameSummary(row.rangeName)}}</label></td>
 
                             <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-repeat="column in columnVals track by $index">
@@ -373,8 +373,8 @@
                         </tr>
                         </thead>
 
-                        <tbody ng-repeat="row in regionColumnVals">
-                        <tr ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
+                        <tbody >
+                        <tr ng-repeat="row in regionColumnVals" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
                             <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ><label>{{getColumnNameSummary(row.rangeName)}}</label></td>
 
                             <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-repeat="column in columnVals track by $index">
