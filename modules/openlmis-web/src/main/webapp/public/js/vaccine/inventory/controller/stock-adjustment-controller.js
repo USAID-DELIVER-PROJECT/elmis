@@ -208,7 +208,7 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
                 return config[0].vvmTracked;
              }
              else{
-                return true;
+                return false;
              }
           };
 
