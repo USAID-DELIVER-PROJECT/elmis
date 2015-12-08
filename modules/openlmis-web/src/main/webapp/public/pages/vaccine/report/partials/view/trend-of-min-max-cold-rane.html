@@ -34,17 +34,12 @@
 
                 <form ng-submit="filterGrid()" name="filterForm" novalidate>
                     <div class="clearfix">
-                        <!-- include facility and zone allgeographic zone  while district get selected facillity will be displayed on
-                         other dropdown and also include layout option for vertical and horizontal-->
 
-                        <!--<vaccine-zone-filter facilityid="filter.facility" faccility="true" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone"  ></vaccine-zone-filter>-->
                         <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
                                              faccility="true" pro="filter.program" user_geo_level="user_geo_level"
                                              zones="zones" val="filter.zone"></vaccine-zone-filter>
 
-                        <!--<vaccine-dropout-filter class="horizontalFilters form-cell" filterproduct="filter.product">-->
 
-                        <!--</vaccine-dropout-filter>-->
                         <static-period-filter range="range" startdate="filter.periodStart" enddate="filter.periodEnd"
                                               rangemax="10" error="perioderror"></static-period-filter>
 
@@ -442,9 +437,7 @@
                             ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
                             >
                         <label>{{getColumnNameSummary(row.rangeName)}}</label></td>
-                    <!--<td ng-if="row.rangeName=='2_dropOutBetweenMidAndMin'"><label>5% < DO <=10%</label></td>-->
-                    <!--<td ng-if="row.rangeName=='3_droOputBetweenMidAndHigh'"><label> 10% < DO <=20% </label></td>-->
-                    <!--<td ng-if="row.rangeName=='4_dropoutGreaterThanHigh'"><label>DO >20%</label></td>-->
+
                     <td
                             ng-style="{'width':'40px','background-color': getBackGroundColorSummary(row.rangeName)}"
                             ng-repeat="column in columnVals track by $index">
@@ -624,9 +617,7 @@
                 <tr ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
                     <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"><label>{{getColumnNameSummary(row.rangeName)}}</label>
                     </td>
-                    <!--<td ng-if="row.rangeName=='2_dropOutBetweenMidAndMin'"><label>5% < DO <=10%</label></td>-->
-                    <!--<td ng-if="row.rangeName=='3_droOputBetweenMidAndHigh'"><label> 10% < DO <=20% </label></td>-->
-                    <!--<td ng-if="row.rangeName=='4_dropoutGreaterThanHigh'"><label>DO >20%</label></td>-->
+
                     <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
                         ng-repeat="column in columnVals track by $index">
                                     <span ng-if="row.coldRangeColumnValues[$index].value>0"
