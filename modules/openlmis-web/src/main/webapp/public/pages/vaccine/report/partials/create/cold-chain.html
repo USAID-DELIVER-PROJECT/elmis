@@ -20,6 +20,9 @@
       <th rowspan="2" class="span2"><span openlmis-message="label.vaccine.cc.serial"></span></th>
       <th rowspan="2" class="span2"><span openlmis-message="label.vaccine.cc.model"></span></th>
       <th rowspan="2" class="span2"><span openlmis-message="label.vaccine.cc.energy.source"></span></th>
+      <th rowspan="2" class="span1">
+        <span openlmis-message="label.vaccine.cc.status"></span>
+      </th>
       <th colspan="2"><span openlmis-message="label.vaccine.cc.temp"></span></th>
       <th colspan="2"><span openlmis-message="label.vaccine.cc.temp.episode"></span></th>
     </tr>
@@ -37,6 +40,11 @@
       <td class="cell-input col-beginningBalance"><span class="cell-text">{{item.serial}}</span></td>
       <td class="cell-input col-beginningBalance"><span class="cell-text">{{item.model}}</span></td>
       <td class="cell-input col-beginningBalance"><span class="cell-text">{{item.energySource}}</span></td>
+      <td class="cell-input col-general">
+        <select ng-model="item.operationalStatusId">
+          <option value="{{s.id}}" ng-selected="s.id == item.operationalStatusId" ng-repeat="s in operationalStatuses">{{s.name}}</option>
+        </select>
+      </td>
       <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
                                                          ng-model="item.minTemp" type="text"/></td>
       <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"

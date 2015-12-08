@@ -36,6 +36,7 @@ public class ColdChainLineItem extends BaseModel {
 
   private String remarks;
 
+  private Long operationalStatusId;
   //DTO properties
   private String equipmentName;
   private String type;

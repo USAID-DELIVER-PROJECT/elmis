@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function ViewVaccineReportDetailController($scope, $location, $filter, report, discardingReasons) {
+function ViewVaccineReportDetailController($scope, $location, report, discardingReasons, operationalStatuses) {
 
   // initial state of the display
   $scope.report = new VaccineReport(report);
@@ -24,6 +24,7 @@ function ViewVaccineReportDetailController($scope, $location, $filter, report, d
     $location.path('/');
   };
 
+  $scope.operationalStatuses = operationalStatuses;
 
   $scope.showAdverseEffect = function (effect, editMode) {
     $scope.currentEffect = effect;
@@ -86,5 +87,16 @@ ViewVaccineReportDetailController.resolve = {
       });
     }, 100);
     return deferred.promise;
+  },
+  operationalStatuses : function ($q, $timeout, $route, ColdChainOperationalStatus) {
+    var deferred = $q.defer();
+
+    $timeout(function () {
+      ColdChainOperationalStatus.get(function (data) {
+        deferred.resolve(data.status);
+      });
+    }, 100);
+    return deferred.promise;
   }
+
 };

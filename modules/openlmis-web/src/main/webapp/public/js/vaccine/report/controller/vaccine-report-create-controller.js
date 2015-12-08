@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function CreateVaccineReportController($scope, $location , $filter, $dialog, manufacturers, report, discardingReasons, VaccineReportSave, VaccineReportSubmit) {
+function CreateVaccineReportController($scope, $location , operationalStatuses, $dialog, manufacturers, report, discardingReasons, VaccineReportSave, VaccineReportSubmit) {
 
   // initial state of the display
   $scope.report = new VaccineReport(report);
@@ -21,6 +21,8 @@ function CreateVaccineReportController($scope, $location , $filter, $dialog, man
   _.chain(report.tabVisibilitySettings).groupBy('tab').map(function(key, value){
                                                                                   $scope.tabVisibility[value] =  key[0].visible;
                                                                                   });
+
+  $scope.operationalStatuses = operationalStatuses;
 
   $scope.save = function () {
     VaccineReportSave.update($scope.report, function () {
@@ -149,6 +151,18 @@ CreateVaccineReportController.resolve = {
     $timeout(function () {
       ManufacturerList.get(function (data) {
         deferred.resolve(data.manufacturers);
+      });
+    }, 100);
+    return deferred.promise;
+  },
+  operationalStatuses : function ($q, $timeout, $route, ColdChainOperationalStatus) {
+    var deferred = $q.defer();
+
+    $timeout(function () {
+      ColdChainOperationalStatus.get(function (data) {
+        deferred.resolve(_.filter(data.status, function(d){
+          return d.category.indexOf('CCE') >=0;
+        }));
       });
     }, 100);
     return deferred.promise;

@@ -288,3 +288,8 @@ services.factory('PerformanceCoverage', function ($resource) {
 services.factory('Distribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/by-voucher-number/', {}, {});
 });
+
+
+services.factory('ColdChainOperationalStatus', function ($resource) {
+  return $resource('/equipment/type/operational-status.json', {}, {});
+});
