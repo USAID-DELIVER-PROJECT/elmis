@@ -34,7 +34,7 @@ $scope.filterd ={};
        // $scope.filter.max = 10000;
     };
 
-    $scope.periodTrends = [{}]
+    $scope.periodTrends = [{}];
 
 
 
