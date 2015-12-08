@@ -13,6 +13,7 @@
 package org.openlmis.vaccine.domain.reports;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -53,6 +54,7 @@ public class VaccineReport extends BaseModel {
   private Long outreachImmunizationSessionsCanceled;
 
   @JsonDeserialize(using = DateDeserializer.class)
+  @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   private Date submissionDate;
 
   private List<VaccineIvdTabVisibility> tabVisibilitySettings;

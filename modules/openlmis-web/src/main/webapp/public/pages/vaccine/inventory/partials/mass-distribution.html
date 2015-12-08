@@ -152,11 +152,17 @@
                                id="lots" ng-click="showLots(facility,product)" class="rnr-adjustment">
                                 <span ng-bind="product.quantity"></span>
                             </a>
-                            <input ng-show="product.lots === undefined && (facility.status === undefined || facility.status !=='PENDING')"
-                                   style="float:right"
-                                   numeric-validator="positiveInteger" maxlength="8" ng-model="product.quantity"
-                                   max="{{product.totalQuantityOnHand}}"
-                                   type="number"/>
+                            <a style="margin:3px 2px 7px 3px;padding-left:30px"
+                               ng-show="product.lots === undefined && (facility.status === undefined || facility.status !=='PENDING')"
+                               href
+                               id="quantity" ng-click="showLots(facility,product)" class="rnr-adjustment">
+                                <span ng-bind="product.quantity"></span>
+                            </a>
+                            <!--<input ng-show="product.lots === undefined && (facility.status === undefined || facility.status !=='PENDING')"-->
+                                   <!--style="float:right"-->
+                                   <!--numeric-validator="positiveInteger" maxlength="8" ng-model="product.quantity"-->
+                                   <!--max="{{product.totalQuantityOnHand}}"-->
+                                   <!--type="number"/>-->
                             <span ng-if="(facility.status === 'PENDING' && product.quantity !==0)"
                                   ng-bind="product.quantity"></span>
                             <span ng-if="(facility.status === 'PENDING' && product.quantity ===0)">-</span>
@@ -237,11 +243,17 @@
                                    id="lots2" ng-click="showLots(UnScheduledFacility,product)" class="rnr-adjustment">
                                     <span ng-bind="product.quantity"></span>
                                 </a>
-                                <input ng-show="product.lots.length === undefined"
-                                       style="float:right"
-                                       numeric-validator="positiveInteger" max="{{product.totalQuantityOnHand}}"
-                                       maxlength="8" ng-model="product.quantity"
-                                       type="number"/>
+                                <a style="margin:3px 2px 7px 3px;padding-left:30px"
+                                   ng-show="product.lots === undefined"
+                                   href
+                                   id="quantityE" ng-click="showLots(UnScheduledFacility,product)" class="rnr-adjustment">
+                                    <span ng-bind="product.quantity"></span>
+                                </a>
+                                <!--<input ng-show="product.lots.length === undefined"-->
+                                       <!--style="float:right"-->
+                                       <!--numeric-validator="positiveInteger" max="{{product.totalQuantityOnHand}}"-->
+                                       <!--maxlength="8" ng-model="product.quantity"-->
+                                       <!--type="number"/>-->
                             </td>
                         </tr>
                     </table>
@@ -257,7 +269,7 @@
             <h3 openlmis-message="label.vaccine.stock.select.batch.and.quantity.to.issue"></h3>
         </div>
 
-        <div class="modal-body">
+        <div class="modal-body" ng-form="lotForm">
             <div class="row-fluid">
                 <div class="span4"><span openlmis-message="label.facility"></span><b>:{{currentFacility}}</b></div>
                 <div class="span4"><span openlmis-message="label.product"></span><b>:{{currentProduct.name}}</b></div>
@@ -266,7 +278,7 @@
                             openlmis-message="label.vaccine.stock.quantity.required"></span><b>{{currentProduct.required}}</b>
                 </div>
             </div>
-            <table id="podTable" class="table table-bordered">
+            <table id="podTable" class="table table-bordered" ng-show="currentProduct.lots.length > 0">
                 <thead>
                 <tr>
                     <th class="col-lot"><span openlmis-message="label.stock.batch"></span></th>
@@ -287,8 +299,8 @@
                               class="icon-warning-sign red"></span>
                     </td>
                     <td>
-                        <input max="{{lot.quantityOnHand}}" name="lotQuantity{{$index}}" ng-model="lot.quantity"
-                               ng-change="updateCurrentTotal(currentProduct,lot)" style="width:100%" numeric-validator="positiveInteger"
+                        <input min="{{0}}" max="{{lot.quantityOnHand}}" name="lotQuantity{{$index}}" ng-model="lot.quantity"
+                               ng-change="updateCurrentTotal()" style="width:100%" numeric-validator="positiveInteger"
                                maxlength="8" type="number"/>
                     </td>
                 </tr>
@@ -298,13 +310,33 @@
                 </tr>
                 </tbody>
             </table>
+            <table id="podTable4" class="table table-bordered" ng-show="currentProduct.lots === undefined">
+                <thead>
+                <tr>
+                    <th class="col-quantity "><span openlmis-message="label.stock.onhand"></span></th>
+                    <th class="col-available"><span openlmis-message="label.vaccine.stock.quantity.toissue"></span></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{currentProduct.totalQuantityOnHand}}</td>
+                        <td>
+                            <input min="0" max="{{currentProduct.totalQuantityOnHand}}" name="nonLotQuantity"
+                                   style="float:right"  ng-change="updateCurrentTotal()"
+                                   numeric-validator="positiveInteger"   ng-model="currentProduct.quantity"
+                                   type="number"/>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="modal-footer">
-            <input ng-disabled="!currentLotsTotal >0" type="button" id="" class="btn btn-primary save-button"
-                   ng-click="saveLots()"
+            <input ng-disabled="currentLotsTotal === 0 && lotForm.$invalid " type="button" id="" class="btn btn-primary save-button"
+                   ng-click="saveCurrent()"
                    openlmis-message="button.done"/>
-            <input type="button" ng-click="closeModal();equipmentError=''" class="btn btn-cancel"
+            <input type="button" ng-click="closeModal();" class="btn btn-cancel"
                    openlmis-message="button.cancel"/>
         </div>
 
@@ -449,9 +481,13 @@
     <div form-toolbar id="action_buttons" class="action-buttons">
         <div class="form-cell button-row">
 
+            <!--<input id="save-all" type="submit"  ng-click="saveAll()" class="btn btn-primary save-button"-->
+                   <!--openlmis-message="button.save"/>-->
+
             <input id="cancel" type="submit" id="cancel-button" ng-click="cancel()" class="btn btn-primary save-button"
                    openlmis-message="button.cancel"/>
         </div>
+
         <div class="toolbar-error" id="saveErrorMsgDiv">
             <span openlmis-message="error" ng-show="error"></span>&nbsp;
             <span ng-show="errorProgram" ng-bind="errorProgram"></span>

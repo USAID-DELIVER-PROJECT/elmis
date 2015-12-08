@@ -1,0 +1,6 @@
+ALTER TABLE vaccine_report_cold_chain_line_items
+ADD operationalStatusId INTEGER NULL references equipment_operational_status(id);
+
+
+ALTER TABLE vaccine_report_adverse_effect_line_items
+ADD investigationDate DATE NULL;
