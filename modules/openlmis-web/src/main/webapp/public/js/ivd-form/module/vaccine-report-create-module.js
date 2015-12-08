@@ -13,25 +13,26 @@
 angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.dialog']).
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
-            when('/bundled-distribution-vaccination-supplies', {
-                controller: ViewbundledDistributionVacinationSuppliesController,
-                templateUrl: 'partials/view/bundled-distribution-vacination-supplies.html'
+            when('/create/:id', {
+                controller: CreateVaccineReportController,
+                templateUrl: 'partials/create.html',
+                resolve: CreateVaccineReportController.resolve
             }).
-            when('/performance-by-dropout-rate-by-district', {
-                controller: ViewPerformanceByDropoutRateByDistrictController,
-                templateUrl: 'partials/view/performance-by-dropout-rate-by-district.html',reloadOnSearch:false
+            when('/list', {
+                controller: VaccineReportController,
+                templateUrl: 'partials/list.html',
+                resolve: VaccineReportController.resolve
             }).
-            when('/trend-min-max-cold-range', {
-                controller: TrendMinMaxColdRangeController,
-                templateUrl: 'partials/view/trend-of-min-max-cold-rane.html',reloadOnSearch:false
+            when('/view/:id', {
+                controller: ViewVaccineReportDetailController,
+                templateUrl: 'partials/view.html',
+                resolve: ViewVaccineReportDetailController.resolve
             }).
-            when('/performance-coverage', {
-            controller: PerformanceCoverageReportController,
-            templateUrl:'partials/view/performance-coverage.html'
+            when('/view', {
+                controller: ViewVaccineReportController,
+                templateUrl: 'partials/view-list.html',
+                resolve: ViewVaccineReportController.resolve
             }).
-
             otherwise({redirectTo: '/list'});
-    }]).config(function (angularCombineConfigProvider) {
-        angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');
-    });
+    }]);
 
