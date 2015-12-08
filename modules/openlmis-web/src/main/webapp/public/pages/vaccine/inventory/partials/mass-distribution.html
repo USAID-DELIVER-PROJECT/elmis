@@ -321,9 +321,9 @@
                     <tr>
                         <td>{{currentProduct.totalQuantityOnHand}}</td>
                         <td>
-                            <input min="0" max="{{currentProduct.totalQuantityOnHand}}"
+                            <input min="0" max="{{currentProduct.totalQuantityOnHand}}" name="nonLotQuantity"
                                    style="float:right"  ng-change="updateCurrentTotal()"
-                                   numeric-validator="positiveInteger" maxlength="8" name="nonLotQuantity" ng-model="currentProduct.quantity"
+                                   numeric-validator="positiveInteger"   ng-model="currentProduct.quantity"
                                    type="number"/>
 
                         </td>
@@ -481,9 +481,13 @@
     <div form-toolbar id="action_buttons" class="action-buttons">
         <div class="form-cell button-row">
 
+            <!--<input id="save-all" type="submit"  ng-click="saveAll()" class="btn btn-primary save-button"-->
+                   <!--openlmis-message="button.save"/>-->
+
             <input id="cancel" type="submit" id="cancel-button" ng-click="cancel()" class="btn btn-primary save-button"
                    openlmis-message="button.cancel"/>
         </div>
+
         <div class="toolbar-error" id="saveErrorMsgDiv">
             <span openlmis-message="error" ng-show="error"></span>&nbsp;
             <span ng-show="errorProgram" ng-bind="errorProgram"></span>

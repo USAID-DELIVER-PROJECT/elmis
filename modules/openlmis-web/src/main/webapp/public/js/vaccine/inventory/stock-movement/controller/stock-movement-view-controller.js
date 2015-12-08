@@ -139,7 +139,10 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
                                        lot.lotId = l.lot.id;
                                        lot.quantity = l.quantity;
-                                       lot.vvmStatus=l.customProps.vvmstatus;
+                                       if(l.customProps !==undefined && l.customProps.vvmstatus !==undefined && l.customProps.vvmstatus !==null  )
+                                       {
+                                         lot.vvmStatus=l.customProps.vvmstatus;
+                                       }
                                        lineItem.lots.push(lot);
                                        lotSum = lotSum + l.quantity;
                                    }
