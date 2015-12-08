@@ -13,6 +13,7 @@
 package org.openlmis.vaccine.domain.reports;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,10 +33,16 @@ public class AdverseEffectLineItem extends BaseModel {
 
   private String productName;
 
+  @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   private Date date;
+
+  @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  private Date investigationDate;
 
   private String manufacturer;
   private String batch;
+
+  @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   private Date expiry;
 
   private Long cases;
