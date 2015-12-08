@@ -216,7 +216,7 @@
 
                         <tbody >
                         <tr ng-repeat="row in colValueList" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
-                            <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ><label>{{getColumnNameSummary(row.rangeName)}}</label></td>
+                            <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-bind="getColumnNameSummary(row.rangeName)"></td>
 
                             <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-repeat="column in columnVals track by $index">
                                     <span ng-if="row.columns[$index].value>0" ng-bind="row.columns[$index].value">
@@ -235,7 +235,7 @@
                 <div ng-show="regionrows.length > 0">
 
                     <table id="dropOutRegiontReport" ng-show="datarows.length > 0"
-                           class="table-bordered table table-striped pull-right"
+                           class="rnr-table table-bordered table"
                            ng-table="tableParams">
                         <thead>
                         <tr>
@@ -375,7 +375,7 @@
 
                         <tbody >
                         <tr ng-repeat="row in regionColumnVals" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
-                            <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ><label>{{getColumnNameSummary(row.rangeName)}}</label></td>
+                            <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-bind="getColumnNameSummary(row.rangeName)"></td>
 
                             <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-repeat="column in columnVals track by $index">
                                     <span ng-if="row.columns[$index].value>0" ng-bind="row.columns[$index].value">
