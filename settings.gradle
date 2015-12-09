@@ -25,7 +25,7 @@ include "modules:authentication",
         "modules:report",
         "modules:reporting",
         "modules:odk-api", "modules:equipment", "modules:help",
-        "modules:demographics", "modules:vaccine", "modules:stock-management"
+        "modules:demographics", "modules:vaccine", "modules:stock-management",
         "modules:requisition",
         "modules:rest-api",
         "modules:shipment",
