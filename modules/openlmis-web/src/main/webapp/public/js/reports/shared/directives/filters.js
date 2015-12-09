@@ -1232,7 +1232,12 @@ app.directive('staticPeriodFilter', [function () {
             };
 
             SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data, er) {
-                $scope.$parent.cutoffdate = $scope.cutofd = data.settings.value;
+                if(utils.isEmpty(data)|| utils.isEmpty(data.settings)|| utils.isEmpty(data.settings.value)){
+                    $scope.$parent.cutoffdate = $scope.cutofd =10;
+                }
+                else {
+                    $scope.$parent.cutoffdate = $scope.cutofd = data.settings.value;
+                }
             });
 
             $scope.$watch('periodRange', function (newValues, oldValues) {
