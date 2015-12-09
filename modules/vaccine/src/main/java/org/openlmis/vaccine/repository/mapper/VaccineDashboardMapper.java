@@ -11,9 +11,11 @@
  */
 package org.openlmis.vaccine.repository.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -184,6 +186,27 @@ public interface VaccineDashboardMapper {
                 "d.district_name,\n" +
                 "i.period_start_date")
         List<HashMap<String, Object>> getWastageByDistrict();
+
+        @Select("with temp as \n" +
+                "( select \n" +
+                "geographic_zone_name,\n" +
+                "COALESCE(fixed_sessions,0) fixed_sessions,\n" +
+                "COALESCE(outreach_sessions,0) outreach_sessions,\n" +
+                "COALESCE(fixed_sessions,0) + COALESCE(outreach_sessions,0) total_sessions\n" +
+                "from vw_vaccine_sessions\n" +
+                "where period_start_date::date >= #{startDate} and period_end_date::date <= #{endDate}\n" +
+                ")\n" +
+                "select \n" +
+                "t.geographic_zone_name,\n" +
+                "sum(t.fixed_sessions) fixed_sessions, \n" +
+                "sum(t.outreach_sessions) outreach_sessions,\n" +
+                "sum(t.total_sessions) total_sessions\n" +
+                "from temp t\n" +
+                "where total_sessions > 0\n" +
+                "group by 1\n" +
+                "order by total_sessions desc\n" +
+                "limit 5")
+        List<HashMap<String, Object>> getMonthlySessions(@Param("startDate") Date starDate, @Param("endDate") Date endDate);
 
 
 }

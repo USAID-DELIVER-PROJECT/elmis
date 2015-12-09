@@ -1,23 +1,12 @@
 <div class="app-form vaccine-form-filter">
-    <form ng-submit="filterGrid()" name="filterForm" novalidate>
-        <div class="horizontalFilters">
-            <div  class="form-field">
-                <span openlmis-message="label.monthly.sessions"></span>
-                <select id="sessions-monthly-product" ui-select2 class="input-large" ng-model="filter.sessions.monthly.product" ng-change="OnFilterChanged();">
-                    <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
-                </select>
-            </div>
-        </div>
-        <div class="horizontalFilters">
-            <div class="form-field">
-                <span openlmis-message="label.show.trend.for"></span>
-                <select id="sessions-monthly-period" ui-select2 class="input-large" ng-model="filter.sessions.monthly.period" ng-change="OnFilterChanged();">
-                    <option ng-repeat="option in periods" value="{{ option.id }}" ng-selected="filter.sessions.monthly.period == option.id">{{ option.name }}</option>
-                </select>
-            </div>
+    <form  name="filterForm" novalidate>
+        <div  class="clearfix">
+            <static-period-filter range="filter.sessions.range" startdate="filter.sessions.monthlyStartDate" enddate="filter.sessions.monthlyEndDate" rangemax="10" error="perioderror"></static-period-filter>
+
         </div>
     </form>
 </div>
+
 
 <c3chart bindto-id="{{product.name}}_monthly_sessions_chart">
     <chart-tooltip value-format-function="formatValue" />

@@ -15,6 +15,7 @@ import org.openlmis.vaccine.repository.mapper.VaccineDashboardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,5 +59,10 @@ public class VaccineDashboardRepository {
 
     public List<HashMap<String, Object>> getWastageByDistrict(){
         return mapper.getWastageByDistrict();
+    }
+
+    public List<HashMap<String, Object>> getMonthlySessions(Date startDate, Date endDate){
+
+        return mapper.getMonthlySessions(startDate, endDate);
     }
 }

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function VaccineDashboardController($scope,VaccineDashboardSummary,VaccineDashboardCoverage,VaccineDashboardWastage,SettingsByKey) {
+function VaccineDashboardController($scope,VaccineDashboardSummary,VaccineDashboardCoverage,VaccineDashboardSessions,VaccineDashboardWastage,SettingsByKey) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -20,7 +20,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,VaccineDashbo
     $scope.repairing = {};
     $scope.supplying = {};
     $scope.investigating = {};
-$scope.filterd ={};
+$scope.filter ={sessions:{}};
 
 
     $scope.periods = [{id:1, name:'custom'},{id:2, name:'last 3 months'}, {id:3, name: 'last 6 months'}, {id:4, name:'last 1 year'}, {id:5, name:'current period'}];
@@ -30,6 +30,9 @@ $scope.filterd ={};
         console.log("start date3 "+$scope.filterd.startDate3 +" and end date3 "+$scope.filterd.endDate3);
         console.log("vaccine product "+$scope.filterd.vaccineProduct)
         console.log("vaccine product2 "+$scope.filterd.vaccineProduct2)*/
+        VaccineDashboardSessions.get({startDate: $scope.filter.sessions.monthlyStartDate, endDate: $scope.filter.sessions.monthlyEndDate}, function(data){
+           $scope.monthlySessions = data.sessionsMonthly;
+        });
         $scope.data = $scope.datarows = [];
        // $scope.filter.max = 10000;
     };
@@ -78,7 +81,7 @@ $scope.filterd ={};
 
 }
 VaccineDashboardController.resolve = {
-    programs: function ($q, $timeout, VaccineSupervisedIvdPrograms) {
+   /* programs: function ($q, $timeout, VaccineSupervisedIvdPrograms) {
         var deferred = $q.defer();
 
         $timeout(function () {
@@ -88,5 +91,5 @@ VaccineDashboardController.resolve = {
         }, 100);
 
         return deferred.promise;
-    }
+    }*/
 };

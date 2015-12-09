@@ -18,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,5 +60,12 @@ public class VaccineDashboardController {
         wastage.put("wastageMonthly", service.getMonthlyWastage());
         wastage.put("wastageDistrict", service.getWastageByDistrict());
         return OpenLmisResponse.response("wastage", wastage);
+    }
+
+    @RequestMapping(value = "sessions", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getSessions(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate){
+
+
+        return OpenLmisResponse.response("monthlySessions", service.getMonthlySessions(startDate, endDate));
     }
 }

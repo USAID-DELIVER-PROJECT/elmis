@@ -12,16 +12,21 @@
 package org.openlmis.vaccine.service;
 
 import lombok.NoArgsConstructor;
+import org.joda.time.format.DateTimeFormat;
 import org.openlmis.vaccine.repository.VaccineDashboardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 @Service
 @NoArgsConstructor
 public class VaccineDashboardService {
+
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Autowired
     VaccineDashboardRepository repository;
@@ -56,6 +61,13 @@ public class VaccineDashboardService {
 
     public List<HashMap<String, Object>> getMonthlyWastage(){
         return repository.getMonthlyWastage();
+    }
+
+    public List<HashMap<String, Object>> getMonthlySessions(String startDate, String endDate){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getMonthlySessions(fromDate, toDate);
     }
 
     public List<HashMap<String, Object>> getWastageByDistrict(){
