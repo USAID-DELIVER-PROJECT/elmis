@@ -435,8 +435,7 @@
                 <tr ng-repeat="row in colValueList" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
                     <td
                             ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
-                            >
-                        <label>{{getColumnNameSummary(row.rangeName)}}</label></td>
+                            ng-bind="getColumnNameSummary(row.rangeName)" />
 
                     <td
                             ng-style="{'width':'40px','background-color': getBackGroundColorSummary(row.rangeName)}"
@@ -615,8 +614,8 @@
 
                 <tbody ng-repeat="row in regionColumnVals">
                 <tr ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
-                    <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"><label>{{getColumnNameSummary(row.rangeName)}}</label>
-                    </td>
+                    <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-bind="getColumnNameSummary(row.rangeName)"/>
+
 
                     <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
                         ng-repeat="column in columnVals track by $index">
