@@ -8,21 +8,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-package org.openlmis.demographics.service;
+package org.openlmis.vaccine.service;
 
 import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.FacilityApprovedProductRepository;
-import org.openlmis.core.repository.FacilityRepository;
-import org.openlmis.core.repository.RequisitionGroupRepository;
-import org.openlmis.core.repository.SupervisoryNodeRepository;
 import org.openlmis.core.service.FacilityProgramProductService;
 import org.openlmis.core.service.FacilityService;
-import org.openlmis.demographics.domain.AnnualDistrictEstimateEntry;
-import org.openlmis.demographics.domain.AnnualFacilityEstimateEntry;
-import org.openlmis.demographics.dto.StockRequirements;
-import org.openlmis.demographics.repository.AnnualDistrictEstimateRepository;
-import org.openlmis.report.mapper.lookup.FacilityLevelMapper;
-import org.openlmis.report.model.dto.FacilityLevelTree;
+import org.openlmis.vaccine.dto.StockRequirements;
+import org.openlmis.demographics.service.PopulationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
