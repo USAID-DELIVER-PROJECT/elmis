@@ -18,13 +18,6 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         $scope.product = data.productList;
     });
 
-    $scope.periods = [
-        {key:1, value:'Current Period'},
-        {key:2, value:'Last 3 Months'},
-        {key:3, value:'Last 6 Months'},
-        {key:4, value:'Last 1 Year'},
-        {key:5, value:'Custom Range'}
-    ];
 
     $scope.perioderror = "";
     $scope.pStartDate = "";
