@@ -285,9 +285,10 @@ public interface VaccineReportMapper {
   @Select("select * from geographic_zones where parentid is null")
   GeographicZone getNationalZone();
 
-  @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
-  List<Map<String, Object>> getPerformanceCoverageMainReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
-                                                                           @Param("productId") Long productId);
+    // Performance coverage report
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getPerformanceCoverageMainReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
+                                                            @Param("productId") Long productId);
 
 
   @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageSummaryReportDataByDistrict")
@@ -310,6 +311,26 @@ public interface VaccineReportMapper {
   @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageSummaryReportDataByRegionAggregate")
   List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByRegionAggregate(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
                                                                                      @Param("productId") Long productId);
+
+
+    // Completeness and Timeliness report
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId);
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessSummaryReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId);
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessMainReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId);
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId);
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessMainReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId);
+
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessSummaryReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId);
 
 }
 
