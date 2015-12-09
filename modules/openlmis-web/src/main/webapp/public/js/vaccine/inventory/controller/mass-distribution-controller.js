@@ -439,6 +439,13 @@ function MassDistributionController($scope,$location, $window,programs,$timeout,
          });
          $scope.page();
      };
+     $scope.saveAll=function(){
+        $scope.allScheduledFacilities.forEach(function(facility){
+            if($scope.hasProductToIssue(facility) && facility.status !== "PENDING"){
+               $scope.showIssueModal(facility,"SCHEDULED");
+            }
+        });
+     };
 
 }
 MassDistributionController.resolve = {
