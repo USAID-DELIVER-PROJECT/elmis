@@ -167,13 +167,15 @@ dependencies {
             project(':modules:reporting'),
             project(':modules:report'),
             project(':modules:distribution'),
+            project(':modules:odk-api'),
             project(':modules:equipment'),
             project(':modules:demographics'),
+            project(':modules:ivd-form'),
             project(':modules:vaccine'),
             project(':modules:help'),
             project(':modules:stock-management')
 
-    testCompile  project(path: ':modules:core', configuration: 'testFixtures'),
+    testCompile project(path: ':modules:core', configuration: 'testFixtures'),
             project(path: ':modules:rest-api', configuration: 'testFixtures'),
             project(path: ':modules:requisition', configuration: 'testFixtures'),
             project(path: ':modules:shipment', configuration: 'testFixtures'),

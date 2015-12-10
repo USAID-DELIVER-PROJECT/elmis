@@ -14,12 +14,13 @@ apply plugin: 'cobertura'
 
 dependencies {
 
-    compile  project(':modules:core')
-    compile project(':modules:demographics')
-    compile project(':modules:stock-management')
-   
+    compile project(':modules:core'),
+            project(':modules:demographics'),
+            project(':modules:ivd-form'),
+            project(':modules:stock-management')
+
     testCompile project(path: ':modules:core', configuration: 'testFixtures'),
-                project(path: ':modules:demographics', configuration: 'testFixtures')
+            project(path: ':modules:demographics', configuration: 'testFixtures')
 
     configurations {
         testFixtures {

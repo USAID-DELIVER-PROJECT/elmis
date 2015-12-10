@@ -12,15 +12,10 @@
 
 package org.openlmis.vaccine.repository.reports;
 
-import org.joda.time.DateTime;
-import org.joda.time.Months;
-import org.openlmis.core.domain.GeographicLevel;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.service.GeographicZoneService;
-import org.openlmis.vaccine.domain.reports.*;
-import org.openlmis.vaccine.dto.ReportStatusDTO;
+import org.openlmis.ivdform.domain.reports.*;
 import org.openlmis.vaccine.repository.mapper.reports.VaccineReportMapper;
-import org.openlmis.vaccine.service.reports.VaccineLineItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,58 +27,10 @@ public class VaccineReportRepository {
   @Autowired
   VaccineReportMapper mapper;
 
-  @Autowired
-  VaccineLineItemService lineItemService;
-
     @Autowired
     GeographicZoneService geographicZoneService;
 
 
-  public void insert(VaccineReport report){
-    mapper.insert(report);
-    saveDetails(report);
-  }
-
-
-  public void saveDetails(VaccineReport report){
-    lineItemService.saveLogisticsLineItems(report.getLogisticsLineItems(), report.getId());
-    lineItemService.saveDiseaseLineItems(report.getDiseaseLineItems(), report.getId());
-    lineItemService.saveCoverageLineItems(report.getCoverageLineItems(),report.getId());
-    lineItemService.saveColdChainLIneItems(report.getColdChainLineItems(), report.getId());
-    lineItemService.saveVitaminLineItems(report.getVitaminSupplementationLineItems(), report.getId());
-    lineItemService.saveAdverseEffectLineItems(report.getAdverseEffectLineItems(), report.getId());
-    lineItemService.saveCampaignLineItems(report.getCampaignLineItems(), report.getId());
-  }
-
-  public void update(VaccineReport report, Long userId) {
-    report.setModifiedBy(userId);
-    mapper.update(report);
-    saveDetails(report);
-  }
-
-  public VaccineReport getById(Long id){
-    return mapper.getById(id);
-  }
-
-  public VaccineReport getByIdWithFullDetails(Long id){
-    return mapper.getByIdWithFullDetails(id);
-  }
-
-  public VaccineReport getByProgramPeriod(Long facilityId, Long programId, Long periodId ){
-    return mapper.getByPeriodFacilityProgram(facilityId, programId, periodId);
-  }
-
-  public VaccineReport getLastReport(Long facilityId, Long programId) {
-    return mapper.getLastReport(facilityId, programId);
-  }
-
-  public Long getScheduleFor(Long facilityId, Long programId) {
-    return mapper.getScheduleFor(facilityId, programId);
-  }
-
-  public List<ReportStatusDTO> getReportedPeriodsForFacility(Long facilityId, Long programId) {
-    return mapper.getReportedPeriodsForFacility(facilityId, programId);
-  }
   public Long getReportIdForFacilityAndPeriod(Long facilityId, Long periodId){
     return mapper.getReportIdForFacilityAndPeriod(facilityId, periodId);
   }
@@ -166,11 +113,6 @@ public class VaccineReportRepository {
 
   public GeographicZone getNationalZone() {
     return mapper.getNationalZone();
-  }
-
-
-  public Long findLastReportBeforePeriod(Long facilityId, Long programId, Long periodId) {
-    return mapper.findPreviousReport(facilityId, programId, periodId);
   }
 
 

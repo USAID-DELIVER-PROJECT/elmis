@@ -20,7 +20,6 @@ import org.openlmis.demographics.domain.AnnualDistrictEstimateEntry;
 import org.openlmis.demographics.domain.EstimateCategory;
 import org.openlmis.demographics.dto.EstimateForm;
 import org.openlmis.demographics.dto.EstimateFormLineItem;
-import org.openlmis.demographics.helpers.ListUtil;
 import org.openlmis.demographics.repository.AnnualDistrictEstimateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +27,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Service
 public class AnnualDistrictDemographicEstimateService {
@@ -46,8 +47,8 @@ public class AnnualDistrictDemographicEstimateService {
 
 
   public void save(EstimateForm estimateForm, Long userId) {
-    for (EstimateFormLineItem dto : ListUtil.emptyIfNull(estimateForm.getEstimateLineItems())) {
-      for (AnnualDistrictEstimateEntry estimate : ListUtil.emptyIfNull(dto.getDistrictEstimates())) {
+    for (EstimateFormLineItem dto : emptyIfNull(estimateForm.getEstimateLineItems())) {
+      for (AnnualDistrictEstimateEntry estimate : emptyIfNull(dto.getDistrictEstimates())) {
         AnnualDistrictEstimateEntry existingEstimateEntry = repository.getEntryBy(estimate.getYear(), estimate.getDistrictId(), estimate.getProgramId(), estimate.getDemographicEstimateId());
         if (existingEstimateEntry != null && (!existingEstimateEntry.getId().equals(estimate.getId()) || existingEstimateEntry.getIsFinal())) {
           continue;
@@ -66,8 +67,8 @@ public class AnnualDistrictDemographicEstimateService {
 
   public void finalizeEstimate(EstimateForm form, Long userId) {
     this.save(form, userId);
-    for (EstimateFormLineItem dto : ListUtil.emptyIfNull(form.getEstimateLineItems())) {
-      for (AnnualDistrictEstimateEntry est : ListUtil.emptyIfNull(dto.getDistrictEstimates())) {
+    for (EstimateFormLineItem dto : emptyIfNull(form.getEstimateLineItems())) {
+      for (AnnualDistrictEstimateEntry est : emptyIfNull(dto.getDistrictEstimates())) {
         est.setDistrictId(dto.getId());
         if (est.getId() != null) {
           est.setModifiedBy(userId);
@@ -80,8 +81,8 @@ public class AnnualDistrictDemographicEstimateService {
   }
 
   public void undoFinalize(EstimateForm form, Long userId) {
-    for (EstimateFormLineItem dto : ListUtil.emptyIfNull(form.getEstimateLineItems())) {
-      for (AnnualDistrictEstimateEntry est : ListUtil.emptyIfNull(dto.getDistrictEstimates())) {
+    for (EstimateFormLineItem dto : emptyIfNull(form.getEstimateLineItems())) {
+      for (AnnualDistrictEstimateEntry est : emptyIfNull(dto.getDistrictEstimates())) {
         est.setDistrictId(dto.getId());
         if (est.getId() != null) {
           est.setModifiedBy(userId);
