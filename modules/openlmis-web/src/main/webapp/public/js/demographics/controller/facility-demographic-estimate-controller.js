@@ -9,21 +9,21 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function FacilityDemographicEstimateController($scope, $dialog, $filter, rights, categories, years, programs, FacilityDemographicEstimates, SaveFacilityDemographicEstimates, FinalizeFacilityDemographicEstimates, UndoFinalizeFacilityDemographicEstimates) {
+function FacilityDemographicEstimateController($scope, $dialog, $filter, rights, categories, years, programs, FacilityDemographicEstimates, DistrictDemographicEstimates, SaveFacilityDemographicEstimates, FinalizeFacilityDemographicEstimates, UndoFinalizeFacilityDemographicEstimates) {
 
   $.extend(this, new BaseDemographicEstimateController($scope, rights, categories, programs , years, $filter));
 
-  $scope.bindEstimates = function(data){
+  $scope.bindEstimates = function(facilities, districts){
     $scope.lineItems = [];
     // initiate all objects.
-    for(var i = 0; i < data.estimates.estimateLineItems.length; i ++){
-      $.extend(data.estimates.estimateLineItems[i], new FacilityEstimateModel());
-      $scope.lineItems.push(data.estimates.estimateLineItems[i]);
+    for(var i = 0; i < facilities.estimates.estimateLineItems.length; i ++){
+      $.extend(facilities.estimates.estimateLineItems[i], new FacilityEstimateModel());
+      $scope.lineItems.push(facilities.estimates.estimateLineItems[i]);
     }
 
     $scope.pageCount = Math.round($scope.lineItems.length / $scope.pageSize);
-    data.estimates.estimateLineItems = [];
-    $scope.form = data.estimates;
+    facilities.estimates.estimateLineItems = [];
+    $scope.form = facilities.estimates;
     $scope.currentPage = 1;
     if($scope.lineItems.length > $scope.pageSize){
       $scope.form.estimateLineItems = $scope.lineItems.slice( $scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
@@ -32,8 +32,8 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
     }
     // todo - check if the list is partially final or not?
     // the list can be partially finalized if the rivo or civo are the once that see whatever is in their respective facilities.
-    $scope.isFinalized = data.estimates.estimateLineItems[0].facilityEstimates[0].isFinal;
-    $scope.districtSummary = new AggregateFacilityEstimateModel($scope.lineItems);
+    $scope.isFinalized = facilities.estimates.estimateLineItems[0].facilityEstimates[0].isFinal;
+    $scope.districtSummary = new AggregateFacilityEstimateModel($scope.lineItems , districts);
 
   };
 
@@ -42,8 +42,10 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
       return;
     }
 
-    FacilityDemographicEstimates.get({year: $scope.year, program: $scope.program}, function(data){
-      $scope.bindEstimates(data);
+    FacilityDemographicEstimates.get({year: $scope.year, program: $scope.program}, function(facilities){
+      DistrictDemographicEstimates.get({year: $scope.year, program: $scope.program}, function(districts){
+        $scope.bindEstimates(facilities, districts);
+      });
     });
   };
 
