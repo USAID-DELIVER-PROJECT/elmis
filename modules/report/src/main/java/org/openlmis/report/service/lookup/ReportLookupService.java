@@ -394,6 +394,7 @@ public class ReportLookupService {
     public List<Facility> getFacilityByGeographicZoneTree(Long userId, Long zoneId, Long programId) {
         return facilityReportMapper.getFacilitiesByGeographicZoneTree(userId, zoneId, programId);
     }
+
     public List<Facility> getFacilityByGeographicZone(Long userId, Long zoneId) {
         return facilityReportMapper.getFacilitiesByGeographicZone(userId, zoneId);
     }
@@ -505,6 +506,58 @@ public class ReportLookupService {
         GeoZoneTree tree = geographicZoneMapper.getParentZoneTree();
         populateChildren(tree, zones);
         return tree;
+    }
+
+    public GeoZoneTree getGeoZoneTreeWithOutZones(Long programId) {
+        List<GeoZoneTree> allGeozones = geographicZoneMapper.getGeoZones(programId);
+        GeoZoneTree tree = geographicZoneMapper.getParentZoneTree();
+        List<GeoZoneTree> zoneList = this.loadZoneList(tree, allGeozones);
+        List<GeoZoneTree> regions = this.loadZoneChildren(zoneList, allGeozones);
+        order(regions);
+
+        for (int i=0;i<regions.size();i++) {
+            populateChildren(regions.get(i), allGeozones);
+        }
+        tree.setChildren(regions);
+        return tree;
+    }
+
+
+    private static void order(List<GeoZoneTree> zoneList) {
+
+        Collections.sort(zoneList, new Comparator() {
+            public int compare(Object o1, Object o2) {
+
+                String x1 = ((GeoZoneTree) o1).getName();
+                String x2 = ((GeoZoneTree) o2).getName();
+
+               return  x1.compareTo(x2);
+                }
+
+        });
+    }
+    public List<GeoZoneTree> loadZoneChildren(List<GeoZoneTree> zoneList, List<GeoZoneTree> geoSourceList) {
+        List<GeoZoneTree> children = new ArrayList<>();
+        for (GeoZoneTree t : geoSourceList) {
+            for (GeoZoneTree zoneTree : zoneList) {
+                if (t.getParentId() == zoneTree.getId()) {
+                    children.add(t);
+                }
+            }
+        }
+        return children;
+    }
+
+    public List<GeoZoneTree> loadZoneList(GeoZoneTree root, List<GeoZoneTree> geoSourceList) {
+        List<GeoZoneTree> children = new ArrayList<>();
+        for (GeoZoneTree t : geoSourceList) {
+
+            if (t.getParentId() == root.getId()) {
+                children.add(t);
+
+            }
+        }
+        return children;
     }
 
     public GeoZoneTree getGeoZoneTree(Long userId, Long programId) {
@@ -681,7 +734,7 @@ public class ReportLookupService {
         return productMapper.getRmnchProducts();
     }
 
-    public List<ProcessingPeriod> getLastPeriods(Long programId){
+    public List<ProcessingPeriod> getLastPeriods(Long programId) {
         return processingPeriodMapper.getLastPeriods(programId);
     }
 
@@ -691,9 +744,13 @@ public class ReportLookupService {
 
         Set<String> years = new HashSet<>();
         Set<Schedule> schedules = new HashSet<>();
+        Set<Integer> scheduleIds = new HashSet<>();
         for (YearSchedulePeriodTree periodTree : yearSchedulePeriodTree) {
             years.add(periodTree.getYear());
-            schedules.add(new Schedule(periodTree.getGroupid(), periodTree.getGroupname(), null, null));
+            if (!scheduleIds.contains(periodTree.getGroupid())){
+                scheduleIds.add(periodTree.getGroupid());
+                schedules.add(new Schedule(periodTree.getGroupid(), periodTree.getGroupname(), null, null));
+            }
         }
 
         List<YearSchedulePeriodTree> yearList = new ArrayList<>();
@@ -729,7 +786,7 @@ public class ReportLookupService {
         return yearList;
     }
 
-    public Long getCurrentPeriodIdForVaccine(){
+    public Long getCurrentPeriodIdForVaccine() {
         return processingPeriodMapper.getCurrentPeriodIdForVaccine();
     }
 
@@ -778,13 +835,12 @@ public class ReportLookupService {
 
 //End new
 
-    public Map<String,Object> getCustomPeriodDates(Long period) {
+    public Map<String, Object> getCustomPeriodDates(Long period) {
 
 
         Map<String, Object> dates = new HashMap<String, Object>();
 
-        if(period != null && period < 5 && period > 0)
-        {
+        if (period != null && period < 5 && period > 0) {
             DateTime
                     sDate = periodStartDate(period),
                     eDate = periodEndDate();
@@ -794,7 +850,7 @@ public class ReportLookupService {
             String startDateString = sDate.toString(VACCINE_DATE_FORMAT_FOR_RANGE);
             String endDateString = eDate.toString(VACCINE_DATE_FORMAT_FOR_RANGE);
 
-            if(startDate != null && endDate != null) {
+            if (startDate != null && endDate != null) {
                 dates.put("startDate", startDate);
                 dates.put("endDate", endDate);
                 dates.put("startDateString", startDateString);
@@ -805,7 +861,7 @@ public class ReportLookupService {
         return dates;
     }
 
-    public DateTime periodEndDate(){
+    public DateTime periodEndDate() {
 
         int currentDay = new DateTime().getDayOfMonth();
 
@@ -813,23 +869,23 @@ public class ReportLookupService {
 
         boolean dateBeforeCutoff = cutOffDays != null && currentDay < cutOffDays;
 
-        if(dateBeforeCutoff)
+        if (dateBeforeCutoff)
             return new DateTime().withDayOfMonth(1).minusMonths(1).minusDays(1);
         else
             return new DateTime().withDayOfMonth(1).minusDays(1);
     }
 
-    public DateTime periodStartDate(Long range){
+    public DateTime periodStartDate(Long range) {
 
         DateTime periodEndDate = periodEndDate();
 
-        if(range == 1)
+        if (range == 1)
             return periodEndDate.withDayOfMonth(1);
-        else if(range == 2)
+        else if (range == 2)
             return periodEndDate.minusMonths(2).withDayOfMonth(1);
-        else if(range == 3)
+        else if (range == 3)
             return periodEndDate.minusMonths(5).withDayOfMonth(1);
-        else if(range == 4)
+        else if (range == 4)
             return periodEndDate.minusYears(1).withDayOfMonth(1);
 
         return null;

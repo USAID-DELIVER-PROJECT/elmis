@@ -13,12 +13,13 @@
 package org.openlmis.demographics.service;
 
 import org.openlmis.demographics.domain.EstimateCategory;
-import org.openlmis.demographics.helpers.ListUtil;
 import org.openlmis.demographics.repository.EstimateCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Service
 public class EstimateCategoryService {
@@ -35,7 +36,7 @@ public class EstimateCategoryService {
   }
 
   public void save(List<EstimateCategory> categories) {
-    for (EstimateCategory category : ListUtil.emptyIfNull(categories)) {
+    for (EstimateCategory category : emptyIfNull(categories)) {
       if (category.getId() == null) {
         repository.insert(category);
       } else {

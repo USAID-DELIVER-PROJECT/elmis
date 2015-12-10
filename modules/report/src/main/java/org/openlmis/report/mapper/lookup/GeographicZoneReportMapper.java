@@ -157,11 +157,14 @@ public interface GeographicZoneReportMapper {
     List<GeoZoneTree> getGeoZonesForUserByProgram(@Param("userId") Long userId, @Param("programId") Long programId);
 
 
-    @Select("select distinct gz.* from geographic_zones gz " +
-            " join (select vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId}) sq" +
-            " on sq.district_id = gz.id or sq.zone_id = gz.id or gz.id = sq.region_id or gz.id = sq.parent")
-    List<GeoZoneTree> getGeoZonesForUser(@Param("userId") Long userId);
-
+        @Select("select distinct gz.* from geographic_zones gz " +
+                " join (select vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.program_id = #{programId} ) sq" +
+                " on sq.district_id = gz.id or sq.zone_id = gz.id or gz.id = sq.region_id or gz.id = sq.parent")
+    List<GeoZoneTree> getGeoZones(@Param("programId")Long ProgramId);
+        @Select("select distinct gz.* from geographic_zones gz " +
+                " join (select vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId}) sq" +
+                " on sq.district_id = gz.id or sq.zone_id = gz.id or gz.id = sq.region_id or gz.id = sq.parent")
+        List<GeoZoneTree> getGeoZonesForUser(@Param("userId") Long userId);
 
     @Select("WITH  recursive  userGeographicZonesRec AS \n" +
             "(SELECT *\n" +

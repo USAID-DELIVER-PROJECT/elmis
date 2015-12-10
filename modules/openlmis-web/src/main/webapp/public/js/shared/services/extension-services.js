@@ -144,7 +144,9 @@ services.factory('TreeGeographicZoneList',function ($resource){
 services.factory('TreeGeographicZoneListByProgram',function ($resource){
   return $resource('/reports//geographic-zones/tree-program.json', {}, {});
 });
-
+services.factory('TreeGeographicTreeByProgramNoZones',function ($resource){
+    return $resource('/reports/geographic-zones/tree-no-zones.json', {}, {});
+});
 services.factory('ReportRegimens',function ($resource){
     return $resource('/reports/regiments.json', {}, {}) ;
 });

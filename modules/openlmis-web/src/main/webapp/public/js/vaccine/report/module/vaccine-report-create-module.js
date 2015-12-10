@@ -13,26 +13,6 @@
 angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.dialog']).
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
-            when('/create/:id', {
-                controller: CreateVaccineReportController,
-                templateUrl: 'partials/create.html',
-                resolve: CreateVaccineReportController.resolve
-            }).
-            when('/list', {
-                controller: VaccineReportController,
-                templateUrl: 'partials/list.html',
-                resolve: VaccineReportController.resolve
-            }).
-            when('/view/:id', {
-                controller: ViewVaccineReportDetailController,
-                templateUrl: 'partials/view.html',
-                resolve: ViewVaccineReportDetailController.resolve
-            }).
-            when('/view', {
-                controller: ViewVaccineReportController,
-                templateUrl: 'partials/view-list.html',
-                resolve: ViewVaccineReportController.resolve
-            }).
             when('/bundled-distribution-vaccination-supplies', {
                 controller: ViewbundledDistributionVacinationSuppliesController,
                 templateUrl: 'partials/view/bundled-distribution-vacination-supplies.html'
@@ -40,6 +20,10 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
             when('/performance-by-dropout-rate-by-district', {
                 controller: ViewPerformanceByDropoutRateByDistrictController,
                 templateUrl: 'partials/view/performance-by-dropout-rate-by-district.html',reloadOnSearch:false
+            }).
+            when('/trend-min-max-cold-range', {
+                controller: TrendMinMaxColdRangeController,
+                templateUrl: 'partials/view/trend-of-min-max-cold-rane.html',reloadOnSearch:false
             }).
             when('/performance-coverage', {
             controller: PerformanceCoverageReportController,

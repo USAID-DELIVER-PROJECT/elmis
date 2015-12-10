@@ -189,7 +189,12 @@ public class ReportLookupController extends BaseController {
 
     return OpenLmisResponse.response(ZONE, geoZoneTree);
   }
+    @RequestMapping(value = "/geographic-zones/tree-no-zones", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getGeographicZoneTreeWithoutZone(@RequestParam(value = "program", required = true, defaultValue = "0") long program ) {
+        GeoZoneTree geoZoneTree =  reportLookupService.getGeoZoneTreeWithOutZones(program);
 
+        return OpenLmisResponse.response(ZONE, geoZoneTree);
+    }
   @RequestMapping(value = "/geographic-zones/tree-program", method = GET, headers = ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getGeographicZoneTreeByProgram( @RequestParam(value = "program", required = true, defaultValue = "0") long program,  HttpServletRequest request) {
     GeoZoneTree geoZoneTree =  reportLookupService.getGeoZoneTree(loggedInUserId(request), program);

@@ -356,14 +356,14 @@
         </div>
     </div>
 </script>
-
+<!--
 <script type="text/ng-template" id="filter-static-period">
     <div>
         <div class="horizontalFilters form-cell">
             <label for="static-period" class="labels" openlmis-message="label.period"><span class="label-required">*</span></label>
             <div>
                 <select id="static-period" ui-select2 class="input-large" ng-model="periodRange"  >
-                    <option ng-value="0" ng-selected="periodRange == 0">---Select period---</option>
+                    <option ng-value="0" ng-selected="periodRange == 0">-&#45;&#45;Select period-&#45;&#45;</option>
                     <option ng-repeat="period in periods" ng-value="{{ period.key }}">{{ period.value }}</option>
                 </select>
             </div>
@@ -383,8 +383,8 @@
             </div>
         </div>
     </div>
-</script>
-<script type="text/ng-template" id="filter-zone-template">
+</script>-->
+<script type="text/ng-template" id="filter-vaccine-zone-template">
     <div>
         <div style=" display: inline-block;    margin-left: 10px;">
             <div id="1" style="float: left">
@@ -402,7 +402,7 @@
                             <option ng-selected="filterZone == value.id" value="{{value.id}}"><b class="green"> -- All of
                                 {{value.name}}</b></option>
                             <option ng-repeat-start="v in value.children" ng-selected="filterZone == v.id" value="{{v.id}}">
-                                {{v.name}}
+                                &nbsp; &nbsp; {{v.name}}
                             </option>
                             <option ng-repeat-end ng-repeat="d in v.children" ng-selected="filterZone == d.id"
                                     value="{{d.id}}"> &nbsp; &nbsp; {{d.name}}
@@ -443,12 +443,26 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="filter-vaccine-product-template">
+    <div>
+        <div>
+            <select  ui-select2 class="input-large"
+                     ng-model="filterProduct">
+                <option ng-value="0" ng-selected="filterProduct ==undefined ||filterProduct == 0">---Select product---</option>
+                <option ng-repeat="option in products " value="{{option.id}}">{{option.name}}</option>
+
+            </select>
+        </div>
+
+    </div>
+</script>
+
 <script type="text/ng-template" id="filter-static-period">
     <div>
-        <div class="horizontalFilters form-cell">
+        <div  class="horizontalFilters form-cell">
             <label for="static-period"  class="labels" openlmis-message="label.period"><span class="label-required">*</span></label>
             <div>
-                <select id="static-period" ui-select2 class="input-large" ng-model="periodRange">
+                <select style="width: 140px" id="static-period" ui-select2 class="input-large" ng-model="periodRange">
                     <option ng-value="0" ng-selected="periodRange == 0">---Select period---</option>
                     <option ng-repeat="period in periods" ng-value="{{ period.key }}">{{ period.value }}</option>
                 </select>
@@ -458,14 +472,14 @@
         <div class="horizontalFilters form-cell" ng-show="showCustomeDateInputs">
             <label for="product" class="labels" ><span openlmis-message="label.start.date"></span></label>
             <div>
-                <input ng-model="periodStartdate" ui-date-format="yy-mm-dd" ui-date />
+                <input ng-model="periodStartdate" ui-date-format="yy-mm-dd" ui-date ng-change="notifyFilterChanged()"/>
             </div>
         </div>
 
         <div class="horizontalFilters form-cell" ng-show="showCustomeDateInputs">
             <label for="product" class="labels" ><span openlmis-message="label.end.date"></span></label>
             <div>
-                <input ng-model="periodEnddate" ui-date-format="yy-mm-dd" ui-date />
+                <input ng-model="periodEnddate" ui-date-format="yy-mm-dd" ui-date ng-change="notifyFilterChanged()"/>
             </div>
         </div>
     </div>
