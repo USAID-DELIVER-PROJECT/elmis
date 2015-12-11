@@ -1253,8 +1253,7 @@ app.directive('staticPeriodFilter', [ function() {
                    return;
 
                 else if(!((angular.isUndefined(newValues[0]) || newValues[0] === null) ||
-                    (angular.isUndefined(newValues[1]) || newValues[1] === null))
-                    && $scope.periodRange == 5 && $scope.periodRange > 0){
+                    (angular.isUndefined(newValues[1]) || newValues[1] === null)) && $scope.periodRange == 5 && $scope.periodRange > 0){
 
                     var datediff = differenceInDays();
 

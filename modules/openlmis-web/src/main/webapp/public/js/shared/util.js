@@ -67,7 +67,7 @@ var utils = {
           var monthBack = 0;
           var currentDays = currentDate.getDate();
 
-          if(periodRange == 0)
+          if(periodRange === "0")
               return {startdate: null, enddate: null};
 
           else if(periodRange !== 0 && utils.isEmpty(_cutoffDate)) {
