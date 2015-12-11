@@ -472,14 +472,14 @@
         <div class="horizontalFilters form-cell" ng-show="showCustomeDateInputs">
             <label for="product" class="labels" ><span openlmis-message="label.start.date"></span></label>
             <div>
-                <input ng-model="periodStartdate" ui-date-format="yy-mm-dd" ui-date ng-change="notifyFilterChanged()"/>
+                <input ng-model="periodStartdate" ui-date-format="yy-mm-dd" ui-date/>
             </div>
         </div>
 
         <div class="horizontalFilters form-cell" ng-show="showCustomeDateInputs">
             <label for="product" class="labels" ><span openlmis-message="label.end.date"></span></label>
             <div>
-                <input ng-model="periodEnddate" ui-date-format="yy-mm-dd" ui-date ng-change="notifyFilterChanged()"/>
+                <input ng-model="periodEnddate" ui-date-format="yy-mm-dd" ui-date/>
             </div>
         </div>
     </div>
