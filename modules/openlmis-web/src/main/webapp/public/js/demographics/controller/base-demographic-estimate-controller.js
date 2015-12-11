@@ -15,6 +15,7 @@ function BaseDemographicEstimateController($scope, rights, categories, programs 
 
   //TODO: read this configuration from backend. 
   $scope.enableAutoCalculate = false;
+  $scope.showFacilityAggregatesOption = false;
 
 
   $scope.currentPage = 1;

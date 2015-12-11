@@ -305,3 +305,7 @@ services.factory('Distribution', function ($resource) {
 services.factory('ColdChainOperationalStatus', function ($resource) {
   return $resource('/equipment/type/operational-status.json', {}, {});
 });
+
+services.factory('CompletenessAndTimeliness', function ($resource) {
+    return $resource('/vaccine/report/completenessAndTimeliness.json', {}, {});
+});

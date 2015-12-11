@@ -229,6 +229,24 @@ public class VaccineReportService {
 
    }
 
+    public Object getCompletenessAndTimelinessReportData(String periodStart, String periodEnd, Long range, Long districtId, Long productId) {
+
+        Date startDate = null, endDate = null;
+
+        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
+        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
+
+        Map<String, List<Map<String, Object>>> result =  new HashMap<String, List<Map<String, Object>>>();
+
+        GeographicZone zone = geographicZoneService.getById(districtId);
+
+        result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId));
+        result.put("summary",    repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
+        result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
+
+        return result;
+    }
+
     private List<Map<String,Object>> getSummaryPeriodList(Date startDate, Date endDate) {
 
         DateTime periodStart = new DateTime(startDate);
@@ -259,34 +277,7 @@ public class VaccineReportService {
         return list;
     }
 
-   /*public DateTime periodEndDate(){
 
-        int currentDay = new DateTime().getDayOfMonth();
 
-        Integer cutOffDays = configurationSettingService.getConfigurationIntValue("VACCINE_LATE_REPORTING_DAYS");
 
-        boolean dateBeforeCutoff = currentDay < cutOffDays;
-
-        if(dateBeforeCutoff)
-            return new DateTime().withDayOfMonth(1).minusMonths(1).minusDays(1);
-        else
-            return new DateTime().withDayOfMonth(1).minusDays(1);
-    }
-
-    public DateTime periodStartDate(Long range){
-
-        DateTime periodEndDate = periodEndDate();
-
-        if(range == 1)
-            return periodEndDate.withDayOfMonth(1);
-        else if(range == 2)
-            return periodEndDate.minusMonths(2).withDayOfMonth(1);
-        else if(range == 3)
-            return periodEndDate.minusMonths(5).withDayOfMonth(1);
-        else if(range == 4)
-            return periodEndDate.minusYears(1).withDayOfMonth(1);
-
-        return null;
-
-    }*/
 }

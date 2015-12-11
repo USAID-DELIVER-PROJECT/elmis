@@ -29,6 +29,11 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
             controller: PerformanceCoverageReportController,
             templateUrl:'partials/view/performance-coverage.html'
             }).
+            when('/completeness-and-timeliness', {
+                controller: CompletenesssAndTimelinessReportController,
+                templateUrl:'partials/view/completeness-and-timeliness.html'
+            }).
+
 
             otherwise({redirectTo: '/list'});
     }]).config(function (angularCombineConfigProvider) {
