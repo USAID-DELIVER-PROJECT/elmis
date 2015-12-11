@@ -15,7 +15,7 @@
     .summary-table{
           table-layout: fixed;
          width: 100% !important;
-           border: 1px solid #000;
+           /*border: 1px solid #000;*/
             margin-top:43px;
         }
 </style>
@@ -24,10 +24,10 @@
 <div class="row-fluid">
     <div class="box span12">
         <div class="box-header">
-            <h2 >Trend Of Mini & Maxi Cold Chain Temperatures And Temperature Alarms<i class="icon-edit"></i><span
+
+            <h2 openlmis-message="report.performance.by.trend.minmax.coldrange.report"><i class="icon-edit"></i><span
                     class="break"></span>
             </h2>
-
             <div class="box-icon">
                 <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
                    class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
@@ -52,8 +52,8 @@
 
                         <br/>
                     </div>
-                    <p style="font-size: .8em"> Period Start: {{filter.periodStart| date:'MMM dd, yyyy'}} &nbsp;&nbsp;Period
-                        End: {{filter.periodEnd| date:'MMM dd, yyyy'}}</p>
+                    <p style="font-size: .8em"> <span  openlmis-message="label.period.start.date"></span>:{{filter.periodStart| date:'MMM dd, yyyy'}} &nbsp;&nbsp;
+                        <span  openlmis-message="label.period.end.date"></span>: {{filter.periodEnd| date:'MMM dd, yyyy'}}</p>
 
                     <p style="font-size: .8em; color: red"> {{perioderror}}</p>
 
@@ -77,50 +77,49 @@
                 <thead>
                 <tr>
                     <th rowspan="2" style="text-align: center; vertical-align: middle">
-                        <span>	 Region</span>
+                        <span openlmis-message="label.region">	</span>
                     </th>
                     <th rowspan="2"
                         style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                        <span>	 District</span>
+                        <span openlmis-message="label.district">	 </span>
                     </th>
                     <th ng-if="reportType==true" rowspan="2"
                         style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                        <span>	 Facility</span>
+                        <span openlmis-message="label.number.of.facilities">	 </span>
                     </th>
 
                     <th rowspan="2">
-                        <span>Period</span>
+                        <span openlmis-message="label.period"></span>
 
                     </th>
                     <th rowspan="2" style="width: 10px">
-                        <span>Population</span>
+                        <span openlmis-message="label.population"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Regrigator Temprature</span>
+                        <span openlmis-message="label.regrigator.temprature"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Alarm Episodes</span>
+                        <span openlmis-message="alamr.episodes"></span>
 
                     </th>
                 </tr>
 
                 <tr>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                     <th>
-                        <span>min</span>
-
+                        <span openlmis-message="label.min"></span>
                     </th>
                     <th>
-                        <span>Max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                 </tr>
@@ -226,7 +225,7 @@
                     <td ng-if="reportType==true" colspan="3"/>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; ">
-                        Total
+                        <style openlmis-message="label.total"></style>
                     </td>
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
@@ -254,50 +253,50 @@
                 <thead>
                 <tr>
                     <th rowspan="2" style="text-align: center; vertical-align: middle">
-                        <span>	 Region</span>
+                        <span openlmis-message="label.region">	</span>
                     </th>
                     <th rowspan="2"
                         style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                        <span>	 District</span>
+                        <span openlmis-message="label.district">	 </span>
                     </th>
                     <th ng-if="reportType==true" rowspan="2"
                         style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                        <span>	 Facility</span>
+                        <span openlmis-message="label.number.of.facilities">	 </span>
                     </th>
 
                     <th rowspan="2">
-                        <span>Period</span>
+                        <span openlmis-message="label.period"></span>
 
                     </th>
                     <th rowspan="2" style="width: 10px">
-                        <span>Population</span>
+                        <span openlmis-message="label.population"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Regrigator Temprature</span>
+                        <span openlmis-message="label.regrigator.temprature"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Alarm Episodes</span>
+                        <span openlmis-message="alamr.episodes"></span>
 
                     </th>
                 </tr>
 
                 <tr>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>Max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                 </tr>
@@ -403,7 +402,7 @@
                     <td ng-if="reportType==true" colspan="3"/>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; ">
-                        Total
+                        <style openlmis-message="label.total"></style>
                     </td>
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
@@ -429,10 +428,10 @@
 
             <table
                     class="rnr-table table-bordered table summary-table"
-                    border="1">
+                    >
                 <thead>
                 <tr>
-                    <th style="height:42px"></th>
+                    <th></th>
                     <th ng-style="{'max-width':'60px'}" ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
                     </th>
                 </tr>
@@ -469,43 +468,43 @@
                 <thead>
                 <tr>
                     <th rowspan="2" style="text-align: center; vertical-align: middle">
-                        <span>	 Region</span>
+                        <span openlmis-message="label.region">	</span>
                     </th>
 
 
                     <th rowspan="2">
-                        <span>Period</span>
+                        <span openlmis-message="label.period"></span>
 
                     </th>
                     <th rowspan="2" style="width: 10px">
-                        <span>Population</span>
+                        <span openlmis-message="label.population"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Regrigator Temprature</span>
+                        <span openlmis-message="label.regrigator.temprature"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Alarm Episodes</span>
+                        <span openlmis-message="alamr.episodes"></span>
 
                     </th>
                 </tr>
 
                 <tr>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>Max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                 </tr>
@@ -582,7 +581,7 @@
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; ">
-                        Total
+                       <style openlmis-message="label.total"></style>
                     </td>
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
@@ -610,10 +609,10 @@
 
             <table
                     class="rnr-table table-bordered table summary-table"
-                    border="1">
+                    >
                 <thead>
                 <tr>
-                    <th style="height:42px"></th>
+                    <th ></th>
                     <th ng-style="{'max-width':'60px'}"  ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
                     </th>
                 </tr>
