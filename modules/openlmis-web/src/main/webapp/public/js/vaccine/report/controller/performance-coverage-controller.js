@@ -18,31 +18,21 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         $scope.product = data.productList;
     });
 
-
     $scope.perioderror = "";
-    $scope.pStartDate = "";
-    $scope.pEndDate = "";
-
-     var periods;
 
     $scope.OnFilterChanged = function () {
 
-        periods = utils.getVaccineCustomDateRange($scope.range, $scope.periodStartDate, $scope.periodEnddate, $scope.cutoffdate);
-
         // prevent first time loading
-        if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.filter.zone)  ||
+        if (utils.isEmpty($scope.filter.product) ||
             utils.isEmpty(periods) || utils.isEmpty(periods.startdate) || utils.isEmpty(periods.enddate) || !utils.isEmpty($scope.perioderror))
             return;
 
-        $scope.pStartDate = periods.startdate;
-        $scope.pEndDate = periods.enddate;
-
         PerformanceCoverage.get(
             {
-                periodStart: periods.startdate,
-                periodEnd:   periods.enddate,
+                periodStart: $scope.periodStartDate,
+                periodEnd:   $scope.periodEnddate,
                 range:       $scope.range,
-                district:    $scope.filter.zone,
+                district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
                 product:     $scope.filter.product
             },
 
