@@ -13,21 +13,26 @@
 -->
 
 <style>
-    #summary-table{
-        table-layout: fixed;
-        width: 100% !important;
-        border: 1px solid #000;
-        margin-top:43px;
+    .ng-table th.sortable div {
+        /* css-3 */
+        white-space: -o-pre-wrap;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;
     }
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
     .rnr-table {
         padding-top: 0px !important;
     }
     .aggregate-row{
         border-top: 2px #000 solid !important;
     }
-    h2 {
-        line-height: 40px;
-    }
+
 </style>
 <div class="row-fluid">
 <div class="box span12">
@@ -44,7 +49,7 @@
 
             <!--================================ filter start ====================-->
             <div class="horizontalFilters form-cell">
-                <label for="zone" class="labels">Regions/Districts<span class="label-required">*</span></label>
+                <label for="zone" class="labels">Regions/Districts</label>
                 <div>
                     <select id="zone" ui-select2 class="input-large" data-placeholder="-- All Zones --"  ng-change="OnFilterChanged();" ng-model="filter.zone">
                         <option ng-selected="filter.zone == undefined || filter.zone == '' || filter.zone == 0" value="0">{{user_geo_level}}</option>
@@ -67,14 +72,15 @@
                 </div>
             </div>
 
-            <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="10" error="perioderror"></static-period-filter>
+            <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
             <!--======================== filter end =========================-->
         </div>
     </form>
-    <div style="margin:2px !important;font-size:10px;"  ng-show="pStartDate" class="row">
+    <div style="margin:2px !important;font-size:10px;"  ng-show="periodStartDate" class="row">
         <div class="span4">
-            <strong><span openlmis-message="label.start.date"></span></strong>: {{pStartDate}} &nbsp;&nbsp;&nbsp;&nbsp;
-            <strong><span openlmis-message="label.end.date"></span></strong> : {{pEndDate}}</div>
+            <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate}} &nbsp;&nbsp;&nbsp;&nbsp;
+            <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate}}
+        </div>
     </div>
     <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror || perioderror1" class="row">
         <div class="span11 ">
@@ -89,177 +95,93 @@
         </tr>
     </table>
     <div>
-
+        <br/>
         <div id="parent" ng-show="datarows.length > 0">
-            <h2 ng-show="!regionSelected">District Level</h2>
-            <h2 ng-show="regionSelected">Region Level</h2>
-            <table id="vbfixTable" class="rnr-table table-bordered table">
+            <table class="rnr-table table-bordered table">
                 <thead>
                 <tr>
                     <th rowspan="2">{{getLocalMessage('label.region')}}</th>
                     <th rowspan="2">{{getLocalMessage('label.district')}}</th>
-                    <th ng-show="!regionSelected" rowspan="2">{{getLocalMessage('label.facility')}}</th>
                     <th rowspan="2">{{getLocalMessage('label.period')}}</th>
                     <th rowspan="2">{{getLocalMessage('label.target.population')}}</th>
-                    <th colspan="2">{{getLocalMessage('label.monthly')}}</th>
-                    <th colspan="2">{{getLocalMessage('label.cumulative')}}</th>
+                    <th colspan="5" style="text-align: center;">{{getLocalMessage('label.reporting.performance')}}</th>
+                    <th colspan="3" style="text-align: center;">{{getLocalMessage('label.session.conducted')}}</th>
                 </tr>
                 <tr>
-                    <th>{{getLocalMessage('label.vaccination')}}</th>
-                    <th>{{getLocalMessage('label.coverage')}}</th>
-                    <th>{{getLocalMessage('label.vaccination')}}</th>
-                    <th>{{getLocalMessage('label.coverage')}}</th>
+                    <th>{{getLocalMessage('label.expected')}}</th>
+                    <th>{{getLocalMessage('label.reported')}}</th>
+                    <th>{{getLocalMessage('label.late')}}</th>
+                    <th>{{getLocalMessage('label.percent.reported')}}</th>
+                    <th>{{getLocalMessage('label.percent.late')}}</th>
+                    <th>{{getLocalMessage('label.fixed')}}</th>
+                    <th>{{getLocalMessage('label.outreach')}}</th>
+                    <th>{{getLocalMessage('label.total')}}</th>
+
                 </tr>
                 <tr>
+                    <th colspan="4"></th>
                     <th>{{getLocalMessage('label.A')}}</th>
                     <th>{{getLocalMessage('label.B')}}</th>
-                    <th ng-show="!regionSelected">{{getLocalMessage('label.C')}}</th>
                     <th>{{getLocalMessage('label.C')}}</th>
+                    <th></th>
+                    <th></th>
                     <th>{{getLocalMessage('label.D')}}</th>
                     <th>{{getLocalMessage('label.E')}}</th>
-                    <th>{{getLocalMessage('label.coverage.equation')}}</th>
-                    <th>{{getLocalMessage('label.G')}}</th>
-                    <th>{{getLocalMessage('label.cumulative.coverage.equation')}}</th>
+                    <th>{{getLocalMessage('label.F')}}</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="row in datarows">
                     <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                     <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
-                    <td ng-show="!regionSelected" style="background-color : {{bgColorCode(row.coverage)}}">{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
-                    <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target}}</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated}}</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.coverage}}%</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated}}</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
+                    <td  >{{row.period_name}}</td>
+                    <td class="number"  >{{row.target}}</td>
+                    <td class="number" >{{row.expected}}</td>
+                    <td class="number" >{{row.reported}}</td>
+                    <td class="number" >{{row.late}}</td>
+                    <td class="number" >{{row.percent_reported}}%</td>
+                    <td class="number" >{{row.percent_late}}%</td>
+                    <td class="number" >{{row.fixed}}</td>
+                    <td class="number" >{{row.outreach}}</td>
+                    <td class="number" >{{row.session_total}}</td>
                 </tr>
-                <tr>
-                    <td class="aggregate-row" ng-show="!regionSelected" colspan="3"></td>
-                    <td class="aggregate-row" ng-show="regionSelected" colspan="2"></td>
-                    <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal}}</td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal}}</td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage}}%</td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination}}</td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage}}%</td>
 
-
-                </tr>
                 </tbody>
             </table>
-
             <div ng-show="datarows.length > 0">
                 <table id="summary-table" class="rnr-table table-bordered table">
                     <thead >
                     <tr>
-                        <th></th>
-                        <th  ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
+                        <th style="width: 19%;"></th>
+                        <th ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td style="background-color : {{colors.color_ninty_percent}}" openlmis-message="coverage.greater.than.or.equal.ninty.percent"></td>
-                        <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="a in g1">{{a.total}}</td>
+                        <td  openlmis-message="completeness.and.timliness.number.of.reports.expected"></td>
+                        <td  ng-repeat="a in expected">{{a.total}}</td>
                     </tr>
                     <tr>
-                        <td  style="background-color : {{colors.color_80_percent}}" openlmis-message="coverage.greater.than.or.equal.eighty.percent"></td>
-                        <td   style="background-color : {{colors.color_80_percent}}" ng-repeat="a in g2">{{a.total}}</td>
+                        <td openlmis-message="completeness.and.timliness.number.of.reports.recived"></td>
+                        <td ng-repeat="ab in reported">{{ab.total}}</td>
                     </tr>
                     <tr>
-                        <td style="background-color : {{colors.color_50_percent_above}}" openlmis-message="coverage.greater.than.or.equal.fifty.percent"></td>
-                        <td style="background-color : {{colors.color_50_percent_above}}" ng-repeat="a in g3">{{a.total}}</td>
+                        <td  openlmis-message="completeness.and.timliness.number.of.reports.on.time"></td>
+                        <td  ng-repeat="abb in ontime">{{abb.total}}</td>
                     </tr>
                     <tr>
-                        <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
-                        <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="a in g4">{{a.total}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2 ng-show="dataRowsRegionAggregate">All Regions</h2>
-            <table id="fixTable" class="rnr-table table-bordered table" ng-show="dataRowsRegionAggregate">
-                <thead>
-                <tr>
-                    <th rowspan="2">{{getLocalMessage('label.region')}}</th>
-                    <th rowspan="2">{{getLocalMessage('label.period')}}</th>
-                    <th rowspan="2">{{getLocalMessage('label.target.population')}}</th>
-                    <th colspan="2">{{getLocalMessage('label.monthly')}}</th>
-                    <th colspan="2">{{getLocalMessage('label.cumulative')}}</th>
-                </tr>
-                <tr>
-                    <th>{{getLocalMessage('label.vaccination')}}</th>
-                    <th>{{getLocalMessage('label.coverage')}}</th>
-                    <th>{{getLocalMessage('label.vaccination')}}</th>
-                    <th>{{getLocalMessage('label.coverage')}}</th>
-                </tr>
-                <tr>
-                    <th>{{getLocalMessage('label.A')}}</th>
-                    <th>{{getLocalMessage('label.B')}}</th>
-                    <th>{{getLocalMessage('label.D')}}</th>
-                    <th>{{getLocalMessage('label.E')}}</th>
-                    <th>{{getLocalMessage('label.coverage.equation')}}</th>
-                    <th>{{getLocalMessage('label.G')}}</th>
-                    <th>{{getLocalMessage('label.cumulative.coverage.equation')}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="row in dataRowsRegionAggregate">
-                    <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
-                    <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target}}</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated}}</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.coverage}}%</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated}}</td>
-                    <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
-                </tr>
-                <tr>
-                    <td class="aggregate-row" ng-show="!regionSelected" colspan="2"></td>
-                    <td class="aggregate-row" ng-show="regionSelected" colspan="1"></td>
-                    <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal}}</td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal}}</td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage}}%</td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination}}</td>
-                    <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage}}%</td>
-                </tr>
-                </tbody>
-            </table>
-
-            <div  ng-show="dataRowsRegionAggregate">
-                <table id="summary-table" class="rnr-table table-bordered table">
-                    <thead >
-                    <tr>
-                        <th></th>
-                        <th  ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td style="background-color : {{colors.color_ninty_percent}}" openlmis-message="coverage.greater.than.or.equal.ninty.percent"></td>
-                        <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="a in gAll1">{{a.total}}</td>
+                        <td openlmis-message="completeness.and.timliness.completeness"></td>
+                        <td ng-repeat="abbb in completeness">{{abbb.total}}</td>
                     </tr>
                     <tr>
-                        <td  style="background-color : {{colors.color_80_percent}}" openlmis-message="coverage.greater.than.or.equal.eighty.percent"></td>
-                        <td   style="background-color : {{colors.color_80_percent}}" ng-repeat="a in gAll2">{{a.total}}</td>
-                    </tr>
-                    <tr>
-                        <td style="background-color : {{colors.color_50_percent_above}}" openlmis-message="coverage.greater.than.or.equal.fifty.percent"></td>
-                        <td style="background-color : {{colors.color_50_percent_above}}" ng-repeat="a in gAll3">{{a.total}}</td>
-                    </tr>
-                    <tr>
-                        <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
-                        <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="a in gAll4">{{a.total}}</td>
+                        <td openlmis-message="completeness.and.timliness.timeliness"></td>
+                        <td ng-repeat="abbbb in timelines">{{abbbb.total}}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
-
-
 </div>
 </div>
 </div>

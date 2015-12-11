@@ -139,15 +139,6 @@ public class VaccineReportRepository {
     }
 
 
-
-    public List<Map<String,Object>> getCompletenessAndTimelinessReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId) {
-        return mapper.getCompletenessAndTimelinessReportDataByRegionAggregate(startDate, endDate, districtId, productId);
-    }
-
-    public List<Map<String,Object>> getCompletenessAndTimelinessSummaryReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId) {
-        return mapper.getCompletenessAndTimelinessSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId);
-    }
-
     public List<Map<String,Object>> getCompletenessAndTimelinessMainReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {
         return mapper.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId);
     }
@@ -156,11 +147,4 @@ public class VaccineReportRepository {
          return mapper.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId);
     }
 
-    public List<Map<String,Object>> getCompletenessAndTimelinessMainReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId) {
-        return mapper.getCompletenessAndTimelinessMainReportDataByRegion(startDate, endDate, districtId, productId);
-    }
-
-    public List<Map<String, Object>> getCompletenessAndTimelinessSummaryReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId) {
-        return mapper.getCompletenessAndTimelinessSummaryReportDataByRegion(startDate, endDate, districtId, productId);
-    }
 }

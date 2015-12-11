@@ -240,20 +240,8 @@ public class VaccineReportService {
 
         GeographicZone zone = geographicZoneService.getById(districtId);
 
-        if(districtId == 0){
-            result.put("mainreportRegionAggregate", repository.getCompletenessAndTimelinessReportDataByRegionAggregate(startDate, endDate, districtId, productId));
-            result.put("summaryRegionAggregate",    repository.getCompletenessAndTimelinessSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId));
-        }
-
-        if(zone != null && zone.getLevel().getCode().equals("dist")) {
-            result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId));
-            result.put("summary",    repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
-        }
-        else{
-            result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByRegion(startDate, endDate, districtId, productId));
-            result.put("summary",    repository.getCompletenessAndTimelinessSummaryReportDataByRegion(startDate, endDate, districtId, productId));
-        }
-
+        result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId));
+        result.put("summary",    repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
 
         return result;
