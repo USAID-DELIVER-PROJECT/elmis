@@ -58,7 +58,7 @@ var utils = {
  getVaccineCustomDateRange: function(periodRange, _startDate, _endDate, _cutoffDate) {
       var er = 0;
 
-      if (periodRange != 5) {
+      if (periodRange !== 5) {
 
           var currentDate = new Date();
           var endDate;
@@ -67,7 +67,7 @@ var utils = {
           var monthBack = 0;
           var currentDays = currentDate.getDate();
 
-          if(periodRange === 0)
+          if(periodRange == 0)
               return {startdate: null, enddate: null};
 
           else if(periodRange !== 0 && utils.isEmpty(_cutoffDate)) {
@@ -103,6 +103,7 @@ var utils = {
       }
       else
           return {startdate:  _startDate, enddate: _endDate};
+
   }
 
 };
