@@ -1153,11 +1153,14 @@ app.directive('vaccineDropoutFilter', ['DropoutProducts', 'messageService',
         return {
             restrict: 'E',
             scope: {
-                filterProduct: '=filterproduct'
+                filterProduct: '=filterproduct',
+                defualtProduct:'=defaultselction'
             },
             controller: function ($scope, $routeParams, $location) {
                 DropoutProducts.get({}, function (data) {
                     $scope.dropoutProductsList = data.dropoutProductsList;
+                    $scope.defualtProduct=$scope.dropoutProductsList[0];
+                    $scope. filterProduct=$scope.defualtProduct.id;
 
                 });
                 $scope.filterProduct = 0;
