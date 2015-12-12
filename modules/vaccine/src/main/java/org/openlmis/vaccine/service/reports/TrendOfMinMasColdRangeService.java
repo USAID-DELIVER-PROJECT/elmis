@@ -210,7 +210,7 @@ public class TrendOfMinMasColdRangeService {
 
                 Float tempLessMinValue = columnRangeValues.get(ReportsCommonUtilService.TEMP_MIN).get(columngName) + 1l;
                 columnRangeValues.get(ReportsCommonUtilService.TEMP_MIN).put(columngName, tempLessMinValue);
-            } else if (tempMinValue > 8) {
+            } else if (tempMaxValue > 8) {
 
                 Float tempGreaterMinValue = columnRangeValues.get(ReportsCommonUtilService.TEMP_GREATER_MIN).get(columngName) + 1l;
                 columnRangeValues.get(ReportsCommonUtilService.TEMP_GREATER_MIN).put(columngName, tempGreaterMinValue);
@@ -221,7 +221,7 @@ public class TrendOfMinMasColdRangeService {
                 Float minAlarmLessMinValue = columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_LESS_MIN).get(columngName) + 1l;
                 columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_LESS_MIN).put(columngName, minAlarmLessMinValue);
             }
-            if (minAlarmEpisodeValue > 8) {
+            if (maxAlarmEpisodeValue > 8) {
 
                 Float minAlarmGreaterMinValue = columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_GREATER_MIN).get(columngName) + 1l;
                 columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_GREATER_MIN).put(columngName, minAlarmGreaterMinValue);

@@ -32,10 +32,10 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
         $scope.maxEpisode=data.settings.value;
     });
     SettingsByKey.get({key:'VCP_RED'},function(data){
-        $scope.minColorCode=data.settings.value;
+        $scope.maxColorCode=data.settings.value;
     });
     SettingsByKey.get({key:'VCP_BLUE'},function(data){
-        $scope.maxColorCode=data.settings.value;
+        $scope.minColorCode=data.settings.value;
     });
     $scope.OnFilterChanged = function () {
 
