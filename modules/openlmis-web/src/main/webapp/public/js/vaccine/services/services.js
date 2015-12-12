@@ -313,3 +313,7 @@ services.factory('VaccineDashboardSessions', function($resource){
 services.factory('VaccineDashboardDistrictSessions', function($resource) {
     return $resource('/vaccine/dashboard/district-sessions', {}, {});
 });
+
+services.factory('CompletenessAndTimeliness', function ($resource) {
+    return $resource('/vaccine/report/completenessAndTimeliness.json', {}, {});
+});

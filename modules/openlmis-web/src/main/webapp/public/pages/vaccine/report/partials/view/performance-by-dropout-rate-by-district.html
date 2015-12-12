@@ -9,7 +9,14 @@
   ~
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
+<style>
+    .summary-table{
+        table-layout: fixed;
+        width: 100% !important;
+        border: 1px solid #000;
+        margin-top:43px;
+    }
+</style>
 <div class="alert alert-success" id="saveSuccessMsgDiv" ng-bind="message" ng-show="message"/>
 
 <div class="row-fluid sortable ui-sortable">
@@ -33,12 +40,12 @@
                 <form ng-submit="filterGrid()" name="filterForm" novalidate>
                     <div   class="clearfix">
 
-                        <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="true" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone"  ></vaccine-zone-filter>
+                        <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="true" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone" ></vaccine-zone-filter>
 
-                        <vaccine-dropout-filter class="horizontalFilters form-cell" filterproduct="filter.product"  >
+                        <vaccine-dropout-filter class="horizontalFilters form-cell" filterproduct="filter.product"  ></vaccine-dropout-filter>
 
-                        </vaccine-dropout-filter>
-                        <static-period-filter style="max-width: 100px"  range="range" startdate="filter.periodStart" enddate="filter.periodEnd" rangemax="10" error="perioderror"></static-period-filter>
+
+                        <static-period-filter style="max-width: 100px"  range="range" startdate="filter.periodStart" enddate="filter.periodEnd" rangemax="10" error="perioderror" ></static-period-filter>
 
                     <br/>
                     </div>
@@ -66,27 +73,27 @@
                         <thead>
                         <tr>
                             <th rowspan="2" style="text-align: center; vertical-align: middle">
-                                <span>	 Region</span>
+                                <span openlmis-message="label.region">	</span>
                             </th>
                             <th rowspan="2"
                                 style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                                <span>	 District</span>
+                                <span openlmis-message="label.district">	 </span>
                             </th>
                             <th ng-if="reportType==true" rowspan="2"
                                 style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                                <span>	 Facility</span>
+                                <span openlmis-message="label.number.of.facilities">	 </span>
                             </th>
 
                             <th rowspan="2">
-                                <span>Period</span>
+                                <span openlmis-message="label.period"></span>
 
                             </th>
                             <th rowspan="2" style="width: 10px">
-                                <span>Target Population</span>
+                                <span openlmis-message="label.vaccine.quantification.target.ppln"></span>
 
                             </th>
                             <th colspan="3 " style=" text-align: center; vertical-align: middle">
-                                <span>DropOut</span>
+                                <span openlmis-message="label.district.dropout"></span>
 
                             </th>
 
@@ -204,11 +211,11 @@
                 <div ng-show="datarows.length > 0">
 
                     <table
-                            class="rnr-table table-bordered table"
-                            border="1">
+                            class="rnr-table table-bordered table summary-table"
+                            >
                         <thead>
                         <tr>
-                            <th style="height:42px"></th>
+                            <th ></th>
                             <th ng-style="{'max-width':'60px'}" ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
                             </th>
                         </tr>
@@ -240,24 +247,24 @@
                         <thead>
                         <tr>
                             <th rowspan="2" style="text-align: center; vertical-align: middle">
-                                <span>	 Region</span>
+                                <span openlmis-message="label.region">	</span>
                             </th>
 
                             <th ng-if="reportType==true" rowspan="2"
                                 style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                                <span>	 Facility</span>
+                                <span openlmis-message="label.number.of.facilities">	 </span>
                             </th>
 
                             <th rowspan="2">
-                                <span>Period</span>
+                                <span openlmis-message="label.period"></span>
 
                             </th>
                             <th rowspan="2" style="width: 10px">
-                                <span>Target Population</span>
+                                <span openlmis-message="label.population"></span>
 
                             </th>
                             <th colspan="3 " style=" text-align: center; vertical-align: middle">
-                                <span>DropOut</span>
+                                <span openlmis-message="label.district.dropout"></span>
 
                             </th>
 
@@ -363,11 +370,11 @@
                 <div ng-show="regionrows.length > 0">
 
                     <table
-                            class="rnr-table table-bordered table"
-                            border="1">
+                            class="rnr-table table-bordered table summary-table"
+                           >
                         <thead>
                         <tr>
-                            <th style="height:42px"></th>
+                            <th ></th>
                             <th ng-style="{'max-width':'60px'}" ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
                             </th>
                         </tr>

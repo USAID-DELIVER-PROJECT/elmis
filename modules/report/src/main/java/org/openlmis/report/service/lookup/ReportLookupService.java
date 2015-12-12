@@ -576,9 +576,9 @@ public class ReportLookupService {
                 children.add(t);
             }
         }
-        order(children);
-        tree.setChildren(children);
 
+        tree.setChildren(children);
+        order(tree.getChildren());
         for (GeoZoneTree zone : tree.getChildren()) {
             populateChildren(zone, source);
         }

@@ -127,7 +127,7 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                                           lotOnHand.originalIssueQuantity=lotOnHand.quantity;
                                                           lotOnHand.lineItemLotId=(distributedLot === undefined)?null:distributedLot.id;
                                                           lotOnHand.initialQuantity=(distributedLot === undefined)?null:distributedLot.quantity;
-                                                          lotOnHand.vvmStatus=(lot.customProps === null)?null:lot.customProps.vvmstatus;
+                                                          lotOnHand.vvmStatus=(lot.customProps !== undefined && lot.customProps !== null && lot.customProps.vvmstatus !== undefined)?lot.customProps.vvmstatus:undefined;
                                                           lotOnHand.expirationDate=lot.lot.expirationDate;
                                                           product.lots.push(lotOnHand);
                                                       });

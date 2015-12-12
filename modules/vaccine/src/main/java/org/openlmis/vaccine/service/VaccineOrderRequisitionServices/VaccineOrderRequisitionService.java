@@ -4,8 +4,6 @@ import org.joda.time.DateTime;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
-import org.openlmis.stockmanagement.domain.StockCard;
-import org.openlmis.stockmanagement.service.StockCardService;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisitionStatusChange;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderStatus;
@@ -22,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static java.lang.System.out;
-import static org.openlmis.vaccine.utils.ListUtil.emptyIfNull;
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
+
 
 @Service
 public class VaccineOrderRequisitionService {

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.openlmis.vaccine.utils.ListUtil.emptyIfNull;
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Service
 public class VaccineOrderRequisitionLineItemService {

@@ -25,7 +25,6 @@ import org.openlmis.demographics.domain.AnnualFacilityEstimateEntry;
 import org.openlmis.demographics.domain.EstimateCategory;
 import org.openlmis.demographics.dto.EstimateForm;
 import org.openlmis.demographics.dto.EstimateFormLineItem;
-import org.openlmis.demographics.helpers.ListUtil;
 import org.openlmis.demographics.repository.AnnualFacilityEstimateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Service
 public class AnnualFacilityDemographicEstimateService {
@@ -56,8 +57,8 @@ public class AnnualFacilityDemographicEstimateService {
   private RequisitionGroupService requisitionGroupService;
 
   public void save(EstimateForm estimateForm, Long userId) {
-    for (EstimateFormLineItem dto : ListUtil.emptyIfNull(estimateForm.getEstimateLineItems())) {
-      for (AnnualFacilityEstimateEntry estimate : ListUtil.emptyIfNull(dto.getFacilityEstimates())) {
+    for (EstimateFormLineItem dto : emptyIfNull(estimateForm.getEstimateLineItems())) {
+      for (AnnualFacilityEstimateEntry estimate : emptyIfNull(dto.getFacilityEstimates())) {
 
         AnnualFacilityEstimateEntry existingEstimateEntry = repository.getEntryBy(estimate.getYear(), estimate.getFacilityId(), estimate.getProgramId(), estimate.getDemographicEstimateId());
 
@@ -79,8 +80,8 @@ public class AnnualFacilityDemographicEstimateService {
 
   public void finalizeEstimate(EstimateForm form, Long userId) {
     this.save(form, userId);
-    for (EstimateFormLineItem dto : ListUtil.emptyIfNull(form.getEstimateLineItems())) {
-      for (AnnualFacilityEstimateEntry est : ListUtil.emptyIfNull(dto.getFacilityEstimates())) {
+    for (EstimateFormLineItem dto : emptyIfNull(form.getEstimateLineItems())) {
+      for (AnnualFacilityEstimateEntry est : emptyIfNull(dto.getFacilityEstimates())) {
         est.setFacilityId(dto.getId());
         if (est.hasId()) {
           est.setModifiedBy(userId);
@@ -93,8 +94,8 @@ public class AnnualFacilityDemographicEstimateService {
   }
 
   public void undoFinalize(EstimateForm form, Long userId) {
-    for (EstimateFormLineItem dto : ListUtil.emptyIfNull(form.getEstimateLineItems())) {
-      for (AnnualFacilityEstimateEntry est : ListUtil.emptyIfNull(dto.getFacilityEstimates())) {
+    for (EstimateFormLineItem dto : emptyIfNull(form.getEstimateLineItems())) {
+      for (AnnualFacilityEstimateEntry est : emptyIfNull(dto.getFacilityEstimates())) {
         est.setFacilityId(dto.getId());
         if (est.hasId()) {
           est.setModifiedBy(userId);

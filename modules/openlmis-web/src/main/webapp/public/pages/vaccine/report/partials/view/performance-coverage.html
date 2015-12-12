@@ -66,12 +66,13 @@
                     <!--======================== filter end =========================-->
                 </div>
             </form>
-            <div style="margin:2px !important;font-size:10px;"  ng-show="pStartDate" class="row">
+            <div style="margin:2px !important;font-size:10px;"  ng-show="periodStartDate" class="row">
                 <div class="span4">
-                    <strong><span openlmis-message="label.start.date"></span></strong>: {{pStartDate}} &nbsp;&nbsp;&nbsp;&nbsp;
-                    <strong><span openlmis-message="label.end.date"></span></strong> : {{pEndDate}}</div>
+                    <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate}} &nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate}}
+                </div>
             </div>
-            <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror || perioderror1" class="row">
+            <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
                 <div class="span11 ">
                     <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
                     </div>
