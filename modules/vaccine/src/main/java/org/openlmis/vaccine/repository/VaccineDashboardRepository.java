@@ -65,4 +65,15 @@ public class VaccineDashboardRepository {
 
         return mapper.getMonthlySessions(startDate, endDate);
     }
+
+    public List<HashMap<String, Object>> getDistrictSessions(Long period){
+
+        return mapper.getDistrictSessions(period);
+    }
+
+
+    public List<HashMap<String, Object>> getBundling(Date startDate, Date endDate, Long productId){
+
+        return mapper.getBundling(startDate, endDate, productId);
+    }
 }

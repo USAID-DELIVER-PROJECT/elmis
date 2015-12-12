@@ -445,6 +445,8 @@
 
 <script type="text/ng-template" id="filter-vaccine-product-template">
     <div>
+
+        <label class="labels" openlmis-message="label.product"><span ng-show="requiredFilters.product" class="label-required">*</span></label>
         <div>
             <select  ui-select2 class="input-large"
                      ng-model="filterProduct">
@@ -454,6 +456,27 @@
             </select>
         </div>
 
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="filter-vaccine-monthly-period-tree-template">
+    <label for="periodTree" class="labels" openlmis-message="label.period"> <span ng-show="requiredFilters.period" class="label-required">*</span></label>
+    <div>
+        <div>
+            <select id="vaccinePeriodTree"
+                    ui-select2 class="input-large" ng-change="notifyFilterChanged('period-tree-changed');" ng-model="period">
+                <!--<option ng-selected="period == 0" ng-value="0">{{period_placeholder}}</option>
+-->
+                <option ng-value="0" ng-selected="period ==undefined ||period == 0">{{period_placeholder}}</option>
+                <optgroup ng-repeat="year in periods"  label="{{year.year}}">
+
+                    <option ng-repeat-start="v in year.children" value="-1">{{v.groupname}}</option>
+                    <option ng-repeat-end ng-repeat="d in v.children" value="{{d.periodid}}" ng-selected="period == d.periodid"> &nbsp; &nbsp; {{d.periodname}}</option>
+
+                </optgroup>
+            </select>
+        </div>
     </div>
 </script>
 

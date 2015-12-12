@@ -1,43 +1,19 @@
 <div class="app-form vaccine-form-filter">
-    <form ng-submit="filterGrid()" name="filterForm" novalidate>
-        <div class="horizontalFilters">
-            <div  class="form-field">
-                <span openlmis-message="label.district.sessions"></span>
-                <select id="sessions-district-product" ui-select2 class="input-large" ng-model="filter.sessions.district.product" ng-change="OnFilterChanged();">
-                    <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
-                </select>
-            </div>
-        </div>
-        <div class="horizontalFilters">
-            <div class="form-field">
-                <span openlmis-message="label.show.trend.for"></span>
-                <select id="session-district-period" ui-select2 class="input-large" ng-model="filter.sessions.district.period" ng-change="OnFilterChanged();">
-                    <option ng-repeat="option in periods" value="{{ option.id }}" ng-selected="filter.sessions.district.period == option.id">{{ option.name }}</option>
-                </select>
-            </div>
+    <form  name="districtSessionForm" novalidate>
+        <div  class="clearfix">
+            <!--<vaccine-period-tree-filter required="true"
+                                        class="form-cell horizontalFilters"></vaccine-period-tree-filter>-->
+            <vaccine-monthly-period-tree-filter cm-model="filter.districtSessions.period"  class="form-cell horizontalFilters"></vaccine-monthly-period-tree-filter>
+           <!-- <static-period-filter range="filter.districtSessions.range" startdate="filter.districtSessions.startDate" enddate="filter.districtSessions.endDate" rangemax="10" error="perioderror"></static-period-filter>-->
+
         </div>
     </form>
 </div>
-
-<c3chart bindto-id="{{product.name}}_district_sessions_chart">
-    <chart-tooltip value-format-function="formatValue" />
-    <chart-axes values-x="x" />
-    <chart-axis >
-        <chart-axis-x axis-position="outer-center" axis-label="Period" axis-height="40"
-                      axis-type="category" >
-            <!--<chart-axis-x-tick tick-rotate="50" />-->
+<c3chart  bindto-id="district_sessions_chart" chart-data="districtSessions.dataPoints" chart-columns="districtSessions.dataColumns" chart-x="districtSessions.dataX" ng-show="districtSessions.dataPoints">
+    <chart-axis>
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="zone"
+                      axis-type="category">
+            <chart-axis-x-tick tick-rotate="50"/>
         </chart-axis-x>
-        <chart-axis-y>
-            <chart-axis-y-tick tick-format-function="formatValue" />
-        </chart-axis-y>
-    </chart-axis>
-
-    <chart-column column-id="Consumption"
-                  column-values="{{product.consumption}}"
-                  column-type="bar"/>
-    <chart-column column-id="amc"
-                  column-values="{{product.amc}}"
-                  column-type="line"/>
-    <chart-column column-id="x"
-                  column-values="{{product.periods}}"/>
 </c3chart>

@@ -118,14 +118,14 @@ public interface VaccineDashboardMapper {
                 "AND pp.productid = i.product_id\n" +
                 "WHERE\n" +
                 "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1) \n" +
-                "AND i.period_start_date::date>= '2015-01-01' and i.period_end_date::date <= '2015-12-31'\n" +
-                "and i.product_id = 2412\n" +
+                "AND i.period_start_date::date>= #{startDate} and i.period_end_date::date <= #{endDate}\n" +
+                "and i.product_id = #{product} \n" +
                 "group by 1,2,3,4\n" +
                 "ORDER BY\n" +
                 "d.region_name,\n" +
                 "d.district_name,\n" +
                 "i.period_start_date")
-        List<HashMap<String, Object>> getMonthlyCoverage();
+        List<HashMap<String, Object>> getMonthlyCoverage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product);
 
         @Select("SELECT\n" +
                 "i.product_name,\n" +
@@ -187,6 +187,25 @@ public interface VaccineDashboardMapper {
                 "i.period_start_date")
         List<HashMap<String, Object>> getWastageByDistrict();
 
+        @Select("with temp as (\n" +
+                "select\n" +
+                "period_name,\n" +
+                "period_start_date, \n" +
+                "COALESCE(fixed_sessions,0) fixed_sessions,\n" +
+                "COALESCE(outreach_sessions,0) outreach_sessions\n" +
+                "from vw_vaccine_sessions\n" +
+                "where period_start_date::date >= #{startDate} and period_end_date::date <= #{endDate})\n" +
+                "select \n" +
+                "t.period_name,\n" +
+                "t.period_start_date,\n" +
+                "sum(t.fixed_sessions) fixed_sessions, \n" +
+                "sum(t.outreach_sessions) outreach_sessions\n" +
+                "from temp t\n" +
+                "group by 1,2\n" +
+                "order by 2 desc\n" +
+                "limit 5")
+        List<HashMap<String, Object>> getMonthlySessions(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
         @Select("with temp as \n" +
                 "( select \n" +
                 "geographic_zone_name,\n" +
@@ -194,7 +213,7 @@ public interface VaccineDashboardMapper {
                 "COALESCE(outreach_sessions,0) outreach_sessions,\n" +
                 "COALESCE(fixed_sessions,0) + COALESCE(outreach_sessions,0) total_sessions\n" +
                 "from vw_vaccine_sessions\n" +
-                "where period_start_date::date >= #{startDate} and period_end_date::date <= #{endDate}\n" +
+                "where period_id = #{period}\n" +
                 ")\n" +
                 "select \n" +
                 "t.geographic_zone_name,\n" +
@@ -205,8 +224,28 @@ public interface VaccineDashboardMapper {
                 "where total_sessions > 0\n" +
                 "group by 1\n" +
                 "order by total_sessions desc\n" +
-                "limit 5")
-        List<HashMap<String, Object>> getMonthlySessions(@Param("startDate") Date starDate, @Param("endDate") Date endDate);
+                "limit 5\n")
+        List<HashMap<String, Object>> getDistrictSessions(@Param("period") Long period);
 
+
+        @Select("\n" +
+                "select \n" +
+                "vvb.programid, \n" +
+                "vvb.periodid, \n" +
+                "vvb.facilityid,\n" +
+                "vvb.productid, \n" +
+                "vvb.sup_received,\n" +
+                "vvb.sup_closing,\n" +
+                "vvb.vac_received, \n" +
+                "vvb.vac_closing,\n" +
+                "vvb.bund_received,\n" +
+                "vvb.bund_issued,\n" +
+                "vb.minlimit,\n" +
+                "vb.maxlimit\n" +
+                "from vw_vaccine_bundles vvb\n" +
+                "join vaccine_bundles vb on vvb.programid = vb.programid and vvb.productid = vb.productid\n" +
+                "where vvb.productid = #{productId}\n" +
+                "and vvb.periodid = 35")
+        List<HashMap<String, Object>> getBundling(@Param("startDate") Date startDate, @Param("endDate") Date endDate, Long productId);
 
 }

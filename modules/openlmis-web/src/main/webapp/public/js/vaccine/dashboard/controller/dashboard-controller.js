@@ -10,35 +10,80 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function VaccineDashboardController($scope,VaccineDashboardSummary,VaccineDashboardCoverage,VaccineDashboardSessions,VaccineDashboardWastage,SettingsByKey) {
+function VaccineDashboardController($scope,VaccineDashboardSummary,VaccineDashboardCoverage,VaccineDashboardDistrictSessions,VaccineDashboardSessions,VaccineDashboardWastage,SettingsByKey, messageService) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
+     $scope.sessions = {
+        openPanel: true
+    };
 
-    $scope.reportingPerformance = {};
+//Instantiate Monthly Sessions charting options
+     $scope.monthlySessions = {
+        dataPoints: [],
+            dataColumns: [{
+            "id": "outreach_sessions",
+            "name": messageService.get('label.outreach.sessions'),
+            "type": "bar"
+        },
+            {"id": "fixed_sessions", "name": messageService.get('label.outreach.sessions'), "type": "bar"}],
+            dataX: {"id": "period_name"}
+    };
+//Instantiate District Sessions charting options
+    $scope.districtSessions = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "outreach_sessions",
+            "name": messageService.get('label.outreach.sessions'),
+            "type": "bar"
+        },
+            {"id": "fixed_sessions", "name": messageService.get('label.outreach.sessions'), "type": "bar"}],
+        dataX: {"id": "geographic_zone_name"}
+    };
 
-    $scope.repairing = {};
-    $scope.supplying = {};
-    $scope.investigating = {};
-$scope.filter ={sessions:{}};
+    $scope.$watchCollection('[filter.monthlySessions.startDate, filter.monthlySessions.endDate]', function(newValues, oldValues){
+
+        if(!isUndefined( $scope.filter.monthlySessions.startDate) && !isUndefined( $scope.filter.monthlySessions.endDate)){
+            VaccineDashboardSessions.get({startDate: $scope.filter.monthlySessions.startDate, endDate: $scope.filter.monthlySessions.endDate}, function(data){
+
+                $scope.monthlySessions.dataPoints =   data.monthlySessions;
+            });
+        }
+    });
+
+    $scope.$watch('filter.districtSessions.period', function(newValues, oldValues){
+        console.log('period is '+$scope.filter.districtSessions.period)
+        if(!isUndefined( $scope.filter.districtSessions.period) ) {
+            VaccineDashboardDistrictSessions.get({period: $scope.filter.districtSessions.period}, function(data){
+
+                $scope.districtSessions.dataPoints =   data.districtSessions;
+            });
+        }
+
+    });
 
 
-    $scope.periods = [{id:1, name:'custom'},{id:2, name:'last 3 months'}, {id:3, name: 'last 6 months'}, {id:4, name:'last 1 year'}, {id:5, name:'current period'}];
-    $scope.OnFilterChanged = function() {
+        $scope.OnFilterChanged = function() {
 
-    /*    console.log("start date "+$scope.filterd.startDate +" and end date "+$scope.filterd.endDate);
-        console.log("start date3 "+$scope.filterd.startDate3 +" and end date3 "+$scope.filterd.endDate3);
-        console.log("vaccine product "+$scope.filterd.vaccineProduct)
-        console.log("vaccine product2 "+$scope.filterd.vaccineProduct2)*/
-        VaccineDashboardSessions.get({startDate: $scope.filter.sessions.monthlyStartDate, endDate: $scope.filter.sessions.monthlyEndDate}, function(data){
-           $scope.monthlySessions = data.sessionsMonthly;
-        });
+      /*  if(!isUndefined( $scope.filter.monthlySessions.startDate) && !isUndefined( $scope.filter.monthlySessions.endDate)){
+            VaccineDashboardSessions.get({startDate: $scope.filter.monthlySessions.startDate, endDate: $scope.filter.monthlySessions.endDate}, function(data){
+
+                $scope.monthlySessions.dataPoints =   data.monthlySessions;
+            });
+        }
+     if(!isUndefined( $scope.filter.districtSessions.startDate) && !isUndefined( $scope.filter.districtSessions.endDate)) {
+         VaccineDashboardDistrictSessions.get({startDate: $scope.filter.districtSessions.startDate, endDate: $scope.filter.districtSessions.endDate}, function(data){
+
+             $scope.districtSessions.dataPoints =   data.districtSessions;
+         });
+     }*/
+
+
         $scope.data = $scope.datarows = [];
        // $scope.filter.max = 10000;
     };
 
     $scope.periodTrends = [{}];
-
 
 
     SettingsByKey.get({key: 'DASHBOARD_SLIDES_TRANSITION_INTERVAL_MILLISECOND'}, function(data){
@@ -79,17 +124,21 @@ $scope.filter ={sessions:{}};
 
     });
 
+    $scope.reportingPerformance = {};
+
+    $scope.repairing = {};
+    $scope.supplying = {};
+    $scope.investigating = {};
+    $scope.filter ={sessions:{}};
+
+    $scope.datapoints=[];
+    $scope.datacolumns=[{"id":"outreach_sessions", "name": messageService.get('label.outreach.sessions'),"type":"bar"},
+        {"id":"fixed_sessions","name": messageService.get('label.outreach.sessions'),"type":"bar"}
+    ];
+
+    $scope.datax={"id":"period_name"};
+
 }
 VaccineDashboardController.resolve = {
-   /* programs: function ($q, $timeout, VaccineSupervisedIvdPrograms) {
-        var deferred = $q.defer();
 
-        $timeout(function () {
-            VaccineSupervisedIvdPrograms.get({}, function (data) {
-                deferred.resolve(data.programs);
-            });
-        }, 100);
-
-        return deferred.promise;
-    }*/
 };

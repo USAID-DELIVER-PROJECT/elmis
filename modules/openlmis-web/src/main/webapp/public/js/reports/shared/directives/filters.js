@@ -1207,6 +1207,43 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
     }
 ]);
 
+app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', 'messageService',
+    function (GetVaccineReportPeriodTree,  messageService) {
+        return {
+            restrict: 'E',
+            scope: {
+                period: '=cmModel'
+            },
+            controller: function($scope){
+
+                $scope.period_placeholder = messageService.get('label.select.period');
+
+                $scope.$evalAsync(function () {
+                    //Load period tree
+                    GetVaccineReportPeriodTree.get({}, function (data) {
+                        $scope.periods = data.vaccinePeriods.periods;
+                        $scope.filter.defaultPeriodId = data.vaccinePeriods.currentPeriodId;
+                        if (!angular.isUndefined($scope.periods)) {
+                            if ($scope.periods.length === 0)
+                                $scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
+                        }
+                    });
+                });
+                $scope.period = 0;
+                $scope.$watch('period', function(newVal, oldVal){
+                    $scope.$parent.OnFilterChanged();
+                });
+            },
+            link: function ($scope, elm, attr) {
+
+
+
+            },
+            templateUrl: 'filter-vaccine-monthly-period-tree-template'
+        };
+    }
+]);
+
 
 app.directive('staticPeriodFilter', [function () {
 

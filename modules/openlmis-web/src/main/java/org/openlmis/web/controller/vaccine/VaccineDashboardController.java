@@ -68,4 +68,17 @@ public class VaccineDashboardController {
 
         return OpenLmisResponse.response("monthlySessions", service.getMonthlySessions(startDate, endDate));
     }
+
+    @RequestMapping(value = "district-sessions", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getDistrictSessions(@RequestParam("period")Long period){
+
+
+        return OpenLmisResponse.response("districtSessions", service.getDistrictSessions(period));
+    }
+
+
+    @RequestMapping(value = "bundling", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getBundling(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, @RequestParam("product")Long productId){
+        return null;
+    }
 }

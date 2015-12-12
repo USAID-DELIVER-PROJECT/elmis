@@ -70,8 +70,22 @@ public class VaccineDashboardService {
         return repository.getMonthlySessions(fromDate, toDate);
     }
 
+    public List<HashMap<String, Object>> getDistrictSessions(Long period){
+        return repository.getDistrictSessions(period);
+    }
+
+    public List<HashMap<String, Object>> getBundling(String startDate, String endDate, Long productId){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getBundling(fromDate, toDate, productId);
+    }
+
+
+
     public List<HashMap<String, Object>> getWastageByDistrict(){
         return repository.getWastageByDistrict();
     }
+
 
 }

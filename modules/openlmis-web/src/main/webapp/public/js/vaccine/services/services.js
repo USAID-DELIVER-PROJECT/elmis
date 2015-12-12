@@ -309,3 +309,7 @@ services.factory('ColdChainOperationalStatus', function ($resource) {
 services.factory('VaccineDashboardSessions', function($resource){
     return $resource('/vaccine/dashboard/sessions.json',{},{});
 });
+
+services.factory('VaccineDashboardDistrictSessions', function($resource) {
+    return $resource('/vaccine/dashboard/district-sessions', {}, {});
+});

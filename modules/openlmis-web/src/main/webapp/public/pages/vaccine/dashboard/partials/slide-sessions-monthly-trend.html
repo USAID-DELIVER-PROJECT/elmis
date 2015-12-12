@@ -1,32 +1,16 @@
 <div class="app-form vaccine-form-filter">
-    <form  name="filterForm" novalidate>
+    <form  name="monthlySessionForm" novalidate>
         <div  class="clearfix">
-            <static-period-filter range="filter.sessions.range" startdate="filter.sessions.monthlyStartDate" enddate="filter.sessions.monthlyEndDate" rangemax="10" error="perioderror"></static-period-filter>
+            <static-period-filter name="testInput" range="filter.monthlySessions.range" startdate="filter.monthlySessions.startDate" enddate="filter.monthlySessions.endDate" rangemax="10" error="perioderror"></static-period-filter>
 
         </div>
     </form>
 </div>
-
-
-<c3chart bindto-id="{{product.name}}_monthly_sessions_chart">
-    <chart-tooltip value-format-function="formatValue" />
-    <chart-axes values-x="x" />
-    <chart-axis >
-        <chart-axis-x axis-position="outer-center" axis-label="Period" axis-height="40"
-                      axis-type="category" >
-            <!--<chart-axis-x-tick tick-rotate="50" />-->
+<c3chart  bindto-id="monthly_sessions_chart" chart-data="monthlySessions.dataPoints" chart-columns="monthlySessions.dataColumns" chart-x="monthlySessions.dataX" ng-show="monthlySessions.dataPoints">
+    <chart-axis>
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="Period"
+                      axis-type="category">
+            <chart-axis-x-tick tick-rotate="50"/>
         </chart-axis-x>
-        <chart-axis-y>
-            <chart-axis-y-tick tick-format-function="formatValue" />
-        </chart-axis-y>
-    </chart-axis>
-
-    <chart-column column-id="Consumption"
-                  column-values="{{product.consumption}}"
-                  column-type="bar"/>
-    <chart-column column-id="amc"
-                  column-values="{{product.amc}}"
-                  column-type="line"/>
-    <chart-column column-id="x"
-                  column-values="{{product.periods}}"/>
 </c3chart>
