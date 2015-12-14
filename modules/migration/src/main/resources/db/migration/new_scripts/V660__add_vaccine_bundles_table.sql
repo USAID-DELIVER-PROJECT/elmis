@@ -1,3 +1,6 @@
+DROP VIEW IF EXISTS vw_vaccine_bundles;
+DROP TABLE IF EXISTS vaccine_bundle_products;
+
 DROP TABLE IF EXISTS vaccine_bundles;
 
 CREATE TABLE vaccine_bundles
