@@ -53,7 +53,7 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
                         pivotResultSet($scope.summary);
                      }
 
-                    if(angular.isUndefined($scope.filter.zone) || (!angular.isUndefined($scope.filter.zone) && $scope.filter.zone == 0)) {
+                    if(angular.isUndefined($scope.filter.zone) || (!angular.isUndefined($scope.filter.zone) && $scope.filter.zone === 0)) {
                         $scope.allRegionSelection = true;
                         generateDistrictStoreAggregateData($scope.aggregateSummary);
                     }
@@ -75,12 +75,12 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
 
             for(i=0; i<$scope.summaryPeriodLists.length; i++)
             {
-                if(i == 0) {
+                if(i === 0) {
                     col.push({val: item.district_name});
                     $scope.aggregateExpectedStoresCount = item.expected;
                 }
 
-                if(item.year == $scope.summaryPeriodLists[i].year && item.month == $scope.summaryPeriodLists[i].month)
+                if(item.year === $scope.summaryPeriodLists[i].year && item.month === $scope.summaryPeriodLists[i].month)
                     col.push({val : item.reporting_status});
 
                 else
@@ -101,9 +101,9 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
 
             for(i=0; i < item.length; i++)
             {
-                if (i == 0) continue;
+                if (i === 0) continue;
 
-                if(index == 0) {
+                if(index === 0) {
                     completed[i-1] = item[i].val === '-' ? 0 : 1 ;
                     onTime[i-1] = item[i].val === 'T' ? 1 : 0 ;
                 }
@@ -119,7 +119,7 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
 
         for(i=0; i < completed.length; i++){
             completeness[i] =   Math.round(((completed[i]/$scope.aggregateExpectedStoresCount)*100)*100)/100;
-            timeliness[i] =  completed[i] == 0 ? 0 : Math.round(((onTime[i]/completed[i])*100)*100)/100;
+            timeliness[i] =  completed[i] === 0 ? 0 : Math.round(((onTime[i]/completed[i])*100)*100)/100;
         }
 
         $scope.aggregateSummaryLegendData = {completed: completed, ontime: onTime, completeness: completeness, timeliness:timeliness };
@@ -140,7 +140,7 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
             for(i=0; i<summary.length; i++)
             {
 
-                if(item.year == summary[i].year && item.month == summary[i].month) {
+                if(item.year === summary[i].year && item.month === summary[i].month) {
                     $scope.expected.push     ({total:summary[i].expected});
                     $scope.reported.push     ({total:summary[i].reported});
                     $scope.ontime.push       ({total:summary[i].ontime});

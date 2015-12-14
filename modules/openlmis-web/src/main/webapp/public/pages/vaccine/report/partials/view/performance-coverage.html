@@ -190,7 +190,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="row in dataRowsRegionAggregate">
-                        <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                        <td >{{ dataRowsRegionAggregate[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                         <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated}}</td>
