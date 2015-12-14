@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="horizontalFilters form-cell">
+            <div class="horizontalFilters form-cell"  ng-show="false">
                 <label for="product" class="labels"  openlmis-message="label.product"><span class="label-required">*</span></label>
                 <div>
                     <select id="product" ui-select2 class="input-large" ng-model="filter.product" ng-change="OnFilterChanged();">
@@ -171,11 +171,11 @@
                     </tr>
                     <tr>
                         <td openlmis-message="completeness.and.timliness.completeness"></td>
-                        <td ng-repeat="abbb in completeness">{{abbb.total}}</td>
+                        <td ng-repeat="abbb in completeness">{{abbb.total}}%</td>
                     </tr>
                     <tr>
                         <td openlmis-message="completeness.and.timliness.timeliness"></td>
-                        <td ng-repeat="abbbb in timelines">{{abbbb.total}}</td>
+                        <td ng-repeat="abbbb in timelines">{{abbbb.total}}%</td>
                     </tr>
                     </tbody>
                 </table>
