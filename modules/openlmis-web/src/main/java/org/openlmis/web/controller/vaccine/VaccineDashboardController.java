@@ -97,7 +97,7 @@ public class VaccineDashboardController {
 
     @RequestMapping(value = "bundle.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getBundling(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, @RequestParam("product")Long productId){
-        return OpenLmisResponse.response("bundling", service.getBundling(startDate, endDate, 2424L));
+        return OpenLmisResponse.response("bundling", service.getBundling(startDate, endDate, productId));
     }
 
     @RequestMapping(value = "monthly-stock.json", method = RequestMethod.GET)
