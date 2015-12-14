@@ -5,23 +5,20 @@ import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.Product;
 import org.openlmis.core.domain.Program;
-import org.openlmis.stockmanagement.domain.Lot;
-import org.openlmis.stockmanagement.domain.LotOnHand;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface VaccineOrderRequisitionMapper {
 
     @Insert("INSERT INTO vaccine_order_requisitions (periodId,programId,status,supervisoryNodeId,facilityId,orderDate," +
-            " createdBy, createdDate,modifiedBy,modifiedDate,emergency )    " +
+            " createdBy, createdDate,modifiedBy,modifiedDate,emergency,reason )    " +
             "VALUES (#{periodId},#{programId},#{status},#{supervisoryNodeId},#{facilityId},#{orderDate}," +
-            "#{createdBy}, NOW(),#{modifiedBy},NOW(),#{emergency} )")
+            "#{createdBy}, NOW(),#{modifiedBy},NOW(),#{emergency},#{reason} )")
     @Options(useGeneratedKeys = true)
     Integer insert(VaccineOrderRequisition orderRequisition);
 
@@ -34,7 +31,8 @@ public interface VaccineOrderRequisitionMapper {
             "orderDate = #{orderDate}," +
             "modifiedBy = #{createdBy}, " +
             "modifiedDate = #{modifiedDate}," +
-            "emergency = #{emergency} " +
+            "emergency = #{emergency}, " +
+            "reason  = #{reason} " +
             "WHERE id = #{id} ")
     void update(VaccineOrderRequisition orderRequisition);
 
@@ -119,6 +117,16 @@ public interface VaccineOrderRequisitionMapper {
                                                 @Param("dateRangeStart") String dateRangeStart,
                                                 @Param("dateRangeEnd") String dateRangeEnd
                                                 ,@Param("programId") Long programId);
+
+
+    @Select("SELECT ic.* FROM isa_coefficients ic \n" +
+            "JOIN facility_program_products fpp ON fpp.isaCoefficientsId = ic.id \n" +
+            "JOIN program_products pp on fpp.programproductId = pp.id\n" +
+            "JOIN products p on p.id = pp.productId\n" +
+            "WHERE facilityId = #{facilityId}")
+    List<OrderRequisitionStockCardDTO>getAllByFacility(@Param("facilityId") Long facilityId,
+                                                       @Param("programId") Long programId);
+
 
     @Select("SELECT *" +
             " FROM vw_stock_cards" +
