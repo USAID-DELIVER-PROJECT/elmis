@@ -32,8 +32,7 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
                 periodEnd:   $scope.periodEnddate,
                 range:       $scope.range,
                 district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
-               // product:     0
-                product:     $scope.filter.product
+                product:     0
             },
 
             function (data) {
@@ -82,7 +81,7 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
                 }
 
                 if(item.year == $scope.summaryPeriodLists[i].year && item.month == $scope.summaryPeriodLists[i].month)
-                    col.push({val : item.ontime == 0 ? 'L' : 'T'});
+                    col.push({val : item.reporting_status});
 
                 else
                    col.push({val : '-'});

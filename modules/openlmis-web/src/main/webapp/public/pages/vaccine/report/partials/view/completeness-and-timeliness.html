@@ -35,166 +35,145 @@
 
 </style>
 <div class="row-fluid">
-<div class="box span12">
-<div class="box-header">
-    <h2 openlmis-message="report.title.completeness.and.timeliness"><i class="icon-edit"></i><span class="break"></span></h2>
-    <div class="box-icon">
-        <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
-        <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
-    </div>
-</div>
-<div class="app-form">
-    <form ng-submit="filterGrid()" name="filterForm" novalidate>
-        <div  class="clearfix">
+    <div class="box span12">
+        <div class="box-header">
+            <h2 openlmis-message="report.title.completeness.and.timeliness"><i class="icon-edit"></i><span class="break"></span></h2>
+            <div class="box-icon">
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+        </div>
+        <div class="app-form">
+            <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                <div  class="clearfix">
 
-            <!--================================ filter start ====================-->
+                    <!--================================ filter start ====================-->
 
+                    <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="false" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone" ></vaccine-zone-filter>
+                    <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
+                    <!--======================== filter end =========================-->
+                </div>
+            </form>
 
-            <div class="horizontalFilters form-cell"  ng-show="false">
-
-            <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="false" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone" ></vaccine-zone-filter>
-            <div class="horizontalFilters form-cell">
-
-                <label for="product" class="labels"  openlmis-message="label.product"><span class="label-required">*</span></label>
-                <div>
-                    <select id="product" ui-select2 class="input-large" ng-model="filter.product" ng-change="OnFilterChanged();">
-                        <option value="">---Select product---</option>
-                        <option ng-repeat="option in product" value="{{ option.id }}">{{ option.name }}</option>
-                    </select>
+            <div style="margin:2px !important;font-size:10px;"  ng-show="periodStartDate" class="row">
+                <div class="span4">
+                    <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate | date:'MMM dd, yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate | date:'MMM dd, yyyy'}}
                 </div>
             </div>
-
-            <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
-            <!--======================== filter end =========================-->
-        </div>
-    </form>
-
-    <div style="margin:2px !important;font-size:10px;"  ng-show="periodStartDate" class="row">
-        <div class="span4">
-            <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate | date:'MMM dd, yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;
-            <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate | date:'MMM dd, yyyy'}}
-        </div>
-    </div>
-    <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror || perioderror1" class="row">
-        <div class="span11 ">
-            <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
-        </div>
-    </div>
-</div>
-<div class="content-body">
-    <table class="table table-bordered" ng-show="datarows.length < 1">
-        <tr>
-            <td>No data to show under selected filters</td>
-        </tr>
-    </table>
-    <div>
-        <br/>
-        <div id="parent" ng-show="datarows.length > 0">
-            <h2 openlmis-message="completeness.and.timliness.header.comp.and.tim.by.district"></h2>
-            <table class="rnr-table table-bordered table">
-                <thead>
-                <tr>
-                    <th rowspan="2">{{getLocalMessage('label.region')}}</th>
-                    <th rowspan="2">{{getLocalMessage('label.district')}}</th>
-                    <th rowspan="2">{{getLocalMessage('label.period')}}</th>
-                    <th rowspan="2">{{getLocalMessage('label.target.population')}}</th>
-                    <th colspan="5" style="text-align: center;">{{getLocalMessage('label.reporting.performance')}}</th>
-                    <th colspan="3" style="text-align: center;">{{getLocalMessage('label.session.conducted')}}</th>
-                </tr>
-                <tr>
-                    <th>{{getLocalMessage('label.expected')}}</th>
-                    <th>{{getLocalMessage('label.reported')}}</th>
-                    <th>{{getLocalMessage('label.late')}}</th>
-                    <th>{{getLocalMessage('label.percent.reported')}}</th>
-                    <th>{{getLocalMessage('label.percent.late')}}</th>
-                    <th>{{getLocalMessage('label.fixed')}}</th>
-                    <th>{{getLocalMessage('label.outreach')}}</th>
-                    <th>{{getLocalMessage('label.total')}}</th>
-
-                </tr>
-                <tr>
-                    <th colspan="4"></th>
-                    <th>{{getLocalMessage('label.A')}}</th>
-                    <th>{{getLocalMessage('label.B')}}</th>
-                    <th>{{getLocalMessage('label.C')}}</th>
-                    <th></th>
-                    <th></th>
-                    <th>{{getLocalMessage('label.D')}}</th>
-                    <th>{{getLocalMessage('label.E')}}</th>
-                    <th>{{getLocalMessage('label.F')}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="row in datarows">
-                    <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
-                    <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
-                    <td  >{{row.period_name}}</td>
-                    <td class="number"  >{{row.target}}</td>
-                    <td class="number" >{{row.expected}}</td>
-                    <td class="number" >{{row.reported}}</td>
-                    <td class="number" >{{row.late}}</td>
-                    <td class="number" >{{row.percent_reported}}%</td>
-                    <td class="number" >{{row.percent_late}}%</td>
-                    <td class="number" >{{row.fixed}}</td>
-                    <td class="number" >{{row.outreach}}</td>
-                    <td class="number" >{{row.session_total}}</td>
-                </tr>
-
-                </tbody>
-            </table>
-
-            <h2 openlmis-message="completeness.and.timliness.header.facility.aggregate"></h2>
-            <div ng-show="datarows.length > 0">
-                <table id="summary-table" class="rnr-table table-bordered table">
-                    <thead >
-                    <tr>
-                        <th style="width: 19%;"></th>
-                        <th ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td  openlmis-message="completeness.and.timliness.number.of.reports.expected"></td>
-                        <td  ng-repeat="tot in expected">{{tot.total}}</td>
-                    </tr>
-                    <tr>
-                        <td openlmis-message="completeness.and.timliness.number.of.reports.recived"></td>
-                        <td ng-repeat="rp in reported">{{rp.total}}</td>
-                    </tr>
-                    <tr>
-                        <td  openlmis-message="completeness.and.timliness.number.of.reports.on.time"></td>
-                        <td  ng-repeat="ontm in ontime">{{ontm.total}}</td>
-                    </tr>
-                    <tr>
-                        <td openlmis-message="completeness.and.timliness.completeness"></td>
-
-                        <td ng-repeat="abbb in completeness">{{abbb.total}}%</td>
-                    </tr>
-                    <tr>
-                        <td openlmis-message="completeness.and.timliness.timeliness"></td>
-                        <td ng-repeat="abbbb in timelines">{{abbbb.total}}%</td>
-
-                        <td ng-repeat="comp in completeness">{{comp.total}}</td>
-                    </tr>
-                    <tr>
-                        <td openlmis-message="completeness.and.timliness.timeliness"></td>
-                        <td ng-repeat="tim in timelines">{{tim.total}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror || perioderror1" class="row">
+                <div class="span11 ">
+                    <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                </div>
             </div>
-
-            <div ng-show="allRegionSelection">
-                <h2 openlmis-message="completeness.and.timliness.header.district.aggregate">District stores aggregate summary</h2>
-                    <table id="summary-table" class="rnr-table table-bordered table" ng-show="aggregateSummary.length > 0">
-                        <thead >
+        </div>
+        <div class="content-body">
+            <table class="table table-bordered" ng-show="datarows.length < 1">
+                <tr>
+                    <td>No data to show under selected filters</td>
+                </tr>
+            </table>
+            <div>
+                <br/>
+                <div id="parent" ng-show="datarows.length > 0">
+                    <h2 openlmis-message="completeness.and.timliness.header.comp.and.tim.by.district"></h2>
+                    <table class="rnr-table table-bordered table">
+                        <thead>
                         <tr>
-                            <th style="width: 19%;"></th>
-                            <th  openlmis-message="label.districts"></th>
-                            <th ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
+                            <th rowspan="2">{{getLocalMessage('label.region')}}</th>
+                            <th rowspan="2">{{getLocalMessage('label.district')}}</th>
+                            <th rowspan="2">{{getLocalMessage('label.period')}}</th>
+                            <th rowspan="2">{{getLocalMessage('label.target.population')}}</th>
+                            <th colspan="5" style="text-align: center;">{{getLocalMessage('label.reporting.performance')}}</th>
+                            <th colspan="3" style="text-align: center;">{{getLocalMessage('label.session.conducted')}}</th>
+                        </tr>
+                        <tr>
+                            <th>{{getLocalMessage('label.expected')}}</th>
+                            <th>{{getLocalMessage('label.reported')}}</th>
+                            <th>{{getLocalMessage('label.late')}}</th>
+                            <th>{{getLocalMessage('label.percent.reported')}}</th>
+                            <th>{{getLocalMessage('label.percent.late')}}</th>
+                            <th>{{getLocalMessage('label.fixed')}}</th>
+                            <th>{{getLocalMessage('label.outreach')}}</th>
+                            <th>{{getLocalMessage('label.total')}}</th>
+
+                        </tr>
+                        <tr>
+                            <th colspan="4"></th>
+                            <th>{{getLocalMessage('label.A')}}</th>
+                            <th>{{getLocalMessage('label.B')}}</th>
+                            <th>{{getLocalMessage('label.C')}}</th>
+                            <th></th>
+                            <th></th>
+                            <th>{{getLocalMessage('label.D')}}</th>
+                            <th>{{getLocalMessage('label.E')}}</th>
+                            <th>{{getLocalMessage('label.F')}}</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <tr ng-repeat="row in datarows">
+                            <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                            <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
+                            <td  >{{row.period_name}}</td>
+                            <td class="number"  >{{row.target}}</td>
+                            <td class="number" >{{row.expected}}</td>
+                            <td class="number" >{{row.reported}}</td>
+                            <td class="number" >{{row.late}}</td>
+                            <td class="number" >{{row.percent_reported}}%</td>
+                            <td class="number" >{{row.percent_late}}%</td>
+                            <td class="number" >{{row.fixed}}</td>
+                            <td class="number" >{{row.outreach}}</td>
+                            <td class="number" >{{row.session_total}}</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                    <h2 openlmis-message="completeness.and.timliness.header.facility.aggregate"></h2>
+                    <div ng-show="datarows.length > 0">
+                        <table id="summary-table" class="rnr-table table-bordered table">
+                            <thead >
+                            <tr>
+                                <th style="width: 19%;"></th>
+                                <th ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td  openlmis-message="completeness.and.timliness.number.of.reports.expected"></td>
+                                <td  ng-repeat="tot in expected">{{tot.total}}</td>
+                            </tr>
+                            <tr>
+                                <td openlmis-message="completeness.and.timliness.number.of.reports.recived"></td>
+                                <td ng-repeat="rp in reported">{{rp.total}}</td>
+                            </tr>
+                            <tr>
+                                <td  openlmis-message="completeness.and.timliness.number.of.reports.on.time"></td>
+                                <td  ng-repeat="ontm in ontime">{{ontm.total}}</td>
+                            </tr>
+                            <tr>
+                                <td openlmis-message="completeness.and.timliness.completeness"></td>
+                                <td ng-repeat="comp in completeness">{{comp.total}}</td>
+                            </tr>
+                            <tr>
+                                <td openlmis-message="completeness.and.timliness.timeliness"></td>
+                                <td ng-repeat="tim in timelines">{{tim.total}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div ng-show="allRegionSelection">
+                        <h2 openlmis-message="completeness.and.timliness.header.district.aggregate">District stores aggregate summary</h2>
+                        <table id="summary-table" class="rnr-table table-bordered table" ng-show="aggregateSummary.length > 0">
+                            <thead >
+                            <tr>
+                                <th style="width: 19%;"></th>
+                                <th  openlmis-message="label.districts"></th>
+                                <th ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             <tr ng-repeat="parent in aggregateTableData">
                                 <td></td>
                                 <td ng-repeat="child in parent">{{child.val}}</td>
@@ -204,10 +183,10 @@
                                 <td colspan="2" openlmis-message="completeness.and.timliness.num.dist.stores"></td>
                                 <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{aggregateExpectedStoresCount}}</td>
                             </tr>
-                        <tr>
-                            <td colspan="2" openlmis-message="completeness.and.timliness.summary.completed"></td>
-                            <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{a}}</td>
-                        </tr>
+                            <tr>
+                                <td colspan="2" openlmis-message="completeness.and.timliness.summary.completed"></td>
+                                <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{a}}</td>
+                            </tr>
                             <tr>
                                 <td colspan="2" openlmis-message="completeness.and.timliness.summary.ontime"></td>
                                 <td ng-repeat="a in aggregateSummaryLegendData.ontime track by $index">{{a}}</td>
@@ -220,17 +199,17 @@
                                 <td colspan="2" openlmis-message="completeness.and.timliness.timeliness"></td>
                                 <td ng-repeat="a in aggregateSummaryLegendData.timeliness track by $index">{{a}}</td>
                             </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
 
-                    <table class="table table-bordered" ng-show="aggregateSummary.length < 1">
-                        <tr>
-                            <td  openlmis-message="completeness.and.timliness.no.district.stores.found"></td>
-                        </tr>
-                    </table>
+                        <table class="table table-bordered" ng-show="aggregateSummary.length < 1">
+                            <tr>
+                                <td  openlmis-message="completeness.and.timliness.no.district.stores.found"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>
