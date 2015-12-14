@@ -24,6 +24,8 @@
     <import resource="classpath:applicationContext-db.xml"/>
     <import resource="classpath:applicationContext-core.xml"/>
     <import resource="classpath:applicationContext-requisition.xml"/>
+    <import resource="classpath:applicationContext-stock-management.xml"/>
+
 
     <context:component-scan base-package="org.openlmis.report"/>
 
@@ -385,7 +387,27 @@
                 </bean>
 
                 <bean class="org.openlmis.report.Report">
-                    <property name="reportKey" value="cold_chain_temperature"/>
+                    <property name="reportKey" value="vaccine_stock_status"/>
+                    <property name="template" value="vaccine-stock-status-report.jasper"/>
+                    <property name="reportDataProvider" ref="vaccineStockStatusReportDataProvider"/>
+                    <property name="id" value="RP-replacement-plan"/>
+                    <property name="name" value="Vaccine Stock Status Report"/>
+                    <property name="title" value="report.vaccine.title.stock.status"/>
+                    <property name="version" value="1.0"/>
+                </bean>
+
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="stock_ledger"/>
+                    <property name="template" value="stock-ledger-report.jasper"/>
+                    <property name="reportDataProvider" ref="stockLedgerServiceDataProvider"/>
+                    <property name="id" value="RP-replacement-plan"/>
+                    <property name="name" value="Stock Ledger Report"/>
+                    <property name="title" value="report.title.stock.ledger.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
+
+                <bean class="org.openlmis.report.Report">
+                <property name="reportKey" value="cold_chain_temperature"/>
                     <property name="template" value="vaccine_temperature.jasper"/>
                     <property name="reportDataProvider" ref="coldChainTemperatureDataProvider"/>
                     <property name="id" value="RP-cold_chain_temperature"/>
