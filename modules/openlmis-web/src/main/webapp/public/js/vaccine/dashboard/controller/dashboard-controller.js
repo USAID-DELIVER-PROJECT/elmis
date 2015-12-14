@@ -32,7 +32,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
     };
 
 
-    $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend);
+    $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
     $scope.defaultProduct = defaultProduct;
 
 
