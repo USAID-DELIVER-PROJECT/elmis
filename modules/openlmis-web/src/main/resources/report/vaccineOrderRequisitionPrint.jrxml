@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="a0a4e861-0726-422f-b3d5-54b1aefe96ce">
 	<property name="ireport.zoom" value="1.3636363636363638"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="167"/>
+	<property name="ireport.x" value="94"/>
+	<property name="ireport.y" value="41"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -114,9 +114,9 @@
 				<textField isStretchWithOverflow="true">
 					<reportElement stretchType="RelativeToTallestObject" x="11" y="0" width="730" height="50" uuid="212194e9-72ca-4321-8f61-a735ab2074b7"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="16" isUnderline="false"/>
+						<font fontName="SansSerif" size="18" isUnderline="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[msg($R{label.title.vaccine.order.requisition.report},$F{programName})]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{label.title.vaccine.order.requisition.report}]]></textFieldExpression>
 				</textField>
 			</band>
 			<band height="83">
@@ -318,7 +318,7 @@
 					<reportElement x="171" y="70" width="246" height="1" uuid="31b459bd-96de-4d7f-8e8f-0244657b7a4b"/>
 				</line>
 				<line>
-					<reportElement x="511" y="30" width="240" height="1" uuid="926ea451-cf79-437f-8f39-da880abf4d75"/>
+					<reportElement x="514" y="50" width="240" height="1" uuid="926ea451-cf79-437f-8f39-da880abf4d75"/>
 				</line>
 				<textField>
 					<reportElement x="511" y="52" width="240" height="18" forecolor="#3D9297" backcolor="#3D9297" uuid="3cf77c08-0c3c-47e3-b934-edf2fd2dd377"/>
@@ -407,14 +407,14 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[msg($R{label.title.united.republic.tanzania}, $F{programName})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{label.title.united.republic.tanzania}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="100" y="43" width="641" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="b7f47698-1462-44d8-ac98-448b9ffc09a0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[msg($R{label.title.immunization},$F{programName})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{label.title.immunization}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
