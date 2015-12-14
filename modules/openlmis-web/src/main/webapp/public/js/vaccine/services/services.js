@@ -103,7 +103,7 @@ services.factory('StockCards', function($resource){
 });
 
 services.factory('Forecast', function($resource){
-//TODO call Forecast API
+    return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements',{facilityId: '@facilityId', programId: '@programId'},{'query':  {method:'GET', isArray:true}});
 });
 
 services.factory('ProgramProducts',function($resource){
