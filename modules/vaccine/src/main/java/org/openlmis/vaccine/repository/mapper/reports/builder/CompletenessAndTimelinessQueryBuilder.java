@@ -24,6 +24,7 @@ public class CompletenessAndTimelinessQueryBuilder {
         Date endDate     = (Date) params.get("endDate");
         Long productId   = (Long) params.get("productId");
 
+
         String sql = "with temp as ( \n" +
                 "            select 	pp.name period_name,\n" +
                 "			pp.startdate::date period_start_date,\n" +
@@ -71,6 +72,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "join vw_districts vd on vd.district_id = t.geographiczoneid\n" + writeDistrictPredicate(zone)  + " \n" +
                 "group by 1, 2, 3, 4\n" +
                 "order by 1,2, 4\n";
+
         return sql;
     }
     public static String  selectCompletenessAndTimelinessSummaryReportDataByDistrict(Map params){
@@ -116,6 +118,60 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "join vw_districts vd on vd.district_id = t.geographiczoneid\n" + writeDistrictPredicate(zone)  + " \n" +
                 "group by 1, 2, 3\n" +
                 "order by 1,3, 2\n";
+        return sql;
+    }
+
+    public static String selectCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(Map params){
+
+        Long zone = (Long) params.get("districtId");
+        Date startDate   = (Date) params.get("startDate");
+        Date endDate     = (Date) params.get("endDate");
+        Long productId   = (Long) params.get("productId");
+
+        String sql = "SELECT district_id, district_name, period_name, \n" +
+                "                       \"month\",  \n" +
+                "                       \"year\",  \n" +
+                "                       SUM(ontime)                                      ontime,  \n" +
+                "                       Count(*)                                         reported,  \n" +
+                "                       (SELECT Count(*) AS expected   FROM   facilities f  join vw_districts d  \n" +
+                "                          ON f.geographiczoneid = d.district_id \n" +
+                "                            AND f.typeid = (SELECT id FROM facility_types WHERE code = 'dvs') ) AS expected  \n" +
+                "           FROM  (SELECT d.district_id,\n" +
+                "                               d.district_name,  \n" +
+                "                               i.period_name,  \n" +
+                "                               i.period_start_date,  \n" +
+                "                               Extract(month FROM i.period_start_date) \"month\",  \n" +
+                "                               Extract(year FROM i.period_start_date)  \"year\",  \n" +
+                "                               vr.id,  \n" +
+                "                               i.facility_id,  \n" +
+                "                               vr.submissiondate,  \n" +
+                "                               CASE  \n" +
+                "                                 WHEN ( Date_part('day', vr.submissiondate :: timestamp -  \n" +
+                "                               i.period_start_date :: timestamp) ) :: NUMERIC <=  conf.cutoff :: NUMERIC THEN 1  \n" +
+                "                                 ELSE 0  \n" +
+                "                               END  ontime  \n" +
+                "                  FROM   vw_vaccine_coverage i  \n" +
+                "                               join vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
+                "                               join vaccine_reports vr  ON i.report_id = vr.id  \n" +
+                "                               join facilities f ON f.id = i.facility_id AND f.typeid = (SELECT id FROM facility_types WHERE code = 'dvs')\n" +
+                "                               join program_products pp ON pp.programid = vr.programid AND pp.productid = i.product_id  \n" +
+                "                               join product_categories pg ON pp.productcategoryid = pg.id  \n" +
+                "                               join (SELECT value AS cutoff, KEY FROM configuration_settings) conf  \n" +
+                "                                 ON conf.KEY = 'VACCINE_LATE_REPORTING_DAYS'  \n" +
+                "                 WHERE  i.program_id = (SELECT id FROM   programs p WHERE  p.enableivdform = TRUE)  \n" +
+                "                 AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
+                "                 AND i.product_id =  " +productId+""+
+                                        writeDistrictPredicate(zone)  +
+                "                ORDER  BY i.period_start_date) AS timeliness  \n" +
+                "                GROUP  BY district_id,\n" +
+                "                          district_name,\n" +
+                "                          period_name,  \n" +
+                "                          \"month\",  \n" +
+                "                          \"year\"  \n" +
+                "                ORDER  BY district_name, \n" +
+                "                          \"year\",  \n" +
+                "                          \"month\"";
+
         return sql;
     }
 
