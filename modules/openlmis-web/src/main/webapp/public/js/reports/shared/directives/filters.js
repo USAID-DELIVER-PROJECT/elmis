@@ -1153,7 +1153,8 @@ app.directive('vaccineDropoutFilter', ['DropoutProducts', 'messageService',
         return {
             restrict: 'E',
             scope: {
-                filterProduct: '=filterproduct'
+                filterProduct: '=filterproduct',
+                default: '=default'
             },
             controller: function ($scope, $routeParams, $location) {
                 DropoutProducts.get({}, function (data) {
@@ -1161,6 +1162,9 @@ app.directive('vaccineDropoutFilter', ['DropoutProducts', 'messageService',
 
                 });
                 $scope.filterProduct = 0;
+                if(!isUndefined($scope.default)){
+                    $scope.filterProduct = $scope.default;
+                }
                 $scope.$watch('filterProduct', function (newValues, oldValues) {
 
 
@@ -1183,7 +1187,8 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
         return {
             restrict: 'E',
             scope: {
-                filterProduct: '=cmModel'
+                filterProduct: '=cmModel',
+                default: '=default'
             },
             controller: function ($scope) {
                 VaccineSupervisedIvdPrograms.get({}, function (data) {
@@ -1195,7 +1200,12 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
                         $scope.products = data.productList;
 
                     });
-                    $scope.filterProduct = 0;
+                    if(!isUndefined($scope.default)){
+                        $scope.filterProduct = $scope.default;
+                    }else{
+
+                        $scope.filterProduct = 0;
+                    }
                     $scope.$watch('filterProduct', function (newValues, oldValues) {
 
                         $scope.$parent.OnFilterChanged();
@@ -1254,7 +1264,8 @@ app.directive('staticPeriodFilter', [ function() {
             periodStartdate: '=startdate',
             periodEnddate: '=enddate',
             periodRangeMax: '=rangemax',
-            perioderror: '=error'
+            perioderror: '=error',
+            default: '=default'
         },
 
         controller: function($scope, SettingsByKey, $timeout){
@@ -1262,10 +1273,12 @@ app.directive('staticPeriodFilter', [ function() {
             $scope.periodStartdate = $scope.periodEnddate = "";
 
             SettingsByKey.get({key:'VACCINE_LATE_REPORTING_DAYS'}, function(data, er){ $scope.cutoffdate =  data.settings.value;});
+            if(!isUndefined($scope.default)){
+                $scope.periodRange = $scope.default;
+            }
 
             $scope.$watch('periodRange', function(newValues, oldValues){
-
-                if ($scope.periodRange < 5 && $scope.periodRange >= 0) {
+                if ($scope.periodRange < 5 && $scope.periodRange > 0) {
                     periods = utils.getVaccineCustomDateRange($scope.periodRange, $scope.periodStartdate, $scope.periodEnddate, $scope.cutoffdate);
 
                     $scope.periodStartdate = periods.startdate;
