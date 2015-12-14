@@ -112,10 +112,10 @@
                         <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                         <td ng-show="!regionSelected" style="background-color : {{bgColorCode(row.coverage)}}">{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
                         <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.coverage}}%</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
                     <tr>
@@ -123,7 +123,7 @@
                         <td class="aggregate-row" ng-show="regionSelected" colspan="2"></td>
                         <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal | number}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage}}%</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage}}%</td>
@@ -192,20 +192,20 @@
                     <tr ng-repeat="row in dataRowsRegionAggregate">
                         <td >{{ dataRowsRegionAggregate[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                         <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.coverage}}%</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
                     <tr>
                         <td class="aggregate-row" ng-show="!regionSelected" colspan="2"></td>
                         <td class="aggregate-row" ng-show="regionSelected" colspan="1"></td>
                         <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal | number}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal | number}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage}}%</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination | number}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage}}%</td>
                     </tr>
                     </tbody>

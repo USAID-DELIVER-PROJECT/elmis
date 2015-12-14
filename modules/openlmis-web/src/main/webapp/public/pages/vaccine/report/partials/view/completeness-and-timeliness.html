@@ -115,15 +115,15 @@
                             <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                             <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                             <td  >{{row.period_name}}</td>
-                            <td class="number"  >{{row.target}}</td>
-                            <td class="number" >{{row.expected}}</td>
-                            <td class="number" >{{row.reported}}</td>
-                            <td class="number" >{{row.late}}</td>
+                            <td class="number"  >{{row.target | number}}</td>
+                            <td class="number" >{{row.expected | number}}</td>
+                            <td class="number" >{{row.reported | number}}</td>
+                            <td class="number" >{{row.late | number}}</td>
                             <td class="number" >{{row.percent_reported}}%</td>
                             <td class="number" >{{row.percent_late}}%</td>
-                            <td class="number" >{{row.fixed}}</td>
-                            <td class="number" >{{row.outreach}}</td>
-                            <td class="number" >{{row.session_total}}</td>
+                            <td class="number" >{{row.fixed | number}}</td>
+                            <td class="number" >{{row.outreach | number}}</td>
+                            <td class="number" >{{row.session_total | number}}</td>
                         </tr>
 
                         </tbody>
@@ -141,23 +141,23 @@
                             <tbody>
                             <tr>
                                 <td  openlmis-message="completeness.and.timliness.number.of.reports.expected"></td>
-                                <td  ng-repeat="tot in expected">{{tot.total}}</td>
+                                <td  ng-repeat="tot in expected">{{tot.total | number}}</td>
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.number.of.reports.recived"></td>
-                                <td ng-repeat="rp in reported">{{rp.total}}</td>
+                                <td ng-repeat="rp in reported">{{rp.total | number}}</td>
                             </tr>
                             <tr>
                                 <td  openlmis-message="completeness.and.timliness.number.of.reports.on.time"></td>
-                                <td  ng-repeat="ontm in ontime">{{ontm.total}}</td>
+                                <td  ng-repeat="ontm in ontime">{{ontm.total | number}}</td>
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.completeness"></td>
-                                <td ng-repeat="comp in completeness">{{comp.total}}</td>
+                                <td ng-repeat="comp in completeness">{{comp.total | number}}</td>
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.timeliness"></td>
-                                <td ng-repeat="tim in timelines">{{tim.total}}</td>
+                                <td ng-repeat="tim in timelines">{{tim.total | number}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -181,23 +181,23 @@
 
                             <tr>
                                 <td colspan="2" openlmis-message="completeness.and.timliness.num.dist.stores"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{aggregateExpectedStoresCount}}</td>
+                                <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{aggregateExpectedStoresCount | number}}</td>
                             </tr>
                             <tr>
                                 <td colspan="2" openlmis-message="completeness.and.timliness.summary.completed"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{a}}</td>
+                                <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{a | number}}</td>
                             </tr>
                             <tr>
                                 <td colspan="2" openlmis-message="completeness.and.timliness.summary.ontime"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.ontime track by $index">{{a}}</td>
+                                <td ng-repeat="a in aggregateSummaryLegendData.ontime track by $index">{{a | number}}</td>
                             </tr>
                             <tr>
                                 <td colspan="2" openlmis-message="completeness.and.timliness.completeness"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.completeness track by $index">{{a}}</td>
+                                <td ng-repeat="a in aggregateSummaryLegendData.completeness track by $index">{{a | number}}</td>
                             </tr>
                             <tr>
                                 <td colspan="2" openlmis-message="completeness.and.timliness.timeliness"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.timeliness track by $index">{{a}}</td>
+                                <td ng-repeat="a in aggregateSummaryLegendData.timeliness track by $index">{{a | number}}</td>
                             </tr>
                             </tbody>
                         </table>
