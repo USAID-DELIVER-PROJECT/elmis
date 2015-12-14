@@ -326,4 +326,9 @@ public interface VaccineReportMapper {
                                                                                      @Param("districtId") Long districtId,
                                                                                      @Param("productId") Long productId);
 
+    @SelectProvider(type = CompletenessAndTimelinessQueryBuilder.class, method = "selectCompletenessAndTimelinessAggregateSummaryReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
+                                                                                              @Param("districtId") Long districtId,
+                                                                                              @Param("productId") Long productId);
+
 }

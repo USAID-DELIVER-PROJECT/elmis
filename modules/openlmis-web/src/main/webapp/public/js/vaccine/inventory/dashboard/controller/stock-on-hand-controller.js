@@ -34,8 +34,14 @@ function StockOnHandController($scope,$window,EquipmentNonFunctional,VaccinePend
         StockCardsByCategory.get(programId ,facilityId).then(function(data){
                $scope.stockCardsByCategory=data;
                if( $scope.stockCardsByCategory[0] !== undefined){
-                    $scope.data = {"stockcards": $scope.stockCardsByCategory[0].stockCards};
-                    $scope.showGraph=true;
+
+                    Forecast.query({programId:programId ,facilityId:facilityId},
+                    function(data){
+                            $scope.data = {"stockcards": $scope.stockCardsByCategory[0].stockCards};
+                            $scope.data.forecasts=data;
+                            $scope.showGraph=true;
+                     });
+
                }
 
         });

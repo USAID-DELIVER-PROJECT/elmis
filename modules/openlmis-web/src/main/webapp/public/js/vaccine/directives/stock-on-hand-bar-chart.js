@@ -13,7 +13,7 @@
 app.directive('stockchart', ['messageService',function(messageService) {
     return{
             restrict: 'EA',
-            template: '<div ng-show="showGraph" ></div> <div class="chart-tooltip" style="display: none;z-index:532;position: absolute;width: auto;line-height: 20px;padding: 10px;font-size: 14px;text-align: center;color:#333;background: #FFF;border: 1px solid #ccc;border-radius: 5px;text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;"></div>',
+            template: '<div style="width:75%" class="alert alert-danger" ng-show="nonISA.length>0"><span openlmis-message="error.product.with.no.isavalue"></span>&nbsp;<b ng-repeat="p in nonISA" ng-bind="p"></b></div><div ng-show="showGraph" ></div> <div class="chart-tooltip" style="display: none;z-index:532;position: absolute;width: auto;line-height: 20px;padding: 10px;font-size: 14px;text-align: center;color:#333;background: #FFF;border: 1px solid #ccc;border-radius: 5px;text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;"></div>',
             link: function(scope, elem, attrs){
                 var stockCards=null;
                 var forecasts=null;
@@ -22,7 +22,7 @@ app.directive('stockchart', ['messageService',function(messageService) {
                 var ylabelMos=messageService.get('label.stock.chart.mos');
                 var type='vaccine';
 
-                plotArea = $(elem.children()[0]);
+                plotArea = $(elem.children()[1]);
                 plotArea.css({
                         width: attrs.width,
                         height: attrs.height
@@ -54,7 +54,7 @@ app.directive('stockchart', ['messageService',function(messageService) {
                                     tickLength: 0
                                 },
                                 yaxis: {
-                                     axisLabel: ylabelDoses,
+                                     axisLabel: ylabelMos,
                                      axisLabelUseCanvas: true,
                                      axisLabelFontSizePixels: 12,
                                      axisLabelPadding: 5
@@ -73,16 +73,17 @@ app.directive('stockchart', ['messageService',function(messageService) {
                 var data = scope[attrs.ngModel];
                 // If the data changes somehow, update it in the chart
                 scope.$watch('data', function(v){
-                     stockCards=v.stockcards;
-                     if(v.forecasts !== undefined){
-                        forecasts=v.forecasts;
-                     }
 
-                     options.yaxis.axisLabel=ylabelDoses;
-                     if( forecasts !== null) {
+                     stockCards=v.stockcards;
+                     if(v.forecasts !== undefined && v.forecasts.length >0){
+                        forecasts=v.forecasts;
                         options.yaxis.axisLabel=ylabelMos;
                      }
+                    else{
+                        options.yaxis.axisLabel=ylabelMos;
+                    }
                      var graphData=[];
+                     scope.nonISA=[];
                      if(stockCards !== null )
                      {
                          stockCards.forEach( function (c)
@@ -94,26 +95,38 @@ app.directive('stockchart', ['messageService',function(messageService) {
                                                  var q=c.totalQuantityOnHand;
                                                  var id=c.product.id;
 
-
-                                                 var f=_.find(forecasts, function(forecast){ if(forecast.product.id==id) return forecast;});
-                                                 if(f !==undefined)
+                                                 var f=_.find(forecasts, function(forecast){ if(forecast.productId==id) return forecast;});
+                                                 if(f !==undefined && f !==null)
                                                  {
 
                                                      //Set Colors
-                                                     if(q<=f.forecast.max && q>f.forecast.orderLevel)
+                                                     if(q<=f.maximumStock && q>f.reorderLevel)
                                                      {
                                                         color="green";
                                                      }
-                                                     else if(q<=f.forecast.orderLevel && q>f.forecast.buffer)
+                                                     else if(q<=f.reorderLevel && q>(f.quarterlyNeed*(f.isaCoefficients.bufferPercentage/100)))
                                                      {
                                                         color="#e5e500";
                                                      }
-                                                     else if(q<=f.forecast.buffer)
+                                                     else if(q<=(f.quarterlyNeed*(f.isaCoefficients.bufferPercentage/100)))
                                                      {
                                                         color="red";
                                                      }
                                                      //Calculate MOS
-                                                     q=q/f.forecast.buffer;
+                                                     if(f.isaValue >0){
+                                                        q=q/f.isaValue;
+                                                     }
+                                                     else if(f.isaValue <=0 || f.isaValue ===null){
+                                                        q=null;
+                                                        color="#b94a48";
+                                                        scope.nonISA.push(c.product.primaryName+"-");
+                                                     }
+
+                                                 }
+                                                 else if(f ===null && f ===undefined){
+                                                    q=null;
+                                                    color="#b94a48";
+                                                    scope.nonISA.push(c.product.primaryName+"-");
                                                  }
                                                  var s=[n,q];
                                                  data.push(s);

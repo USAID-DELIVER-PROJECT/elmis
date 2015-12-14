@@ -1,0 +1,23 @@
+<div>Monthly Stock</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.monthlyStock.product"></vaccine-product-filter>
+            <static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyStock.range" startdate="filter.monthlyStock.startDate" enddate="filter.monthlyStock.endDate" rangemax="10" error="perioderror"></static-period-filter>
+
+        </div>
+    </form>
+</div>
+
+<c3chart  bindto-id="monthly_stock_chart" chart-data="monthlyStock.dataPoints" chart-columns="monthlyStock.dataColumns" chart-x="monthlyStock.dataX" ng-show="monthlyStock.dataPoints">
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.period}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="monthlyStock.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

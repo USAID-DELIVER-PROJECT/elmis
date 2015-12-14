@@ -1186,7 +1186,8 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
         return {
             restrict: 'E',
             scope: {
-                filterProduct: '=cmModel'
+                filterProduct: '=cmModel',
+                default: '=default'
             },
             controller: function ($scope) {
                 VaccineSupervisedIvdPrograms.get({}, function (data) {
@@ -1198,7 +1199,12 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
                         $scope.products = data.productList;
 
                     });
-                    $scope.filterProduct = 0;
+                    if(!isUndefined($scope.default)){
+                        $scope.filterProduct = $scope.default;
+                    }else{
+
+                        $scope.filterProduct = 0;
+                    }
                     $scope.$watch('filterProduct', function (newValues, oldValues) {
 
                         $scope.$parent.OnFilterChanged();
@@ -1206,6 +1212,49 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
                 });
             },
             templateUrl: 'filter-vaccine-product-template'
+        };
+    }
+]);
+
+app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', 'messageService',
+    function (GetVaccineReportPeriodTree,  messageService) {
+        return {
+            restrict: 'E',
+            scope: {
+                period: '=cmModel',
+                default: '=default'
+            },
+            controller: function($scope){
+
+                $scope.period_placeholder = messageService.get('label.select.period');
+
+                $scope.$evalAsync(function () {
+                    //Load period tree
+                    GetVaccineReportPeriodTree.get({}, function (data) {
+                        $scope.periods = data.vaccinePeriods.periods;
+                        $scope.filter.defaultPeriodId = data.vaccinePeriods.currentPeriodId;
+                        if (!angular.isUndefined($scope.periods)) {
+                            if ($scope.periods.length === 0)
+                                $scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
+                        }
+                    });
+                });
+                if(!isUndefined($scope.default)){
+                    $scope.period = $scope.default;
+                }else{
+
+                    $scope.period = 0;
+                }
+                $scope.$watch('period', function(newVal, oldVal){
+                    $scope.$parent.OnFilterChanged();
+                });
+            },
+            link: function ($scope, elm, attr) {
+
+
+
+            },
+            templateUrl: 'filter-vaccine-monthly-period-tree-template'
         };
     }
 ]);
@@ -1220,7 +1269,8 @@ app.directive('staticPeriodFilter', [ function() {
             periodStartdate: '=startdate',
             periodEnddate: '=enddate',
             periodRangeMax: '=rangemax',
-            perioderror: '=error'
+            perioderror: '=error',
+            default: '=default'
         },
 
         controller: function($scope, SettingsByKey, $timeout){
@@ -1228,10 +1278,12 @@ app.directive('staticPeriodFilter', [ function() {
             $scope.periodStartdate = $scope.periodEnddate = "";
 
             SettingsByKey.get({key:'VACCINE_LATE_REPORTING_DAYS'}, function(data, er){ $scope.cutoffdate =  data.settings.value;});
+            if(!isUndefined($scope.default)){
+                $scope.periodRange = $scope.default;
+            }
 
             $scope.$watch('periodRange', function(newValues, oldValues){
-
-                if ($scope.periodRange < 5 && $scope.periodRange >= 0) {
+                if ($scope.periodRange < 5 && $scope.periodRange > 0) {
                     periods = utils.getVaccineCustomDateRange($scope.periodRange, $scope.periodStartdate, $scope.periodEnddate, $scope.cutoffdate);
 
                     $scope.periodStartdate = periods.startdate;

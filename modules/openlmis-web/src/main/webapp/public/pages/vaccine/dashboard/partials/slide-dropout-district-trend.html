@@ -1,44 +1,22 @@
-<div class="app-form vaccine-form-filter" >
-    <form ng-submit="filterGrid()" name="filterForm" novalidate>
-        <div class="horizontalFilters">
-            <div  class="form-field">
-                <span openlmis-message="label.district.dropout"></span>
-                <select id="drop-out-district-product" ui-select2 class="input-large" ng-model="filter.dropout.district.product" ng-change="OnFilterChanged();">
-                    <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
-                </select>
-            </div>
-        </div>
-        <div class="horizontalFilters">
-            <div class="form-field">
-                <span openlmis-message="label.show.trend.for"></span>
-                <select id="drop-out-district-period" ui-select2 class="input-large" ng-model="filter.dropout.district.period" ng-change="OnFilterChanged();">
-                    <option ng-repeat="option in periods" value="{{ option.id }}" ng-selected="filter.dropout.district.period == option.id">{{ option.name }}</option>
-                </select>
-            </div>
+
+<div>Dropout By District</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-dropout-filter  defaultselection="defaultProduct" class="form-cell horizontalFilters" filterproduct="filter.districtDropout.product"></vaccine-dropout-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtDropout.period"  class="form-cell horizontalFilters"></vaccine-monthly-period-tree-filter>
         </div>
     </form>
 </div>
+<c3chart  bindto-id="district_dropout_chart" chart-data="districtDropout.dataPoints" chart-columns="districtDropout.dataColumns" chart-x="districtDropout.dataX" ng-show="districtDropout.dataPoints">
+    <chart-axis>
 
-
-<c3chart bindto-id="{{product.name}}_district_dropout_chart">
-    <chart-tooltip value-format-function="formatValue" />
-    <chart-axes values-x="x" />
-    <chart-axis >
-        <chart-axis-x axis-position="outer-center" axis-label="Period" axis-height="40"
-                      axis-type="category" >
-            <!--<chart-axis-x-tick tick-rotate="50" />-->
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.zone}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
         </chart-axis-x>
-        <chart-axis-y>
-            <chart-axis-y-tick tick-format-function="formatValue" />
-        </chart-axis-y>
     </chart-axis>
-
-    <chart-column column-id="Consumption"
-                  column-values="{{product.consumption}}"
-                  column-type="bar"/>
-    <chart-column column-id="amc"
-                  column-values="{{product.amc}}"
-                  column-type="line"/>
-    <chart-column column-id="x"
-                  column-values="{{product.periods}}"/>
 </c3chart>
+<div style="font-weight: bold" ng-hide="districtDropout.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

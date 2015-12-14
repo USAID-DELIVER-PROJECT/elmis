@@ -238,10 +238,11 @@ public class VaccineReportService {
 
         Map<String, List<Map<String, Object>>> result =  new HashMap<String, List<Map<String, Object>>>();
 
-        GeographicZone zone = geographicZoneService.getById(districtId);
-
         result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId));
         result.put("summary",    repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
+        if(districtId == 0)
+        result.put("aggregateSummary",    repository.getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
+
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
 
         return result;
