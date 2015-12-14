@@ -51,6 +51,7 @@ public class RightName {
   public static final String MANAGE_DEMOGRAPHIC_ESTIMATES = "MANAGE_DEMOGRAPHIC_ESTIMATES";
   public static final String MANAGE_DEMOGRAPHIC_PARAMETERS = "MANAGE_DEMOGRAPHIC_PARAMETERS";
   public static final String VIEW_VACCINE_ORDER_REQUISITION = "VIEW_ORDER_REQUISITION";
+  public static final String VIEW_STOCK_LEDGER_REPORT = "VIEW_STOCK_LEDGER_REPORT";
 
 
   public static String commaSeparateRightNames(String... rightNames) {
