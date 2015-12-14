@@ -1,11 +1,13 @@
 /*
- * This program is part of the OpenLMIS logistics management information system platform software.
- * Copyright © 2013 VillageReach
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+ *
+ * Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.openlmis.vaccine.dto;
@@ -60,14 +62,16 @@ public class StockRequirements
 
   int isaValue = 0;
 
-  private Integer getIsaValue()
+  Double bufferStock;
+
+  public Integer getIsaValue()
   {
     if(isa == null || population == null)
       return null;
     return isa.calculate(population);
   }
 
-  private Double getMinimumStock()
+  public Double getMinimumStock()
   {
     if(getIsaValue() == null || minMonthsOfStock == null)
       return null;
@@ -75,7 +79,7 @@ public class StockRequirements
     return MinimumStock = value;
   }
 
-  private Double getMaximumStock()
+  public Double getMaximumStock()
   {
     if(getIsaValue() == null || maxMonthsOfStock == null)
       return null;
@@ -83,24 +87,33 @@ public class StockRequirements
     return MaximumStock= value;
   }
 
-  private Double getReorderLevel()
+  public Double getReorderLevel()
   {
     if(getIsaValue() == null || eop == null)
       return null;
     return getIsaValue() * eop;
   }
 
-  private Integer getAnnualNeed(){
+  public Integer getAnnualNeed(){
     if(getIsaValue() == null)
       return null;
     return getIsaValue() * 12;
   }
 
-  private Integer getQuarterlyNeed(){
+  public Integer getQuarterlyNeed(){
     if (getAnnualNeed() == null)
       return null;
     return getAnnualNeed() / 4;
   }
+
+
+  public Double getBufferStock(){
+      if(getQuarterlyNeed() == null && isa == null)
+          return null;
+      return Double.valueOf((getQuarterlyNeed() * isa.getBufferPercentage()) / 100);
+  }
+
+
 
 
   public String getJSON()
@@ -109,7 +122,7 @@ public class StockRequirements
     (The benefit is that we wouldn't have to worry about maulually escaping strings, etc, as
     Alternatively, look into "Jackson Views." They may give you good control over what is and
     isn't returned to the client. */
-    StringBuilder builder = new StringBuilder();
+   StringBuilder builder = new StringBuilder();
     builder.append("{");
 
     builder.append("\"facilityId\": ");
