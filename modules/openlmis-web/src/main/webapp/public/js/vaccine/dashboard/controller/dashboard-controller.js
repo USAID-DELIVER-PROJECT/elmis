@@ -23,6 +23,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                                     VaccineDashboardBundle,
                                     defaultProduct,
                                     defaultPeriodTrend,
+                                    defaultMonthlyPeriod,
                                     SettingsByKey, messageService) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
@@ -34,6 +35,9 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
 
     $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
     $scope.defaultProduct = defaultProduct;
+    $scope.defaultMonthlyPeriod = defaultMonthlyPeriod;
+
+    $scope.label ={ zone: messageService.get('label.zone'), period: messageService.get('label.period')} ;
 
 
 //Instantiate Monthly Sessions charting options
@@ -79,7 +83,6 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
         dataX: {"id": "geographic_zone_name"}
     };
 
-    $scope.label ={ zone: messageService.get('label.zone'), period: messageService.get('label.period')} ;
 
     $scope.monthlyWastage = {
         dataPoints: [],
@@ -274,17 +277,21 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
 
         $scope.carousels = [carousel('trend'), carousel('district'), carousel('facility')];
     });
-        $scope.OnFilterChanged = function() {
 
 
+    $scope.setInterval = function(carouselId){
+        var cr = _.findWhere($scope.carousels, {id: carouselId});
+        if(!isUndefined(cr)){
+            return cr.interval;
+        }
+        return -1;
+    };
 
+    $scope.OnFilterChanged = function() {
 
         $scope.data = $scope.datarows = [];
        // $scope.filter.max = 10000;
     };
-
-    $scope.periodTrends = [{}];
-
 
 
     VaccineDashboardSummary.get({}, function(data){
@@ -329,6 +336,20 @@ VaccineDashboardController.resolve = {
         $timeout(function () {
 
             SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_PERIOD_TREND'}, function(data){
+                deferred.resolve(data.settings.value);
+
+            });
+
+        },100);
+
+        return deferred.promise;
+
+    },
+    defaultMonthlyPeriod: function($q, $timeout, SettingsByKey){
+        var deferred = $q.defer();
+        $timeout(function () {
+
+            SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_MONTHLY_PERIOD'}, function(data){
                 deferred.resolve(data.settings.value);
 
             });

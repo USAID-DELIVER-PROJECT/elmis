@@ -1221,7 +1221,8 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', '
         return {
             restrict: 'E',
             scope: {
-                period: '=cmModel'
+                period: '=cmModel',
+                default: '=default'
             },
             controller: function($scope){
 
@@ -1238,7 +1239,12 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', '
                         }
                     });
                 });
-                $scope.period = 0;
+                if(!isUndefined($scope.default)){
+                    $scope.period = $scope.default;
+                }else{
+
+                    $scope.period = 0;
+                }
                 $scope.$watch('period', function(newVal, oldVal){
                     $scope.$parent.OnFilterChanged();
                 });
