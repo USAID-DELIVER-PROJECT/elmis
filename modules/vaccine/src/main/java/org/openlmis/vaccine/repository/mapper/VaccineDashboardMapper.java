@@ -127,65 +127,61 @@ public interface VaccineDashboardMapper {
                 "i.period_start_date")
         List<HashMap<String, Object>> getMonthlyCoverage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product);
 
-        @Select("SELECT\n" +
-                "i.product_name,\n" +
-                "i.period_name,\n" +
-                "i.period_start_date, \n" +
-                "CASE\n" +
-                "WHEN sum(COALESCE(i.usage_denominator,0)) > 0 THEN round(sum(COALESCE(i.vaccinated,0))::numeric / sum(COALESCE(i.usage_denominator,0))::numeric, 4) * 100::numeric\n" +
-                "ELSE NULL::numeric\n" +
-                "END AS usage_rate,\n" +
-                "CASE\n" +
-                "WHEN sum(COALESCE(i.usage_denominator,0)) > 0 THEN 100::numeric - round(sum(COALESCE(i.vaccinated,0))::numeric / sum(COALESCE(i.usage_denominator,0))::numeric, 4) * 100::numeric\n" +
-                "ELSE NULL::numeric\n" +
-                "END AS wastage_rate\n" +
-                "FROM\n" +
-                "vw_vaccine_stock_status i\n" +
-                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
-                "JOIN vaccine_reports vr ON i.report_id = vr. ID\n" +
-                "JOIN program_products pp ON pp.programid = vr.programid\n" +
-                "AND pp.productid = i.product_id\n" +
-                "JOIN product_categories pg ON pp.productcategoryid = pg. ID\n" +
-                "WHERE\n" +
-                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE )\n" +
-                "AND i.period_start_date >= '2015-01-01' and i.period_end_date <= '2015-12-31'\n" +
-                "group by 1,2,3\n" +
-                "ORDER BY\n" +
-                "i.product_name,\n" +
-                "i.period_name")
-        List<HashMap<String, Object>> getMonthlyWastage();
 
-        @Select("SELECT\n" +
-                "d.region_name,\n" +
-                "d.district_name,\n" +
-                "i.period_name,\n" +
-                "i.product_name,\n" +
-                "i.period_start_date, \n" +
-                "CASE\n" +
-                "WHEN sum(COALESCE(i.usage_denominator,0)) > 0 THEN round(sum(COALESCE(i.vaccinated,0))::numeric / sum(COALESCE(i.usage_denominator,0))::numeric, 4) * 100::numeric\n" +
-                "ELSE NULL::numeric\n" +
-                "END AS usage_rate,\n" +
-                "CASE\n" +
-                "WHEN sum(COALESCE(i.usage_denominator,0)) > 0 THEN 100::numeric - round(sum(COALESCE(i.vaccinated,0))::numeric / sum(COALESCE(i.usage_denominator,0))::numeric, 4) * 100::numeric\n" +
-                "ELSE NULL::numeric\n" +
-                "END AS wastage_rate\n" +
+        @Select("\n" +
+                "SELECT\n" +
+                "d.district_name geographic_zone_name,\n" +
+                "sum(i.denominator) target, \n" +
+                "sum(COALESCE(i.within_outside_total,0)) actual,\n" +
+                "(case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / \n" +
+                "sum(denominator)::numeric) else 0 end) * 100 coverage\n" +
                 "FROM\n" +
-                "vw_vaccine_stock_status i\n" +
+                "vw_vaccine_coverage i\n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
-                "JOIN vaccine_reports vr ON i.report_id = vr. ID\n" +
+                "JOIN vaccine_reports vr ON i.report_id = vr.ID\n" +
                 "JOIN program_products pp ON pp.programid = vr.programid\n" +
                 "AND pp.productid = i.product_id\n" +
-                "JOIN product_categories pg ON pp.productcategoryid = pg. ID\n" +
                 "WHERE\n" +
-                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE )\n" +
-                "--AND i.period_start_date >= '2015-01-01' and i.period_end_date <= '2015-12-31'\n" +
-                "and i.period_id = 51\n" +
-                "group by 1,2,3,4,5\n" +
+                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1) \n" +
+                "AND i.period_id = #{period}\n" +
+                "and i.product_id = #{product}\n" +
+                "group by 1\n" +
                 "ORDER BY\n" +
-                "d.region_name,\n" +
-                "d.district_name,\n" +
-                "i.period_start_date")
-        List<HashMap<String, Object>> getWastageByDistrict();
+                "d.district_name\n")
+        List<HashMap<String, Object>> getDistrictCoverage(@Param("period") Long period, @Param("product") Long product);
+
+        @Select("with temp as (\n" +
+                "select period_name, period_start_date::date,\n" +
+                "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +
+                "THEN (100 - round(sum(COALESCE(vaccinated,0)) / (sum(COALESCE(usage_denominator,0))), 4) * 100)\n" +
+                "else 0\n" +
+                "END wastage_rate\n" +
+                "from vw_vaccine_stock_status vss\n" +
+                "where vss.period_start_date >= #{startDate} and vss.period_end_date <= #{endDate}\n" +
+                "and product_id = #{product}\n" +
+                "and vss.product_category_code = 'Vaccine'\n" +
+                "group by 1,2 \n" +
+                ")select t.period_name, t.period_start_date, wastage_rate\n" +
+                "from temp t\n" +
+                "where wastage_rate > 0\n" +
+                "order by 2")
+        List<HashMap<String, Object>> getMonthlyWastage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product);
+
+        @Select("with temp as (\n" +
+                "select geographic_zone_name,\n" +
+                "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +
+                "THEN (100 - round(sum(COALESCE(vaccinated,0)) / (sum(COALESCE(usage_denominator,0))), 4) * 100)\n" +
+                "else 0\n" +
+                "END wastage_rate\n" +
+                "from vw_vaccine_stock_status vss\n" +
+                "where vss.period_id = #{period}\n" +
+                "and product_id = #{product}\n" +
+                "and vss.product_category_code = 'Vaccine'\n" +
+                "group by 1 )\n" +
+                "select t.geographic_zone_name, wastage_rate\n" +
+                "from temp t\n" +
+                "where wastage_rate > 0\n")
+        List<HashMap<String, Object>> getWastageByDistrict(@Param("period") Long period, @Param("product") Long product);
 
         @Select("with temp as (\n" +
                 "select\n" +
@@ -228,10 +224,12 @@ public interface VaccineDashboardMapper {
         List<HashMap<String, Object>> getDistrictSessions(@Param("period") Long period);
 
 
-        @Select("\n" +
-                "select \n" +
+        @Select("select \n" +
                 "vvb.programid, \n" +
                 "vvb.periodid, \n" +
+                "vvb.period_name,\n" +
+                "vvb.period_start_date,\n" +
+                "vvb.period_end_date,\n" +
                 "vvb.facilityid,\n" +
                 "vvb.productid, \n" +
                 "vvb.sup_received,\n" +
@@ -244,8 +242,97 @@ public interface VaccineDashboardMapper {
                 "vb.maxlimit\n" +
                 "from vw_vaccine_bundles vvb\n" +
                 "join vaccine_bundles vb on vvb.programid = vb.programid and vvb.productid = vb.productid\n" +
-                "where vvb.productid = #{productId}\n" +
-                "and vvb.periodid = 35")
-        List<HashMap<String, Object>> getBundling(@Param("startDate") Date startDate, @Param("endDate") Date endDate, Long productId);
+                "where vvb.productid = #{product}\n" +
+                "and vvb.period_start_date >= #{startDate} and vvb.period_end_date <= #{endDate}")
+        List<HashMap<String, Object>> getBundling(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long productId);
 
+        @Select("SELECT\n" +
+                "i.period_name,\n" +
+                "i.period_start_date, \n" +
+                "sum(i.denominator) target,\n" +
+                "sum(i.bcg_1) bcg_vaccinated, \n" +
+                "sum(i.dtp_1) dtp1_vaccinated,\n" +
+                "sum(i.mr_1) mr_vaccinated, \n" +
+                "sum(i.dtp_3) dtp3_vaccinated,\n" +
+                "case when sum(COALESCE(i.bcg_1,0)) > 0 then ( (sum(COALESCE(i.bcg_1,0)) - sum(COALESCE(i.mr_1,0))) / sum(COALESCE(i.bcg_1,0))::numeric) * 100 else 0 end bcg_mr_dropout, \n" +
+                "case when sum(COALESCE(i.dtp_1,0)) > 0 then ( (sum(COALESCE(i.dtp_1,0)) - sum(COALESCE(i.dtp_3,0))) / sum(COALESCE(i.dtp_1,0))::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
+                "FROM\n" +
+                "vw_vaccine_coverage i\n" +
+                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
+                "JOIN vaccine_reports vr ON i.report_id = vr. ID\n" +
+                "JOIN program_products pp ON pp.programid = vr.programid\n" +
+                "AND pp.productid = i.product_id\n" +
+                "JOIN product_categories pg ON pp.productcategoryid = pg. ID\n" +
+                "WHERE\n" +
+                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE )\n" +
+                "AND i.period_start_date >= #{startDate} and i.period_end_date <= #{endDate}\n" +
+                "and i.product_id = #{product}\n" +
+                "group by 1,2\n" +
+                "order by 2")
+        List<HashMap<String, Object>> getMonthlyDropout(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long productId);
+
+        @Select("SELECT\n" +
+                "i.geographic_zone_id,\n" +
+                "i.geographic_zone_name,\n" +
+                "sum(i.denominator) target,\n" +
+                "sum(i.bcg_1) bcg_vaccinated, \n" +
+                "sum(i.dtp_1) dtp1_vaccinated,\n" +
+                "sum(i.mr_1) mr_vaccinated, \n" +
+                "sum(i.dtp_3) dtp3_vaccinated,\n" +
+                "case when sum(COALESCE(i.bcg_1,0)) > 0 then ( (sum(COALESCE(i.bcg_1,0)) - sum(COALESCE(i.mr_1,0))) / sum(COALESCE(i.bcg_1,0))::numeric) * 100 else 0 end bcg_mr_dropout, \n" +
+                "case when sum(COALESCE(i.dtp_1,0)) > 0 then ( (sum(COALESCE(i.dtp_1,0)) - sum(COALESCE(i.dtp_3,0))) / sum(COALESCE(i.dtp_1,0))::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
+                "FROM\n" +
+                "vw_vaccine_coverage i\n" +
+                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
+                "JOIN vaccine_reports vr ON i.report_id = vr. ID\n" +
+                "JOIN program_products pp ON pp.programid = vr.programid\n" +
+                "AND pp.productid = i.product_id\n" +
+                "JOIN product_categories pg ON pp.productcategoryid = pg. ID\n" +
+                "WHERE\n" +
+                "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
+                "AND i.period_id = #{period}\n" +
+                "and i.product_id = #{product} \n" +
+                "group by 1,2\n" +
+                "order by 2")
+        List<HashMap<String, Object>> getDistrictDropout(@Param("period") Long period, @Param("product") Long productId);
+
+        @Select("WITH TEMP AS (\n" +
+                "SELECT\n" +
+                "vss.period_name,\n" +
+                "vss.period_start_date::date period_start,\n" +
+                "COALESCE(vss.closing_balance,0) cb,\n" +
+                "COALESCE(vss.quantity_issued,0) issued\n" +
+                "FROM\n" +
+                "vw_vaccine_stock_status vss\n" +
+                "where period_start_date >= #{startDate} and period_end_date <= #{endDate} and product_id = #{product}\n" +
+                "ORDER BY\n" +
+                "period_start_date\n" +
+                ") SELECT\n" +
+                "T .period_name,\n" +
+                "T .period_start,\n" +
+                "case when sum(t.issued) > 0 then round((sum(t.cb) / sum(t.issued)::numeric),1) else 0 end mos\n" +
+                "FROM\n" +
+                "TEMP T\n" +
+                "group by 1,2\n" +
+                "order by 2")
+        List<HashMap<String, Object>> getMonthlyStock(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long productId);
+
+        @Select("WITH TEMP AS (\n" +
+                "SELECT\n" +
+                "vss.period_name,\n" +
+                "vss.geographic_zone_name geographic_zone_name,\n" +
+                "COALESCE(vss.closing_balance,0) cb,\n" +
+                "COALESCE(vss.quantity_issued,0) issued\n" +
+                "FROM\n" +
+                "vw_vaccine_stock_status vss\n" +
+                "where period_id =#{period} and product_id =#{product}\n" +
+                ") SELECT\n" +
+                "T.geographic_zone_name,\n" +
+                "case when sum(t.issued) > 0 then round((sum(t.cb) / sum(t.issued)::numeric),1) end mos\n" +
+                "FROM\n" +
+                "TEMP T\n" +
+                "group by 1\n" +
+                "order by 2\n" +
+                "limit 5")
+        List<HashMap<String, Object>> getDistrictStock(@Param("period") Long period, @Param("product") Long productId);
 }

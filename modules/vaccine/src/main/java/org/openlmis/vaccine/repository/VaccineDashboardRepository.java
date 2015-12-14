@@ -49,16 +49,20 @@ public class VaccineDashboardRepository {
         return mapper.getInvestigatingDetails();
     }
 
-    public List<HashMap<String, Object>> getMonthlyCoverage(){
-        return mapper.getMonthlyCoverage();
+    public List<HashMap<String, Object>> getMonthlyCoverage(Date startDate, Date endDate, Long product){
+        return mapper.getMonthlyCoverage(startDate, endDate, product);
     }
 
-    public List<HashMap<String, Object>> getMonthlyWastage(){
-        return mapper.getMonthlyWastage();
+    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product){
+        return mapper.getDistrictCoverage(period, product);
     }
 
-    public List<HashMap<String, Object>> getWastageByDistrict(){
-        return mapper.getWastageByDistrict();
+    public List<HashMap<String, Object>> getMonthlyWastage(Date startDate, Date endDate, Long productId){
+        return mapper.getMonthlyWastage(startDate, endDate, productId);
+    }
+
+    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product){
+        return mapper.getWastageByDistrict(period, product);
     }
 
     public List<HashMap<String, Object>> getMonthlySessions(Date startDate, Date endDate){
@@ -76,4 +80,20 @@ public class VaccineDashboardRepository {
 
         return mapper.getBundling(startDate, endDate, productId);
     }
+    public List<HashMap<String, Object>> getMonthlyDropout(Date startDate, Date endDate, Long product){
+
+        return mapper.getMonthlyDropout(startDate, endDate, product);
+    }
+    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product){
+        return mapper.getDistrictDropout(period, product);
+    }
+
+    public List<HashMap<String, Object>> getMonthlyStock(Date startDate, Date endDate, Long product){
+
+        return mapper.getMonthlyStock(startDate, endDate, product);
+    }
+    public List<HashMap<String, Object>> getDistrictStock(Long period, Long product){
+        return mapper.getDistrictStock(period, product);
+    }
+
 }

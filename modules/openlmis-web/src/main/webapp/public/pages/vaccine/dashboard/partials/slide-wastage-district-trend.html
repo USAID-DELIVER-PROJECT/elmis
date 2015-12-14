@@ -1,42 +1,21 @@
+
+<div>Wastage By District</div>
 <div class="app-form vaccine-form-filter">
-    <form ng-submit="filterGrid()" name="filterForm" novalidate>
-        <div class="horizontalFilters">
-            <div  class="form-field">
-                <span openlmis-message="label.district.wastage"></span>
-                <select id="wastage-district-product" ui-select2 class="input-large" ng-model="filter.wastage.district.product" ng-change="OnFilterChanged();">
-                    <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
-                </select>
-            </div>
-        </div>
-        <div class="horizontalFilters">
-            <div class="form-field">
-                <span openlmis-message="label.show.trend.for"></span>
-                <select id="wastage-district-period" ui-select2 class="input-large" ng-model="filter.wastage.district.period" ng-change="OnFilterChanged();">
-                    <option ng-repeat="option in periods" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
-                </select>
-            </div>
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-product-filter class="form-cell horizontalFilters"  cm-model="filter.districtWastage.product"></vaccine-product-filter>
+            <vaccine-monthly-period-tree-filter cm-model="filter.districtWastage.period"  class="form-cell horizontalFilters"></vaccine-monthly-period-tree-filter>
         </div>
     </form>
 </div>
-<c3chart bindto-id="{{product.name}}_district_wastage_chart">
-    <chart-tooltip value-format-function="formatValue" />
-    <chart-axes values-x="x" />
-    <chart-axis >
-        <chart-axis-x axis-position="outer-center" axis-label="Period" axis-height="40"
-                      axis-type="category" >
-            <!--<chart-axis-x-tick tick-rotate="50" />-->
+<c3chart  bindto-id="district_wastage" chart-data="districtWastage.dataPoints" chart-columns="districtWastage.dataColumns" chart-x="districtWastage.dataX" ng-show="districtWastage.dataPoints">
+    <chart-axis>
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.zone}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
         </chart-axis-x>
-        <chart-axis-y>
-            <chart-axis-y-tick tick-format-function="formatValue" />
-        </chart-axis-y>
     </chart-axis>
-
-    <chart-column column-id="Consumption"
-                  column-values="{{product.consumption}}"
-                  column-type="bar"/>
-    <chart-column column-id="amc"
-                  column-values="{{product.amc}}"
-                  column-type="line"/>
-    <chart-column column-id="x"
-                  column-values="{{product.periods}}"/>
 </c3chart>
+<div style="font-weight: bold" ng-hide="districtWastage.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

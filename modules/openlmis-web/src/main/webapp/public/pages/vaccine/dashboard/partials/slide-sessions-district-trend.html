@@ -1,11 +1,9 @@
+
+<div>Sessions By District</div>
 <div class="app-form vaccine-form-filter">
     <form  name="districtSessionForm" novalidate>
         <div  class="clearfix">
-            <!--<vaccine-period-tree-filter required="true"
-                                        class="form-cell horizontalFilters"></vaccine-period-tree-filter>-->
             <vaccine-monthly-period-tree-filter cm-model="filter.districtSessions.period"  class="form-cell horizontalFilters"></vaccine-monthly-period-tree-filter>
-           <!-- <static-period-filter range="filter.districtSessions.range" startdate="filter.districtSessions.startDate" enddate="filter.districtSessions.endDate" rangemax="10" error="perioderror"></static-period-filter>-->
-
         </div>
     </form>
 </div>
@@ -14,6 +12,8 @@
         <chart-axis-x axis-position="outer-center"
                       axis-label="zone"
                       axis-type="category">
-            <chart-axis-x-tick tick-rotate="50"/>
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
         </chart-axis-x>
+    </chart-axis>
 </c3chart>
+<div style="font-weight: bold" ng-hide="districtSessions.dataPoints" openlmis-message="label.report.no.data.to.show"></div>
