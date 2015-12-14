@@ -36,7 +36,9 @@
 }
 
 
-function AggregateFacilityEstimateModel( facilityList , districts ){
+function AggregateFacilityEstimateModel( facilityList , districts, categories, year){
+
+  this.categories = categories;
 
   this.indexedList = _.groupBy(facilityList, 'parentId');
 
@@ -51,16 +53,57 @@ function AggregateFacilityEstimateModel( facilityList , districts ){
   };
 
   AggregateFacilityEstimateModel.prototype.getDistrictEntry = function(district, category){
-    var d = _.findWhere(districts.estimates.estimateLineItems, {id: district});
-    if(d){
-      var v = _.findWhere(d.districtEstimates, {
+    var districtLineItem = _.findWhere(districts.estimates.estimateLineItems, {id: district});
+    if(districtLineItem){
+      var estimateEntry = _.findWhere(districtLineItem.districtEstimates, {
         'demographicEstimateId': category.id
       });
-      if(v){
-        return v.value;
+      if(estimateEntry){
+        return estimateEntry.value;
       }
     }
     return 0;
   };
 
+  AggregateFacilityEstimateModel.prototype.isValid = function(district){
+    for(var i = 0; i < this.categories.length; i++){
+        if( this.getSummary(district, this.categories[i], year) != this.getDistrictEntry(district, this.categories[i]) ){
+          return false;
+        }
+      }
+      return true;
+  };
 }
+
+
+function FacilityDemographicsForm ($scope, facilities, districts){
+
+   FacilityDemographicsForm.prototype.init = function($scope, facilities, districts)
+   {
+     $scope.lineItems = [];
+     var finalizedCount = 0;
+     var draftCount = 0;
+     angular.forEach(facilities.estimates.estimateLineItems, function(item) {
+       $.extend(item, new FacilityEstimateModel());
+       if( item.facilityEstimates[0].isFinal ){
+         finalizedCount++;
+       }else{
+         draftCount++;
+       }
+       $scope.lineItems.push(item);
+     });
+
+     $scope.pageCount = Math.round($scope.lineItems.length / $scope.pageSize);
+
+     facilities.estimates.estimateLineItems = [];
+     $scope.form = facilities.estimates;
+     $scope.currentPage = 1;
+     $scope.pageLineItems();
+
+     $scope.formStatus = (finalizedCount > 0 && draftCount === 0)? 'Finalized' : (finalizedCount > 0 && draftCount > 0)? 'Partial' : 'Draft';
+
+     $scope.districtSummary = new AggregateFacilityEstimateModel($scope.lineItems, districts, $scope.categories, $scope.year);
+   };
+
+   this.init($scope, facilities, districts);
+ }

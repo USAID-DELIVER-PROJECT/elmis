@@ -11,72 +11,41 @@
  */
 function FacilityDemographicEstimateController($scope, $dialog, $filter, rights, categories, years, programs, FacilityDemographicEstimates, DistrictDemographicEstimates, SaveFacilityDemographicEstimates, FinalizeFacilityDemographicEstimates, UndoFinalizeFacilityDemographicEstimates) {
 
-  $.extend(this, new BaseDemographicEstimateController($scope, rights, categories, programs , years, $filter));
+  $.extend(this, new BaseDemographicEstimateController($scope, rights, categories, programs, years, $filter));
 
-  $scope.bindEstimates = function(facilities, districts){
-    $scope.lineItems = [];
-    // initiate all objects.
-    for(var i = 0; i < facilities.estimates.estimateLineItems.length; i ++){
-      $.extend(facilities.estimates.estimateLineItems[i], new FacilityEstimateModel());
-      $scope.lineItems.push(facilities.estimates.estimateLineItems[i]);
-    }
-
-    $scope.pageCount = Math.round($scope.lineItems.length / $scope.pageSize);
-    facilities.estimates.estimateLineItems = [];
-    $scope.form = facilities.estimates;
-    $scope.currentPage = 1;
-    if($scope.lineItems.length > $scope.pageSize){
-      $scope.form.estimateLineItems = $scope.lineItems.slice( $scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
-    } else{
-      $scope.form.estimateLineItems = $scope.lineItems;
-    }
-    // todo - check if the list is partially final or not?
-    // the list can be partially finalized if the rivo or civo are the once that see whatever is in their respective facilities.
-    $scope.isFinalized = facilities.estimates.estimateLineItems[0].facilityEstimates[0].isFinal;
-    $scope.districtSummary = new AggregateFacilityEstimateModel($scope.lineItems , districts);
-
+  $scope.bindEstimates = function (facilities, districts) {
+    $scope.forms = new FacilityDemographicsForm($scope, facilities, districts);
   };
 
-  $scope.onParamChanged = function(){
-    if(angular.isUndefined($scope.program) || $scope.program === null || angular.isUndefined($scope.year)){
+  $scope.onParamChanged = function () {
+    if (angular.isUndefined($scope.program) || $scope.program === null || angular.isUndefined($scope.year)) {
       return;
     }
-
-    FacilityDemographicEstimates.get({year: $scope.year, program: $scope.program}, function(facilities){
-      DistrictDemographicEstimates.get({year: $scope.year, program: $scope.program}, function(districts){
+    FacilityDemographicEstimates.get({year: $scope.year, program: $scope.program}, function (facilities) {
+      DistrictDemographicEstimates.get({year: $scope.year, program: $scope.program}, function (districts) {
+        $scope.districts = districts;
         $scope.bindEstimates(facilities, districts);
       });
     });
   };
 
-  $scope.$watch('currentPage', function(){
-    if($scope.isDirty()){
-      $scope.save();
-    }
-    if(angular.isDefined($scope.lineItems)){
-      if($scope.lineItems.length > $scope.pageSize){
-        $scope.form.estimateLineItems = $scope.lineItems.slice( $scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * Number($scope.currentPage));
-      } else{
-        $scope.form.estimateLineItems = $scope.lineItems;
-      }
-    }
-  });
 
-  $scope.save = function(){
-    SaveFacilityDemographicEstimates.update($scope.form, function(){
+
+  $scope.save = function () {
+    SaveFacilityDemographicEstimates.update($scope.form, function () {
       $scope.message = "message.facility.demographic.estimates.saved";
-    }, function(data){
+    }, function (data) {
       $scope.error = data.error;
     });
   };
 
-  $scope.finalize = function(){
+  $scope.finalize = function () {
     var callBack = function (result) {
       if (result) {
         var form = angular.copy($scope.form);
         form.estimateLineItems = $scope.lineItems;
-        FinalizeFacilityDemographicEstimates.update(form, function (data) {
-          $scope.bindEstimates(data);
+        FinalizeFacilityDemographicEstimates.update(form, function (facilities) {
+          $scope.bindEstimates(facilities, $scope.districts);
           $scope.message = 'Estimates are now finalized';
         });
       }
@@ -91,13 +60,13 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
     OpenLmisDialog.newDialog(options, callBack, $dialog);
   };
 
-  $scope.undoFinalize = function(){
+  $scope.undoFinalize = function () {
     var callBack = function (result) {
       if (result) {
         var form = angular.copy($scope.form);
         form.estimateLineItems = $scope.lineItems;
-        UndoFinalizeFacilityDemographicEstimates.update(form, function (data) {
-          $scope.bindEstimates(data);
+        UndoFinalizeFacilityDemographicEstimates.update(form, function (facilities) {
+          $scope.bindEstimates(facilities, $scope.districts);
           $scope.message = 'Estimates are now available for editing.';
         });
       }
@@ -110,16 +79,6 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
     };
 
     OpenLmisDialog.newDialog(options, callBack, $dialog);
-  };
-
-  $scope.init = function(){
-    // default to the current year
-    $scope.year = Number( $filter('date')(new Date(), 'yyyy') );
-    // when the available program is only 1, default to this program.
-    if(programs.length === 1){
-      $scope.program = programs[0].id;
-    }
-    $scope.onParamChanged();
   };
 
   $scope.init();

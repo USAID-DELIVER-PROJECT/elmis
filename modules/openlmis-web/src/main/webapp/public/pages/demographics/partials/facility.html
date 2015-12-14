@@ -27,7 +27,8 @@
     </div>
     <div class="pull-left padding2px">
       <label openlmis-message="label.program"></label>
-      <select style="width:200px"  ui-select2="{dropdownAutoWidth : true}" ng-model="program" ng-change="onParamChanged()">
+      <select style="width:200px" ui-select2="{dropdownAutoWidth : true}" ng-model="program"
+              ng-change="onParamChanged()">
         <option ng-repeat="p in programs" value="{{p.id}}">{{p.name}}</option>
       </select>
     </div>
@@ -35,7 +36,8 @@
       <label>
         <span openlmis-message="label.demographic.parameter.year"></span>
       </label>
-      <select style="width:200px" ui-select2="{dropdownAutoWidth : true}" ng-change="onParamChanged();" ng-model="year" placeholder="year">
+      <select style="width:200px" ui-select2="{dropdownAutoWidth : true}" ng-change="onParamChanged();" ng-model="year"
+              placeholder="year">
         <option ng-repeat="y in years" ng-selected="year == y" value="{{y}}">{{y}}</option>
       </select>
     </div>
@@ -45,106 +47,122 @@
     <div class="parent">
       <table class="table table-bordered scrollable">
         <thead>
-          <tr class="gradient-header">
-            <th class="span1">
-              <span openlmis-message="label.demographic.facility.code"></span>
-            </th>
-            <th class="span3">
-              <span openlmis-message="label.demographic.facility.name"></span>
-            </th>
-            <th ng-repeat="category in categories">
-              {{category.name}}
-            </th>
-          </tr>
+        <tr class="gradient-header">
+          <th style="min-width:25px;width: 25px;"></th>
+          <th class="span1">
+            <span openlmis-message="label.demographic.facility.code"></span>
+          </th>
+          <th class="span3">
+            <span openlmis-message="label.demographic.facility.name"></span>
+          </th>
+          <th ng-repeat="category in categories">
+            {{category.name}}
+          </th>
+        </tr>
         </thead>
         <tbody>
         <tr ng-repeat-start="facility in form.estimateLineItems"></tr>
-        <tr class="gradient-header"  ng-show="showParent($index)">
-          <th colspan="2">{{facility.parentName}}</th>
-          <th  ng-repeat="category in categories">
-            <span style="text-align: left;">
+        <tr class="gradient-header" ng-show="showParent($index)">
+          <th style="min-width:25px;width: 25px;"></th>
+          <th colspan="2">
+            <span class=""
+                  ng-class="{'bad': !districtSummary.isValid(facility.parentId) }">{{facility.parentName}}</span>
+          </th>
+          <th ng-repeat="category in categories">
+            <span style="text-align: left; color: steelblue;">
               {{districtSummary.getDistrictEntry(facility.parentId, category, year) | number: 0}}
             </span>
-
-            <span class="number pull-right" ng-class="{'bad': (districtSummary.getDistrictEntry(facility.parentId, category, year) != districtSummary.getSummary(facility.parentId, category, year)) }">
+            <span class="number pull-right"
+                  ng-class="{'bad': (districtSummary.getDistrictEntry(facility.parentId, category, year) != districtSummary.getSummary(facility.parentId, category, year)) }">
               {{districtSummary.getSummary(facility.parentId, category, year) | number : 0}}
             </span>
-
           </th>
         </tr>
         <tr ng-repeat-end>
-            <td class="cell-input">
-              <span class="cell-text">{{facility.code}}</span>
-            </td>
-            <td class="cell-input">
-              <span class="cell-text">
+          <td style="width: 25px;">{{$index + 1}}</td>
+          <td class="cell-input">
+            <span class="text-label">{{facility.code}}</span>
+          </td>
+          <td class="cell-input">
+              <span class="text-label">
                 {{facility.name}}
               </span>
-            </td>
-            <td class="cell-input number" ng-repeat="category in categories" class="number">
+          </td>
+          <td class="cell-input number" ng-repeat="category in categories" class="number">
               <span class="ng-scope" ng-if="category.isPrimaryEstimate">
                 <span class="position-relative ng-scope">
                   <input
-                    ng-disabled="facility.getByCategory(category, year).isFinal"
-                    class="number numeric-input"
-                    maxlength="8"
-                    ng-change="facility.populationChanged(autoCalculate)"
-                    ng-model="facility.getByCategory(category, year).value"
-                    numeric-validator="positiveInteger"
-                    type="text"/>
+                      style="font-size: 0.95em"
+                      ng-disabled="facility.getByCategory(category, year).isFinal"
+                      class="number numeric-input"
+                      maxlength="8"
+                      ng-change="facility.populationChanged(autoCalculate)"
+                      ng-model="facility.getByCategory(category, year).value"
+                      numeric-validator="positiveInteger"
+                      type="text"/>
                 </span>
               </span>
               <span class="ng-scope" ng-if="!category.isPrimaryEstimate">
                 <span class="position-relative ng-scope">
                   <input
-                    ng-disabled="facility.getByCategory(category, year).isFinal"
-                    class="number numeric-input"
-                    maxlength="8"
-                    ng-model="facility.getByCategory(category, year).value"
-                    numeric-validator="positiveInteger"
-                    type="text"/>
+                      style="font-size: 0.95em"
+                      ng-disabled="facility.getByCategory(category, year).isFinal"
+                      class="number numeric-input"
+                      maxlength="8"
+                      ng-model="facility.getByCategory(category, year).value"
+                      numeric-validator="positiveInteger"
+                      type="text"/>
                 </span>
               </span>
-            </td>
-          </tr>
+          </td>
+        </tr>
 
         </tbody>
       </table>
     </div>
+    <br />
+    <select ui-select2 class="pull-left" ng-model="pageSize" ng-change="pageLineItems()">
+      <option value="10">10 per page</option>
+      <option value="20">20 per page</option>
+      <option value="50">50 per page</option>
+      <option value="100">100 per page</option>
+    </select>
     <openlmis-pagination num-pages="pageCount" current-page="currentPage" max-size="10"
                          check-error-on-page="checkErrorOnPage(page)"></openlmis-pagination>
+    <div class="clear-top"></div>
+    <br />
   </div>
-  <div class="action-buttons" form-toolbar id="action_buttons">
+  <div ng-show="program && year" class="action-buttons" form-toolbar id="action_buttons">
     <div class="form-cell button-row">
       <input
-        ng-disabled="isFinalized"
-        class="btn btn-primary save-button"
-        id="saveButton"
-        ng-click="save()"
-        openlmis-message="button.save"
-        type="submit"/>
+          ng-disabled="formStatus == 'Finalized'"
+          class="btn btn-primary save-button"
+          id="saveButton"
+          ng-click="save()"
+          openlmis-message="button.save"
+          type="submit"/>
       <input
-        ng-disabled="isFinalized"
-        ng-show="hasPermission('FINALIZE_DEMOGRAPHIC_ESTIMATES')"
-        class="btn btn-primary save-button"
-        id="finalizeButton"
-        ng-click="finalize()"
-        openlmis-message="button.finalize"
-        type="submit"/>
+          ng-disabled="formStatus == 'Finalized'"
+          ng-show="hasPermission('FINALIZE_DEMOGRAPHIC_ESTIMATES')"
+          class="btn btn-primary save-button"
+          id="finalizeButton"
+          ng-click="finalize()"
+          openlmis-message="button.finalize"
+          type="submit"/>
       <input
-        ng-disabled="!isFinalized"
-        ng-show="hasPermission('UNLOCK_FINALIZED_DEMOGRAPHIC_ESTIMATES')"
-        class="btn btn-primary save-button"
-        id="undoFinalizeButton"
-        ng-click="undoFinalize()"
-        openlmis-message="button.undo.finalize"
-        type="submit"/>
+          ng-disabled="formStatus != 'Finalized'"
+          ng-show="hasPermission('UNLOCK_FINALIZED_DEMOGRAPHIC_ESTIMATES')"
+          class="btn btn-primary save-button"
+          id="undoFinalizeButton"
+          ng-click="undoFinalize()"
+          openlmis-message="button.undo.finalize"
+          type="submit"/>
       <input
-        class="btn btn-cancel cancel-button"
-        id="cancelButton"
-        ng-click="cancel()"
-        openlmis-message="button.cancel"
-        type="button"/>
+          class="btn btn-cancel cancel-button"
+          id="cancelButton"
+          ng-click="cancel()"
+          openlmis-message="button.cancel"
+          type="button"/>
     </div>
 
     <div class="toolbar-error" id="saveErrorMsgDiv">
