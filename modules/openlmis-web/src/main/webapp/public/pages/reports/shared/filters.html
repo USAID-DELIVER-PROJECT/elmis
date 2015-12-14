@@ -434,8 +434,8 @@
         <div>
             <select  ui-select2 class="input-large"
                      ng-model="filterProduct">
-                <option ng-value="0" ng-selected="filterProduct ==undefined ||filterProduct == 0">---Select Dropout---</option>
-                <option ng-repeat="option in dropoutProductsList " value="{{option.id}}" ng-selected="filterProduct == option.id">{{option.dropout}}</option>
+                <!--<option value="{{defualtProduct.id}}" ng-selected="filterProduct ==undefined ||filterProduct == 0">{{defualtProduct.dropout}}</option>-->
+                <option ng-repeat="option in dropoutProductsList " value="{{option.id}}">{{option.dropout}}</option>
 
             </select>
         </div>

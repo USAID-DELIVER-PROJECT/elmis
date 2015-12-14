@@ -19,8 +19,7 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
     $scope.OnFilterChanged = function () {
 
         // prevent first time loading
-        if (utils.isEmpty($scope.filter.product) ||
-            utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
+        if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
         CompletenessAndTimeliness.get(
@@ -29,7 +28,7 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
                 periodEnd:   $scope.periodEnddate,
                 range:       $scope.range,
                 district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
-                product:     $scope.filter.product
+                product:     0
             },
 
             function (data) {

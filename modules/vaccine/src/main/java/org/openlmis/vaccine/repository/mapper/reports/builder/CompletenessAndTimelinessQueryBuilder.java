@@ -24,44 +24,53 @@ public class CompletenessAndTimelinessQueryBuilder {
         Date endDate     = (Date) params.get("endDate");
         Long productId   = (Long) params.get("productId");
 
-        String sql = "SELECT \n" +
-                "region_name, district_name, period_name, target, expected, reported, expected - reported AS late, \n" +
-                "trunc((reported::numeric/expected::numeric)*100,2) percent_reported, \n" +
-                "trunc(((expected::numeric - reported::numeric)/expected::numeric)*100,2) percent_late, \n" +
-                "fixed, outreach, fixed+outreach session_total\n" +
-                "  FROM (\n" +
-                "       SELECT \n" +
-                "                d.region_name, \n" +
-                "                d.district_name,\n" +
-                "                d.district_id,\n" +
-                "                sum(i.denominator) target, \n" +
-                "                i.period_name, \n" +
-                " count(i.facility_id) reported,\n" +
-                " SUM(i.fixed_immunization_session) fixed,\n" +
-                " SUM(i.outreach_immunization_session) outreach\n" +
-                "                FROM \n" +
-                "                    vw_vaccine_coverage i \n" +
-                "                JOIN vw_districts d ON i.geographic_zone_id = d.district_id \n" +
-                "                JOIN vaccine_reports vr ON i.report_id = vr.ID \n" +
-                "                JOIN program_products pp ON pp.programid = vr.programid \n" +
-                "                AND pp.productid = i.product_id \n" +
-                "                JOIN product_categories pg ON pp.productcategoryid = pg.ID \n" +
-                "                WHERE \n" +
-                "                i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE ) \n" +
-                "        AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
-                "                 and i.product_id =  " +productId+
-                "\n" +
-                                 writeDistrictPredicate(zone)  +
-                "                 group by d.region_name, d.district_id, d.district_name, i.period_name, i.period_start_date \n" +
-                "                 ORDER BY \n" +
-                "                 d.region_name,\n" +
-                "                 d.district_name,\n" +
-                "                  i.period_start_date\n" +
-                "      ) AS coverages\n" +
-                "            JOIN (SELECT d.district_id, count(*) expected FROM facilities f\n" +
-                "              JOIN vw_districts d ON f.geographiczoneid = d.district_id \n" +
-                "              GROUP BY d.district_id\n" +
-                "            ) reporting_facilities ON coverages.district_id = reporting_facilities.district_id\n";
+        String sql = "with temp as ( \n" +
+                "            select 	pp.name period_name,\n" +
+                "			pp.startdate::date period_start_date,\n" +
+                "			z.id geographiczoneid,\n" +
+                "			z.name district,\n" +
+                "			f.name facility_name,\n" +
+                "			f.code facility_code, \n" +
+                "			to_char(vr.createdDate, 'DD Mon YYYY') reported_date,\n" +
+                "			COALESCE(vr.fixedimmunizationsessions,0) fixed,\n" +
+                "			COALESCE(vr.outreachimmunizationsessions,0) outreach,\n" +
+                "			COALESCE(z.catchmentpopulation,0) target,\n" +
+                "                 CASE\n" +
+                "                    WHEN date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone) <= COALESCE((( SELECT configuration_settings.value \n" +
+                "                      FROM configuration_settings \n" +
+                "                      WHERE configuration_settings.key::text = 'MSD_ZONE_REPORTING_CUT_OFF_DATE'::text))::integer, 0)::double precision THEN 'T'::text \n" +
+                "                    WHEN COALESCE(date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone), 0::double precision) > COALESCE((( SELECT configuration_settings.value \n" +
+                "                      FROM configuration_settings \n" +
+                "                      WHERE configuration_settings.key::text = 'MSD_ZONE_REPORTING_CUT_OFF_DATE'::text))::integer, 0)::double precision THEN 'L'::text \n" +
+                "                    ELSE 'N'::text \n" +
+                "                 END AS reporting_status \n" +
+                "                from programs_supported ps \n" +
+                "                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid \n" +
+                "                left join processing_periods pp on pp.id = vr.periodid\n" +
+                "                join facilities f on f.id = ps.facilityId  \n" +
+                "                join geographic_zones z on z.id = f.geographicZoneId \n" +
+                "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
+                "            and pp.startdate::date >= '"+startDate+"' and pp.enddate::date <= '"+endDate+"'  \n" +
+                "            )  \n" +
+                "            select \n" +
+                "            vd.region_name,\n" +
+                "            vd.district_name,    \n" +
+                "            t.period_name,\n" +
+                "            t.period_start_date,\n" +
+                "            sum(fixed) fixed,\n" +
+                "            sum(outreach) outreach,\n" +
+                "            sum(fixed) + sum(outreach) session_total,\n" +
+                "            sum(target) target,  \n" +
+                "            sum(1) expected,\n" +
+                "            sum(case when reporting_status IN ('T','L') then 1 else 0 end) reported,\n" +
+                "            sum(case when reporting_status = 'T' then 1 else 0 end) ontime, \n" +
+                "            sum(case when reporting_status = 'L' then 1 else 0 end) late,\n" +
+                "            trunc((sum(case when reporting_status IN ('T','L') then 1 else 0 end)::numeric/sum(1)::numeric)*100,2) percent_reported,\n" +
+                "            trunc(((sum(1)::numeric - sum(case when reporting_status IN ('T','L') then 1 else 0 end)::numeric)/sum(1)::numeric)*100,2) percent_late \n" +
+                "from temp t\n" +
+                "join vw_districts vd on vd.district_id = t.geographiczoneid\n" + writeDistrictPredicate(zone)  + " \n" +
+                "group by 1, 2, 3, 4\n" +
+                "order by 1,2, 4\n";
         return sql;
     }
     public static String  selectCompletenessAndTimelinessSummaryReportDataByDistrict(Map params){
@@ -70,61 +79,49 @@ public class CompletenessAndTimelinessQueryBuilder {
         Date endDate     = (Date) params.get("endDate");
         Long productId   = (Long) params.get("productId");
 
-        String sql = "SELECT period_name, \n" +
-                "       \"month\", \n" +
-                "       \"year\", \n" +
-                "       SUM(ontime)                                      ontime, \n" +
-                "       Count(*)                                         reported, \n" +
-                "       (SELECT Count(*) AS expected \n" +
-                "        FROM   facilities f \n" +
-                "               join vw_districts d \n" +
-                "                 ON f.geographiczoneid = d.district_id WHERE 1=1 "+writeDistrictPredicate(zone)  +" ) AS expected \n" +
-                "FROM   (SELECT d.district_id, \n" +
-                "               i.period_name, \n" +
-                "               i.period_start_date, \n" +
-                "               Extract(month FROM i.period_start_date) \"month\", \n" +
-                "               Extract(year FROM i.period_start_date)  \"year\", \n" +
-                "               vr.id, \n" +
-                "               i.facility_id, \n" +
-                "               vr.submissiondate, \n" +
-                "               CASE \n" +
-                "                 WHEN ( Date_part('day', vr.submissiondate :: timestamp - \n" +
-                "               i.period_start_date :: timestamp) ) :: NUMERIC <= \n" +
-                "               conf.cutoff :: NUMERIC THEN 1 \n" +
-                "                 ELSE 0 \n" +
-                "               END                                     ontime \n" +
-                "        FROM   vw_vaccine_coverage i \n" +
-                "               join vw_districts d \n" +
-                "                 ON i.geographic_zone_id = d.district_id \n" +
-                "               join vaccine_reports vr \n" +
-                "                 ON i.report_id = vr.id \n" +
-                "               join program_products pp \n" +
-                "                 ON pp.programid = vr.programid \n" +
-                "                    AND pp.productid = i.product_id \n" +
-                "               join product_categories pg \n" +
-                "                 ON pp.productcategoryid = pg.id \n" +
-                "               join (SELECT value AS cutoff, \n" +
-                "                            KEY \n" +
-                "                     FROM   configuration_settings) conf \n" +
-                "                 ON conf.KEY = 'VACCINE_LATE_REPORTING_DAYS' \n" +
-                "        WHERE  i.program_id = (SELECT id \n" +
-                "                               FROM   programs p \n" +
-                "                               WHERE  p.enableivdform = TRUE) \n" +
-                "        AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
-                "                 and i.product_id =  " +productId+
-                writeDistrictPredicate(zone)  +
-                "        ORDER  BY i.period_start_date) AS timeliness \n" +
-                "GROUP  BY period_name, \n" +
-                "          \"month\", \n" +
-                "          \"year\" \n" +
-                "ORDER  BY \"year\", \n" +
-                "          \"month\" ";
+        String sql = "with temp as ( \n" +
+                "               select pp.name period_name, \n" +
+                "               Extract(month FROM pp.startdate) period_month, \n" +
+                "               Extract(year FROM pp.startdate)  period_year,\n" +
+                "pp.startdate::date period_start_date, z.id geographiczoneid, z.name district, f.name facility_name, f.code facility_code, \n" +
+                "                   to_char(vr.createdDate, 'DD Mon YYYY') reported_date,  \n" +
+                "                 CASE\n" +
+                "                        WHEN date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone) <= COALESCE((( SELECT configuration_settings.value \n" +
+                "                           FROM configuration_settings \n" +
+                "                          WHERE configuration_settings.key::text = 'MSD_ZONE_REPORTING_CUT_OFF_DATE'::text))::integer, 0)::double precision THEN 'T'::text \n" +
+                "                        WHEN COALESCE(date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone), 0::double precision) > COALESCE((( SELECT configuration_settings.value \n" +
+                "                           FROM configuration_settings \n" +
+                "                          WHERE configuration_settings.key::text = 'MSD_ZONE_REPORTING_CUT_OFF_DATE'::text))::integer, 0)::double precision THEN 'L'::text \n" +
+                "                        ELSE 'N'::text \n" +
+                "                 END AS reporting_status \n" +
+                "                from programs_supported ps \n" +
+                "                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid \n" +
+                "                left join processing_periods pp on pp.id = vr.periodid      \n" +
+                "                join facilities f on f.id = ps.facilityId  \n" +
+                "                join geographic_zones z on z.id = f.geographicZoneId \n" +
+                "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
+                "            and pp.startdate::date >= '"+startDate+"' and pp.enddate::date <= '"+endDate+"'  \n" +
+                "            )  \n" +
+                "            select \n" +
+                "            t.period_name,\n" +
+                "            t.period_month  as month,\n" +
+                "            t.period_year  as year, \n" +
+                "            sum(1) expected,\n" +
+                "            sum(case when reporting_status IN ('T','L') then 1 else 0 end) reported,\n" +
+                "            sum(case when reporting_status = 'T' then 1 else 0 end) ontime, \n" +
+                "            sum(case when reporting_status = 'L' then 1 else 0 end) late,\n" +
+                "            trunc((sum(case when reporting_status IN ('T','L') then 1 else 0 end)::numeric/sum(1)::numeric)*100,2) percent_reported,\n" +
+                "            trunc(((sum(1)::numeric - sum(case when reporting_status IN ('T','L') then 1 else 0 end)::numeric)/sum(1)::numeric)*100,2) percent_late \n" +
+                "from temp t\n" +
+                "join vw_districts vd on vd.district_id = t.geographiczoneid\n" + writeDistrictPredicate(zone)  + " \n" +
+                "group by 1, 2, 3\n" +
+                "order by 1,3, 2\n";
         return sql;
     }
 
     private static String writeDistrictPredicate(Long zone) {
 
-        String predicate = "";
+        String predicate = " ";
         if (zone != 0 && zone != null) {
             predicate = " AND (district_id = "+zone+" or zone_id = "+zone+" or region_id = "+zone+" or parent = "+zone+")";
         }

@@ -1154,17 +1154,16 @@ app.directive('vaccineDropoutFilter', ['DropoutProducts', 'messageService',
             restrict: 'E',
             scope: {
                 filterProduct: '=filterproduct',
-                default: '=default'
+                defualtProduct:'=defaultselction'
             },
             controller: function ($scope, $routeParams, $location) {
                 DropoutProducts.get({}, function (data) {
                     $scope.dropoutProductsList = data.dropoutProductsList;
+                    $scope.defualtProduct=$scope.dropoutProductsList[0];
+                    $scope. filterProduct=$scope.defualtProduct.id;
 
                 });
                 $scope.filterProduct = 0;
-                if(!isUndefined($scope.default)){
-                    $scope.filterProduct = $scope.default;
-                }
                 $scope.$watch('filterProduct', function (newValues, oldValues) {
 
 
