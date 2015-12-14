@@ -17,6 +17,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.ivdform.domain.reports.*;
+import org.openlmis.vaccine.repository.mapper.reports.builder.CompletenessAndTimelinessQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceCoverageQueryBuilder;
 import org.springframework.stereotype.Repository;
 
@@ -285,9 +286,10 @@ public interface VaccineReportMapper {
   @Select("select * from geographic_zones where parentid is null")
   GeographicZone getNationalZone();
 
-  @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
-  List<Map<String, Object>> getPerformanceCoverageMainReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
-                                                                           @Param("productId") Long productId);
+    // Performance coverage report
+    @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageMainReportDataByDistrict")
+    List<Map<String,Object>> getPerformanceCoverageMainReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
+                                                            @Param("productId") Long productId);
 
 
   @SelectProvider(type = PerformanceCoverageQueryBuilder.class, method = "selectPerformanceCoverageSummaryReportDataByDistrict")
@@ -311,5 +313,22 @@ public interface VaccineReportMapper {
   List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByRegionAggregate(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("districtId") Long districtId,
                                                                                      @Param("productId") Long productId);
 
-}
 
+    // Completeness and Timeliness report
+
+    @SelectProvider(type = CompletenessAndTimelinessQueryBuilder.class, method = "selectCompletenessAndTimelinessMainReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessMainReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
+                                                                                  @Param("districtId") Long districtId,
+                                                                                  @Param("productId") Long productId);
+
+    @SelectProvider(type = CompletenessAndTimelinessQueryBuilder.class, method = "selectCompletenessAndTimelinessSummaryReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessSummaryReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
+                                                                                     @Param("districtId") Long districtId,
+                                                                                     @Param("productId") Long productId);
+
+    @SelectProvider(type = CompletenessAndTimelinessQueryBuilder.class, method = "selectCompletenessAndTimelinessAggregateSummaryReportDataByDistrict")
+    List<Map<String,Object>> getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
+                                                                                              @Param("districtId") Long districtId,
+                                                                                              @Param("productId") Long productId);
+
+}

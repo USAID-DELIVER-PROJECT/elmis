@@ -37,40 +37,23 @@ public class TrendOfMinMaxColdRangeBuilder {
         BEGIN();
         SELECT(" d.region_name");
         SELECT("   d.district_name");
-        SELECT(" gz.catchmentpopulation targetpopulation");
-        SELECT(" tr.period_id");
-        SELECT("    to_date(tr.period_name, 'Mon YYYY') period_name");
-        SELECT("    tr.period_start_date");
-        SELECT("    tr.period_end_date");
-        SELECT("    tr.geographic_zone_id");
-        SELECT("    tr.geographic_zone_name");
-        SELECT("    tr.level_id");
-        SELECT("    tr.parent_id");
-        SELECT("    tr.facility_id");
-        SELECT("    tr.facility_code");
         SELECT("    tr.facility_name");
-        SELECT("    tr.report_id");
-        SELECT("    tr.programid");
+        SELECT("    to_date(tr.period_name, 'Mon YYYY') period_name");
+        SELECT(" vt.target_value_monthly targetpopulation");
 
-        SELECT("    tr.equipment_name");
-        SELECT("    tr.model");
-
-        SELECT("    tr.equipment_type_name");
-        SELECT("    tr.mintemp");
-        SELECT("    tr.maxtemp");
-        SELECT("    tr.minepisodetemp");
-        SELECT("    tr.maxepisodetemp");
-        SELECT("    tr.energy_source");
-//        SELECT("    vt.targetpopulation");
-        SELECT("    tr.status");
+        SELECT("    tr.period_start_date");
+        SELECT("   min( tr.mintemp) mintemp");
+        SELECT("   max( tr.maxtemp) maxtemp")  ;
+        SELECT("   min( tr.minepisodetemp) minepisodetemp");
+        SELECT("   max( tr.maxepisodetemp ) maxepisodetemp");
         FROM(" vw_vaccine_cold_chain tr");
         JOIN(" vw_districts d ON tr.geographic_zone_id = d.district_id");
         JOIN(" geographic_zones gz ON gz.id = d.district_id");
-//        JOIN(" vaccine_facility_targets vt ON tr.facility_id =  vt.facilityid");
+      JOIN(" vw_vaccine_target_population vt ON tr.facility_id =  vt.facility_id and vt.year = extract(year from tr.period_start_date)  and vt.geographic_zone_id = gz.id and vt.category_id = 1");
         WHERE("tr.status= 'Functional'");
         writePredicates(filter);
-
-        ORDER_BY("        tr.geographic_zone_name, tr.facility_name,  to_date(tr.period_name, 'Mon YYYY')");
+GROUP_BY("1,2,3,4,5,6");
+        ORDER_BY(" 1,2,3,4,5");
         query = SQL();
         return query;
     }
@@ -95,19 +78,23 @@ public class TrendOfMinMaxColdRangeBuilder {
         BEGIN();
         SELECT(" d.region_name");
         SELECT("   d.district_name");
-        SELECT(" sum(gz.catchmentpopulation ) targetpopulation");
         SELECT("    to_date(tr.period_name, 'Mon YYYY') period_name");
-        SELECT("  sum(  tr.mintemp) mintemp");
-        SELECT("  sum(  tr.maxtemp) maxtemp");
-        SELECT(" sum(   tr.minepisodetemp) minepisodetemp");
-        SELECT("   sum( tr.maxepisodetemp)  maxepisodetemp");
+        SELECT("    tr.period_start_date");
+        SELECT(" sum(vt.target_value_monthly) targetpopulation");
+
+
+        SELECT("   min( tr.mintemp) mintemp");
+        SELECT("   max( tr.maxtemp) maxtemp")  ;
+        SELECT("   min( tr.minepisodetemp) minepisodetemp");
+        SELECT("   max( tr.maxepisodetemp ) maxepisodetemp");
         FROM(" vw_vaccine_cold_chain tr");
         JOIN(" vw_districts d ON tr.geographic_zone_id = d.district_id");
         JOIN(" geographic_zones gz ON gz.id = d.district_id");
-//        JOIN(" vaccine_facility_targets vt ON tr.facility_id =  vt.facilityid");
+        JOIN(" vw_vaccine_target_population vt ON tr.facility_id =  vt.facility_id and vt.year = extract(year from tr.period_start_date)  and vt.geographic_zone_id = gz.id and vt.category_id = 1");
+        WHERE("tr.status= 'Functional'");
         writeRegionPredicates(filter);
-        GROUP_BY(" d.region_name, d.district_name , to_date(tr.period_name, 'Mon YYYY')");
-        ORDER_BY("        d.region_name, d.district_name ,  to_date(tr.period_name, 'Mon YYYY')");
+        GROUP_BY("1,2,3,4");
+        ORDER_BY(" 1,2,3");
         query = SQL();
         return query;
     }
@@ -130,18 +117,23 @@ public class TrendOfMinMaxColdRangeBuilder {
         BEGIN();
         SELECT(" d.region_name");
         SELECT("    to_date(tr.period_name, 'Mon YYYY') period_name");
-        SELECT(" sum(gz.catchmentpopulation ) targetpopulation");
-        SELECT("  sum(  tr.mintemp) mintemp");
-        SELECT("  sum(  tr.maxtemp) maxtemp");
-        SELECT(" sum(   tr.minepisodetemp) minepisodetemp");
-        SELECT("   sum( tr.maxepisodetemp)  maxepisodetemp");
+
+
+        SELECT("    tr.period_start_date");
+        SELECT(" sum(vt.target_value_monthly) targetpopulation");
+        SELECT("   min( tr.mintemp) mintemp");
+        SELECT("   max( tr.maxtemp) maxtemp")  ;
+        SELECT("   min( tr.minepisodetemp) minepisodetemp");
+        SELECT("   max( tr.maxepisodetemp ) maxepisodetemp");
         FROM(" vw_vaccine_cold_chain tr");
         JOIN(" vw_districts d ON tr.geographic_zone_id = d.district_id");
         JOIN(" geographic_zones gz ON gz.id = d.district_id");
-//        JOIN(" vaccine_facility_targets vt ON tr.facility_id =  vt.facilityid");
+        JOIN(" vw_vaccine_target_population vt ON tr.facility_id =  vt.facility_id and vt.year = extract(year from tr.period_start_date)  and vt.geographic_zone_id = gz.id and vt.category_id = 1");
+        WHERE("tr.status= 'Functional'");
         writeRegionPredicates(filter);
-        GROUP_BY(" d.region_name, to_date(tr.period_name, 'Mon YYYY')");
-        ORDER_BY("         d.region_name,  to_date(tr.period_name, 'Mon YYYY')");
+        GROUP_BY("1,2,3");
+        ORDER_BY(" 1,2");
+
         query = SQL();
         return query;
     }

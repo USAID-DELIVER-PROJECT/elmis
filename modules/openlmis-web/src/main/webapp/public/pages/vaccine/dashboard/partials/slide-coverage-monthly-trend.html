@@ -1,48 +1,23 @@
 
-    <div class="app-form vaccine-form-filter">
-        <form ng-submit="filterGrid()" name="filterForm" novalidate>
-            <div class="horizontalFilters">
-                <div  class="form-field">
-                    <span openlmis-message="label.monthly.coverage"></span>
-                    <select id="coverage-monthly-product" ui-select2 class="input-large" ng-model="filter.coverage.monthly.product" ng-change="OnFilterChanged();">
-                        <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="horizontalFilters">
-                <div class="form-field">
-                    <span openlmis-message="label.show.trend.for"></span>
-                    <select id="coverage-monthly-period" ui-select2 class="input-large" ng-model="filter.coverage.monthly.period" ng-change="OnFilterChanged();">
-                        <option ng-repeat="option in periods " value="{{ option.id }}" ng-selected="filter.coverage.monthly.period == option.id">{{ option.name }}</option>
-                    </select>
-                </div>
-            </div>
-        </form>
-    </div>
+<div>Monthly Coverage</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-product-filter class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.monthlyCoverage.product"></vaccine-product-filter>
+            <static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyCoverage.range" startdate="filter.monthlyCoverage.startDate" enddate="filter.monthlyCoverage.endDate" rangemax="10" error="perioderror"></static-period-filter>
 
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="monthly_coverage_chart" chart-data="monthlyCoverage.dataPoints" chart-columns="monthlyCoverage.dataColumns" chart-x="monthlyCoverage.dataX" ng-show="monthlyCoverage.dataPoints">
+    <chart-axis>
 
-    <c3chart bindto-id="{{product.name}}_monthly_coverage_chart">
         <chart-tooltip value-format-function="formatValue" />
-        <chart-axes values-x="x" />
-        <chart-axis >
-            <chart-axis-x axis-position="outer-center" axis-label="Period" axis-height="40"
-                          axis-type="category" >
-                <!--<chart-axis-x-tick tick-rotate="50" />-->
-            </chart-axis-x>
-            <chart-axis-y>
-                <chart-axis-y-tick tick-format-function="formatValue" />
-            </chart-axis-y>
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.period}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
         </chart-axis>
-
-        <chart-column column-id="Coverage"
-                      column-values="{{coverage}}"
-                      column-type="line"/>
-        <chart-column column-id="Actual"
-                      column-values="{{actual}}"
-                      column-type="bar"/>
-        <chart-column column-id="Target"
-                      column-values="{{target}}"
-                      column-type="bar"/>
-        <chart-column column-id="x"
-                      column-values="{{coverageMonthName}}"/>
-    </c3chart>
+</c3chart>
+<div style="font-weight: bold" ng-hide="monthlyCoverage.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

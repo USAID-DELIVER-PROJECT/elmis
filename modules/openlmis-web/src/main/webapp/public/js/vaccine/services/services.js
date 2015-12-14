@@ -289,12 +289,37 @@ services.factory('VaccineDashboardSummary', function($resource){
    return $resource('/vaccine/dashboard/summary.json',{},{});
 });
 
-services.factory('VaccineDashboardCoverage', function($resource){
-    return $resource('/vaccine/dashboard/coverage.json',{},{});
+services.factory('VaccineDashboardMonthlyCoverage', function($resource){
+    return $resource('/vaccine/dashboard/monthly-coverage.json',{},{});
 });
 
-services.factory('VaccineDashboardWastage', function($resource){
-    return $resource('/vaccine/dashboard/wastage.json',{},{});
+services.factory('VaccineDashboardMonthlyDropout', function($resource){
+    return $resource('/vaccine/dashboard/monthly-dropout.json',{},{});
+});
+
+services.factory('VaccineDashboardDistrictDropout', function($resource){
+    return $resource('/vaccine/dashboard/district-dropout.json',{},{});
+});
+
+services.factory('VaccineDashboardDistrictCoverage', function($resource){
+    return $resource('/vaccine/dashboard/district-coverage.json',{},{});
+});
+
+services.factory('VaccineDashboardMonthlyWastage', function($resource){
+    return $resource('/vaccine/dashboard/monthly-wastage.json',{},{});
+});
+services.factory('VaccineDashboardDistrictWastage', function($resource){
+    return $resource('/vaccine/dashboard/district-wastage.json',{},{});
+});
+services.factory('VaccineDashboardMonthlyStock', function($resource){
+    return $resource('/vaccine/dashboard/monthly-stock.json',{},{});
+});
+services.factory('VaccineDashboardDistrictStock', function($resource){
+    return $resource('/vaccine/dashboard/district-stock.json',{},{});
+});
+
+services.factory('VaccineDashboardBundle', function($resource){
+    return $resource('/vaccine/dashboard/bundle.json',{},{});
 });
 
 services.factory('Distribution', function ($resource) {
@@ -304,4 +329,16 @@ services.factory('Distribution', function ($resource) {
 
 services.factory('ColdChainOperationalStatus', function ($resource) {
   return $resource('/equipment/type/operational-status.json', {}, {});
+});
+
+services.factory('VaccineDashboardSessions', function($resource){
+    return $resource('/vaccine/dashboard/sessions.json',{},{});
+});
+
+services.factory('VaccineDashboardDistrictSessions', function($resource) {
+    return $resource('/vaccine/dashboard/district-sessions.json', {}, {});
+});
+
+services.factory('CompletenessAndTimeliness', function ($resource) {
+    return $resource('/vaccine/report/completenessAndTimeliness.json', {}, {});
 });

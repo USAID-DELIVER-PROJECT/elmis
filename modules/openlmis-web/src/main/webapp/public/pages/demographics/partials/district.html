@@ -19,7 +19,7 @@
   <div class="form-inline">
     <div class="pull-right checkbox">
 
-      <label>
+      <label ng-show="showFacilityAggregatesOption">
         <input ng-model="showFacilityAggregate" type="checkbox">
         <span>Show Facility Aggregate</span>
       </label>
@@ -51,7 +51,7 @@
 
 
   <div class="clearfix padding2px"></div>
-  <div  class="rnr-table">
+  <div  class="rnr-table" ng-show="form && form.estimateLineItems.length > 0">
 
     <div adjust-height bottom-offset="180" tab-scroll>
       <div class="float-left left-table parent">
@@ -86,7 +86,7 @@
       </div>
 
 
-    <div class="float-left right-table parent" custom-horizontal-scroll">
+    <div class="float-left right-table parent" custom-horizontal-scroll >
       <table class="table table-bordered scrollable">
         <thead>
         <tr style="height: 40px;" class="text-row gradient-header">

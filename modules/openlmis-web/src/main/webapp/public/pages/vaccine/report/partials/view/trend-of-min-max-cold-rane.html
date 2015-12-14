@@ -15,7 +15,7 @@
     .summary-table{
           table-layout: fixed;
          width: 100% !important;
-           border: 1px solid #000;
+           /*border: 1px solid #000;*/
             margin-top:43px;
         }
 </style>
@@ -24,10 +24,10 @@
 <div class="row-fluid">
     <div class="box span12">
         <div class="box-header">
-            <h2 >Trend Of Mini & Maxi Cold Chain Temperatures And Temperature Alarms<i class="icon-edit"></i><span
+
+            <h2 openlmis-message="report.performance.by.trend.minmax.coldrange.report"><i class="icon-edit"></i><span
                     class="break"></span>
             </h2>
-
             <div class="box-icon">
                 <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
                    class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
@@ -52,12 +52,20 @@
 
                         <br/>
                     </div>
-                    <p style="font-size: .8em"> Period Start: {{filter.periodStart| date:'MMM dd, yyyy'}} &nbsp;&nbsp;Period
-                        End: {{filter.periodEnd| date:'MMM dd, yyyy'}}</p>
 
-                    <p style="font-size: .8em; color: red"> {{perioderror}}</p>
+                    <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                        <div class="span11 ">
+                            <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                        </div>
+                    </div>
 
                 </form>
+                <div style="margin:2px !important;font-size:10px;"  ng-show="filter.periodStart" class="row">
+                    <div class="span4">
+                        <strong><span openlmis-message="label.start.date"></span></strong>: {{filter.periodStart}} &nbsp;&nbsp;&nbsp;&nbsp;
+                        <strong><span openlmis-message="label.end.date"></span></strong> : {{filter.periodEnd}}
+                    </div>
+                </div>
             </div>
 
     <div class="content-body">
@@ -69,58 +77,59 @@
             </tr>
         </table>
 
-        <div ng-show="datarows.length > 0">
+        <div ng-show="data.length > 0">
 
-            <table ng-if="reportType==false" id="fullSupplyTable1" ng-show="datarows.length > 0"
+
+            <table  id="fullSupplyTable" ng-show="datarows.length > 0"
                    class="rnr-table table-bordered table"
                    ng-table="tableParams">
                 <thead>
                 <tr>
-                    <th rowspan="2" style="text-align: center; vertical-align: middle">
-                        <span>	 Region</span>
+                    <th rowspan="2" >
+                        <span openlmis-message="label.region">	</span>
                     </th>
                     <th rowspan="2"
-                        style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                        <span>	 District</span>
+                        style=" width: 40px">
+                        <span openlmis-message="label.district">	 </span>
                     </th>
                     <th ng-if="reportType==true" rowspan="2"
-                        style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                        <span>	 Facility</span>
+                        style=" width: 40px">
+                        <span openlmis-message="label.facility">	 </span>
                     </th>
 
                     <th rowspan="2">
-                        <span>Period</span>
+                        <span openlmis-message="label.period"></span>
 
                     </th>
                     <th rowspan="2" style="width: 10px">
-                        <span>Population</span>
+                        <span openlmis-message="label.population"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Regrigator Temprature</span>
+                        <span openlmis-message="label.regrigator.temprature"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Alarm Episodes</span>
+                        <span openlmis-message="alamr.episodes"></span>
 
                     </th>
                 </tr>
 
                 <tr>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>Max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                 </tr>
@@ -167,32 +176,26 @@
                 </thead>
                 <tbody>
 
-                <tr ng-repeat-start="row in data">
+                <tr ng-repeat="subRow in data">
 
-                </tr>
-
-
-                </tr>
-                <tr  ng-repeat-start="subRow in row.children"></tr>
-
-
-
-                <tr ng-repeat-end
+                    <td
 
                         >
-                    <td ng-if="!$first"></td>
-                    <td ng-if="!$first"></td>
 
-                    <td ng-if="$first" rowspan="{{subRow.children.length}}"
 
-                        ng-bind="row.region_name"></td>
-                    <td ng-if="$first" rowspan="{{subRow.children.length}}"
+                        <span  ng-if="data[$index-1].region_name!=subRow.region_name"
 
-                        ng-bind="subRow.district_name"></td>
-                    <td ng-if="$first && reportType==true"
-                        rowspan="{{subRow.children.length}}"
+                               ng-bind="subRow.region_name"></span>
+                    </td>
+                    <td><span  ng-if="data[$index-1].district_name!=subRow.district_name"
 
-                        ng-bind="subRow.facility_name"></td>
+                                                               ng-bind="subRow.district_name"></span></td>
+
+                    <td ng-if="reportType==true"><span  ng-if="data[$index-1].facility_name!=subRow.facility_name"
+
+                               ng-bind="subRow.facility_name"></span></td>
+
+
                     <td ng-bind="subRow.period_name| date:'MMM-yyyy'"
                         ng-style="{'text-align':'right'}"/>
 
@@ -214,7 +217,6 @@
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.maxepisodetemp)  ,'text-align':'right'}"/>
 
                 </tr>
-                <tr ng-repeat-end ng-hide="true"/>
 
                 </tbody
                         >
@@ -226,184 +228,7 @@
                     <td ng-if="reportType==true" colspan="3"/>
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; ">
-                        Total
-                    </td>
-
-                    <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; " ng-bind="report.targetpopulation| number"></td>
-
-                    <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; " ng-bind="report.mintemp| number"></td>
-                    <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; "  ng-bind="report.maxtemp| number"></td>
-                    <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; "><span
-                            ng-bind="report.minepisodetemp| number" />
-                    </td>
-                    <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; "><span
-                            ng-bind="report.maxepisodetemp| number" />
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
-            <!-- end of the table-->
-            <table ng-if="reportType==true" id="fullSupplyTable" ng-show="datarows.length > 0"
-                   class="rnr-table table-bordered table"
-                   ng-table="tableParams">
-                <thead>
-                <tr>
-                    <th rowspan="2" style="text-align: center; vertical-align: middle">
-                        <span>	 Region</span>
-                    </th>
-                    <th rowspan="2"
-                        style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                        <span>	 District</span>
-                    </th>
-                    <th ng-if="reportType==true" rowspan="2"
-                        style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                        <span>	 Facility</span>
-                    </th>
-
-                    <th rowspan="2">
-                        <span>Period</span>
-
-                    </th>
-                    <th rowspan="2" style="width: 10px">
-                        <span>Population</span>
-
-                    </th>
-                    <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Regrigator Temprature</span>
-
-                    </th>
-                    <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Alarm Episodes</span>
-
-                    </th>
-                </tr>
-
-                <tr>
-                    <th>
-                        <span>min</span>
-
-                    </th>
-                    <th>
-                        <span>max</span>
-
-                    </th>
-                    <th>
-                        <span>min</span>
-
-                    </th>
-                    <th>
-                        <span>Max</span>
-
-                    </th>
-                </tr>
-                <tr style="height: 15px">
-                    <th>
-                        <span></span>
-
-                    </th>
-                    <th>
-                        <span></span>
-
-                    </th>
-                    <th ng-if="reportType==true">
-                        <span></span>
-
-                    </th>
-                    <th>
-                        <span></span>
-
-                    </th>
-                    <th>
-                        <span></span>
-
-                    </th>
-                    <th>
-                        <span>A</span>
-
-                    </th>
-                    <th>
-                        <span>B</span>
-
-                    </th>
-                    <th>
-                        <span>C</span>
-
-                    </th>
-                    <th>
-                        <span>D</span>
-
-                    </th>
-
-                </tr>
-
-                </thead>
-                <tbody>
-
-                <tr ng-repeat-start="row in data">
-
-                </tr>
-                <tr ng-repeat-start="aa in row.children">
-
-                </tr>
-                <tr  ng-repeat-start="subRow in aa.children"></tr>
-
-
-
-                <tr ng-repeat-end
-
-                        >
-                    <td ng-if="!$first"></td>
-                    <td ng-if="!$first"></td>
-                    <td ng-if="!$first"></td>
-                    <td ng-if="$first" rowspan="{{subRow.children.length}}"
-
-                        ng-bind="row.region_name"></td>
-                    <td ng-if="$first" rowspan="{{subRow.children.length}}"
-
-                        ng-bind="subRow.district_name"></td>
-                    <td ng-if="$first && reportType==true"
-                        rowspan="{{subRow.children.length}}"
-
-                        ng-bind="subRow.facility_name"></td>
-                    <td ng-bind="subRow.period_name| date:'MMM-yyyy'"
-                        ng-style="{'text-align':'right'}"/>
-
-                    <td ng-bind="subRow.targetpopulation| number"
-                        ng-style="{'text-align':'right'}"/>
-
-                    <td ng-bind="subRow.mintemp| number"
-                        ng-style="{'background-color':getBackGroundColorForTd(subRow.mintemp)  ,'text-align':'right'}"/>
-
-
-                    <td ng-bind="subRow.maxtemp| number"
-                        ng-style="{'background-color':getBackGroundColorForTd(subRow.maxtemp)  ,'text-align':'right'}"/>
-
-
-                    <td ng-bind="subRow.minepisodetemp| number"
-                        ng-style="{'background-color':getBackGroundColorForTd(subRow.minepisodetemp)  ,'text-align':'right'}"/>
-
-                    <td ng-bind="subRow.maxepisodetemp| number"
-                        ng-style="{'background-color':getBackGroundColorForTd(subRow.maxepisodetemp)  ,'text-align':'right'}"/>
-
-                </tr>
-                <tr ng-repeat-end ng-hide="true"/>
-                <tr ng-repeat-end ng-hide="true"/>
-                </tbody
-                        >
-
-                <tfoot style="'border-top-style':'solid'; 'border-top-color': 'black'; 'border-top-width': '2px'"
-                        >
-                <tr>
-                    <td ng-if="reportType==false" colspan="2"/>
-                    <td ng-if="reportType==true" colspan="3"/>
-                    <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; ">
-                        Total
+                        <span openlmis-message="label.total"></span>
                     </td>
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
@@ -425,14 +250,15 @@
                 </tfoot>
             </table>
         </div>
-        <div  ng-show="datarows.length > 0 && filter.facility==''">
+        <div  ng-show="datarows.length > 0 && (isUndefined(filter.facility)||filter.facility=='' || filter.facility=='0' || filter.facility==0)">
 
             <table
+
                     class="rnr-table table-bordered table summary-table"
-                    border="1">
+                    >
                 <thead>
                 <tr>
-                    <th style="height:42px"></th>
+                    <th></th>
                     <th ng-style="{'max-width':'60px'}" ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
                     </th>
                 </tr>
@@ -468,44 +294,44 @@
                    ng-table="tableParams">
                 <thead>
                 <tr>
-                    <th rowspan="2" style="text-align: center; vertical-align: middle">
-                        <span>	 Region</span>
+                    <th rowspan="2" >
+                        <span openlmis-message="label.region">	</span>
                     </th>
 
 
                     <th rowspan="2">
-                        <span>Period</span>
+                        <span openlmis-message="label.period"></span>
 
                     </th>
                     <th rowspan="2" style="width: 10px">
-                        <span>Population</span>
+                        <span openlmis-message="label.population"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Regrigator Temprature</span>
+                        <span openlmis-message="label.regrigator.temprature"></span>
 
                     </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
-                        <span>Alarm Episodes</span>
+                        <span openlmis-message="alamr.episodes"></span>
 
                     </th>
                 </tr>
 
                 <tr>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                     <th>
-                        <span>min</span>
+                        <span openlmis-message="label.min"></span>
 
                     </th>
                     <th>
-                        <span>Max</span>
+                        <span openlmis-message="label.max"></span>
 
                     </th>
                 </tr>
@@ -582,7 +408,7 @@
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; ">
-                        Total
+                        <span openlmis-message="label.total"></span>
                     </td>
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
@@ -610,10 +436,10 @@
 
             <table
                     class="rnr-table table-bordered table summary-table"
-                    border="1">
+                    >
                 <thead>
                 <tr>
-                    <th style="height:42px"></th>
+                    <th ></th>
                     <th ng-style="{'max-width':'60px'}"  ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
                     </th>
                 </tr>

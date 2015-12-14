@@ -12,7 +12,7 @@
  *
  */
 
-function ViewPerformanceByDropoutRateByDistrictController($scope,  PerformanceByDropoutRateByDistrict, VaccineSupervisedIvdPrograms, $routeParams) {
+function ViewPerformanceByDropoutRateByDistrictController($scope,SettingsByKey,  PerformanceByDropoutRateByDistrict, VaccineSupervisedIvdPrograms, $routeParams) {
 
     $scope.customPeriod;
     $scope.products;
@@ -23,8 +23,22 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,  PerformanceBy
     var maxReportSubmission = 10;
     var maxReportSubmissionKey;
 
-
-
+    $scope.minTemp;
+    $scope.maxTemp;
+    $scope.average;
+    $scope.belowAverage;
+    SettingsByKey.get({key:'VCP_LESS_THAN_FIFTY_PERCENT_COLOR'},function(data){
+        $scope.minTemp=data.settings.value;
+    });
+    SettingsByKey.get({key:'VCP_GREATER_THAN_NINTY_PERCENT_COLOR'},function(data){
+        $scope.maxTemp=data.settings.value;
+    });
+    SettingsByKey.get({key:'VCP_GREATER_THAN_OR_EQUAL_EIGHTY_PERCENT_COLOR'},function(data){
+        $scope.average=data.settings.value;
+    });
+    SettingsByKey.get({key:'VCP_GREATER_THAN_OR_EQUAL_FIFTY_PERCENT_COLOR'},function(data){
+        $scope.belowAverage=data.settings.value;
+    });
     $scope.OnFilterChanged = function () {
 console.log('period start '+ $scope.filter.periodStart);
         $scope.data = $scope.datarows = [];
@@ -64,26 +78,26 @@ console.log('period start '+ $scope.filter.periodStart);
      $scope.getBackGroundColor=function(value) {
         var bgColor='';
         if(value>20){
-            bgColor='red';
+            bgColor=$scope.maxTemp;
         }else if(value>10){
-            bgColor='lightblue';
+            bgColor=$scope.average;
         }else if(value>5){
-            bgColor='yellow';
+            bgColor=$scope.belowAverage;
         }else{
-            bgColor='lightgreen';
+            bgColor=$scope.minTemp;
         }
         return bgColor;
     };
     $scope.getBackGroundColorSummary=function(value) {
         var bgColor='';
         if(value=='4_dropoutGreaterThanHigh'){
-            bgColor='red';
+            bgColor=$scope.maxTemp;
         }else if(value=='3_droOputBetweenMidAndHigh'){
-            bgColor='lightblue';
+            bgColor=$scope.average;
         }else if(value=='2_dropOutBetweenMidAndMin'){
-            bgColor='yellow';
+            bgColor=$scope.belowAverage;
         }else{
-            bgColor='lightgreen';
+            bgColor=$scope.minTemp;
         }
         return bgColor;
     };

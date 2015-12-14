@@ -29,24 +29,25 @@ public class PerformanceByDropoutRateQueryBuilder {
         BEGIN();
         SELECT("d.region_name");
         SELECT("   d.district_name");
-        SELECT("    i.denominator target");
+        SELECT("    (select target_value_monthly from vw_vaccine_target_population where facility_id = i.facility_id and year = extract(year from i.period_start_date) limit 1) target");
         SELECT("     i.facility_name");
         SELECT("    i.facility_id");
         SELECT("to_date(i.period_name, 'Mon YYYY')  period_name");
-        SELECT("   i.bcg_1 bcg_vaccinated");
-        SELECT("   i.dtp_1 dtp1_vaccinated");
-        SELECT("   i.mr_1 mr_vaccinated");
-        SELECT("i.dtp_3 dtp3_vaccinated");
-        SELECT(" case when i.bcg_1 > 0 then((i.bcg_1 - i.mr_1) / i.bcg_1::numeric) * 100 else 0 end bcg_mr_dropout");
-        SELECT("   case when i.dtp_1 > 0 then((i.dtp_1 - i.dtp_3) / i.dtp_1::numeric) * 100 else 0 end dtp1_dtp3_dropout");
+        SELECT( " i.period_start_date");
+        SELECT("   sum(i.bcg_1) bcg_vaccinated");
+        SELECT("   sum(i.dtp_1) dtp1_vaccinated");
+        SELECT("   sum(i.mr_1) mr_vaccinated");
+        SELECT("   sum(i.dtp_3) dtp3_vaccinated");
+        SELECT(" case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout");
+        SELECT("   case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout");
         FROM(" vw_vaccine_coverage i");
         JOIN(" vw_districts d ON i.geographic_zone_id = d.district_id");
         JOIN(" vaccine_reports vr ON i.report_id = vr.ID");
         JOIN(" program_products pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id ");
         JOIN("  product_categories pg  ON pp.productcategoryid = pg.ID ");
         writePredicates(filter);
-
-        ORDER_BY("        i.geographic_zone_name,  i.facility_name,  to_date(i.period_name, 'Mon YYYY')");
+        GROUP_BY("1,2,3,4,5,6,7");
+        ORDER_BY("1,2,4,6");
         query = SQL();
         return query;
     }

@@ -36,7 +36,7 @@
 }
 
 
-function AggregateFacilityEstimateModel( facilityList ){
+function AggregateFacilityEstimateModel( facilityList , districts ){
 
   this.indexedList = _.groupBy(facilityList, 'parentId');
 
@@ -48,6 +48,19 @@ function AggregateFacilityEstimateModel( facilityList ){
       sum = sum + Number(val.value);
     });
     return sum;
+  };
+
+  AggregateFacilityEstimateModel.prototype.getDistrictEntry = function(district, category){
+    var d = _.findWhere(districts.estimates.estimateLineItems, {id: district});
+    if(d){
+      var v = _.findWhere(d.districtEstimates, {
+        'demographicEstimateId': category.id
+      });
+      if(v){
+        return v.value;
+      }
+    }
+    return 0;
   };
 
 }

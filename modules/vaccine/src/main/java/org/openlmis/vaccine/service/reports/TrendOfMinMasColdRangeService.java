@@ -63,8 +63,8 @@ public class TrendOfMinMasColdRangeService {
         List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListRegion = null;
         if (isFacilityReport) {
             coldChainTempratureDetailList = repository.loadTrendMinMaxColdChainTempratureReports(filterParam);
-            coldChainTempratureDetailListAggeregateForDistrict = this.buildReportTree(coldChainTempratureDetailList, ReportsCommonUtilService.DISTRICT_REPORT);
-            coldChainTempratureDetailListAggeregateForRegion = this.buildReportTree(coldChainTempratureDetailListAggeregateForDistrict, ReportsCommonUtilService.REGION_REPORT);
+//            coldChainTempratureDetailListAggeregateForDistrict = this.buildReportTree(coldChainTempratureDetailList, ReportsCommonUtilService.DISTRICT_REPORT);
+            coldChainTempratureDetailListAggeregateForRegion =coldChainTempratureDetailList;// this.buildReportTree(coldChainTempratureDetailListAggeregateForDistrict, ReportsCommonUtilService.REGION_REPORT);
             districtFacilitySummaryColumnList = this.prepareColumnRangesForSummary(this.columnNameList, coldChainTempratureDetailList);
             coldChainTempratureReport = this.aggregateReport(coldChainTempratureDetailList);
         } else {
@@ -77,7 +77,7 @@ public class TrendOfMinMasColdRangeService {
 
             }
             coldChainTempratureDetailListAggeregateForDistrict = this.repository.loadTrendMinMaxColdChainDistrictTempratureReports(filterParam);
-            coldChainTempratureDetailListAggeregateForRegion = this.buildReportTree(coldChainTempratureDetailListAggeregateForDistrict, ReportsCommonUtilService.REGION_REPORT);
+            coldChainTempratureDetailListAggeregateForRegion =coldChainTempratureDetailListAggeregateForDistrict;// this.buildReportTree(coldChainTempratureDetailListAggeregateForDistrict, ReportsCommonUtilService.REGION_REPORT);
             districtFacilitySummaryColumnList = this.prepareColumnRangesForSummary(this.columnNameList, coldChainTempratureDetailListAggeregateForDistrict);
             coldChainTempratureReport = this.aggregateReport(coldChainTempratureDetailListAggeregateForDistrict);
         }
@@ -94,17 +94,17 @@ public class TrendOfMinMasColdRangeService {
     }
 
     public TrendOfMinMaxColdChainTempratureReport aggregateReport(List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList) {
-        float mintemp = 0f;
-        float maxtemp = 0f;
-        float minepisodetemp = 0f;
-        float maxepisodetemp = 0f;
+        float mintemp = coldChainTempratureDetailList.get(0).getMintemp();
+        float maxtemp = coldChainTempratureDetailList.get(0).getMaxtemp();
+        float minepisodetemp = coldChainTempratureDetailList.get(0).getMinepisodetemp();
+        float maxepisodetemp =coldChainTempratureDetailList.get(0).getMaxepisodetemp();
         Long targetpopulation = 0l;
         TrendOfMinMaxColdChainTempratureReport coldChainTempratureReport = new TrendOfMinMaxColdChainTempratureReport();
         for (TrendOfMinMaxColdChainTempratureDetail coldChainTempratureDetail : coldChainTempratureDetailList) {
-            mintemp += coldChainTempratureDetail.getMintemp();
-            maxtemp += coldChainTempratureDetail.getMaxtemp();
-            minepisodetemp += coldChainTempratureDetail.getMinepisodetemp();
-            maxepisodetemp += coldChainTempratureDetail.getMaxepisodetemp();
+            mintemp= mintemp>coldChainTempratureDetail.getMintemp()?coldChainTempratureDetail.getMintemp():mintemp;
+            maxtemp = maxtemp<coldChainTempratureDetail.getMaxtemp()?coldChainTempratureDetail.getMaxtemp():maxtemp;
+            minepisodetemp = minepisodetemp> coldChainTempratureDetail.getMinepisodetemp()?coldChainTempratureDetail.getMinepisodetemp():minepisodetemp;
+            maxepisodetemp = maxepisodetemp< coldChainTempratureDetail.getMaxepisodetemp()?coldChainTempratureDetail.getMaxepisodetemp():maxepisodetemp;
             targetpopulation += coldChainTempratureDetail.getTargetpopulation() == null ? 0 : coldChainTempratureDetail.getTargetpopulation();
         }
         coldChainTempratureReport.setMaxepisodetemp(maxepisodetemp);
@@ -210,7 +210,7 @@ public class TrendOfMinMasColdRangeService {
 
                 Float tempLessMinValue = columnRangeValues.get(ReportsCommonUtilService.TEMP_MIN).get(columngName) + 1l;
                 columnRangeValues.get(ReportsCommonUtilService.TEMP_MIN).put(columngName, tempLessMinValue);
-            } else if (tempMinValue > 8) {
+            } else if (tempMaxValue > 8) {
 
                 Float tempGreaterMinValue = columnRangeValues.get(ReportsCommonUtilService.TEMP_GREATER_MIN).get(columngName) + 1l;
                 columnRangeValues.get(ReportsCommonUtilService.TEMP_GREATER_MIN).put(columngName, tempGreaterMinValue);
@@ -221,7 +221,7 @@ public class TrendOfMinMasColdRangeService {
                 Float minAlarmLessMinValue = columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_LESS_MIN).get(columngName) + 1l;
                 columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_LESS_MIN).put(columngName, minAlarmLessMinValue);
             }
-            if (minAlarmEpisodeValue > 8) {
+            if (maxAlarmEpisodeValue > 8) {
 
                 Float minAlarmGreaterMinValue = columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_GREATER_MIN).get(columngName) + 1l;
                 columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_GREATER_MIN).put(columngName, minAlarmGreaterMinValue);

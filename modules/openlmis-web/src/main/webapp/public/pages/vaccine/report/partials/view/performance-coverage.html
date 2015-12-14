@@ -38,20 +38,8 @@
                 <div  class="clearfix">
 
                     <!--================================ filter start ====================-->
-                    <div class="horizontalFilters form-cell">
-                        <label for="zone" class="labels">Regions/Districts<span class="label-required">*</span></label>
-                        <div>
-                            <select id="zone" ui-select2 class="input-large" data-placeholder="-- All Zones --"  ng-change="OnFilterChanged();" ng-model="filter.zone">
-                                <option ng-selected="filter.zone == undefined || filter.zone == '' || filter.zone == 0" value="0">{{user_geo_level}}</option>
-                                <optgroup ng-repeat="value in zones.children" value="{{ value.id }}" ng-selected="filter.zone == value.id" label="{{value.name}}">
-                                    <option ng-selected="filter.zone == value.id" value="{{value.id}}"><b class="green"> -- All of {{value.name}}</b></option>
-                                    <option ng-repeat-start="v in value.children" ng-selected="filter.zone == v.id" value="{{v.id}}">{{v.name}}</option>
-                                    <option ng-repeat-end ng-repeat="d in v.children" ng-selected="filter.zone == d.id" value="{{d.id}}"> &nbsp; &nbsp; {{d.name}}</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                    </div>
 
+                    <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="false" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone" ></vaccine-zone-filter>
                     <div class="horizontalFilters form-cell">
                         <label for="product" class="labels"  openlmis-message="label.product"><span class="label-required">*</span></label>
                         <div>
@@ -62,16 +50,17 @@
                         </div>
                     </div>
 
-                    <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="10" error="perioderror"></static-period-filter>
+                    <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
                     <!--======================== filter end =========================-->
                 </div>
             </form>
-            <div style="margin:2px !important;font-size:10px;"  ng-show="pStartDate" class="row">
+            <div style="margin:2px !important;font-size:10px;"  ng-show="periodStartDate" class="row">
                 <div class="span4">
-                    <strong><span openlmis-message="label.start.date"></span></strong>: {{pStartDate}} &nbsp;&nbsp;&nbsp;&nbsp;
-                    <strong><span openlmis-message="label.end.date"></span></strong> : {{pEndDate}}</div>
+                    <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate | date:'MMM dd, yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate | date:'MMM dd, yyyy'}}
+                </div>
             </div>
-            <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror || perioderror1" class="row">
+            <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
                 <div class="span11 ">
                     <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
                     </div>
@@ -123,10 +112,10 @@
                         <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                         <td ng-show="!regionSelected" style="background-color : {{bgColorCode(row.coverage)}}">{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
                         <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.coverage}}%</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
                     <tr>
@@ -134,7 +123,7 @@
                         <td class="aggregate-row" ng-show="regionSelected" colspan="2"></td>
                         <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal | number}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage}}%</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage}}%</td>
@@ -148,7 +137,7 @@
                     <table id="summary-table" class="rnr-table table-bordered table">
                         <thead >
                         <tr>
-                            <th></th>
+                            <th style="width:17%;"></th>
                             <th  ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
                         </tr>
                         </thead>
@@ -201,22 +190,22 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="row in dataRowsRegionAggregate">
-                        <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                        <td >{{ dataRowsRegionAggregate[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                         <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.coverage}}%</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
                     <tr>
                         <td class="aggregate-row" ng-show="!regionSelected" colspan="2"></td>
                         <td class="aggregate-row" ng-show="regionSelected" colspan="1"></td>
                         <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal | number}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal | number}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage}}%</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination | number}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage}}%</td>
                     </tr>
                     </tbody>
@@ -226,7 +215,7 @@
                     <table id="summary-table" class="rnr-table table-bordered table">
                         <thead >
                         <tr>
-                            <th></th>
+                            <th style="width:17%;"></th>
                             <th  ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
                         </tr>
                         </thead>
