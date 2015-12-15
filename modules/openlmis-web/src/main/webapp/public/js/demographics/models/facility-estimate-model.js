@@ -67,7 +67,7 @@ function AggregateFacilityEstimateModel( facilityList , districts, categories, y
 
   AggregateFacilityEstimateModel.prototype.isValid = function(district){
     for(var i = 0; i < this.categories.length; i++){
-        if( this.getSummary(district, this.categories[i], year) != this.getDistrictEntry(district, this.categories[i]) ){
+        if( this.getSummary(district, this.categories[i], year) !== this.getDistrictEntry(district, this.categories[i]) ){
           return false;
         }
       }
@@ -100,9 +100,25 @@ function FacilityDemographicsForm ($scope, facilities, districts){
      $scope.currentPage = 1;
      $scope.pageLineItems();
 
-     $scope.formStatus = (finalizedCount > 0 && draftCount === 0)? 'Finalized' : (finalizedCount > 0 && draftCount > 0)? 'Partial' : 'Draft';
 
+     if (finalizedCount > 0 && draftCount === 0){
+       $scope.formStatus = 'Finalized';
+     } else{
+       $scope.formStatus = (finalizedCount > 0 && draftCount > 0)? 'Partial' : 'Draft';
+     }
+     this.districts = districts;
      $scope.districtSummary = new AggregateFacilityEstimateModel($scope.lineItems, districts, $scope.categories, $scope.year);
+     this.districtSummary = $scope.districtSummary;
+   };
+
+   FacilityDemographicsForm.prototype.isValid = function(){
+     for(var i = 0; i < this.districts.estimates.estimateLineItems.length; i++){
+       var district = this.districts.estimates.estimateLineItems[i];
+       if (!this.districtSummary.isValid(district.id)) {
+         return false;
+       }
+     }
+     return true;
    };
 
    this.init($scope, facilities, districts);

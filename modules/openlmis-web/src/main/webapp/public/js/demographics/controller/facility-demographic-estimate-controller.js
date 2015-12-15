@@ -46,7 +46,7 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
         form.estimateLineItems = $scope.lineItems;
         FinalizeFacilityDemographicEstimates.update(form, function (facilities) {
           $scope.bindEstimates(facilities, $scope.districts);
-          $scope.message = 'Estimates are now finalized';
+          $scope.message = 'label.message.estimates.finalized';
         });
       }
     };
@@ -56,8 +56,12 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
       header: "label.confirm.finalize.title",
       body: "label.confirm.finalize.demographic.estimate"
     };
-
-    OpenLmisDialog.newDialog(options, callBack, $dialog);
+    $scope.error = '';
+    if($scope.forms.isValid()){
+      OpenLmisDialog.newDialog(options, callBack, $dialog);
+    }else{
+      $scope.error = 'label.error.validate.facility.aggregate';
+    }
   };
 
   $scope.undoFinalize = function () {
@@ -67,7 +71,7 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
         form.estimateLineItems = $scope.lineItems;
         UndoFinalizeFacilityDemographicEstimates.update(form, function (facilities) {
           $scope.bindEstimates(facilities, $scope.districts);
-          $scope.message = 'Estimates are now available for editing.';
+          $scope.message = 'label.message.estimates.available.for.editing';
         });
       }
     };

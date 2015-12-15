@@ -30,7 +30,11 @@ function DistrictDemographicEstimateController($scope, $dialog, $filter, rights,
     data.estimates.estimateLineItems = [];
     $scope.form = data.estimates;
     $scope.currentPage = 1;
-    $scope.formStatus = (finalizedCount > 0 && draftCount === 0)? 'Finalized' : (finalizedCount > 0 && draftCount > 0)? 'Partial' : 'Draft';
+    if(finalizedCount > 0 && draftCount === 0){
+      $scope.formStatus = 'Finalized';
+    }else{
+      $scope.formStatus = (finalizedCount > 0 && draftCount > 0)? 'Partial' : 'Draft';
+    }
     $scope.districtSummary = new AggregateRegionEstimateModel($scope.lineItems);
     $scope.pageLineItems();
   };
@@ -39,7 +43,6 @@ function DistrictDemographicEstimateController($scope, $dialog, $filter, rights,
     if(angular.isUndefined($scope.program) || $scope.program === null || angular.isUndefined($scope.year)){
       return;
     }
-    
     DistrictDemographicEstimates.get({year: $scope.year, program: $scope.program}, function(data){
       $scope.bindEstimates(data);
     });
