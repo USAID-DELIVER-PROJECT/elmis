@@ -1,4 +1,4 @@
-function newVaccineOrderRequisitionController($scope,$rootScope,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location, ViewOrderRequisitionVaccineReportPeriods) {
+function newVaccineOrderRequisitionController($scope,$rootScope,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location, ViewOrderRequisitionVaccineReportPeriods) {
 
     $rootScope.viewOrder = false;
     $rootScope.receive = false;
@@ -16,7 +16,7 @@ function newVaccineOrderRequisitionController($scope,$rootScope,localStorageServ
     $scope.requisitionTypes = [{id: '0', name: 'Unscheduled Reporting'}, {id: '1', name: 'Scheduled Reporting'}];
 
 
-    ViewOrderRequisitionVaccineReportPeriods.get({
+    VaccineOrderRequisitionReportPeriods.get({
 
                 facilityId: parseInt(facilityId,10),
                 programId: parseInt(id,10)
