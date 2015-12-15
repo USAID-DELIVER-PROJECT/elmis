@@ -31,8 +31,8 @@ function newVaccineOrderRequisitionController($scope,$rootScope,VaccineOrderRequ
 
                         var lastReport = data.lastReport;
 
-                        if ((lastReport !== null) &&
-                            (lastReport.status === 'ISSUED') || lastReport.status === 'DRAFT') {
+                            if( (lastReport.status !== null) &&
+                                (lastReport.status === 'ISSUED') || lastReport.status === 'DRAFT'){
 
                             VaccineOrderRequisitionReportInitiateEmergency.get({
                                 periodId: lastReport.periodId,
