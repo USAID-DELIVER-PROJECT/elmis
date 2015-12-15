@@ -6,8 +6,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.*;
-import org.openlmis.vaccine.dto.OrderRequisitionDTO;
+import org.openlmis.core.service.ProductService;
+import org.openlmis.stockmanagement.domain.StockCard;
+import org.openlmis.stockmanagement.service.StockCardService;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
+import org.openlmis.vaccine.dto.StockRequirements;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,60 +35,57 @@ public class VaccineOrderRequisition extends BaseModel {
     private Long facilityId;
     private String orderDate;
     private boolean emergency;
+    private String reason;
     private List<VaccineOrderRequisitionLineItem> lineItems;
     private List<VaccineOrderRequisitionStatusChange> statusChanges;
-    private List<OrderRequisitionDTO> orderRequisitionDTOs;
-    private List<OrderRequisitionStockCardDTO> stockCards;
     private List<VaccineOrderRequisitionColumns> columnsList;
+    private List<OrderRequisitionStockCardDTO> stockCards;
 
-    public void viewOrderRequisitionLineItems(List<OrderRequisitionStockCardDTO> stockCards) {
+
+    public void initiateOrder(List<StockRequirements> requirementsList, ProductService service, StockCardService stockCardService) {
         lineItems = new ArrayList<>();
 
-        ISA myIsa;
 
-           for (OrderRequisitionStockCardDTO stockCard : stockCards) {
-
-               myIsa = new ISA.Builder().adjustmentValue(stockCard.getAdjustmentValue()).bufferPercentage(stockCard.getBufferPercentage()).dosesPerYear(stockCard.getDosesPerYear()).
-                       maximumValue(stockCard.getMaximumValue())
-                       .minimumValue(stockCard.getMinimumValue()).wastageFactor(stockCard.getWastageFactor()).whoRatio(stockCard.getWhoRatio()).build();
-
-               VaccineOrderRequisitionLineItem lineItem = new VaccineOrderRequisitionLineItem();
-
-               lineItem.setOrderId(id);
-               lineItem.setProductId(stockCard.getProduct().getId());
-               lineItem.setProductName(stockCard.getProduct().getPrimaryName());
-               lineItem.setMaxmonthsofstock(stockCard.getMaxmonthsofstock());
-               lineItem.setOverriddenisa(myIsa.calculate(facility.getCatchmentPopulation()));
-               lineItem.setEop(stockCard.getEop());
-               lineItem.setStockOnHand(stockCard.getTotalQuantityOnHand());
-               lineItem.setMinMonthsOfStock(stockCard.getMinmonthsofstock());
-               lineItem.setOrderedDate(form.format(new Date()));
-
-               lineItems.add(lineItem);
-           }
-
-    }
+        for (StockRequirements stockRequirements : requirementsList) {
 
 
-    public void initiateOrderRequisitionLineItem(List<ProgramProduct>programProducts){
-        orderRequisitionDTOs = new ArrayList<>();
-        for(ProgramProduct pp: programProducts){
-            OrderRequisitionDTO lineItem = new OrderRequisitionDTO();
-            lineItem.setProductCategory(pp.getProductCategory().getName());
-            orderRequisitionDTOs.add(lineItem);
-        }
-    }
+            if (stockRequirements.getIsaValue() != null) {
 
-    public void initColumns(List<VaccineOrderRequisitionColumns> columns){
-        columnsList = new ArrayList<>();
-        for(VaccineOrderRequisitionColumns columns1: columns){
-            VaccineOrderRequisitionColumns lineItem = new VaccineOrderRequisitionColumns();
-            lineItem.setName(lineItem.getName());
-            lineItem.setLabel(lineItem.getLabel());
-            lineItem.setDisplayOrder(columns1.getDisplayOrder());
-            columnsList.add(lineItem);
+                VaccineOrderRequisitionLineItem lineItem = new VaccineOrderRequisitionLineItem();
+                lineItem.setOrderId(id);
+                lineItem.setProductId(stockRequirements.getProductId());
+                lineItem.setProductName(stockRequirements.getProductName());
+                lineItem.setMaxmonthsofstock(stockRequirements.getMaxMonthsOfStock());
+
+                lineItem.setOverriddenisa(stockRequirements.getIsaValue());
+                lineItem.setEop(stockRequirements.getEop());
+
+                Product p = service.getById(stockRequirements.getProductId());
+                StockCard s = stockCardService.getOrCreateStockCard(stockRequirements.getFacilityId(), p.getCode());
+                lineItem.setStockOnHand(s.getTotalQuantityOnHand());
+                lineItem.setMinMonthsOfStock(stockRequirements.getMinMonthsOfStock());
+                lineItem.setOrderedDate(form.format(new Date()));
+                lineItem.setBufferStock(stockRequirements.getBufferStock());
+
+                lineItem.setMaximumStock(stockRequirements.getMaximumStock());
+                lineItem.setReOrderLevel(stockRequirements.getReorderLevel());
+                lineItem.setCategory(stockRequirements.getProductCategory());
+                lineItem.setPopulation(stockRequirements.getPopulation());
+
+                lineItem.setIsa(stockRequirements.getIsa());
+
+
+                lineItem.setMinimumStock(stockRequirements.getMinimumStock());
+                lineItem.setAnnualNeed(stockRequirements.getAnnualNeed());
+                lineItem.setBufferStock(stockRequirements.getBufferStock());
+
+                lineItems.add(lineItem);
+            }
+
         }
 
+
     }
+
 
 }

@@ -1375,3 +1375,13 @@ services.factory('GeographicZoneService',function($resource){
         }
     };
 });
+
+
+services.factory('VaccineStockStatusReport',function($resource){
+    return $resource('/reports/reportdata/vaccineStockStatus.json',{},{});
+});
+
+
+services.factory('StockLedgerReport',function($resource){
+    return $resource('/reports/reportdata/stockLedgerReport.json',{},{});
+});

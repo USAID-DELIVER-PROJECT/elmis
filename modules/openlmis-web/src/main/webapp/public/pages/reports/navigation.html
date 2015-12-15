@@ -178,6 +178,14 @@
 
       <div class="submenu">
         <ul>
+          <li ng-show="hasPermission('VIEW_STOCK_LEDGER_REPORT')">
+            <a href="/public/pages/reports/main/index.html#stock-ledger-report"
+               openlmis-message="menu.report.stock.ledger.report"></a>
+          </li>
+          <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
+            <a href="/public/pages/reports/main/index.html#vaccine-stock-status"
+               openlmis-message="menu.report.vaccine.stock.status"></a>
+          </li>
           <li ng-show="hasPermission('VIEW_ADJUSTMENT_SUMMARY_REPORT')">
             <a ng-href="/public/pages/reports/main/index.html#adjustment-summary"
                openlmis-message="menu.report.adjustment.summary"></a>

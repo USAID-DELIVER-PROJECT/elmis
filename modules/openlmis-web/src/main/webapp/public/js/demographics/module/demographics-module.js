@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module('demographics', ['openlmis','ngTable','ui.sortable' , 'ui.bootstrap.modal', 'ui.bootstrap.dialog']).
+angular.module('demographics', ['openlmis','ngTable','ui.sortable', 'ui.directives' , 'ui.bootstrap.modal', 'ui.bootstrap.dialog']).
   config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
         when('/list', {controller:DemographicEstimateCategoryController, templateUrl:'partials/category.html', resolve : DemographicEstimateCategoryController.resolve }).

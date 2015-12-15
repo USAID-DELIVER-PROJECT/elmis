@@ -60,17 +60,19 @@ public class AnnualFacilityDemographicEstimateService {
     for (EstimateFormLineItem dto : emptyIfNull(estimateForm.getEstimateLineItems())) {
       for (AnnualFacilityEstimateEntry estimate : emptyIfNull(dto.getFacilityEstimates())) {
 
-        AnnualFacilityEstimateEntry existingEstimateEntry = repository.getEntryBy(estimate.getYear(), estimate.getFacilityId(), estimate.getProgramId(), estimate.getDemographicEstimateId());
-
-        if (existingEstimateEntry != null && (!existingEstimateEntry.getId().equals(estimate.getId()) || existingEstimateEntry.getIsFinal())) {
-          continue;
-        }
         estimate.setFacilityId(dto.getId());
 
-        if (!estimate.hasId()) {
+        AnnualFacilityEstimateEntry existingEstimateEntry = repository.getEntryBy(estimate.getYear(), estimate.getFacilityId(), estimate.getProgramId(), estimate.getDemographicEstimateId());
+        // skip finalized records
+        if (existingEstimateEntry != null && existingEstimateEntry.getIsFinal()) {
+          continue;
+        }
+
+        if (existingEstimateEntry == null) {
           estimate.setCreatedBy(userId);
           repository.insert(estimate);
         } else {
+          estimate.setId(existingEstimateEntry.getId());
           estimate.setModifiedBy(userId);
           repository.update(estimate);
         }

@@ -70,8 +70,7 @@ public interface AnnualFacilityEstimateMapper {
   @Results(value = {
     @Result(column = "demographicEstimateId", property = "demographicEstimateId"),
     @Result(property = "category", column = "demographicEstimateId", one = @One(select = "org.openlmis.demographics.repository.mapper.EstimateCategoryMapper.getById"))
-  }
-  )
+  })
   List<AnnualFacilityEstimateEntry> getEstimatesForFacilityWithDetails(@Param("year") Integer year, @Param("facilityId") Long facilityId, @Param("programId") Long programId);
 
 
@@ -80,6 +79,7 @@ public interface AnnualFacilityEstimateMapper {
     "     join geographic_zones gz on gz.id = f.geographicZoneId " +
     "     join programs_supported ps on ps.facilityId = f.id  and ps.programId = #{programId} " +
     "     join requisition_group_members m on m.facilityId = f.id " +
+    "     join requisition_group_program_schedules ss on ss.requisitionGroupId = m.requisitionGroupId and ss.programId = ps.programId " +
     " where m.requisitionGroupId  = ANY(#{requisitionGroupIds}::INTEGER[]) " +
     " order by gz.name, f.name")
   List<EstimateFormLineItem> getFacilityList(@Param("programId") Long programId, @Param("requisitionGroupIds") String requsitionGroupIds);
