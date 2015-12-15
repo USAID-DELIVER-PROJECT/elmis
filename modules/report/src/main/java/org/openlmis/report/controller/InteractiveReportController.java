@@ -588,6 +588,7 @@ public class InteractiveReportController extends BaseController {
         return new Pages(page, max, reportData);
     }
 
+
     @RequestMapping(value = "/reportdata/vaccineTemperature", method = GET, headers = BaseController.ACCEPT_JSON)
     ///@PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_COLD_CHAIN_EQUIPMENT_LIST_REPORT')")
     public Map<String, Pages> getVaccineTemperatureReport(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -624,6 +625,37 @@ public class InteractiveReportController extends BaseController {
         multiPages.put("coldchainSubreportdata", new Pages(page, max, subReportData));
 
         return multiPages;
+
+    }
+
+
+    @RequestMapping(value = "/reportdata/vaccineStockStatus", method = GET, headers = BaseController.ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_STOCK_STATUS_REPORT')")
+    public Pages getVaccineStockStatus(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                       HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("vaccine_stock_status");
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+        List<VaccineStockStatusReport> reportData =
+                (List<VaccineStockStatusReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+        return new Pages(page, max, reportData);
+    }
+
+
+    @RequestMapping(value = "/reportdata/stockLedgerReport", method = GET, headers = BaseController.ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_STOCK_LEDGER_REPORT')")
+    public Pages getStockLedgerReport(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                      @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                      HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("stock_ledger");
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+        List<StockLedgerReport> reportData =
+                (List<StockLedgerReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+        return new Pages(page, max, reportData);
     }
 
 }

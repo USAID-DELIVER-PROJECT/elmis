@@ -41,10 +41,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @Controller
 @RequestMapping(value = "/vaccine/orderRequisition/")
 public class VaccineOrderRequisitionController extends BaseController {
-    public static final String VaccineOrderRequisition = "orderRequisition";
-    public static final String OrderRequisitionColumns = "columns";
+
     private static final String PROGRAM_PRODUCT_LIST = "programProductList";
-    private static final String PRINT_ORDER_REQUISITION = "print_vaccine_Order_Requisition";
+    private static final String PRINT_ORDER_REQUISITION = "Vaccine Order Requisition";
     private static final String PRINT_ISSUE_STOCK = "vims_distribution";
     private static final String ORDER_REQUISITION_SEARCH = "search";
 
@@ -71,27 +70,26 @@ public class VaccineOrderRequisitionController extends BaseController {
     private JasperReportsViewFactory jasperReportsViewFactory;
 
     @RequestMapping(value = "periods/{facilityId}/{programId}", method = RequestMethod.GET)
-   //TODO// @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_REQUISITION, AUTHORIZE_REQUISITION')")
-    public ResponseEntity<OpenLmisResponse> getPeriods(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request){
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
+    public ResponseEntity<OpenLmisResponse> getPeriods(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
         return response("periods", service.getPeriodsFor(facilityId, programId, new Date()));
     }
 
     @RequestMapping(value = "view-periods/{facilityId}/{programId}", method = RequestMethod.GET)
-   //TODO// @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_REQUISITION, AUTHORIZE_REQUISITION')")
-    public ResponseEntity<OpenLmisResponse> getViewPeriods(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request){
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
+    public ResponseEntity<OpenLmisResponse> getViewPeriods(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
         return response("periods", service.getReportedPeriodsFor(facilityId, programId));
     }
 
 
-
     @RequestMapping(value = "initialize/{periodId}/{programId}/{facilityId}")
-   //TODO @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_REQUISITION, AUTHORIZE_REQUISITION')")
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> initialize(
             @PathVariable Long periodId,
             @PathVariable Long programId,
             @PathVariable Long facilityId,
             HttpServletRequest request
-    ){
+    ) {
         return response("report", service.initialize(periodId, programId, facilityId, loggedInUserId(request)));
     }
 
@@ -102,68 +100,68 @@ public class VaccineOrderRequisitionController extends BaseController {
             @PathVariable Long programId,
             @PathVariable Long facilityId,
             HttpServletRequest request
-    ){
+    ) {
         return response("report", service.initializeEmergency(periodId, programId, facilityId, loggedInUserId(request)));
     }
 
     @RequestMapping(value = "submit")
-   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION')")
-    public ResponseEntity<OpenLmisResponse> submit(@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request){
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION')")
+    public ResponseEntity<OpenLmisResponse> submit(@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request) {
         service.submit(orderRequisition, loggedInUserId(request));
         return response("report", orderRequisition);
     }
 
     @RequestMapping(value = "save")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION')")
-    public ResponseEntity<OpenLmisResponse> save(@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request){
+    public ResponseEntity<OpenLmisResponse> save(@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request) {
         service.save(orderRequisition);
         return response("report", orderRequisition);
     }
 
     @RequestMapping(value = "lastReport/{facilityId}/{programId}", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse>
-    getLastReport(@PathVariable  Long facilityId,@PathVariable Long programId,HttpServletRequest request){
+    getLastReport(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
 
         return response("lastReport", service.getLastReport(facilityId, programId));
     }
 
     @RequestMapping(value = "get/{id}.json", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> getReport(@PathVariable Long id, HttpServletRequest request){
+    public ResponseEntity<OpenLmisResponse> getReport(@PathVariable Long id, HttpServletRequest request) {
         return response("report", service.getAllDetailsById(id));
     }
 
     @RequestMapping(value = "userHomeFacility.json", method = RequestMethod.GET)
-        public ResponseEntity<OpenLmisResponse> getUserHomeFacilities(HttpServletRequest request){
-            return  response("homeFacility", facilityService.getHomeFacility(loggedInUserId(request)));
-        }
+    public ResponseEntity<OpenLmisResponse> getUserHomeFacilities(HttpServletRequest request) {
+        return response("homeFacility", facilityService.getHomeFacility(loggedInUserId(request)));
+    }
 
-    @RequestMapping(value = "getPendingRequest/{facilityId}/{programId}", method = RequestMethod.GET,headers = ACCEPT_JSON)
-    public ResponseEntity<OpenLmisResponse> getPendingRequest(@PathVariable  Long facilityId,@PathVariable Long programId,HttpServletRequest request){
+    @RequestMapping(value = "getPendingRequest/{facilityId}/{programId}", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getPendingRequest(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
 
         return response("pendingRequest", service.getPendingRequest(loggedInUserId(request), facilityId, programId));
     }
 
-    @RequestMapping(value = "getAllBy/{programId}/{periodId}/{facilityId}", method = RequestMethod.GET,headers = ACCEPT_JSON)
-    public ResponseEntity<OpenLmisResponse> getAllBy(@PathVariable Long programId ,@PathVariable Long periodId,@PathVariable  Long facilityId,HttpServletRequest request){
+    @RequestMapping(value = "getAllBy/{programId}/{periodId}/{facilityId}", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getAllBy(@PathVariable Long programId, @PathVariable Long periodId, @PathVariable Long facilityId, HttpServletRequest request) {
         return response("requisitionList", service.getAllBy(programId, periodId, facilityId));
     }
 
 
-    @RequestMapping(value = "updateOrderRequest/{orderId}", method = RequestMethod.PUT,headers = ACCEPT_JSON)
+    @RequestMapping(value = "updateOrderRequest/{orderId}", method = RequestMethod.PUT, headers = ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse>
-    updateORStatus(@PathVariable  Long orderId,HttpServletRequest request){
-    try{
-        service.updateORStatus(orderId);
-        return success("Saved Successifully");
+    updateORStatus(@PathVariable Long orderId, HttpServletRequest request) {
+        try {
+            service.updateORStatus(orderId);
+            return success("Saved Successifully");
 
-    } catch (DataException e) {
-        return error(e, HttpStatus.BAD_REQUEST);
+        } catch (DataException e) {
+            return error(e, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
-    }
-
-    @RequestMapping(value = "updateOrderRequisition/{orderId}", method = RequestMethod.PUT,headers = ACCEPT_JSON)
-    public ResponseEntity<OpenLmisResponse> update(@PathVariable  Long orderId,@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request){
+    @RequestMapping(value = "updateOrderRequisition/{orderId}", method = RequestMethod.PUT, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> update(@PathVariable Long orderId, @RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request) {
         orderRequisition.setId(orderId);
         orderRequisition.setStatus(VaccineOrderStatus.ISSUED);
         service.save(orderRequisition);
@@ -174,7 +172,6 @@ public class VaccineOrderRequisitionController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getProgramsForConfiguration() {
         return response("programs", programService.getAllIvdPrograms());
     }
-
 
 
     @RequestMapping(value = "loggedInUserDetails.json", method = RequestMethod.GET)
@@ -226,7 +223,7 @@ public class VaccineOrderRequisitionController extends BaseController {
     @RequestMapping(value = "issue/print/{id}", method = GET, headers = ACCEPT_JSON)
     public ModelAndView printIssueStock(@PathVariable Long id) throws JRException, IOException, ClassNotFoundException {
         Template orPrintTemplate = templateService.getByName(PRINT_ISSUE_STOCK);
-   JasperReportsMultiFormatView jasperView = jasperReportsViewFactory.getJasperReportsView(orPrintTemplate);
+        JasperReportsMultiFormatView jasperView = jasperReportsViewFactory.getJasperReportsView(orPrintTemplate);
         Map<String, Object> map = new HashMap<>();
         map.put("format", "pdf");
 
@@ -247,30 +244,26 @@ public class VaccineOrderRequisitionController extends BaseController {
     }
 
 
-    @RequestMapping(value = "search", method = GET,headers = ACCEPT_JSON)
+    @RequestMapping(value = "search", method = GET, headers = ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> searchUser(@RequestParam(value = "facilityId", required = false) Long facilityId,
                                                        @RequestParam(value = "dateRangeStart", required = false) String dateRangeStart,
                                                        @RequestParam(value = "dateRangeEnd", required = false) String dateRangeEnd,
                                                        @RequestParam(value = "programId", required = false) Long programId,
 
-     HttpServletRequest request
+                                                       HttpServletRequest request
     ) {
-        return response(ORDER_REQUISITION_SEARCH, service.getAllSearchBy(facilityId,dateRangeStart,dateRangeEnd,programId));
+        return response(ORDER_REQUISITION_SEARCH, service.getAllSearchBy(facilityId, dateRangeStart, dateRangeEnd, programId));
 
     }
 
     @RequestMapping(value = "facilities/{facilityId}/programs/{programId}/stockCards", method = GET, headers = ACCEPT_JSON)
     public ResponseEntity getStockCards(@PathVariable Long facilityId,
-                                        @PathVariable Long programId,
-                                        @RequestParam(value = "entries", defaultValue = "1")Integer entries,
-                                        @RequestParam(value = "countOnly", defaultValue = "false")Boolean countOnly)
-    {
+                                        @PathVariable Long programId) {
 
         List<OrderRequisitionStockCardDTO> stockCards = service.getStockCards(facilityId, programId);
         return OpenLmisResponse.response("stockCards", stockCards);
     }
-
 
 
 }

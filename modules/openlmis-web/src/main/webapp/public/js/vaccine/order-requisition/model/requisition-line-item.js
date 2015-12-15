@@ -37,5 +37,24 @@ var OrderRequisitionLineItem = function(stockCards,report){
         return Math.ceil(Number(this.stockOnHand) / this.getTotalByVial());
     };
 
+    //Added for forecast purpose
+    OrderRequisitionLineItem.prototype.getIsaValue = function(){
+
+        var isaValue = (this.getReorderLevel() - this.getMaximumStock());
+        this.bufferStock = buffer;
+        return buffer;
+
+    };
+
+    OrderRequisitionLineItem.prototype.calculate = function(){
+
+       var isaVal = parseInt(Math.ceil(Number(1000) *
+            (this.whoRatio / 100) * this.dosesPerYear * this.wastageFactor / 12 *
+            (1 + this.bufferPercentage / 100) + this.adjustmentValue ),10);
+        this.isaValue = isaVal;
+        console.log(this.product.code);
+        return isaVal;
+
+    };
 
 };

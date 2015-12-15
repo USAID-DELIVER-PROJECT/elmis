@@ -23,8 +23,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     $scope.OnFilterChanged = function () {
 
         // prevent first time loading
-        if (utils.isEmpty($scope.filter.product) ||
-            utils.isEmpty(periods) || utils.isEmpty(periods.startdate) || utils.isEmpty(periods.enddate) || !utils.isEmpty($scope.perioderror))
+        if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
         PerformanceCoverage.get(
@@ -206,16 +205,17 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
             for(i=0; i<summary.length; i++)
             {
 
-                if(summary[i].group === group && item.year === summary[i].year && item.month === summary[i].month) {
+                if(summary[i].group === group && item.year == summary[i].year && item.month == summary[i].month) {
                     temp.push({row:item.row, period:summary[i].period, group:group, total:summary[i].total});
                     break;
                 }
                 // if no match is found add a dummy object as a place holder
-                else if(i+1 === $scope.summary.length) {
+                else if(i+1 == summary.length) {
                     temp.push({row:item.row, period: item.monthString+" "+item.year, group:group, total:'-'});
                 }
             }
         });
+
         return temp;
     }
 

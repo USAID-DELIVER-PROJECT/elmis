@@ -456,3 +456,7 @@ services.factory('ProgramsToViewVaccineOrderRequisitions', function ($resource) 
 services.factory('VaccineOrderRequisitionsForViewing', function ($resource) {
   return $resource('/vaccine/orderRequisition/search.json', {}, {});
 });
+
+services.factory('UserFacilityWithViewStockLedgerReport', function ($resource) {
+  return $resource('/user/facilities/view-ledger-report-facilities.json', {}, {});
+});

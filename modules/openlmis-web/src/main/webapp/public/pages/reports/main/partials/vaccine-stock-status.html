@@ -1,0 +1,128 @@
+<!--
+* Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+*
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+*
+* This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<style>
+    .ng-binding {
+        text-align: right;
+    }
+
+    .ng-binding .monthsOfStock {
+        text-align: center;
+    !important;
+
+    }
+
+    #s .ng-binding {
+        text-align: left;
+    !important;
+    }
+
+</style>
+<div class="row-fluid">
+    <div class="box span12">
+        <div class="box-header">
+            <h2 openlmis-message="report.vaccine.title.stock.status"><i class="icon-edit"></i><span
+                    class="break"></span>
+            </h2>
+
+            <div class="box-icon">
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+        </div>
+
+        <div class=row-fluid>
+            <div class="sidebar">
+                <div class="app-form" style="padding: 5px;">
+
+                    <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                        <div filter-container class="clearfix">
+                            <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+                            <facility-level-filter class="form-cell horizontalFilters"
+                                                   required="true"></facility-level-filter>
+                            <product-category-filter class="form-cell horizontalFilters"
+                                                     required="true"></product-category-filter>
+                            <product-multi-filter class="form-cell horizontalFilters"></product-multi-filter>
+<!--
+                            <date-status-filter class="form-cell horizontalFilters"></date-status-filter>
+-->
+
+                            <div class="form-cell horizontalFilters" >
+
+                                <label for="startTime">
+                                    <span openlmis-message="label.date" class="labels"></span>
+                                </label>
+
+                                <div class="form-field">
+                                    <input name="startTime" id="startTime" type="text" style="width: 200px"
+                                           ui-date
+                                           ui-date-format
+                                           ng-model="filter.dateStatus"
+                                           ng-change="OnFilterChanged()"/>
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="content-body">
+
+                <table client-side-sort-pagination class="table table-bordered"
+                       ng-show="data == undefined || data.length == 0">
+                    <tr>
+                        <td openlmis-message="label.report.no.data.to.show"></td>
+                    </tr>
+                </table>
+
+                <div client-side-sort-pagination class="pull-right legend">Page: {{tableParams.page}}, Showing records
+                    {{ ((tableParams.page - 1) *
+                    tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of {{tableParams.total}}
+                </div>
+
+
+                <table ng-show="datarows.length > 0" class="table-bordered table table-striped" ng-table="tableParams">
+
+                    <tbody>
+                    <tr ng-repeat="row in datarows">
+
+                        <td style="width:20px;text-align: left;!important;" data-title="'#'" class="number">{{ row.no
+                            }}
+                        </td>
+                        <td data-title="getLocalMessage('label.facility.name')">
+                         <span ng-show="row.facilityId !== datarows[$index-1].facilityId">{{row.facilityName}}
+                         </span>
+                        </td>
+
+                        <td data-title="getLocalMessage('label.product')">{{ row.product }}</td>
+                        <td class="number" data-title="getLocalMessage('label.stock.on.hand')">{{ row.soh|number}}
+                        </td>
+                        <td class="number" id="s" data-title="getLocalMessage('label.months.of.stock')">{{ (
+                            row.soh/(row.monthlyStock).toFixed(2)).toFixed(0) | number}}
+                        </td>
+                        <td class="number" data-title="getLocalMessage('label.last.update')">{{
+                            row.lastUpdate}}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
