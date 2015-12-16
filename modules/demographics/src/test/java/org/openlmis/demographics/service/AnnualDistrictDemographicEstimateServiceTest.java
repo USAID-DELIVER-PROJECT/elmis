@@ -54,14 +54,15 @@ public class AnnualDistrictDemographicEstimateServiceTest {
   @InjectMocks
   AnnualDistrictDemographicEstimateService service;
 
-  private EstimateForm getDemographicEstimateFormForOneDistrict(AnnualDistrictEstimateEntry... facilityEstimateEntry) {
+  private EstimateForm getDemographicEstimateFormForOneDistrict(AnnualDistrictEstimateEntry... estimateEntries) {
     EstimateForm form = new EstimateForm();
     form.setEstimateLineItems(new ArrayList<EstimateFormLineItem>());
 
     EstimateFormLineItem lineItem = make(a(EstimateFormLineItemBuilder.defaultDemographicEstimateLineItem));
     lineItem.setDistrictEstimates(new ArrayList<AnnualDistrictEstimateEntry>());
-    for (AnnualDistrictEstimateEntry entry : facilityEstimateEntry) {
+    for (AnnualDistrictEstimateEntry entry : estimateEntries) {
       lineItem.getDistrictEstimates().add(entry);
+      lineItem.setId(entry.getDistrictId());
     }
 
     form.getEstimateLineItems().add(lineItem);
@@ -73,8 +74,12 @@ public class AnnualDistrictDemographicEstimateServiceTest {
 
     AnnualDistrictEstimateEntry districtEstimateEntry = make(an(AnnualDistrictEstimateBuilder.defaultAnnualDistrictEstimateEntry,
       with(AnnualDistrictEstimateBuilder.id, 2L),
+      with(AnnualDistrictEstimateBuilder.districtId, 2L),
       with(AnnualDistrictEstimateBuilder.isFinal, false)
     ));
+    when(repository.getEntryBy(districtEstimateEntry.getYear(), districtEstimateEntry.getDistrictId(), districtEstimateEntry.getProgramId(), districtEstimateEntry.getDemographicEstimateId()))
+      .thenReturn(districtEstimateEntry);
+
     EstimateForm form = getDemographicEstimateFormForOneDistrict(districtEstimateEntry);
     service.save(form, 2L);
 
@@ -97,6 +102,7 @@ public class AnnualDistrictDemographicEstimateServiceTest {
   public void shouldNotUpdateIfRecordIsSetAsFinal() throws Exception {
     AnnualDistrictEstimateEntry districtEstimateEntry = make(a(AnnualDistrictEstimateBuilder.defaultAnnualDistrictEstimateEntry,
       with(AnnualDistrictEstimateBuilder.id, 3L),
+      with(AnnualDistrictEstimateBuilder.districtId, 3L),
       with(AnnualDistrictEstimateBuilder.isFinal, true)));
 
     when(repository.getEntryBy(districtEstimateEntry.getYear(), districtEstimateEntry.getDistrictId(), districtEstimateEntry.getProgramId(), districtEstimateEntry.getDemographicEstimateId()))
@@ -113,9 +119,14 @@ public class AnnualDistrictDemographicEstimateServiceTest {
 
   @Test
   public void shouldFinalize() throws Exception {
-    AnnualDistrictEstimateEntry districtEstimateEntry = make(a(AnnualDistrictEstimateBuilder.defaultAnnualDistrictEstimateEntry,
+    AnnualDistrictEstimateEntry districtEstimateEntry = make(an(AnnualDistrictEstimateBuilder.defaultAnnualDistrictEstimateEntry,
       with(AnnualDistrictEstimateBuilder.id, 3L),
+      with(AnnualDistrictEstimateBuilder.districtId, 3L),
       with(AnnualDistrictEstimateBuilder.isFinal, false)));
+
+    when(repository.getEntryBy(districtEstimateEntry.getYear(), districtEstimateEntry.getDistrictId(), districtEstimateEntry.getProgramId(), districtEstimateEntry.getDemographicEstimateId()))
+      .thenReturn(districtEstimateEntry);
+
     EstimateForm form = getDemographicEstimateFormForOneDistrict(districtEstimateEntry);
 
     service.finalizeEstimate(form, 2L);

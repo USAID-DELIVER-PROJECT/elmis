@@ -189,12 +189,15 @@ services.factory('VaccineOrderRequisitionByCategory', function ($resource, Vacci
                          console.log(JSON.stringify(lineItems));
                         lineItems.forEach(function(s){
 
-                            s.displayOrder=s.productId;
+                           // s.displayOrder=s.productId;
                             var product= _.filter(programProducts, function(obj) {
                                 return obj.product.primaryName === s.product.primaryName;
                             });
+                            s.displayOrder=product[0].productCategory.displayOrder;
                             s.productCategory=product[0].productCategory;
+
                         });
+
                         lineItems=_.sortBy(lineItems,'displayOrder');
 
                         var byCategory=_.groupBy(lineItems,function(s){

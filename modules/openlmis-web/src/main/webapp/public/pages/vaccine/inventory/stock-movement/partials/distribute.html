@@ -84,14 +84,15 @@
                     </div>
                 </th>
 
-                <th class="col-dosesRequested">
-                    <div class="regimen-heading">
-                        <span openlmis-message="header.doses.requested"></span>
-                    </div>
-                </th>
                 <th class="col-quantity">
                     <div class="regimen-heading">
                         <span openlmis-message="header.doses.issued"></span>
+                    </div>
+                </th>
+
+                <th class="col-dosesRequested">
+                    <div class="regimen-heading">
+                        <span openlmis-message="header.doses.requested"></span>
                     </div>
                 </th>
 
@@ -132,20 +133,22 @@
                     <span ng-if="c.lotsOnHand.length === 0" class="cell-text" ng-bind="c.totalQuantityOnHand | number "></span>
                 </td>
 
-                <td rowspan="{{c.lotsOnHand.length}}" class="col-available cell-input number disabled"
-                    ng-class="{'last-row':c.lotsOnHand.length===1}">
-                    <span class="cell-text" ng-bind="c.quantityRequested "></span>
-                </td>
                 <td ng-class="{'last-row':$last} " class="col-count cell-input col-general number disabled">
                   <span class="cell-text " >
                       <input ng-show="c.lotsOnHand.length > 0"  name="quantityToIssue_{{$index}}_0" numeric-validator="positiveInteger" maxlength="8" max="{{c.lotsOnHand[0].quantityOnHand}}"
                              ng-model="c.lotsOnHand[0].quantity" ng-change="sumLots(c)" type="number" style="width: 180px;!important;"
-                              max="{{c.lotsOnHand[0].quantityOnHand}}"/>
+                             max="{{c.lotsOnHand[0].quantityOnHand}}"/>
                       <input ng-show="c.lotsOnHand.length ===0" name="quantityToIssue_{{$index}}" numeric-validator="positiveInteger" maxlength="8" max="{{c.totalQuantityOnHand}}"
                              ng-model="c.quantity" ng-change="sumLots(c)" type="number" style="width: 180px;!important;"
-                              max="{{c.totalQuantityOnHand}}"/>
+                             max="{{c.totalQuantityOnHand}}"/>
                   </span>
                 </td>
+
+                <td rowspan="{{c.lotsOnHand.length}}" class="col-available cell-input number disabled"
+                    ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <span class="cell-text" ng-bind="c.quantityRequested "></span>
+                </td>
+
                 <td rowspan="{{c.lotsOnHand.length}}" id="gap" class="col-gap cell-input  last-row disabled">
                     <span
                         class="cell-text {{(total < c.quantityRequested)?'red':(c.sum == 0 )?'blue':'orange'}}"

@@ -16,47 +16,37 @@ function DistrictDemographicEstimateController($scope, $dialog, $filter, rights,
   $scope.bindEstimates = function(data){
     $scope.lineItems = [];
     // initiate all objects.
-    for(var i = 0; i < data.estimates.estimateLineItems.length; i ++){
-      $.extend(data.estimates.estimateLineItems[i], new DistrictEstimateModel());
-      $scope.lineItems.push(data.estimates.estimateLineItems[i]);
-    }
+    var finalizedCount = 0, draftCount = 0;
+    angular.forEach(data.estimates.estimateLineItems, function(district){
+      $.extend(district, new DistrictEstimateModel());
+      $scope.lineItems.push(district);
+      if(district.districtEstimates[0].isFinal){
+        finalizedCount ++;
+      }else{
+        draftCount++;
+      }
+    });
 
-    $scope.pageCount = Math.round($scope.lineItems.length / $scope.pageSize);
     data.estimates.estimateLineItems = [];
     $scope.form = data.estimates;
     $scope.currentPage = 1;
-    $scope.form.estimateLineItems = $scope.lineItems.slice( $scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
-    // todo - check if the list is partially final or not?
-    // the list can be partially finalized if the rivo or civo are the once that see whatever is in their respective facilities.
-
-    $scope.isFinalized = data.estimates.estimateLineItems[0].districtEstimates[0].isFinal;
-
+    if(finalizedCount > 0 && draftCount === 0){
+      $scope.formStatus = 'Finalized';
+    }else{
+      $scope.formStatus = (finalizedCount > 0 && draftCount > 0)? 'Partial' : 'Draft';
+    }
     $scope.districtSummary = new AggregateRegionEstimateModel($scope.lineItems);
-
+    $scope.pageLineItems();
   };
 
   $scope.onParamChanged = function(){
     if(angular.isUndefined($scope.program) || $scope.program === null || angular.isUndefined($scope.year)){
       return;
     }
-
     DistrictDemographicEstimates.get({year: $scope.year, program: $scope.program}, function(data){
       $scope.bindEstimates(data);
     });
   };
-
-
-
-  $scope.$watch('currentPage', function(){
-    if($scope.isDirty()){
-      $scope.save();
-    }
-
-
-    if(angular.isDefined($scope.lineItems)){
-      $scope.form.estimateLineItems = $scope.lineItems.slice( $scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
-    }
-  });
 
   $scope.save = function(){
     SaveDistrictDemographicEstimates.update($scope.form, function(){
@@ -111,4 +101,3 @@ function DistrictDemographicEstimateController($scope, $dialog, $filter, rights,
   $scope.init();
 
 }
-

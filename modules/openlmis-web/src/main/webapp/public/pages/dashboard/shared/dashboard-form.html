@@ -81,12 +81,12 @@
                         <label class="labels" openlmis-message="label.geographic.zones"></label>
 
                         <div class="form-fields">
-                            <select class="input-large"  ng-change="processZoneFilter();" ng-model="formFilter.zoneId">
+                            <select ui-select2 class="input-large"  ng-change="processZoneFilter();" ng-model="formFilter.zoneId">
                                 <option selected="selected"></option>
                                     <optgroup ng-repeat="value in zones.children"  label="{{value.name}}">
-                                    <option value="{{value.id}}"><b class="green">All of {{value.name}}</b></option>
-                                    <option ng-repeat-start="v in value.children" value="{{v.id}}">{{v.name}}</option>
-                                    <option ng-repeat-end ng-repeat="d in v.children" value="{{d.id}}"> &nbsp; &nbsp; {{d.name}}</option>
+                                    <option value="{{value.id}}" ng-selected="formFilter.zoneId == value.id"><b class="green">All of {{value.name}}</b></option>
+                                    <option ng-repeat-start="v in value.children" value="{{v.id}}" ng-selected="formFilter.zoneId == v.id">{{v.name}}</option>
+                                    <option ng-repeat-end ng-repeat="d in v.children" value="{{d.id}}" ng-selected="formFilter.zoneId == d.id"> &nbsp; &nbsp; {{d.name}}</option>
                                 </optgroup>
                             </select>
                         </div>

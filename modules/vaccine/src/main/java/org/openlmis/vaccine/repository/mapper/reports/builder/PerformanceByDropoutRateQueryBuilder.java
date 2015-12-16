@@ -29,11 +29,10 @@ public class PerformanceByDropoutRateQueryBuilder {
         BEGIN();
         SELECT("d.region_name");
         SELECT("   d.district_name");
-        SELECT("    (select target_value_monthly from vw_vaccine_target_population where facility_id = i.facility_id and year = extract(year from i.period_start_date) limit 1) target");
+        SELECT("    i.denominator target");
         SELECT("     i.facility_name");
         SELECT("    i.facility_id");
         SELECT("to_date(i.period_name, 'Mon YYYY')  period_name");
-        SELECT( " i.period_start_date");
         SELECT("   sum(i.bcg_1) bcg_vaccinated");
         SELECT("   sum(i.dtp_1) dtp1_vaccinated");
         SELECT("   sum(i.mr_1) mr_vaccinated");
@@ -46,8 +45,8 @@ public class PerformanceByDropoutRateQueryBuilder {
         JOIN(" program_products pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id ");
         JOIN("  product_categories pg  ON pp.productcategoryid = pg.ID ");
         writePredicates(filter);
-        GROUP_BY("1,2,3,4,5,6,7");
-        ORDER_BY("1,2,4,6");
+        GROUP_BY("1,2,3,4,5,6");
+        ORDER_BY("1,2,4,5");
         query = SQL();
         return query;
     }

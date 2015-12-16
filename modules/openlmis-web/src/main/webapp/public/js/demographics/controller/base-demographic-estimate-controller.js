@@ -13,7 +13,7 @@
 
 function BaseDemographicEstimateController($scope, rights, categories, programs , years, $filter) {
 
-  //TODO: read this configuration from backend. 
+  //TODO: read this configuration from backend.
   $scope.enableAutoCalculate = false;
   $scope.showFacilityAggregatesOption = false;
 
@@ -26,6 +26,14 @@ function BaseDemographicEstimateController($scope, rights, categories, programs 
   $scope.years = years;
   $scope.programs = programs;
 
+  $scope.$watch('currentPage', function () {
+    if ($scope.isDirty()) {
+      $scope.save();
+    }
+    if (angular.isDefined($scope.lineItems)) {
+      $scope.pageLineItems();
+    }
+  });
 
   $scope.isDirty = function () {
     return $scope.$dirty;
@@ -42,6 +50,14 @@ function BaseDemographicEstimateController($scope, rights, categories, programs 
     return true;
   };
 
+  $scope.pageLineItems = function () {
+    $scope.pageCount = Math.ceil($scope.lineItems.length / $scope.pageSize);
+    if ($scope.lineItems.length > $scope.pageSize) {
+      $scope.form.estimateLineItems = $scope.lineItems.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * Number($scope.currentPage));
+    } else {
+      $scope.form.estimateLineItems = $scope.lineItems;
+    }
+  };
 
   $scope.init = function(){
     // default to the current year
