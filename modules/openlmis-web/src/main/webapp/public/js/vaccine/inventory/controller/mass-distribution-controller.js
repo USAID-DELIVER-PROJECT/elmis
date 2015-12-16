@@ -475,8 +475,7 @@ MassDistributionController.resolve = {
                                 });
                              }, 100);
                              return deferred.promise;
-        }
-       ,
+        },
          facilityDistributed:function($q, $timeout,FacilityDistributed) {
              var deferred = $q.defer();
              var configurations={};
