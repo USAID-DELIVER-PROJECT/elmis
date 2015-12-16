@@ -136,6 +136,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                                        event.lotId= l.lot.id;
                                        event.quantity= l.quantity;
                                        event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
+                                       events.push(event);
 
                                        lot.lotId = l.lot.id;
                                        lot.quantity = l.quantity;
@@ -151,19 +152,27 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
                            }
                         else{
-                               var event={};
-                               event.type="ISSUE";
-                               event.productCode= s.product.code;
-                               event.facilityId=toFacilityId;
-                               event.quantity= s.quantity;
-                               event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
-                               events.push(event);
-                               lineItem.quantity=s.quantity;
+                               if(s.quantity >0)
+                               {
+                                   var event={};
+                                   event.type="ISSUE";
+                                   event.productCode= s.product.code;
+                                   event.facilityId=toFacilityId;
+                                   event.quantity= s.quantity;
+                                   event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
+                                   events.push(event);
+                                   lineItem.quantity=s.quantity;
+                                   if(s.customProps !==undefined && s.customProps !==null && s.customProps.vvmstatus !==undefined  )
+                                   {
+                                       lineItem.vvmStatus=s.customProps.vvmstatus;
+                                   }
+                               }
 
                            }
-
-                       distribution.lineItems.push(lineItem);
-
+                        if(lineItem.quantity >0)
+                        {
+                              distribution.lineItems.push(lineItem);
+                        }
                     });
 
                 });

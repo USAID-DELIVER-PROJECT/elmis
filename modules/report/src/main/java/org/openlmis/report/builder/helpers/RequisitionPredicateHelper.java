@@ -71,4 +71,12 @@ public class RequisitionPredicateHelper {
     return String.format("%s= #{filterCriteria.regimen}", field);
   }
 
+  public static String statusDateFilteredBy(String field) {
+    return String.format("%s <= #{filterCriteria.statusDate}::DATE ", field);
+  }
+
+  public static String startDateFilteredBy(String field) {
+    return String.format("%s <= #{filterCriteria.startDate}::DATE ", field);
+  }
+
 }

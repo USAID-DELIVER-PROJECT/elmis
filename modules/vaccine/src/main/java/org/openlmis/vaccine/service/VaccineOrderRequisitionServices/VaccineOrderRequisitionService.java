@@ -4,13 +4,16 @@ import org.joda.time.DateTime;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
+import org.openlmis.stockmanagement.service.StockCardService;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisitionStatusChange;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderStatus;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
+import org.openlmis.vaccine.dto.StockRequirements;
 import org.openlmis.vaccine.repository.VaccineOrderRequisitions.VaccineOrderRequisitionRepository;
 import org.openlmis.vaccine.repository.VaccineOrderRequisitions.VaccineOrderRequisitionStatusChangeRepository;
+import org.openlmis.vaccine.service.StockRequirementsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +53,17 @@ public class VaccineOrderRequisitionService {
     @Autowired
     FacilityProgramProductService facilityProgramProductService;
 
+    @Autowired
+    StockRequirementsService stockRequirementsService;
+
+
+    @Autowired
+    StockCardService stockCardService;
+
+    @Autowired
+    ProductService service;
+
+
     @Transactional
     public VaccineOrderRequisition initialize(Long periodId, Long programId, Long facilityId, Long userId) {
         VaccineOrderRequisition orderRequisition = orderRequisitionRepository.getByFacilityProgram(periodId, programId, facilityId);
@@ -85,7 +99,7 @@ public class VaccineOrderRequisitionService {
 
         Date date = new Date();
         SupervisoryNode supervisoryNode = supervisoryNodeService.getFor(facilityService.getFacilityById(facilityId), programService.getById(programId));
-        List<OrderRequisitionStockCardDTO> stockCard = getStockCards(facilityId, programId);
+        List<StockRequirements> stockRequirements = stockRequirementsService.getStockRequirements(facilityId,programId);
         orderRequisition = new VaccineOrderRequisition();
         orderRequisition.setPeriodId(periodId);
         orderRequisition.setProgramId(programId);
@@ -97,7 +111,9 @@ public class VaccineOrderRequisitionService {
         orderRequisition.setModifiedBy(userId);
         if(facility !=null)
         orderRequisition.setFacility(facility);
-        orderRequisition.viewOrderRequisitionLineItems(stockCard);
+        if(stockRequirements != null)
+        orderRequisition.initiateOrder(stockRequirements,service,stockCardService);
+
         return orderRequisition;
     }
 
@@ -154,6 +170,7 @@ public class VaccineOrderRequisitionService {
             reportStatusDTO.setProgramId(programId);
             reportStatusDTO.setFacilityId(facilityId);
             reportStatusDTO.setId(lastRequest.getId());
+            reportStatusDTO.setEmergency(lastRequest.isEmergency());
 
             results.add(reportStatusDTO);
         }
@@ -168,6 +185,7 @@ public class VaccineOrderRequisitionService {
                 reportStatusDTO.setStatus(VaccineOrderStatus.DRAFT.toString());
                 reportStatusDTO.setProgramId(programId);
                 reportStatusDTO.setFacilityId(facilityId);
+                reportStatusDTO.setEmergency(false);
                 results.add(reportStatusDTO);
             }
 
@@ -210,5 +228,8 @@ public class VaccineOrderRequisitionService {
         return orderRequisitionRepository.getStockCards(facilityId, programId);
     }
 
+    public List<OrderRequisitionStockCardDTO>getAllByFacility(Long facilityId,Long programId){
+        return orderRequisitionRepository.getAllByFacility(facilityId,programId);
+    }
 
 }

@@ -42,18 +42,22 @@
 
                         <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="true" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone" ></vaccine-zone-filter>
 
-                        <vaccine-dropout-filter class="horizontalFilters form-cell" filterproduct="filter.product"  ></vaccine-dropout-filter>
+                        <vaccine-dropout-filter defaultselction="defualt" class="horizontalFilters form-cell" filterproduct="filter.product"  ></vaccine-dropout-filter>
 
 
                         <static-period-filter style="max-width: 100px"  range="range" startdate="filter.periodStart" enddate="filter.periodEnd" rangemax="10" error="perioderror" ></static-period-filter>
 
                     <br/>
                     </div>
-                    <p style="font-size: .8em"> Period Start: {{filter.periodStart| date:'MMM dd, yyyy'}} &nbsp;&nbsp;Period End: {{filter.periodEnd| date:'MMM dd, yyyy'}}</p>
 
-                    <p style="font-size: .8em; color: red"> {{perioderror}}</p>
 
                 </form>
+                <div style="margin:2px !important;font-size:10px;"  ng-show="filter.periodStart" class="row">
+                    <div class="span4">
+                        <strong><span openlmis-message="label.start.date"></span></strong>: {{filter.periodStart}} &nbsp;&nbsp;&nbsp;&nbsp;
+                        <strong><span openlmis-message="label.end.date"></span></strong> : {{filter.periodEnd}}
+                    </div>
+                </div>
             </div>
 
             <div class="content-body">
@@ -72,28 +76,28 @@
                            ng-table="tableParams">
                         <thead>
                         <tr>
-                            <th rowspan="2" style="text-align: center; vertical-align: middle">
-                                <span>	 Region</span>
+                            <th rowspan="2" >
+                                <span openlmis-message="label.region">	</span>
                             </th>
                             <th rowspan="2"
-                                style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                                <span>	 District</span>
+                                style="  width: 40px">
+                                <span openlmis-message="label.district">	 </span>
                             </th>
                             <th ng-if="reportType==true" rowspan="2"
-                                style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                                <span>	 Facility</span>
+                                style="  width: 40px">
+                                <span openlmis-message="label.facility">	 </span>
                             </th>
 
                             <th rowspan="2">
-                                <span>Period</span>
+                                <span openlmis-message="label.period"></span>
 
                             </th>
                             <th rowspan="2" style="width: 10px">
-                                <span>Target Population</span>
+                                <span openlmis-message="label.vaccine.quantification.target.ppln"></span>
 
                             </th>
                             <th colspan="3 " style=" text-align: center; vertical-align: middle">
-                                <span>DropOut</span>
+                                <span openlmis-message="label.district.dropout"></span>
 
                             </th>
 
@@ -192,7 +196,7 @@
                         <td ng-if="reportType==false" colspan="2"/>
                         <td ng-if="reportType==true" colspan="3"/>
                         <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " >
-                            Total
+                            <span openlmis-message="label.total"></span>
                         </td>
 
                         <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="report.total_target| number"></td>
@@ -208,14 +212,14 @@
                     <!-- end of the table-->
 
                 </div>
-                <div ng-show="datarows.length > 0">
+                <div ng-show="datarows.length > 0 && (isUndefined(filter.facility) || filter.facility=='')">
 
                     <table
                             class="rnr-table table-bordered table summary-table"
                             >
                         <thead>
                         <tr>
-                            <th style="height:42px"></th>
+                            <th ></th>
                             <th ng-style="{'max-width':'60px'}" ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
                             </th>
                         </tr>
@@ -246,25 +250,25 @@
                            ng-table="tableParams">
                         <thead>
                         <tr>
-                            <th rowspan="2" style="text-align: center; vertical-align: middle">
-                                <span>	 Region</span>
+                            <th rowspan="2" >
+                                <span openlmis-message="label.region">	</span>
                             </th>
 
                             <th ng-if="reportType==true" rowspan="2"
-                                style="height:13px; text-align: center; vertical-align: middle; width: 40px">
-                                <span>	 Facility</span>
+                                style="  width: 40px">
+                                <span openlmis-message="label.number.of.facilities">	 </span>
                             </th>
 
                             <th rowspan="2">
-                                <span>Period</span>
+                                <span openlmis-message="label.period"></span>
 
                             </th>
                             <th rowspan="2" style="width: 10px">
-                                <span>Target Population</span>
+                                <span openlmis-message="label.population"></span>
 
                             </th>
                             <th colspan="3 " style=" text-align: center; vertical-align: middle">
-                                <span>DropOut</span>
+                                <span openlmis-message="label.district.dropout"></span>
 
                             </th>
 
@@ -351,7 +355,7 @@
                                >
                         <td></td>
                         <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}">
-                            Total
+                            <span openlmis-message="label.total"></span>
                         </td>
 
                         <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="report.total_target| number"></td>
@@ -371,10 +375,11 @@
 
                     <table
                             class="rnr-table table-bordered table summary-table"
+                            ng-show="datarows.length > 0"
                            >
                         <thead>
                         <tr>
-                            <th style="height:42px"></th>
+                            <th ></th>
                             <th ng-style="{'max-width':'60px'}" ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
                             </th>
                         </tr>

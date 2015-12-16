@@ -41,7 +41,7 @@
     </div>
   </div>
   <div class="clearfix padding2px"></div>
-  <div>
+  <div ng-show="form && form.estimateLineItems.length > 0">
     <div class="parent">
       <table class="table table-bordered scrollable">
         <thead>
@@ -61,8 +61,15 @@
         <tr ng-repeat-start="facility in form.estimateLineItems"></tr>
         <tr class="gradient-header"  ng-show="showParent($index)">
           <th colspan="2">{{facility.parentName}}</th>
-          <th class="number" ng-repeat="category in categories">
-            {{districtSummary.getSummary(facility.parentId, category, year) | number : 0}}
+          <th  ng-repeat="category in categories">
+            <span style="text-align: left;">
+              {{districtSummary.getDistrictEntry(facility.parentId, category, year) | number: 0}}
+            </span>
+
+            <span class="number pull-right" ng-class="{'bad': (districtSummary.getDistrictEntry(facility.parentId, category, year) != districtSummary.getSummary(facility.parentId, category, year)) }">
+              {{districtSummary.getSummary(facility.parentId, category, year) | number : 0}}
+            </span>
+
           </th>
         </tr>
         <tr ng-repeat-end>

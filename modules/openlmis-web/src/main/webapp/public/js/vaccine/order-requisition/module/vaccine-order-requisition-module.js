@@ -9,7 +9,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-angular.module('vaccine_order_requisition', ['openlmis', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion', 'ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle'])
+angular.module('vaccine_order_requisition', ['openlmis', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion', 'ui.bootstrap.modal','ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle'])
     .config(['$routeProvider', function ($routeProvider) {
 
         $routeProvider.
@@ -19,6 +19,7 @@ angular.module('vaccine_order_requisition', ['openlmis', 'ngGrid', 'ui.bootstrap
         when('/search', {controller:ViewOrderRequisitionList, templateUrl:'partials/view/view.html',resolve:ViewOrderRequisitionList.resolve,  reloadOnSearch: false}).
         when('/view-order-requisition/:id/:facility', {controller:VaccineOrderRequisitionController, templateUrl:'partials/view-order.html',resolve:VaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/details', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/details.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
+        when('/information', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/information.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/view', {controller:ViewVaccineOrderRequisitionController, templateUrl:'partials/view.html',resolve:ViewVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         otherwise({redirectTo: '/order-requisition-list'});
 }]).directive('select2Blur', function () {

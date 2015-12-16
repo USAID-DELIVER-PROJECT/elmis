@@ -18,38 +18,20 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         $scope.product = data.productList;
     });
 
-    $scope.periods = [
-        {key:1, value:'Current Period'},
-        {key:2, value:'Last 3 Months'},
-        {key:3, value:'Last 6 Months'},
-        {key:4, value:'Last 1 Year'},
-        {key:5, value:'Custom Range'}
-    ];
-
     $scope.perioderror = "";
-    $scope.pStartDate = "";
-    $scope.pEndDate = "";
-
-     var periods;
 
     $scope.OnFilterChanged = function () {
 
-        periods = utils.getVaccineCustomDateRange($scope.range, $scope.periodStartDate, $scope.periodEnddate, $scope.cutoffdate);
-
         // prevent first time loading
-        if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.filter.zone)  ||
-            utils.isEmpty(periods) || utils.isEmpty(periods.startdate) || utils.isEmpty(periods.enddate) || !utils.isEmpty($scope.perioderror))
+        if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
-
-        $scope.pStartDate = periods.startdate;
-        $scope.pEndDate = periods.enddate;
 
         PerformanceCoverage.get(
             {
-                periodStart: periods.startdate,
-                periodEnd:   periods.enddate,
+                periodStart: $scope.periodStartDate,
+                periodEnd:   $scope.periodEnddate,
                 range:       $scope.range,
-                district:    $scope.filter.zone,
+                district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
                 product:     $scope.filter.product
             },
 
@@ -223,16 +205,17 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
             for(i=0; i<summary.length; i++)
             {
 
-                if(summary[i].group === group && item.year === summary[i].year && item.month === summary[i].month) {
+                if(summary[i].group === group && item.year == summary[i].year && item.month == summary[i].month) {
                     temp.push({row:item.row, period:summary[i].period, group:group, total:summary[i].total});
                     break;
                 }
                 // if no match is found add a dummy object as a place holder
-                else if(i+1 === $scope.summary.length) {
+                else if(i+1 == summary.length) {
                     temp.push({row:item.row, period: item.monthString+" "+item.year, group:group, total:'-'});
                 }
             }
         });
+
         return temp;
     }
 

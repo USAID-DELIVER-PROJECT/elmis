@@ -1,4 +1,3 @@
-
 <!--
   ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
   ~
@@ -11,8 +10,9 @@
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div>
+<div ng-show="emergency==false">
     <h2><span openlmis-message="label.vaccine.order.requisition.title"></span></h2>
+
     <div ng-show="programs.length > 1">
         <div class="row-fluid">
             <div class="span12">
@@ -22,7 +22,7 @@
         <div class="row-fluid">
             <select ui-select2
                     id="programListMyFacility" class="span3"
-                    ng-model="filter.program"   ng-change="onProgramChanged()">
+                    ng-model="filter.program" ng-change="onProgramChanged()">
                 <option value="{{program.id}}" ng-repeat="program in programs">{{program.name}}</option>
             </select>
         </div>
@@ -31,6 +31,7 @@
         <div class="info-box">
             <b><span openlmis-message="label.program"></span>:</b>
             <span ng-bind="programs[0].name"></span>
+
             <div class="padding2px"></div>
         </div>
     </div>
@@ -39,50 +40,46 @@
         <div class="info-box">
             <b><span openlmis-message="label.facility"></span>:</b>
             <span ng-bind="facility.name"></span>
+
             <div class="padding2px"></div>
         </div>
     </div>
-<!--
-    <div class="row-fluid">
-        <div class="span12">
-            <label openlmis-message="label.requisition.type"></label>
-        </div>
-    </div>
--->
 
     <div ng-show="!report.emergency" ng-model="filter.type">
         <div class="info-box">
             <b><span> Type </span>:</b>
             <span>Scheduled</span>
+
             <div class="padding2px"></div>
         </div>
     </div>
 
-<!--
+
+    <div class="alert alert-info row-fluid" style="width: auto" id="saveSuccessMsgDiv" ng-show="message">
+        <div>
+            <span ng-bind="message"></span>&nbsp;&nbsp;Please:
+        <span><a id="viewHereLink" href="/public/pages/vaccine/inventory/index.html#/receive"
+                ><B>Receive Consignment</B></a></span>
+        </div>
+
+    </div>
+
     <div class="row-fluid">
-        <select ui-select2
-                id="facility" class="span3"
-                ng-model="filter.type"  ng-change="onRequisitionChanged()">
-            <option value="{{type.id}}" ng-repeat="type in requisitionTypes">{{type.name}}</option>
-
-        </select>
-    </div>
--->
-
-    <div class="row-fluid" ng-show="emergency == false" >
-        <div class="row-fluid init-rnr-grid">
-            <div class="span6">
+        <div class="row-fluid ">
+            <div class="span6 init-rnr-grid">
                 <div class="gridStyle small" ng-grid="periodGridOptions"
-                     ng-show="!(periodGridData.length == 0)"></div>
+                     ng-show="!(periodGridData.length == 0) && !(periodGridData.emergency)"></div>
             </div>
+            <!-- <div class="clearfix"></div>-->
+            <div class="span6 padding2px" style="text-align:right;"><br>
+                <span><a id="viewHereLink" href="/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand">Back to HomePage</a>
+                </span>
+            </div>
+
         </div>
+
+
     </div>
 
-    <div class="row-fluid" ng-show="error">
-        <div class="span12">
-            <div class="alert alert-error" id="saveSuccessMsgDiv"
-                 openlmis-message="error" ng-show="error"></div>
-        </div>
-    </div>
 
 </div>
