@@ -49,16 +49,18 @@ public class AnnualDistrictDemographicEstimateService {
   public void save(EstimateForm estimateForm, Long userId) {
     for (EstimateFormLineItem dto : emptyIfNull(estimateForm.getEstimateLineItems())) {
       for (AnnualDistrictEstimateEntry estimate : emptyIfNull(dto.getDistrictEstimates())) {
+        estimate.setDistrictId(dto.getId());
         AnnualDistrictEstimateEntry existingEstimateEntry = repository.getEntryBy(estimate.getYear(), estimate.getDistrictId(), estimate.getProgramId(), estimate.getDemographicEstimateId());
-        if (existingEstimateEntry != null && (!existingEstimateEntry.getId().equals(estimate.getId()) || existingEstimateEntry.getIsFinal())) {
+        if (existingEstimateEntry != null && existingEstimateEntry.getIsFinal()) {
           continue;
         }
-        estimate.setDistrictId(dto.getId());
-        if (estimate.getId() == null) {
+
+        if (existingEstimateEntry == null) {
           estimate.setCreatedBy(userId);
           repository.insert(estimate);
         } else {
           estimate.setModifiedBy(userId);
+          estimate.setId(existingEstimateEntry.getId());
           repository.update(estimate);
         }
       }

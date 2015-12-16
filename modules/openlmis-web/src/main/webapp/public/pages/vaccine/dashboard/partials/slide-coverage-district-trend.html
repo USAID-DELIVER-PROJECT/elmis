@@ -3,8 +3,8 @@
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
-            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters" default="defaultProduct"  cm-model="filter.districtCoverage.product"></vaccine-product-filter>
-            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtCoverage.period"  class="form-cell horizontalFilters"></vaccine-monthly-period-tree-filter>
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters" default="defaultProduct"  cm-model="filter.districtCoverage.product" on-change="districtCoverageCallback()"></vaccine-product-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtCoverage.period"  class="form-cell horizontalFilters" on-change="districtCoverageCallback()"></vaccine-monthly-period-tree-filter>
         </div>
     </form>
 </div>

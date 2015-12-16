@@ -70,13 +70,14 @@ public class AnnualFacilityDemographicEstimateServiceTest {
   @InjectMocks
   private AnnualFacilityDemographicEstimateService service;
 
-  private EstimateForm getDemographicEstimateFormForOneFacility(AnnualFacilityEstimateEntry... facilityEstimateEntry) {
+  private EstimateForm getDemographicEstimateFormForOneFacility(AnnualFacilityEstimateEntry... facilityEstimateEntries) {
     EstimateForm form  = new EstimateForm();
     form.setEstimateLineItems(new ArrayList<EstimateFormLineItem>());
 
     EstimateFormLineItem lineItem = make(a(EstimateFormLineItemBuilder.defaultDemographicEstimateLineItem));
     lineItem.setFacilityEstimates(new ArrayList<AnnualFacilityEstimateEntry>());
-    for(AnnualFacilityEstimateEntry entry : facilityEstimateEntry){
+    for(AnnualFacilityEstimateEntry entry : facilityEstimateEntries){
+      lineItem.setId(entry.getFacilityId());
       lineItem.getFacilityEstimates().add(entry);
     }
 
@@ -89,8 +90,12 @@ public class AnnualFacilityDemographicEstimateServiceTest {
 
     AnnualFacilityEstimateEntry facilityEstimateEntry = make(an(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry,
       with(AnnualFacilityEstimateBuilder.id, 2L),
+      with(AnnualFacilityEstimateBuilder.facilityId, 2L),
       with(AnnualFacilityEstimateBuilder.isFinal, false)
     ));
+    when(repository.getEntryBy(facilityEstimateEntry.getYear(), facilityEstimateEntry.getFacilityId(), facilityEstimateEntry.getProgramId(), facilityEstimateEntry.getDemographicEstimateId()))
+      .thenReturn(facilityEstimateEntry);
+
     EstimateForm form = getDemographicEstimateFormForOneFacility(facilityEstimateEntry);
     service.save(form, 2L);
 
@@ -100,7 +105,7 @@ public class AnnualFacilityDemographicEstimateServiceTest {
 
   @Test
   public void shouldCreateNewRecords() throws Exception {
-    AnnualFacilityEstimateEntry facilityEstimateEntry = make(a(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry));
+    AnnualFacilityEstimateEntry facilityEstimateEntry = make(an(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry));
     EstimateForm form = getDemographicEstimateFormForOneFacility(facilityEstimateEntry);
 
     service.save(form, 2L);
@@ -111,8 +116,9 @@ public class AnnualFacilityDemographicEstimateServiceTest {
 
   @Test
   public void shouldNotUpdateIfRecordIsSetAsFinal() throws Exception {
-    AnnualFacilityEstimateEntry facilityEstimateEntry = make(a(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry,
+    AnnualFacilityEstimateEntry facilityEstimateEntry = make(an(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry,
       with(AnnualFacilityEstimateBuilder.id, 3L),
+      with(AnnualFacilityEstimateBuilder.facilityId, 3L),
       with(AnnualFacilityEstimateBuilder.isFinal, true)));
 
     when(repository.getEntryBy(facilityEstimateEntry.getYear(), facilityEstimateEntry.getFacilityId(), facilityEstimateEntry.getProgramId(), facilityEstimateEntry.getDemographicEstimateId()))
@@ -130,9 +136,14 @@ public class AnnualFacilityDemographicEstimateServiceTest {
 
   @Test
   public void shouldFinalize() throws Exception {
-    AnnualFacilityEstimateEntry facilityEstimateEntry = make(a(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry,
+    AnnualFacilityEstimateEntry facilityEstimateEntry = make(an(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry,
       with(AnnualFacilityEstimateBuilder.id, 3L),
+      with(AnnualFacilityEstimateBuilder.facilityId, 3L),
       with(AnnualFacilityEstimateBuilder.isFinal,false)));
+
+    when(repository.getEntryBy(facilityEstimateEntry.getYear(), facilityEstimateEntry.getFacilityId(), facilityEstimateEntry.getProgramId(), facilityEstimateEntry.getDemographicEstimateId()))
+      .thenReturn(facilityEstimateEntry);
+
     EstimateForm form = getDemographicEstimateFormForOneFacility(facilityEstimateEntry);
 
     service.finalizeEstimate(form, 2L);
@@ -144,7 +155,7 @@ public class AnnualFacilityDemographicEstimateServiceTest {
 
   @Test
   public void shouldUndoFinalize() throws Exception {
-    AnnualFacilityEstimateEntry facilityEstimateEntry = make(a(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry,
+    AnnualFacilityEstimateEntry facilityEstimateEntry = make(an(AnnualFacilityEstimateBuilder.defaultAnnualFacilityEstimateEntry,
         with(AnnualFacilityEstimateBuilder.id, 2L),
         with(AnnualFacilityEstimateBuilder.isFinal, true)
       ));

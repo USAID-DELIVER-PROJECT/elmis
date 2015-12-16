@@ -2,8 +2,8 @@
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
-            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.monthlyStock.product"></vaccine-product-filter>
-            <static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyStock.range" startdate="filter.monthlyStock.startDate" enddate="filter.monthlyStock.endDate" rangemax="10" error="perioderror"></static-period-filter>
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.monthlyStock.product" on-change="monthlyStockCallback()"></vaccine-product-filter>
+            <static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyStock.range" startdate="filter.monthlyStock.startDate" enddate="filter.monthlyStock.endDate" rangemax="10" error="perioderror" on-change="monthlyStockCallback()"></static-period-filter>
 
         </div>
     </form>

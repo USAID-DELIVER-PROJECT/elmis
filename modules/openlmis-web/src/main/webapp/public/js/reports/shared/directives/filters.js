@@ -1154,20 +1154,30 @@ app.directive('vaccineDropoutFilter', ['DropoutProducts', 'messageService',
             restrict: 'E',
             scope: {
                 filterProduct: '=filterproduct',
-                defualtProduct:'=defaultselction'
+                defaultProduct:'=defaultselction',
+                onChange: '&'
             },
             controller: function ($scope, $routeParams, $location) {
                 DropoutProducts.get({}, function (data) {
                     $scope.dropoutProductsList = data.dropoutProductsList;
-                    $scope.defualtProduct=$scope.dropoutProductsList[0];
-                    $scope. filterProduct=$scope.defualtProduct.id;
+                    if(!isUndefined($scope.dropoutProductsList)){
+                        $scope.defualt=$scope.dropoutProductsList[0];
+                    }
+                    if(!isUndefined($scope.default)){
+                        $scope.filterProduct=$scope.defualt.id;
+                    }
 
                 });
-                $scope.filterProduct = 0;
+                if(!isUndefined($scope.defaultProduct)){
+                    $scope.filterProduct = $scope.defaultProduct;
+                }else{
+                    $scope.filterProduct = 0;
+                }
                 $scope.$watch('filterProduct', function (newValues, oldValues) {
 
 
                     $scope.$parent.OnFilterChanged();
+                    $scope.onChange();
                 });
             },
             link: function (scope, elm, attr) {
@@ -1187,7 +1197,8 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
             restrict: 'E',
             scope: {
                 filterProduct: '=cmModel',
-                default: '=default'
+                default: '=default',
+                onChange: '&'
             },
             controller: function ($scope) {
                 VaccineSupervisedIvdPrograms.get({}, function (data) {
@@ -1208,6 +1219,9 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
                     $scope.$watch('filterProduct', function (newValues, oldValues) {
 
                         $scope.$parent.OnFilterChanged();
+                        //if(!isUndefined($scope.onChange)){
+                            $scope.onChange();
+                       // }
                     });
                 });
             },
@@ -1222,7 +1236,8 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', '
             restrict: 'E',
             scope: {
                 period: '=cmModel',
-                default: '=default'
+                default: '=default',
+                onChange: '&'
             },
             controller: function($scope){
 
@@ -1232,7 +1247,7 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', '
                     //Load period tree
                     GetVaccineReportPeriodTree.get({}, function (data) {
                         $scope.periods = data.vaccinePeriods.periods;
-                        $scope.filter.defaultPeriodId = data.vaccinePeriods.currentPeriodId;
+                        $scope.filter = {defaultPeriodId : data.vaccinePeriods.currentPeriodId};
                         if (!angular.isUndefined($scope.periods)) {
                             if ($scope.periods.length === 0)
                                 $scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
@@ -1246,6 +1261,7 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', '
                     $scope.period = 0;
                 }
                 $scope.$watch('period', function(newVal, oldVal){
+                    $scope.onChange();
                     $scope.$parent.OnFilterChanged();
                 });
             },
@@ -1270,7 +1286,8 @@ app.directive('staticPeriodFilter', [ function() {
             periodEnddate: '=enddate',
             periodRangeMax: '=rangemax',
             perioderror: '=error',
-            default: '=default'
+            default: '=default',
+            onChange: '&'
         },
 
         controller: function($scope, SettingsByKey, $timeout){
@@ -1290,6 +1307,7 @@ app.directive('staticPeriodFilter', [ function() {
                     $scope.periodEnddate = periods.enddate;
 
                     $timeout(function(){
+                        $scope.onChange();
                         $scope.$parent.OnFilterChanged();
                     },10);
 
