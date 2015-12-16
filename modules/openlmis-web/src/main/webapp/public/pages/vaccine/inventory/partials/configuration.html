@@ -30,7 +30,7 @@
                 <br/>
 
                 <div ng-show="visibleTab == 'PRODUCT' || visibleTab ==undefined" class="tab-content">
-                    <div class="span10 alert alert-warning">
+                    <div class="row-fluid alert alert-warning">
                         <div class="span3 ">
                             <select style="min-width:200px !important" ui-select2 ng-model="configToAdd.product"
                                     ng-options="obj.product as obj.product.primaryName for obj in productsToDisplay">
@@ -56,7 +56,8 @@
                         <div class="span2"><input
                                 ng-disabled="(configToAdd.product ===undefined || configToAdd.product===null)"
                                 type="submit" class="btn btn-primary" value="Add"
-                                ng-click="addConfiguration(configToAdd)"></div>
+                                ng-click="addConfiguration(configToAdd)">
+                        </div>
                     </div>
                     <br/>
                     <table id="podTable" class="table table-bordered" fixed-table-header>

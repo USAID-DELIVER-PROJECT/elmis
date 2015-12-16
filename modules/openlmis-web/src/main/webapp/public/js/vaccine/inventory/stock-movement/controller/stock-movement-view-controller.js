@@ -9,7 +9,7 @@
  */
 
 
-function StockMovementViewController($scope, $window,SaveDistribution,StockEvent, UpdateOrderRequisitionStatus,VaccineLastStockMovement, StockCardsByCategoryAndRequisition, StockCardsForProgramByCategory, $dialog, homeFacility, programs, $routeParams, $location) {
+function StockMovementViewController($scope, $window,SaveDistribution,StockEvent,configurations, UpdateOrderRequisitionStatus,VaccineLastStockMovement, StockCardsByCategoryAndRequisition, StockCardsForProgramByCategory, $dialog, homeFacility, programs, $routeParams, $location) {
 
     var orderId = parseInt($routeParams.id, 10);
     var programId = parseInt($routeParams.programId, 10);
@@ -19,7 +19,8 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
     var toFacilityId = parseInt($routeParams.facilityId, 10);
     $scope.toFacilityName = $routeParams.facilityName;
 
-    var program = programs;
+    var program = configurations.programs;
+    $scope.period=configurations.period;
 
     $scope.line = [];
     $scope.facilities = [];
@@ -243,6 +244,19 @@ StockMovementViewController.resolve = {
         }, 100);
 
         return deferred.promise;
-    }
+    },
+
+    configurations:function($q, $timeout, VaccineInventoryConfigurations) {
+                                 var deferred = $q.defer();
+                                 var configurations={};
+                                 $timeout(function () {
+                                    VaccineInventoryConfigurations.get(function(data)
+                                    {
+                                          configurations=data;
+                                          deferred.resolve(configurations);
+                                    });
+                                 }, 100);
+                                 return deferred.promise;
+            }
 
 };

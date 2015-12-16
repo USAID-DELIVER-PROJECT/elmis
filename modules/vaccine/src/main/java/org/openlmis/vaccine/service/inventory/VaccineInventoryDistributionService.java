@@ -186,6 +186,13 @@ public class VaccineInventoryDistributionService {
     public ProcessingPeriod getCurrentPeriod(Long facilityId, Long programId, Date distributionDate) {
         return repository.getCurrentPeriod(facilityId, programId, distributionDate);
     }
+    public ProcessingPeriod getCurrentPeriod(Long userId) {
+        Facility homeFacility = facilityService.getHomeFacility(userId);
+        Long facilityId = homeFacility.getId();
+        List<Program> programs = programService.getAllIvdPrograms();
+        Long programId =(programs ==null)?null: programs.get(0).getId();
+        return repository.getCurrentPeriod(facilityId, programId, new Date());
+    }
 
     public VaccineDistribution getById(Long id) {
         return repository.getById(id);
@@ -199,5 +206,12 @@ public class VaccineInventoryDistributionService {
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long facilityId = homeFacility.getId();
         return repository.getDistributionByVoucherNumber(facilityId,voucherNumber);
+    }
+
+    public VoucherNumberCode  getFacilityGeographicZone(Long userId)
+    {
+        Facility homeFacility = facilityService.getHomeFacility(userId);
+        Long facilityId = homeFacility.getId();
+        return repository.getFacilityVoucherNumberCode(facilityId);
     }
 }

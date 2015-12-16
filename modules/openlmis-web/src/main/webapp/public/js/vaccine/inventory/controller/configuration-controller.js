@@ -11,9 +11,9 @@
  */
 
 
-function VaccineInventoryConfigurationController($scope,programs,DemographicEstimateCategories,VaccineInventoryConfigurations,VaccineProgramProducts,configurations,SaveVaccineInventoryConfigurations,localStorageService,$location) {
+function VaccineInventoryConfigurationController($scope,DemographicEstimateCategories,VaccineInventoryConfigurations,VaccineProgramProducts,configurations,SaveVaccineInventoryConfigurations,localStorageService,$location) {
 
-    $scope.userPrograms=programs;
+    $scope.userPrograms=configurations.programs;
     $scope.configToAdd={};
     $scope.configToAdd.batchTracked=false;
     $scope.configToAdd.vvmTracked=false;
@@ -32,15 +32,13 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
     $scope.loadConfigurations=function(){
         VaccineInventoryConfigurations.get(function(data)
         {
-           $scope.configurations=data.Configurations;
+           $scope.configurations=data.productsConfiguration;
            updateProductToDisplay($scope.configurations);
         });
     };
     $scope.addConfiguration=function(configToAdd)
     {
         configToAdd.type='PRODUCT';
-        console.log(JSON.stringify($scope.configurations[0]));
-        console.log(JSON.stringify(configToAdd));
 
         $scope.configurations.push(configToAdd);
         updateProductToDisplay($scope.configurations);
@@ -65,7 +63,8 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
     $scope.saveConfigurations=function()
     {
         SaveVaccineInventoryConfigurations.update($scope.configurations,function(data){
-            $scope.configurations=data.Configurations;
+            $scope.configurations=data.productConfigurations;
+            $scope.message='configurations.save.successfully';
             updateProductToDisplay($scope.configurations);
         });
     };
@@ -108,22 +107,9 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
 }
 VaccineInventoryConfigurationController.resolve = {
 
-        programs:function ($q, $timeout, VaccineInventoryPrograms) {
-            var deferred = $q.defer();
-            var programs={};
-
-            $timeout(function () {
-                     VaccineInventoryPrograms.get({},function(data){
-                       programs=data.programs;
-                        deferred.resolve(programs);
-                     });
-            }, 100);
-            return deferred.promise;
-         },
-
         configurations:function ($q, $timeout, VaccineInventoryConfigurations) {
              var deferred = $q.defer();
-             var configurations=[];
+             var configurations={};
 
             $timeout(function () {
                 VaccineInventoryConfigurations.get({},function(data){

@@ -43,6 +43,10 @@
 
 </style>
 <div>
+    <div class="alert alert-danger" ng-show="stockCardsByCategory.length === 0" >
+        <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
+        <strong><a href="/public/pages/vaccine/inventory/index.html#/receive" openlmis-message="stock.initialize.stock"></a></strong>
+    </div>
 <form name="issueForm2" ng-show="stockCardsByCategory.length > 0" novalidate>
     <div>
 

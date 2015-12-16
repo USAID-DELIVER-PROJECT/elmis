@@ -186,9 +186,10 @@ services.factory('VaccineOrderRequisitionByCategory', function ($resource, Vacci
                         var overallData = data.report;
 
                         var lineItems = data.report.lineItems;
-
+                         console.log(JSON.stringify(lineItems));
                         lineItems.forEach(function(s){
-                            s.displayOrder=s.product.form.displayOrder;
+
+                            s.displayOrder=s.productId;
                             var product= _.filter(programProducts, function(obj) {
                                 return obj.product.primaryName === s.product.primaryName;
                             });

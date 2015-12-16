@@ -32,7 +32,7 @@
                                      <!--ng-model="stockCardsByCategory[0].issueDate"-->
                                     <!--/>-->
                             <input ng-required="true" id="receivingDate" name="issueDate" type="text"
-                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: false, maxDate:'today', minDate:period.stringStartDate}"
                                    ng-model="stockCardsByCategory[0].issueDate"/>
                         </span>
 
