@@ -69,4 +69,5 @@ public class VaccineInventoryConfigurationController extends BaseController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
 }
