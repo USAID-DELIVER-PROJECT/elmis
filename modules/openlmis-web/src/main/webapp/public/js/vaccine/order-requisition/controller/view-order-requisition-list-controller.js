@@ -95,8 +95,8 @@
             };
             if ($scope.selectedProgramId) data.programId = $scope.selectedProgramId;
             navigateBackService.setData(data);
-
-            $window.location = '/public/pages/vaccine/order-requisition/index.html#/create/'+parseInt($scope.selectedItems[0].id,10);
+            console.log($scope.selectedItems[0].id);
+            $window.location = '/public/pages/vaccine/order-requisition/index.html#/create/'+parseInt($scope.selectedItems[0].id,10)+'/'+parseInt($scope.selectedProgramId,10);
         };
 
         function setProgramsLabel() {
