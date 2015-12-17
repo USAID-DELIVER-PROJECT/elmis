@@ -94,7 +94,7 @@ public class VaccineOrderRequisitionService {
     private VaccineOrderRequisition createNewOrderRequisition(Long periodId, Long programId, Long facilityId, Long userId) {
 
         VaccineOrderRequisition orderRequisition;
-        SimpleDateFormat form = new SimpleDateFormat("dd-MM-YYYY");
+        SimpleDateFormat form = new SimpleDateFormat("MM-dd-YYYY");
 
         Facility facility = facilityService.getById(facilityId);
 

@@ -24,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class VaccineOrderRequisition extends BaseModel {
-    public static final SimpleDateFormat form = new SimpleDateFormat("YYYY-MM-dd");
+    public static final SimpleDateFormat form = new SimpleDateFormat("MM-dd-YYYY");
     private Long periodId;
     private Long programId;
     private ProductCategory productCategory;
