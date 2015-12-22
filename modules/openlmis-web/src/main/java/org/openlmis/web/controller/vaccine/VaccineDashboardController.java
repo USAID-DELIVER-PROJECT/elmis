@@ -12,6 +12,7 @@
 package org.openlmis.web.controller.vaccine;
 
 import org.openlmis.core.web.OpenLmisResponse;
+import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.vaccine.service.VaccineDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/vaccine/dashboard/")
-public class VaccineDashboardController {
+public class VaccineDashboardController  extends BaseController {
 
     @Autowired
     VaccineDashboardService service;
@@ -48,10 +50,26 @@ public class VaccineDashboardController {
     }
 
     @RequestMapping(value = "monthly-coverage.json", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> getCoverageByMonthly(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, Long product){
+    public ResponseEntity<OpenLmisResponse> getCoverageByMonthly(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
 
-        return OpenLmisResponse.response("monthlyCoverage", service.getMonthlyCoverage(startDate, endDate, product));
+        return OpenLmisResponse.response("monthlyCoverage", service.getMonthlyCoverage(startDate, endDate,userId, product));
     }
+
+    @RequestMapping(value = "facility-coverage.json", method = RequestMethod.GET)
+            public ResponseEntity<OpenLmisResponse> getFacilityCoverage(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilityCoverage", service.getFacilityCoverage(period, product, userId));
+    }
+
+    @RequestMapping(value = "facility-coverage-details.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityCoverageDetails(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilityCoverageDetails", service.getFacilityCoverageDetails(startDate, endDate, product, userId));
+    }
+
 
     @RequestMapping(value = "district-coverage.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getDistrictCoverage(@RequestParam("period") Long period, @RequestParam("product") Long product){
