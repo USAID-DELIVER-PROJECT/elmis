@@ -128,6 +128,7 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                                           lotOnHand.lineItemLotId=(distributedLot === undefined)?null:distributedLot.id;
                                                           lotOnHand.initialQuantity=(distributedLot === undefined)?null:distributedLot.quantity;
                                                           lotOnHand.vvmStatus=(lot.customProps !== undefined && lot.customProps !== null && lot.customProps.vvmstatus !== undefined)?lot.customProps.vvmstatus:undefined;
+                                                          lotOnHand.vvmStatus=(lot.customProps !== undefined && lot.customProps !== null && lot.customProps.vvmstatus !== undefined)?lot.customProps.vvmstatus:null;
                                                           lotOnHand.expirationDate=lot.lot.expirationDate;
                                                           product.lots.push(lotOnHand);
                                                       });
@@ -185,14 +186,18 @@ services.factory('VaccineOrderRequisitionByCategory', function ($resource, Vacci
                         var overallData = data.report;
 
                         var lineItems = data.report.lineItems;
-
+                         console.log(JSON.stringify(lineItems));
                         lineItems.forEach(function(s){
-                            s.displayOrder=s.product.form.displayOrder;
+
+                           // s.displayOrder=s.productId;
                             var product= _.filter(programProducts, function(obj) {
                                 return obj.product.primaryName === s.product.primaryName;
                             });
+                            s.displayOrder=product[0].productCategory.displayOrder;
                             s.productCategory=product[0].productCategory;
+
                         });
+
                         lineItems=_.sortBy(lineItems,'displayOrder');
 
                         var byCategory=_.groupBy(lineItems,function(s){

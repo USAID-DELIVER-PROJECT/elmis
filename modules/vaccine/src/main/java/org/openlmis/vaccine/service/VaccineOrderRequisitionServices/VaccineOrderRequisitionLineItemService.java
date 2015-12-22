@@ -23,7 +23,12 @@ public class VaccineOrderRequisitionLineItemService {
                 itemRepository.Insert(lineItem);
             } else {
 
-                itemRepository.Update(lineItem);
+                if(lineItem.getMaximumStock() < lineItem.getStockOnHand()) {
+                    lineItem.setQuantityRequested(0L);
+                    itemRepository.Update(lineItem);
+                }else {
+                    itemRepository.Update(lineItem);
+                }
             }
 
 

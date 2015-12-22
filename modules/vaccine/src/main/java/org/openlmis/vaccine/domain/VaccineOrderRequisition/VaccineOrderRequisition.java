@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.service.ProductService;
 import org.openlmis.stockmanagement.domain.StockCard;
+import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
 import org.openlmis.stockmanagement.service.StockCardService;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
 import org.openlmis.vaccine.dto.StockRequirements;
@@ -23,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class VaccineOrderRequisition extends BaseModel {
-    public static final SimpleDateFormat form = new SimpleDateFormat("YYYY-MM-dd");
+    public static final SimpleDateFormat form = new SimpleDateFormat("MM-dd-YYYY");
     private Long periodId;
     private Long programId;
     private ProductCategory productCategory;
@@ -42,7 +43,7 @@ public class VaccineOrderRequisition extends BaseModel {
     private List<OrderRequisitionStockCardDTO> stockCards;
 
 
-    public void initiateOrder(List<StockRequirements> requirementsList, ProductService service, StockCardService stockCardService) {
+    public void initiateOrder(List<StockRequirements> requirementsList, ProductService service, StockCardMapper stockCardMapper) {
         lineItems = new ArrayList<>();
 
 
@@ -61,8 +62,13 @@ public class VaccineOrderRequisition extends BaseModel {
                 lineItem.setEop(stockRequirements.getEop());
 
                 Product p = service.getById(stockRequirements.getProductId());
-                StockCard s = stockCardService.getOrCreateStockCard(stockRequirements.getFacilityId(), p.getCode());
-                lineItem.setStockOnHand(s.getTotalQuantityOnHand());
+                StockCard s = stockCardMapper.getByFacilityAndProduct(stockRequirements.getFacilityId(), p.getCode());
+                if (s != null){
+                    lineItem.setStockOnHand(s.getTotalQuantityOnHand());
+                }
+                else {
+                    lineItem.setStockOnHand(0L);
+                }
                 lineItem.setMinMonthsOfStock(stockRequirements.getMinMonthsOfStock());
                 lineItem.setOrderedDate(form.format(new Date()));
                 lineItem.setBufferStock(stockRequirements.getBufferStock());

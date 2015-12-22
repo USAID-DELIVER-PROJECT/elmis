@@ -12,16 +12,21 @@
 package org.openlmis.web.controller.vaccine.inventory;
 
 
+import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.vaccine.domain.inventory.VaccineInventoryProductConfiguration;
 import org.openlmis.vaccine.service.inventory.VaccineInventoryConfigurationService;
+import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
+import org.openlmis.vaccine.service.inventory.VaccineInventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static org.openlmis.core.web.OpenLmisResponse.response;
@@ -35,17 +40,34 @@ public class VaccineInventoryConfigurationController extends BaseController {
     @Autowired
     VaccineInventoryConfigurationService service;
 
+    @Autowired
+    VaccineInventoryService vaccineInventoryService;
+
+    @Autowired
+    VaccineInventoryDistributionService distributionService;
+
+    @Autowired
+    ProgramService programService;
+
     @RequestMapping(value = "save", method = PUT, headers = ACCEPT_JSON)
     //TODO @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_PROGRAM_PRODUCT')")
     public ResponseEntity<OpenLmisResponse> save(@RequestBody List<VaccineInventoryProductConfiguration> configurations) {
         service.save(configurations);
-        return OpenLmisResponse.response("Configurations", service.getAll());
+        return OpenLmisResponse.response("productConfigurations", service.getAll());
     }
 
     @RequestMapping(value = "getAll", method = GET, headers = ACCEPT_JSON)
     //TODO @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_PROGRAM_PRODUCT')")
-    public ResponseEntity<OpenLmisResponse> getAll() {
-        return OpenLmisResponse.response("Configurations", service.getAll());
+    public ResponseEntity<OpenLmisResponse> getAll(HttpServletRequest request) {
+        Long userId = loggedInUserId(request);
+        OpenLmisResponse response=new OpenLmisResponse();
+        response.addData("productsConfiguration",service.getAll());
+        response.addData("programs",programService.getAllIvdPrograms());
+        response.addData("period",distributionService.getCurrentPeriod(userId));
+        response.addData("geographicZone",distributionService.getFacilityGeographicZone(userId));
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 }

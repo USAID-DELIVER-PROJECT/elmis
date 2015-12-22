@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
+import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
 import org.openlmis.stockmanagement.service.StockCardService;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisitionStatusChange;
@@ -58,7 +59,7 @@ public class VaccineOrderRequisitionService {
 
 
     @Autowired
-    StockCardService stockCardService;
+    StockCardMapper stockCardMapper;
 
     @Autowired
     ProductService service;
@@ -93,7 +94,7 @@ public class VaccineOrderRequisitionService {
     private VaccineOrderRequisition createNewOrderRequisition(Long periodId, Long programId, Long facilityId, Long userId) {
 
         VaccineOrderRequisition orderRequisition;
-        SimpleDateFormat form = new SimpleDateFormat("dd-MM-YYYY");
+        SimpleDateFormat form = new SimpleDateFormat("MM-dd-YYYY");
 
         Facility facility = facilityService.getById(facilityId);
 
@@ -112,7 +113,7 @@ public class VaccineOrderRequisitionService {
         if(facility !=null)
         orderRequisition.setFacility(facility);
         if(stockRequirements != null)
-        orderRequisition.initiateOrder(stockRequirements,service,stockCardService);
+        orderRequisition.initiateOrder(stockRequirements,service,stockCardMapper);
 
         return orderRequisition;
     }

@@ -1,0 +1,183 @@
+<div class="alert alert-info" openlmis-message="message.stock.initialize"></div>
+<table id="podTable" class="table table-bordered" fixed-table-header>
+                    <thead>
+                    <tr>
+                        <th class="col-product " openlmis-message="label.products"></th>
+                        <th class="col-quantity" style="max-width:160px !important"
+                            openlmis-message="label.stock.total.quantity"></th>
+                        <th class="col-lot"><span openlmis-message="label.stock.batch"></span></th>
+                        <th class="col-quantity" style="max-width:160px !important"><span
+                                openlmis-message="label.stock.quantity"></span></th>
+                        <th class="col-vvm-status"><span openlmis-message="label.stock.vvm"></span></th>
+                        <th class="col-add-lot"><span openlmis-message="label.stock.add.lot"></span></th>
+                        <th class="col-add-product"><span openlmis-message="label.stock.add.product"></span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat-start="product in receivedProducts" style="border-bottom:2px solid #333"
+                        ng-form="receivingForm2">
+                        <td rowspan="{{product.lots.length}}" class="col-product cell-input last-row disabled">
+                            <span class="cell-text" ng-bind="product.product.primaryName"></span>
+                        </td>
+                        <td rowspan="{{product.lots.length}}" class="col-product cell-input last-row"
+                            ng-class="{'disabled':product.batchTracked}">
+                            <span class="cell-text" ng-if="product.batchTracked" class="cell-text">{{sumLots(product.lots)}}</span>
+                            <input ng-required="!product.batchTracked" name="quantity_{{$index}}"
+                                   ng-if="!product.batchTracked" type="number" min="1" ng-model="product.quantity">
+                        </td>
+                        <td ng-if="product.batchTracked" class="col-lot cell-input cell-text disabled"
+                            ng-class="{'last-row':product.lots.length===1}">
+                            <span class="cell-text" ng-if="product.lots.length > 0"
+                                  ng-bind="product.lots[0].lot.lotCode"></span>
+                        </td>
+                        <td ng-if="product.batchTracked" class="col-count cell-input col-general"
+                            ng-class="{'last-row':product.lots.length===1}">
+                            <input ng-required="product.lots.length > 0" ng-if="product.lots.length > 0"
+                                   name="batchQuantity_{{$index}}_0" ng-model="product.lots[0].quantity" min="1"
+                                   type="number"/>
+                        </td>
+                        <td ng-if="product.batchTracked && product.vvmTracked"
+                            class="col-count cell-input col-general disabled"
+                            ng-class="{'last-row':product.lots.length===1}">
+                            <span ng-if="product.lots.length > 0" ng-bind="product.lots[0].vvmStatus"></span>
+                        </td>
+                        <td ng-if="product.batchTracked && !product.vvmTracked " class="skip">&nbsp;</td>
+                        <td ng-if="product.batchTracked" ng-class="{'last-row':product.lots.length===1}">
+                            <a ng-if="product.lots[0]" href="" class="close red"
+                               ng-click="removeReceivedLot(product,product.lots[0])">&times;</a>
+                        </td>
+                        <td ng-if="!product.batchTracked" colspan="4" class="last-row skip">&nbsp</td>
+                        <td class="last-row cell-input" rowspan="{{product.lots.length}}">
+                            <a class="close red" ng-click="removeProduct(product)">&times;</a>
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first">
+                        <td ng-if="product.batchTracked" ng-class="{'last-row':$last}"
+                            class="col-lot  cell-input cell-text disabled"><span ng-bind="lot.lot.lotCode"></span></td>
+                        <td ng-if="product.batchTracked" ng-class="{'last-row':$last}"
+                            class="col-count cell-input col-general ">
+                            <input name="batchQuantity_{{$parent.$index}}_{{$index}}" ng-required="product.batchTracked"
+                                   ng-model="lot.quantity" min="1" type="number"/>
+                        </td>
+                        <td ng-if="product.batchTracked && !product.vvmTracked " class="skip">&nbsp;</td>
+                        <td ng-if="product.batchTracked && product.vvmTracked" ng-class="{'last-row':$last}"
+                            class="col-count cell-input col-general disabled">
+                            <span ng-bind="lot.vvmStatus"></span>
+                        </td>
+                        <td ng-if="product.batchTracked" ng-class="{'last-row':$last}">
+                            <a ng-if="lot" class="close red" ng-click="removeReceivedLot(product,lot)">&times;</a>
+                        </td>
+                    </tr>
+                    </form>
+                    <!--Close receiving form-->
+
+                    <tr>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr style="border-bottom:2px solid #333" ng-form="productToAddForm">
+
+                        <td rowspan="{{productToAdd.lots.length +2 }}" class="col-product cell-input row-add ">
+                            <select style="min-width:200px !important" ui-select2
+                                    ng-click="loadProductLots(productToAdd.product)"
+                                    ng-disabled="productToAdd.lots.length >0" ng-model="productToAdd.product"
+                                    ng-options="obj.product as obj.product.primaryName for obj in productsToDisplay">
+                                <option value="" openlmis-message="placeholder.select.product"></option>
+                            </select>
+                        </td>
+                        <td rowspan="{{productToAdd.lots.length +2 }} " class=" cell-input col-general row-add">
+                            <input ng-required="true" name="productToAddQuantity" type="number" min="1"
+                                   ng-show="(productToAdd.product !==undefined || productToAdd.product ===null ) && productToAdd.batchTracked===false"
+                                   ng-model="productToAdd.quantity">
+                        </td>
+
+                        <td class="col-lot cell-input cell-text row-add">
+                            <span ng-if="productToAdd.lots.length >0 && productToAdd.batchTracked"
+                                  ng-bind="productToAdd.lots[0].lot.lotCode"></span>
+                        </td>
+                        <td class="col-count cell-input col-general row-add">
+                            <input ng-require="true" ng-if="productToAdd.lots.length >0" min="1" type="number"
+                                   ng-model="productToAdd.lots[0].quantity"/>
+                        </td>
+                        <td class="col-count cell-input col-general row-add"
+                            ng-class="{'skip':(productToAdd.lots.length >0 && !productToAdd.vvmTracked)}">
+                            <span ng-if="productToAdd.lots.length >0 && productToAdd.vvmTracked"
+                                  ng-bind="productToAdd.lots[0].vvmStatus"></span>
+                        </td>
+                        <td class="row-add">
+                            <a ng-if="productToAdd.lots.length >0" href="" class="close red"
+                               ng-click="removeProductLot(productToAdd.lots[0])">&times;</a>
+                        </td>
+
+                        <td class="cell-input row-add" rowspan="{{productToAdd.lots.length +2 }}">
+                            <input type="submit"
+                                   ng-disabled="(productToAdd.product===undefined || productToAdd.product===null) || (!productToAdd.batchTracked && productToAddForm.productToAddQuantity.$invalid) || (productToAdd.batchTracked && productToAdd.lots.length ===0 )"
+                                   class="btn btn-primary" ng-click="addProduct(productToAdd)" value="Add Product"/>
+                        </td>
+                    </tr>
+
+                    <tr ng-repeat="lot in productToAdd.lots" ng-show="!$first">
+                        <td class="col-lot  cell-input cell-text row-add">
+                            <span ng-bind="lot.lot.lotCode"></span>
+                        </td>
+                        <td class="col-count cell-input col-general row-add">
+                            <input ng-require="true" min="1" type="number" ng-model="lot.quantity"/>
+                        </td>
+                        <td class="col-count cell-input col-general row-add"
+                            ng-class="{'skip':(productToAdd.lots.length >0 && !productToAdd.vvmTracked)}">
+                            <span ng-bind="lot.vvmStatus"></span>
+                        </td>
+                        <td class="row-add">
+                            <a ng-if="lot" href="" class="close red" ng-click="removeProductLot(lot)">&times;</a>
+                        </td>
+
+                    </tr>
+                    <!--Add new Row-->
+                    <tr ng-if="productToAdd.product !==undefined && productToAdd.product !==null"
+                        ng-form="lotToAddForm">
+                        <td ng-if="productToAdd.batchTracked===true"
+                            class="col-lot  cell-input cell-text last-row row-add-batch ">
+                            <select ng-show="productToAdd.batchTracked" name="lotToAdd"
+                                    ng-required="productToAdd.batchTracked===true" style="min-width:200px !important"
+                                    ui-select2 ng-model="lotToAdd.lot"
+                                    ng-options="lot as lot.lotCode for lot in lotsToDisplay">
+                                <option value="" openlmis-message="placeholder.select.batch"></option>
+                            </select>
+                        </td>
+                        <td ng-if="productToAdd.batchTracked===true"
+                            class="col-count cell-input col-general last-row row-add-batch">
+                            <input placeholder="Quantity" ng-show="productToAdd.batchTracked===true" min="1"
+                                   ng-required="productToAdd.batchTracked===true" name="quantityToAdd"
+                                   ng-model="lotToAdd.quantity" maxlength="5" type="number"/>
+                        </td>
+                        <td ng-if="productToAdd.batchTracked===true && productToAdd.vvmTracked"
+                            class="col-count cell-input col-general last-row row-add-batch">
+                            <select ng-show="productToAdd.vvmTracked" ng-required="productToAdd.vvmTracked"
+                                    style="max-width:130px !important;min-width:130px !important" ui-select2
+                                    ng-options="i.value as i.name for i in vvmStatuses" name="vvmToAdd"
+                                    ng-model="lotToAdd.vvmStatus">
+                                <option value="" openlmis-message="placeholder.select.vvmstatus"></option>
+                            </select>
+                        </td>
+                        <td ng-if="productToAdd.batchTracked===true && productToAdd.vvmTracked===false"
+                            class="skip"></td>
+                        <td ng-if="productToAdd.batchTracked===true" class="last-row row-add-batch-last">
+                            <input type="submit" ng-show="productToAdd.batchTracked===true"
+                                   ng-disabled="lotToAddForm.$invalid" class="btn btn-primary"
+                                   ng-click="addLot(lotToAdd)" value="Add Batch"/>
+                        </td>
+                        <td ng-if="productToAdd.batchTracked===false" colspan="4" class="row-add skip">&nbsp;</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+
+<div id="scroll-to-lot"></div>
+
+

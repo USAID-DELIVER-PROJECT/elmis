@@ -353,7 +353,7 @@
                         <strong id="received-date-label" openlmis-message="label.vaccine.issue.date"> </strong>
                         <span class="label-required">*</span>:&nbsp;
                         <input ng-required="true" id="receivingDate" name="issueDate" type="text"
-                               ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                               ui-date="{dateFormat: 'dd/mm/yy', changeYear: false, maxDate:'today',minDate:period.stringStartDate}"
                                ng-model="facilityToIssue.issueDate"/>
                     </div>
                     <div class="span4">

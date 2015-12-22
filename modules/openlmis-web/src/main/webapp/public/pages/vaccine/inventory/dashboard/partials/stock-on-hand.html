@@ -144,9 +144,17 @@
                             </div>
                         </div>
                         <div class="span12"
-                             ng-show='data.stockcards === null && (selectedType === "0" || filter.facilityId !== "0") '>
+                             ng-show='data.stockcards === null && selectedType === "1"'>
                             <span openlmis-message="message.vaccine.noDataToshowInDatatable"></span>
                         </div>
+                        <br/>
+                        <br/>
+                        <div class="alert alert-danger"  ng-show='data.stockcards === null && selectedType === "0"'>
+                            <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
+                            <strong><a href="/public/pages/vaccine/inventory/index.html#/receive" openlmis-message="stock.initialize.stock"></a></strong>
+                        </div>
+                        <br/>
+                        <br/>
                     </div>
 
                 </div>

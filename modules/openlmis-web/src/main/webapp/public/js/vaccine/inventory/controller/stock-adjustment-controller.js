@@ -8,15 +8,15 @@
  * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
  */
 
-function StockAdjustmentController($scope, $timeout,$window,$routeParams,programs,StockCardsByCategory,productsConfiguration,StockEvent,localStorageService,homeFacility,VaccineAdjustmentReasons,UserFacilityList) {
+function StockAdjustmentController($scope, $timeout,$window,$routeParams,StockCardsByCategory,configurations,StockEvent,localStorageService,homeFacility,VaccineAdjustmentReasons,UserFacilityList) {
 
     //Get Home Facility
     $scope.currentStockLot = undefined;
     $scope.adjustmentReasonsDialogModal = false;
-    $scope.userPrograms=programs;
+    $scope.userPrograms=configurations.programs;
     $scope.adjustmentReason={};
     $scope.vvmStatuses=[{"value":"1","name":" 1 "},{"value":"2","name":" 2 "}];
-    $scope.productsConfiguration=productsConfiguration;
+    $scope.productsConfiguration=configurations.productsConfiguration;
     var AdjustmentReasons=[];
 
     var loadStockCards=function(programId, facilityId){
@@ -65,7 +65,6 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
     };
     $scope.removeAdjustmentReason=function(adjustment)
     {
-        console.log(adjustment);
         $scope.currentStockLot.adjustmentReasons = $.grep($scope.currentStockLot.adjustmentReasons, function (reasonObj) {
               return (adjustment !== reasonObj);
             });
@@ -199,7 +198,7 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,program
            };
           $scope.vvmTracked=function(c)
           {
-             var config=_.filter(productsConfiguration, function(obj) {
+             var config=_.filter(configurations.productsConfiguration, function(obj) {
                    return obj.product.id===c.product.id;
              });
 
@@ -229,32 +228,16 @@ StockAdjustmentController.resolve = {
             }, 100);
             return deferred.promise;
          },
-
-        programs:function ($q, $timeout, VaccineInventoryPrograms) {
-                    var deferred = $q.defer();
-                    var programs={};
-
-                    $timeout(function () {
-                             VaccineInventoryPrograms.get({},function(data){
-                               programs=data.programs;
-                                deferred.resolve(programs);
-                             });
-                    }, 100);
-                    return deferred.promise;
-        },
-
-        productsConfiguration:function($q, $timeout, VaccineInventoryPrograms,VaccineInventoryConfigurations) {
+        configurations:function($q, $timeout, VaccineInventoryConfigurations) {
                      var deferred = $q.defer();
                      var configurations={};
                      $timeout(function () {
                         VaccineInventoryConfigurations.get(function(data)
                         {
-                              configurations=data.Configurations;
+                              configurations=data;
                               deferred.resolve(configurations);
                         });
                      }, 100);
                      return deferred.promise;
-                }
-
-
+         }
 };

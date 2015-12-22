@@ -11,9 +11,10 @@
  */
 
 
-function MassDistributionController($scope,$location, $window,programs,$timeout,facilityDistributed,homeFacility,FacilitiesWithProducts,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
+function MassDistributionController($scope,$location, $window,configurations,$timeout,facilityDistributed,homeFacility,FacilitiesWithProducts,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
 
-     $scope.userPrograms=programs;
+     $scope.userPrograms=configurations.programs;
+     $scope.period=configurations.period;
      $scope.facilityDisplayName=homeFacility.name;
      $scope.toIssue=[];
      $scope.distributionType='SCHEDULED';
@@ -463,19 +464,18 @@ MassDistributionController.resolve = {
             }, 100);
             return deferred.promise;
          },
-        programs:function ($q, $timeout, VaccineInventoryPrograms) {
-            var deferred = $q.defer();
-            var programs={};
-
-            $timeout(function () {
-                     VaccineInventoryPrograms.get({},function(data){
-                       programs=data.programs;
-                        deferred.resolve(programs);
-                     });
-            }, 100);
-            return deferred.promise;
-         },
-
+        configurations:function($q, $timeout, VaccineInventoryConfigurations) {
+                             var deferred = $q.defer();
+                             var configurations={};
+                             $timeout(function () {
+                                VaccineInventoryConfigurations.get(function(data)
+                                {
+                                      configurations=data;
+                                      deferred.resolve(configurations);
+                                });
+                             }, 100);
+                             return deferred.promise;
+        },
          facilityDistributed:function($q, $timeout,FacilityDistributed) {
              var deferred = $q.defer();
              var configurations={};
