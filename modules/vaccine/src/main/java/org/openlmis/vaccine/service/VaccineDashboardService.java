@@ -55,12 +55,23 @@ public class VaccineDashboardService {
         return repository.getInvestigatingDetails();
     }
 
-    public List<HashMap<String, Object>> getMonthlyCoverage(String startDate, String endDate, Long product){
+    public List<HashMap<String, Object>> getMonthlyCoverage(String startDate, String endDate, Long userId, Long product){
         Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
         Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
 
-        return repository.getMonthlyCoverage(fromDate, toDate, product);
+        return repository.getMonthlyCoverage(fromDate, toDate,userId, product);
     }
+    public List<HashMap<String, Object>> getFacilityCoverage(Long period, Long product, Long userId){
+        return repository.getFacilityCoverage(period, product, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityCoverageDetails(String startDate, String endDate, Long product, Long userId){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getFacilityCoverageDetails(fromDate,toDate, product, userId);
+    }
+
 
     public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product){
         return repository.getDistrictCoverage(period, product);

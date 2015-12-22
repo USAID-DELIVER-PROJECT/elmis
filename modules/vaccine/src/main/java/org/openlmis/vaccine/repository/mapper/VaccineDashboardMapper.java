@@ -101,7 +101,7 @@ public interface VaccineDashboardMapper {
                 "    and  period_id = 51; ")
         HashMap<String, Object> getInvestigatingDetails();
 
-        @Select("SELECT\n" +
+       /* @Select("SELECT\n" +
                 "d.region_name,\n" +
                 "d.district_name,\n" +
                 "i.period_name, \n" +
@@ -125,7 +125,32 @@ public interface VaccineDashboardMapper {
                 "d.region_name,\n" +
                 "d.district_name,\n" +
                 "i.period_start_date")
-        List<HashMap<String, Object>> getMonthlyCoverage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product);
+        List<HashMap<String, Object>> getMonthlyCoverage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product);*/
+
+
+        @Select("SELECT\n" +
+                "d.region_name,\n" +
+                "i.period_name,\n" +
+                "i.period_start_date,\n" +
+                "sum(i.denominator) target, \n" +
+                "sum(COALESCE(i.within_outside_total,0)) actual, \n" +
+                "(case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / sum(denominator)::numeric) else 0 end) * 100 coverage \n" +
+                "FROM \n" +
+                "vw_vaccine_coverage i \n" +
+                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id \n" +
+                "JOIN vaccine_reports vr ON i.report_id = vr.ID \n" +
+                "JOIN program_products pp ON pp.programid = vr.programid \n" +
+                "AND pp.productid = i.product_id \n" +
+                "WHERE \n" +
+                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1) \n" +
+                "and i.period_start_date >= #{startDate} and i.period_end_date <= #{endDate}\n" +
+                "and i.product_id = #{product} \n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                "or d.region_id = (select value from user_preferences up where up.userid =  #{user}  and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                ")\n" +
+                "GROUP BY 1,2,3 \n" +
+                "ORDER BY 3;")
+        List<HashMap<String, Object>> getMonthlyCoverage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("user") Long userId, @Param("product") Long product);
 
 
         @Select("\n" +
@@ -149,6 +174,54 @@ public interface VaccineDashboardMapper {
                 "ORDER BY\n" +
                 "d.district_name\n")
         List<HashMap<String, Object>> getDistrictCoverage(@Param("period") Long period, @Param("product") Long product);
+
+        @Select("SELECT\n" +
+                "d.district_name, \n" +
+                "i.facility_name,\n" +
+                "sum(i.denominator) target, \n" +
+                "sum(COALESCE(i.within_outside_total,0)) actual, \n" +
+                "(case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / sum(denominator)::numeric) else 0 end) * 100 coverage \n" +
+                "FROM \n" +
+                "vw_vaccine_coverage i \n" +
+                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id \n" +
+                "JOIN vaccine_reports vr ON i.report_id = vr.ID \n" +
+                "JOIN program_products pp ON pp.programid = vr.programid \n" +
+                "AND pp.productid = i.product_id \n" +
+                "WHERE \n" +
+                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1) \n" +
+                "and i.product_id = #{product} \n" +
+                "and i.period_id = #{period}\n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
+                "GROUP BY 1,2\n" +
+                "ORDER BY 2;\n")
+        List<HashMap<String, Object>> getFacilityCoverage(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("SELECT\n" +
+                "d.district_name,\n" +
+                "i.facility_name,\n" +
+                "i.period_name,\n" +
+                "i.period_start_date,\n" +
+                "sum(i.denominator) target, \n" +
+                "sum(COALESCE(i.within_outside_total,0)) actual, \n" +
+                "(case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / sum(denominator)::numeric) else 0 end) * 100 coverage \n" +
+                "FROM \n" +
+                "vw_vaccine_coverage i \n" +
+                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id \n" +
+                "JOIN vaccine_reports vr ON i.report_id = vr.ID \n" +
+                "JOIN program_products pp ON pp.programid = vr.programid \n" +
+                "AND pp.productid = i.product_id \n" +
+                "WHERE \n" +
+                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1) \n" +
+                "and i.period_start_date::date >= #{startDate} and i.period_end_date::date <= #{endDate}\n" +
+                "and i.product_id =#{product}\n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                ")\n" +
+                "GROUP BY 1,2,3, 4\n" +
+                "ORDER BY 2, 4;")
+        List<HashMap<String, Object>> getFacilityCoverageDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
+
 
         @Select("with temp as (\n" +
                 "select period_name, period_start_date::date,\n" +
