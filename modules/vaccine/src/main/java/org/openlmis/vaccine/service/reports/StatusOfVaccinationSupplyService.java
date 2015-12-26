@@ -22,6 +22,7 @@ import org.openlmis.vaccine.repository.reports.StatusOfVaccinationSuppliesReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,31 +33,60 @@ public class StatusOfVaccinationSupplyService {
     @Autowired
     private PerformanceByDropoutRateByDistrictRepository dropoutRateByDistrictRepository;
 
+
     public StatusOfVaccinationSuppliesReceivedReport loadStatusOfVaccineSupplyReport(Map<String, String[]> filterCriteria) {
         StatusOfVaccinationSuppliesReceivedReport suppliesReceivedReport = null;
         boolean isFacilityReport = false;
         boolean isRegionReport = false;
         List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesFacilityDistrictList = null;
         List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRegionList = null;
+        HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> facilityOrDistrictPopulationMap = null;
+        HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap = null;
         PerformanceByDropoutRateParam filterParam = null;
         filterParam = ReportsCommonUtilService.prepareParam(filterCriteria);
         isRegionReport = filterParam.getGeographic_zone_id() == 0 ? true : false;
         isFacilityReport = dropoutRateByDistrictRepository.isDistrictLevel(filterParam.getGeographic_zone_id());
         if (isFacilityReport) {
             statusOfVaccinationSuppliesFacilityDistrictList = this.repository.loadStatusOfVaccineSupplyForFacilityReports(filterParam);
+            facilityOrDistrictPopulationMap = this.repository.loadPopulationForFacilityReports(filterParam);
+            this.extractPopulationInformation(statusOfVaccinationSuppliesFacilityDistrictList,facilityOrDistrictPopulationMap,ReportsCommonUtilService.FACILLITY_REPORT);
         } else {
             statusOfVaccinationSuppliesFacilityDistrictList = this.repository.loadStatusOfVaccineSupplyForDistrict(filterParam);
+            facilityOrDistrictPopulationMap = this.repository.loadPopulationForDistrict(filterParam);
+            this.extractPopulationInformation(statusOfVaccinationSuppliesFacilityDistrictList,facilityOrDistrictPopulationMap,ReportsCommonUtilService.DISTRICT_REPORT);
             if (isRegionReport) {
                 statusOfVaccinationSuppliesRegionList = this.repository.loadStatusOfVaccineSupplyForRegionReports(filterParam);
+                regionPopulationMap = this.repository.loadPopulationForRegionReports(filterParam);
+                this.extractPopulationInformation(statusOfVaccinationSuppliesRegionList,regionPopulationMap,ReportsCommonUtilService.REGION_REPORT);
             }
         }
-        suppliesReceivedReport=this.aggeregaeReportValue(statusOfVaccinationSuppliesFacilityDistrictList);
+        suppliesReceivedReport = this.aggeregaeReportValue(statusOfVaccinationSuppliesFacilityDistrictList);
         suppliesReceivedReport.setFacilityDistrictVaccineStatusList(statusOfVaccinationSuppliesFacilityDistrictList);
         suppliesReceivedReport.setRegionVaccineStatusList(statusOfVaccinationSuppliesRegionList);
         suppliesReceivedReport.setFacilityReport(isFacilityReport);
         suppliesReceivedReport.setRegionReport(isRegionReport);
         return suppliesReceivedReport;
 
+    }
+
+    private void extractPopulationInformation(List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesFacilityDistrictList,
+                                              HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> populationListMap, int geoLevel) {
+        for (StatusOfVaccinationSuppliesRecievedDetail vaccinationSuppliesRecievedDetail : statusOfVaccinationSuppliesFacilityDistrictList) {
+            Long population = 0l;
+            String geoLevelName = "";
+            StatusOfVaccinationSuppliesRecievedDetail populationInfo = null;
+            if (geoLevel == ReportsCommonUtilService.FACILLITY_REPORT) {
+                geoLevelName = vaccinationSuppliesRecievedDetail.getFacility_name();
+            } else if (geoLevel == ReportsCommonUtilService.DISTRICT_REPORT) {
+                geoLevelName = vaccinationSuppliesRecievedDetail.getDistrict_name();
+            } else {
+                geoLevelName = vaccinationSuppliesRecievedDetail.getRegion_name();
+            }
+            geoLevelName+="_"+vaccinationSuppliesRecievedDetail.getPeriod_name();
+            populationInfo = populationListMap.get(geoLevelName);
+            population = populationInfo != null ? populationInfo.getTargetpopulation() : 0l;
+            vaccinationSuppliesRecievedDetail.setTargetpopulation(population);
+        }
     }
 
     public StatusOfVaccinationSuppliesReceivedReport aggeregaeReportValue(List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesFacilityDistrictList) {
@@ -69,13 +99,14 @@ public class StatusOfVaccinationSupplyService {
         float totalAdminstered = 0f;
         Long totalPopulation = 0l;
         for (StatusOfVaccinationSuppliesRecievedDetail statusOfVaccinationSuppliesRecievedDetail : statusOfVaccinationSuppliesFacilityDistrictList) {
+
             totalReceived += statusOfVaccinationSuppliesRecievedDetail.getReceived();
             totalOnHand += statusOfVaccinationSuppliesRecievedDetail.getOnhand();
             totalIssued += statusOfVaccinationSuppliesRecievedDetail.getIssued();
             totalUsed += statusOfVaccinationSuppliesRecievedDetail.getUsed();
             totalWasted += statusOfVaccinationSuppliesRecievedDetail.getWasted();
-            totalAdminstered+=statusOfVaccinationSuppliesRecievedDetail.getAdministered();
-//           totalPopulation+=statusOfVaccinationSuppliesRecievedDetail.getT;
+            totalAdminstered += statusOfVaccinationSuppliesRecievedDetail.getAdministered();
+            totalPopulation += statusOfVaccinationSuppliesRecievedDetail.getTargetpopulation();
         }
         suppliesReceivedReport.setTotalReceived(totalReceived);
         suppliesReceivedReport.setTotalOnHand(totalOnHand);

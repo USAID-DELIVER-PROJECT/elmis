@@ -14,15 +14,14 @@
 
 package org.openlmis.vaccine.repository.mapper.reports;
 
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.openlmis.vaccine.domain.reports.StatusOfVaccinationSuppliesRecievedDetail;
 import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
 import org.openlmis.vaccine.repository.mapper.reports.builder.StatusOfVaccinationSuppliesQueryBuilder;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 @Repository
 public interface StatusOfVaccinationSupplyStatusMapper {
@@ -36,6 +35,25 @@ public interface StatusOfVaccinationSupplyStatusMapper {
     );
     @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getStatusOfVaccineSupplyForRegion")
     public List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForRegionReports(
+            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
+    );
+    /////////////////////////////////////////////////////
+    @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getPopulationForFacility")
+    @MapKey("facility_name")
+    @ResultType(HashMap.class)
+    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForFacilityReports(
+            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
+    );
+    @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getPopulationForDistrict")
+    @MapKey("district_name")
+    @ResultType(HashMap.class)
+    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForDistrict(
+            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
+    );
+    @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getPopulationForRegion")
+    @MapKey("region_name")
+    @ResultType(HashMap.class)
+    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForRegionReports(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
 }

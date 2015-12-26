@@ -59,7 +59,8 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "t.vaccinated administered," +
                 "case when t.wasted < 0 then 0 else t.wasted end wasted,\n" +
                 "case when t.used < 0 then 0 else t.used end used\n" +
-                "from temp t\n" ;
+                "from temp t\n" +
+                " order by 1,2,3,6,5" ;
 
         return query;
     }
@@ -95,7 +96,8 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "t.vaccinated administered," +
                 "case when t.wasted < 0 then 0 else t.wasted end wasted,\n" +
                 "case when t.used < 0 then 0 else t.used end used\n" +
-                "from temp t\n" ;
+                "from temp t\n" +
+                " order by 1,2,5,4" ;
 
         return query;
     }
@@ -129,7 +131,8 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "t.vaccinated administered," +
                 "case when t.wasted < 0 then 0 else t.wasted end wasted,\n" +
                 "case when t.used < 0 then 0 else t.used end used\n" +
-                "from temp t\n" ;
+                "from temp t\n" +
+                "order by 1,4,3" ;
 
         return query;
     }
@@ -154,5 +157,60 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
         return predicate;
 
 
+    }
+    ////////
+    public String getPopulationForFacility(Map params) {
+
+        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
+        String query = "select \n" +
+                "d.region_name,\n" +
+                "d.district_name,\n" +
+                "s.facility_name||'_'||s.period_name  facility_name ,\n" +
+                "s.period_name,\n" +
+                "extract(month from s.period_start_date) period_month, \n" +
+                "extract(year from s.period_start_date) period_year,\n" +
+                "sum(s.within_outside_total) administered,\n" +
+                "sum(denominator) targetpopulation\n" +
+                "from vw_vaccine_coverage s\n" +
+                "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
+                writePredicates(filter) +
+                "group by 1,2,3,4,5,6\n"  ;
+
+        return query;
+    }
+    public String getPopulationForDistrict(Map params) {
+
+        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
+        String query = "select \n" +
+                "d.region_name,\n" +
+                "d.district_name||'_'||s.period_name district_name,\n" +
+                "s.period_name,\n" +
+                "extract(month from s.period_start_date) period_month, \n" +
+                "extract(year from s.period_start_date) period_year,\n" +
+                "sum(s.within_outside_total) administered,\n" +
+                "sum(denominator) targetpopulation\n" +
+                "from vw_vaccine_coverage s\n" +
+                "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
+                writePredicates(filter) +
+                "group by 1,2,3,4,5\n"  ;
+
+        return query;
+    }
+    public String getPopulationForRegion(Map params) {
+
+        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
+        String query = "select \n" +
+                "d.region_name||'_'||s.period_name  region_name,\n" +
+                "s.period_name,\n" +
+                "extract(month from s.period_start_date) period_month, \n" +
+                "extract(year from s.period_start_date) period_year,\n" +
+                "sum(s.within_outside_total) administered,\n" +
+                "sum(denominator) targetpopulation\n" +
+                "from vw_vaccine_coverage s\n" +
+                "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
+                writePredicates(filter) +
+                "group by 1,2,3,4\n"  ;
+
+        return query;
     }
 }

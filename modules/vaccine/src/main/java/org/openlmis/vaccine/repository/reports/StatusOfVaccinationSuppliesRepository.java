@@ -14,12 +14,14 @@
 
 package org.openlmis.vaccine.repository.reports;
 
+import org.apache.ibatis.annotations.Param;
 import org.openlmis.vaccine.domain.reports.StatusOfVaccinationSuppliesRecievedDetail;
 import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
 import org.openlmis.vaccine.repository.mapper.reports.StatusOfVaccinationSupplyStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Component
@@ -49,5 +51,27 @@ public class StatusOfVaccinationSuppliesRepository {
         List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRecievedDetailList = null;
         statusOfVaccinationSuppliesRecievedDetailList = this.mapper.loadStatusOfVaccineSupplyForRegionReports(filterCriteria);
         return statusOfVaccinationSuppliesRecievedDetailList;
+    }
+    //////////////////////////////////
+    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForFacilityReports(
+           PerformanceByDropoutRateParam filterCriteria
+    ){
+        HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap= null;
+        regionPopulationMap=this.mapper.loadPopulationForFacilityReports(filterCriteria);
+        return regionPopulationMap;
+    }
+    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForDistrict(
+             PerformanceByDropoutRateParam filterCriteria
+    ){
+        HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap= null;
+        regionPopulationMap=this.mapper.loadPopulationForDistrict(filterCriteria);
+        return regionPopulationMap;
+    }
+    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForRegionReports(
+             PerformanceByDropoutRateParam filterCriteria
+    ){
+        HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap= null;
+        regionPopulationMap=this.mapper.loadPopulationForRegionReports(filterCriteria);
+        return regionPopulationMap;
     }
 }
