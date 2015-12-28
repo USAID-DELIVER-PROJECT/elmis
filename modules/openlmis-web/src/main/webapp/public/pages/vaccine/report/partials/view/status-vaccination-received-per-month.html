@@ -1,0 +1,482 @@
+<!--
+  ~
+  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+  ~
+  ~  Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+  ~
+  ~    You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+<style>
+    .summary-table {
+        table-layout: fixed;
+        width: 100% !important;
+        /*border: 1px solid #000;*/
+        margin-top: 43px;
+    }
+    .rnr-table {
+        padding-top: 0px !important;
+        max-width:100% !important;
+    }
+    .rnr-table th{
+        min-width: 60px;
+        max-width: 123px;
+    }
+</style>
+<div class="alert alert-success" id="saveSuccessMsgDiv" ng-bind="message" ng-show="message"/>
+
+<div class="row-fluid">
+    <div class="box span12">
+        <div class="box-header">
+
+            <h2 openlmis-message="report.status.vaccination.received.permonth.report"><i class="icon-edit"></i><span
+                    class="break"></span>
+            </h2>
+
+            <div class="box-icon">
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+        </div>
+        <div>
+
+            <div class="app-form " style="padding: 5px;">
+
+                <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                    <div class="clearfix">
+
+                        <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
+                                             faccility="true" pro="filter.program" user_geo_level="user_geo_level"
+                                             zones="zones" val="filter.zone"></vaccine-zone-filter>
+                        <vaccine-product-filter class="form-cell horizontalFilters" default="defaultProduct"
+                                                cm-model="filter.product"
+                        "></vaccine-product-filter>
+
+                        <static-period-filter range="range" startdate="filter.periodStart" enddate="filter.periodEnd"
+                                              rangemax="10" error="perioderror"></static-period-filter>
+
+                        <br/>
+                    </div>
+
+                    <div style="margin:2px !important;font-size:10px;" ng-show="perioderror" class="row">
+                        <div class="span11 ">
+                            <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                        </div>
+                    </div>
+
+                </form>
+                <div style="margin:2px !important;font-size:10px;" ng-show="filter.periodStart" class="row">
+                    <div class="span4">
+                        <strong><span openlmis-message="label.start.date"></span></strong>: {{filter.periodStart}}
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <strong><span openlmis-message="label.end.date"></span></strong> : {{filter.periodEnd}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-body">
+
+                <table client-side-sort-pagination class="table table-bordered"
+                       ng-show="data == undefined || data.length == 0">
+                    <tr>
+                        <td>No data to show under selected filters</td>
+                    </tr>
+                </table>
+
+                <div ng-show="data.length > 0">
+
+
+                    <table id="fullSupplyTable" ng-show="datarows.length > 0"
+                           class="rnr-table table-bordered table"
+                           ng-table="tableParams">
+                        <thead>
+                        <tr>
+                            <th rowspan="2">
+                                <span openlmis-message="label.region">	</span>
+                            </th>
+                            <th rowspan="2"
+                                style=" width: 40px">
+                                <span openlmis-message="label.district">	 </span>
+                            </th>
+                            <th ng-if="reportType==true" rowspan="2"
+                                style=" width: 40px">
+                                <span openlmis-message="label.facility">	 </span>
+                            </th>
+
+                            <th rowspan="2">
+                                <span openlmis-message="label.period"></span>
+
+                            </th>
+                            <th rowspan="2" style="width: 30px;width: 10px">
+                                <span openlmis-message="label.population"></span>
+
+                            </th>
+                            <th colspan="6" style="width: 30px; text-align: center; vertical-align: middle">
+                                <span openlmis-message=" "></span>
+
+                            </th>
+
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.received"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.onhand"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.issued"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.used"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.waseted"></span>
+
+                            </th>
+                            <th style="max-width: 30px ">
+                                <span openlmis-message="label.vaccine.supply.status.administered"></span>
+
+                            </th>
+                        </tr>
+                        <tr style="height: 15px">
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th ng-if="reportType==true">
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th >
+                                <span ></span>
+
+                            </th>
+
+                        </tr>
+
+                        </thead>
+                        <tbody>
+
+                        <tr ng-repeat="subRow in data">
+
+                            <td
+
+                                    >
+
+
+                        <span ng-if="data[$index-1].region_name!=subRow.region_name"
+
+                              ng-bind="subRow.region_name"></span>
+                            </td>
+                            <td><span ng-if="data[$index-1].district_name!=subRow.district_name"
+
+                                      ng-bind="subRow.district_name"></span></td>
+
+                            <td ng-if="reportType==true"><span
+                                    ng-if="data[$index-1].facility_name!=subRow.facility_name"
+
+                                    ng-bind="subRow.facility_name"></span></td>
+
+
+                            <td ng-bind="subRow.period_name"
+                                ng-style="{'text-align':'right'}"/>
+
+                            <td ng-bind="subRow.targetpopulation| number"
+                                ng-style="{'text-align':'right'}"/>
+
+                            <td ng-bind="subRow.received| number"
+                                ng-style="{'text-align':'right'}"/>
+
+
+                            <td ng-bind="subRow.onhand| number"
+                                ng-style="{'text-align':'right'}"/>
+
+
+                            <td ng-bind="subRow.issued| number"
+                                ng-style="{'text-align':'right'}"/>
+
+                            <td ng-bind="subRow.used| number"
+                                ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.wasted| number"
+                                ng-style="{'text-align':'right'}"/>
+
+                            <td ng-bind="subRow.administered| number"
+                                ng-style="{'text-align':'right'}"/>
+
+                        </tr>
+
+                        </tbody>
+
+                        <tfoot style="'border-top-style':'solid'; 'border-top-color': 'black'; 'border-top-width': '2px'"
+                                >
+                        <tr>
+                            <td ng-if="reportType==false" colspan="2"/>
+                            <td ng-if="reportType==true" colspan="3"/>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; ">
+                                <span openlmis-message="label.total"></span>
+                            </td>
+
+                            <td ng-style="{'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; " ng-bind="report.totalPopulation| number"></td>
+
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; " ng-bind="report.totalReceived| number"></td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; " ng-bind="report.totalOnHand| number"></td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; "><span
+                                    ng-bind="report.totalIssued| number"/>
+                            </td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; "><span
+                                    ng-bind="report.totalUsed| number"/>
+                            </td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; "><span
+                                    ng-bind="report.totalWasted| number"/>
+                            </td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; "><span
+                                    ng-bind="report.totalAdminstered| number"/>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div ng-show="regionrows.length > 0">
+
+                    <table id="dropOutRegiontReport" ng-show="regionrows.length > 0"
+                           class="rnr-table table-bordered table"
+                           ng-table="tableParams">
+                        <thead>
+                        <tr>
+                            <th rowspan="2">
+                                <span openlmis-message="label.region">	</span>
+                            </th>
+
+
+                            <th rowspan="2">
+                                <span openlmis-message="label.period"></span>
+
+                            </th>
+                            <th rowspan="2" style="width: 10px">
+                                <span openlmis-message="label.population"></span>
+
+                            </th>
+                            <th colspan="6" style=" text-align: center; vertical-align: middle">
+                                <span openlmis-message=""></span>
+
+                            </th>
+
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.received"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.onhand"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.issued"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.used"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.waseted"></span>
+
+                            </th>
+                            <th>
+                                <span openlmis-message="label.vaccine.supply.status.administered"></span>
+
+                            </th>
+                        </tr>
+                        <tr style="height: 15px">
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th ng-if="reportType==true">
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+                            <th>
+                                <span></span>
+
+                            </th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr ng-repeat="subRow in regionrows">
+
+                            <td
+
+                                    >
+
+
+                        <span ng-if="regionrows[$index-1].region_name!=subRow.region_name"
+
+                              ng-bind="subRow.region_name"></span>
+                            </td>
+
+
+
+                            <td ng-bind="subRow.period_name"
+                                ng-style="{'text-align':'right'}"/>
+
+                            <td ng-bind="subRow.targetpopulation| number"
+                                ng-style="{'text-align':'right'}"/>
+
+                            <td ng-bind="subRow.received| number"
+                                ng-style="{'text-align':'right'}"/>
+
+
+                            <td ng-bind="subRow.onhand| number"
+                                ng-style="{'text-align':'right'}"/>
+
+
+                            <td ng-bind="subRow.issued| number"
+                                ng-style="{'text-align':'right'}"/>
+
+                            <td ng-bind="subRow.used| number"
+                                ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.wasted| number"
+                                ng-style="{'text-align':'right'}"/>
+
+                            <td ng-bind="subRow.administered| number"
+                                ng-style="{'text-align':'right'}"/>
+
+                        </tr>
+
+                        </tbody>
+                        <tfoot
+                                >
+                        <tr>
+                            <td/>
+
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; ">
+                                <span openlmis-message="label.total"></span>
+                            </td>
+
+                            <td ng-style="{'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; " ng-bind="report.totalPopulation| number"></td>
+
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; " ng-bind="report.totalReceived| number"></td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; " ng-bind="report.totalOnHand| number"></td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; "><span
+                                    ng-bind="report.totalIssued| number"/>
+                            </td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; "><span
+                                    ng-bind="report.totalUsed| number"/>
+                            </td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; "><span
+                                    ng-bind="report.totalWasted| number"/>
+                            </td>
+                            <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
+                                style="text-align:right; "><span
+                                    ng-bind="report.totalAdminstered| number"/>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <!-- end of the table-->
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+</div>
