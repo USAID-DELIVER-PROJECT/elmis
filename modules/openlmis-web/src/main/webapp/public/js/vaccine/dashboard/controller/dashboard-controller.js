@@ -192,8 +192,8 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
 
 
     $scope.getIndicatorValues = function (facility, indicator) {
-        var facility = _.where($scope.coverageDetails, {facility_name: facility});
-        var values = _.pluck(facility, indicator);
+        var facilityDetail = _.where($scope.coverageDetails, {facility_name: facility});
+        var values = _.pluck(facilityDetail, indicator);
         var tot = _.reduce(values, function(res, num){return res + num;}, 0);
         values.push(tot);
         return values;

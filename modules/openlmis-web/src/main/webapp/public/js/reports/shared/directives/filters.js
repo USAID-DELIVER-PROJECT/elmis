@@ -1462,7 +1462,6 @@ app.directive('rangePagination',['SettingsByKey', function(SettingsByKey){
                     range = 12; //12 is the maximum allowed range
 
                 $scope.range = range;
-                console.log('range is '+$scope.range)
 
                 $scope.pages = getRange($scope.total, $scope.range);
                 if(!isUndefined($scope.pages) && $scope.total <= $scope.range){
