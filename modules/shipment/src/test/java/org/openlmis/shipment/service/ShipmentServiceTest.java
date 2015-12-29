@@ -72,7 +72,7 @@ public class ShipmentServiceTest {
       with(orderId, 1L),
       with(quantityShipped, 500)));
 
-    shipmentLineItem.setReplacedProductCode(null);
+    shipmentLineItem.setSubstitutedProductCode(null);
     when(requisitionService.getNonSkippedLineItem(1L, "P10")).thenReturn(new RnrLineItem());
     when(productService.getByCode(shipmentLineItem.getProductCode())).thenReturn(new Product());
 
@@ -88,7 +88,7 @@ public class ShipmentServiceTest {
       with(orderId, 1L),
       with(quantityShipped, 500)));
 
-    shipmentLineItem.setReplacedProductCode(null);
+    shipmentLineItem.setSubstitutedProductCode(null);
     when(requisitionService.getNonSkippedLineItem(1L, "P10")).thenReturn(null);
     when(productService.getByCode(shipmentLineItem.getProductCode())).thenReturn(new Product());
 
@@ -116,7 +116,7 @@ public class ShipmentServiceTest {
     ShipmentLineItem shipmentLineItem = spy(make(a(defaultShipmentLineItem, with(productCode, "P10"), with(orderId, 1L),
       with(quantityShipped, 20))));
 
-    shipmentLineItem.setReplacedProductCode(null);
+    shipmentLineItem.setSubstitutedProductCode(null);
     RnrLineItem lineItem = make(a(defaultRnrLineItem));
     when(requisitionService.getNonSkippedLineItem(shipmentLineItem.getOrderId(), "P10")).thenReturn(lineItem);
     when(productService.getByCode(shipmentLineItem.getProductCode())).thenReturn(new Product());

@@ -35,8 +35,6 @@ public class ShipmentLineItem extends LineItem {
 
   private Long orderId;
 
-  private String concatenatedOrderId;
-
   private String facilityCode;
 
   private String programCode;
@@ -46,8 +44,6 @@ public class ShipmentLineItem extends LineItem {
   private String productCode;
 
   private Integer quantityOrdered;
-
-  private String replacedProductCode;
 
   private Integer quantityShipped;
 
@@ -64,6 +60,8 @@ public class ShipmentLineItem extends LineItem {
   private String substitutedProductCode;
 
   private String substitutedProductName;
+
+  private String batch;
 
   private Integer substitutedProductQuantityShipped;
 

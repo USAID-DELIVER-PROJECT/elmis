@@ -31,9 +31,9 @@ public interface ShipmentFileColumnMapper {
     "modifiedBy = #{modifiedBy},",
     "modifiedDate = DEFAULT ",
     "WHERE name = #{name}"})
-  public void update(EDIFileColumn shipmentFileColumn);
+  void update(EDIFileColumn shipmentFileColumn);
 
-  @Select("SELECT * FROM shipment_file_columns ORDER BY id")
-  public List<EDIFileColumn> getAll();
+  @Select("SELECT * FROM shipment_file_columns ORDER BY position")
+   List<EDIFileColumn> getAll();
 
 }
