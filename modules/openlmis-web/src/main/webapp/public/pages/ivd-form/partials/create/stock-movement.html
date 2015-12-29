@@ -14,66 +14,103 @@
   <h2>
     <span openlmis-message="label.vaccine.stock.status"></span>
   </h2>
-
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th ng-if="false" ng-repeat-start="column in report.columnTemplate | filter : {visible:true}"></th>
-        <th class="span5" ng-if="column.name == 'productName'">
-          <span openlmis-message="label.vaccine.stock.status.product"></span>
-        </th>
-        <th class="span1" ng-if="column.name != 'productName' && column.name != 'skipped'" ng-repeat-end="">{{column.label}}</th>
-
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="productCategory" ng-repeat-start="product in report.logisticsLineItems" ng-show="$index == 0 || ( $index > 0 && product.productCategory != report.logisticsLineItems[$index - 1].productCategory)">
-        <td colspan="14">{{product.productCategory}}</td>
-      </tr>
-      <tr ng-repeat-end >
-        <td ng-if="false" ng-repeat-start="column in report.columnTemplate | filter : {visible:true}"></td>
-        <td class="cell-input" ng-if="column.name == 'productName'">
-          <span class="cell-text">{{product.productName}}</span>
-        </td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'openingBalance'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.openingBalance" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityReceived'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityReceived" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityIssued'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityIssued" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'closingBalance'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.closingBalance" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityVvmAlerted'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-disabled="!product.product.fullSupply" ng-model="product.quantityVvmAlerted" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityFreezed'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-disabled="!product.product.fullSupply" ng-model="product.quantityFreezed" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityExpired'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-disabled="!product.product.fullSupply" ng-model="product.quantityExpired" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityOtherWasted'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityOtherWasted" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityDiscardedUnopened'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityDiscardedUnopened" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityDiscardedOpened'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityDiscardedOpened" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-general padding2px" ng-if="column.name == 'reasonForDiscardingUnopened'">
-          <select ng-disabled="report.status != 'DRAFT'" ng-model="product.discardingReasonId" ng-show="!rowRequiresExplanation(product);">
-            <option ng-repeat="reason in discardingReasons" value="{{reason.id}}">{{reason.name}}</option>
-          </select>
+  <div adjust-height bottom-offset="180" tab-scroll>
+    <div class="float-left left-table parent">
+      <table class="table table-bordered" fixed-table-header>
+        <thead>
+          <tr style="height: 55px;">
+            <th>
+              <span openlmis-message="label.vaccine.stock.status.product"></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr style="height: 31px;" class="productCategory" ng-repeat-start="product in report.logisticsLineItems"
+            ng-show="$index == 0 || ( $index > 0 && product.productCategory != report.logisticsLineItems[$index - 1].productCategory)">
+          <td colspan="14">{{product.productCategory}}</td>
+        </tr>
+        <tr style="height: 36px;" ng-repeat-end>
+          <td class="cell-input">
+            <span class="cell-text">{{product.productName}}</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="float-left right-table parent" custom-horizontal-scroll>
+      <table class="table table-bordered" fixed-table-header id="notFrozen">
+        <thead>
+        <tr style="height: 55px;">
+          <th ng-if="false" ng-repeat-start="column in report.columnTemplate | filter : {visible:true}"></th>
+          <th class="span1" ng-if="column.name != 'productName' && column.name != 'skipped'" ng-repeat-end="">
+            {{column.label}}
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="productCategory" ng-repeat-start="product in report.logisticsLineItems"
+            ng-show="$index == 0 || ( $index > 0 && product.productCategory != report.logisticsLineItems[$index - 1].productCategory)">
+          <td colspan="14">&nbsp;</td>
+        </tr>
+        <tr ng-repeat-end>
+          <td ng-if="false" ng-repeat-start="column in report.columnTemplate | filter : {visible:true}"></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'openingBalance'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.openingBalance"
+                   numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityReceived'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityReceived"
+                   numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityIssued'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityIssued"
+                   numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'closingBalance'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.closingBalance"
+                   numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityVvmAlerted'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-disabled="!product.product.fullSupply"
+                   ng-model="product.quantityVvmAlerted" numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityFreezed'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-disabled="!product.product.fullSupply"
+                   ng-model="product.quantityFreezed" numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityExpired'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-disabled="!product.product.fullSupply"
+                   ng-model="product.quantityExpired" numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityOtherWasted'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityOtherWasted"
+                   numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityDiscardedUnopened'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityDiscardedUnopened"
+                   numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityDiscardedOpened'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.quantityDiscardedOpened"
+                   numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-general padding2px" ng-if="column.name == 'reasonForDiscardingUnopened'">
+            <select ng-disabled="report.status != 'DRAFT'" ng-model="product.discardingReasonId"
+                    ng-show="!rowRequiresExplanation(product);">
+              <option ng-repeat="reason in discardingReasons" value="{{reason.id}}">{{reason.name}}</option>
+            </select>
           <span ng-show="rowRequiresExplanation(product);">
-            <input ng-disabled="report.status != 'DRAFT'" ng-model="product.discardingReasonExplanation" style="width: 80%; text-align: left;" type="text"/>
+            <input ng-disabled="report.status != 'DRAFT'" ng-model="product.discardingReasonExplanation"
+                   style="width: 80%; text-align: left;" type="text"/>
             <a ng-click="product.discardingReasonId = undefined;">
               <i class="icon-remove-circle"></i>
             </a>
           </span>
 
-        </td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'daysStockedOut'">
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.daysStockedOut" numeric-validator="positiveInteger" type="text"/></td>
-        <td class="cell-input col-beginningBalance" ng-if="column.name == 'remarks'">
-          <input ng-disabled="report.status != 'DRAFT'" ng-model="product.remarks" type="text"/>
-        </td>
-        <td ng-if="false" ng-repeat-end=""></td>
-      </tr>
-    </tbody>
-  </table>
+          </td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'daysStockedOut'">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="product.daysStockedOut"
+                   numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-beginningBalance" ng-if="column.name == 'remarks'">
+            <input ng-disabled="report.status != 'DRAFT'" ng-model="product.remarks" type="text"/>
+          </td>
+          <td ng-if="false" ng-repeat-end=""></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="clear-both"></div>
+  <br />
 </div>
+
