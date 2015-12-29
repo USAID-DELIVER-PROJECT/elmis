@@ -45,13 +45,13 @@
           <option value="{{s.id}}" ng-selected="s.id == item.operationalStatusId" ng-repeat="s in operationalStatuses">{{s.name}}</option>
         </select>
       </td>
-      <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
+      <td class="cell-input col-beginningBalance"><input ng-disabled="report.status != 'DRAFT'" numeric-validator="positiveInteger" maxlength="6"
                                                          ng-model="item.minTemp" type="text"/></td>
-      <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
+      <td class="cell-input col-beginningBalance"><input ng-disabled="report.status != 'DRAFT'" numeric-validator="positiveInteger" maxlength="6"
                                                          ng-model="item.maxTemp" type="text"/></td>
-      <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
+      <td class="cell-input col-beginningBalance"><input ng-disabled="report.status != 'DRAFT'" numeric-validator="positiveInteger" maxlength="6"
                                                          ng-model="item.minEpisodeTemp" type="text"/></td>
-      <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
+      <td class="cell-input col-beginningBalance"><input ng-disabled="report.status != 'DRAFT'" numeric-validator="positiveInteger" maxlength="6"
                                                          ng-model="item.maxEpisodeTemp" type="text"/></td>
     </tr>
     </tbody>
