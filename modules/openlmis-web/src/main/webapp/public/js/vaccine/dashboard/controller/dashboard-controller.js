@@ -21,6 +21,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                                     VaccineDashboardMonthlyWastage,
                                     VaccineDashboardDistrictWastage,
                                     VaccineDashboardBundle,
+                                    dashboardSlidesHelp,
                                     VaccineDashboardFacilityCoverageDetails,
                                     VaccineDashboardFacilityCoverage,
                                     defaultProduct,
@@ -34,6 +35,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
         openPanel: true
     };
 
+    $scope.dashboardHelps = dashboardSlidesHelp;
     $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
     $scope.defaultProduct = defaultProduct;
     $scope.defaultMonthlyPeriod = defaultMonthlyPeriod;
@@ -483,6 +485,28 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
 
 }
 VaccineDashboardController.resolve = {
+    dashboardSlidesHelp: function($q, $timeout, HelpContentByKey){
+      var deferred = $q.defer();
+        var helps =  {};
+        $timeout(function(){
+            HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function(data){
+                helps['coverageHelp'] = data.siteContent;
+            });
+            HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function(data){
+                helps['wastageHelp'] = data.siteContent;
+            });
+            HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function(data){
+                helps['sessionsHelp'] = data.siteContent;
+            });
+            HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function(data){
+                helps['dropoutHelp'] = data.siteContent;
+            });
+
+            deferred.resolve(helps);
+
+        },100);
+        return deferred.promise;
+    },
     defaultProduct : function($q, $timeout, SettingsByKey){
         var deferred = $q.defer();
         $timeout(function () {
