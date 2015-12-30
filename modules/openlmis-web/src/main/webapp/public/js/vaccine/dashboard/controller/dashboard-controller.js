@@ -170,8 +170,16 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                 $scope.monthlyCoverage.dataPoints = data.monthlyCoverage;
             });
 
-            VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.monthlyCoverage.startDate, endDate: $scope.filter.monthlyCoverage.endDate,
-                product: $scope.filter.monthlyCoverage.product}, function(data){
+        }
+    };
+
+    $scope.coverageDetailCallback = function(){
+        if(!isUndefined( $scope.filter.detailCoverage.startDate) &&
+            !isUndefined( $scope.filter.detailCoverage.endDate) &&
+            !isUndefined($scope.filter.detailCoverage.product) && $scope.filter.detailCoverage.product !== 0){
+
+            VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
+                product: $scope.filter.detailCoverage.product}, function(data){
 
                 $scope.coverageDetails = data.facilityCoverageDetails;
                 $scope.periodsList = _.uniq(_.pluck(data.facilityCoverageDetails,'period_name'));
@@ -180,16 +188,15 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                 angular.forEach($scope.facilityList, function(facility){
                     var district =_.findWhere($scope.coverageDetails, {facility_name: facility}).district_name;
 
-                $scope.facilityDetails.push({district: district, facilityName: facility, indicator: 'target', indicatorValues: $scope.getIndicatorValues(facility, 'target')});
-                $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'actual', indicatorValues: $scope.getIndicatorValues(facility, 'actual')});
-                $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'coverage', indicatorValues: $scope.getIndicatorValues(facility, 'coverage')});
+                    $scope.facilityDetails.push({district: district, facilityName: facility, indicator: 'target', indicatorValues: $scope.getIndicatorValues(facility, 'target')});
+                    $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'actual', indicatorValues: $scope.getIndicatorValues(facility, 'actual')});
+                    $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'coverage', indicatorValues: $scope.getIndicatorValues(facility, 'coverage')});
 
-        });
+                });
             });
 
         }
     };
-
 
     $scope.getIndicatorValues = function (facility, indicator) {
         var facilityDetail = _.where($scope.coverageDetails, {facility_name: facility});
