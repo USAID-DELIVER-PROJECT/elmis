@@ -490,16 +490,16 @@ VaccineDashboardController.resolve = {
         var helps =  {};
         $timeout(function(){
             HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function(data){
-                helps['coverageHelp'] = data.siteContent;
+                helps.coverageHelp = data.siteContent;
             });
             HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function(data){
-                helps['wastageHelp'] = data.siteContent;
+                helps.wastageHelp = data.siteContent;
             });
             HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function(data){
-                helps['sessionsHelp'] = data.siteContent;
+                helps.sessionsHelp = data.siteContent;
             });
             HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function(data){
-                helps['dropoutHelp'] = data.siteContent;
+                helps.dropoutHelp= data.siteContent;
             });
 
             deferred.resolve(helps);
