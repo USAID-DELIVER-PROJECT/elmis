@@ -24,7 +24,8 @@
           </label>
 
           <div class="form-field">
-            <input ng-required="true" ng-model="estimate_category.name" name="name" id="name" type="text" maxlength="200"/>
+            <input ng-required="true" ng-model="estimate_category.name" name="name" id="name" type="text"
+                   maxlength="200"/>
           </div>
         </div>
       </div>
@@ -32,14 +33,28 @@
 
       <div class="form-row clearfix">
         <div class="form-cell">
-          <label for="defaultConversionFactor">
+          <label for="estimate.defaultConversionFactor">
             <span openlmis-message="label.demographic.default.conversion.factor"></span>
             <span class="label-required">*</span>
           </label>
 
           <div class="form-field">
-            <input ng-required="true" ng-model="estimate_category.defaultConversionFactor" name="defaultConversionFactor"
-                   id="defaultConversionFactor" type="text" maxlength="200"/>
+            <div class="position-relative">
+              <input
+                ng-required="true"
+                ng-model="estimate_category.defaultConversionFactor"
+                name="defaultConversionFactor"
+                id="estimate.defaultConversionFactor"
+                type="text"
+                class="right-justified"
+                numeric-validator="positiveNumericValue,3,2"
+                maxlength="6"
+              />
+              <span class="rnr-form-error"
+                    style="display:none;"
+                    id="defaultConversionFactor"
+                    openlmis-message="error.number.only"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -60,11 +75,13 @@
 
     <div form-toolbar id="action_buttons" class="action-buttons">
       <div class="form-cell button-row">
-        <input id="saveButton" type="submit" id="save-button" ng-disabled="categoryForm.$invalid" class="btn btn-primary save-button" openlmis-message="button.save" />
-        <a id="cancelButton" href="#/list" type="button" class="btn btn-cancel cancel-button"  ><span openlmis-message="button.cancel"></span></a>
+        <input id="saveButton" type="submit" id="save-button" ng-disabled="categoryForm.$invalid"
+               class="btn btn-primary save-button" openlmis-message="button.save"/>
+        <a id="cancelButton" href="#/list" type="button" class="btn btn-cancel cancel-button"><span
+          openlmis-message="button.cancel"></span></a>
       </div>
 
-      <div class="toolbar-error" id="saveErrorMsgDiv" ng-bind="error" ng-show="error" />
+      <div class="toolbar-error" id="saveErrorMsgDiv" ng-bind="error" ng-show="error"/>
       <div class="toolbar-success" id="saveSuccessMsgDiv" openlmis-message="message" ng-show="message"></div>
     </div>
 

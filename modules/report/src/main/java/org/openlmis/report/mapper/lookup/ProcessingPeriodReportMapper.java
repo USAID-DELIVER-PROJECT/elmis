@@ -44,7 +44,7 @@ public interface ProcessingPeriodReportMapper {
 
     @Select(" select  EXTRACT(YEAR FROM pp.startdate) as year, ps.name as groupname, pp.name as periodname, pp.id AS periodid, ps.id as groupid   \n" +
             " from processing_periods pp    \n" +
-            " join processing_schedules ps on pp.scheduleid = ps.id  \n" +
+            " join processing_schedules ps on pp.scheduleid = ps.id and lower(ps.code) = lower('Monthly') \n" +
             " join (select distinct programid, scheduleid from requisition_group_program_schedules) rps on rps.scheduleid = ps.id and rps.scheduleid = pp.scheduleid  \n" +
             " where rps.programid in (select distinct programid from vaccine_reports)    \n" +
             " order by year,groupname,pp.startdate  asc")

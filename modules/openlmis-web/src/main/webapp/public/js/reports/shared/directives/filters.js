@@ -1406,5 +1406,97 @@ app.directive('vaccineFacilityBySupervisoryNodeFilter', ['UserFacilityWithViewSt
         }]
 );
 
+app.directive('rangePagination',['SettingsByKey', function(SettingsByKey){
+
+    var getRange = function(total, range){
+
+        if(range <=0)
+            return null;
+        var pages = []; var offset; var extremeVal;
+        var loops = Math.floor(total/range)+1;
+
+        for(var i =1 ; i <= loops ; i++){
+            offset = (i-1)*range ;
+            extremeVal = total > i*range ? i*range : total;
+            if(offset >= total) break;
+            pages.push( { offset: offset, range: range, value: (offset+1).toString().concat('-').concat(extremeVal.toString())});
+
+        }
+
+        return pages;
+
+    };
+
+    return {
+        restrict: 'E',
+        scope: {
+            range: '=?range',
+            labelAll: '@labelAll',
+            fieldLabel: '@fieldLabel',
+            total: '=total',
+            offset: '=?offset',
+            onChange: '&'
+        },
+
+        controller: function($scope){
+
+            //$scope.fieldLabel = 'label.facility';
+
+            SettingsByKey.get({key:'VACCINE_DASHBOARD_MAX_X_POINTS_FOR_CHART'}, function(data, er){
+                $scope.Max_X_Points =  !isUndefined(data.settings) ? data.settings.value : null;
+            });
+
+            var computePages = function(){
+                var range = 0;
+                if(!isUndefined($scope.range)){
+                    range = $scope.range;
+                }
+                if(!isUndefined($scope.Max_X_Points)){
+                    range = $scope.Max_X_Points;
+
+                }
+                if(range <=0)
+                    return;
+
+                if(range > 12)
+                    range = 12; //12 is the maximum allowed range
+
+                $scope.range = range;
+
+                $scope.pages = getRange($scope.total, $scope.range);
+                if(!isUndefined($scope.pages) && $scope.total <= $scope.range){
+
+                    $scope.offset = -1;
+                    $scope.pages.unshift({offset: -1, range: $scope.range, value: $scope.labelAll});
+                }else{
+
+                    $scope.offset = 0;
+                }
+            };
+
+            $scope.$watch('offset', function(){
+                $scope.onChange(); // custom callback function to be called for the different instances of this directive in a single page
+                $scope.$parent.OnFilterChanged();// Used only when this directive is used once in a page
+            });
+
+            $scope.$watch('total', function(){
+                computePages();
+            });
+
+           // computePages();
+
+        },
+
+
+        link: function(scope, elm, attr) {
+
+
+        },
+        templateUrl: 'filter-range-pagination'
+    };
+
+
+}]);
+
 
 

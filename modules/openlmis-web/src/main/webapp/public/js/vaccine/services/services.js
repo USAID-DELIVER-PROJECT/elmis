@@ -321,6 +321,14 @@ services.factory('VaccineDashboardDistrictStock', function($resource){
 services.factory('VaccineDashboardBundle', function($resource){
     return $resource('/vaccine/dashboard/bundle.json',{},{});
 });
+services.factory('VaccineDashboardFacilityCoverage', function($resource){
+    return $resource('/vaccine/dashboard/facility-coverage.json',{},{});
+});
+
+
+services.factory('VaccineDashboardFacilityCoverageDetails', function($resource){
+    return $resource('/vaccine/dashboard/facility-coverage-details.json',{},{});
+});
 
 services.factory('Distribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/by-voucher-number/', {}, {});

@@ -21,6 +21,8 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                                     VaccineDashboardMonthlyWastage,
                                     VaccineDashboardDistrictWastage,
                                     VaccineDashboardBundle,
+                                    VaccineDashboardFacilityCoverageDetails,
+                                    VaccineDashboardFacilityCoverage,
                                     defaultProduct,
                                     defaultPeriodTrend,
                                     defaultMonthlyPeriod,
@@ -35,8 +37,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
     $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
     $scope.defaultProduct = defaultProduct;
     $scope.defaultMonthlyPeriod = defaultMonthlyPeriod;
-
-    $scope.label ={ zone: messageService.get('label.zone'), period: messageService.get('label.period')} ;
+    $scope.label ={ zone: messageService.get('label.zone'), period: messageService.get('label.period')};
 
 
 //Instantiate Monthly Sessions charting options
@@ -70,6 +71,15 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                       {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
                     ],
         dataX: {"id": "period_name"}
+    };
+    $scope.facilityCoverage = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"},
+            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"},
+            {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
+        ],
+        dataX: {"id": "facility_name"}
     };
 
     $scope.districtCoverage = {
@@ -145,7 +155,12 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
     $scope.formatValue = function (value, ratio, id) {
         return $filter('number')(value);
     };
-
+    $scope.facilityCoveragePagination = function(){
+         var s = parseInt($scope.filter.facilityCoverageOffset,10)+ parseInt($scope.filter.facilityCoverageRange,10);
+        if(!isUndefined($scope.filter.facilityCoverageOffset) ){
+            $scope.facilityCoverage.dataPoints = $scope.facilityCoverage.data.slice(parseInt($scope.filter.facilityCoverageOffset,10), s );
+        }
+    };
     $scope.monthlyCoverageCallback = function(){
         if(!isUndefined( $scope.filter.monthlyCoverage.startDate) &&
             !isUndefined( $scope.filter.monthlyCoverage.endDate) &&
@@ -154,6 +169,53 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                 product: $scope.filter.monthlyCoverage.product}, function(data){
                 $scope.monthlyCoverage.dataPoints = data.monthlyCoverage;
             });
+
+            VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.monthlyCoverage.startDate, endDate: $scope.filter.monthlyCoverage.endDate,
+                product: $scope.filter.monthlyCoverage.product}, function(data){
+
+                $scope.coverageDetails = data.facilityCoverageDetails;
+                $scope.periodsList = _.uniq(_.pluck(data.facilityCoverageDetails,'period_name'));
+                $scope.facilityList = _.uniq(_.pluck(data.facilityCoverageDetails,'facility_name'));
+                $scope.facilityDetails  = [];
+                angular.forEach($scope.facilityList, function(facility){
+                    var district =_.findWhere($scope.coverageDetails, {facility_name: facility}).district_name;
+
+                $scope.facilityDetails.push({district: district, facilityName: facility, indicator: 'target', indicatorValues: $scope.getIndicatorValues(facility, 'target')});
+                $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'actual', indicatorValues: $scope.getIndicatorValues(facility, 'actual')});
+                $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'coverage', indicatorValues: $scope.getIndicatorValues(facility, 'coverage')});
+
+        });
+            });
+
+        }
+    };
+
+
+    $scope.getIndicatorValues = function (facility, indicator) {
+        var facilityDetail = _.where($scope.coverageDetails, {facility_name: facility});
+        var values = _.pluck(facilityDetail, indicator);
+        var tot = _.reduce(values, function(res, num){return res + num;}, 0);
+        values.push(tot);
+        return values;
+    };
+    $scope.getDetail = function(facility, period){
+        return _.findWhere($scope.coverageDetails, {facility_name: facility, period_name: period});
+    };
+
+    $scope.facilityCoverageCallback = function(){
+        if(!isUndefined( $scope.filter.facilityCoverage.period) &&
+            !isUndefined($scope.filter.facilityCoverage.product) && $scope.filter.monthlyCoverage.product !== 0){
+            VaccineDashboardFacilityCoverage.get({period: $scope.filter.facilityCoverage.period,
+                product: $scope.filter.facilityCoverage.product}, function(data){
+                $scope.facilityCoverage.data = data.facilityCoverage;
+                if(!isUndefined($scope.facilityCoverage.data)){
+                    $scope.filter.totalFacilityCoverage = $scope.facilityCoverage.data.length;
+                }else{
+                    $scope.filter.totalFacilityCoverage= 0;
+                }
+            });
+
+
         }
     };
 

@@ -10,29 +10,49 @@
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <div class="rnr-table">
-  <h2><span openlmis-message="label.vaccine.disease"></span></h2>
+  <h2>
+    <span openlmis-message="label.vaccine.disease"></span>
+  </h2>
 
   <div class="span9" style="margin-left: 0px;">
-  <table class="table table-bordered">
-    <thead>
-    <tr class="text-row">
-      <th class="span5"><span openlmis-message="label.vaccine.disease.name"></span></th>
-      <th class="span1"><span openlmis-message="label.vaccine.disease.cases"></span></th>
-      <th class="span1"><span openlmis-message="label.vaccine.disease.cumulative.cases"></span></th>
-      <th class="span1"><span openlmis-message="label.vaccine.disease.death"></span></th>
-      <th class="span1"><span openlmis-message="label.vaccine.disease.cumulative.deaths"></span></th>
-    </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="disease in report.diseaseLineItems">
-        <td class="cell-input"><span class="cell-text">{{disease.diseaseName}}</span></td>
-        <td class="cell-input col-general"><input numeric-validator="positiveInteger" maxlength="8" type="text" ng-model="disease.cases" /></td>
-        <td class="cell-input col-general number" style="text-align: right"><span class="cell-text" ng-bind="(disease.calculatedCumulativeCases + toNumber(disease.cases))"></span></td>
-        <td class="cell-input col-general"><input numeric-validator="positiveInteger" maxlength="8" type="text" ng-model="disease.death" /></td>
-        <td class="cell-input col-general number" style="text-align: right"><span class="cell-text" ng-bind="(disease.calculatedCumulativeDeaths + toNumber(disease.death))"></span></td>
+    <table class="table table-bordered">
+      <thead>
+        <tr class="text-row">
+          <th class="span5">
+            <span openlmis-message="label.vaccine.disease.name"></span>
+          </th>
+          <th class="span1">
+            <span openlmis-message="label.vaccine.disease.cases"></span>
+          </th>
+          <th class="span1">
+            <span openlmis-message="label.vaccine.disease.cumulative.cases"></span>
+          </th>
+          <th class="span1">
+            <span openlmis-message="label.vaccine.disease.death"></span>
+          </th>
+          <th class="span1">
+            <span openlmis-message="label.vaccine.disease.cumulative.deaths"></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="disease in report.diseaseLineItems">
+          <td class="cell-input">
+            <span class="cell-text">{{disease.diseaseName}}</span>
+          </td>
+          <td class="cell-input col-general">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="disease.cases" numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-general number" style="text-align: right">
+            <span class="cell-text" ng-bind="(disease.calculatedCumulativeCases + toNumber(disease.cases))"></span>
+          </td>
+          <td class="cell-input col-general">
+            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="disease.death" numeric-validator="positiveInteger" type="text"/></td>
+          <td class="cell-input col-general number" style="text-align: right">
+            <span class="cell-text" ng-bind="(disease.calculatedCumulativeDeaths + toNumber(disease.death))"></span>
+          </td>
 
-      </tr>
-    </tbody>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
