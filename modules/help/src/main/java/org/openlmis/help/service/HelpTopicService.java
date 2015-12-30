@@ -188,7 +188,10 @@ public class HelpTopicService {
         HelpTopic siteContent= this.repository.getSiteContent(contentName);
         return siteContent;
     }
-
+    public HelpTopic getContentByKey(String contentName){
+        HelpTopic siteContent= this.repository.getContentByKey(contentName);
+        return siteContent;
+    }
     public List<HelpTopic> getVaccineReportLegendContent(){
         return this.repository.getVaccineReportLegend();
     }

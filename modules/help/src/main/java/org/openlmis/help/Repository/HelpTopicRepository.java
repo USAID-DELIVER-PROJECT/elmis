@@ -78,7 +78,11 @@ public List<HelpTopic> loadChildrenOfHelpTopic(Long loggedUserId, HelpTopic pare
       siteContent=this.mapper.getSiteContent(SiteConstantEnum.SITE_CONTENT.getValue(),contentName);
       return siteContent;
     }
-
+    public HelpTopic  getContentByKey(String contentName){
+        HelpTopic siteContent=null;
+        siteContent=this.mapper.getContentByKey(contentName);
+        return siteContent;
+    }
   public List<HelpTopic> getVaccineReportLegend(){
       return this.mapper.getVaccineReportLegendContent();
   }

@@ -793,6 +793,9 @@ services.factory('HelpUsertopicList', function ($resource) {
 services.factory('SiteContent', function ($resource) {
     return $resource('/site_content/:content_name.json', {}, {post:{method:'GET'}});
 });
+services.factory('HelpContentByKey', function ($resource) {
+    return $resource('/general_content/:content_key.json', {}, {post:{method:'GET'}});
+});
 services.factory('VaccineTargetUpdate', function ($resource) {
     return $resource('/vaccine/target/create.json', {}, {post:{method:'POST'}});
 });
