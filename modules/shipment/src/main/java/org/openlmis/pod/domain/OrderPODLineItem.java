@@ -100,7 +100,7 @@ public class OrderPODLineItem extends BaseModel {
     this.setPacksToShip(shipmentLineItem.getPacksToShip());
     this.setFullSupply(shipmentLineItem.getFullSupply());
     this.setQuantityShipped(shipmentLineItem.getQuantityShipped());
-    this.setReplacedProductCode(shipmentLineItem.getReplacedProductCode());
+    this.setReplacedProductCode(shipmentLineItem.getSubstitutedProductCode());
     this.setCreatedBy(createdBy);
     this.setModifiedBy(createdBy);
   }

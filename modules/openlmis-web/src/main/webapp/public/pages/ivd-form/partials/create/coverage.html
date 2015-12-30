@@ -63,36 +63,37 @@
   <div class="span6">
     <div class="rnr-table">
       <table class="table table-bordered" style="margin-bottom: 0px; padding-bottom: 0px">
-      <thead>
-        <tr class="text-row">
-          <th colspan="4" openlmis-message="vaccine.immunization.sessions"></th>
-        </tr>
-        <tr class="text-row">
-          <th class="span2" openlmis-message="vaccine.immunization.sessions.fixed"></th>
-          <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach"></th>
-          <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.outreach"></th>
-          <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.percentage"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="cell-input col-general">
-            <input maxlength="8" ng-model="report.fixedImmunizationSessions" numeric-validator="positiveInteger" type="text">
-          </td>
-          <td class="cell-input col-general">
-            <input maxlength="8" ng-model="report.outreachImmunizationSessions" numeric-validator="positiveInteger" type="text">
-          </td>
-          <td class="cell-input col-general">
-            <input maxlength="8" ng-model="report.outreachImmunizationSessionsCanceled" numeric-validator="positiveInteger" type="text">
-          </td>
-          <td class="col-general number">
-            <span ng-show="report.outreachImmunizationSessions > 0">
-              {{ ((report.outreachImmunizationSessions != 0)? (report.outreachImmunizationSessionsCanceled * 100 / report.outreachImmunizationSessions) : 0) | number : '2' }} %
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <thead>
+          <tr class="text-row">
+            <th colspan="4" openlmis-message="vaccine.immunization.sessions"></th>
+          </tr>
+          <tr class="text-row">
+            <th class="span2" openlmis-message="vaccine.immunization.sessions.fixed"></th>
+            <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach"></th>
+            <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.outreach"></th>
+            <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.percentage"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cell-input col-general">
+              <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="report.fixedImmunizationSessions" numeric-validator="positiveInteger" type="text">
+            </td>
+            <td class="cell-input col-general">
+              <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="report.outreachImmunizationSessions" numeric-validator="positiveInteger" type="text">
+            </td>
+            <td class="cell-input col-general">
+              <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="report.outreachImmunizationSessionsCanceled" numeric-validator="positiveInteger" type="text">
+            </td>
+            <td class="col-general number">
+              <span ng-show="report.outreachImmunizationSessions > 0">
+                {{ ((report.outreachImmunizationSessions != 0)? (report.outreachImmunizationSessionsCanceled * 100 / report.outreachImmunizationSessions) : 0) | number : '2' }}
+                %
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -101,16 +102,16 @@
     <div class="rnr-table">
       <table class="table table-bordered">
         <thead>
-        <tr class="text-row">
-          <th  openlmis-message="label.vaccine.major.immunization.activities"></th>
-        </tr>
+          <tr class="text-row">
+            <th openlmis-message="label.vaccine.major.immunization.activities"></th>
+          </tr>
         </thead>
         <tbody>
-        <tr>
-          <td class="cell-input col-general">
-            <textarea style="width: 98%" ng-model="report.majorImmunizationActivities" rows="4"></textarea>
-          </td>
-        </tr>
+          <tr>
+            <td class="cell-input col-general">
+              <textarea ng-disabled="report.status != 'DRAFT'" ng-model="report.majorImmunizationActivities" rows="4" style="width: 98%"></textarea>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -118,4 +119,3 @@
   </div>
 </div>
 <div class="clearfix"><br/></div>
-

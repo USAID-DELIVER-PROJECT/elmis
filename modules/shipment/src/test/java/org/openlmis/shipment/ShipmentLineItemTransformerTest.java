@@ -53,7 +53,7 @@ public class ShipmentLineItemTransformerTest {
     assertThat(lineItem.getPackedDate().toString(), is("Thu Oct 10 00:00:00 IST 2013"));
     assertThat(lineItem.getShippedDate().toString(), is("Sat Oct 12 00:00:00 IST 2013"));
     assertThat(lineItem.getCost().toString(), is("21"));
-    assertThat(lineItem.getReplacedProductCode(), is("P151"));
+    assertThat(lineItem.getSubstitutedProductCode(), is("P151"));
   }
 
   @Test

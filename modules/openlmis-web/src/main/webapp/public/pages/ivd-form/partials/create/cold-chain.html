@@ -45,14 +45,62 @@
           <option value="{{s.id}}" ng-selected="s.id == item.operationalStatusId" ng-repeat="s in operationalStatuses">{{s.name}}</option>
         </select>
       </td>
-      <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
-                                                         ng-model="item.minTemp" type="text"/></td>
-      <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
-                                                         ng-model="item.maxTemp" type="text"/></td>
-      <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
-                                                         ng-model="item.minEpisodeTemp" type="text"/></td>
-      <td class="cell-input col-beginningBalance"><input numeric-validator="positiveInteger" maxlength="6"
-                                                         ng-model="item.maxEpisodeTemp" type="text"/></td>
+      <td class="cell-input col-general">
+        <input
+          name="minTemp-{{$index}}"
+          ng-disabled="report.status != 'DRAFT'"
+          numeric-validator="numericValue,4,2"
+          maxlength="7"
+          ng-model="item.minTemp"
+          type="text"/>
+        <span class="rnr-form-error"
+              style="display:none;"
+              id="minTemp-{{$index}}"
+              openlmis-message="error.number.only"
+        ></span>
+      </td>
+      <td class="cell-input col-general">
+        <input
+          name="maxTemp-{{$index}}"
+          ng-disabled="report.status != 'DRAFT'"
+          numeric-validator="numericValue,4,2"
+          maxlength="7"
+          ng-model="item.maxTemp"
+          type="text"/>
+        <span class="rnr-form-error"
+              style="display:none;"
+              id="maxTemp-{{$index}}"
+              openlmis-message="error.number.only"
+        ></span>
+      </td>
+      <td class="cell-input col-general">
+        <input
+          name="lowTemp-{{$index}}"
+          ng-disabled="report.status != 'DRAFT'"
+          numeric-validator="numericValue,4,2"
+          maxlength="7"
+          ng-model="item.minEpisodeTemp"
+          type="text"/>
+        <span class="rnr-form-error"
+              style="display:none;"
+              id="lowTemp-{{$index}}"
+              openlmis-message="error.number.only"
+        ></span>
+      </td>
+      <td class="cell-input col-general">
+        <input
+          name="highTemp-{{$index}}"
+          ng-disabled="report.status != 'DRAFT'"
+          numeric-validator="numericValue,4,2"
+          maxlength="7"
+          ng-model="item.maxEpisodeTemp"
+          type="text"/>
+        <span class="rnr-form-error"
+              style="display:none;"
+              id="highTemp-{{$index}}"
+              openlmis-message="error.number.only"
+        ></span>
+      </td>
     </tr>
     </tbody>
   </table>
