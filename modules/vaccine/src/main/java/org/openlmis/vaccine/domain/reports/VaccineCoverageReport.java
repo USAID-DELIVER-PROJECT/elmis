@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VaccineReport {
+public class VaccineCoverageReport {
     private String product_name;
     private String display_name;
     private float denominator;

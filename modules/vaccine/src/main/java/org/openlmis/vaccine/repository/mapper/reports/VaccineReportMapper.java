@@ -15,10 +15,9 @@ package org.openlmis.vaccine.repository.mapper.reports;
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.ivdform.domain.reports.*;
-import org.openlmis.vaccine.domain.reports.VaccineReport;
+import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.mapper.reports.builder.CompletenessAndTimelinessQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceCoverageQueryBuilder;
-import org.openlmis.vaccine.repository.mapper.reports.builder.StatusOfVaccinationSuppliesQueryBuilder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -116,7 +115,7 @@ public interface VaccineReportMapper {
 
     @MapKey("product_name")
     @ResultType(HashMap.class)
-    HashMap<String, VaccineReport> calculateVaccineCoverageReport(@Param("reportId") Long reportId);
+    HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport(@Param("reportId") Long reportId);
 
     @Select("" +
             "select \n" +
@@ -152,7 +151,7 @@ public interface VaccineReportMapper {
 
     @MapKey("product_name")
     @ResultType(HashMap.class)
-    HashMap<String, VaccineReport> calculateAggeregatedVaccineCoverageReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    HashMap<String, VaccineCoverageReport> calculateAggeregatedVaccineCoverageReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select \n" +
             "product_name,\n" +

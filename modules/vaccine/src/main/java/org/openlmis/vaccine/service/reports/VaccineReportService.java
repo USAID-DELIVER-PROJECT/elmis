@@ -13,7 +13,6 @@
 package org.openlmis.vaccine.service.reports;
 
 import lombok.NoArgsConstructor;
-import org.apache.ibatis.annotations.Param;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.joda.time.format.DateTimeFormat;
@@ -21,7 +20,7 @@ import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
 import org.openlmis.ivdform.domain.reports.*;
-import org.openlmis.vaccine.domain.reports.VaccineReport;
+import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.reports.VaccineReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,7 +97,7 @@ public class VaccineReportService {
         return repository.getVaccineCoverageAggregateReport(periodId, zoneId);
     }
 
-    private HashMap<String, VaccineReport> calculateVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
             return repository.calculateVaccineCoverageReport(reportId);
         }

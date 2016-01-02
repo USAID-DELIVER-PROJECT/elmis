@@ -12,11 +12,10 @@
 
 package org.openlmis.vaccine.repository.reports;
 
-import org.apache.ibatis.annotations.Param;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.ivdform.domain.reports.*;
-import org.openlmis.vaccine.domain.reports.VaccineReport;
+import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.mapper.reports.VaccineReportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -67,11 +66,11 @@ public class VaccineReportRepository {
   public List<HashMap<String , Object>> getVaccineCoverageAggregateReport(Long periodId, Long zoneId){
     return mapper.getVaccineCoverageAggregateReportByGeoZone(periodId, zoneId);
   }
-public HashMap<String, VaccineReport> calculateVaccineCoverageReport( Long reportId){
+public HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport( Long reportId){
   return mapper.calculateVaccineCoverageReport(reportId);
 }
-  public HashMap<String, VaccineReport> calculateVaccineCoverageReport( Long periodId, Long zoneId){
-    return mapper.calculateAggeregatedVaccineCoverageReport(periodId,zoneId);
+  public HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport( Long periodId, Long zoneId){
+    return mapper.calculateAggeregatedVaccineCoverageReport(periodId, zoneId);
   }
   public List<VaccineReport> getImmunizationSession(Long reportId){
     return mapper.getImmunizationSession(reportId);
