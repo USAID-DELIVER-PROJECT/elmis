@@ -109,7 +109,9 @@ public interface VaccineReportMapper {
             "           \n" +
             "              from vw_vaccine_coverage \n" +
             "              where period_start_date <= (select startdate from processing_periods\n" +
-            "               where id = (select periodid from vaccine_reports where id = #{reportId))\n" +
+            "               where id = (select periodid from vaccine_reports where id = #{reportId))" +
+            "and   period_year = (select extract(year from startdate) from processing_periods\n" +
+            "               where id = (select periodid from vaccine_reports where id = #{periodId}))" +
             "              group by 1 \n" +
             "")
 
@@ -146,6 +148,8 @@ public interface VaccineReportMapper {
             " INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
             "              where period_start_date <= (select startdate from processing_periods\n" +
             "               where id =  #{periodId})" +
+            "and   period_year = (select extract(year from startdate) from processing_periods\n" +
+            "               where id = (select periodid from vaccine_reports where id = #{periodId}))" +
             " and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )" +
             "              group by 1")
 
