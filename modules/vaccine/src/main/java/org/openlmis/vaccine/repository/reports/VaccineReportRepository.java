@@ -16,7 +16,6 @@ import org.apache.ibatis.annotations.Param;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.ivdform.domain.reports.*;
-import org.openlmis.vaccine.domain.reports.PeriodInfo;
 import org.openlmis.vaccine.domain.reports.VaccineReport;
 import org.openlmis.vaccine.repository.mapper.reports.VaccineReportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
