@@ -21,6 +21,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                                     VaccineDashboardMonthlyWastage,
                                     VaccineDashboardDistrictWastage,
                                     VaccineDashboardBundle,
+                                    dashboardSlidesHelp,
                                     VaccineDashboardFacilityCoverageDetails,
                                     VaccineDashboardFacilityCoverage,
                                     defaultProduct,
@@ -34,6 +35,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
         openPanel: true
     };
 
+    $scope.dashboardHelps = dashboardSlidesHelp;
     $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
     $scope.defaultProduct = defaultProduct;
     $scope.defaultMonthlyPeriod = defaultMonthlyPeriod;
@@ -170,8 +172,16 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                 $scope.monthlyCoverage.dataPoints = data.monthlyCoverage;
             });
 
-            VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.monthlyCoverage.startDate, endDate: $scope.filter.monthlyCoverage.endDate,
-                product: $scope.filter.monthlyCoverage.product}, function(data){
+        }
+    };
+
+    $scope.coverageDetailCallback = function(){
+        if(!isUndefined( $scope.filter.detailCoverage.startDate) &&
+            !isUndefined( $scope.filter.detailCoverage.endDate) &&
+            !isUndefined($scope.filter.detailCoverage.product) && $scope.filter.detailCoverage.product !== 0){
+
+            VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
+                product: $scope.filter.detailCoverage.product}, function(data){
 
                 $scope.coverageDetails = data.facilityCoverageDetails;
                 $scope.periodsList = _.uniq(_.pluck(data.facilityCoverageDetails,'period_name'));
@@ -180,16 +190,15 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                 angular.forEach($scope.facilityList, function(facility){
                     var district =_.findWhere($scope.coverageDetails, {facility_name: facility}).district_name;
 
-                $scope.facilityDetails.push({district: district, facilityName: facility, indicator: 'target', indicatorValues: $scope.getIndicatorValues(facility, 'target')});
-                $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'actual', indicatorValues: $scope.getIndicatorValues(facility, 'actual')});
-                $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'coverage', indicatorValues: $scope.getIndicatorValues(facility, 'coverage')});
+                    $scope.facilityDetails.push({district: district, facilityName: facility, indicator: 'target', indicatorValues: $scope.getIndicatorValues(facility, 'target')});
+                    $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'actual', indicatorValues: $scope.getIndicatorValues(facility, 'actual')});
+                    $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'coverage', indicatorValues: $scope.getIndicatorValues(facility, 'coverage')});
 
-        });
+                });
             });
 
         }
     };
-
 
     $scope.getIndicatorValues = function (facility, indicator) {
         var facilityDetail = _.where($scope.coverageDetails, {facility_name: facility});
@@ -476,6 +485,28 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
 
 }
 VaccineDashboardController.resolve = {
+    dashboardSlidesHelp: function($q, $timeout, HelpContentByKey){
+      var deferred = $q.defer();
+        var helps =  {};
+        $timeout(function(){
+            HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function(data){
+                helps.coverageHelp = data.siteContent;
+            });
+            HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function(data){
+                helps.wastageHelp = data.siteContent;
+            });
+            HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function(data){
+                helps.sessionsHelp = data.siteContent;
+            });
+            HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function(data){
+                helps.dropoutHelp= data.siteContent;
+            });
+
+            deferred.resolve(helps);
+
+        },100);
+        return deferred.promise;
+    },
     defaultProduct : function($q, $timeout, SettingsByKey){
         var deferred = $q.defer();
         $timeout(function () {
