@@ -405,7 +405,4 @@ public interface VaccineReportMapper {
                                                                                                @Param("productId") Long productId);
 
 
-    @Select("select * from processing_periods where id=#{period_id}")
-    PeriodInfo getPeriodInfo(@Param("period_id") Long period_id);
-
 }

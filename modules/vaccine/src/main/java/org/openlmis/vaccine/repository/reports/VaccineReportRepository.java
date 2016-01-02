@@ -158,9 +158,5 @@ public HashMap<String, VaccineReport> calculateVaccineCoverageReport( Long repor
     public List<Map<String, Object>> getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {
         return mapper.getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(startDate, endDate, districtId, productId);
     }
-  public PeriodInfo getPeriodInfor(Long period_id){
-    PeriodInfo periodInfo=null;
-    periodInfo=this.mapper.getPeriodInfo(period_id);
-    return periodInfo;
-  }
+
 }
