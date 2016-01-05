@@ -157,4 +157,12 @@ public HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport( Lo
         return mapper.getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(startDate, endDate, districtId, productId);
     }
 
+    public List<Map<String,Object>> getAdequacyLevelOfSupplyByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {
+        return mapper.getAdequacyLevelOfSupplyReportDataByDistrict(startDate, endDate, districtId, productId);
+    }
+
+    public List<Map<String,Object>> getAdequacyLevelOfSupplyByRegion(Date startDate, Date endDate, Long districtId, Long productId) {
+        return mapper.getAdequacyLevelOfSupplyReportDataByRegion(startDate, endDate, districtId, productId);
+    }
+
 }

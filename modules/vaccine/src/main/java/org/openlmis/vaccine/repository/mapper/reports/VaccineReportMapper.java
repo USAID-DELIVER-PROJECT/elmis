@@ -16,6 +16,7 @@ import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.ivdform.domain.reports.*;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
+import org.openlmis.vaccine.repository.mapper.reports.builder.AdequacyLevelReportQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.CompletenessAndTimelinessQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceCoverageQueryBuilder;
 import org.springframework.stereotype.Repository;
@@ -406,5 +407,15 @@ public interface VaccineReportMapper {
                                                                                                @Param("districtId") Long districtId,
                                                                                                @Param("productId") Long productId);
 
+    @SelectProvider(type = AdequacyLevelReportQueryBuilder.class, method = "selectAdequacyLevelOfSupplyReportDataByDistrict")
+    List<Map<String, Object>> getAdequacyLevelOfSupplyReportDataByDistrict(@Param("startDate") Date startDate,
+                                                                           @Param("endDate") Date endDate,
+                                                                           @Param("districtId") Long districtId,
+                                                                           @Param("productId") Long productId);
 
+    @SelectProvider(type = AdequacyLevelReportQueryBuilder.class, method = "selectAdequacyLevelOfSupplyReportDataByRegion")
+    List<Map<String, Object>> getAdequacyLevelOfSupplyReportDataByRegion(@Param("startDate") Date startDate,
+                                                                         @Param("endDate") Date endDate,
+                                                                         @Param("districtId") Long districtId,
+                                                                         @Param("productId") Long productId);
 }

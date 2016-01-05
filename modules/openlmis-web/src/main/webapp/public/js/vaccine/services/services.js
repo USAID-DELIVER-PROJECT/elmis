@@ -350,6 +350,11 @@ services.factory('VaccineDashboardDistrictSessions', function($resource) {
 services.factory('CompletenessAndTimeliness', function ($resource) {
     return $resource('/vaccine/report/completenessAndTimeliness.json', {}, {});
 });
+
+services.factory('AdequacyLevelOfSupply', function ($resource) {
+    return $resource('/vaccine/report/adequaceyLevel.json', {}, {});
+});
+
 services.factory('StatuVaccinationSupply', function ($resource) {
     return $resource('/vaccine/report/statusOfVaccinationSupplyReceive.json', {}, {});
 });

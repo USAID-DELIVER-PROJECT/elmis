@@ -1,0 +1,199 @@
+<!--
+~ This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+~
+~ This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+~
+~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+~
+~ You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+-->
+<style>
+    #summary{
+        height; 350px;
+        padding-left: 151px;
+    }
+    .rnr-table {
+        padding-top: 0px !important;
+    }
+    .aggregate-row{
+        border-top: 2px #000 solid !important;
+    }
+    h2 {
+        line-height: 40px;
+    }
+    #parent{
+      height: 500px;
+    }
+    .rnr-table th {
+        min-width: 0px !important;
+    }
+
+    .left-0{
+        border-left: 9px solid #C1C1C1 !important;
+    }
+</style>
+<div class="row-fluid">
+    <div class="box span12">
+        <div class="box-header">
+            <h2 openlmis-message="report.title.adepuacy.level.of.supply"><i class="icon-edit"></i><span class="break"></span></h2>
+            <div class="box-icon">
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+        </div>
+        <div class="app-form">
+            <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                <div  class="clearfix">
+
+                    <!--================================ filter start ====================-->
+
+                    <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="false" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone" ></vaccine-zone-filter>
+
+                    <div class="horizontalFilters form-cell">
+                        <label for="product" class="labels"  openlmis-message="label.product"><span class="label-required">*</span></label>
+                        <div>
+                            <select id="product" ui-select2 class="input-large" ng-model="filter.product" ng-change="OnFilterChanged();">
+                                <option value="">---Select product---</option>
+                                <option ng-repeat="option in product" value="{{ option.id }}">{{ option.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
+                    <!--======================== filter end =========================-->
+                </div>
+            </form>
+            <div style="margin:2px !important;font-size:10px;"  ng-show="periodStartDate" class="row">
+                <div class="span4">
+                    <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate | date:'MMM dd, yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate | date:'MMM dd, yyyy'}}
+                </div>
+            </div>
+            <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                <div class="span11 ">
+                    <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                    </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <table class="table table-bordered" ng-show="datarows.length < 1">
+                <tr>
+                    <td>No data to show under selected filters</td>
+                </tr>
+            </table>
+            <div>
+
+            <h2 ng-show="districtReport.length > 0" >District Level</h2>
+            <div id="parent" ng-show="districtReport.length > 0">
+                <table id="fixTableDistrict" class="rnr-table table-bordered table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th colspan="{{periodCols.length}}" class="left-0">Proportion of vaccination supplies recieved over estimated need</th>
+                        <th colspan="{{periodCols.length}}" class="left-0">Trend of monthly stock level, in weeks</th>
+                        <th colspan="{{periodCols.length}}" class="left-0">Vaccine consuption rate at service delivery</th>
+                        <th colspan="{{periodCols.length}}" class="left-0">Vaccine wastage rates from vaccine vials opened for use</th>
+                        <th colspan="{{periodCols.length}}" class="left-0">Unopened vial wastage rates</th>
+                        <th colspan="{{periodCols.length}}" class="left-0">Global wastage rates</th>
+                    </tr>
+                    <tr>
+                        <th>{{getLocalMessage('label.zone')}}</th>
+                        <th>{{getLocalMessage('label.region')}}</th>
+                        <th>{{getLocalMessage('label.district')}}</th>
+                        <th>{{getLocalMessage('label.target.population')}}</th>
+
+                        <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                        <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                        <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                        <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                        <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                        <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="row in districtReport">
+                        <td>{{districtReport[$index-1].zone_name == row.zone_name ? '' : row.zone_name }}</td>
+                        <td >{{ districtReport[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                        <td >{{ districtReport[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
+                        <td>0</td>
+                        <td ng-repeat="a in row.supplied_over_needs track by $index" class="left-{{$index}}">{{a}} </td>
+                        <td ng-repeat="b in row.mos track by $index" class="left-{{$index}}">{{b}}</td>
+                        <td ng-repeat="c in row.consumption_rate track by $index" class="left-{{$index}}">{{c}}</td>
+                        <td ng-repeat="d in row.wasted_opened track by $index" class="left-{{$index}}">{{d}}</td>
+                        <td ng-repeat="e in row.wasted_unopened track by $index" class="left-{{$index}}">{{e}}</td>
+                        <td ng-repeat="f in row.wasted_global track by $index" class="left-{{$index}}">{{f}}</td>
+                    </tr>
+                    <tfoot>
+
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th >Districts with supply > 150%</th>
+                        <th ng-repeat="aggregate in rowOneAggregate track by $index"> {{aggregate}}</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th >Districts with supply < 100%</td>
+                        <th ng-repeat="aggregate in rowTwoAggregate track by $index"> {{aggregate}}</th>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+                <h2 ng-show="regionalReport.length > 0" >Regional Level</h2>
+                <div id="parent" ng-show="regionalReport.length > 0" >
+                    <table id="fixTableRegion" class="rnr-table table-bordered table">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th colspan="{{periodCols.length}}" class="left-0">Proportion of vaccination supplies recieved over estimated need</th>
+                            <th colspan="{{periodCols.length}}" class="left-0">Trend of monthly stock level, in weeks</th>
+                            <th colspan="{{periodCols.length}}" class="left-0">Vaccine consuption rate at service delivery</th>
+                            <th colspan="{{periodCols.length}}" class="left-0">Vaccine wastage rates from vaccine vials opened for use</th>
+                            <th colspan="{{periodCols.length}}" class="left-0">Unopened vial wastage rates</th>
+                            <th colspan="{{periodCols.length}}" class="left-0">Global wastage rates</th>
+                        </tr>
+                        <tr>
+                            <th>{{getLocalMessage('label.region')}}</th>
+                            <th>{{getLocalMessage('label.target.population')}}</th>
+                            <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                            <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                            <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                            <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                            <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                            <th ng-repeat="cols in periodCols" class="left-{{$index}}">{{cols.monthString}} {{cols.year}}</th>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in regionalReport">
+                            <td >{{ regionalReport[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                            <td>0</td>
+                            <td ng-repeat="a in row.supplied_over_needs track by $index" class="left-{{$index}}">{{a}} </td>
+                            <td ng-repeat="b in row.mos track by $index" class="left-{{$index}}">{{b}}</td>
+                            <td ng-repeat="c in row.consumption_rate track by $index" class="left-{{$index}}">{{c}}</td>
+                            <td ng-repeat="d in row.wasted_opened track by $index" class="left-{{$index}}">{{d}}</td>
+                            <td ng-repeat="e in row.wasted_unopened track by $index" class="left-{{$index}}">{{e}}</td>
+                            <td ng-repeat="f in row.wasted_global track by $index" class="left-{{$index}}">{{f}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+        </div>
+
+
+    </div>
+</div>
+</div>
