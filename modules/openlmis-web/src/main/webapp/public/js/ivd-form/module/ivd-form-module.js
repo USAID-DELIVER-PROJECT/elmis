@@ -10,28 +10,33 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.dialog']).
+angular.module('ivd-form-module', ['openlmis', 'ngGrid', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.dialog']).
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/create/:id', {
-                controller: CreateVaccineReportController,
-                templateUrl: 'partials/create.html',
-                resolve: CreateVaccineReportController.resolve
+                controller: CreateIvdFormController,
+                templateUrl: 'partials/create/index.html',
+                resolve: CreateIvdFormController.resolve
             }).
             when('/list', {
-                controller: VaccineReportController,
-                templateUrl: 'partials/list.html',
-                resolve: VaccineReportController.resolve
+                controller: InitIvdFormController,
+                templateUrl: 'partials/create/list.html',
+                resolve: InitIvdFormController.resolve
             }).
             when('/view/:id', {
-                controller: ViewVaccineReportDetailController,
-                templateUrl: 'partials/view.html',
-                resolve: ViewVaccineReportDetailController.resolve
+                controller: ViewIvdFormDetailController,
+                templateUrl: 'partials/view/index.html',
+                resolve: ViewIvdFormDetailController.resolve
             }).
             when('/view', {
-                controller: ViewVaccineReportController,
-                templateUrl: 'partials/view-list.html',
-                resolve: ViewVaccineReportController.resolve
+                controller: ViewIvdFormController,
+                templateUrl: 'partials/view/list.html',
+                resolve: ViewIvdFormController.resolve
+            }).
+            when('/approve', {
+                controller : ApproveIvdFormController,
+                templateUrl: 'partials/approve/index.html',
+                resolve: ApproveIvdFormController.resolve
             }).
             otherwise({redirectTo: '/list'});
     }]);

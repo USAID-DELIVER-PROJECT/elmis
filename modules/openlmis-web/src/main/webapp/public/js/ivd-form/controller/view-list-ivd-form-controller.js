@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function ViewVaccineReportController($scope, programs, VaccineReportFacilities, ViewVaccineReportPeriods, messageService, $location) {
+function ViewIvdFormController($scope, programs, VaccineReportFacilities, ViewVaccineReportPeriods, messageService, $location) {
 
   $scope.programs = programs;
 
@@ -66,7 +66,7 @@ function ViewVaccineReportController($scope, programs, VaccineReportFacilities, 
 
 }
 
-ViewVaccineReportController.resolve = {
+ViewIvdFormController.resolve = {
   programs: function ($q, $timeout, VaccineSupervisedIvdPrograms) {
     var deferred = $q.defer();
 
