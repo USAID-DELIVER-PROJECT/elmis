@@ -15,6 +15,7 @@ package org.openlmis.vaccine.repository.reports;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.ivdform.domain.reports.*;
+import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.mapper.reports.VaccineReportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,7 +66,12 @@ public class VaccineReportRepository {
   public List<HashMap<String , Object>> getVaccineCoverageAggregateReport(Long periodId, Long zoneId){
     return mapper.getVaccineCoverageAggregateReportByGeoZone(periodId, zoneId);
   }
-
+public HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport( Long reportId){
+  return mapper.calculateVaccineCoverageReport(reportId);
+}
+  public HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport( Long periodId, Long zoneId){
+    return mapper.calculateAggeregatedVaccineCoverageReport(periodId, zoneId);
+  }
   public List<VaccineReport> getImmunizationSession(Long reportId){
     return mapper.getImmunizationSession(reportId);
   }
@@ -150,4 +156,13 @@ public class VaccineReportRepository {
     public List<Map<String, Object>> getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {
         return mapper.getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(startDate, endDate, districtId, productId);
     }
+
+    public List<Map<String,Object>> getAdequacyLevelOfSupplyByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {
+        return mapper.getAdequacyLevelOfSupplyReportDataByDistrict(startDate, endDate, districtId, productId);
+    }
+
+    public List<Map<String,Object>> getAdequacyLevelOfSupplyByRegion(Date startDate, Date endDate, Long districtId, Long productId) {
+        return mapper.getAdequacyLevelOfSupplyReportDataByRegion(startDate, endDate, districtId, productId);
+    }
+
 }

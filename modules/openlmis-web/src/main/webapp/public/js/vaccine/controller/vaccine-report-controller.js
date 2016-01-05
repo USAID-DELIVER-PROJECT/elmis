@@ -56,6 +56,7 @@ function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineU
                     $scope.coldChain = $scope.data.coldChain;
                     $scope.adverseEffect = $scope.data.adverseEffect;
                     $scope.vaccineCoverage = $scope.data.vaccineCoverage;
+                    $scope.vaccineCoverageCalculation = $scope.data.vaccineCoverageCalculation;
                     $scope.immunizationSession = $scope.data.immunizationSession;
                     $scope.vaccination = $scope.data.vaccination;
                     $scope.syringes = $scope.data.syringes;
@@ -63,13 +64,26 @@ function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineU
                     $scope.targetPopulation = $scope.data.targetPopulation;
                     $scope.vitaminSupplementation = $scope.data.vitaminSupplementation;
                     $scope.dropOuts = $scope.data.dropOuts;
+                    extractCoverage( $scope.vaccineCoverage,$scope.vaccineCoverageCalculation);
                 }
             });
 
         }
 
     };
+function extractCoverage(coverageList, coverageTotalCalculation){
+    var length=coverageList.length;
+    for(i=0;i<length;i++) {
+        var coverage= coverageList[i];
+        var calcCoverage = coverageTotalCalculation[coverage.product_name+"_"+coverage.display_name];
+        coverage.within_coverage=calcCoverage.within_coverage;
+        coverage.within_outside_coverage=calcCoverage.within_outside_coverage;
+        coverage.cum_within_outside_coverage=calcCoverage.cum_within_outside_coverage;
 
+    }
+
+
+}
     $scope.renderGraph = function(facilityCode, productCode){
         $scope.filter.facilityCode = isUndefined(facilityCode)? '' : facilityCode;
         $scope.filter.productCode =  isUndefined(productCode)? '': productCode;
