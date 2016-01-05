@@ -181,12 +181,12 @@ public class VaccineReportService {
 
         }
 
-        if (zoneId == -1) {
+        if (zoneId == -1 ||zoneId==0) {
             zoneId = getNationalZoneId();
         }
 
         data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, zoneId));
-        data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
+//        data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
         data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
         data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
         data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, zoneId));

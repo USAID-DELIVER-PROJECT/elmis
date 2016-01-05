@@ -76,9 +76,11 @@ function extractCoverage(coverageList, coverageTotalCalculation){
     for(i=0;i<length;i++) {
         var coverage= coverageList[i];
         var calcCoverage = coverageTotalCalculation[coverage.product_name+"_"+coverage.display_name];
-        coverage.within_coverage=calcCoverage.within_coverage;
-        coverage.within_outside_coverage=calcCoverage.within_outside_coverage;
-        coverage.cum_within_outside_coverage=calcCoverage.cum_within_outside_coverage;
+        coverage.cum_within_total=calcCoverage.within_total;
+        coverage.cum_within_coverage=calcCoverage.within_coverage;
+        coverage.cum_outside_total=calcCoverage.outside_total;
+        coverage.cum_within_outside_total=calcCoverage.within_outside_total;
+            coverage.cum_within_outside_coverage=calcCoverage.within_outside_coverage;
 
     }
 

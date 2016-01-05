@@ -85,33 +85,20 @@ public interface VaccineReportMapper {
             "select \n" +
             " \n" +
             "            product_name ||'_'|| display_name product_name,\n" +
-
-            "           sum( COALESCE(within_male, 0)) within_male,  \n" +
-            "           sum(   COALESCE(within_female,0)) within_female,  \n" +
             "           sum(  COALESCE(within_total,0)) within_total,  \n" +
             "           case when sum(COALESCE(denominator,0)) > 0 \n" +
             "           then round(sum(  COALESCE(within_total,0)) / sum(COALESCE(denominator,0))::numeric * 100, 2)\n" +
             "            else 0 end within_coverage,   \n" +
-            "           sum(   COALESCE(outside_male, 0) )outside_male,  \n" +
-            "           sum(   COALESCE(outside_female,0)) outside_female, \n" +
             "           sum(COALESCE(outside_total, 0)) outside_total,  \n" +
             "           sum(   COALESCE(within_outside_total, 0)) within_outside_total,             \n" +
             "           case when sum(COALESCE(denominator,0)) > 0 \n" +
             "           then round(sum(  COALESCE(within_outside_total,0)) / sum(COALESCE(denominator,0))::numeric * 100,2) \n" +
-            "           else 0 end within_outside_coverage,   \n" +
-            "            sum(  COALESCE(cum_within_total,0)) cum_within_total,  \n" +
-            "            sum(  COALESCE(cum_within_coverage,0)) cum_within_coverage,  \n" +
-            "           sum(   COALESCE(cum_outside_total,0)) cum_outside_total,  \n" +
-            "           sum(   COALESCE(cum_within_outside_total,0)) cum_within_outside_total,  \n" +
-            "             case when sum(COALESCE(denominator,0)) > 0 \n" +
-            "             then round(sum(  COALESCE(cum_within_outside_total,0)) / sum(COALESCE(denominator,0))::numeric * 100,2) \n" +
-            "             else 0 end cum_within_outside_coverage  \n" +
-            "           \n" +
+            "           else 0 end within_outside_coverage  \n" +
             "              from vw_vaccine_coverage \n" +
             "              where period_start_date <= (select startdate from processing_periods\n" +
-            "               where id = (select periodid from vaccine_reports where id = #{reportId))" +
+            "               where id = (select periodid from vaccine_reports where id = #{reportId}))" +
             "and   period_year = (select extract(year from startdate) from processing_periods\n" +
-            "               where id = (select periodid from vaccine_reports where id = #{periodId}))" +
+            "               where id =  #{periodId})" +
             "              group by 1 \n" +
             "")
 
@@ -123,33 +110,24 @@ public interface VaccineReportMapper {
             "select \n" +
             " \n" +
             "            product_name ||'_'|| display_name product_name,\n" +
-            "           sum( COALESCE(within_male, 0)) within_male,  \n" +
-            "           sum(   COALESCE(within_female,0)) within_female,  \n" +
+
             "           sum(  COALESCE(within_total,0)) within_total,  \n" +
             "           case when sum(COALESCE(denominator,0)) > 0 \n" +
             "           then round(sum(  COALESCE(within_total,0)) / sum(COALESCE(denominator,0))::numeric * 100, 2)\n" +
             "            else 0 end within_coverage,   \n" +
-            "           sum(   COALESCE(outside_male, 0) )outside_male,  \n" +
-            "           sum(   COALESCE(outside_female,0)) outside_female, \n" +
+
             "           sum(COALESCE(outside_total, 0)) outside_total,  \n" +
             "           sum(   COALESCE(within_outside_total, 0)) within_outside_total,             \n" +
             "           case when sum(COALESCE(denominator,0)) > 0 \n" +
             "           then round(sum(  COALESCE(within_outside_total,0)) / sum(COALESCE(denominator,0))::numeric * 100,2) \n" +
-            "           else 0 end within_outside_coverage,   \n" +
-            "            sum(  COALESCE(cum_within_total,0)) cum_within_total,  \n" +
-            "            sum(  COALESCE(cum_within_coverage,0)) cum_within_coverage,  \n" +
-            "           sum(   COALESCE(cum_outside_total,0)) cum_outside_total,  \n" +
-            "           sum(   COALESCE(cum_within_outside_total,0)) cum_within_outside_total,  \n" +
-            "             case when sum(COALESCE(denominator,0)) > 0 \n" +
-            "             then round(sum(  COALESCE(cum_within_outside_total,0)) / sum(COALESCE(denominator,0))::numeric * 100,2) \n" +
-            "             else 0 end cum_within_outside_coverage  \n" +
-            "           \n" +
+            "           else 0 end within_outside_coverage   \n" +
+
             "              from vw_vaccine_coverage \n" +
             " INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
             "              where period_start_date <= (select startdate from processing_periods\n" +
             "               where id =  #{periodId})" +
             "and   period_year = (select extract(year from startdate) from processing_periods\n" +
-            "               where id = (select periodid from vaccine_reports where id = #{periodId}))" +
+            "               where id   = #{periodId})" +
             " and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )" +
             "              group by 1")
 
@@ -160,19 +138,20 @@ public interface VaccineReportMapper {
     @Select("select \n" +
             "product_name,\n" +
             "display_name, \n" +
+            " COALESCE(denominator, 0) denominator," +
             "COALESCE(within_male, 0) within_male, \n" +
             "COALESCE(within_female,0) within_female, \n" +
             "COALESCE(within_total,0) within_total, \n" +
-            "COALESCE(within_coverage, 0) within_coverage,  \n" +
+            "COALESCE(within_total,0) /  COALESCE(denominator, 0)::numeric * 100 within_coverage,  \n" +
             "COALESCE(outside_male, 0) outside_male, \n" +
             "COALESCE(outside_female,0) outside_female, COALESCE(outside_total, 0) outside_total, \n" +
             "COALESCE(within_outside_total, 0) within_outside_total, \n" +
-            "COALESCE(within_outside_coverage,0) within_outside_coverage, \n" +
+            "COALESCE(within_outside_total,0) /  COALESCE(denominator, 0)::numeric * 100  within_outside_coverage, \n" +
             "COALESCE(cum_within_total,0) cum_within_total, \n" +
             "COALESCE(cum_within_coverage,0) cum_within_coverage, \n" +
             "COALESCE(cum_outside_total,0) cum_outside_total, \n" +
             "COALESCE(cum_within_outside_total,0) cum_within_outside_total, \n" +
-            "COALESCE(cum_within_outside_coverage ,0) cum_within_outside_coverage, \n" +
+            "COALESCE(cum_within_outside_total,0) /  COALESCE(denominator, 0)::numeric * 100 cum_within_outside_coverage, \n" +
             "case when dtp_1 > 0 then ((dtp_1 - dtp_3)::double precision / dtp_1::double precision) * 100 else 0 end dtp_dropout, \n" +
             "case when bcg_1 > 0 then ((bcg_1 - mr_1)::double precision / bcg_1::double precision) * 100 else 0 end bcg_mr_dropout \n" +
             "  from vw_vaccine_coverage  \n" +
@@ -180,30 +159,31 @@ public interface VaccineReportMapper {
     List<HashMap<String, Object>> getVaccineCoverageReport(@Param("reportId") Long reportId);
 
     @Select("select \n" +
-            "MAX(product_name) product_name,\n" +
-            "MAX(display_name) display_name,  \n" +
-            "MAX(display_order) display_order,  \n" +
+            "product_name product_name,\n" +
+            "display_name display_name,  \n" +
+            "display_order display_order,  \n" +
+            "sum( COALESCE(denominator, 0)) denominator," +
             "SUM(COALESCE(within_male, 0)) within_male,  \n" +
             "SUM(COALESCE(within_female,0)) within_female,  \n" +
             "SUM(COALESCE(within_total,0)) within_total,  \n" +
-            "SUM(COALESCE(within_coverage, 0)) within_coverage,  \n" +
+            "SUM(COALESCE(within_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100 within_coverage,  \n" +
             "SUM(COALESCE(outside_male, 0)) outside_male,  \n" +
             "SUM(COALESCE(outside_female,0)) outside_female, \n" +
             "SUM(COALESCE(outside_total, 0)) outside_total, \n" +
             "SUM(COALESCE(within_outside_total, 0)) within_outside_total,  \n" +
-            "SUM(COALESCE(within_outside_coverage,0)) within_outside_coverage, \n" +
+            "SUM(COALESCE(within_outside_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100 within_outside_coverage, \n" +
             "SUM(COALESCE(cum_within_total,0)) cum_within_total,  \n" +
             "SUM(COALESCE(cum_within_coverage,0)) cum_within_coverage, \n" +
             "SUM(COALESCE(cum_outside_total,0)) cum_outside_total,  \n" +
             "SUM(COALESCE(cum_within_outside_total,0)) cum_within_outside_total, \n" +
-            "SUM(COALESCE(cum_within_outside_coverage ,0)) cum_within_outside_coverage, \n" +
+            "SUM(COALESCE(cum_within_outside_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100 cum_within_outside_coverage, \n" +
             "SUM(COALESCE(case when dtp_1 > 0 then ((dtp_1 - dtp_3)::double precision / dtp_1::double precision) * 100 else 0 end)) dtp_dropout, \n" +
             "SUM(COALESCE(case when bcg_1 > 0 then ((bcg_1 - mr_1)::double precision / bcg_1::double precision) * 100 else 0 end)) bcg_mr_dropout \n" +
             "from vw_vaccine_coverage  \n" +
             "INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
             "where period_id = #{periodId} and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )\n" +
-            "group by product_code \n" +
-            "order by display_order")
+            "group by product_name,display_name,display_order \n" +
+            "order by product_name,display_name,display_order")
     List<HashMap<String, Object>> getVaccineCoverageAggregateReportByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("SELECT COALESCE(fixedimmunizationsessions, 0) fixedimmunizationsessions, COALESCE(outreachimmunizationsessions, 0) outreachimmunizationsessions, COALESCE(outreachimmunizationsessionscanceled, 0) outreachimmunizationsessionscanceled FROM vaccine_reports WHERE id = #{reportId} ")
