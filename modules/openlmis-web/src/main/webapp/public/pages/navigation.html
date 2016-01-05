@@ -80,17 +80,27 @@
         </ul>
       </div>
     </li>
-    <li ng-show="hasPermission('CREATE_IVD') || hasPermission('VIEW_IVD') || hasPermission('MANAGE_DISTRIBUTION') || hasPermission('VIEW_ORDER_REQUISITION') || hasPermission('VIEW_PENDING_REQUEST') || hasPermission('CREATE_ORDER_REQUISITION')">
-      <a id="vaccine" href="" openlmis-message="link.vaccine"></a>
+    <li ng-show="hasPermission('CREATE_IVD') || hasPermission('VIEW_IVD') || hasPermission('APPROVE_IVD')">
+      <a id="ivd" href="" openlmis-message="link.ivd.form"></a>
       <div class="submenu">
         <ul>
           <li ng-show="hasPermission('CREATE_IVD')">
             <a href="/public/pages/ivd-form/index.html"
-                openlmis-message="link.vaccine.create"></a>
+               openlmis-message="link.vaccine.create"></a>
           </li>
           <li ng-show="hasPermission('VIEW_IVD')">
             <a href="/public/pages/ivd-form/index.html#/view" openlmis-message="link.view.ivd"></a>
           </li>
+          <li ng-show="hasPermission('APPROVE_IVD')">
+            <a href="/public/pages/ivd-form/index.html#/approve" openlmis-message="link.approve.ivd"></a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li  ng-show="hasPermission('MANAGE_DISTRIBUTION') || hasPermission('VIEW_ORDER_REQUISITION') || hasPermission('VIEW_PENDING_REQUEST') || hasPermission('CREATE_ORDER_REQUISITION')">
+      <a id="vaccine" href="" openlmis-message="link.vaccine"></a>
+      <div class="submenu">
+        <ul>
           <li ng-show="hasPermission('MANAGE_DISTRIBUTION')">
             <a id="manage-distribution"
                href="/public/pages/logistics/distribution/index.html#/manage"
