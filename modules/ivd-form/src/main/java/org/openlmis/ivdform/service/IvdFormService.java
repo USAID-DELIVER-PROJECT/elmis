@@ -31,8 +31,8 @@ import org.openlmis.ivdform.dto.ReportStatusDTO;
 import org.openlmis.ivdform.repository.VitaminRepository;
 import org.openlmis.ivdform.repository.VitaminSupplementationAgeGroupRepository;
 import org.openlmis.ivdform.repository.reports.IvdFormRepository;
-import org.openlmis.ivdform.repository.reports.VaccineReportColdChainRepository;
-import org.openlmis.ivdform.repository.reports.VaccineReportStatusChangeRepository;
+import org.openlmis.ivdform.repository.reports.ColdChainLineItemRepository;
+import org.openlmis.ivdform.repository.reports.StatusChangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,10 +61,10 @@ public class IvdFormService {
   ProcessingPeriodRepository periodService;
 
   @Autowired
-  VaccineProductDoseService productDoseService;
+  ProductDoseService productDoseService;
 
   @Autowired
-  VaccineReportColdChainRepository coldChainRepository;
+  ColdChainLineItemRepository coldChainRepository;
 
   @Autowired
   VitaminRepository vitaminRepository;
@@ -76,10 +76,10 @@ public class IvdFormService {
   ProgramService programService;
 
   @Autowired
-  VaccineIvdTabVisibilityService tabVisibilityService;
+  TabVisibilityService tabVisibilityService;
 
   @Autowired
-  VaccineReportStatusChangeRepository reportStatusChangeRepository;
+  StatusChangeRepository reportStatusChangeRepository;
 
   @Autowired
   AnnualFacilityDemographicEstimateService annualFacilityDemographicEstimateService;

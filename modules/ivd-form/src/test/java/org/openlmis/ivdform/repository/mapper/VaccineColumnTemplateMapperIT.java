@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 public class VaccineColumnTemplateMapperIT {
 
   @Autowired
-  private VaccineColumnTemplateMapper mapper;
+  private LogisticsColumnTemplateMapper mapper;
 
 
   @Test

@@ -17,7 +17,7 @@ import org.openlmis.ivdform.domain.reports.DiseaseLineItem;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
 import org.openlmis.ivdform.repository.mapper.reports.IvdFormMapper;
-import org.openlmis.ivdform.service.VaccineLineItemService;
+import org.openlmis.ivdform.service.LineItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +30,7 @@ public class IvdFormRepository {
   IvdFormMapper mapper;
 
   @Autowired
-  VaccineLineItemService lineItemService;
+  LineItemService lineItemService;
 
   @Autowired
   GeographicZoneService geographicZoneService;

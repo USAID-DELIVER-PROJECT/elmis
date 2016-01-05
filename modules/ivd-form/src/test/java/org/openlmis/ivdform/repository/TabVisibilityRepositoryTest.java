@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.ivdform.repository.reports;
+package org.openlmis.ivdform.repository;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -19,74 +19,45 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.db.categories.UnitTests;
-import org.openlmis.ivdform.domain.reports.VaccineReport;
-import org.openlmis.ivdform.repository.mapper.reports.IvdFormMapper;
-import org.openlmis.ivdform.service.LineItemService;
+import org.openlmis.ivdform.domain.config.VaccineIvdTabVisibility;
+import org.openlmis.ivdform.repository.mapper.TabVisibilityMapper;
 
 import static org.mockito.Mockito.verify;
 
 
 @Category(UnitTests.class)
 @RunWith(MockitoJUnitRunner.class)
-public class IvdFormRepositoryTest {
+public class TabVisibilityRepositoryTest {
 
   @Mock
-  LineItemService lineItemService;
-
-  @Mock
-  IvdFormMapper mapper;
+  TabVisibilityMapper mapper;
 
   @InjectMocks
-  IvdFormRepository repository;
+  TabVisibilityRepository repository;
 
   @Test
   public void shouldInsert() throws Exception {
-    VaccineReport report = new VaccineReport();
-    repository.insert(report);
-    verify(mapper).insert(report);
+    VaccineIvdTabVisibility visibility = new VaccineIvdTabVisibility();
+    repository.insert(visibility);
+    verify(mapper).insert(visibility);
   }
 
   @Test
   public void shouldUpdate() throws Exception {
-    VaccineReport report = new VaccineReport();
-    repository.update(report, 2L);
-    verify(mapper).update(report);
+    VaccineIvdTabVisibility visibility = new VaccineIvdTabVisibility();
+    repository.update(visibility);
+    verify(mapper).update(visibility);
   }
 
   @Test
-  public void shouldGetById() throws Exception {
-    repository.getById(20L);
-    verify(mapper).getById(20L);
+  public void shouldGetVisibilityForProgram() throws Exception {
+    repository.getVisibilityForProgram(2L);
+    verify(mapper).getTabVisibilityForProgram(2L);
   }
 
   @Test
-  public void shouldGetByIdWithFullDetails() throws Exception {
-    repository.getByIdWithFullDetails(20L);
-    verify(mapper).getByIdWithFullDetails(20L);
+  public void shouldGetAllVisibilityConfiguration() throws Exception {
+    repository.getAllVisibilityConfiguration();
+    verify(mapper).getTabVisibilityForNewProgram();
   }
-
-  @Test
-  public void shouldGetByProgramPeriod() throws Exception {
-    repository.getByProgramPeriod(20L, 10L, 3L);
-    verify(mapper).getByPeriodFacilityProgram(20L, 10L, 3L);
-  }
-
-  @Test
-  public void shouldGetLastReport() throws Exception {
-    repository.getLastReport(20L, 2L);
-    verify(mapper).getLastReport(20L, 2L);
-  }
-
-  @Test
-  public void shouldGetScheduleFor() throws Exception {
-    repository.getScheduleFor(29L, 2L);
-    verify(mapper).getScheduleFor(29L, 2L);
-  }
-
-  @Test
-  public void shouldGetSubmittedPeriods() throws Exception {
-    repository.getReportedPeriodsForFacility(2L, 1L);
-    verify(mapper).getReportedPeriodsForFacility(2L, 1L);
-  }
-
 }

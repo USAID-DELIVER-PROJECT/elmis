@@ -19,74 +19,33 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.db.categories.UnitTests;
-import org.openlmis.ivdform.domain.reports.VaccineReport;
-import org.openlmis.ivdform.repository.mapper.reports.IvdFormMapper;
-import org.openlmis.ivdform.service.LineItemService;
+import org.openlmis.ivdform.domain.reports.CampaignLineItem;
+import org.openlmis.ivdform.repository.mapper.reports.CampaignLineItemMapper;
 
 import static org.mockito.Mockito.verify;
 
 
 @Category(UnitTests.class)
 @RunWith(MockitoJUnitRunner.class)
-public class IvdFormRepositoryTest {
+public class CampaignLineItemRepositoryTest {
 
   @Mock
-  LineItemService lineItemService;
-
-  @Mock
-  IvdFormMapper mapper;
+  CampaignLineItemMapper mapper;
 
   @InjectMocks
-  IvdFormRepository repository;
+  CampaignLineItemRepository repository;
 
   @Test
   public void shouldInsert() throws Exception {
-    VaccineReport report = new VaccineReport();
-    repository.insert(report);
-    verify(mapper).insert(report);
+    CampaignLineItem lineItem = new CampaignLineItem();
+    repository.insert(lineItem);
+    verify(mapper).insert(lineItem);
   }
 
   @Test
   public void shouldUpdate() throws Exception {
-    VaccineReport report = new VaccineReport();
-    repository.update(report, 2L);
-    verify(mapper).update(report);
+    CampaignLineItem lineItem = new CampaignLineItem();
+    repository.update(lineItem);
+    verify(mapper).update(lineItem);
   }
-
-  @Test
-  public void shouldGetById() throws Exception {
-    repository.getById(20L);
-    verify(mapper).getById(20L);
-  }
-
-  @Test
-  public void shouldGetByIdWithFullDetails() throws Exception {
-    repository.getByIdWithFullDetails(20L);
-    verify(mapper).getByIdWithFullDetails(20L);
-  }
-
-  @Test
-  public void shouldGetByProgramPeriod() throws Exception {
-    repository.getByProgramPeriod(20L, 10L, 3L);
-    verify(mapper).getByPeriodFacilityProgram(20L, 10L, 3L);
-  }
-
-  @Test
-  public void shouldGetLastReport() throws Exception {
-    repository.getLastReport(20L, 2L);
-    verify(mapper).getLastReport(20L, 2L);
-  }
-
-  @Test
-  public void shouldGetScheduleFor() throws Exception {
-    repository.getScheduleFor(29L, 2L);
-    verify(mapper).getScheduleFor(29L, 2L);
-  }
-
-  @Test
-  public void shouldGetSubmittedPeriods() throws Exception {
-    repository.getReportedPeriodsForFacility(2L, 1L);
-    verify(mapper).getReportedPeriodsForFacility(2L, 1L);
-  }
-
 }

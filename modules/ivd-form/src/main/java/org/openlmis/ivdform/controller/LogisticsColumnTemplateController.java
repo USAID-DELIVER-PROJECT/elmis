@@ -9,11 +9,13 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.openlmis.ivdform.controller;
 
 import org.openlmis.core.web.OpenLmisResponse;
-import org.openlmis.ivdform.dto.VaccineServiceConfigDTO;
-import org.openlmis.ivdform.service.TabVisibilityService;
+import org.openlmis.core.web.controller.BaseController;
+import org.openlmis.ivdform.dto.ProgramColumnTemplateDTO;
+import org.openlmis.ivdform.service.LogisticsColumnTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,25 +24,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "/vaccine/config/")
-public class ConfigurationController {
+@RequestMapping(value = "/vaccine/columns/")
+public class LogisticsColumnTemplateController extends BaseController {
 
-  public static final String VISIBILITIES = "visibilities";
-
+  public static final String COLUMNS = "columns";
   @Autowired
-  TabVisibilityService service;
+  LogisticsColumnTemplateService service;
 
-  @RequestMapping(value = "tab-visibility/{programId}")
-  public ResponseEntity<OpenLmisResponse> getProgramTabVisibility(@PathVariable Long programId) {
-    VaccineServiceConfigDTO dto = new VaccineServiceConfigDTO();
-    dto.setTabVisibilitySettings(service.getVisibilityForProgram(programId));
-    dto.setProgramId(programId);
-    return OpenLmisResponse.response(VISIBILITIES, dto);
+  @RequestMapping(value = "get/{programId}")
+  public ResponseEntity<OpenLmisResponse> get(@PathVariable Long programId) {
+    return OpenLmisResponse.response(COLUMNS, service.getTemplate(programId));
   }
 
-  @RequestMapping(value = "save-tab-visibility")
-  public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineServiceConfigDTO settings) {
-    service.save(settings.getTabVisibilitySettings(), settings.getProgramId());
-    return OpenLmisResponse.response(VISIBILITIES, settings);
+  @RequestMapping(value = "save")
+  public ResponseEntity<OpenLmisResponse> save(@RequestBody ProgramColumnTemplateDTO programColumnDTO) {
+    service.saveChanges(programColumnDTO.getColumns());
+    return OpenLmisResponse.response(COLUMNS, service.getTemplate(programColumnDTO.getProgramId()));
   }
+
 }
