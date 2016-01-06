@@ -37,6 +37,10 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
                 controller: StatusVaccinationReceiceController,
                 templateUrl:'partials/view/status-vaccination-received-per-month.html'
             }).
+            when('/adequacy-level-of-supply', {
+                 controller: AdequacyLevelOfSupplyController,
+                 templateUrl:'partials/view/adequacy-level-of-supply.html'
+             }).
 
             otherwise({redirectTo: '/list'});
     }]).config(function (angularCombineConfigProvider) {

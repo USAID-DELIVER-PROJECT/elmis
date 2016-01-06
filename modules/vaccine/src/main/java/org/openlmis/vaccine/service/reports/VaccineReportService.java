@@ -215,7 +215,7 @@ public class VaccineReportService {
         return repository.getNationalZone().getId();
     }
 
-    public Map<String, List<Map<String, Object>>> getPerformanceCoverageReportData(String periodStart, String periodEnd, Long range,
+    public Map<String, List<Map<String, Object>>> getPerformanceCoverageReportData(String periodStart, String periodEnd,
                                                                                    Long districtId, Long productId) {
 
         Date startDate = null, endDate = null;
@@ -246,7 +246,8 @@ public class VaccineReportService {
 
     }
 
-    public Object getCompletenessAndTimelinessReportData(String periodStart, String periodEnd, Long range, Long districtId, Long productId) {
+    public Map<String, List<Map<String, Object>>> getCompletenessAndTimelinessReportData(String periodStart, String periodEnd,
+                                                                                         Long districtId, Long productId) {
 
         Date startDate = null, endDate = null;
 
@@ -260,6 +261,41 @@ public class VaccineReportService {
         if (districtId == 0)
             result.put("aggregateSummary", repository.getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
 
+        result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
+
+        return result;
+    }
+
+    public Map<String, List<Map<String, Object>>> getAdequacyLevelOfSupply(String periodStart, String periodEnd, Long districtId,
+                                                                           Long productId) {
+
+
+        Date startDate = null, endDate = null;
+
+        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
+        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
+
+        Map<String, List<Map<String, Object>>> result =  new HashMap<String, List<Map<String, Object>>>();
+
+        /*List<Map<String, Object>> adequacyResultList =  repository.getAdequacyLevelOfSupplyByDistrict(startDate, endDate, districtId, productId);
+        List<Map<String, Object>> generatedPeriodList = getSummaryPeriodList(startDate, endDate);
+
+
+            for(Map<String, Object> adequacyResult : adequacyResultList){
+
+                for(Map<String, Object> generatedPeriod : generatedPeriodList){
+                    adequacyResult.containsKey("ovnd_"generatedPeriod.get("monthString").toString().toLowerCase());
+                    adequacyResult.containsKey("mos_"generatedPeriod.get("monthString").toString().toLowerCase());
+                    adequacyResult.containsKey("cr_"generatedPeriod.get("monthString").toString().toLowerCase());
+                    adequacyResult.containsKey("wo_"generatedPeriod.get("monthString").toString().toLowerCase());
+                    adequacyResult.containsKey("wu_"generatedPeriod.get("monthString").toString().toLowerCase());
+                    adequacyResult.containsKey("wg_"generatedPeriod.get("monthString").toString().toLowerCase());
+            }
+        }
+        */
+
+        result.put("bydistrict", repository.getAdequacyLevelOfSupplyByDistrict(startDate, endDate, districtId, productId));
+        result.put("byregion", repository.getAdequacyLevelOfSupplyByRegion(startDate, endDate, districtId, productId));
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
 
         return result;
