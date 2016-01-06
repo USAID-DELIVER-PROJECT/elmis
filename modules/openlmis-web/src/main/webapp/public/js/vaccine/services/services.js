@@ -68,6 +68,9 @@ services.factory('ViewVaccineReportPeriods', function ($resource) {
   return $resource('/vaccine/report/view-periods/:facilityId/:programId.json', {facilityId: '@facilityId', programId: '@programId'}, {});
 });
 
+services.factory('ApprovalPendingIvds', function($resource){
+  return $resource('/vaccine/report/approval-pending.json',{}, {});
+});
 
 services.factory('VaccineReportInitiate', function ($resource) {
   return $resource('/vaccine/report/initialize/:facilityId/:programId/:periodId.json', {facilityId: '@facilityId', programId: '@programId', periodId: '@periodId'}, {});
