@@ -33,8 +33,9 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class IvdFormProgramController extends BaseController {
 
-  public static final String PROGRAMS = "programs";
-  public static final String FACILITIES = "facilities";
+  private static final String PROGRAMS = "programs";
+  private static final String FACILITIES = "facilities";
+
   @Autowired
   IvdFormService service;
 
@@ -70,7 +71,6 @@ public class IvdFormProgramController extends BaseController {
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD, APPROVE_IVD, VIEW_IVD')")
   public ResponseEntity<OpenLmisResponse> getFacilities(@PathVariable Long programId, HttpServletRequest request) {
     Long userId = loggedInUserId(request);
-    //TODO: make sure this method also supports home facility.
     return OpenLmisResponse.response(FACILITIES, facilityService.getUserSupervisedFacilities(userId, programId, RightName.CREATE_IVD, RightName.APPROVE_IVD, RightName.VIEW_IVD));
   }
 

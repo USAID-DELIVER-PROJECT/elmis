@@ -32,7 +32,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RequestMapping(value = "/vaccine/disease/")
 public class DiseaseController extends BaseController {
 
-  public static final String DISEASE = "disease";
+  private static final String DISEASE = "disease";
+
   @Autowired
   private DiseaseService service;
 

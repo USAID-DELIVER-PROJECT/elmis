@@ -27,7 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/vaccine/columns/")
 public class LogisticsColumnTemplateController extends BaseController {
 
-  public static final String COLUMNS = "columns";
+  private static final String COLUMNS = "columns";
+
   @Autowired
   LogisticsColumnTemplateService service;
 

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/vaccine/config/")
 public class ConfigurationController {
 
-  public static final String VISIBILITIES = "visibilities";
+  private static final String VISIBILITIES = "visibilities";
 
   @Autowired
   TabVisibilityService service;

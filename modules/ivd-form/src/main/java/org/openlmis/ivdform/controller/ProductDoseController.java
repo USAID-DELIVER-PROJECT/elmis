@@ -27,7 +27,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/vaccine/product-dose/")
 public class ProductDoseController extends BaseController {
 
-  public static final String PROTOCOL = "protocol";
+  private static final String PROTOCOL = "protocol";
+
   @Autowired
   private ProductDoseService service;
 
