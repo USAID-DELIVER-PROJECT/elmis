@@ -18,6 +18,7 @@ import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.ivdform.domain.reports.DiseaseLineItem;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
+import org.openlmis.ivdform.dto.RoutineReportDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -123,5 +124,15 @@ public interface IvdFormMapper {
   Long findPreviousReport(@Param("facilityId") Long facilityId, @Param("programId") Long programId, @Param("periodId") Long periodId);
 
 
+  @Select("SELECT " +
+    "   r.id, f.name as facilityName, f.code as facilityCode, z.name as districtName, r.status, r.submissionDate, p.startDate periodStartDate, p.endDate periodEndDate, p.name periodName " +
+    "from vaccine_reports r " +
+    "join processing_periods p on p.id = r.periodId " +
+    "join facilities f on f.id = r.facilityId " +
+    "join geographic_zones z on z.id = f.geographicZoneId " +
+    "where " +
+    "r.status = 'SUBMITTED' " +
+    "and facilityId = ANY( #{facilityIds}::INT[] )")
+  List<RoutineReportDTO> getApprovalPendingReports(@Param("facilityIds") String facilityIds);
 }
 

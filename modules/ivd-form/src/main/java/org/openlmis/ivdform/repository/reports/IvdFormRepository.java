@@ -16,6 +16,7 @@ import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.ivdform.domain.reports.DiseaseLineItem;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
+import org.openlmis.ivdform.dto.RoutineReportDTO;
 import org.openlmis.ivdform.repository.mapper.reports.IvdFormMapper;
 import org.openlmis.ivdform.service.LineItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,4 +95,7 @@ public class IvdFormRepository {
     return mapper.findPreviousReport(facilityId, programId, periodId);
   }
 
+  public List<RoutineReportDTO> getApprovalPendingForms(String facilityIds) {
+    return mapper.getApprovalPendingReports(facilityIds);
+  }
 }

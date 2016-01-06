@@ -14,9 +14,12 @@ package org.openlmis.ivdform.service;
 
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
+import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.ProgramProduct;
+import org.openlmis.core.domain.RightName;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
+import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.service.*;
 import org.openlmis.demographics.service.AnnualFacilityDemographicEstimateService;
 import org.openlmis.ivdform.domain.VaccineDisease;
@@ -28,6 +31,7 @@ import org.openlmis.ivdform.domain.reports.ReportStatus;
 import org.openlmis.ivdform.domain.reports.ReportStatusChange;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
+import org.openlmis.ivdform.dto.RoutineReportDTO;
 import org.openlmis.ivdform.repository.VitaminRepository;
 import org.openlmis.ivdform.repository.VitaminSupplementationAgeGroupRepository;
 import org.openlmis.ivdform.repository.reports.IvdFormRepository;
@@ -86,6 +90,12 @@ public class IvdFormService {
 
   @Autowired
   MessageService messageService;
+
+  @Autowired
+  FacilityService facilityService;
+
+  @Autowired
+  CommaSeparator commaSeparator;
 
   @Autowired
   ConfigurationSettingService configurationSettingService;
@@ -218,4 +228,8 @@ public class IvdFormService {
     return repository.getReportIdForFacilityAndPeriod(facilityId, periodId);
   }
 
+  public List<RoutineReportDTO> getApprovalPendingForms(Long userId, Long programId) {
+    String facilityIds = commaSeparator.commaSeparateIds(facilityService.getUserSupervisedFacilities(userId, programId, RightName.APPROVE_IVD));
+    return repository.getApprovalPendingForms( facilityIds);
+  }
 }
