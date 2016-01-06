@@ -42,7 +42,12 @@ public class VaccineReportRepository {
   public List<DiseaseLineItem> getDiseaseSurveillanceAggregateReport(Long periodId, Long zoneId){
     return mapper.getDiseaseSurveillanceAggregateByGeoZone(periodId, zoneId);
   }
-
+  public HashMap<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(Long reportId){
+    return mapper.getCumFacilityDiseaseSurveillance(reportId);
+  }
+public HashMap<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateReport(Long periodId, Long zoneId){
+  return mapper.getCumDiseaseSurveillanceAggregateByGeoZone(periodId, zoneId);
+}
   public List<ColdChainLineItem> getColdChain(Long reportId){
     return mapper.getColdChain(reportId);
   }

@@ -74,7 +74,14 @@ public class VaccineReportService {
 
         return repository.getDiseaseSurveillanceAggregateReport(periodId, zoneId);
     }
+    private HashMap<String,DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+        if (facilityId != null && facilityId != 0) {
 
+            return repository.getCumFacilityDiseaseSurveillance(reportId);
+        }
+
+        return repository.getCumDiseaseSurveillanceAggregateReport(periodId, zoneId);
+    }
     private List<ColdChainLineItem> getColdChain(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
             return repository.getColdChain(reportId);
@@ -186,7 +193,8 @@ public class VaccineReportService {
         }
 
         data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, zoneId));
-//        data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
+        data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
+        data.put("cumDiseaseSurveillance", this.getCumulativeDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
         data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
         data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
         data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, zoneId));

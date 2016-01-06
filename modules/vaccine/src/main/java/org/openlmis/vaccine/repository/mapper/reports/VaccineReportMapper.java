@@ -33,6 +33,37 @@ public interface VaccineReportMapper {
             "where report_id = #{reportId}")
     List<DiseaseLineItem> getDiseaseSurveillance(@Param("reportId") Long reportId);
 
+    @Select("SELECT disease_name as diseaseName,\n" +
+            " sum(COALESCE (cases, 0)) AS calculatedCumulativeCases,\n" +
+            " sum(COALESCE (death, 0)) AS calculatedCumulativeDeaths\n" +
+            "FROM\n" +
+            " vw_vaccine_disease_surveillance d\n" +
+            " INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
+            "               where period_start_date <= (select startdate from processing_periods \n" +
+            "                           where id = (select periodid from vaccine_reports where id = #{reportId})) \n" +
+            "            and   period_year = (select extract(year from startdate) from processing_periods           \n" +
+            "                            where id = (select periodid from vaccine_reports where id =  #{reportId}))\n" +
+            "\n" +
+            "group by diseaseName")
+    @MapKey("diseaseName")
+    @ResultType(HashMap.class)
+    HashMap<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(@Param("reportId") Long reportId);
+
+    @Select("SELECT disease_name as diseaseName,\n" +
+            " sum(COALESCE (cases, 0)) AS calculatedCumulativeCases,\n" +
+            " sum(COALESCE (death, 0)) AS calculatedCumulativeDeaths\n" +
+            "FROM\n" +
+            " vw_vaccine_disease_surveillance d\n" +
+            " INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
+            "where period_start_date::date <= (select startdate::date from processing_periods \n" +
+            "                          where id =  #{periodId}) \n" +
+            "            and   period_year = (select extract(year from startdate) from processing_periods \n" +
+            "                          where id = #{periodId})\n" +
+            " and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} ) " +
+            "group by diseaseName")
+    @MapKey("diseaseName")
+    @ResultType(HashMap.class)
+    HashMap<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("Select id from vaccine_reports where facilityid = #{facilityId} and periodid = #{periodId}")
     Long getReportIdForFacilityAndPeriod(@Param("facilityId") Long facilityId, @Param("periodId") Long periodId);
@@ -98,7 +129,7 @@ public interface VaccineReportMapper {
             "              where period_start_date <= (select startdate from processing_periods\n" +
             "               where id = (select periodid from vaccine_reports where id = #{reportId}))" +
             "and   period_year = (select extract(year from startdate) from processing_periods\n" +
-            "               where id =  #{periodId})" +
+            "                where id = (select periodid from vaccine_reports where id = #{reportId}))" +
             "              group by 1 \n" +
             "")
 
