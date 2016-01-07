@@ -710,14 +710,19 @@ app.directive('vaccinePeriodTreeFilter', ['GetVaccineReportPeriodTree', '$routeP
                     GetVaccineReportPeriodTree.get({}, function (data) {
                         scope.periods = data.vaccinePeriods.periods;
                         scope.filter.defaultPeriodId = data.vaccinePeriods.currentPeriodId;
+                      var defaultPeriodId=  utils.getVaccineMonthlyDefaultPeriod( scope.periods);
+
                         scope.period_placeholder = messageService.get('label.select.period');
                         if (!angular.isUndefined(scope.periods)) {
                             if (scope.periods.length === 0)
                                 scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
                         }
+                        scope.filter.period=defaultPeriodId;
                     });
                 });
-
+                scope.$watch('filter.period', function(){
+                    scope.$parent.OnFilterChanged();
+                });
             },
             templateUrl: 'filter-period-tree-template'
         };
