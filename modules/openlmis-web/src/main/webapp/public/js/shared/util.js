@@ -57,12 +57,10 @@ var utils = {
 
     getVaccineCustomDateRange: function (periodRange, _startDate, _endDate, _cutoffDate) {
         var er = 0;
-
+        var endDate;
+        var startDate;
         if (periodRange !== 5) {
-
             var currentDate = new Date();
-            var endDate;
-            var startDate;
             var months = 0;
             var monthBack = 0;
             var currentDays = currentDate.getDate();
@@ -80,7 +78,7 @@ var utils = {
             }
 
             endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
-            startDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1);
+            startDate = new Date(endDate.getFullYear(), endDate.getMonth()+1 ,1);
 
             switch (periodRange) {
                 case '1':
@@ -99,13 +97,15 @@ var utils = {
                     months = 0;
             }
             startDate.setMonth(months);
+
             return {
-                startdate: startDate.toISOString().substring(0, 10),
-                enddate: endDate.toISOString().substring(0, 10)
+                startdate: utils.formatDate(startDate),
+                enddate: utils.formatDate(endDate)
             };
         }
         else
             return {startdate: _startDate, enddate: _endDate};
+
 
     },
 
@@ -137,7 +137,14 @@ var utils = {
             }
         }
             return 0;
-        }
+        },
+    formatDate: function(dateValue){
+        var day = dateValue.getDate();
+        var monthIndex = dateValue.getMonth()+1;
+        var year = dateValue.getFullYear();
+        var formatedDate=("0000"+year).slice(-4)+"-"+("00"+monthIndex).slice(-2)+"-"+("00"+day).slice(-2);
+        return formatedDate;
+    }
 
 
     };
