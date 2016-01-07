@@ -110,14 +110,16 @@ var utils = {
     },
 
 
-    getVaccineMonthlyDefaultPeriod: function (periods) {
+    getVaccineMonthlyDefaultPeriod: function (periods,cuttoffDate) {
         var monthBack = 0;
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var currentDate = new Date();
         var currentDays = currentDate.getDate();
         var endDate;
-
-        if (currentDays <= 6) {
+        if (cuttoffDate === undefined || cuttoffDate === null) {
+            cuttoffDate=10;
+        }
+        if (currentDays <= cuttoffDate) {
             monthBack = 1;
         }
         endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
