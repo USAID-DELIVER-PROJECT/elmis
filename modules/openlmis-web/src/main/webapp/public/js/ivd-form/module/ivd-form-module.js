@@ -38,6 +38,11 @@ angular.module('ivd-form-module', ['openlmis', 'ngGrid', 'angularCombine', 'ui.b
                 templateUrl: 'partials/approve/index.html',
                 resolve: ApproveIvdFormController.resolve
             }).
+            when('/approve/:id', {
+                controller : ApproveIvdFormDetailController,
+                templateUrl: 'partials/approve/approve.html',
+                resolve: ApproveIvdFormDetailController.resolve
+            }).
             otherwise({redirectTo: '/list'});
     }]);
 
