@@ -21,7 +21,7 @@ function ViewIvdFormDetailController($scope, $location, report, discardingReason
                                                               });
 
   $scope.cancel = function () {
-    $location.path('/');
+    $location.path('/view');
   };
 
   $scope.operationalStatuses = operationalStatuses;

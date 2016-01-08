@@ -21,7 +21,7 @@ function ApproveIvdFormDetailController($scope, $dialog, $location, report, disc
                                                               });
 
   $scope.cancel = function () {
-    $location.path('/');
+    $location.path('/approve');
   };
 
   $scope.operationalStatuses = operationalStatuses;
