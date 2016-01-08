@@ -96,7 +96,22 @@ public interface IvdFormMapper {
   @Select("select * from vaccine_reports " +
       "   where " +
       "     facilityId = #{facilityId} and programId = #{programId} order by id desc limit 1")
+  @Results(value = {
+    @Result(property = "periodId", column = "periodId"),
+    @Result(property = "period", javaType = ProcessingPeriod.class, column = "periodId", one = @One(select = "org.openlmis.core.repository.mapper.ProcessingPeriodMapper.getById"))
+  })
   VaccineReport getLastReport(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
+
+
+  @Select("select * from vaccine_reports " +
+    "   where " +
+    "     facilityId = #{facilityId} and programId = #{programId} and status = 'REJECTED'" +
+    "order by id desc")
+  @Results(value = {
+    @Result(property = "periodId", column = "periodId"),
+    @Result(property = "period", javaType = ProcessingPeriod.class, column = "periodId", one = @One(select = "org.openlmis.core.repository.mapper.ProcessingPeriodMapper.getById"))
+  })
+  List<VaccineReport> getRejectedReports(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
 
 
   @Select("select r.id, p.name as periodName, r.facilityId, r.status, r.programId " +

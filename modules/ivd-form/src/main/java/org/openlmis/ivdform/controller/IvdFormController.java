@@ -72,7 +72,7 @@ public class IvdFormController extends BaseController {
   }
 
   @RequestMapping(value = "get/{id}.json", method = RequestMethod.GET)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD, VIEW_IVD')")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD, VIEW_IVD, APPROVE_IVD')")
   public ResponseEntity<OpenLmisResponse> getReport(@PathVariable Long id) {
     return OpenLmisResponse.response(REPORT, service.getById(id));
   }
@@ -95,6 +95,20 @@ public class IvdFormController extends BaseController {
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
   public ResponseEntity<OpenLmisResponse> pendingForApproval(@RequestParam("program") Long programId, HttpServletRequest request){
     return OpenLmisResponse.response(PENDING_SUBMISSIONS, service.getApprovalPendingForms(this.loggedInUserId(request), programId));
+  }
+
+  @RequestMapping(value = "approve")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
+  public ResponseEntity<OpenLmisResponse> approve(@RequestBody VaccineReport report, HttpServletRequest request) {
+    service.approve(report, loggedInUserId(request));
+    return OpenLmisResponse.response(REPORT, report);
+  }
+
+  @RequestMapping(value = "reject")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
+  public ResponseEntity<OpenLmisResponse> reject(@RequestBody VaccineReport report, HttpServletRequest request) {
+    service.reject(report, loggedInUserId(request));
+    return OpenLmisResponse.response(REPORT, report);
   }
 
 }

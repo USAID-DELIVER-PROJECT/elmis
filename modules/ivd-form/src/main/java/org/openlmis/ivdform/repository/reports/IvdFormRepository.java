@@ -98,4 +98,8 @@ public class IvdFormRepository {
   public List<RoutineReportDTO> getApprovalPendingForms(String facilityIds) {
     return mapper.getApprovalPendingReports(facilityIds);
   }
+
+  public List<VaccineReport> getRejectedReports(Long facilityId, Long programId) {
+    return mapper.getRejectedReports(facilityId, programId);
+  }
 }

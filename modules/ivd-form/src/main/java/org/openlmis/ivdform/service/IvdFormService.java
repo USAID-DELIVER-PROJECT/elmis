@@ -14,7 +14,6 @@ package org.openlmis.ivdform.service;
 
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
-import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.ProgramProduct;
 import org.openlmis.core.domain.RightName;
@@ -186,20 +185,19 @@ public class IvdFormService {
     }
 
     List<ReportStatusDTO> results = new ArrayList<>();
-    // find all periods that are after this period, and before today.
-
     List<ProcessingPeriod> periods = periodService.getAllPeriodsForDateRange(scheduleId, startDate, endDate);
-    if (lastRequest != null && lastRequest.getStatus().equals(ReportStatus.DRAFT)) {
-      ReportStatusDTO reportStatusDTO = new ReportStatusDTO();
-      reportStatusDTO.setPeriodName(lastRequest.getPeriod().getName());
-      reportStatusDTO.setPeriodId(lastRequest.getPeriod().getId());
-      reportStatusDTO.setStatus(lastRequest.getStatus().toString());
-      reportStatusDTO.setProgramId(programId);
-      reportStatusDTO.setFacilityId(facilityId);
-      reportStatusDTO.setId(lastRequest.getId());
+    if (lastRequest != null ) {
 
-      results.add(reportStatusDTO);
+      List<VaccineReport> rejectedReports = repository.getRejectedReports(facilityId, programId);
+      for(VaccineReport rReport : rejectedReports){
+        results.add(createReportStatusDto(facilityId, programId, rReport));
+      }
+
+      if( lastRequest.getStatus().equals(ReportStatus.DRAFT)) {
+        results.add(createReportStatusDto(facilityId, programId, lastRequest));
+      }
     }
+
 
     for (ProcessingPeriod period : emptyIfNull(periods)) {
       if (lastRequest == null || !lastRequest.getPeriodId().equals(period.getId())) {
@@ -214,6 +212,17 @@ public class IvdFormService {
       }
     }
     return results;
+  }
+
+  private ReportStatusDTO createReportStatusDto(Long facilityId, Long programId, VaccineReport report) {
+    ReportStatusDTO reportStatusDTO = new ReportStatusDTO();
+    reportStatusDTO.setPeriodName(report.getPeriod().getName());
+    reportStatusDTO.setPeriodId(report.getPeriod().getId());
+    reportStatusDTO.setStatus(report.getStatus().toString());
+    reportStatusDTO.setProgramId(programId);
+    reportStatusDTO.setFacilityId(facilityId);
+    reportStatusDTO.setId(report.getId());
+    return reportStatusDTO;
   }
 
   public VaccineReport getById(Long id) {
@@ -231,5 +240,19 @@ public class IvdFormService {
   public List<RoutineReportDTO> getApprovalPendingForms(Long userId, Long programId) {
     String facilityIds = commaSeparator.commaSeparateIds(facilityService.getUserSupervisedFacilities(userId, programId, RightName.APPROVE_IVD));
     return repository.getApprovalPendingForms( facilityIds);
+  }
+
+  public void approve(VaccineReport report, Long userId) {
+    report.setStatus(ReportStatus.APPROVED);
+    repository.update(report, userId);
+    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.APPROVED, userId);
+    reportStatusChangeRepository.insert(change);
+  }
+
+  public void reject(VaccineReport report, Long userId) {
+    report.setStatus(ReportStatus.REJECTED);
+    repository.update(report, userId);
+    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.REJECTED, userId);
+    reportStatusChangeRepository.insert(change);
   }
 }

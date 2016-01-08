@@ -89,6 +89,15 @@ services.factory('VaccineReportSubmit', function ($resource) {
 });
 
 
+services.factory('VaccineReportApprove', function ($resource) {
+  return $resource('/vaccine/report/approve.json', {}, update);
+});
+
+services.factory('VaccineReportReject', function ($resource) {
+  return $resource('/vaccine/report/reject.json', {}, update);
+});
+
+
 services.factory('VaccineColumnTemplate', function ($resource) {
   return $resource('/vaccine/columns/get/:id.json', {id : '@id'}, {});
 });

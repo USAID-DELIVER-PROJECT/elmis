@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function ApproveIvdFormDetailController($scope, $location, report, discardingReasons, operationalStatuses) {
+function ApproveIvdFormDetailController($scope, $dialog, $location, report, discardingReasons, operationalStatuses, VaccineReportApprove, VaccineReportReject) {
 
   // initial state of the display
   $scope.report = new VaccineReport(report);
@@ -38,7 +38,6 @@ function ApproveIvdFormDetailController($scope, $location, report, discardingRea
   };
 
   $scope.showCampaignForm = function (campaign, editMode) {
-
     $scope.currentCampaign = campaign;
     $scope.currentCampaignMode = editMode;
     $scope.campaignsModal = true;
@@ -54,6 +53,41 @@ function ApproveIvdFormDetailController($scope, $location, report, discardingRea
       return reason.requiresExplanation;
     }
     return false;
+  };
+
+  $scope.approve = function () {
+    var callBack = function (result) {
+      if (result) {
+        VaccineReportApprove.update($scope.report, function () {
+          $scope.message = "msg.ivd.approved.successfully";
+          $location.path('/approve');
+        });
+      }
+    };
+    var options = {
+      id: "confirmDialog",
+      header: "label.confirm.approve.action",
+      body: "msg.question.approve.ivd.confirmation"
+    };
+    OpenLmisDialog.newDialog(options, callBack, $dialog);
+  };
+
+
+  $scope.reject = function () {
+    var callBack = function (result) {
+      if (result) {
+        VaccineReportReject.update($scope.report, function () {
+          $scope.message = "msg.ivd.rejected.successfully";
+          $location.path('/approve');
+        });
+      }
+    };
+    var options = {
+      id: "confirmDialog",
+      header: "label.confirm.reject.action",
+      body: "msg.question.reject.ivd.confirmation"
+    };
+    OpenLmisDialog.newDialog(options, callBack, $dialog);
   };
 
 }
