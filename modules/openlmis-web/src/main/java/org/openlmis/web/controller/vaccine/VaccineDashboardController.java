@@ -70,7 +70,48 @@ public class VaccineDashboardController  extends BaseController {
         return OpenLmisResponse.response("facilityCoverageDetails", service.getFacilityCoverageDetails(startDate, endDate, product, userId));
     }
 
+    @RequestMapping(value = "facility-sessions.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilitySessions(@RequestParam("period") Long period, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
 
+        return OpenLmisResponse.response("facilitySessions", service.getFacilitySessions(period, userId));
+    }
+
+    @RequestMapping(value = "facility-sessions-details.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilitySessionsDetails(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilitySessionsDetails", service.getFacilitySessionsDetails(startDate, endDate, userId));
+    }
+
+    @RequestMapping(value = "facility-wastage.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityWastage(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilityWastage", service.getFacilityWastage(period, product, userId));
+    }
+
+    @RequestMapping(value = "facility-wastage-details.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityWastageDetails(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilityWastageDetails", service.getFacilityWastageDetails(startDate, endDate, product, userId));
+    }
+
+
+    @RequestMapping(value = "facility-dropout.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityDropout(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilityDropout", service.getFacilityDropout(period, product, userId));
+    }
+
+    @RequestMapping(value = "facility-dropout-details.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityDropoutDetails(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilityDropoutDetails", service.getFacilityDropoutDetails(startDate, endDate, product, userId));
+    }
     @RequestMapping(value = "district-coverage.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getDistrictCoverage(@RequestParam("period") Long period, @RequestParam("product") Long product){
         return OpenLmisResponse.response("districtCoverage", service.getDistrictCoverage(period, product));

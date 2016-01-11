@@ -20,6 +20,7 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
                                     VaccineDashboardDistrictStock,
                                     VaccineDashboardMonthlyWastage,
                                     VaccineDashboardDistrictWastage,
+                                    VaccineDashboardFacilityTrend,
                                     VaccineDashboardBundle,
                                     dashboardSlidesHelp,
                                     VaccineDashboardFacilityCoverageDetails,
@@ -154,6 +155,32 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
         dataX: {"id": "period_name"}
     };
 
+
+    $scope.facilitySessions = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "fixed_sessions", "name": messageService.get('label.fixed.sessions'), "type": "line"},
+            {"id": "outreach_sessions", "name": messageService.get('label.outreach.sessions'), "type": "bar"}
+        ],
+        dataX: {"id": "facility_name"}
+    };
+    $scope.facilityWastage = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "wastage_rate", "name": messageService.get('label.wastage'), "type": "line"},
+            {"id": "usage_rate", "name": messageService.get('label.actual'), "type": "bar"}
+        ],
+        dataX: {"id": "facility_name"}
+    };
+    $scope.facilityDropout = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "bcg_mr_dropout", "name": messageService.get('label.bcg.mr.dropout'), "type": "line"},
+            {"id": "dtp1_dtp3_dropout", "name": messageService.get('label.dtp.dropout'), "type": "bar"}
+        ],
+        dataX: {"id": "facility_name"}
+    };
+
     $scope.formatValue = function (value, ratio, id) {
         return $filter('number')(value);
     };
@@ -180,19 +207,90 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
             !isUndefined( $scope.filter.detailCoverage.endDate) &&
             !isUndefined($scope.filter.detailCoverage.product) && $scope.filter.detailCoverage.product !== 0){
 
-            VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
+           // VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
+            VaccineDashboardFacilityTrend.coverageDetails({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
                 product: $scope.filter.detailCoverage.product}, function(data){
 
                 $scope.coverageDetails = data.facilityCoverageDetails;
                 $scope.periodsList = _.uniq(_.pluck(data.facilityCoverageDetails,'period_name'));
-                $scope.facilityList = _.uniq(_.pluck(data.facilityCoverageDetails,'facility_name'));
+                var facilities = _.uniq(_.pluck(data.facilityCoverageDetails,'facility_name'));
                 $scope.facilityDetails  = [];
-                angular.forEach($scope.facilityList, function(facility){
+                angular.forEach(facilities, function(facility){
                     var district =_.findWhere($scope.coverageDetails, {facility_name: facility}).district_name;
 
-                    $scope.facilityDetails.push({district: district, facilityName: facility, indicator: 'target', indicatorValues: $scope.getIndicatorValues(facility, 'target')});
-                    $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'actual', indicatorValues: $scope.getIndicatorValues(facility, 'actual')});
-                    $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'coverage', indicatorValues: $scope.getIndicatorValues(facility, 'coverage')});
+                    $scope.facilityDetails.push({district: district, facilityName: facility, indicator: 'target', indicatorValues: $scope.getIndicatorValues(facility, 'target',$scope.coverageDetails)});
+                    $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'actual', indicatorValues: $scope.getIndicatorValues(facility, 'actual', $scope.coverageDetails)});
+                    $scope.facilityDetails.push({district: district,facilityName: facility, indicator: 'coverage', indicatorValues: $scope.getIndicatorValues(facility, 'coverage', $scope.coverageDetails)});
+
+                });
+            });
+
+        }
+    };
+    $scope.sessionDetailCallback = function(){
+        if(!isUndefined( $scope.filter.detailSessions.startDate) &&
+            !isUndefined( $scope.filter.detailSessions.endDate) ){
+
+            VaccineDashboardFacilityTrend.sessionsDetails({startDate: $scope.filter.detailSessions.startDate, endDate: $scope.filter.detailSessions.endDate}, function(data){
+
+                $scope.sessionsDetails = data.facilitySessionsDetails;
+                $scope.sessionsPeriodsList = _.uniq(_.pluck($scope.sessionsDetails,'period_name'));
+                var facilities = _.uniq(_.pluck($scope.sessionsDetails,'facility_name'));
+                $scope.facilitySessionsDetails  = [];
+                angular.forEach(facilities, function(facility){
+                    var district =_.findWhere($scope.sessionsDetails, {facility_name: facility}).district_name;
+
+                    $scope.facilitySessionsDetails.push({district: district, facilityName: facility, indicator: 'fixed_sessions', indicatorValues: $scope.getIndicatorValues(facility, 'fixed_sessions',$scope.sessionsDetails)});
+                    $scope.facilitySessionsDetails.push({district: district,facilityName: facility, indicator: 'outreach_sessions', indicatorValues: $scope.getIndicatorValues(facility, 'outreach_sessions', $scope.sessionsDetails)});
+
+                });
+            });
+
+        }
+    };
+    $scope.facilitySessionsPagination = function(){
+        var s = parseInt($scope.filter.facilitySessionsOffset,10)+ parseInt($scope.filter.facilitySessionsRange,10);
+        if(!isUndefined($scope.filter.facilitySessionsOffset) ){
+            $scope.facilitySessions.dataPoints = $scope.facilitySessions.data.slice(parseInt($scope.filter.facilitySessionsOffset,10), s );
+        }
+    };
+    $scope.facilitySessionsCallback = function(){
+        if(!isUndefined( $scope.filter.facilitySessions.period)){
+           VaccineDashboardFacilityTrend.sessions({period: $scope.filter.facilitySessions.period}, function(data){
+                $scope.facilitySessions.data = data.facilitySessions;
+                if(!isUndefined($scope.facilitySessions.data)){
+                    $scope.filter.totalFacilitySessions = $scope.facilitySessions.data.length;
+                }else{
+                    $scope.filter.totalFacilitySessions= 0;
+                }
+            });
+
+
+        }
+    };
+    $scope.facilityWastagePagination = function(){
+        var s = parseInt($scope.filter.facilityWastageOffset,10)+ parseInt($scope.filter.facilityWastageRange,10);
+        if(!isUndefined($scope.filter.facilityWastageOffset) ){
+            $scope.facilityWastage.dataPoints = $scope.facilityWastage.data.slice(parseInt($scope.filter.facilityWastageOffset,10), s );
+        }
+    };
+    $scope.wastageDetailCallback = function(){
+        if(!isUndefined( $scope.filter.detailWastage.startDate) &&
+            !isUndefined( $scope.filter.detailWastage.endDate) &&
+            !isUndefined($scope.filter.detailWastage.product) && $scope.filter.detailWastage.product !== 0){
+
+            VaccineDashboardFacilityTrend.wastageDetails({startDate: $scope.filter.detailWastage.startDate, endDate: $scope.filter.detailWastage.endDate,
+                product: $scope.filter.detailWastage.product}, function(data){
+
+                $scope.wastageDetails = data.facilityWastageDetails;
+                $scope.wastagePeriodsList = _.uniq(_.pluck($scope.wastageDetails,'period_name'));
+                var facilities = _.uniq(_.pluck($scope.wastageDetails,'facility_name'));
+                $scope.facilityWastageDetails  = [];
+                angular.forEach(facilities, function(facility){
+                    var district =_.findWhere($scope.wastageDetails, {facility_name: facility}).district_name;
+
+                    $scope.facilityWastageDetails.push({district: district, facilityName: facility, indicator: 'wastage_rate', indicatorValues: $scope.getIndicatorValues(facility, 'wastage_rate',$scope.wastageDetails)});
+                    $scope.facilityWastageDetails.push({district: district,facilityName: facility, indicator: 'usage_rate', indicatorValues: $scope.getIndicatorValues(facility, 'usage_rate', $scope.wastageDetails)});
 
                 });
             });
@@ -200,8 +298,73 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
         }
     };
 
-    $scope.getIndicatorValues = function (facility, indicator) {
-        var facilityDetail = _.where($scope.coverageDetails, {facility_name: facility});
+    $scope.facilityWastageCallback = function(){
+        if(!isUndefined( $scope.filter.facilityWastage.period) &&
+            !isUndefined($scope.filter.facilityWastage.product) && $scope.filter.facilityWastage.product !== 0){
+            VaccineDashboardFacilityTrend.wastage({period: $scope.filter.facilityWastage.period,
+                product: $scope.filter.facilityWastage.product}, function(data){
+                $scope.facilityWastage.data = data.facilityWastage;
+                if(!isUndefined($scope.facilityWastage.data)){
+
+                    $scope.filter.totalfacilityWastage = $scope.facilityWastage.data.length;
+                   // $scope.facilityWastagePagination();
+                }else{
+                    $scope.filter.totalfacilityWastage= 0;
+                }
+            });
+
+
+        }
+    };
+    $scope.facilityDropoutPagination = function(){
+        var s = parseInt($scope.filter.facilityDropoutOffset,10)+ parseInt($scope.filter.facilityDropoutRange,10);
+        if(!isUndefined($scope.filter.facilityDropoutOffset) ){
+            $scope.facilityDropout.dataPoints = $scope.facilityDropout.data.slice(parseInt($scope.filter.facilityDropoutOffset,10), s );
+        }
+    };
+    $scope.dropoutDetailCallback = function(){
+        if(!isUndefined( $scope.filter.detailDropout.startDate) &&
+            !isUndefined( $scope.filter.detailDropout.endDate) &&
+            !isUndefined($scope.filter.detailDropout.product) && $scope.filter.detailDropout.product !== 0){
+
+            VaccineDashboardFacilityTrend.dropoutDetails({startDate: $scope.filter.detailDropout.startDate, endDate: $scope.filter.detailDropout.endDate,
+                product: $scope.filter.detailDropout.product}, function(data){
+
+                $scope.dropoutDetails = data.facilityDropoutDetails;
+                $scope.dropoutPeriodsList = _.uniq(_.pluck($scope.dropoutDetails,'period_name'));
+                var facilities = _.uniq(_.pluck($scope.dropoutDetails,'facility_name'));
+                $scope.facilityDropoutDetails  = [];
+                angular.forEach(facilities, function(facility){
+                    var district =_.findWhere($scope.dropoutDetails, {facility_name: facility}).district_name;
+
+                    $scope.facilityDropoutDetails.push({district: district, facilityName: facility, indicator: 'bcg_mr_dropout', indicatorValues: $scope.getIndicatorValues(facility, 'bcg_mr_dropout',$scope.dropoutDetails)});
+                    $scope.facilityDropoutDetails.push({district: district,facilityName: facility, indicator: 'dtp1_dtp3_dropout', indicatorValues: $scope.getIndicatorValues(facility, 'dtp1_dtp3_dropout', $scope.dropoutDetails)});
+
+                });
+            });
+
+        }
+    };
+
+    $scope.facilityDropoutCallback = function(){
+        if(!isUndefined( $scope.filter.facilityDropout.period) &&
+            !isUndefined($scope.filter.facilityDropout.product) && $scope.filter.facilityDropout.product !== 0){
+            VaccineDashboardFacilityTrend.dropout({period: $scope.filter.facilityDropout.period,
+                product: $scope.filter.facilityDropout.product}, function(data){
+                $scope.facilityDropout.data = data.facilityDropout;
+                if(!isUndefined($scope.facilityDropout.data)){
+                    $scope.filter.totalfacilityDropout = $scope.facilityDropout.data.length;
+                }else{
+                    $scope.filter.totalfacilityDropout= 0;
+                }
+            });
+
+
+        }
+    };
+
+    $scope.getIndicatorValues = function (facility, indicator, data) {
+        var facilityDetail = _.where(data, {facility_name: facility});
         var values = _.pluck(facilityDetail, indicator);
         var tot = _.reduce(values, function(res, num){return res + num;}, 0);
         values.push(tot);
@@ -214,7 +377,8 @@ function VaccineDashboardController($scope,VaccineDashboardSummary,$filter,Vacci
     $scope.facilityCoverageCallback = function(){
         if(!isUndefined( $scope.filter.facilityCoverage.period) &&
             !isUndefined($scope.filter.facilityCoverage.product) && $scope.filter.monthlyCoverage.product !== 0){
-            VaccineDashboardFacilityCoverage.get({period: $scope.filter.facilityCoverage.period,
+            //VaccineDashboardFacilityCoverage.get({period: $scope.filter.facilityCoverage.period,
+            VaccineDashboardFacilityTrend.coverage({period: $scope.filter.facilityCoverage.period,
                 product: $scope.filter.facilityCoverage.product}, function(data){
                 $scope.facilityCoverage.data = data.facilityCoverage;
                 if(!isUndefined($scope.facilityCoverage.data)){

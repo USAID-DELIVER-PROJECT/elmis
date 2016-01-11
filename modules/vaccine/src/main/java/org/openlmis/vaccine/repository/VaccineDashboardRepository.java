@@ -63,6 +63,27 @@ public class VaccineDashboardRepository {
     public List<HashMap<String, Object>> getFacilityCoverageDetails(Date startDate, Date endDate, Long productId, Long userId){
         return mapper.getFacilityCoverageDetails(startDate, endDate, productId, userId);
     }
+
+    public List<HashMap<String, Object>> getFacilitySessions(Long period, Long userId){
+        return mapper.getFacilitySessions(period, userId);
+    }
+    public List<HashMap<String, Object>> getFacilitySessionsDetails(Date startDate, Date endDate, Long userId){
+        return mapper.getFacilitySessionsDetails(startDate, endDate, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityWastage(Long period, Long product, Long userId){
+        return mapper.getFacilityWastage(period, product, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityWastageDetails(Date startDate, Date endDate, Long productId, Long userId){
+        return mapper.getFacilityWastageDetails(startDate, endDate, productId, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityDropout(Long period, Long product, Long userId){
+        return mapper.getFacilityDropout(period, product, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityDropoutDetails(Date startDate, Date endDate, Long productId, Long userId){
+        return mapper.getFacilityDropoutDetails(startDate, endDate, productId, userId);
+    }
+
     public List<HashMap<String, Object>> getMonthlyWastage(Date startDate, Date endDate, Long productId){
         return mapper.getMonthlyWastage(startDate, endDate, productId);
     }

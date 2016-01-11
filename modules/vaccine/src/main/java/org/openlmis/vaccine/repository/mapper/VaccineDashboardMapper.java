@@ -223,6 +223,128 @@ public interface VaccineDashboardMapper {
         List<HashMap<String, Object>> getFacilityCoverageDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
 
+        @Select("SELECT \n" +
+                "d.district_name,  \n" +
+                "s.facility_name,\n" +
+                "COALESCE(fixed_sessions,0) fixed_sessions, \n" +
+                "COALESCE(outreach_sessions,0) outreach_sessions\n" +
+                "from vw_vaccine_sessions  s  \n" +
+                "JOIN vw_districts d ON s.geographic_zone_id = d.district_id  \n" +
+                "WHERE\n" +
+                "s.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and s.period_id = #{period} \n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
+                "ORDER BY 2;")
+        List<HashMap<String, Object>> getFacilitySessions(@Param("period") Long period,  @Param("user") Long user);
+
+        @Select("SELECT \n" +
+                "d.district_name,  \n" +
+                "s.facility_name,\n" +
+                "s.period_name,\n" +
+                "s.period_start_date,\n" +
+                "COALESCE(fixed_sessions,0) fixed_sessions, \n" +
+                "COALESCE(outreach_sessions,0) outreach_sessions\n" +
+                "from vw_vaccine_sessions  s  \n" +
+                "JOIN vw_districts d ON s.geographic_zone_id = d.district_id  \n" +
+                "WHERE\n" +
+                "s.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and s.period_start_date::date >= #{startDate}  and s.period_end_date::date <= #{endDate} \n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
+                "ORDER BY 2;")
+        List<HashMap<String, Object>> getFacilitySessionsDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("user") Long user);
+
+        @Select("SELECT \n" +
+                "d.district_name,  \n" +
+                "ss.facility_name,\n" +
+                "usage_rate,\n" +
+                "wastage_rate \n" +
+                "FROM  \n" +
+                "vw_vaccine_stock_status ss  \n" +
+                "JOIN vw_districts d ON ss.geographic_zone_id = d.district_id  \n" +
+                "JOIN vaccine_reports vr ON ss.report_id = vr.ID  \n" +
+                "JOIN program_products pp ON pp.programid = vr.programid  \n" +
+                "AND pp.productid = ss.product_id  \n" +
+                "WHERE  \n" +
+                "ss.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and ss.product_id = #{product}  \n" +
+                "and ss.period_id = #{period} \n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
+                "ORDER BY 2;")
+        List<HashMap<String, Object>> getFacilityWastage(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("\n" +
+                "SELECT \n" +
+                "d.district_name,  \n" +
+                "ss.facility_name,\n" +
+                "usage_rate,\n" +
+                "wastage_rate ,\n" +
+                "ss.period_start_date,\n" +
+                "ss.period_name \n" +
+                "FROM  \n" +
+                "vw_vaccine_stock_status ss  \n" +
+                "JOIN vw_districts d ON ss.geographic_zone_id = d.district_id  \n" +
+                "JOIN vaccine_reports vr ON ss.report_id = vr.ID  \n" +
+                "JOIN program_products pp ON pp.programid = vr.programid  \n" +
+                "AND pp.productid = ss.product_id  \n" +
+                "WHERE  \n" +
+                "ss.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and ss.product_id = #{product}  \n" +
+                "and ss.period_start_date::date >= #{startDate} and  ss.period_end_date::date <= #{endDate}\n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
+                "ORDER BY 2;")
+        List<HashMap<String, Object>> getFacilityWastageDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("\n" +
+                "SELECT \n" +
+                "d.district_name,  \n" +
+                "i.facility_name,\n" +
+                "case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,\n" +
+                "case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
+                "FROM  \n" +
+                "vw_vaccine_coverage i  \n" +
+                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
+                "JOIN vaccine_reports vr ON i.report_id = vr.ID  \n" +
+                "JOIN program_products pp ON pp.programid = vr.programid  \n" +
+                "AND pp.productid = i.product_id  \n" +
+                "WHERE  \n" +
+                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and i.product_id = #{product}  \n" +
+                "and i.period_id = #{period} \n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
+                "GROUP BY 1,2\n" +
+                "ORDER BY 2;")
+        List<HashMap<String, Object>> getFacilityDropout(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("SELECT \n" +
+                "d.district_name,  \n" +
+                "i.facility_name,\n" +
+                "i.period_name,\n" +
+                "i.period_start_date,\n" +
+                "case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,\n" +
+                "case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
+                "FROM  \n" +
+                "vw_vaccine_coverage i  \n" +
+                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
+                "JOIN vaccine_reports vr ON i.report_id = vr.ID  \n" +
+                "JOIN program_products pp ON pp.programid = vr.programid  \n" +
+                "AND pp.productid = i.product_id  \n" +
+                "WHERE  \n" +
+                "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and i.product_id = #{product}  \n" +
+                "and i.period_start_date::date >= #{startDate} and i.period_end_date::date <= #{endDate}\n" +
+                "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
+                "GROUP BY 1,2,3,4\n" +
+                "ORDER BY 2;")
+        List<HashMap<String, Object>> getFacilityDropoutDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
+
+
+
         @Select("with temp as (\n" +
                 "select period_name, period_start_date::date,\n" +
                 "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +

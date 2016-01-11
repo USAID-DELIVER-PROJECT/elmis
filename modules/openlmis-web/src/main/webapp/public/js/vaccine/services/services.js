@@ -330,6 +330,51 @@ services.factory('VaccineDashboardFacilityCoverageDetails', function($resource){
     return $resource('/vaccine/dashboard/facility-coverage-details.json',{},{});
 });
 
+services.factory('VaccineDashboardFacilityWastage', function($resource){
+    return $resource('/vaccine/dashboard/facility-wastage.json',{},{});
+});
+
+
+services.factory('VaccineDashboardFacilityWastageDetails', function($resource){
+    return $resource('/vaccine/dashboard/facility-wastage-details.json',{},{});
+});
+
+services.factory('VaccineDashboardFacilitySessions', function($resource){
+    return $resource('/vaccine/dashboard/facility-sessions.json',{},{});
+});
+
+
+services.factory('VaccineDashboardFacilitySessionsDetails', function($resource){
+    return $resource('/vaccine/dashboard/facility-sessions-details.json',{},{});
+});
+
+services.factory('VaccineDashboardFacilityDropout', function($resource){
+    return $resource('/vaccine/dashboard/facility-dropout.json',{},{});
+});
+
+
+services.factory('VaccineDashboardFacilityDropoutDetails', function($resource){
+    return $resource('/vaccine/dashboard/facility-dropout-details.json',{},{});
+});
+
+services.factory('VaccineDashboardFacilityTrend', function($resource){
+    return $resource('/vaccine/dashboard/facility-coverage.json',{},
+        {
+            coverage: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage.json'},
+            coverageDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage-details.json'},
+            sessions: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-sessions.json'},
+            sessionsDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-sessions-details.json'},
+            wastage: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-wastage.json'},
+            wastageDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-wastage-details.json'},
+            dropout: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-dropout.json'},
+            dropoutDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-dropout-details.json'},
+        }
+    );
+});
+
+
+
+
 services.factory('Distribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/by-voucher-number/', {}, {});
 });
