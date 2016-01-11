@@ -18,6 +18,7 @@ import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.ivdform.domain.reports.DiseaseLineItem;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
+import org.openlmis.ivdform.dto.RoutineReportDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -43,23 +44,23 @@ public interface IvdFormMapper {
       @Result(property = "periodId", column = "periodId"),
       @Result(property = "programId", column = "programId"),
       @Result(property = "logisticsLineItems", javaType = List.class, column = "id",
-          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.VaccineReportLogisticsLineItemMapper.getLineItems")),
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.LogisticsLineItemMapper.getLineItems")),
       @Result(property = "coverageLineItems", javaType = List.class, column = "id",
-          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.VaccineReportCoverageMapper.getLineItems")),
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.CoverageMapper.getLineItems")),
       @Result(property = "adverseEffectLineItems", javaType = List.class, column = "id",
-          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.VaccineReportAdverseEffectMapper.getLineItems")),
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.AdverseEffectMapper.getLineItems")),
       @Result(property = "columnTemplate", javaType = List.class, column = "programId",
-          many = @Many(select = "org.openlmis.ivdform.repository.mapper.VaccineColumnTemplateMapper.getForProgram")),
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.LogisticsColumnTemplateMapper.getForProgram")),
       @Result(property = "coldChainLineItems", javaType = List.class, column = "id",
-          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.VaccineReportColdChainMapper.getLineItems")),
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.ColdChainMapper.getLineItems")),
       @Result(property = "campaignLineItems", javaType = List.class, column = "id",
-          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.VaccineReportCampaignLineItemMapper.getLineItems")),
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.CampaignLineItemMapper.getLineItems")),
       @Result(property = "diseaseLineItems", javaType = List.class, column = "id",
-          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.VaccineReportDiseaseLineItemMapper.getLineItems")),
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.DiseaseLineItemMapper.getLineItems")),
       @Result(property = "vitaminSupplementationLineItems", javaType = List.class, column = "id",
           many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.VitaminSupplementationLineItemMapper.getLineItems")),
       @Result(property = "reportStatusChanges", javaType = List.class, column = "id",
-          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.VaccineReportStatusChangeMapper.getChangeLogByReportId")),
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.StatusChangeMapper.getChangeLogByReportId")),
       @Result(property = "period", javaType = ProcessingPeriod.class, column = "periodId",
           many = @Many(select = "org.openlmis.core.repository.mapper.ProcessingPeriodMapper.getById")),
       @Result(property = "facility", javaType = Facility.class, column = "facilityId",
@@ -95,7 +96,22 @@ public interface IvdFormMapper {
   @Select("select * from vaccine_reports " +
       "   where " +
       "     facilityId = #{facilityId} and programId = #{programId} order by id desc limit 1")
+  @Results(value = {
+    @Result(property = "periodId", column = "periodId"),
+    @Result(property = "period", javaType = ProcessingPeriod.class, column = "periodId", one = @One(select = "org.openlmis.core.repository.mapper.ProcessingPeriodMapper.getById"))
+  })
   VaccineReport getLastReport(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
+
+
+  @Select("select * from vaccine_reports " +
+    "   where " +
+    "     facilityId = #{facilityId} and programId = #{programId} and status = 'REJECTED'" +
+    "order by id desc")
+  @Results(value = {
+    @Result(property = "periodId", column = "periodId"),
+    @Result(property = "period", javaType = ProcessingPeriod.class, column = "periodId", one = @One(select = "org.openlmis.core.repository.mapper.ProcessingPeriodMapper.getById"))
+  })
+  List<VaccineReport> getRejectedReports(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
 
 
   @Select("select r.id, p.name as periodName, r.facilityId, r.status, r.programId " +
@@ -123,5 +139,15 @@ public interface IvdFormMapper {
   Long findPreviousReport(@Param("facilityId") Long facilityId, @Param("programId") Long programId, @Param("periodId") Long periodId);
 
 
+  @Select("SELECT " +
+    "   r.id, f.name as facilityName, f.code as facilityCode, z.name as districtName, r.status, r.submissionDate, p.startDate periodStartDate, p.endDate periodEndDate, p.name periodName " +
+    "from vaccine_reports r " +
+    "join processing_periods p on p.id = r.periodId " +
+    "join facilities f on f.id = r.facilityId " +
+    "join geographic_zones z on z.id = f.geographicZoneId " +
+    "where " +
+    "r.status = 'SUBMITTED' " +
+    "and facilityId = ANY( #{facilityIds}::INT[] )")
+  List<RoutineReportDTO> getApprovalPendingReports(@Param("facilityIds") String facilityIds);
 }
 

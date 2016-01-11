@@ -15,5 +15,6 @@ package org.openlmis.ivdform.domain.reports;
 public enum ReportStatus {
   DRAFT,
   SUBMITTED,
+  REJECTED,
   APPROVED
 }

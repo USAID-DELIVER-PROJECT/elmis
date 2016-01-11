@@ -21,7 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.repository.mapper.reports.IvdFormMapper;
-import org.openlmis.ivdform.service.VaccineLineItemService;
+import org.openlmis.ivdform.service.LineItemService;
 
 import static org.mockito.Mockito.verify;
 
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 public class IvdFormRepositoryTest {
 
   @Mock
-  VaccineLineItemService lineItemService;
+  LineItemService lineItemService;
 
   @Mock
   IvdFormMapper mapper;

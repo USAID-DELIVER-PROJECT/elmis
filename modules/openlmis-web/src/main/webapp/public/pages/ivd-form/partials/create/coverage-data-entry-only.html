@@ -21,7 +21,7 @@
       <td class="cell-input">
         <input
           class="right-justified"
-          ng-disabled="report.status != 'DRAFT'"
+          ng-disabled="!report.editable"
           numeric-validator="positiveInteger"
           maxlength="8"
           ng-disabled="!dose.trackMale"
@@ -31,7 +31,7 @@
       <td class="cell-input">
         <input
           class="right-justified"
-          ng-disabled="report.status != 'DRAFT'"
+          ng-disabled="!report.editable"
           numeric-validator="positiveInteger"
           maxlength="8"
           ng-disabled="!dose.trackFemale"
@@ -41,7 +41,7 @@
       <td class="cell-input">
         <input
           class="right-justified"
-          ng-disabled="report.status != 'DRAFT'"
+          ng-disabled="!report.editable"
           numeric-validator="positiveInteger"
           maxlength="8"
           ng-disabled="!dose.trackMale"
@@ -51,7 +51,7 @@
       <td class="cell-input">
         <input
           class="right-justified"
-          ng-disabled="report.status != 'DRAFT'"
+          ng-disabled="!report.editable"
           numeric-validator="positiveInteger"
           maxlength="8"
           ng-disabled="!dose.trackFemale"

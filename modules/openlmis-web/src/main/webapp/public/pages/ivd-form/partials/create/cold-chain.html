@@ -48,7 +48,7 @@
       <td class="cell-input col-general">
         <input
           name="minTemp-{{$index}}"
-          ng-disabled="report.status != 'DRAFT'"
+          ng-disabled="!report.editable"
           numeric-validator="numericValue,4,2"
           maxlength="7"
           ng-model="item.minTemp"
@@ -62,7 +62,7 @@
       <td class="cell-input col-general">
         <input
           name="maxTemp-{{$index}}"
-          ng-disabled="report.status != 'DRAFT'"
+          ng-disabled="!report.editable"
           numeric-validator="numericValue,4,2"
           maxlength="7"
           ng-model="item.maxTemp"
@@ -76,7 +76,7 @@
       <td class="cell-input col-general">
         <input
           name="lowTemp-{{$index}}"
-          ng-disabled="report.status != 'DRAFT'"
+          ng-disabled="!report.editable"
           numeric-validator="numericValue,4,2"
           maxlength="7"
           ng-model="item.minEpisodeTemp"
@@ -90,7 +90,7 @@
       <td class="cell-input col-general">
         <input
           name="highTemp-{{$index}}"
-          ng-disabled="report.status != 'DRAFT'"
+          ng-disabled="!report.editable"
           numeric-validator="numericValue,4,2"
           maxlength="7"
           ng-model="item.maxEpisodeTemp"

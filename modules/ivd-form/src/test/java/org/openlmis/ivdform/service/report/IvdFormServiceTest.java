@@ -41,8 +41,8 @@ import org.openlmis.ivdform.dto.ReportStatusDTO;
 import org.openlmis.ivdform.repository.VitaminRepository;
 import org.openlmis.ivdform.repository.VitaminSupplementationAgeGroupRepository;
 import org.openlmis.ivdform.repository.reports.IvdFormRepository;
-import org.openlmis.ivdform.repository.reports.VaccineReportColdChainRepository;
-import org.openlmis.ivdform.repository.reports.VaccineReportStatusChangeRepository;
+import org.openlmis.ivdform.repository.reports.ColdChainLineItemRepository;
+import org.openlmis.ivdform.repository.reports.StatusChangeRepository;
 import org.openlmis.ivdform.service.*;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class IvdFormServiceTest {
   ProgramProductService programProductService;
 
   @Mock
-  VaccineLineItemService lLineItemService;
+  LineItemService lLineItemService;
 
   @Mock
   DiseaseService diseaseService;
@@ -77,13 +77,13 @@ public class IvdFormServiceTest {
   ProcessingPeriodRepository periodService;
 
   @Mock
-  VaccineProductDoseService productDoseService;
+  ProductDoseService productDoseService;
 
   @Mock
-  VaccineIvdTabVisibilityService settingService;
+  TabVisibilityService settingService;
 
   @Mock
-  VaccineReportColdChainRepository coldChainRepository;
+  ColdChainLineItemRepository coldChainRepository;
 
   @Mock
   VitaminRepository vitaminRepository;
@@ -95,7 +95,7 @@ public class IvdFormServiceTest {
   ProgramService programService;
 
   @Mock
-  VaccineReportStatusChangeRepository statusChangeRepository;
+  StatusChangeRepository statusChangeRepository;
 
   @Mock
   AnnualFacilityDemographicEstimateService annualFacilityDemographicEstimateService;
