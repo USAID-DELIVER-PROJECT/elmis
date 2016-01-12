@@ -488,6 +488,18 @@ public class ReportLookupController extends BaseController {
     @RequestMapping(value = "/vaccineYearSchedulePeriod", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getVaccineScheduleYearPeriod() {
 
+        List<YearSchedulePeriodTree> yearSchedulePeriodTree = reportLookupService.getVaccineYearSchedulePeriodTree();
+
+        Long currentPeriodId = reportLookupService.getCurrentPeriodIdForVaccine();
+        Map<String, Object> data = new HashMap<>(2);
+        data.put("currentPeriodId", currentPeriodId);
+        data.put(PERIODS, yearSchedulePeriodTree);
+
+        return OpenLmisResponse.response(VACCINE_PERIODS, data);
+    }
+    @RequestMapping(value = "/vaccineYearSchedulePeriodFlat", method = GET, headers = BaseController.ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getVaccineScheduleYearPeriodFlat() {
+
         List<YearSchedulePeriodTree> yearSchedulePeriodTree = reportLookupService.getVaccineYearSchedulePeriodTreeWithoutSchedule();
 
         Long currentPeriodId = reportLookupService.getCurrentPeriodIdForVaccine();
@@ -497,7 +509,6 @@ public class ReportLookupController extends BaseController {
 
         return OpenLmisResponse.response(VACCINE_PERIODS, data);
     }
-
     @RequestMapping(value = "/OrderFillRateSummary/program/{programId}/period/{periodId}/schedule/{scheduleId}/facilityTypeId/{facilityTypeId}/zone/{zoneId}/status/{status}/orderFillRateSummary", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getOrderFillRateSummaryData(@PathVariable("programId") Long programId,
                                                                         @PathVariable("periodId") Long periodId,
