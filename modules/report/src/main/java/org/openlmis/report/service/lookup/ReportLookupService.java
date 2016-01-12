@@ -787,6 +787,44 @@ public class ReportLookupService {
         return yearList;
     }
 
+    public List<YearSchedulePeriodTree> getVaccineYearSchedulePeriodTreeWithoutSchedule() {
+        List<YearSchedulePeriodTree> yearSchedulePeriodTree = processingPeriodMapper.getVaccineYearSchedulePeriodTree();
+
+        Set<String> years = new HashSet<>();
+
+        for (YearSchedulePeriodTree periodTree : yearSchedulePeriodTree) {
+            years.add(periodTree.getYear());
+
+        }
+
+        List<YearSchedulePeriodTree> yearList = new ArrayList<>();
+
+        //add the year layer
+        for (String year : years) {
+
+            YearSchedulePeriodTree yearObject = new YearSchedulePeriodTree();
+            yearObject.setYear(year);
+
+            // Add the schedule layer
+
+
+                for (YearSchedulePeriodTree period : yearSchedulePeriodTree) {
+
+                    if (period.getYear().equals(year)) {
+                        yearObject.getChildren().add(period);
+                    }
+                }
+
+
+
+            yearList.add(yearObject);
+        }
+
+        return yearList;
+    }
+
+
+
     public Long getCurrentPeriodIdForVaccine() {
         return processingPeriodMapper.getCurrentPeriodIdForVaccine();
     }

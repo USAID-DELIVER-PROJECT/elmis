@@ -129,11 +129,11 @@ var utils = {
         for (yearIndex = 0; yearIndex < periods.length; yearIndex++) {
 
             for (i = 0; i < periods[yearIndex].children.length; i++) {
-                for(j=0;j< periods[yearIndex].children[i].children.length;j++) {
-                    if (periods[yearIndex].children[i].children[j].periodname == formattedDate) {
-                        return periods[yearIndex].children[i].children[j].periodid;
+
+                    if (periods[yearIndex].children[i].periodname == formattedDate) {
+                        return periods[yearIndex].children[i].periodid;
                     }
-                }
+
             }
         }
             return 0;

@@ -488,7 +488,7 @@ public class ReportLookupController extends BaseController {
     @RequestMapping(value = "/vaccineYearSchedulePeriod", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getVaccineScheduleYearPeriod() {
 
-        List<YearSchedulePeriodTree> yearSchedulePeriodTree = reportLookupService.getVaccineYearSchedulePeriodTree();
+        List<YearSchedulePeriodTree> yearSchedulePeriodTree = reportLookupService.getVaccineYearSchedulePeriodTreeWithoutSchedule();
 
         Long currentPeriodId = reportLookupService.getCurrentPeriodIdForVaccine();
         Map<String, Object> data = new HashMap<>(2);
