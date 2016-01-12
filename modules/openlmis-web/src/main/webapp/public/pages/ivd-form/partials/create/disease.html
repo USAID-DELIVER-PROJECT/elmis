@@ -41,12 +41,12 @@
             <span class="cell-text">{{disease.diseaseName}}</span>
           </td>
           <td class="cell-input col-general">
-            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="disease.cases" numeric-validator="positiveInteger" type="text"/></td>
+            <input ng-disabled="!report.editable" maxlength="8" ng-model="disease.cases" numeric-validator="positiveInteger" type="text"/></td>
           <td class="cell-input col-general number" style="text-align: right">
             <span class="cell-text" ng-bind="(disease.calculatedCumulativeCases + toNumber(disease.cases))"></span>
           </td>
           <td class="cell-input col-general">
-            <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="disease.death" numeric-validator="positiveInteger" type="text"/></td>
+            <input ng-disabled="!report.editable" maxlength="8" ng-model="disease.death" numeric-validator="positiveInteger" type="text"/></td>
           <td class="cell-input col-general number" style="text-align: right">
             <span class="cell-text" ng-bind="(disease.calculatedCumulativeDeaths + toNumber(disease.death))"></span>
           </td>

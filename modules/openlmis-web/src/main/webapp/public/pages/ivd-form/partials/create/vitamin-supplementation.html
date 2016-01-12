@@ -44,9 +44,9 @@
             <span class="cell-text">{{vitamin.ageGroup}}</span>
           </td>
           <td class="cell-input col-general">
-            <input maxlength="8" ng-disabled="report.status != 'DRAFT'" ng-model="vitamin.maleValue" numeric-validator="positiveInteger" type="text"/></td>
+            <input maxlength="8" ng-disabled="!report.editable" ng-model="vitamin.maleValue" numeric-validator="positiveInteger" type="text"/></td>
           <td class="cell-input col-general">
-            <input maxlength="8" ng-disabled="report.status != 'DRAFT'" ng-model="vitamin.femaleValue" numeric-validator="positiveInteger" type="text"/></td>
+            <input maxlength="8" ng-disabled="!report.editable" ng-model="vitamin.femaleValue" numeric-validator="positiveInteger" type="text"/></td>
           <td class="cell-input col-general" style="text-align: right">
             <span class="number cell-text">{{toNumber(vitamin.maleValue) + toNumber(vitamin.femaleValue)}}</span>
           </td>

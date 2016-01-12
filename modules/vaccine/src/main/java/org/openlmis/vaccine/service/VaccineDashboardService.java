@@ -72,6 +72,37 @@ public class VaccineDashboardService {
         return repository.getFacilityCoverageDetails(fromDate,toDate, product, userId);
     }
 
+    public List<HashMap<String, Object>> getFacilitySessions(Long period, Long userId){
+        return repository.getFacilitySessions(period, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilitySessionsDetails(String startDate, String endDate, Long userId){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getFacilitySessionsDetails(fromDate, toDate, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityWastage(Long period, Long product, Long userId){
+        return repository.getFacilityWastage(period, product, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityWastageDetails(String startDate, String endDate, Long product, Long userId){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getFacilityWastageDetails(fromDate, toDate, product, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityDropout(Long period, Long product, Long userId){
+        return repository.getFacilityDropout(period, product, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityDropoutDetails(String startDate, String endDate, Long product, Long userId){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getFacilityDropoutDetails(fromDate,toDate, product, userId);
+    }
 
     public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product){
         return repository.getDistrictCoverage(period, product);

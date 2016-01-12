@@ -29,19 +29,6 @@
 
 <div xmlns="http://www.w3.org/1999/html">
 
-  <!--  <div class="app-form " style="padding: 5px;">
-        <form ng-submit="filterGrid()" name="filterForm" novalidate>
-            <div  class="clearfix">
-                &lt;!&ndash;<program-filter class="form-cell horizontalFilters" required="true"></program-filter>&ndash;&gt;
-                <static-period-filter range="filterd.range2" startdate="filterd.startDate" enddate="filterd.endDate" rangemax="10" error="perioderror"></static-period-filter>
-                <vaccine-dropout-filter filterproduct="filterd.dropout" class="form-cell horizontalFilters" required="true"></vaccine-dropout-filter>
-
-
-            </div>
-        </form>
-    </div>-->
-
-
     <accordion>
         <accordion-group class="gray-cascade" is-open="actionBar.openPanel">
             <accordion-heading>
@@ -94,9 +81,8 @@
                 <tab>
                     <tab-heading style="cursor: pointer;"><span openlmis-message="title.coverage"></span></tab-heading>
 
-                        <carousel  interval="setInterval('trend')">
+                        <carousel  interval="setInterval('coverage')">
                             <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-coverage-monthly-trend.html'"></ng-include></slide>
-                            <!--<slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-coverage-district-trend.html'"></ng-include></slide>-->
                             <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-coverage-facility-trend.html'"></ng-include></slide>
                             <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-coverage-detail-trend.html'"></ng-include></slide>
                             <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-coverage-help-content.html'"></ng-include></slide>
@@ -105,27 +91,33 @@
                 </tab>
                 <tab>
                     <tab-heading style="cursor: pointer;"><span openlmis-message="title.dropout"></span></tab-heading>
-                    <carousel  interval="setInterval('trend')">
+                    <carousel  interval="setInterval('dropout')">
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-dropout-monthly-trend.html'"></ng-include></slide>
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-dropout-district-trend.html'"></ng-include></slide>
+                        <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-dropout-facility-trend.html'"></ng-include></slide>
+                        <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-dropout-detail-trend.html'"></ng-include></slide>
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-dropout-help-content.html'"></ng-include></slide>
                     </carousel>
 
                 </tab>
                 <tab>
                     <tab-heading style="cursor: pointer;"><span openlmis-message="title.westage.rate"></span></tab-heading>
-                    <carousel  interval="setInterval('trend')">
+                    <carousel  interval="setInterval('wastage')">
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-wastage-monthly-trend.html'"></ng-include></slide>
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-wastage-district-trend.html'"></ng-include></slide>
+                        <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-wastage-facility-trend.html'"></ng-include></slide>
+                        <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-wastage-detail-trend.html'"></ng-include></slide>
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-wastage-help-content.html'"></ng-include></slide>
                     </carousel>
                 </tab>
                 <tab>
                     <tab-heading style="cursor: pointer;"><span openlmis-message="title.sessions"></span></tab-heading>
 
-                    <carousel  interval="setInterval('trend')">
+                    <carousel  interval="setInterval('sessions')">
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-sessions-monthly-trend.html'"></ng-include></slide>
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-sessions-district-trend.html'"></ng-include></slide>
+                        <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-sessions-facility-trend.html'"></ng-include></slide>
+                        <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-sessions-detail-trend.html'"></ng-include></slide>
                         <slide><ng-include src="'/public/pages/vaccine/dashboard/partials/slide-sessions-help-content.html'"></ng-include></slide>
                     </carousel>
                 </tab>

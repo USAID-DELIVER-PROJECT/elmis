@@ -12,19 +12,17 @@
 
 package org.openlmis.ivdform.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.openlmis.core.domain.BaseModel;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@EqualsAndHashCode(callSuper = false)
 public class DiscardingReason extends BaseModel {
 
   private String name;
   private Boolean requiresExplanation;
   private Long displayOrder;
+
 }

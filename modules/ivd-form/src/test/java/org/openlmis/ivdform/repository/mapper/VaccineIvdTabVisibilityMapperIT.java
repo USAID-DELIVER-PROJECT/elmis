@@ -46,7 +46,7 @@ public class VaccineIvdTabVisibilityMapperIT {
   ProgramMapper programMapper;
 
   @Autowired
-  VaccineIvdTabVisibilityMapper mapper;
+  TabVisibilityMapper mapper;
 
   Program program;
 

@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.ivdform.domain.config.VaccineIvdTabVisibility;
-import org.openlmis.ivdform.repository.VaccineIvdTabVisibilityRepository;
+import org.openlmis.ivdform.repository.TabVisibilityRepository;
 
 import java.util.List;
 
@@ -35,10 +35,10 @@ import static org.mockito.Mockito.*;
 public class VaccineIvdTabVisibilityServiceTest {
 
   @Mock
-  VaccineIvdTabVisibilityRepository repository;
+  TabVisibilityRepository repository;
 
   @InjectMocks
-  VaccineIvdTabVisibilityService service;
+  TabVisibilityService service;
 
   @Test
   public void shouldGetAllPossibleVisibilityForProgram() throws Exception {
