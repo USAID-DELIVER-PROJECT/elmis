@@ -1304,7 +1304,9 @@ services.factory('GetStockOutFacilitiesForProgramPeriodAndProductCode', function
 services.factory('GetVaccineReportPeriodTree',function ($resource){
     return $resource('/reports/vaccineYearSchedulePeriod', {}, {});
 });
-
+services.factory('GetVaccineReportPeriodFlat',function ($resource){
+    return $resource('/reports/vaccineYearSchedulePeriodFlat', {}, {});
+});
 services.factory("ELMISInterface",function($resource)  {
     return   {
         getInterface : function(){

@@ -692,8 +692,8 @@ app.directive('periodTreeFilter', ['GetYearSchedulePeriodTree', '$routeParams', 
 ]);
 
 
-app.directive('vaccinePeriodTreeFilter', ['GetVaccineReportPeriodTree', '$routeParams', 'messageService','SettingsByKey',
-    function (GetVaccineReportPeriodTree, $routeParams, messageService,SettingsByKey) {
+app.directive('vaccinePeriodTreeFilter', ['GetVaccineReportPeriodFlat', '$routeParams', 'messageService','SettingsByKey',
+    function (GetVaccineReportPeriodFlat, $routeParams, messageService,SettingsByKey) {
         return {
             restrict: 'E',
             require: '^filterContainer',
@@ -707,11 +707,11 @@ app.directive('vaccinePeriodTreeFilter', ['GetVaccineReportPeriodTree', '$routeP
                 SettingsByKey.get({key:'VACCINE_LATE_REPORTING_DAYS'}, function(data, er){ scope.cutoffdate =  data.settings.value;});
                 scope.$evalAsync(function () {
                     //Load period tree
-                    GetVaccineReportPeriodTree.get({}, function (data) {
+                    GetVaccineReportPeriodFlat.get({}, function (data) {
                         scope.periods = data.vaccinePeriods.periods;
-                        scope.filter.defaultPeriodId = data.vaccinePeriods.currentPeriodId;
-                      var defaultPeriodId=  utils.getVaccineMonthlyDefaultPeriod( scope.periods,scope.cutoffdate);
 
+                      var defaultPeriodId=  utils.getVaccineMonthlyDefaultPeriod( scope.periods,scope.cutoffdate);
+                        scope.filter.defaultPeriodId = defaultPeriodId;
                         scope.period_placeholder = messageService.get('label.select.period');
                         if (!angular.isUndefined(scope.periods)) {
                             if (scope.periods.length === 0)
