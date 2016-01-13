@@ -524,7 +524,7 @@ app.directive('geoFacilityFilter', ['FacilitiesByGeographicZone', '$routeParams'
 
             if (!$routeParams.facility) {
                 $scope.facilities = [{
-                    name: messageService.get('report.filter.select.facility')
+                    name: messageService.get('report.filter.select.facility'), id:0
                 }];
             }
 
@@ -538,7 +538,7 @@ app.directive('geoFacilityFilter', ['FacilitiesByGeographicZone', '$routeParams'
                     $scope.facilities = [];
                 }
                 $scope.facilities.unshift({
-                    name: messageService.get('report.filter.all.facilities')
+                    name: messageService.get('report.filter.all.facilities'), id:0
                 });
             });
         };
