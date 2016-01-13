@@ -53,7 +53,7 @@ public interface VaccineDashboardMapper {
             "            sum(case when reporting_status = 'L' then 1 else 0 end) late, \n" +
             "            sum(case when reporting_status = 'N' then 1 else 0 end) not_reported  \n" +
             "             from temp t")
-    HashMap<String, Object> getReportingSummary();
+    HashMap<String, Object> getReportingSummary(Long userId);
 
 /* */
     @Select("with temp as ( \n" +
@@ -77,7 +77,7 @@ public interface VaccineDashboardMapper {
             "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or \n" +
             "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(2)))              \n" +
             "            ) select district, facility_name, facility_code, reported_date, reporting_status from temp t")
-    HashMap<String, Object> getReportingDetails();
+    HashMap<String, Object> getReportingDetails(Long userId);
 
 /* */
     @Select("select count(1) repairing from ( \n" +
@@ -89,7 +89,7 @@ public interface VaccineDashboardMapper {
             "                 and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or  \n" +
             "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(2))) \n" +
             "            ) a" )
-    HashMap<String, Object> getRepairingSummary();
+    HashMap<String, Object> getRepairingSummary(Long userId);
 
 /* */
         @Select("select facility_id, facility_name, geographic_zone_name district, equipment_name, model, \n" +
@@ -101,7 +101,7 @@ public interface VaccineDashboardMapper {
                 "                      and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or  \n" +
                 "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(2))\n" +
                 "                      ) ")
-        HashMap<String, Object> getRepairingDetails();
+        HashMap<String, Object> getRepairingDetails(Long userId);
 
 /* */
         @Select(" select count(1) from ( \n" +
@@ -115,7 +115,7 @@ public interface VaccineDashboardMapper {
                 "                    vd.region_id = (select geographiczoneid from fn_get_user_preferences(2))\n" +
                 "                     )  \n" +
                 "                ) a ")
-        HashMap<String, Object> getInvestigatingSummary();
+        HashMap<String, Object> getInvestigatingSummary(Long userId);
 
 /* */
         @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case, aefi_batch, aefi_date, aefi_notes \n" +
@@ -127,7 +127,7 @@ public interface VaccineDashboardMapper {
                 "                    and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or  \n" +
                 "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(2))\n" +
                 "                     )  ")
-        HashMap<String, Object> getInvestigatingDetails();
+        HashMap<String, Object> getInvestigatingDetails(Long userId);
 
 /* End Action Bar */
 
