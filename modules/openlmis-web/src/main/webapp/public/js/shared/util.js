@@ -128,13 +128,13 @@ var utils = {
 
         for (yearIndex = 0; yearIndex < periods.length; yearIndex++) {
 
-            for (i = 0; i < periods[yearIndex].children.length; i++) {
 
-                    if (periods[yearIndex].children[i].periodname == formattedDate) {
-                        return periods[yearIndex].children[i].periodid;
+
+                    if (periods[yearIndex].periodname == formattedDate) {
+                        return periods[yearIndex].periodid;
                     }
 
-            }
+
         }
             return 0;
         },
