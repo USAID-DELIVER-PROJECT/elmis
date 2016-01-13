@@ -34,19 +34,20 @@ public class VaccineDashboardController  extends BaseController {
     VaccineDashboardService service;
 
     @RequestMapping(value = "summary.json", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> getReportingSummary(){
-
+    public ResponseEntity<OpenLmisResponse> getReportingSummary(HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
         Map<String, Object> summary = new HashMap<>();
-        summary.put("reportingSummary", service.getReportingSummary());
-        summary.put("repairing", service.getRepairingSummary());
-        summary.put("investigating", service.getInvestigatingSummary());
+        summary.put("reportingSummary", service.getReportingSummary(userId));
+        summary.put("repairing", service.getRepairingSummary(userId));
+        summary.put("investigating", service.getInvestigatingSummary(userId));
 
         return OpenLmisResponse.response("summary", summary);
     }
 
     @RequestMapping(value = "reporting-details.json", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> getReportingDetails(){
-        return OpenLmisResponse.response("reportingDetails", service.getReportingDetails());
+    public ResponseEntity<OpenLmisResponse> getReportingDetails(HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("reportingDetails", service.getReportingDetails(userId));
     }
 
     @RequestMapping(value = "monthly-coverage.json", method = RequestMethod.GET)

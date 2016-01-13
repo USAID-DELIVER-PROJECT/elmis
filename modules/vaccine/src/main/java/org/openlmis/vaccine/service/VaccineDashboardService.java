@@ -31,28 +31,28 @@ public class VaccineDashboardService {
     @Autowired
     VaccineDashboardRepository repository;
 
-    public HashMap<String, Object> getReportingSummary(){
-        return repository.getReportingSummary();
+    public HashMap<String, Object> getReportingSummary(Long userId){
+        return repository.getReportingSummary(userId);
     }
 
-    public HashMap<String, Object> getReportingDetails(){
-        return repository.getReportingDetails();
+    public HashMap<String, Object> getReportingDetails(Long userId){
+        return repository.getReportingDetails(userId);
     }
 
-    public HashMap<String, Object> getRepairingSummary(){
-        return repository.getRepairingSummary();
+    public HashMap<String, Object> getRepairingSummary(Long userId){
+        return repository.getRepairingSummary(userId);
     }
 
-    public HashMap<String, Object> getRepairingDetails(){
-        return repository.getRepairingDetails();
+    public HashMap<String, Object> getRepairingDetails(Long userId){
+        return repository.getRepairingDetails(userId);
     }
 
-    public HashMap<String, Object> getInvestigatingSummary(){
-        return repository.getInvestigatingSummary();
+    public HashMap<String, Object> getInvestigatingSummary(Long userId){
+        return repository.getInvestigatingSummary(userId);
     }
 
-    public HashMap<String, Object> getInvestigatingDetails(){
-        return repository.getInvestigatingDetails();
+    public HashMap<String, Object> getInvestigatingDetails(Long userId){
+        return repository.getInvestigatingDetails(userId);
     }
 
     public List<HashMap<String, Object>> getMonthlyCoverage(String startDate, String endDate, Long userId, Long product){

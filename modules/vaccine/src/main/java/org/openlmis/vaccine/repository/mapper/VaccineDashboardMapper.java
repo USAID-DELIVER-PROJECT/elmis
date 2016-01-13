@@ -48,7 +48,7 @@ public interface VaccineDashboardMapper {
             "sum(case when reporting_status = 'N' then 1 else 0 end) not_reported\n" +
             "\n" +
             " from temp t;")
-    HashMap<String, Object> getReportingSummary();
+    HashMap<String, Object> getReportingSummary( @Param("user") Long user);
 
     @Select("with temp as (\n" +
             "select z.name district, f.name facility_name, f.code facility_code,\n" +
@@ -70,7 +70,7 @@ public interface VaccineDashboardMapper {
             "where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
             " \n" +
             ") select district, facility_name, facility_code, reported_date, reporting_status from temp t;\n")
-    HashMap<String, Object> getReportingDetails();
+    HashMap<String, Object> getReportingDetails(@Param("user") Long user);
 
 
     @Select("select count(1) repairing from (\n" +
@@ -78,13 +78,13 @@ public interface VaccineDashboardMapper {
             "     from vw_vaccine_cold_chain where upper(status) = 'NOT FUNCTIONAL' and programid = (select id from programs where enableivdform = 't' limit 1)  \n" +
             "      and period_id = 51\n" +
             ") a;\n")
-    HashMap<String, Object> getRepairingSummary();
+    HashMap<String, Object> getRepairingSummary(@Param("user") Long user);
 
 
         @Select("  select facility_id, facility_name, geographic_zone_name district, equipment_name, model, yearofinstallation year_installed, period_start_date::date date_reported\n" +
                 "     from vw_vaccine_cold_chain where upper(status) = 'NOT FUNCTIONAL' and programid = (select id from programs where enableivdform = 't' limit 1)  \n" +
                 "      and period_id = 51;")
-        HashMap<String, Object> getRepairingDetails();
+        HashMap<String, Object> getRepairingDetails(@Param("user") Long user);
 
 
         @Select("select count(1) from (\n" +
@@ -93,13 +93,13 @@ public interface VaccineDashboardMapper {
                 "    and program_id = (select id from programs where enableivdform = 't' limit 1) \n" +
                 "    and  period_id = 51 \n" +
                 ") a;")
-        HashMap<String, Object> getInvestigatingSummary();
+        HashMap<String, Object> getInvestigatingSummary(@Param("user") Long user);
 
         @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case, aefi_batch, aefi_date, aefi_notes\n" +
                 "   from vw_vaccine_iefi where is_investigated = 'f' \n" +
                 "    and program_id = (select id from programs where enableivdform = 't' limit 1) \n" +
                 "    and  period_id = 51; ")
-        HashMap<String, Object> getInvestigatingDetails();
+        HashMap<String, Object> getInvestigatingDetails(@Param("user") Long user);
 
        /* @Select("SELECT\n" +
                 "d.region_name,\n" +
