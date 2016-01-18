@@ -8,26 +8,31 @@ function ModalInstanceCtrl($scope, $modalInstance, items, ContactList,SettingsBy
     $scope.items = items;
     $scope.show_email = false;
     $scope.contacts = [];
+    var contactsCallBack=function (aa,i) {
+        ContactList.get(aa, function (aa, i) {
+
+            return function (data) {
+                var index = aa.facilityId;
+
+                //$scope.contacts = data.contacts;
+                angular.forEach(data.contacts, function (contact) {
+                    $scope.contacts.push(contact);
+                });
+
+
+            };
+        }(aa, i));
+
+
+    };
     function loadFacilityContacts() {
         for (i = 0; i < items.length; i++) {
             if (items[i].hascontacts && items[i].checked) {
                 var aa = {type: 'email', facilityId: items[i].facility_id};
-                ContactList.get(aa, function (aa, i) {
-
-                    return function (data) {
-                        var index = aa.facilityId;
-
-                        //$scope.contacts = data.contacts;
-                        angular.forEach(data.contacts, function (contact) {
-                            $scope.contacts.push(contact);
-                        });
-
-
-                    }
-                }(aa, i));
+                contactsCallBack(aa,i);
             }
         }
-    };
+    }
 
     $scope.itemChecked = function (_index) {
         var value = !$scope.items[_index].checked;
@@ -43,7 +48,7 @@ function ModalInstanceCtrl($scope, $modalInstance, items, ContactList,SettingsBy
     $scope.getBackGroundColor = function (_index) {
         var bgColor = '';
 
-        if (_index % 2 == 0) {
+        if (_index % 2 === 0) {
             bgColor = 'lightGreen';
         } else {
             bgColor = 'white';
