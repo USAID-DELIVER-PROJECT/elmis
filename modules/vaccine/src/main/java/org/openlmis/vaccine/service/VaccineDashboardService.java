@@ -35,7 +35,7 @@ public class VaccineDashboardService {
         return repository.getReportingSummary(userId);
     }
 
-    public HashMap<String, Object> getReportingDetails(Long userId){
+    public List<HashMap<String, Object>> getReportingDetails(Long userId){
         return repository.getReportingDetails(userId);
     }
 
@@ -43,15 +43,23 @@ public class VaccineDashboardService {
         return repository.getRepairingSummary(userId);
     }
 
-    public HashMap<String, Object> getRepairingDetails(Long userId){
-        return repository.getRepairingDetails(userId);
+    public List<HashMap<String, Object>> getRepairingDetails(Long userId){
+        List<HashMap<String, Object>> repairingDetailList=null;
+        try{
+
+
+        repairingDetailList=repository.getRepairingDetails(userId);
+        }catch (Exception ex){
+System.out.println(" ex "+ ex.getMessage());
+        }
+        return repairingDetailList;
     }
 
     public HashMap<String, Object> getInvestigatingSummary(Long userId){
         return repository.getInvestigatingSummary(userId);
     }
 
-    public HashMap<String, Object> getInvestigatingDetails(Long userId){
+    public List<HashMap<String, Object>> getInvestigatingDetails(Long userId){
         return repository.getInvestigatingDetails(userId);
     }
 

@@ -44,8 +44,8 @@ public interface VaccineDashboardMapper {
             "                join facilities f on f.id = ps.facilityId  \n" +
             "                join vw_districts vd on f.geographiczoneid = vd.district_id \n" +
             "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
-            "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or \n" +
-            "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(2)))  \n" +
+            "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or \n" +
+            "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)))  \n" +
             "            )  \n" +
             "            select \n" +
             "            sum(1) expected, \n" +
@@ -53,11 +53,12 @@ public interface VaccineDashboardMapper {
             "            sum(case when reporting_status = 'L' then 1 else 0 end) late, \n" +
             "            sum(case when reporting_status = 'N' then 1 else 0 end) not_reported  \n" +
             "             from temp t")
-    HashMap<String, Object> getReportingSummary(Long userId);
+    HashMap<String, Object> getReportingSummary(@Param("userId") Long userId);
 
 /* */
     @Select("with temp as ( \n" +
-            "            select vd.district_name district, f.name facility_name, f.code facility_code, \n" +
+            "            select vd.district_name district, f.name facility_name, f.code facility_code, f.id facility_id," +
+            " (select count(*) > 0 from users where users.active = true and users.facilityId = f.id) as hasContacts, \n" +
             "                   to_char(vr.createdDate, 'DD Mon YYYY') reported_date,  \n" +
             "                 CASE \n" +
             "                        WHEN date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone) <= COALESCE((( SELECT configuration_settings.value \n" +
@@ -74,10 +75,10 @@ public interface VaccineDashboardMapper {
             "                join facilities f on f.id = ps.facilityId  \n" +
             "                join vw_districts vd on f.geographiczoneid = vd.district_id \n" +
             "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
-            "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or \n" +
-            "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(2)))              \n" +
-            "            ) select district, facility_name, facility_code, reported_date, reporting_status from temp t")
-    HashMap<String, Object> getReportingDetails(Long userId);
+            "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or \n" +
+            "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)))              \n" +
+            "            ) select district, facility_name, facility_code, reported_date, reporting_status,facility_id, hasContacts from temp t")
+    List< HashMap<String, Object>> getReportingDetails(@Param("userId")Long userId);
 
 /* */
     @Select("select count(1) repairing from ( \n" +
@@ -86,10 +87,10 @@ public interface VaccineDashboardMapper {
             "                 join vw_districts vd on cc.geographic_zone_id = vd.district_id \n" +
             "                 where upper(status) = 'NOT FUNCTIONAL' and programid = fn_get_vaccine_program_id()      \n" +
             "                 and period_id = fn_get_vaccine_current_reporting_period()\n" +
-            "                 and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or  \n" +
-            "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(2))) \n" +
+            "                 and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
+            "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))) \n" +
             "            ) a" )
-    HashMap<String, Object> getRepairingSummary(Long userId);
+    HashMap<String, Object> getRepairingSummary(@Param("userId")Long userId);
 
 /* */
         @Select("select facility_id, facility_name, geographic_zone_name district, equipment_name, model, \n" +
@@ -98,10 +99,10 @@ public interface VaccineDashboardMapper {
                 "                      join vw_districts vd on cc.geographic_zone_id = vd.district_id \n" +
                 "                      where upper(status) = 'NOT FUNCTIONAL' and programid = fn_get_vaccine_program_id()   \n" +
                 "                      and period_id = fn_get_vaccine_current_reporting_period()\n" +
-                "                      and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or  \n" +
-                "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(2))\n" +
+                "                      and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
+                "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
                 "                      ) ")
-        HashMap<String, Object> getRepairingDetails(Long userId);
+        List<HashMap<String, Object>> getRepairingDetails(@Param("userId")Long userId);
 
 /* */
         @Select(" select count(1) from ( \n" +
@@ -111,11 +112,11 @@ public interface VaccineDashboardMapper {
                 "                    where is_investigated = 'f'  \n" +
                 "                    and program_id = (select id from programs where enableivdform = 't' limit 1)  \n" +
                 "                    and  period_id = fn_get_vaccine_current_reporting_period()\n" +
-                "		             and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or  \n" +
-                "                    vd.region_id = (select geographiczoneid from fn_get_user_preferences(2))\n" +
+                "		             and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
+                "                    vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
                 "                     )  \n" +
                 "                ) a ")
-        HashMap<String, Object> getInvestigatingSummary(Long userId);
+        HashMap<String, Object> getInvestigatingSummary(@Param("userId")Long userId);
 
 /* */
         @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case, aefi_batch, aefi_date, aefi_notes \n" +
@@ -124,10 +125,10 @@ public interface VaccineDashboardMapper {
                 "                    where is_investigated = 'f'  \n" +
                 "                    and program_id = fn_get_vaccine_program_id()  \n" +
                 "                    and  period_id = fn_get_vaccine_current_reporting_period()\n" +
-                "                    and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(2)) or  \n" +
-                "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(2))\n" +
+                "                    and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
+                "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
                 "                     )  ")
-        HashMap<String, Object> getInvestigatingDetails(Long userId);
+        List<HashMap<String, Object>> getInvestigatingDetails(@Param("userId")Long userId);
 
 /* End Action Bar */
 

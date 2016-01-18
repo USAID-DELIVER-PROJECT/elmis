@@ -298,6 +298,7 @@ services.factory('PerformanceCoverage', function ($resource) {
 });
 
 services.factory('VaccineDashboardSummary', function($resource){
+
    return $resource('/vaccine/dashboard/summary.json',{},{});
 });
 
@@ -305,6 +306,15 @@ services.factory('VaccineDashboardMonthlyCoverage', function($resource){
     return $resource('/vaccine/dashboard/monthly-coverage.json',{},{});
 });
 
+services.factory('repairingDetail', function($resource){
+    return $resource('/vaccine/dashboard/repairing-details.json',{},{});
+});
+services.factory('reportingDetail', function($resource){
+    return $resource('/vaccine/dashboard/reporting-details.json',{},{});
+});
+services.factory('InvestigatingDetails', function($resource){
+    return $resource('/vaccine/dashboard/investigating-details.json',{},{});
+});
 services.factory('VaccineDashboardMonthlyDropout', function($resource){
     return $resource('/vaccine/dashboard/monthly-dropout.json',{},{});
 });
@@ -414,4 +424,7 @@ services.factory('AdequacyLevelOfSupply', function ($resource) {
 
 services.factory('StatuVaccinationSupply', function ($resource) {
     return $resource('/vaccine/report/statusOfVaccinationSupplyReceive.json', {}, {});
+});
+services.factory("SendVaccineMessages",function($resource){
+    return $resource('/vaccine/messages/send.json',{}, {post: {method:'POST'}});
 });

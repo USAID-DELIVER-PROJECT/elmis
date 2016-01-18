@@ -37,10 +37,14 @@ public class VaccineDashboardController  extends BaseController {
     public ResponseEntity<OpenLmisResponse> getReportingSummary(HttpServletRequest request){
         Long userId = this.loggedInUserId(request);
         Map<String, Object> summary = new HashMap<>();
+        try{
         summary.put("reportingSummary", service.getReportingSummary(userId));
         summary.put("repairing", service.getRepairingSummary(userId));
         summary.put("investigating", service.getInvestigatingSummary(userId));
+        }catch (Exception ex){
 
+            System.out.println("for user" + userId + " " +ex.getMessage());
+        }
         return OpenLmisResponse.response("summary", summary);
     }
 
@@ -49,7 +53,16 @@ public class VaccineDashboardController  extends BaseController {
         Long userId = this.loggedInUserId(request);
         return OpenLmisResponse.response("reportingDetails", service.getReportingDetails(userId));
     }
-
+    @RequestMapping(value = "repairing-details.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getRepairingDetails(HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("repairingDetails", service.getRepairingDetails(userId));
+    }
+    @RequestMapping(value = "investigating-details.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getInvestigatingDetails(HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("investigatingDetails", service.getInvestigatingDetails(userId));
+    }
     @RequestMapping(value = "monthly-coverage.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getCoverageByMonthly(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, Long product, HttpServletRequest request){
         Long userId = this.loggedInUserId(request);

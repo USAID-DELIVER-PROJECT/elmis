@@ -30,7 +30,7 @@ public class VaccineDashboardRepository {
         return mapper.getReportingSummary(user);
     }
 
-    public HashMap<String, Object> getReportingDetails(Long userId){
+    public List<HashMap<String, Object>> getReportingDetails(Long userId){
         return mapper.getReportingDetails(userId);
     }
 
@@ -38,7 +38,7 @@ public class VaccineDashboardRepository {
         return mapper.getRepairingSummary( userId);
     }
 
-    public HashMap<String, Object> getRepairingDetails(Long userId){
+    public List<HashMap<String, Object>> getRepairingDetails(Long userId){
         return mapper.getRepairingDetails(userId);
     }
 
@@ -46,7 +46,7 @@ public class VaccineDashboardRepository {
         return mapper.getInvestigatingSummary(userId);
     }
 
-    public HashMap<String, Object> getInvestigatingDetails(Long userId){
+    public List<HashMap<String, Object>> getInvestigatingDetails(Long userId){
         return mapper.getInvestigatingDetails(userId);
     }
 
