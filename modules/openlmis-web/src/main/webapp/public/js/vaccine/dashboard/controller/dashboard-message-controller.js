@@ -20,7 +20,7 @@ function ModalInstanceCtrl($scope, $modalInstance, items, ContactList,SettingsBy
                         //$scope.contacts = data.contacts;
                         angular.forEach(data.contacts, function (contact) {
                             $scope.contacts.push(contact);
-                        })
+                        });
 
 
                     }

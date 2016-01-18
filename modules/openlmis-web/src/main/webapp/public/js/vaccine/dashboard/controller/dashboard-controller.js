@@ -816,7 +816,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.getBackGroundColor=function(_index) {
         var bgColor='';
         alert(bgColor);
-        if(_index%2==0){
+        if(_index%2===0){
             bgColor='red';
         }else if(value>10) {
             bgColor = 'white';
