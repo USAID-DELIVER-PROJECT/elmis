@@ -23,86 +23,142 @@
                     <li ng-class="{'selected': (visibleTab == key || visibleTab ==undefined) }">
                         <a href="" ng-click="changeTab('PRODUCT')">PRODUCT</a>
                     </li>
-
                 </ul>
             </div>
             <div>
                 <br/>
-
                 <div ng-show="visibleTab == 'PRODUCT' || visibleTab ==undefined" class="tab-content">
-                    <div class="row-fluid alert alert-warning">
-                        <div class="span3 ">
-                            <select style="min-width:200px !important" ui-select2 ng-model="configToAdd.product"
-                                    ng-options="obj.product as obj.product.primaryName for obj in productsToDisplay">
-                                <option value="">--Select Product--</option>
-                            </select>
-                        </div>
-                        <div class="span2">
-                            <input ng-disabled="(configToAdd.product ===undefined || configToAdd.product===null)"
-                                   type="checkbox" ng-checked="false" ng-model="configToAdd.batchTracked"/>
-                            <span>isBatchTracked?</span>
-                        </div>
-                        <div class="span2">
-                            <input ng-disabled="(configToAdd.product ===undefined || configToAdd.product===null)"
-                                   type="checkbox" ng-checked="false" ng-model="configToAdd.vvmTracked"/>
-                            <span>isVVMTracked?</span>
-                        </div>
-                        <div class="span2">
-                            <input ng-disabled="(configToAdd.product ===undefined || configToAdd.product===null)"
-                                   type="checkbox" ng-checked="false" ng-model="configToAdd.survivingInfants"/>
-                            <span>isSurvivingInfants Applied?</span>
-                        </div>
-
-                        <div class="span2"><input
-                                ng-disabled="(configToAdd.product ===undefined || configToAdd.product===null)"
-                                type="submit" class="btn btn-primary" value="Add"
-                                ng-click="addConfiguration(configToAdd)">
-                        </div>
-                    </div>
+                    <style>
+                        th{
+                            font-size: 11px;
+                        }
+                    </style>
                     <br/>
-                    <table id="podTable" class="table table-bordered" fixed-table-header>
+                    <table class="table table-bordered">
                         <thead>
-                        <tr>
-                            <th class="col-product " openlmis-message="label.products"></th>
-                            <th class="col-lot"><span openlmis-message="batchTracked"></span></th>
-                            <th class="col-available"><span openlmis-message="vvmTracked"></span></th>
-                            <th class="col-survivingInfants"><span openlmis-message="survivingInfants"></span></th>
-                            <th width="150px"><span openlmis-message="label.vaccine.coverage.denominator"></span></th>
+                        <tr style="background-color:#EAEAEA">
+                            <th>Product</th>
+                            <th>Schedule</th>
+                            <th>Target</th>
+                            <th>Coverage(%)</th>
+                            <th>Presentation</th>
+                            <th>Packed Volume<br> per Dose(cm3)</th>
+                            <th>Administration<br> Mode</th>
+                            <th>Dilution Syringe</th>
+                            <th>Volume per CIF</th>
+                            <th>Track Batch</th>
+                            <th>Track VVM</th>
+                            <th>Surviving Infants</th>
+                            <th style="width: 70px">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="setting in configurations">
-                            <td class="col-product ">{{setting.product.primaryName}}</td>
-                            <td class="col-lot"><input type="checkbox" ng-model="setting.batchTracked"/></td>
-                            <td class="col-available"><input type="checkbox" ng-model="setting.vvmTracked"/></td>
-                            <td class="col-survivingInfants"><input type="checkbox" ng-model="setting.survivingInfants"/></td>
-                            <td class="col-general cell-input">
-                                <select ng-model="setting.denominatorEstimateCategoryId">
-                                    <option ng-selected="c.id == setting.denominatorEstimateCategoryId" ng-repeat="c in demographicCategories" value="{{c.id}}" openlmis-message="c.name"></option>
+                        <tr ng-repeat="product in usedProducts | orderBy:'ordering'" ng-if="product.productCategory.code == 'Vaccine'" >
+                            <td class="col-product ">{{product.product.primaryName}}</td>
+                            <td>
+                                <span ng-if="!product.editing">{{ product.programProductIsa.isa.dosesPerYear }}</span>
+                                <input ng-if="product.editing" type="text" ng-model="product.schedule" style="width: 50px">
+                            </td>
+
+                            <td>
+                                <select ng-disabled="!product.editing" ng-model="product.denominatorEstimateCategoryId" style="min-width:100px !important" ui-select2>
+                                    <option value="">--Select--</option>
+                                    <option ng-repeat="c in demographicCategories" value="{{c.id}}" openlmis-message="c.name"></option>
                                 </select>
+                            </td>
+                            <td>
+                                <span  ng-if="!product.editing">{{  product.programProductIsa.isa.whoRatio }}</span>
+                                <input ng-if="product.editing" type="text" ng-model="product.coverage"  style="width: 50px">
+                            </td>
+                            <td>
+                                <span  ng-if="!product.editing">{{ product.presentation }}</span>
+                                <input ng-if="product.editing" type="text" ng-model="product.presentation"  style="width: 50px">
+                            </td>
+                            <td>
+                                <span ng-if="!product.editing">{{ product.packedVolumePerDose }}</span>
+                                <input ng-if="product.editing" type="text" ng-model="product.packedVolumePerDose" style="width: 50px">
+                            </td>
+                            <td>
+                                <select ng-disabled="!product.editing" style="min-width:100px !important" ui-select2 ng-model="product.administrationMode">
+                                    <option value="">--Select Product--</option>
+                                    <option value="{{ product.product.id }}" ng-repeat="product in allProducts" ng-if="product.productCategory.code != 'Vaccine'">{{ product.product.primaryName }}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select ng-disabled="!product.editing" style="min-width:100px !important" ui-select2 ng-model="product.dilutionSyringe">
+                                    <option value="">--Select Product--</option>
+                                    <option value="{{ product.product.id }}" ng-repeat="product in allProducts" ng-if="product.productCategory.code != 'Vaccine'">{{ product.product.primaryName }}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <span ng-if="!product.editing">{{ product.volumePerCif }}</span>
+                                <input ng-if="product.editing" type="text" ng-model="product.volumePerCif" style="width: 50px">
+                            </td>
+                            <td class="col-lot">
+                                <input type="checkbox" ng-model="product.batchTracked" disabled ng-if="!product.editing"/>
+                                <input type="checkbox" ng-model="product.batchTracked"  ng-if="product.editing"/>
+                            </td>
+                            <td class="col-available">
+                                <input type="checkbox" ng-model="product.vvmTracked" disabled ng-if="!product.editing"/>
+                                <input type="checkbox" ng-model="product.vvmTracked" ng-if="product.editing"/>
+                            </td>
+                            <td class="col-available">
+                                <input type="checkbox" ng-model="product.survivingInfants" disabled ng-if="!product.editing"/>
+                                <input type="checkbox" ng-model="product.survivingInfants" ng-if="product.editing"/>
+                            </td>
+                            <td>
+                                <a href="" ng-click="enableEditing(product)" ng-if="!product.editing"  title="update"><img src="/public/images/edit-icon.png"></a>
+                                <a href="" ng-click="disableEditing(product)" ng-if="product.editing"  title="save"><img src="/public/images/all-functioning-marker.png" style="height: 20px;width: 20px"></a>
+                                <a href="" ng-click="changeOrder('up',product)" ng-if="product.editing"><img src="/public/images/up.png"  style="height:20px;width:20px"></a>
+                                <a href="" ng-click="changeOrder('down',product)" ng-if="product.editing"><img src="/public/images/down.png" style="height:20px;width:20px"></a>
+                            </td>
+                        </tr>
+                        <tr style="background-color:#EAEAEA">
+                            <td colspan="13">Other Suplies</td>
+                        </tr>
+                        <tr ng-repeat="product in allProducts | orderBy:'ordering'" ng-if="product.productCategory.code != 'Vaccine'">
+                            <td class="col-product ">{{product.product.primaryName}}</td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td class="col-lot">
+                                <input type="checkbox" ng-model="product.batchTracked" disabled ng-if="!product.editing"/>
+                                <input type="checkbox" ng-model="product.batchTracked" ng-if="product.editing"/>
+                            </td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td style="background-color: #EAEAEA"></td>
+                            <td>
+                                <a href="" ng-click="enableEditing(product)" ng-if="!product.editing" title="update"><img src="/public/images/edit-icon.png"></a>
+                                <a href="" ng-click="disableEditing(product)" ng-if="product.editing" title="save"><img src="/public/images/all-functioning-marker.png"></a>
+                                <a href="" ng-click="changeOrder('up',product)" ng-if="product.editing"><img src="/public/images/up.png"  style="height:20px;width:20px"></a>
+                                <a href="" ng-click="changeOrder('down',product)" ng-if="product.editing"><img src="/public/images/down.png" style="height:20px;width:20px"></a>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
 
-        <div form-toolbar id="action_buttons" class="action-buttons">
-            <div class="form-cell button-row">
-                <input ng-click="saveConfigurations()" ng-disabled="saveDisabled" type="submit" id="save-button"
-                       class="btn btn-primary save-button"
-                       openlmis-message="button.save"/>
-            </div>
+        <!--<div form-toolbar id="action_buttons" class="action-buttons">-->
+            <!--<div class="form-cell button-row">-->
+                <!--<input ng-click="saveConfigurations()" ng-disabled="saveDisabled" type="submit" id="save-button"-->
+                       <!--class="btn btn-primary save-button"-->
+                       <!--openlmis-message="button.save"/>-->
+            <!--</div>-->
 
 
-            <div class="toolbar-error" id="saveErrorMsgDiv">
-                <span openlmis-message="error" ng-show="error"></span>&nbsp;
-                <span ng-show="errorProgram" ng-bind="errorProgram"></span>
-            </div>
-            <div class="toolbar-success" id="saveSuccessMsgDiv" openlmis-message="message" ng-show="message"></div>
-        </div>
+            <!--<div class="toolbar-error" id="saveErrorMsgDiv">-->
+                <!--<span openlmis-message="error" ng-show="error"></span>&nbsp;-->
+                <!--<span ng-show="errorProgram" ng-bind="errorProgram"></span>-->
+            <!--</div>-->
+            <!--<div class="toolbar-success" id="saveSuccessMsgDiv" openlmis-message="message" ng-show="message"></div>-->
+        <!--</div>-->
     </form>
 
 </div>

@@ -26,9 +26,9 @@ describe("User", function () {
       messageService = _messageService_;
 
       spyOn(messageService, 'get').andCallFake(function (value) {
-        if (value == 'label.active') return "Active"
+        if (value == 'label.active') return "Active";
         if (value == 'label.inactive') return "Inactive"
-      })
+      });
       scope = $rootScope.$new();
       $httpBackend = _$httpBackend_;
       scope.user = {active: true};
