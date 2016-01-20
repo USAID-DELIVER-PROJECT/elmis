@@ -15,6 +15,7 @@ package org.openlmis.vaccine.repository.mapper.reports;
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.ivdform.domain.reports.*;
+import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.mapper.reports.builder.AdequacyLevelReportQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.CompletenessAndTimelinessQueryBuilder;
@@ -429,4 +430,16 @@ public interface VaccineReportMapper {
                                                                          @Param("endDate") Date endDate,
                                                                          @Param("districtId") Long districtId,
                                                                          @Param("productId") Long productId);
+
+
+    @Select("SELECT p.id, coalesce(p.primaryname,'') as name, p.code, pp.productcategoryid as categoryid,  \n" +
+            "    CASE WHEN p.tracer = true THEN 'Indicator Product' ELSE 'Regular' END tracer \n" +
+            "      \n" +
+            "       from products p \n" +
+            "join program_products pp on p.id = pp.productid\n" +
+            "join product_categories pc on pp.productcategoryid = pc.id\n" +
+            "where  pc.code = (select value from configuration_settings where key = 'VACCINE_REPORT_VACCINE_CATEGORY_CODE')\n" +
+            "     order by pp.displayorder "
+    )
+   public List<Product> getVaccineProductsList();
 }

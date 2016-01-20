@@ -20,6 +20,7 @@ import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
 import org.openlmis.ivdform.domain.reports.*;
+import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.reports.VaccineReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -331,5 +332,7 @@ public class VaccineReportService {
         return list;
     }
 
-
+   public List<Product> getVaccineProductsList(){
+        return this.repository.getVaccineProductsList();
+    }
 }

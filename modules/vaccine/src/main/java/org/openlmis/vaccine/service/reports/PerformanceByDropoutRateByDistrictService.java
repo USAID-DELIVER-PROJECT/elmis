@@ -93,6 +93,7 @@ public class PerformanceByDropoutRateByDistrictService {
         columnRangeValues = this.prepareColumnRangesForSummary(columnNames, performanceByDropoutRateByDistrictList);
         if (isRegionReport) {
             regionColumnRangeValues = this.prepareColumnRangesForSummary(columnNames, performanceByDropoutRateByRegionList);
+
             performanceByDisrictReport.setRegionColumnsValueList(this.prepareColumn(regionColumnRangeValues));
         }
         performanceByDisrictReport.setColumnsValueList(this.prepareColumn(columnRangeValues));

@@ -270,13 +270,11 @@
                     <td
                             ng-style="{'width':'40px','background-color': getBackGroundColorSummary(row.rangeName)}"
                             ng-repeat="column in columnVals track by $index">
-                                    <span  ng-if="row.coldRangeColumnValues[$index].value>0"
+                                    <span
                                           ng-bind="row.coldRangeColumnValues[$index].value">
 
                                     </span>
-                                     <span ng-if="row.coldRangeColumnValues[$index].value==0">
-                                        -
-                                    </span>
+
                     </td>
 
                 </tr>
@@ -449,13 +447,11 @@
 
                     <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
                         ng-repeat="column in columnVals track by $index">
-                                    <span ng-if="row.coldRangeColumnValues[$index].value>0"
+                                    <span
                                           ng-bind="row.coldRangeColumnValues[$index].value">
 
                                     </span>
-                                     <span ng-if="row.coldRangeColumnValues[$index].value==0">
-                                        -
-                                    </span>
+
                     </td>
 
                 </tr>
