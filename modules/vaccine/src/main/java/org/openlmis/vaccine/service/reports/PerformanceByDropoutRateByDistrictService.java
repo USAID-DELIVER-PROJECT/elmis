@@ -301,6 +301,7 @@ public class PerformanceByDropoutRateByDistrictService {
             performanceByDropoutRange.setColumns(performanceByDropoutColumn);
             performanceByDropoutColumnList.add(performanceByDropoutRange);
         }
+        this.order(performanceByDropoutColumnList);
         return performanceByDropoutColumnList;
 
     }
@@ -335,4 +336,18 @@ public class PerformanceByDropoutRateByDistrictService {
         productList = this.repository.loadDropoutProductList();
         return productList;
     }
+    private static void order(List<PerformanceByDropoutRange> performanceByDropoutRangeList) {
+
+        Collections.sort(performanceByDropoutRangeList, new Comparator() {
+            public int compare(Object o1, Object o2) {
+
+                String x1 = ((PerformanceByDropoutRange) o1).getRangeName();
+                String x2 = ((PerformanceByDropoutRange) o2).getRangeName();
+
+                return x1.compareTo(x2);
+            }
+
+        });
+    }
+
 }

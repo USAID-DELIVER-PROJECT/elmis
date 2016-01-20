@@ -287,7 +287,21 @@ public class TrendOfMinMasColdRangeService {
             trendMinMaxColdChainColumnRange.setColdRangeColumnValues(trendOfMinMaxColdRangeColumnList);
             trendMinMaxColdChainColumnRangeValuesList.add(trendMinMaxColdChainColumnRange);
         }
+        order(trendMinMaxColdChainColumnRangeValuesList);
         return trendMinMaxColdChainColumnRangeValuesList;
 
+    }
+    private static void order(List<TrendMinMaxColdChainColumnRangeValues> trendMinMaxColdChainColumnRangeValues) {
+
+        Collections.sort(trendMinMaxColdChainColumnRangeValues, new Comparator() {
+            public int compare(Object o1, Object o2) {
+
+                String x1 = ((TrendMinMaxColdChainColumnRangeValues) o1).getRangeName();
+                String x2 = ((TrendMinMaxColdChainColumnRangeValues) o2).getRangeName();
+
+                return x1.compareTo(x2);
+            }
+
+        });
     }
 }

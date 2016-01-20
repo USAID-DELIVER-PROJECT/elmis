@@ -106,9 +106,9 @@ console.log('period start '+ $scope.filter.periodStart);
         if(value=='4_dropoutGreaterThanHigh'){
             bgColor='DO >20%';
         }else if(value=='3_droOputBetweenMidAndHigh'){
-            bgColor='5% < DO <=10%';
+            bgColor='10% < DO <=20%';
         }else if(value=='2_dropOutBetweenMidAndMin'){
-            bgColor=' 10% < DO <=20%';
+            bgColor=' 5% < DO <=10%';
         }else{
             bgColor='DO <=5';
         }
