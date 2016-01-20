@@ -80,7 +80,7 @@ public interface VaccineOrderRequisitionMapper {
             "   and m.facilityId = #{facilityId} ")
     Long getScheduleFor(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
 
-    @Select("SELECT DISTINCT f.id AS facilityId,r.periodId,f.name facilityName,R.orderDate::date orderDate,R.ID,R.STATUS,ra.programid AS programId,pp.name periodName  " +
+    @Select("SELECT DISTINCT f.id AS facilityId,r.periodId,f.name facilityName,R.orderDate orderDate,R.ID,R.STATUS,ra.programid AS programId,pp.name periodName  " +
             "   FROM facilities f  " +
             "     JOIN requisition_group_members m ON m.facilityid = f.id  " +
             "     JOIN requisition_groups rg ON rg.id = m.requisitiongroupid  " +
@@ -145,6 +145,18 @@ public interface VaccineOrderRequisitionMapper {
 
     })
     List<OrderRequisitionStockCardDTO> getAllByFacilityAndProgram(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
+
+    @Select("select * from supervisory_nodes where facilityId = #{facilityId} ")
+    List<OrderRequisitionDTO>getSupervisoryNodeByFacility(@Param("facilityId") Long facilityId);
+
+   @Select(" select o.id orderId, facilityId, (select name from facilities where id = o.facilityId) facilityName,  " +
+           "li.quantityRequested,li.productName,p.code productCode  " +
+           " from vaccine_order_requisitions o  " +
+           "JOIN vaccine_order_requisition_line_items li ON o.id = li.orderId " +
+           "JOIN products p ON li.productId = p.Id " +
+           "WHERE status = 'SUBMITTED' AND programId = #{program} AND facilityId = ANY(#{facilityIds}::int[])" +
+           " ORDER BY p.id ")
+    List<OrderRequisitionDTO> getConsolidatedList(@Param("program") Long program,@Param("facilityIds") String facilityIds);
 
 }
 
