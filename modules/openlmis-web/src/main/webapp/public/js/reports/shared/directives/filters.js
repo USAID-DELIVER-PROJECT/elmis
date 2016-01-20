@@ -1210,6 +1210,19 @@ app.directive('vaccineProductFilter', ['VaccineProducts', 'VaccineSupervisedIvdP
                         $scope.products = data.products;
 
                     });
+                if(!isUndefined($scope.default)){
+                    $scope.filterProduct = $scope.default;
+                }else{
+
+                    $scope.filterProduct = 0;
+                }
+                $scope.$watch('filterProduct', function (newValues, oldValues) {
+
+                    $scope.$parent.OnFilterChanged();
+                    //if(!isUndefined($scope.onChange)){
+                    $scope.onChange();
+                    // }
+                });
 
             },
             templateUrl: 'filter-vaccine-product-template'
