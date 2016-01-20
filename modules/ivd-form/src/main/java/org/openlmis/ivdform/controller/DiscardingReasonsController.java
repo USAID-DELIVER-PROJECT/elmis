@@ -23,12 +23,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/vaccine/discarding/reasons/")
 public class DiscardingReasonsController extends BaseController {
 
+  private static final String REASONS = "reasons";
+
   @Autowired
   DiscardingReasonsService service;
 
   @RequestMapping("all")
   public ResponseEntity<OpenLmisResponse> getAll() {
-    return OpenLmisResponse.response("reasons", service.getAllReasons());
+    return OpenLmisResponse.response(REASONS, service.getAllReasons());
   }
 
 }

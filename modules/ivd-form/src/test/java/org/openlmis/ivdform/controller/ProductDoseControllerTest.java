@@ -10,7 +10,7 @@ import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.ivdform.dto.ProductDoseDTO;
 import org.openlmis.ivdform.dto.VaccineServiceConfigDTO;
-import org.openlmis.ivdform.service.VaccineProductDoseService;
+import org.openlmis.ivdform.service.ProductDoseService;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 public class ProductDoseControllerTest {
 
   @Mock
-  VaccineProductDoseService service;
+  ProductDoseService service;
 
   @InjectMocks
   ProductDoseController controller;

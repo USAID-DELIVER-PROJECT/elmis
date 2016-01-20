@@ -77,13 +77,13 @@
         <tbody>
           <tr>
             <td class="cell-input col-general">
-              <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="report.fixedImmunizationSessions" numeric-validator="positiveInteger" type="text">
+              <input ng-disabled="!report.editable" maxlength="8" ng-model="report.fixedImmunizationSessions" numeric-validator="positiveInteger" type="text">
             </td>
             <td class="cell-input col-general">
-              <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="report.outreachImmunizationSessions" numeric-validator="positiveInteger" type="text">
+              <input ng-disabled="!report.editable" maxlength="8" ng-model="report.outreachImmunizationSessions" numeric-validator="positiveInteger" type="text">
             </td>
             <td class="cell-input col-general">
-              <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="report.outreachImmunizationSessionsCanceled" numeric-validator="positiveInteger" type="text">
+              <input ng-disabled="!report.editable" maxlength="8" ng-model="report.outreachImmunizationSessionsCanceled" numeric-validator="positiveInteger" type="text">
             </td>
             <td class="col-general number">
               <span ng-show="report.outreachImmunizationSessions > 0">
@@ -109,7 +109,7 @@
         <tbody>
           <tr>
             <td class="cell-input col-general">
-              <textarea ng-disabled="report.status != 'DRAFT'" ng-model="report.majorImmunizationActivities" rows="4" style="width: 98%"></textarea>
+              <textarea ng-disabled="!report.editable" ng-model="report.majorImmunizationActivities" rows="4" style="width: 98%"></textarea>
             </td>
           </tr>
         </tbody>

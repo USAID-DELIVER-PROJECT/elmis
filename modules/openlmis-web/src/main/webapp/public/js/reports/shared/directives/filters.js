@@ -524,7 +524,7 @@ app.directive('geoFacilityFilter', ['FacilitiesByGeographicZone', '$routeParams'
 
             if (!$routeParams.facility) {
                 $scope.facilities = [{
-                    name: messageService.get('report.filter.select.facility')
+                    name: messageService.get('report.filter.select.facility'), id:0
                 }];
             }
 
@@ -538,7 +538,7 @@ app.directive('geoFacilityFilter', ['FacilitiesByGeographicZone', '$routeParams'
                     $scope.facilities = [];
                 }
                 $scope.facilities.unshift({
-                    name: messageService.get('report.filter.all.facilities')
+                    name: messageService.get('report.filter.all.facilities'), id:0
                 });
             });
         };
@@ -692,8 +692,8 @@ app.directive('periodTreeFilter', ['GetYearSchedulePeriodTree', '$routeParams', 
 ]);
 
 
-app.directive('vaccinePeriodTreeFilter', ['GetVaccineReportPeriodTree', '$routeParams', 'messageService',
-    function (GetVaccineReportPeriodTree, $routeParams, messageService) {
+app.directive('vaccinePeriodTreeFilter', ['GetVaccineReportPeriodFlat', '$routeParams', 'messageService','SettingsByKey',
+    function (GetVaccineReportPeriodFlat, $routeParams, messageService,SettingsByKey) {
         return {
             restrict: 'E',
             require: '^filterContainer',
@@ -704,20 +704,25 @@ app.directive('vaccinePeriodTreeFilter', ['GetVaccineReportPeriodTree', '$routeP
                 }
 
                 scope.filter.period = (isUndefined($routeParams.period) || $routeParams.period === '') ? 0 : $routeParams.period;
-
+                SettingsByKey.get({key:'VACCINE_LATE_REPORTING_DAYS'}, function(data, er){ scope.cutoffdate =  data.settings.value;});
                 scope.$evalAsync(function () {
                     //Load period tree
-                    GetVaccineReportPeriodTree.get({}, function (data) {
+                    GetVaccineReportPeriodFlat.get({}, function (data) {
                         scope.periods = data.vaccinePeriods.periods;
-                        scope.filter.defaultPeriodId = data.vaccinePeriods.currentPeriodId;
+
+                      var defaultPeriodId=  utils.getVaccineMonthlyDefaultPeriod( scope.periods,scope.cutoffdate);
+                        scope.filter.defaultPeriodId = defaultPeriodId;
                         scope.period_placeholder = messageService.get('label.select.period');
                         if (!angular.isUndefined(scope.periods)) {
                             if (scope.periods.length === 0)
                                 scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
                         }
+                        scope.filter.period=defaultPeriodId;
                     });
                 });
-
+                scope.$watch('filter.period', function(){
+                    scope.$parent.OnFilterChanged();
+                });
             },
             templateUrl: 'filter-period-tree-template'
         };

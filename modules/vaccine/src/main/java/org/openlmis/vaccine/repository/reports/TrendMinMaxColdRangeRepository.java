@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Component
@@ -40,6 +41,7 @@ public class TrendMinMaxColdRangeRepository {
     ){
         List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
         coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureReports(filterCriteria);
+        HashMap<String,TrendOfMinMaxColdChainTempratureDetail> facilityPopulationListMap= this.getFacilityVaccineTargetInformation(filterCriteria);
         return  coldChainTempratureDetailList;
     }
     public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainDistrictTempratureReports(
@@ -47,6 +49,7 @@ public class TrendMinMaxColdRangeRepository {
     ){
         List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
         coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureDisrictReports(filterCriteria);
+        HashMap<String,TrendOfMinMaxColdChainTempratureDetail> districtPopulationListMap= this.getDistrictVaccineTargetInformation(filterCriteria);
         return  coldChainTempratureDetailList;
     }
     public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainTempratureRegionReports(
@@ -54,6 +57,29 @@ public class TrendMinMaxColdRangeRepository {
     ){
         List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
         coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureRegionReports(filterCriteria);
+        HashMap<String,TrendOfMinMaxColdChainTempratureDetail> regionPoulationListMap=this.getRegionVaccineTargetInformation(filterCriteria);
         return  coldChainTempratureDetailList;
+    }
+
+    //////////////////////////////////////////////////
+
+    private HashMap<String,TrendOfMinMaxColdChainTempratureDetail> getFacilityVaccineTargetInformation(
+            PerformanceByDropoutRateParam filterCriteria
+    ){
+     return this.mapper.getFacilityVaccineTargetInformation(filterCriteria);
+    }
+
+
+    private HashMap<String,TrendOfMinMaxColdChainTempratureDetail> getDistrictVaccineTargetInformation(
+            PerformanceByDropoutRateParam filterCriteria
+    ){
+        return this.mapper.getDistrictVaccineTargetInformation(filterCriteria);
+    }
+
+
+    private HashMap<String,TrendOfMinMaxColdChainTempratureDetail> getRegionVaccineTargetInformation(
+             PerformanceByDropoutRateParam filterCriteria
+    ){
+        return this.mapper.getRegionVaccineTargetInformation(filterCriteria);
     }
 }

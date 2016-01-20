@@ -16,7 +16,9 @@ import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.ProgramProduct;
+import org.openlmis.core.domain.RightName;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
+import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.service.*;
 import org.openlmis.demographics.service.AnnualFacilityDemographicEstimateService;
 import org.openlmis.ivdform.domain.VaccineDisease;
@@ -28,11 +30,12 @@ import org.openlmis.ivdform.domain.reports.ReportStatus;
 import org.openlmis.ivdform.domain.reports.ReportStatusChange;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
+import org.openlmis.ivdform.dto.RoutineReportDTO;
 import org.openlmis.ivdform.repository.VitaminRepository;
 import org.openlmis.ivdform.repository.VitaminSupplementationAgeGroupRepository;
 import org.openlmis.ivdform.repository.reports.IvdFormRepository;
-import org.openlmis.ivdform.repository.reports.VaccineReportColdChainRepository;
-import org.openlmis.ivdform.repository.reports.VaccineReportStatusChangeRepository;
+import org.openlmis.ivdform.repository.reports.ColdChainLineItemRepository;
+import org.openlmis.ivdform.repository.reports.StatusChangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,10 +64,10 @@ public class IvdFormService {
   ProcessingPeriodRepository periodService;
 
   @Autowired
-  VaccineProductDoseService productDoseService;
+  ProductDoseService productDoseService;
 
   @Autowired
-  VaccineReportColdChainRepository coldChainRepository;
+  ColdChainLineItemRepository coldChainRepository;
 
   @Autowired
   VitaminRepository vitaminRepository;
@@ -76,16 +79,22 @@ public class IvdFormService {
   ProgramService programService;
 
   @Autowired
-  VaccineIvdTabVisibilityService tabVisibilityService;
+  TabVisibilityService tabVisibilityService;
 
   @Autowired
-  VaccineReportStatusChangeRepository reportStatusChangeRepository;
+  StatusChangeRepository reportStatusChangeRepository;
 
   @Autowired
   AnnualFacilityDemographicEstimateService annualFacilityDemographicEstimateService;
 
   @Autowired
   MessageService messageService;
+
+  @Autowired
+  FacilityService facilityService;
+
+  @Autowired
+  CommaSeparator commaSeparator;
 
   @Autowired
   ConfigurationSettingService configurationSettingService;
@@ -176,20 +185,19 @@ public class IvdFormService {
     }
 
     List<ReportStatusDTO> results = new ArrayList<>();
-    // find all periods that are after this period, and before today.
-
     List<ProcessingPeriod> periods = periodService.getAllPeriodsForDateRange(scheduleId, startDate, endDate);
-    if (lastRequest != null && lastRequest.getStatus().equals(ReportStatus.DRAFT)) {
-      ReportStatusDTO reportStatusDTO = new ReportStatusDTO();
-      reportStatusDTO.setPeriodName(lastRequest.getPeriod().getName());
-      reportStatusDTO.setPeriodId(lastRequest.getPeriod().getId());
-      reportStatusDTO.setStatus(lastRequest.getStatus().toString());
-      reportStatusDTO.setProgramId(programId);
-      reportStatusDTO.setFacilityId(facilityId);
-      reportStatusDTO.setId(lastRequest.getId());
+    if (lastRequest != null ) {
 
-      results.add(reportStatusDTO);
+      List<VaccineReport> rejectedReports = repository.getRejectedReports(facilityId, programId);
+      for(VaccineReport rReport : rejectedReports){
+        results.add(createReportStatusDto(facilityId, programId, rReport));
+      }
+
+      if( lastRequest.getStatus().equals(ReportStatus.DRAFT)) {
+        results.add(createReportStatusDto(facilityId, programId, lastRequest));
+      }
     }
+
 
     for (ProcessingPeriod period : emptyIfNull(periods)) {
       if (lastRequest == null || !lastRequest.getPeriodId().equals(period.getId())) {
@@ -206,6 +214,17 @@ public class IvdFormService {
     return results;
   }
 
+  private ReportStatusDTO createReportStatusDto(Long facilityId, Long programId, VaccineReport report) {
+    ReportStatusDTO reportStatusDTO = new ReportStatusDTO();
+    reportStatusDTO.setPeriodName(report.getPeriod().getName());
+    reportStatusDTO.setPeriodId(report.getPeriod().getId());
+    reportStatusDTO.setStatus(report.getStatus().toString());
+    reportStatusDTO.setProgramId(programId);
+    reportStatusDTO.setFacilityId(facilityId);
+    reportStatusDTO.setId(report.getId());
+    return reportStatusDTO;
+  }
+
   public VaccineReport getById(Long id) {
     VaccineReport report = repository.getByIdWithFullDetails(id);
     report.setTabVisibilitySettings(tabVisibilityService.getVisibilityForProgram(report.getProgramId()));
@@ -218,4 +237,22 @@ public class IvdFormService {
     return repository.getReportIdForFacilityAndPeriod(facilityId, periodId);
   }
 
+  public List<RoutineReportDTO> getApprovalPendingForms(Long userId, Long programId) {
+    String facilityIds = commaSeparator.commaSeparateIds(facilityService.getUserSupervisedFacilities(userId, programId, RightName.APPROVE_IVD));
+    return repository.getApprovalPendingForms( facilityIds);
+  }
+
+  public void approve(VaccineReport report, Long userId) {
+    report.setStatus(ReportStatus.APPROVED);
+    repository.update(report, userId);
+    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.APPROVED, userId);
+    reportStatusChangeRepository.insert(change);
+  }
+
+  public void reject(VaccineReport report, Long userId) {
+    report.setStatus(ReportStatus.REJECTED);
+    repository.update(report, userId);
+    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.REJECTED, userId);
+    reportStatusChangeRepository.insert(change);
+  }
 }

@@ -24,7 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/vaccine/")
 public class ManufacturerController extends BaseController {
 
-  public static final String MANUFACTURERS = "manufacturers";
+  private static final String MANUFACTURERS = "manufacturers";
+
   @Autowired
   private ManufacturerService service;
 

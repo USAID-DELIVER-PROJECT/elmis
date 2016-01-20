@@ -66,7 +66,7 @@ public class VaccineDemographicProgramControllerTest {
   UserService userService;
 
   @InjectMocks
-  VaccineProgramController controller;
+  IvdFormProgramController controller;
 
   private MockHttpSession session;
   private MockHttpServletRequest httpServletRequest;
