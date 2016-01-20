@@ -27,16 +27,16 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,SettingsByKey, 
     $scope.maxTemp;
     $scope.average;
     $scope.belowAverage;
-    SettingsByKey.get({key:'VCP_LESS_THAN_FIFTY_PERCENT_COLOR'},function(data){
+    SettingsByKey.get({key:'VCP_GREEN'},function(data){
         $scope.minTemp=data.settings.value;
     });
-    SettingsByKey.get({key:'VCP_GREATER_THAN_NINTY_PERCENT_COLOR'},function(data){
+    SettingsByKey.get({key:'VCP_RED'},function(data){
         $scope.maxTemp=data.settings.value;
     });
-    SettingsByKey.get({key:'VCP_GREATER_THAN_OR_EQUAL_EIGHTY_PERCENT_COLOR'},function(data){
+    SettingsByKey.get({key:'VCP_BLUE'},function(data){
         $scope.average=data.settings.value;
     });
-    SettingsByKey.get({key:'VCP_GREATER_THAN_OR_EQUAL_FIFTY_PERCENT_COLOR'},function(data){
+    SettingsByKey.get({key:'VCP_ORANGE'},function(data){
         $scope.belowAverage=data.settings.value;
     });
     $scope.OnFilterChanged = function () {
