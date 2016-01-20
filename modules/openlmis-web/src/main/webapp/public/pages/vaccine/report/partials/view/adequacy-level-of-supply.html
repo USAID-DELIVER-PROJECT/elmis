@@ -22,7 +22,7 @@
         line-height: 40px;
     }
     #parent{
-      height: 500px;
+      height: 700px;
     }
     .rnr-table th {
         min-width: 0px !important;
@@ -134,6 +134,20 @@
                         <th></th>
                         <th >Districts with supply < 100%</td>
                         <th ng-repeat="aggregate in rowTwoAggregate track by $index"> {{aggregate}}</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th >Regions with supply > 150%</td>
+                        <th ng-repeat="aggregate in rowThreeAggregate track by $index"> {{aggregate}}</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th >Regions with supply < 100%</td>
+                        <th ng-repeat="aggregate in rowFourAggregate track by $index"> {{aggregate}}</th>
                     </tr>
                     </tbody>
 

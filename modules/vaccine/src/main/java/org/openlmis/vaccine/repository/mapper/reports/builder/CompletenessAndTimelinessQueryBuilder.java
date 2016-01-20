@@ -58,11 +58,18 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "            vd.district_name,    \n" +
                 "            t.period_name,\n" +
                 "            t.period_start_date,\n" +
+                "            t.geographiczoneid," +
                 "            sum(fixed) fixed,\n" +
                 "            sum(outreach) outreach,\n" +
                 "            sum(fixed) + sum(outreach) session_total,\n" +
                 "            sum(target) target,  \n" +
-                "            sum(1) expected,\n" +
+
+                "           (select count(*) from programs_supported ps\n" +
+                "           join facilities f on ps.facilityid = f.id\n" +
+                "           join vw_districts vd on f.geographiczoneid = vd.district_id\n" +
+                "           where ps.programid = (select id from programs where enableivdform = 't' limit 1)\n" +
+                "           and district_id = t.geographiczoneid ) expected," +
+
                 "            sum(case when reporting_status IN ('T','L') then 1 else 0 end) reported,\n" +
                 "            sum(case when reporting_status = 'T' then 1 else 0 end) ontime, \n" +
                 "            sum(case when reporting_status = 'L' then 1 else 0 end) late,\n" +
@@ -70,7 +77,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "            trunc(((sum(1)::numeric - sum(case when reporting_status IN ('T','L') then 1 else 0 end)::numeric)/sum(1)::numeric)*100,2) percent_late \n" +
                 "from temp t\n" +
                 "join vw_districts vd on vd.district_id = t.geographiczoneid\n" + writeDistrictPredicate(zone)  + " \n" +
-                "group by 1, 2, 3, 4\n" +
+                "group by 1, 2, 3, 4, 5\n" +
                 "order by 1,2, 4\n";
 
         return sql;
