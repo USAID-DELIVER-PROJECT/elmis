@@ -80,8 +80,7 @@ function AdequacyLevelOfSupplyController($scope, $routeParams, AdequacyLevelOfSu
              _.each(reportdataKeys, function(key){
 
                  $.merge(aggregateResult, _.map(_.zip.apply(_, _.pluck(reportData, key)), function(pieces) {
-                    return angular.equals(thresholdType, ABOVE)
-                        ?
+                    return angular.equals(thresholdType, ABOVE) ?
                         _.reduce(pieces, function(m, p) { return (_.isNumber(p) ? p : 0) > threshold ? m+1 : m; }, 0) :
                         _.reduce(pieces, function(m, p) { return (_.isNumber(p) && p < threshold) ? m+1 : m--; }, 0);
                 }));
@@ -116,8 +115,7 @@ function AdequacyLevelOfSupplyController($scope, $routeParams, AdequacyLevelOfSu
             {
                 temp.push(_.map(_.zip.apply(_, _.pluck(_.where($scope.districtReport, {region_name: region}), datakey)), function(pieces) {
 
-                    return angular.equals(thresholdType, ABOVE)
-                        ?
+                    return angular.equals(thresholdType, ABOVE) ?
                         _.reduce(pieces, function(m, p) { return p > threshold ? 1 : m; }, 0) :
                         _.reduce(pieces, function(m, p) { return p < threshold ? 1 : m; }, 0);
                 }));
