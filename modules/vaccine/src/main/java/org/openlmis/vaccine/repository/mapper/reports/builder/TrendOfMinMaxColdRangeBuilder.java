@@ -158,14 +158,14 @@ public class TrendOfMinMaxColdRangeBuilder {
         BEGIN();
         SELECT(" d.region_name");
         SELECT("   d.district_name");
-        SELECT("    f.facility_name");
+        SELECT("    f.name facility_name");
         SELECT(" vt.target_value_monthly targetpopulation");
         FROM(" vw_vaccine_target_population vt ");
         JOIN(" geographic_zones gz ON gz.id = vt.geographic_zone_id");
         JOIN(" vw_districts d ON vt.geographic_zone_id = d.district_id ");
         JOIN(" facilities f on f.id=vt.facility_id");
         writePopulationPredicts(filter);
-        GROUP_BY(" 1,2,3 ");
+        GROUP_BY(" 1,2,3,4 ");
         query = SQL();
         return query;
     }
