@@ -29,13 +29,12 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
     });
   };
 
-
-
   $scope.save = function () {
+    $scope.clearMessages();
     SaveFacilityDemographicEstimates.update($scope.form, function () {
       $scope.message = "message.facility.demographic.estimates.saved";
-    }, function (data) {
-      $scope.error = data.error;
+    }, function (response) {
+      $scope.error = response.data.error;
     });
   };
 
@@ -47,6 +46,8 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
         FinalizeFacilityDemographicEstimates.update(form, function (facilities) {
           $scope.bindEstimates(facilities, $scope.districts);
           $scope.message = 'label.message.estimates.finalized';
+        }, function(response){
+          $scope.error = response.data.error;
         });
       }
     };
@@ -56,7 +57,9 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
       header: "label.confirm.finalize.title",
       body: "label.confirm.finalize.demographic.estimate"
     };
-    $scope.error = '';
+
+    $scope.clearMessages();
+
     if($scope.forms.isValid()){
       OpenLmisDialog.newDialog(options, callBack, $dialog);
     }else{
@@ -72,6 +75,8 @@ function FacilityDemographicEstimateController($scope, $dialog, $filter, rights,
         UndoFinalizeFacilityDemographicEstimates.update(form, function (facilities) {
           $scope.bindEstimates(facilities, $scope.districts);
           $scope.message = 'label.message.estimates.available.for.editing';
+        }, function(response){
+          $scope.error = response.data.error;
         });
       }
     };

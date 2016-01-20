@@ -59,6 +59,11 @@ function BaseDemographicEstimateController($scope, rights, categories, programs 
     }
   };
 
+  $scope.clearMessages = function(){
+    $scope.message = '';
+    $scope.error = '';
+  };
+
   $scope.init = function(){
     // default to the current year
     $scope.year = Number( $filter('date')(new Date(), 'yyyy') );
