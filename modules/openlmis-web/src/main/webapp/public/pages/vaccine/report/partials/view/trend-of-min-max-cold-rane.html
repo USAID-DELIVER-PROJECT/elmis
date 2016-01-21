@@ -263,11 +263,11 @@
 
                 <tbody >
                 <tr ng-repeat="row in colValueList" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
-                    <td
+                    <td  ng-show="{{ !(row.rangeName === '5_alarm_episode_less_min' || row.rangeName === '6_alarm_episode_greater_min') }}"
                             ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
                             ng-bind="getColumnNameSummary(row.rangeName)" />
 
-                    <td
+                    <td  ng-show="{{ !(row.rangeName === '5_alarm_episode_less_min' || row.rangeName === '6_alarm_episode_greater_min') }}"
                             ng-style="{'width':'40px','background-color': getBackGroundColorSummary(row.rangeName)}"
                             ng-repeat="column in columnVals track by $index">
                                     <span
@@ -442,11 +442,13 @@
 
                 <tbody ng-repeat="row in regionColumnVals">
                 <tr ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
-                    <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-bind="getColumnNameSummary(row.rangeName)"/>
+
+                    <td ng-show="{{ !(row.rangeName === '5_alarm_episode_less_min' || row.rangeName === '6_alarm_episode_greater_min') }}" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-bind="getColumnNameSummary(row.rangeName)"/>
 
 
-                    <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
+                    <td  ng-show="{{ !(row.rangeName === '5_alarm_episode_less_min' || row.rangeName === '6_alarm_episode_greater_min') }}" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
                         ng-repeat="column in columnVals track by $index">
+
                                     <span
                                           ng-bind="row.coldRangeColumnValues[$index].value">
 

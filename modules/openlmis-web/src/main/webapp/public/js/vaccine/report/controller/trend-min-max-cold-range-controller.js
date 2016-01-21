@@ -91,7 +91,7 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
         }else if(value=='7_min_temp_recorded'){
             bgColor='Min. Temp Recorded';
         }else if(value=='2_temp_min_greater'){
-            bgColor='Districts with t min > 8';
+            bgColor='Districts with t max > 8';
         }
         else{
             bgColor='Districts with t min < 2';
