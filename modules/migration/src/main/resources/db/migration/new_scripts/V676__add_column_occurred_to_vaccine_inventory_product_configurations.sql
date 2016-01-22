@@ -1,0 +1,8 @@
+ALTER TABLE vaccine_inventory_product_configurations ADD COLUMN schedule INTEGER ;
+ALTER TABLE vaccine_inventory_product_configurations ADD COLUMN coverage INTEGER;
+ALTER TABLE vaccine_inventory_product_configurations ADD COLUMN presentation INTEGER;
+ALTER TABLE vaccine_inventory_product_configurations ADD COLUMN packedvolumeperdose INTEGER;
+ALTER TABLE vaccine_inventory_product_configurations ADD COLUMN administrationmode INTEGER;
+ALTER TABLE vaccine_inventory_product_configurations ADD COLUMN dilutionsyringe INTEGER;
+ALTER TABLE vaccine_inventory_product_configurations ADD COLUMN volumepercif INTEGER;
+ALTER TABLE vaccine_inventory_product_configurations ADD COLUMN ordering INTEGER;

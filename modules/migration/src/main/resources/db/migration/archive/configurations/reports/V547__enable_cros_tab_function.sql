@@ -1,4 +1,4 @@
 
-CREATE EXTENSION tablefunc;
+-- CREATE EXTENSION tablefunc;
 
 

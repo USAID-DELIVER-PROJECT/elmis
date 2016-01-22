@@ -25,16 +25,15 @@ import org.openlmis.ivdform.domain.VaccineDisease;
 import org.openlmis.ivdform.domain.VaccineProductDose;
 import org.openlmis.ivdform.domain.Vitamin;
 import org.openlmis.ivdform.domain.VitaminSupplementationAgeGroup;
-import org.openlmis.ivdform.domain.reports.ColdChainLineItem;
-import org.openlmis.ivdform.domain.reports.ReportStatus;
-import org.openlmis.ivdform.domain.reports.ReportStatusChange;
-import org.openlmis.ivdform.domain.reports.VaccineReport;
+import org.openlmis.ivdform.domain.reports.*;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
 import org.openlmis.ivdform.dto.RoutineReportDTO;
+import org.openlmis.ivdform.dto.StockInfoDto;
 import org.openlmis.ivdform.repository.VitaminRepository;
 import org.openlmis.ivdform.repository.VitaminSupplementationAgeGroupRepository;
 import org.openlmis.ivdform.repository.reports.IvdFormRepository;
 import org.openlmis.ivdform.repository.reports.ColdChainLineItemRepository;
+import org.openlmis.ivdform.repository.reports.LogisticsLineItemRepository;
 import org.openlmis.ivdform.repository.reports.StatusChangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +50,8 @@ import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 @NoArgsConstructor
 public class IvdFormService {
 
+  private static final String STOCK_STATUS_FOUND = "STOCK_STATUS_FOUND";
+  private static final String STOCK_STATUS_NOT_FOUND = "STOCK_STATUS_NOT_FOUND";
   @Autowired
   IvdFormRepository repository;
 
@@ -86,6 +87,9 @@ public class IvdFormService {
 
   @Autowired
   AnnualFacilityDemographicEstimateService annualFacilityDemographicEstimateService;
+
+  @Autowired
+  LogisticsLineItemRepository logisticsLineItemRepository;
 
   @Autowired
   MessageService messageService;
@@ -254,5 +258,40 @@ public class IvdFormService {
     repository.update(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.REJECTED, userId);
     reportStatusChangeRepository.insert(change);
+  }
+
+  public StockInfoDto getStockInfoFor(String facilityCode, String productCode, String programCode, Long periodId) {
+    StockInfoDto response = new StockInfoDto();
+    response.setFacilityCode(facilityCode);
+    response.setPeriodId(periodId);
+    response.setProductCode(productCode);
+    response.setProgramCode(programCode);
+
+    LogisticsLineItem periodicLLI = logisticsLineItemRepository.getApprovedLineItemsFor(programCode, productCode, facilityCode, periodId);
+
+    if(periodicLLI != null){
+      response.setDaysOutOfStock(periodicLLI.getDaysStockedOut());
+      response.setStockStatus(periodicLLI.getClosingBalance());
+      response.setStatus(STOCK_STATUS_FOUND);
+
+      List<LogisticsLineItem> previousThreeSubmissions = logisticsLineItemRepository.getPreviousPeriodLineItemsFor(programCode, productCode, facilityCode, periodId);
+      response.setAmc(calculateAMC(previousThreeSubmissions));
+    }else{
+      response.setStatus(STOCK_STATUS_NOT_FOUND);
+    }
+
+    return response;
+  }
+
+  private Long calculateAMC(List<LogisticsLineItem> previousThree) {
+    Long sum = 0L;
+    int count = 0;
+    for(LogisticsLineItem lineItem: emptyIfNull(previousThree)){
+      if(lineItem.getQuantityIssued() != null) {
+        sum += lineItem.getQuantityIssued();
+        count++;
+      }
+    }
+    return (count == 0 )? 0L : sum / count;
   }
 }

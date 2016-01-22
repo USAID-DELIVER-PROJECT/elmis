@@ -444,6 +444,7 @@ public interface VaccineReportMapper {
             "join program_products pp on p.id = pp.productid\n" +
             "join product_categories pc on pp.productcategoryid = pc.id\n" +
             "where  pc.code = (select value from configuration_settings where key = 'VACCINE_REPORT_VACCINE_CATEGORY_CODE')\n" +
+            " and pp.active = true\n" +
             "     order by pp.displayorder "
     )
    public List<Product> getVaccineProductsList();

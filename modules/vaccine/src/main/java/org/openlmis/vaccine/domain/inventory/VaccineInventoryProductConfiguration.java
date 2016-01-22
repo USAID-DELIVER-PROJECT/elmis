@@ -25,6 +25,22 @@ public class VaccineInventoryProductConfiguration extends BaseModel {
 
     private Product product;
 
+    private Long schedule;
+
+    private Double coverage;
+
+    private Long presentation;
+
+    private Double packedVolumePerDose;
+
+    private Long administrationMode;
+
+    private Long dilutionSyringe;
+
+    private Long volumePerCif;
+
+    private Long ordering;
+
     private Boolean batchTracked;
 
     private Boolean vvmTracked;
