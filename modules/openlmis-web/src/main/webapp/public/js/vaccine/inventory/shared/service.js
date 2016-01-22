@@ -81,9 +81,11 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                 StockCards.get({facilityId:fId},function(s){
                                     DistributedFacilities.get(function(d){
                                         allSupervisedFacilities=f.facilities;stockCards=s.stockCards;distributions=d.Distributions;
-//                                        console.log(JSON.stringify(angular.extend(allSupervisedFacilities,distributions,stockCards)));
                                         allSupervisedFacilities.forEach(function(facility){
+                                        //Construct a facility object with product
                                              facility.productsToIssue=[];
+
+                                             //Set distribution status to facility object
                                              var facilityDistribution=_.findWhere(distributions,{toFacilityId:facility.id});
                                              facility.status=(facilityDistribution !== undefined)?facilityDistribution.status:undefined;
                                              facility.voucherNumber=(facilityDistribution !== undefined)?facilityDistribution.voucherNumber:undefined;
@@ -91,6 +93,8 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                              facility.distributionId=(facilityDistribution !== undefined)?facilityDistribution.id:undefined;
                                              facility.toFacilityId=(facilityDistribution !== undefined)?facilityDistribution.toFacilityId:undefined;
                                              facility.fromFacilityId=(facilityDistribution !== undefined)?facilityDistribution.fromFacilityId:undefined;
+
+                                             //Add Products array to facility object
                                              stockCards.forEach(function(stockCard){
                                                  var product={};
                                                  var distributedProduct;
@@ -103,12 +107,15 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                                  product.productCode=stockCard.product.code;
                                                  product.displayOrder=stockCard.product.id;
                                                  product.totalQuantityOnHand=stockCard.totalQuantityOnHand;
+                                                 //Catch stock on hand for front end reduction on stock quantity
                                                  product.totalQuantityOnHand2=product.totalQuantityOnHand;
                                                  product.quantity=(distributedProduct===undefined || facility.status==="RECEIVED")?0:distributedProduct.quantity;
                                                  product.originalIssueQuantity=product.quantity;
                                                  product.unScheduledQuantity=0;
                                                  product.lineItemId=(distributedProduct===undefined)?null:distributedProduct.id;
                                                  product.initialQuantity=(distributedProduct === undefined)?null:distributedProduct.quantity;
+
+                                                 //Add lots to product to be added to facility object
                                                  if(stockCard.lotsOnHand !== undefined && stockCard.lotsOnHand.length >0)
                                                  {
                                                       product.lots=[];
@@ -132,6 +139,7 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                                           lotOnHand.expirationDate=lot.lot.expirationDate;
                                                           product.lots.push(lotOnHand);
                                                       });
+                                                      //Make sort of lots by vvm and expiration
                                                       var lotsAscExpiration=_.sortBy(product.lots,'expirationDate');
                                                       var lotsDescExpiration=lotsAscExpiration.reverse();
                                                       var lotAscVVM=_.sortBy(lotsDescExpiration,'vvmStatus');
@@ -144,7 +152,7 @@ services.factory('FacilitiesWithProducts', function($resource,$timeout,$q,OneLev
                                              });
 
                                         });
-
+                                        //Group facilities into scheduled and unscheduled.
                                          facilities.scheduled = $.grep(allSupervisedFacilities, function (facility) {
                                                    return facility.status !=='RECEIVED';
                                          });
