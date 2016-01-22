@@ -25,7 +25,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
         {
             console.log($scope.issueForm);
             $scope.showFormError();
-            return
+            return;
         }
         if($scope.allProductsZero){
             $scope.showNoProductError();
