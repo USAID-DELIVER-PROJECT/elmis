@@ -75,7 +75,8 @@ public class VaccineReportService {
 
         return repository.getDiseaseSurveillanceAggregateReport(periodId, zoneId);
     }
-    private HashMap<String,DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+
+    private HashMap<String, DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
 
             return repository.getCumFacilityDiseaseSurveillance(reportId);
@@ -83,6 +84,7 @@ public class VaccineReportService {
 
         return repository.getCumDiseaseSurveillanceAggregateReport(periodId, zoneId);
     }
+
     private List<ColdChainLineItem> getColdChain(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
             return repository.getColdChain(reportId);
@@ -166,17 +168,24 @@ public class VaccineReportService {
     }
 
     public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long periodId, Long zoneId) {
+        List<HashMap<String, Object>> vaccineUsageTrend = null;
+        try {
 
-        if (zoneId == -1) {
-            zoneId = getNationalZoneId();
+
+            if (zoneId == -1) {
+                zoneId = getNationalZoneId();
+            }
+
+            if ((facilityCode == null || facilityCode.isEmpty()) && periodId != 0) { // Return aggregated data for selected geographic zone
+                vaccineUsageTrend = repository.vaccineUsageTrendByGeographicZone(periodId, zoneId, productCode);
+            } else {
+                vaccineUsageTrend = repository.vaccineUsageTrend(facilityCode, productCode);
+
+            }
+        } catch (Exception ex) {
+            System.out.println("Error Message: " + ex.getMessage());
         }
-
-        if ((facilityCode == null || facilityCode.isEmpty()) && periodId != 0) { // Return aggregated data for selected geographic zone
-
-            return repository.vaccineUsageTrendByGeographicZone(periodId, zoneId, productCode);
-        } else {
-            return repository.vaccineUsageTrend(facilityCode, productCode);
-        }
+        return vaccineUsageTrend;
     }
 
     public Map<String, Object> getMonthlyVaccineReport(Long facilityId, Long periodId, Long zoneId) {
@@ -189,24 +198,28 @@ public class VaccineReportService {
 
         }
 
-        if (zoneId == -1 ||zoneId==0) {
+        if (zoneId == -1 || zoneId == 0) {
             zoneId = getNationalZoneId();
         }
+        try {
 
-        data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, zoneId));
-        data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
-        data.put("cumDiseaseSurveillance", this.getCumulativeDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
-        data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
-        data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
-        data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, zoneId));
-        data.put("vitaminSupplementation", getVitaminSupplementationReport(reportId, facilityId, periodId, zoneId));
-        data.put("adverseEffect", getAdverseEffectReport(reportId, facilityId, periodId, zoneId));
-        data.put("coldChain", getColdChain(reportId, facilityId, periodId, zoneId));
-        data.put("targetPopulation", getTargetPopulation(facilityId, periodId, zoneId));
-        data.put("syringes", getSyringeAndSafetyBoxReport(reportId, facilityId, periodId, zoneId));
-        data.put("vitamins", getVitaminsReport(reportId, facilityId, periodId, zoneId));
-        data.put("dropOuts", getDropOuts(reportId, facilityId, periodId, zoneId));
 
+            data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, zoneId));
+            data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
+            data.put("cumDiseaseSurveillance", this.getCumulativeDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
+            data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
+            data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
+            data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, zoneId));
+            data.put("vitaminSupplementation", getVitaminSupplementationReport(reportId, facilityId, periodId, zoneId));
+            data.put("adverseEffect", getAdverseEffectReport(reportId, facilityId, periodId, zoneId));
+            data.put("coldChain", getColdChain(reportId, facilityId, periodId, zoneId));
+            data.put("targetPopulation", getTargetPopulation(facilityId, periodId, zoneId));
+            data.put("syringes", getSyringeAndSafetyBoxReport(reportId, facilityId, periodId, zoneId));
+            data.put("vitamins", getVitaminsReport(reportId, facilityId, periodId, zoneId));
+            data.put("dropOuts", getDropOuts(reportId, facilityId, periodId, zoneId));
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
 
         return data;
     }
@@ -276,7 +289,7 @@ public class VaccineReportService {
         startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
         endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
 
-        Map<String, List<Map<String, Object>>> result =  new HashMap<String, List<Map<String, Object>>>();
+        Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
 
         /*List<Map<String, Object>> adequacyResultList =  repository.getAdequacyLevelOfSupplyByDistrict(startDate, endDate, districtId, productId);
         List<Map<String, Object>> generatedPeriodList = getSummaryPeriodList(startDate, endDate);
@@ -332,7 +345,7 @@ public class VaccineReportService {
         return list;
     }
 
-   public List<Product> getVaccineProductsList(){
+    public List<Product> getVaccineProductsList() {
         return this.repository.getVaccineProductsList();
     }
 }

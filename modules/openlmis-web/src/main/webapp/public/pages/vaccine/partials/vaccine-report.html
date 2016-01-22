@@ -387,7 +387,7 @@
                                     <tbody>
                                     <tr ng-repeat="vc in vaccination">
                                         <td>{{vc.product_name}}</td>
-                                        <td class="number">{{vc.opening_balance | number}}</td>
+                                        <td class="number">{{vc.opening_balanace | number}}</td>
                                         <td class="number">{{vc.quantity_received | number}}</td>
                                         <td class="number" ng-class="colorify(vc.quantity_issued)">
                                             <a ng-mouseover="renderGraph(vc.facility_code, vc.product_code)" href="" ns-popover
@@ -461,7 +461,7 @@
                                     <tbody>
                                     <tr ng-repeat="sy in syringes">
                                         <td>{{sy.product_name}}</td>
-                                        <td class="number">{{sy.opening_balance | number}}</td>
+                                        <td class="number">{{sy.opening_balanace | number}}</td>
                                         <td class="number">{{sy.quantity_received | number}}</td>
                                         <td class="number">{{sy.quantity_issued | number}}</td>
                                         <td class="number">{{ sy.quantity_wasted_other | number}}</td>
@@ -507,7 +507,7 @@
                                     <tbody>
                                     <tr ng-repeat="vit in vitamins">
                                         <td>{{vit.product_name}}</td>
-                                        <td class="number">{{vit.opening_balance | number}}</td>
+                                        <td class="number">{{vit.opening_balanace | number}}</td>
                                         <td class="number">{{vit.quantity_received | number}}</td>
                                         <td class="number">{{vit.quantity_issued | number}}</td>
                                         <td class="number">{{vit.quantity_wasted_other | number}}</td>
@@ -555,7 +555,7 @@
                                         <td style="width:100px">{{vd.product_name}}</td>
                                         <td class="number">{{vd.expired | number}}</td>
                                         <td class="number">{{vd.broken | number}}</td>
-                                        <td class="number">{{vd.cold_chain | number}}</td>
+                                        <td class="number">{{vd.cold_chain_failure | number}}</td>
                                         <td class="number">{{vd.other | number}}</td>
                                         <td class="number">{{vd.quantity_discarded_unopened | number}}</td>
                                     </tr>
@@ -645,8 +645,8 @@
                                         <td>{{cc.energySource}}</td>
                                         <td>{{cc.minTemp}}</td>
                                         <td>{{cc.maxTemp}}</td>
-                                        <td>{{cc.minEmpisodeTemp}}</td>
-                                        <td>{{cc.maxEmpisodeTemp}}</td>
+                                        <td>{{cc.minEpisodeTemp}}</td>
+                                        <td>{{cc.maxEpisodeTemp}}</td>
                                     </tr>
 
                                     </tbody>
