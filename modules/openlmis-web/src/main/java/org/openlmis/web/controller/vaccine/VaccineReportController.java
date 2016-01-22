@@ -75,26 +75,34 @@ public class VaccineReportController extends BaseController {
   @RequestMapping(value = "/performanceCoverage", method = RequestMethod.GET)
   public ResponseEntity<OpenLmisResponse> performanceCoverage(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                               @RequestParam(value = "periodEnd", required = false) String periodEnd,
-                                                              @RequestParam(value = "range", required = false) Long range,
                                                               @RequestParam("district") Long districtId,
                                                               @RequestParam("product") Long product) {
 
 
     return OpenLmisResponse.response("performanceCoverage",
-        service.getPerformanceCoverageReportData(periodStart, periodEnd, range, districtId, product));
+        service.getPerformanceCoverageReportData(periodStart, periodEnd, districtId, product));
   }
 
     @RequestMapping(value = "/completenessAndTimeliness", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> completenessAndTimeliness(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                                 @RequestParam(value = "periodEnd", required = false) String periodEnd,
-                                                                @RequestParam(value = "range", required = false) Long range,
                                                                 @RequestParam("district") Long districtId,
                                                                 @RequestParam("product") Long product){
 
 
         return OpenLmisResponse.response("completenessAndTimeliness",
-                service.getCompletenessAndTimelinessReportData(periodStart, periodEnd, range, districtId, product));
+                service.getCompletenessAndTimelinessReportData(periodStart, periodEnd, districtId, product));
     }
 
+    @RequestMapping(value = "/adequaceyLevel", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> adequacyLevelOfSupply(@RequestParam(value = "periodStart", required = false) String periodStart,
+                                                                      @RequestParam(value = "periodEnd", required = false) String periodEnd,
+                                                                      @RequestParam("district") Long districtId,
+                                                                      @RequestParam("product") Long product){
+
+
+        return OpenLmisResponse.response("adequaceyLevel",
+                service.getAdequacyLevelOfSupply(periodStart, periodEnd, districtId, product));
+    }
 
 }
