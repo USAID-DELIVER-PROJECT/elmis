@@ -79,7 +79,7 @@ public class VaccineReportService {
     private HashMap<String, DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
 
-            return repository.getCumFacilityDiseaseSurveillance(reportId);
+            return repository.getCumFacilityDiseaseSurveillance(reportId,facilityId);
         }
 
         return repository.getCumDiseaseSurveillanceAggregateReport(periodId, zoneId);
@@ -109,7 +109,7 @@ public class VaccineReportService {
 
     private HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
-            return repository.calculateVaccineCoverageReport(reportId);
+            return repository.calculateVaccineCoverageReportForFacility(reportId, facilityId);
         }
         return repository.calculateVaccineCoverageReport(periodId, zoneId);
     }

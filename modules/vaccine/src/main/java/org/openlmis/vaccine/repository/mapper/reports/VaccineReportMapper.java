@@ -45,11 +45,11 @@ public interface VaccineReportMapper {
             "                           where id = (select periodid from vaccine_reports where id = #{reportId})) \n" +
             "            and   period_year = (select extract(year from startdate) from processing_periods           \n" +
             "                            where id = (select periodid from vaccine_reports where id =  #{reportId}))\n" +
-            "\n" +
+            " and facility_id=  #{facilityId} \n" +
             "group by diseaseName")
     @MapKey("diseaseName")
     @ResultType(HashMap.class)
-    HashMap<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(@Param("reportId") Long reportId);
+    HashMap<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId );
 
     @Select("SELECT disease_name as diseaseName,\n" +
             " sum(COALESCE (cases, 0)) AS calculatedCumulativeCases,\n" +
@@ -132,13 +132,14 @@ public interface VaccineReportMapper {
             "              where period_start_date <= (select startdate from processing_periods\n" +
             "               where id = (select periodid from vaccine_reports where id = #{reportId}))" +
             "and   period_year = (select extract(year from startdate) from processing_periods\n" +
-            "                where id = (select periodid from vaccine_reports where id = #{reportId}))" +
+            "                where id = (select periodid from vaccine_reports where id = #{reportId})) " +
+            " and facility_id=#{facilityId}" +
             "              group by 1 \n" +
             "")
 
     @MapKey("product_name")
     @ResultType(HashMap.class)
-    HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport(@Param("reportId") Long reportId);
+    HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId);
 
     @Select("" +
             "select \n" +
