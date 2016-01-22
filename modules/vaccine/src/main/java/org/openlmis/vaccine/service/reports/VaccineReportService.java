@@ -172,7 +172,7 @@ public class VaccineReportService {
         try {
 
 
-            if (zoneId == -1) {
+            if (zoneId == -1|| zoneId==0) {
                 zoneId = getNationalZoneId();
             }
 
