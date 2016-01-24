@@ -23,6 +23,8 @@ import org.openlmis.ivdform.domain.reports.*;
 import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.reports.VaccineReportRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ import java.util.*;
 @Service
 @NoArgsConstructor
 public class VaccineReportService {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(VaccineReportService.class);
     public static final String VACCINE_REPORT_VACCINE_CATEGORY_CODE = "VACCINE_REPORT_VACCINE_CATEGORY_CODE";
     public static final String VACCINE_REPORT_VITAMINS_CATEGORY_CODE = "VACCINE_REPORT_VITAMINS_CATEGORY_CODE";
     public static final String VACCINE_REPORT_SYRINGES_CATEGORY_CODE = "VACCINE_REPORT_SYRINGES_CATEGORY_CODE";
@@ -218,7 +220,9 @@ public class VaccineReportService {
             data.put("vitamins", getVitaminsReport(reportId, facilityId, periodId, zoneId));
             data.put("dropOuts", getDropOuts(reportId, facilityId, periodId, zoneId));
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ex);
+            LOGGER.warn("error while loading Reporting summary:... ", ex);
+
         }
 
         return data;

@@ -177,16 +177,21 @@ public interface VaccineReportMapper {
             "COALESCE(within_male, 0) within_male, \n" +
             "COALESCE(within_female,0) within_female, \n" +
             "COALESCE(within_total,0) within_total, \n" +
-            "COALESCE(within_total,0) /  COALESCE(denominator, 0)::numeric * 100 within_coverage,  \n" +
+            "           case when sum(COALESCE(denominator,0)) > 0 then \n" +
+            "COALESCE(within_total,0) /  COALESCE(denominator, 0)::numeric * 100" +
+            " else 0 end within_coverage,  \n" +
             "COALESCE(outside_male, 0) outside_male, \n" +
             "COALESCE(outside_female,0) outside_female, COALESCE(outside_total, 0) outside_total, \n" +
             "COALESCE(within_outside_total, 0) within_outside_total, \n" +
-            "COALESCE(within_outside_total,0) /  COALESCE(denominator, 0)::numeric * 100  within_outside_coverage, \n" +
+            "           case when sum(COALESCE(denominator,0)) > 0 then \n" +
+            "COALESCE(within_outside_total,0) /  COALESCE(denominator, 0)::numeric * 100" +
+            " else 0 end  within_outside_coverage, \n" +
             "COALESCE(cum_within_total,0) cum_within_total, \n" +
             "COALESCE(cum_within_coverage,0) cum_within_coverage, \n" +
             "COALESCE(cum_outside_total,0) cum_outside_total, \n" +
-            "COALESCE(cum_within_outside_total,0) cum_within_outside_total, \n" +
-            "COALESCE(cum_within_outside_total,0) /  COALESCE(denominator, 0)::numeric * 100 cum_within_outside_coverage, \n" +
+            "COALESCE(cum_within_outside_total,0) cum_within_outside_total, " +
+            " case when  COALESCE(denominator, 0)::numeric> 0 then  \n" +
+            "COALESCE(cum_within_outside_total,0) /  COALESCE(denominator, 0)::numeric * 100 else 0 end cum_within_outside_coverage, \n" +
             "case when dtp_1 > 0 then ((dtp_1 - dtp_3)::double precision / dtp_1::double precision) * 100 else 0 end dtp_dropout, \n" +
             "case when bcg_1 > 0 then ((bcg_1 - mr_1)::double precision / bcg_1::double precision) * 100 else 0 end bcg_mr_dropout \n" +
             "  from vw_vaccine_coverage  \n" +
@@ -202,17 +207,23 @@ public interface VaccineReportMapper {
             "SUM(COALESCE(within_male, 0)) within_male,  \n" +
             "SUM(COALESCE(within_female,0)) within_female,  \n" +
             "SUM(COALESCE(within_total,0)) within_total,  \n" +
-            "SUM(COALESCE(within_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100 within_coverage,  \n" +
+            " case when  sum( COALESCE(denominator, 0))::numeric> 0 then  \n" +
+            "SUM(COALESCE(within_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100" +
+            " else 0 end within_coverage,  \n" +
             "SUM(COALESCE(outside_male, 0)) outside_male,  \n" +
             "SUM(COALESCE(outside_female,0)) outside_female, \n" +
             "SUM(COALESCE(outside_total, 0)) outside_total, \n" +
             "SUM(COALESCE(within_outside_total, 0)) within_outside_total,  \n" +
-            "SUM(COALESCE(within_outside_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100 within_outside_coverage, \n" +
+            " case when  sum( COALESCE(denominator, 0))::numeric> 0 then  \n" +
+            "SUM(COALESCE(within_outside_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100" +
+            " else 0 end within_outside_coverage, \n" +
             "SUM(COALESCE(cum_within_total,0)) cum_within_total,  \n" +
             "SUM(COALESCE(cum_within_coverage,0)) cum_within_coverage, \n" +
             "SUM(COALESCE(cum_outside_total,0)) cum_outside_total,  \n" +
             "SUM(COALESCE(cum_within_outside_total,0)) cum_within_outside_total, \n" +
-            "SUM(COALESCE(cum_within_outside_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100 cum_within_outside_coverage, \n" +
+            " case when  sum( COALESCE(denominator, 0))::numeric> 0 then  \n" +
+            "SUM(COALESCE(cum_within_outside_total,0)) / sum( COALESCE(denominator, 0))::numeric * 100" +
+            " else 0 end cum_within_outside_coverage, \n" +
             "SUM(COALESCE(case when dtp_1 > 0 then ((dtp_1 - dtp_3)::double precision / dtp_1::double precision) * 100 else 0 end)) dtp_dropout, \n" +
             "SUM(COALESCE(case when bcg_1 > 0 then ((bcg_1 - mr_1)::double precision / bcg_1::double precision) * 100 else 0 end)) bcg_mr_dropout \n" +
             "from vw_vaccine_coverage  \n" +
