@@ -177,13 +177,13 @@ public interface VaccineReportMapper {
             "COALESCE(within_male, 0) within_male, \n" +
             "COALESCE(within_female,0) within_female, \n" +
             "COALESCE(within_total,0) within_total, \n" +
-            "           case when sum(COALESCE(denominator,0)) > 0 then \n" +
+            "           case when COALESCE(denominator, 0) > 0 then \n" +
             "COALESCE(within_total,0) /  COALESCE(denominator, 0)::numeric * 100" +
             " else 0 end within_coverage,  \n" +
             "COALESCE(outside_male, 0) outside_male, \n" +
             "COALESCE(outside_female,0) outside_female, COALESCE(outside_total, 0) outside_total, \n" +
             "COALESCE(within_outside_total, 0) within_outside_total, \n" +
-            "           case when sum(COALESCE(denominator,0)) > 0 then \n" +
+            "           case when COALESCE(denominator,0) > 0 then \n" +
             "COALESCE(within_outside_total,0) /  COALESCE(denominator, 0)::numeric * 100" +
             " else 0 end  within_outside_coverage, \n" +
             "COALESCE(cum_within_total,0) cum_within_total, \n" +
