@@ -14,6 +14,7 @@
 function MassDistributionController($scope,$location, $window,configurations,$timeout,facilityDistributed,homeFacility,FacilitiesWithProducts,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
 
      $scope.userPrograms=configurations.programs;
+     console.log(configurations);
      $scope.period=configurations.period;
      $scope.homeFacility=homeFacility;
      $scope.facilityDisplayName=homeFacility.name;
@@ -323,11 +324,11 @@ MassDistributionController.resolve = {
             }, 100);
             return deferred.promise;
          },
-        configurations:function($q, $timeout, VaccineInventoryConfigurations) {
+        configurations:function($q, $timeout, AllVaccineInventoryConfigurations) {
                              var deferred = $q.defer();
                              var configurations={};
                              $timeout(function () {
-                                VaccineInventoryConfigurations.get(function(data)
+                                AllVaccineInventoryConfigurations.get(function(data)
                                 {
                                       configurations=data;
                                       deferred.resolve(configurations);
