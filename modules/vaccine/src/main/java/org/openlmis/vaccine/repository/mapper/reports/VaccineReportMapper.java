@@ -100,6 +100,7 @@ public interface VaccineReportMapper {
 
     @Select("select product_name as productName, aefi_expiry_date as expiry, aefi_case as cases, aefi_batch as batch, manufacturer, is_investigated as isInvestigated from vw_vaccine_iefi \n" +
             "where report_id = #{reportId}    order by display_order"
+
     )
     List<AdverseEffectLineItem> getAdverseEffectReport(@Param("reportId") Long reportId);
 
