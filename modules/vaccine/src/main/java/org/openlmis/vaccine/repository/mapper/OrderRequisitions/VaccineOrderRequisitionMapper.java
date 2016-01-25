@@ -80,7 +80,7 @@ public interface VaccineOrderRequisitionMapper {
             "   and m.facilityId = #{facilityId} ")
     Long getScheduleFor(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
 
-    @Select("SELECT DISTINCT f.id AS facilityId,r.periodId,f.name facilityName,R.orderDate::date orderDate,R.ID,R.STATUS,ra.programid AS programId,pp.name periodName  " +
+    @Select("SELECT DISTINCT f.id AS facilityId,r.periodId,f.name facilityName,R.orderDate orderDate,R.ID,R.STATUS,ra.programid AS programId,pp.name periodName  " +
             "   FROM facilities f  " +
             "     JOIN requisition_group_members m ON m.facilityid = f.id  " +
             "     JOIN requisition_groups rg ON rg.id = m.requisitiongroupid  " +
