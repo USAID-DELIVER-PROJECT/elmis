@@ -37,6 +37,9 @@ public class VaccineInventoryConfigurationService {
     public VaccineInventoryProductConfiguration getById(Long id) {
         return repository.getById(id);
     }
+    public VaccineInventoryProductConfiguration getByProductId(Long productId) {
+        return repository.getByProductId(productId);
+    }
 
     public void save(List<VaccineInventoryProductConfiguration> configurations) {
 

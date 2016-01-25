@@ -12,6 +12,7 @@
 package org.openlmis.web.controller.vaccine.inventory;
 
 
+import org.openlmis.core.domain.FacilityTypeApprovedProduct;
 import org.openlmis.core.domain.Program;
 import org.openlmis.core.domain.ProgramProduct;
 import org.openlmis.core.service.ProgramProductService;
@@ -38,6 +39,8 @@ public class VaccineInventoryController extends BaseController {
 
     private static final String PROGRAM_PRODUCT_LIST = "programProductList";
 
+    private static final String FACILITY_TYPE_PROGRAM_PRODUCT_LIST = "facilityProduct";
+
     @Autowired
     ProgramService programService;
     @Autowired
@@ -47,28 +50,35 @@ public class VaccineInventoryController extends BaseController {
     VaccineInventoryService service;
 
     @RequestMapping(value = "programProducts/programId/{programId}", method = GET, headers = ACCEPT_JSON)
-    //@PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK','VIEW_STOCK_ON_HAND','')")
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK , VIEW_STOCK_ON_HAND')")
     public ResponseEntity<OpenLmisResponse> getProgramProductsByProgram(@PathVariable Long programId) {
         List<ProgramProduct> programProductsByProgram = programProductService.getByProgram(new Program(programId));
         return response(PROGRAM_PRODUCT_LIST, programProductsByProgram);
     }
 
+    @RequestMapping(value = "programProducts/facilityId/{facilityId}/programId/{programId}", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK , VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getProgramProductsByProgramAndType(@PathVariable Long facilityId,@PathVariable Long programId) {
+        List<FacilityTypeApprovedProduct> facilityTypeApprovedProducts = service.facilityTypeApprovedProduct(facilityId,programId);
+        return response(FACILITY_TYPE_PROGRAM_PRODUCT_LIST, facilityTypeApprovedProducts);
+    }
+
     @RequestMapping(value = "programs")
-    //  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK','VIEW_STOCK_ON_HAND')")
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK , VIEW_STOCK_ON_HAND')")
     public ResponseEntity<OpenLmisResponse> getProgramsForConfiguration() {
         return OpenLmisResponse.response("programs", programService.getAllIvdPrograms());
     }
 
     @RequestMapping(value = "lots/byProduct/{productId}", method = GET, headers = ACCEPT_JSON)
-    // @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")
     public ResponseEntity getLotsByProductId(@PathVariable Long productId) {
 
         return OpenLmisResponse.response("lots", service.getLotsByProductId(productId));
     }
 
     @RequestMapping(value = "lot/create", method = PUT, headers = ACCEPT_JSON)
-//TODO:   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_LOT')")
     public ResponseEntity saveLot(@RequestBody Lot lot) {
-        return OpenLmisResponse.response("lot", service.insertLot(lot));
+         return OpenLmisResponse.response("lot", service.insertLot(lot));
     }
 }

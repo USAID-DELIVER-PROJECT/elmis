@@ -11,7 +11,7 @@ public interface VaccineInventoryMapper {
 
     @Select("SELECT *" +
             " FROM lots" +
-            " WHERE productid = #{productId} ")
+            " WHERE productid = #{productId} and expirationdate > NOW() ")
     @Results({
             @Result(property = "lotCode", column = "lotnumber"),
     })
