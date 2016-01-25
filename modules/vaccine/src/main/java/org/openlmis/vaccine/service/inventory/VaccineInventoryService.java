@@ -46,4 +46,12 @@ public class VaccineInventoryService {
     public List<FacilityTypeApprovedProduct> facilityTypeApprovedProduct(Long facilityId, Long programId) {
         return facilityApprovedProductRepository.getAllByFacilityAndProgramId(facilityId,programId);
     }
+
+    public Integer deleteRequisitions() {
+        return repository.deleteOrderRequisitions();
+    }
+
+    public Integer deleteDistributions() {
+        return repository.deleteDistributions();
+    }
 }

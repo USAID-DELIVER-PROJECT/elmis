@@ -81,4 +81,14 @@ public class VaccineInventoryController extends BaseController {
     public ResponseEntity saveLot(@RequestBody Lot lot) {
          return OpenLmisResponse.response("lot", service.insertLot(lot));
     }
+
+    @RequestMapping(value = "delete-requisitions", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity deleteRequisitions(){
+        return OpenLmisResponse.response("deleteRequisitions", service.deleteRequisitions());
+    }
+
+    @RequestMapping(value = "delete-distributions", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity deleteDistributions(){
+        return OpenLmisResponse.response("deleteDistributions", service.deleteDistributions());
+    }
 }
