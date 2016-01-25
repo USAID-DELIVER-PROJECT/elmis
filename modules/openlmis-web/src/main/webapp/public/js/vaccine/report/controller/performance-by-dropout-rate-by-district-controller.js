@@ -33,14 +33,14 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,SettingsByKey, 
     SettingsByKey.get({key:'VCP_RED'},function(data){
         $scope.maxTemp=data.settings.value;
     });
-    SettingsByKey.get({key:'VCP_BLUE'},function(data){
+    SettingsByKey.get({key:'VCP_ORANGE'},function(data){
         $scope.average=data.settings.value;
     });
-    SettingsByKey.get({key:'VCP_ORANGE'},function(data){
+    SettingsByKey.get({key:'VCP_BLUE'},function(data){
         $scope.belowAverage=data.settings.value;
     });
     $scope.OnFilterChanged = function () {
-console.log('period start '+ $scope.filter.periodStart);
+      //console.log('period start '+ $scope.filter.periodStart);
         $scope.data = $scope.datarows = [];
         $scope.filter.facilityId='' ;
         $scope.filter.geographicZoneId = $scope.filter.zone;

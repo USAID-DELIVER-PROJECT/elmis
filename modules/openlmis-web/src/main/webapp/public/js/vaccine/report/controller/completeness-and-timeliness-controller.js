@@ -123,7 +123,6 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
         }
 
         $scope.aggregateSummaryLegendData = {completed: completed, ontime: onTime, completeness: completeness, timeliness:timeliness };
-        console.log($scope.aggregateSummaryLegendData);
 
     }
 
