@@ -259,30 +259,11 @@ services.factory('StockRequirementsData', function ($resource, StockRequirements
         $timeout(function () {
             if (!isNaN(program) && !isUndefined(homeFacility)) {
 
-                VaccineOrderRequisitionProgramProduct.get({programId: program}, function (data) {
-                    programProducts = data.programProductList;
-
-
                     StockRequirements.get({facilityId: homeFacility, programId: program}, function (data) {
-
-                        pageLineItems = data;
-                        pageLineItems.forEach(function (s) {
-
-                            if (s.isaValue !== null && s.eop !== null && s.maxMonthsOfStock !== null) {
-
-                                var product = _.filter(programProducts, function (obj) {
-                                    if (s.productName !== undefined) {
-                                        return obj.product.primaryName === s.productName;
-                                    }
-                                });
-                                s.productCategory = product[0].productCategory;
-                            }
-
-
-                        });
+                        pageLineItems = data.stock_requirements;
 
                         var byCategory = _.groupBy(pageLineItems, function (s) {
-                            return s.productCategory.name;
+                            return s.productCategory;
 
                         });
                         var stockCardsToDisplay = $.map(byCategory, function (value, index) {
@@ -294,10 +275,6 @@ services.factory('StockRequirementsData', function ($resource, StockRequirements
                         deferred.resolve(stockCardsToDisplay);
 
                     });
-
-
-                });
-
 
             } else {
                 var stockCardsToDisplay = [];
@@ -535,21 +512,6 @@ services.factory('VaccineOrderRequisitionProgramProduct', function ($resource) {
     return $resource('/vaccine/orderRequisition/:programId.json', {programId: '@programId'}, {});
 });
 
-
-
 services.factory('StockRequirements', function ($resource) {
-
-    return $resource(
-        '/rest-api/facility/:facilityId/program/:programId/stockRequirements.json',
-        {facilityId: '@facilityId', programId: '@programId'},
-        {
-            'get': {
-                method: 'GET',
-                transformResponse: function (data) {
-                    return angular.fromJson(data);
-                },
-                isArray: true //since list property is an array
-            }
-        }
-    );
+    return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements.json',{facilityId: '@facilityId', programId: '@programId'},{});
 });
