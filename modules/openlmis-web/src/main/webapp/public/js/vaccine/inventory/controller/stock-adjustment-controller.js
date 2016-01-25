@@ -228,11 +228,11 @@ StockAdjustmentController.resolve = {
             }, 100);
             return deferred.promise;
          },
-        configurations:function($q, $timeout, VaccineInventoryConfigurations) {
+        configurations:function($q, $timeout, AllVaccineInventoryConfigurations) {
                      var deferred = $q.defer();
                      var configurations={};
                      $timeout(function () {
-                        VaccineInventoryConfigurations.get(function(data)
+                        AllVaccineInventoryConfigurations.get(function(data)
                         {
                               configurations=data;
                               deferred.resolve(configurations);
