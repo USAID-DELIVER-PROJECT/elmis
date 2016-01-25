@@ -237,7 +237,7 @@
                                     <tbody>
                                     <tr ng-repeat="vc in vaccineCoverage">
                                         <td style="text-align: center; vertical-align: middle;">{{vc.product_name}}</td>
-                                        <td class="number">{{vc.display_name}}</td>
+                                        <td>{{vc.display_name}}</td>
                                         <td class="number">{{vc.within_male | number}}</td>
                                         <td class="number">{{vc.within_female | number}}</td>
                                         <td class="number">{{vc.within_total | number}}</td>
@@ -412,7 +412,7 @@
                                         </td>
 
                                         <td class="number">{{vc.days_stocked_out | number}}</td>
-                                        <td class="number">{{vc.children_immunized | number}}</td>
+                                        <td class="number">{{vc.vaccinated | number}}</td>
                                         <td class="number">{{vc.usage_rate | number:0}}%</td>
                                         <td class="number">{{vc.wastage_rate | number:0}}%</td>
                                     </tr>
@@ -464,7 +464,7 @@
                                         <td class="number">{{sy.opening_balanace | number}}</td>
                                         <td class="number">{{sy.quantity_received | number}}</td>
                                         <td class="number">{{sy.quantity_issued | number}}</td>
-                                        <td class="number">{{ sy.quantity_wasted_other | number}}</td>
+                                        <td class="number">{{ sy.quantity_discarded_unopened | number}}</td>
                                         <td class="number">{{sy.closing_balance | number}}</td>
                                         <td class="number">{{sy.days_stocked_out | number}}</td>
                                     </tr>
@@ -510,7 +510,7 @@
                                         <td class="number">{{vit.opening_balanace | number}}</td>
                                         <td class="number">{{vit.quantity_received | number}}</td>
                                         <td class="number">{{vit.quantity_issued | number}}</td>
-                                        <td class="number">{{vit.quantity_wasted_other | number}}</td>
+                                        <td class="number">{{vit.quantity_discarded_unopened | number}}</td>
                                         <td class="number">{{vit.closing_balance | number}}</td>
                                     </tr>
 

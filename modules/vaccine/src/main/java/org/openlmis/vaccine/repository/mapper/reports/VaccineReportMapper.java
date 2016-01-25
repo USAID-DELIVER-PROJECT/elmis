@@ -268,16 +268,17 @@ public interface VaccineReportMapper {
             " order by tp.category_id  \n")
     List<HashMap<String, Object>> getTargetPopulationAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
-    @Select("Select age_group AS ageGroup, vitamin_name AS vitaminName, male_value AS maleValue, female_value AS femaleValue from vw_vaccine_vitamin_supplementation where report_id = #{reportId}")
+    @Select("Select age_group AS ageGroup, vitamin_name AS vitaminName, male_value AS maleValue, female_value AS femaleValue from vw_vaccine_vitamin_supplementation where report_id = #{reportId} order by age_group_display_order")
     List<VitaminSupplementationLineItem> getVitaminSupplementationReport(@Param("reportId") Long reportId);
 
     @Select("Select MAX(age_group) AS ageGroup,\n" +
             "MAX(vitamin_name) AS vitaminName,\n" +
+            "MAX(age_group_display_order) AS age_group_display_order,\n" +
             "SUM(COALESCE(male_value, 0)) AS maleValue,\n" +
             "SUM(COALESCE(female_value,0)) AS femaleValue\n" +
             "from vw_vaccine_vitamin_supplementation\n" +
             "join vw_districts d ON d.district_id = geographic_zone_id\n" +
-            "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} )\n")
+            "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} ) order by age_group_display_order\n")
     List<VitaminSupplementationLineItem> getVitaminSupplementationAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select COALESCE(fr.quantity_issued, 0) quantity_issued, COALESCE(fr.closing_balance, 0) closing_balance, pp.name period_name \n" +
