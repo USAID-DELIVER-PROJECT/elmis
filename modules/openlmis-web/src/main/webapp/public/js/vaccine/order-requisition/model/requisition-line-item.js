@@ -3,7 +3,7 @@ var OrderRequisitionLineItem = function(stockCards,report){
     $.extend(this, stockCards);
 
     OrderRequisitionLineItem.prototype.getQuantityToRequest = function() {
-       var quantity = (this.getMaximumStock() - Number(parseInt(this.stockOnHand,10)) );
+       var quantity = (this.maximumStock - Number(parseInt(this.stockOnHand,10)) );
            this.quantityRequested = quantity;
         return quantity;
 
