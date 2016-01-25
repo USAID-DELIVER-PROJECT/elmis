@@ -94,14 +94,14 @@ public class RequisitionCellFactory {
         result.add(pdfPCell);
         break;
       case NUMERIC:
-        if(!columnValue.isEmpty() && NumberUtils.isNumber(columnValue.toString()))
-          result.add(numberCell(formatter.format(Double.parseDouble(columnValue.toString())).toString()));
+        if(!columnValue.isEmpty() && NumberUtils.isNumber(columnValue))
+          result.add(numberCell(formatter.format(Double.parseDouble(columnValue)).toString()));
         else
           result.add(numberCell(columnValue));
         break;
       case CURRENCY:
-        if(!columnValue.isEmpty() && NumberUtils.isNumber(columnValue.toString()))
-          result.add(numberCell(currency + moneyFormatter.format(Double.parseDouble(columnValue.toString())).toString()));
+        if(!columnValue.isEmpty() && NumberUtils.isNumber(columnValue))
+          result.add(numberCell(currency + moneyFormatter.format(Double.parseDouble(columnValue)).toString()));
         else
           result.add(numberCell(currency));
           break;
