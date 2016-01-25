@@ -340,8 +340,9 @@ vaccine.controller("StockModuleController",function($scope,$http,$location,$rout
         };
 
     $scope.editPackage = function(id,packageObject){
-        console.log(id);
-        $scope.editPackage = {};
+
+        //$scope.package = packageObject;
+        //console.log($scope.package);
         //$scope.viewForm = false;
         //$scope.editForm = true;
         //$scope.viewTable = false;
@@ -349,16 +350,16 @@ vaccine.controller("StockModuleController",function($scope,$http,$location,$rout
         jQuery(editForm).show();
         jQuery(viewForm).hide();
         $scope.package = packageObject;
-
-        $scope.editPackage.delivery_status= 'pending';
+        //
+        $scope.package.delivery_status= 'pending';
         //$scope.editPackage.expire_date= formatDate(packageObject.expire_date);
-        $scope.editPackage.lot_number= packageObject.lot_number;
+        $scope.package.lot_number= packageObject.lot_number;
         //$scope.editPackage.manufacture_date= Date(formatDate(packageObject.manufacture_date));
-        $scope.editPackage.number_of_doses= packageObject.number_of_doses;
-        $scope.editPackage.purchasing_order_number= "order";
-        $scope.editPackage.shipment_id= packageObject.shipment_id;
-        $scope.editPackage.vaccine_packaging= null;
-        $scope.editPackage.vaccine_packaging_id= packageObject.vaccine_packaging_id;
+        $scope.package.number_of_doses= packageObject.number_of_doses;
+        $scope.package.purchasing_order_number= "order";
+        $scope.package.shipment_id= packageObject.shipment_id;
+        $scope.package.vaccine_packaging= null;
+        $scope.package.vaccine_packaging_id= packageObject.vaccine_packaging_id;
 
         $scope.fecthPackages();
 
@@ -568,10 +569,18 @@ vaccine.controller("StockPackageController",function($scope,$http) {
     $scope.editPackageInfo = function(id,packages){
         $scope.showTable = false;
         $scope.showEdit = true;
-        $scope.data.package = packages;
-        package.vaccine_id = packages.vaccine.id;
-        package.manufacturer_id = packages.manufacturer.id;
+        $scope.data.package = {};
+        $scope.data.package.vaccine_id = packages.productid;
+        $scope.data.package.id = id;
+        $scope.data.package.gtin = packages.gtin;
+        $scope.data.package.manufacturer_id = packages.manufacturename;
+        $scope.data.package.doses_per_vial = packages.dosespervial;
+        $scope.data.package.vials_per_box = packages.vialsperbox;
+        $scope.data.package.boxes_per_box = packages.boxesperbox;
+        //package.vaccine_id = packages.vaccine.id;
+        //package.manufacturer_id = packages.manufacturer.id;
     };
+
 
    //display the add table
     $scope.adding = false;
@@ -579,6 +588,39 @@ vaccine.controller("StockPackageController",function($scope,$http) {
         $scope.adding = true;
         packages.status = '';
         $scope.packageToAdd = {
+            "gtin": packages.gtin,
+            "productid":packages.vaccine_id,
+            "manufacturename":packages.manufacturer_id,
+            "dosespervial":packages.doses_per_vial,
+            "vialsperbox": packages.vials_per_box,
+            "boxesperbox":packages.boxes_per_box,
+            "createdBy":$scope.current_user.id
+        };
+        packages.country_id = 1;
+        $http.post('/vaccine/gitn_lookup/save',$scope.packageToAdd). success(function(data) {
+            $http.get('/vaccine/gitn_lookup/all').
+                success(function(data) {
+                    $scope.gtin_lookups = data.gitn_lookup;
+                    $scope.data.vaccine_packages = data.gitn_lookup;
+                    $scope.adding = false;
+                }).
+                error(function(data) {
+                    console.log("Error:" + data);
+                });
+            $scope.cancelAdd();
+        }). error(function(data) {
+            console.log("Error:" + data);
+        });
+    };
+
+   //updating data
+    $scope.adding = false;
+    $scope.updatePackage = function(packages){
+        console.log(packages);
+        $scope.adding = true;
+        packages.status = '';
+        $scope.packageToAdd = {
+            "id":packages.id,
             "gtin": packages.gtin,
             "productid":packages.vaccine_id,
             "manufacturename":packages.manufacturer_id,
@@ -655,7 +697,6 @@ vaccine.controller("StockReceiveController",function($scope,$http){
     $scope.data = {};
     $scope.current_user = {};
     $scope.data.vaccine_packages = {};
-    $scope.programId = "82";
     $scope.vaccines = [];
     $scope.package = {};
     $scope.package.packing_list ="Yes" ;$scope.package.release_certificate ="Yes" ;$scope.package.invoice ="Yes" ;
@@ -681,6 +722,7 @@ vaccine.controller("StockReceiveController",function($scope,$http){
 
     //get a list of vaccines
     $http.get('/vaccine/inventory/programProducts/programId/'+$scope.programId).success(function(data) {
+        $scope.allProduct = data.programProductList;
         angular.forEach(data.programProductList,function(value){
             if(value.productCategory.name === "Vaccine"){
                 $scope.vaccines.push({'id':value.product.id,'name':value.product.primaryName});
@@ -923,6 +965,7 @@ vaccine.controller("StockReceiveController",function($scope,$http){
         var numberofIetms = 0;
         angular.forEach($scope.data.processed_packages,function(data){
             numberofIetms ++;
+            console.log($scope.current_user);
             $scope.itemStructure = {
                 "id":data.id,
                 "vardetailsid": data.vardetailsid,
@@ -951,9 +994,27 @@ vaccine.controller("StockReceiveController",function($scope,$http){
                 "createdBy": $scope.current_user.userId,
                 "modifiedBy": $scope.current_user.userId
             };
-
+            angular.forEach($scope.allProduct,function(prod){
+               if(data.productid === prod.product.id){
+                   $scope.productCode = prod.product.code;
+               }
+            });
             //send an update for a package
-            $http.post('/vaccine/inventory/lot/create',$scope.lotStructure).
+            var facilityId = $scope.current_user.preferences.DEFAULT_FACILITY;
+            var stockCard  = [{
+                "type": "RECEIPT",
+                "facilityId": facilityId,
+                "productCode": $scope.productCode,
+                "quantity":data.numberofdoses,
+                "lot": {
+                    "lotCode": data.lotnumber,
+                    "manufacturerName": data.packaging.manufacturename,
+                    "expirationDate": data.expiredate
+                }
+            }];
+            console.log(stockCard);
+            //$http.post('/vaccine/inventory/lot/create',$scope.lotStructure).
+            $http.post('/api/v2/facilities/'+facilityId+'/stockCards',stockCard).
                 success(function(data) {
                     console.log(data);
                 }).
@@ -980,12 +1041,11 @@ vaccine.controller("StockReceiveController",function($scope,$http){
                 "deliverystatus":'received',
                 "airwaybill":data.details.airwaybill
             };
-            console.log($scope.packageStructure);
 
             //send an update for a package
             $http.post('/vaccine/var_items/save',$scope.itemStructure).
                 success(function(data) {
-                    console.log(data);
+
                 }).
                 error(function(data) {
                     console.log("Error:" + data);

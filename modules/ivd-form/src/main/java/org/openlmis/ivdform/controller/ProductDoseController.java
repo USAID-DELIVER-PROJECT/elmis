@@ -14,7 +14,7 @@ package org.openlmis.ivdform.controller;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.ivdform.dto.VaccineServiceConfigDTO;
-import org.openlmis.ivdform.service.VaccineProductDoseService;
+import org.openlmis.ivdform.service.ProductDoseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,9 +27,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/vaccine/product-dose/")
 public class ProductDoseController extends BaseController {
 
-  public static final String PROTOCOL = "protocol";
+  private static final String PROTOCOL = "protocol";
+
   @Autowired
-  private VaccineProductDoseService service;
+  private ProductDoseService service;
 
   @RequestMapping(value = "get/{programId}")
   public ResponseEntity<OpenLmisResponse> getProgramProtocol(@PathVariable Long programId) {

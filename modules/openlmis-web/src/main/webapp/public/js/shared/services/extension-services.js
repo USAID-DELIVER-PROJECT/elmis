@@ -366,7 +366,9 @@ services.factory('GetProductsCompleteListForAProgram',function($resource){
 services.factory('ReportProductsByProgram',function($resource){
     return $resource('/reports/program-products/:programId.json',{},{});
 });
-
+services.factory('VaccineProducts',function($resource){
+    return $resource('/vaccine/report/vaccine_products.json',{},{});
+});
 services.factory('GetApprovedProductForFacilityTypeDetail', function($resource){
     return $resource('/facilityApprovedProducts/facilityType/:facilityTypeId/program/:programId/product/:productId',{},{});
 });
@@ -1304,7 +1306,9 @@ services.factory('GetStockOutFacilitiesForProgramPeriodAndProductCode', function
 services.factory('GetVaccineReportPeriodTree',function ($resource){
     return $resource('/reports/vaccineYearSchedulePeriod', {}, {});
 });
-
+services.factory('GetVaccineReportPeriodFlat',function ($resource){
+    return $resource('/reports/vaccineYearSchedulePeriodFlat', {}, {});
+});
 services.factory("ELMISInterface",function($resource)  {
     return   {
         getInterface : function(){

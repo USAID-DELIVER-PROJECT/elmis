@@ -31,28 +31,36 @@ public class VaccineDashboardService {
     @Autowired
     VaccineDashboardRepository repository;
 
-    public HashMap<String, Object> getReportingSummary(){
-        return repository.getReportingSummary();
+    public HashMap<String, Object> getReportingSummary(Long userId){
+        return repository.getReportingSummary(userId);
     }
 
-    public HashMap<String, Object> getReportingDetails(){
-        return repository.getReportingDetails();
+    public List<HashMap<String, Object>> getReportingDetails(Long userId){
+        return repository.getReportingDetails(userId);
     }
 
-    public HashMap<String, Object> getRepairingSummary(){
-        return repository.getRepairingSummary();
+    public HashMap<String, Object> getRepairingSummary(Long userId){
+        return repository.getRepairingSummary(userId);
     }
 
-    public HashMap<String, Object> getRepairingDetails(){
-        return repository.getRepairingDetails();
+    public List<HashMap<String, Object>> getRepairingDetails(Long userId){
+        List<HashMap<String, Object>> repairingDetailList=null;
+        try{
+
+
+        repairingDetailList=repository.getRepairingDetails(userId);
+        }catch (Exception ex){
+System.out.println(" ex "+ ex.getMessage());
+        }
+        return repairingDetailList;
     }
 
-    public HashMap<String, Object> getInvestigatingSummary(){
-        return repository.getInvestigatingSummary();
+    public HashMap<String, Object> getInvestigatingSummary(Long userId){
+        return repository.getInvestigatingSummary(userId);
     }
 
-    public HashMap<String, Object> getInvestigatingDetails(){
-        return repository.getInvestigatingDetails();
+    public List<HashMap<String, Object>> getInvestigatingDetails(Long userId){
+        return repository.getInvestigatingDetails(userId);
     }
 
     public List<HashMap<String, Object>> getMonthlyCoverage(String startDate, String endDate, Long userId, Long product){
@@ -72,6 +80,37 @@ public class VaccineDashboardService {
         return repository.getFacilityCoverageDetails(fromDate,toDate, product, userId);
     }
 
+    public List<HashMap<String, Object>> getFacilitySessions(Long period, Long userId){
+        return repository.getFacilitySessions(period, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilitySessionsDetails(String startDate, String endDate, Long userId){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getFacilitySessionsDetails(fromDate, toDate, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityWastage(Long period, Long product, Long userId){
+        return repository.getFacilityWastage(period, product, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityWastageDetails(String startDate, String endDate, Long product, Long userId){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getFacilityWastageDetails(fromDate, toDate, product, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityDropout(Long period, Long product, Long userId){
+        return repository.getFacilityDropout(period, product, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityDropoutDetails(String startDate, String endDate, Long product, Long userId){
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+
+        return repository.getFacilityDropoutDetails(fromDate,toDate, product, userId);
+    }
 
     public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product){
         return repository.getDistrictCoverage(period, product);

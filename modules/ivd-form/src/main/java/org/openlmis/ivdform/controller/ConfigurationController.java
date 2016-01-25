@@ -13,7 +13,7 @@ package org.openlmis.ivdform.controller;
 
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.ivdform.dto.VaccineServiceConfigDTO;
-import org.openlmis.ivdform.service.VaccineIvdTabVisibilityService;
+import org.openlmis.ivdform.service.TabVisibilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/vaccine/config/")
 public class ConfigurationController {
 
-  public static final String VISIBILITIES = "visibilities";
+  private static final String VISIBILITIES = "visibilities";
 
   @Autowired
-  VaccineIvdTabVisibilityService service;
+  TabVisibilityService service;
 
   @RequestMapping(value = "tab-visibility/{programId}")
   public ResponseEntity<OpenLmisResponse> getProgramTabVisibility(@PathVariable Long programId) {

@@ -787,6 +787,15 @@ public class ReportLookupService {
         return yearList;
     }
 
+    public List<YearSchedulePeriodTree> getVaccineYearSchedulePeriodTreeWithoutSchedule() {
+        List<YearSchedulePeriodTree> yearSchedulePeriodTree = processingPeriodMapper.getVaccineYearSchedulePeriodTree();
+
+
+        return yearSchedulePeriodTree;
+    }
+
+
+
     public Long getCurrentPeriodIdForVaccine() {
         return processingPeriodMapper.getCurrentPeriodIdForVaccine();
     }

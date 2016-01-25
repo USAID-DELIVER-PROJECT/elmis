@@ -14,7 +14,7 @@
   <h2>
     <span openlmis-message="label.vaccine.campaigns"></span>
   </h2>
-  <input ng-disabled="report.status != 'DRAFT'" class="btn btn-primary pull-right" ng-click="showCampaignForm({}, false)" openlmis-message="link.add.new.campaign" type="button"/>
+  <input ng-disabled="!report.editable" class="btn btn-primary pull-right" ng-click="showCampaignForm({}, false)" openlmis-message="link.add.new.campaign" type="button"/>
   <div class="clearfix padding2px"></div>
   <div ng-show="report.campaignLineItems.length > 0">
     <table class="table table-bordered">
@@ -86,7 +86,7 @@
             <span class="label-required">
               *</span>
           </label>
-          <input ng-disabled="report.status != 'DRAFT'" id="name" name="name" ng-model="currentCampaign.name" required type="text"/>
+          <input ng-disabled="!report.editable" id="name" name="name" ng-model="currentCampaign.name" required type="text"/>
         </div>
         <div class="span6">
           <label for="venue">
@@ -94,7 +94,7 @@
             <span class="label-required">
               *</span>
           </label>
-          <input ng-disabled="report.status != 'DRAFT'" id="venue" name="venue" ng-model="currentCampaign.venue" required type="text"/>
+          <input ng-disabled="!report.editable" id="venue" name="venue" ng-model="currentCampaign.venue" required type="text"/>
         </div>
       </div>
 
@@ -105,7 +105,7 @@
             <span class="label-required">
               *</span>
           </label>
-          <input ng-disabled="report.status != 'DRAFT'" ng-model="currentCampaign.startDate" ng-required="true" readonly required type="text" ui-date-format="yy-mm-dd" ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"/>
+          <input ng-disabled="!report.editable" ng-model="currentCampaign.startDate" ng-required="true" readonly required type="text" ui-date-format="yy-mm-dd" ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"/>
         </div>
         <div class="span6">
           <label>
@@ -113,7 +113,7 @@
             <span class="label-required">
               *</span>
           </label>
-          <input ng-disabled="report.status != 'DRAFT'" ng-model="currentCampaign.endDate" ng-required="true" readonly required type="text" ui-date-format="yy-mm-dd" ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"/>
+          <input ng-disabled="!report.editable" ng-model="currentCampaign.endDate" ng-required="true" readonly required type="text" ui-date-format="yy-mm-dd" ui-date="{dateFormat: 'dd/mm/yy', minDate: report.period.stringStartDate, maxDate: 'today', changeYear: false}"/>
         </div>
       </div>
 
@@ -124,7 +124,7 @@
             <span class="label-required">
               *</span>
           </label>
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="currentCampaign.childrenVaccinated" numeric-validator="positiveInteger" required type="text">
+          <input ng-disabled="!report.editable" maxlength="8" ng-model="currentCampaign.childrenVaccinated" numeric-validator="positiveInteger" required type="text">
         </div>
         <div class="span6">
           <label>
@@ -132,7 +132,7 @@
             <span class="label-required">
               *</span>
           </label>
-          <input ng-disabled="report.status != 'DRAFT'" maxlength="8" ng-model="currentCampaign.pregnantWomanVaccinated" numeric-validator="positiveInteger" required type="text">
+          <input ng-disabled="!report.editable" maxlength="8" ng-model="currentCampaign.pregnantWomanVaccinated" numeric-validator="positiveInteger" required type="text">
         </div>
       </div>
 
@@ -141,7 +141,7 @@
           <label>
             <span openlmis-message="label.vaccine.campaign.other.objectives"></span>
           </label>
-          <textarea ng-disabled="report.status != 'DRAFT'" ng-model="currentCampaign.otherObjectives" type="text"></textarea>
+          <textarea ng-disabled="!report.editable" ng-model="currentCampaign.otherObjectives" type="text"></textarea>
         </div>
       </div>
       <div class="clearfix"></div>
@@ -149,7 +149,7 @@
     </div>
     <div class="modal-footer">
       <div>
-        <input ng-disabled="report.status != 'DRAFT'" class="btn btn-primary" href="" id="addCampaign" ng-click="applyCampaign()" ng-disabled="campaignForm.$invalid" openlmis-message="button.save" type="button"/>
+        <input ng-disabled="!report.editable" class="btn btn-primary" href="" id="addCampaign" ng-click="applyCampaign()" ng-disabled="campaignForm.$invalid" openlmis-message="button.save" type="button"/>
 
         <input class="btn btn-primary" href="" ng-click="closeCampaign();" openlmis-message="button.cancel" type="button"/>
 

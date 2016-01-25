@@ -22,10 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -34,8 +31,10 @@ import java.util.Date;
 @RequestMapping(value = "/vaccine/report/")
 public class IvdFormController extends BaseController {
 
-  public static final String PERIODS = "periods";
-  public static final String REPORT = "report";
+  private static final String PERIODS = "periods";
+  private static final String REPORT = "report";
+  private static final String PENDING_SUBMISSIONS = "pending_submissions";
+
   @Autowired
   IvdFormService service;
 
@@ -73,7 +72,7 @@ public class IvdFormController extends BaseController {
   }
 
   @RequestMapping(value = "get/{id}.json", method = RequestMethod.GET)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD, VIEW_IVD')")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD, VIEW_IVD, APPROVE_IVD')")
   public ResponseEntity<OpenLmisResponse> getReport(@PathVariable Long id) {
     return OpenLmisResponse.response(REPORT, service.getById(id));
   }
@@ -89,6 +88,26 @@ public class IvdFormController extends BaseController {
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> submit(@RequestBody VaccineReport report, HttpServletRequest request) {
     service.submit(report, loggedInUserId(request));
+    return OpenLmisResponse.response(REPORT, report);
+  }
+
+  @RequestMapping(value = "approval-pending")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
+  public ResponseEntity<OpenLmisResponse> pendingForApproval(@RequestParam("program") Long programId, HttpServletRequest request){
+    return OpenLmisResponse.response(PENDING_SUBMISSIONS, service.getApprovalPendingForms(this.loggedInUserId(request), programId));
+  }
+
+  @RequestMapping(value = "approve")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
+  public ResponseEntity<OpenLmisResponse> approve(@RequestBody VaccineReport report, HttpServletRequest request) {
+    service.approve(report, loggedInUserId(request));
+    return OpenLmisResponse.response(REPORT, report);
+  }
+
+  @RequestMapping(value = "reject")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
+  public ResponseEntity<OpenLmisResponse> reject(@RequestBody VaccineReport report, HttpServletRequest request) {
+    service.reject(report, loggedInUserId(request));
     return OpenLmisResponse.response(REPORT, report);
   }
 

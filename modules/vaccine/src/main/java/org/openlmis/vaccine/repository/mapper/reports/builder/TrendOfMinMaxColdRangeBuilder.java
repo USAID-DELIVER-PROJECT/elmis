@@ -43,16 +43,16 @@ public class TrendOfMinMaxColdRangeBuilder {
 
         SELECT("    tr.period_start_date");
         SELECT("   min( tr.mintemp) mintemp");
-        SELECT("   max( tr.maxtemp) maxtemp")  ;
+        SELECT("   max( tr.maxtemp) maxtemp");
         SELECT("   min( tr.minepisodetemp) minepisodetemp");
         SELECT("   max( tr.maxepisodetemp ) maxepisodetemp");
         FROM(" vw_vaccine_cold_chain tr");
         JOIN(" vw_districts d ON tr.geographic_zone_id = d.district_id");
         JOIN(" geographic_zones gz ON gz.id = d.district_id");
-      JOIN(" vw_vaccine_target_population vt ON tr.facility_id =  vt.facility_id and vt.year = extract(year from tr.period_start_date)  and vt.geographic_zone_id = gz.id and vt.category_id = 1");
+        JOIN(" vw_vaccine_target_population vt ON tr.facility_id =  vt.facility_id and vt.year = extract(year from tr.period_start_date)  and vt.geographic_zone_id = gz.id and vt.category_id = 1");
         WHERE("tr.status= 'Functional'");
         writePredicates(filter);
-GROUP_BY("1,2,3,4,5,6");
+        GROUP_BY("1,2,3,4,5,6");
         ORDER_BY(" 1,2,3,4,5");
         query = SQL();
         return query;
@@ -84,7 +84,7 @@ GROUP_BY("1,2,3,4,5,6");
 
 
         SELECT("   min( tr.mintemp) mintemp");
-        SELECT("   max( tr.maxtemp) maxtemp")  ;
+        SELECT("   max( tr.maxtemp) maxtemp");
         SELECT("   min( tr.minepisodetemp) minepisodetemp");
         SELECT("   max( tr.maxepisodetemp ) maxepisodetemp");
         FROM(" vw_vaccine_cold_chain tr");
@@ -122,7 +122,7 @@ GROUP_BY("1,2,3,4,5,6");
         SELECT("    tr.period_start_date");
         SELECT(" sum(vt.target_value_monthly) targetpopulation");
         SELECT("   min( tr.mintemp) mintemp");
-        SELECT("   max( tr.maxtemp) maxtemp")  ;
+        SELECT("   max( tr.maxtemp) maxtemp");
         SELECT("   min( tr.minepisodetemp) minepisodetemp");
         SELECT("   max( tr.maxepisodetemp ) maxepisodetemp");
         FROM(" vw_vaccine_cold_chain tr");
@@ -145,6 +145,65 @@ GROUP_BY("1,2,3,4,5,6");
 
 //    discuss why product id is not part of the view
 //    WHERE(PerformanceByDropOutRateHelper.isFilteredProductId("tr.product_id"));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredGeographicZoneId("d.parent", "d.region_id", "d.district_id"));
+
+
+    }
+/*
+
+ */
+    public static String getFacilityVaccineTargetInformation(Map params) {
+        String query = "";
+        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
+        BEGIN();
+        SELECT(" d.region_name");
+        SELECT("   d.district_name");
+        SELECT("    f.name facility_name");
+        SELECT(" vt.target_value_monthly targetpopulation");
+        FROM(" vw_vaccine_target_population vt ");
+        JOIN(" geographic_zones gz ON gz.id = vt.geographic_zone_id");
+        JOIN(" vw_districts d ON vt.geographic_zone_id = d.district_id ");
+        JOIN(" facilities f on f.id=vt.facility_id");
+        writePopulationPredicts(filter);
+        GROUP_BY(" 1,2,3,4 ");
+        query = SQL();
+        return query;
+    }
+    public static String getDistrictVaccineTargetInformation(Map params) {
+        String query = "";
+        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
+        BEGIN();
+        SELECT(" d.region_name");
+        SELECT("   d.district_name");
+
+        SELECT(" sum( vt.target_value_monthly) targetpopulation");
+        FROM(" vw_vaccine_target_population vt ");
+        JOIN(" geographic_zones gz ON gz.id = vt.geographic_zone_id");
+        JOIN(" vw_districts d ON vt.geographic_zone_id = d.district_id ");
+        writePopulationPredicts(filter);
+        GROUP_BY(" 1,2 ");
+        query = SQL();
+        return query;
+    }
+    public static String getRegionVaccineTargetInformation(Map params) {
+        String query = "";
+        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
+        BEGIN();
+        SELECT(" d.region_name");
+
+        SELECT(" sum( vt.target_value_monthly) targetpopulation");
+        FROM(" vw_vaccine_target_population vt ");
+        JOIN(" geographic_zones gz ON gz.id = vt.geographic_zone_id");
+        JOIN(" vw_districts d ON vt.geographic_zone_id = d.district_id ");
+        writePopulationPredicts(filter);
+        GROUP_BY(" 1 ");
+        query = SQL();
+        return query;
+    }
+    private static void writePopulationPredicts(PerformanceByDropoutRateParam param) {
+        WHERE(" vt.program_id = (SELECT id FROM programs p WHERE p.enableivdform = TRUE )");
+        WHERE(" vt.category_id=(select id from demographic_estimate_categories c where c.name='Population')");
+        WHERE(PerformanceByDropOutRateHelper.isFilteredByYearFromPeriodStart("vt.year"));
         WHERE(PerformanceByDropOutRateHelper.isFilteredGeographicZoneId("d.parent", "d.region_id", "d.district_id"));
 
 

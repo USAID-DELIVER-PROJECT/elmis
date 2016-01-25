@@ -39,8 +39,8 @@ public class ReportsCommonUtilService {
     public static final String HIGHER = "4_dropoutGreaterThanHigh";
     public static final String TEMP_MIN = "1_temp_min_less";
     public static final String TEMP_GREATER_MIN = "2_temp_min_greater";
-    public static final String MIN_TEMP_RECORDED = "3_min_temp_recorded";
-    public static final String MAX_TEMP_RECORDED = "4_max_temp_recorded";
+    public static final String MIN_TEMP_RECORDED = "7_min_temp_recorded";
+    public static final String MAX_TEMP_RECORDED = "8_max_temp_recorded";
     public static final String ALARM_EPISODES_LESS_MIN = "5_alarm_episode_less_min";
     public static final String ALARM_EPISODES_GREATER_MIN = "6_alarm_episode_greater_min";
 

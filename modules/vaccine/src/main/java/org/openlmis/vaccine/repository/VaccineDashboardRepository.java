@@ -11,6 +11,7 @@
  */
 package org.openlmis.vaccine.repository;
 
+import org.apache.ibatis.annotations.Param;
 import org.openlmis.vaccine.repository.mapper.VaccineDashboardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,28 +26,28 @@ public class VaccineDashboardRepository {
     @Autowired
     VaccineDashboardMapper mapper;
 
-    public HashMap<String, Object> getReportingSummary(){
-        return mapper.getReportingSummary();
+    public HashMap<String, Object> getReportingSummary(  Long user){
+        return mapper.getReportingSummary(user);
     }
 
-    public HashMap<String, Object> getReportingDetails(){
-        return mapper.getReportingDetails();
+    public List<HashMap<String, Object>> getReportingDetails(Long userId){
+        return mapper.getReportingDetails(userId);
     }
 
-    public HashMap<String, Object> getRepairingSummary(){
-        return mapper.getRepairingSummary();
+    public HashMap<String, Object> getRepairingSummary(Long userId){
+        return mapper.getRepairingSummary( userId);
     }
 
-    public HashMap<String, Object> getRepairingDetails(){
-        return mapper.getRepairingDetails();
+    public List<HashMap<String, Object>> getRepairingDetails(Long userId){
+        return mapper.getRepairingDetails(userId);
     }
 
-    public HashMap<String, Object> getInvestigatingSummary(){
-        return mapper.getInvestigatingSummary();
+    public HashMap<String, Object> getInvestigatingSummary(Long userId){
+        return mapper.getInvestigatingSummary(userId);
     }
 
-    public HashMap<String, Object> getInvestigatingDetails(){
-        return mapper.getInvestigatingDetails();
+    public List<HashMap<String, Object>> getInvestigatingDetails(Long userId){
+        return mapper.getInvestigatingDetails(userId);
     }
 
     public List<HashMap<String, Object>> getMonthlyCoverage(Date startDate, Date endDate,Long userId, Long product){
@@ -63,6 +64,27 @@ public class VaccineDashboardRepository {
     public List<HashMap<String, Object>> getFacilityCoverageDetails(Date startDate, Date endDate, Long productId, Long userId){
         return mapper.getFacilityCoverageDetails(startDate, endDate, productId, userId);
     }
+
+    public List<HashMap<String, Object>> getFacilitySessions(Long period, Long userId){
+        return mapper.getFacilitySessions(period, userId);
+    }
+    public List<HashMap<String, Object>> getFacilitySessionsDetails(Date startDate, Date endDate, Long userId){
+        return mapper.getFacilitySessionsDetails(startDate, endDate, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityWastage(Long period, Long product, Long userId){
+        return mapper.getFacilityWastage(period, product, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityWastageDetails(Date startDate, Date endDate, Long productId, Long userId){
+        return mapper.getFacilityWastageDetails(startDate, endDate, productId, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityDropout(Long period, Long product, Long userId){
+        return mapper.getFacilityDropout(period, product, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityDropoutDetails(Date startDate, Date endDate, Long productId, Long userId){
+        return mapper.getFacilityDropoutDetails(startDate, endDate, productId, userId);
+    }
+
     public List<HashMap<String, Object>> getMonthlyWastage(Date startDate, Date endDate, Long productId){
         return mapper.getMonthlyWastage(startDate, endDate, productId);
     }

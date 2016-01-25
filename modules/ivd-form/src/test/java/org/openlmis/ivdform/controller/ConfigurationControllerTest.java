@@ -20,7 +20,7 @@ import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.ivdform.domain.config.VaccineIvdTabVisibility;
 import org.openlmis.ivdform.dto.VaccineServiceConfigDTO;
-import org.openlmis.ivdform.service.VaccineIvdTabVisibilityService;
+import org.openlmis.ivdform.service.TabVisibilityService;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class ConfigurationControllerTest {
 
   @Mock
-  VaccineIvdTabVisibilityService service;
+  TabVisibilityService service;
 
   @InjectMocks
   ConfigurationController controller;

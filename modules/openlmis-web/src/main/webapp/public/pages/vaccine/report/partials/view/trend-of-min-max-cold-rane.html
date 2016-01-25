@@ -29,10 +29,7 @@
                     class="break"></span>
             </h2>
             <div class="box-icon">
-                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
-                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
-                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
-                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+
             </div>
         </div>
         <div>
@@ -273,13 +270,11 @@
                     <td
                             ng-style="{'width':'40px','background-color': getBackGroundColorSummary(row.rangeName)}"
                             ng-repeat="column in columnVals track by $index">
-                                    <span  ng-if="row.coldRangeColumnValues[$index].value>0"
+                                    <span
                                           ng-bind="row.coldRangeColumnValues[$index].value">
 
                                     </span>
-                                     <span ng-if="row.coldRangeColumnValues[$index].value==0">
-                                        -
-                                    </span>
+
                     </td>
 
                 </tr>
@@ -452,13 +447,11 @@
 
                     <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}"
                         ng-repeat="column in columnVals track by $index">
-                                    <span ng-if="row.coldRangeColumnValues[$index].value>0"
+                                    <span
                                           ng-bind="row.coldRangeColumnValues[$index].value">
 
                                     </span>
-                                     <span ng-if="row.coldRangeColumnValues[$index].value==0">
-                                        -
-                                    </span>
+
                     </td>
 
                 </tr>

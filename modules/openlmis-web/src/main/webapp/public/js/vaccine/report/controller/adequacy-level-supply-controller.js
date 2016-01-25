@@ -22,6 +22,13 @@ function AdequacyLevelOfSupplyController($scope, $routeParams, AdequacyLevelOfSu
     var isFixTableInitialized = false;
 
 
+    var DISTRICT_AGGREGATE_UPPER_TRESHOLD = 150;
+    var DISTRICT_AGGREGATE_LOWER_TRESHOLD = 100;
+    var REGION_AGGREGATE_UPPER_TRESHOLD = 150;
+    var REGION_AGGREGATE_LOWER_TRESHOLD = 100;
+    var reportdataKeys =  ["supplied_over_needs", "mos", "consumption_rate", "wasted_opened", "wasted_unopened", "wasted_global"];
+    var ABOVE = 'ABOVE', BELOW = 'BELOW';
+
     $scope.OnFilterChanged = function () {
 
         // prevent first time loading
@@ -45,20 +52,21 @@ function AdequacyLevelOfSupplyController($scope, $routeParams, AdequacyLevelOfSu
                      $scope.periodCols = data.adequaceyLevel.summaryPeriodLists;
 
 
-                var uniqueDistr = _.uniq(_.pluck($scope.datarows, 'district_name'));
-                $scope.districtReport = formatReportTablesData(uniqueDistr, $scope.datarows, 'district');
+                $scope.uniqueDistr = _.uniq(_.pluck($scope.datarows, 'district_name'));
+                $scope.districtReport = formatReportTablesData($scope.uniqueDistr, $scope.datarows, 'district');
 
-                var uniqueRegions = _.uniq(_.pluck($scope.datarowsByRegion, 'region_name'));
-                $scope.regionalReport = formatReportTablesData(uniqueRegions, $scope.datarowsByRegion, 'region');
+                $scope.uniqueRegions = _.uniq(_.pluck($scope.datarowsByRegion, 'region_name'));
+                $scope.regionalReport = formatReportTablesData($scope.uniqueRegions, $scope.datarowsByRegion, 'region');
 
-                $scope.rowOneAggregate = generateMainReportAggregateData($scope.districtReport, 150, 'ABOVE');
-                $scope.rowTwoAggregate = generateMainReportAggregateData($scope.districtReport, 100, 'BELOW');
+                $scope.rowOneAggregate =   generateMainReportAggregateData($scope.districtReport, DISTRICT_AGGREGATE_UPPER_TRESHOLD,    ABOVE);
+                $scope.rowTwoAggregate =   generateMainReportAggregateData($scope.districtReport, DISTRICT_AGGREGATE_LOWER_TRESHOLD,    BELOW);
+                $scope.rowThreeAggregate = generateMainReportRegionalAggregateData($scope.districtReport, REGION_AGGREGATE_UPPER_TRESHOLD,    ABOVE);
+                $scope.rowFourAggregate =  generateMainReportRegionalAggregateData($scope.districtReport, REGION_AGGREGATE_LOWER_TRESHOLD,    BELOW);
 
                if(!isFixTableInitialized) {
                    setTimeout(function () {
                        $("#fixTableDistrict").tableHeadFixer({"foot": true, "head": true, left: 4});
                        $("#fixTableRegion").tableHeadFixer({"foot": true, "head": true, left: 2});
-                       listener();
                    }, 0);
                }
                 isFixTableInitialized = true;
@@ -67,20 +75,53 @@ function AdequacyLevelOfSupplyController($scope, $routeParams, AdequacyLevelOfSu
 
         function generateMainReportAggregateData(reportData, threshold, thresholdType){
 
-           var reportdataKeys =  ["supplied_over_needs", "mos", "consumption_rate", "wasted_opened", "wasted_unopened", "wasted_global"];
-
            var aggregateResult = [];
 
              _.each(reportdataKeys, function(key){
 
                  $.merge(aggregateResult, _.map(_.zip.apply(_, _.pluck(reportData, key)), function(pieces) {
-                    return angular.equals(thresholdType,'ABOVE') ? _.reduce(pieces, function(m, p) {
-                        return (_.isNumber(p) ? p : 0) > threshold ? m+1 : m;}, 0) :
-                        _.reduce(pieces, function(m, p) {return (_.isNumber(p) ? p : 0) < threshold ? m+1 : m;}, 0);
+                    return angular.equals(thresholdType, ABOVE) ?
+                        _.reduce(pieces, function(m, p) { return (_.isNumber(p) ? p : 0) > threshold ? m+1 : m; }, 0) :
+                        _.reduce(pieces, function(m, p) { return (_.isNumber(p) && p < threshold) ? m+1 : m--; }, 0);
                 }));
 
             });
             return aggregateResult;
+        }
+
+        function generateMainReportRegionalAggregateData(reportData, threshold, thresholdType){
+
+            var aggregateResult = [];
+
+            _.each(reportdataKeys, function(reportdataKey){
+
+                $.merge(aggregateResult,
+                    _.map(
+                        _.zip.apply(_, regionCountByDataKeyAndThreshold(reportdataKey, threshold, thresholdType)), function(pieces)
+                                {
+                                    return  _.reduce(pieces, function(m, p) { return m+p; }, 0);
+                                }));
+
+            });
+            return aggregateResult;
+        }
+
+        //returns array data of number of regions  with periodic data per each datakey
+        function regionCountByDataKeyAndThreshold(datakey, threshold, thresholdType){
+
+            var temp = [];
+
+            _.each($scope.uniqueRegions, function(region)
+            {
+                temp.push(_.map(_.zip.apply(_, _.pluck(_.where($scope.districtReport, {region_name: region}), datakey)), function(pieces) {
+
+                    return angular.equals(thresholdType, ABOVE) ?
+                        _.reduce(pieces, function(m, p) { return p > threshold ? 1 : m; }, 0) :
+                        _.reduce(pieces, function(m, p) { return p < threshold ? 1 : m; }, 0);
+                }));
+            });
+
+            return temp;
         }
 
         function formatReportTablesData(uniqueDistr, reportDataRows, level){

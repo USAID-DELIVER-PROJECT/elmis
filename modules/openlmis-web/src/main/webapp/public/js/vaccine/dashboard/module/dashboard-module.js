@@ -12,8 +12,7 @@
 angular.module( 'vaccine-dashboard',['openlmis',  'angularCombine','ui.bootstrap','gridshore.c3js.chart','textAngular']).config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.
-        when('/dashboard', {controller: VaccineDashboardController, templateUrl: 'partials/dashboard.html', resolve: VaccineDashboardController.resolve}).
-        otherwise({redirectTo: '/dashboard'});
+        when('/dashboard', {controller: VaccineDashboardController, templateUrl: 'partials/dashboard.html', resolve: VaccineDashboardController.resolve}).otherwise({redirectTo: '/dashboard'});
 }]).config(function(angularCombineConfigProvider) {
     angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');
 });

@@ -15,6 +15,7 @@ package org.openlmis.vaccine.repository.reports;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.ivdform.domain.reports.*;
+import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.mapper.reports.VaccineReportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,12 @@ public class VaccineReportRepository {
   public List<DiseaseLineItem> getDiseaseSurveillanceAggregateReport(Long periodId, Long zoneId){
     return mapper.getDiseaseSurveillanceAggregateByGeoZone(periodId, zoneId);
   }
-
+  public HashMap<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(Long reportId){
+    return mapper.getCumFacilityDiseaseSurveillance(reportId);
+  }
+public HashMap<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateReport(Long periodId, Long zoneId){
+  return mapper.getCumDiseaseSurveillanceAggregateByGeoZone(periodId, zoneId);
+}
   public List<ColdChainLineItem> getColdChain(Long reportId){
     return mapper.getColdChain(reportId);
   }
@@ -164,5 +170,8 @@ public HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport( Lo
     public List<Map<String,Object>> getAdequacyLevelOfSupplyByRegion(Date startDate, Date endDate, Long districtId, Long productId) {
         return mapper.getAdequacyLevelOfSupplyReportDataByRegion(startDate, endDate, districtId, productId);
     }
+ public List<Product> getVaccineProductsList(){
+    return this.mapper.getVaccineProductsList();
+  }
 
 }

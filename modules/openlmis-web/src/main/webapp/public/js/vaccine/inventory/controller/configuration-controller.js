@@ -26,7 +26,7 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
 
     $scope.loadProducts=function(programId){
         VaccineProgramProducts.get({programId:programId},function(data){
-           $scope.allProducts=data.programProductList;
+            $scope.allProducts = data.programProductList;
             VaccineInventoryConfigurations.get(function(configdata)
             {
                 if(configdata.Configurations.length === 0){
@@ -53,7 +53,7 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
                             value.ordering = order1;
                         }
                         value.editing  = false;
-        });
+                    });
                 }else{
                     $scope.usedProducts = data.programProductList;
                     angular.forEach($scope.usedProducts,function(value){
@@ -156,7 +156,7 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
         VaccineInventoryConfigurations.get(function(data)
         {
             $scope.configurations=data.Configurations;
-           updateProductToDisplay($scope.configurations);
+            updateProductToDisplay($scope.configurations);
         });
     };
     $scope.addConfiguration=function(configToAdd)
@@ -191,10 +191,10 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
 
     function updateProductToDisplay(configurationProducts)
     {
-         var toExclude = _.pluck(_.pluck(configurationProducts, 'product'), 'primaryName');
-         $scope.productsToDisplay = $.grep($scope.allProducts, function (productObject) {
-                 return $.inArray(productObject.product.primaryName, toExclude) == -1;
-         });
+        var toExclude = _.pluck(_.pluck(configurationProducts, 'product'), 'primaryName');
+        $scope.productsToDisplay = $.grep($scope.allProducts, function (productObject) {
+            return $.inArray(productObject.product.primaryName, toExclude) == -1;
+        });
     }
 
     if($scope.userPrograms.length > 1)
@@ -212,17 +212,17 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
 
 
     $scope.loadRights = function () {
-            $scope.rights = localStorageService.get(localStorageKeys.RIGHT);
+        $scope.rights = localStorageService.get(localStorageKeys.RIGHT);
     }();
 
     $scope.hasPermission = function (permission) {
-            if ($scope.rights !== undefined && $scope.rights !== null) {
-              var rights = JSON.parse($scope.rights);
-              var rightNames = _.pluck(rights, 'name');
-              return rightNames.indexOf(permission) > -1;
-            }
-            return false;
-     };
+        if ($scope.rights !== undefined && $scope.rights !== null) {
+            var rights = JSON.parse($scope.rights);
+            var rightNames = _.pluck(rights, 'name');
+            return rightNames.indexOf(permission) > -1;
+        }
+        return false;
+    };
 
 }
 VaccineInventoryConfigurationController.resolve = {
@@ -240,17 +240,17 @@ VaccineInventoryConfigurationController.resolve = {
         return deferred.promise;
     },
 
-        configurations:function ($q, $timeout, VaccineInventoryConfigurations) {
-             var deferred = $q.defer();
+    configurations:function ($q, $timeout, VaccineInventoryConfigurations) {
+        var deferred = $q.defer();
         var configurations=[];
 
-            $timeout(function () {
-                VaccineInventoryConfigurations.get({},function(data){
-                     configurations=data;
-                     deferred.resolve(configurations);
-                });
-            }, 100);
-            return deferred.promise;
-        }
+        $timeout(function () {
+            VaccineInventoryConfigurations.get({},function(data){
+                configurations=data;
+                deferred.resolve(configurations);
+            });
+        }, 100);
+        return deferred.promise;
+    }
 
 };

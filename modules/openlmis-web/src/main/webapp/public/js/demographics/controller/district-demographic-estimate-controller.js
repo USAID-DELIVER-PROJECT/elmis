@@ -49,14 +49,16 @@ function DistrictDemographicEstimateController($scope, $dialog, $filter, rights,
   };
 
   $scope.save = function(){
+    $scope.clearMessages();
     SaveDistrictDemographicEstimates.update($scope.form, function(){
       $scope.message = "message.district.demographic.estimates.saved";
-    }, function(data){
-      $scope.error = data.error;
+    }, function(response){
+      $scope.error = response.data.error;
     });
   };
 
   $scope.finalize = function(){
+    $scope.clearMessages();
     var callBack = function (result) {
       if (result) {
         var form = angular.copy($scope.form);
@@ -64,6 +66,8 @@ function DistrictDemographicEstimateController($scope, $dialog, $filter, rights,
         FinalizeDistrictDemographicEstimates.update(form, function (data) {
           $scope.bindEstimates(data);
           $scope.message = 'Estimates are now finalized';
+        }, function(response){
+          $scope.error = response.data.error;
         });
       }
     };
@@ -78,6 +82,7 @@ function DistrictDemographicEstimateController($scope, $dialog, $filter, rights,
   };
 
   $scope.undoFinalize = function(){
+    $scope.clearMessages();
     var callBack = function (result) {
       if (result) {
         var form = angular.copy($scope.form);
@@ -85,6 +90,8 @@ function DistrictDemographicEstimateController($scope, $dialog, $filter, rights,
         UndoFinalizeDistrictDemographicEstimates.update(form, function (data) {
           $scope.bindEstimates(data);
           $scope.message = 'Estimates are now available for editing.';
+        }, function(response){
+          $scope.error = response.data.error;
         });
       }
     };

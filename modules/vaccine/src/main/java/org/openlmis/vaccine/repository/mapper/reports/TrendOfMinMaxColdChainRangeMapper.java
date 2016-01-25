@@ -22,9 +22,7 @@ package org.openlmis.vaccine.repository.mapper.reports;/*
  * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
  */
 
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.openlmis.vaccine.domain.reports.TrendOfMinMaxColdChainTempratureDetail;
 import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
@@ -32,22 +30,50 @@ import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceByDropo
 import org.openlmis.vaccine.repository.mapper.reports.builder.TrendOfMinMaxColdRangeBuilder;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+
 @Repository
 public interface TrendOfMinMaxColdChainRangeMapper {
-    @SelectProvider(type=TrendOfMinMaxColdRangeBuilder.class, method="getTredofMinMaxColdRangeFacilityQuery")
-    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
+    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getTredofMinMaxColdRangeFacilityQuery")
+    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
     public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainTempratureReports(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
-    @SelectProvider(type=TrendOfMinMaxColdRangeBuilder.class, method="getTredofMinMaxColdRangeDistrictQuery")
-    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
+
+    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getTredofMinMaxColdRangeDistrictQuery")
+    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
     public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainTempratureDisrictReports(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
-    @SelectProvider(type=TrendOfMinMaxColdRangeBuilder.class, method="getTredofMinMaxColdRangeRegionQuery")
-    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
+
+    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getTredofMinMaxColdRangeRegionQuery")
+    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
     public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainTempratureRegionReports(
+            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
+    );
+
+    /*
+
+     */
+    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getFacilityVaccineTargetInformation")
+    @MapKey("facility_name")
+    @ResultType(HashMap.class)
+    public HashMap<String,TrendOfMinMaxColdChainTempratureDetail> getFacilityVaccineTargetInformation(
+            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
+    );
+
+    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getDistrictVaccineTargetInformation")
+    @MapKey("district_name")
+    @ResultType(HashMap.class)
+    public HashMap<String,TrendOfMinMaxColdChainTempratureDetail> getDistrictVaccineTargetInformation(
+            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
+    );
+
+    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getRegionVaccineTargetInformation")
+    @MapKey("region_name")
+    @ResultType(HashMap.class)
+    public HashMap<String,TrendOfMinMaxColdChainTempratureDetail> getRegionVaccineTargetInformation(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
 }

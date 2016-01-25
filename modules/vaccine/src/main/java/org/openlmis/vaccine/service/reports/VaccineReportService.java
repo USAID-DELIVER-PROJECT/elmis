@@ -20,6 +20,7 @@ import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
 import org.openlmis.ivdform.domain.reports.*;
+import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.reports.VaccineReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,14 @@ public class VaccineReportService {
 
         return repository.getDiseaseSurveillanceAggregateReport(periodId, zoneId);
     }
+    private HashMap<String,DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+        if (facilityId != null && facilityId != 0) {
 
+            return repository.getCumFacilityDiseaseSurveillance(reportId);
+        }
+
+        return repository.getCumDiseaseSurveillanceAggregateReport(periodId, zoneId);
+    }
     private List<ColdChainLineItem> getColdChain(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
             return repository.getColdChain(reportId);
@@ -181,12 +189,13 @@ public class VaccineReportService {
 
         }
 
-        if (zoneId == -1) {
+        if (zoneId == -1 ||zoneId==0) {
             zoneId = getNationalZoneId();
         }
 
         data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, zoneId));
         data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
+        data.put("cumDiseaseSurveillance", this.getCumulativeDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
         data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
         data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
         data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, zoneId));
@@ -323,5 +332,7 @@ public class VaccineReportService {
         return list;
     }
 
-
+   public List<Product> getVaccineProductsList(){
+        return this.repository.getVaccineProductsList();
+    }
 }
