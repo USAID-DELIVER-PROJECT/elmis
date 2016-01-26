@@ -52,7 +52,7 @@ public class CustomCsvTemplate extends AbstractView {
     int index = 0;
     for(JsonNode n: columns){
       String displayName = n.get("displayName").asText();
-      writer.write(displayName.toString());
+      writer.write(displayName);
       if(index < columns.size() - 1){
         writer.write(",");
       }
@@ -82,7 +82,7 @@ public class CustomCsvTemplate extends AbstractView {
       for(JsonNode col: columns ){
         if( m.containsKey(col.get("name").asText()) && m.get( col.get("name").asText() ) != null ) {
           String colValue = m.get(col.get("name").asText()).toString();
-          writer.write( colValue.toString() );
+          writer.write( colValue );
         }
         if(index < m.values().size() - 1){
           writer.write(",");
