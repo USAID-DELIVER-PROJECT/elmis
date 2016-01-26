@@ -367,6 +367,7 @@ public interface VaccineReportMapper {
             " product_code in (select value from configuration_settings \n" +
             " where key in ('VACCINE_DROPOUT_BCG','VACCINE_DROPOUT_MR','VACCINE_DROPOUT_DTP'))\n" +
             "and i.period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} )\n" +
+            "and i.product_code in ('V001','V010')\n" +
             "group by 1\n" +
             "  order by 1,2")
     List<HashMap<String, Object>> getAggregateDropOuts(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
@@ -391,6 +392,7 @@ public interface VaccineReportMapper {
             " product_code in (select value from configuration_settings \n" +
             " where key in ('VACCINE_DROPOUT_BCG','VACCINE_DROPOUT_MR','VACCINE_DROPOUT_DTP'))\n" +
             "and report_id = #{reportId}\n" +
+            "and i.product_code in ('V001','V010')\n" +
             "group by 1\n" +
             " order by 1,2")
     List<HashMap<String, Object>> getDropOuts(@Param("reportId") Long reportId);
