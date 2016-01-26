@@ -19,7 +19,12 @@ public class IvdRestApi extends BaseController {
   IvdFormService service;
 
   @RequestMapping(value = "stock-status", method = RequestMethod.GET)
-  public ResponseEntity<OpenLmisResponse> getPeriods(@RequestParam("facilityCode") String facilityCode, @RequestParam("productCode") String productCode, @RequestParam("programCode") String programCode, @RequestParam("periodId") Long periodId) {
+  public ResponseEntity<OpenLmisResponse> getProductStockStatus(@RequestParam("facilityCode") String facilityCode, @RequestParam("productCode") String productCode, @RequestParam("programCode") String programCode, @RequestParam("periodId") Long periodId) {
     return OpenLmisResponse.response("status", service.getStockInfoFor(facilityCode, productCode, programCode, periodId));
+  }
+
+  @RequestMapping(value = "facility-stock-status", method = RequestMethod.GET)
+  public ResponseEntity<OpenLmisResponse> getProductFacilityStatus(@RequestParam("facilityCode") String facilityCode, @RequestParam("programCode") String programCode, @RequestParam("periodId") Long periodId) {
+    return OpenLmisResponse.response("status", service.getStockInfoFor(facilityCode, programCode, periodId));
   }
 }

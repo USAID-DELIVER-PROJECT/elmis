@@ -5,13 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StockInfoDto {
-
-  private String facilityCode;
-
-  private String programCode;
+public class StockStatusSummary {
 
   private String productCode;
+
+  private Long productId;
 
   private String status;
 
