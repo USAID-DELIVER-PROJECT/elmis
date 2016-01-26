@@ -81,21 +81,21 @@ public interface VaccineReportMapper {
             "group by disease_name \n")
     List<DiseaseLineItem> getDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
-    @Select("select equipment_type_name as equipmentName, model, minTemp, maxTemp, minEpisodeTemp, maxEpisodeTemp, energy_source as energySource from vw_vaccine_cold_chain \n" +
-            "where report_id = #{reportId}")
+    @Select("select equipment_name as equipmentName, model, minTemp, maxTemp, minEpisodeTemp, maxEpisodeTemp, energy_source as energySource from vw_vaccine_cold_chain \n" +
+            "where report_id = #{reportId} order by 1 ")
     List<ColdChainLineItem> getColdChain(@Param("reportId") Long reportId);
 
-    @Select("select equipment_type_name as equipmentName,\n" +
+    @Select("select equipment_name as equipmentName,\n" +
             "model,\n" +
+            "energy_source as energySource, \n" +
             "MIN(COALESCE(minTemp,0)) minTemp,\n" +
             "MAX(COALESCE(maxTemp,0)) maxTemp,\n" +
-            "SUM(COALESCE(minEpisodeTemp,0)) minEpisodeTemp,\n" +
-            "SUM(COALESCE(maxEpisodeTemp,0)) maxEpisodeTemp,\n" +
-            "MAX(energy_source ) as energySource \n" +
-            "from vw_vaccine_cold_chain \n" +
+            "MIN(COALESCE(minEpisodeTemp,0)) minEpisodeTemp,\n" +
+            "MAX(COALESCE(maxEpisodeTemp,0)) maxEpisodeTemp \n" +
+             "from vw_vaccine_cold_chain \n" +
             "join vw_districts d ON d.district_id = geographic_zone_id\n" +
             "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId})\n" +
-            "group by model, equipment_type_name \n")
+            "group by equipment_name, model, energy_source order by 1\n")
     List<ColdChainLineItem> getColdChainAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select product_name as productName, aefi_expiry_date as expiry, aefi_case as cases, aefi_batch as batch, manufacturer, is_investigated as isInvestigated from vw_vaccine_iefi \n" +
@@ -103,16 +103,16 @@ public interface VaccineReportMapper {
     )
     List<AdverseEffectLineItem> getAdverseEffectReport(@Param("reportId") Long reportId);
 
-    @Select("select MAX(product_name) as productName,\n" +
-            "MAX(aefi_expiry_date) as expiry,\n" +
+    @Select("select product_name as productName, display_order,\n" +
+            "MIN(aefi_expiry_date) as expiry,\n" +
             "SUM(COALESCE(aefi_case,0)) as cases, \n" +
-            "MAX(aefi_batch) as batch,\n" +
-            "MAX(manufacturer) as manufacturer,\n" +
-            "every(is_investigated) as isInvestigated \n" +
+            "null as batch,\n" +
+            "null as manufacturer,\n" +
+            "null as isInvestigated \n" +
             "from vw_vaccine_iefi \n" +
             "join vw_districts d ON d.district_id = geographic_zone_id\n" +
             "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} )\n" +
-            "group by product_code,display_order" +
+            "group by product_name,display_order" +
             " order by display_order ")
     List<AdverseEffectLineItem> getAdverseEffectAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
@@ -242,7 +242,7 @@ public interface VaccineReportMapper {
             "sum(COALESCE(outreachimmunizationsessions, 0)) outreachimmunizationsessions, \n" +
             "sum(COALESCE(outreachimmunizationsessionscanceled, 0)) outreachimmunizationsessionscanceled \n" +
             "FROM vaccine_reports r\n" +
-            "join facilities f on r.facilityid = r.facilityid\n" +
+            "join facilities f on r.facilityid = f.id\n" +
             "join vw_districts d ON d.district_id = f.geographiczoneid\n" +
             "where r.periodid = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} )\n")
     List<VaccineReport> getImmunizationSessionAggregate(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
@@ -272,14 +272,16 @@ public interface VaccineReportMapper {
     @Select("Select age_group AS ageGroup, vitamin_name AS vitaminName, male_value AS maleValue, female_value AS femaleValue from vw_vaccine_vitamin_supplementation where report_id = #{reportId} order by age_group_display_order")
     List<VitaminSupplementationLineItem> getVitaminSupplementationReport(@Param("reportId") Long reportId);
 
-    @Select("Select MAX(age_group) AS ageGroup,\n" +
-            "MAX(vitamin_name) AS vitaminName,\n" +
-            "MAX(age_group_display_order) AS age_group_display_order,\n" +
+    @Select("Select age_group AS ageGroup,\n" +
+            "vitamin_name AS vitaminName,\n" +
+            "age_group_display_order AS age_group_display_order,\n" +
             "SUM(COALESCE(male_value, 0)) AS maleValue,\n" +
             "SUM(COALESCE(female_value,0)) AS femaleValue\n" +
             "from vw_vaccine_vitamin_supplementation\n" +
             "join vw_districts d ON d.district_id = geographic_zone_id\n" +
-            "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} ) order by age_group_display_order\n")
+            "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} ) \n" +
+            "group by 1,2,3\n" +
+            "order by age_group_display_order\n")
     List<VitaminSupplementationLineItem> getVitaminSupplementationAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select COALESCE(fr.quantity_issued, 0) quantity_issued, COALESCE(fr.closing_balance, 0) closing_balance, pp.name period_name \n" +
