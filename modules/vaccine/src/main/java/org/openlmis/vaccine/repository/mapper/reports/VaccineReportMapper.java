@@ -259,15 +259,17 @@ public interface VaccineReportMapper {
             "order by category_id\n")
     List<HashMap<String, Object>> getTargetPopulation(@Param("facilityId") Long facilityId, @Param("periodId") Long periodId);
 
-    @Select(" select tp.category_name,   \n" +
-            " sum(COALESCE(tp.target_value_annual,0)) target_value_annual,  \n" +
-            " round(sum(COALESCE(tp.target_value_annual,0))/12) target_value_monthly  \n" +
-            " from vw_vaccine_target_population tp  \n" +
-            "  join vw_districts d on d.district_id = tp.geographic_zone_id  \n" +
-            " where  tp.year = (select date_part('year'::text, processing_periods.startdate) from processing_periods where id = #{periodId})  \n" +
-            " and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId})  \n" +
-            " group by tp.category_id, tp.category_name  \n" +
-            " order by tp.category_id  \n")
+    @Select("           select tp.category_name,\n" +
+            "             sum(COALESCE(tp.target_value_annual,0)) target_value_annual,   \n" +
+            "             round(sum(COALESCE(tp.target_value_annual,0))/12) target_value_monthly   \n" +
+            "             from vw_vaccine_target_population tp   \n" +
+            "              join vw_districts d on d.district_id = tp.geographic_zone_id\n" +
+            "              join vaccine_reports vr on vr.facilityid = tp.facility_id and vr.programid = tp.program_id            \n" +
+            "             where  tp.year = (select date_part('year'::text, processing_periods.startdate) from processing_periods where id = #{periodId} )  \n" +
+            "             and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId})\n" +
+            "             and vr.periodid = #{periodId}   \n" +
+            "             group by tp.category_id, tp.category_name   \n" +
+            "             order by tp.category_id  \n")
     List<HashMap<String, Object>> getTargetPopulationAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("Select age_group AS ageGroup, vitamin_name AS vitaminName, male_value AS maleValue, female_value AS femaleValue from vw_vaccine_vitamin_supplementation where report_id = #{reportId} order by age_group_display_order")
