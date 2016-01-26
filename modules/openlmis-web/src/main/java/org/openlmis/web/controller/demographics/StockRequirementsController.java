@@ -14,12 +14,14 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.vaccine.dto.StockRequirements;
+import org.openlmis.vaccine.dto.StockRequirements_;
 import org.openlmis.vaccine.service.StockRequirementsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,18 +87,22 @@ public class StockRequirementsController extends BaseController
     @RequestMapping(value = "/rest-api/facility/{facilityId}/program/{programId}/stockRequirements", method = GET, headers = ACCEPT_JSON)
     public ResponseEntity getStockRequirements(@PathVariable Long facilityId, @PathVariable Long programId)
     {
-        List<StockRequirements> stockRequirements = stockRequirementsService.getStockRequirements(facilityId, programId);
+        List<StockRequirements_> stockRequirements = stockRequirementsService.getStockRequirements(facilityId, programId);
        if(stockRequirements == null) {
            return OpenLmisResponse.error("Stock requirements not found. Please ensure that the specified facility exists and is properly configured." , HttpStatus.NOT_FOUND);
        }
-
-        String JSON =  StockRequirements.getJSONArray(stockRequirements);
-        return OpenLmisResponse.response(JSON);
+        return OpenLmisResponse.response("stock_requirements", stockRequirements);
     }
 
     @RequestMapping(value = "/rest-api/facility/{facilityId}/program/{programId}/stockRequirementsData", method = GET, headers = ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> get(@PathVariable("facilityId") Long facilityId, @PathVariable("programId") Long programId, HttpServletRequest request) {
         return OpenLmisResponse.response("stock_requirements", stockRequirementsService.getStockRequirements(facilityId,programId));
+    }
+
+    @RequestMapping(value = "/rest-api/facility/{facilityId}/program/{programId}/refreshStockRequirements", method = GET, headers = ACCEPT_JSON)
+    @Transactional
+    public ResponseEntity<OpenLmisResponse> refreshStockRequrements(@PathVariable("facilityId") Long facilityId, @PathVariable("programId") Long programId, HttpServletRequest request) {
+        return OpenLmisResponse.response("stock_requirements", stockRequirementsService.setStockRequirements(facilityId,programId));
     }
 
 

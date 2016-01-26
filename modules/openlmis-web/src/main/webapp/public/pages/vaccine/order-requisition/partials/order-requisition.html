@@ -79,13 +79,13 @@
                             -->
                         </td>
                         <td class="cell-input">
-                        <span ng-bind="item.getReorderLevel() | number" id="item.reOrderLevel{{$index}}"
+                        <span ng-bind="item.reOrderLevel | number" id="item.reOrderLevel{{$index}}"
                               class="cell-text"></span>
                         </td>
                         <td class="cell-input col-stockAvailable" ng-hide="selectedType==1">
-                        <span class="{{(item.stockOnHand <= item.getBufferStock())?'red':((item.stockOnHand > item.getBufferStock()) && (item.stockOnHand <= item.getReorderLevel())  )?'yellow':
+                        <span class="{{(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
 
-                        ((item.stockOnHand > item.getReorderLevel()) && (item.getReorderLevel() <= item.getMaximumStock()))?green:'black'}}  cell-text"
+                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}}  cell-text"
                               ng-bind="item.stockOnHand | number">
                         </span>
 
@@ -93,9 +93,9 @@
                         </td>
 
                         <td class="cell-input col-stockAvailable" ng-hide="selectedType==0">
-                        <span class="{{(item.getTotalStockOnHand() <= item.getBufferStock())?'red':((item.getTotalStockOnHand() > item.getBufferStock()) && (item.getTotalStockOnHand() <= item.getReorderLevel())  )?'yellow':
-                        ((item.getTotalStockOnHand() > item.getReorderLevel()) && (item.getReorderLevel() <= item.getMaximumStock()))?green:'black'}}  cell-text "
-                              ng-bind="item.getTotalStockOnHand() | number">
+                        <span class="{{(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
+                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}}  cell-text "
+                              ng-bind="item.stockOnHand | number">
                         </span>
 
 

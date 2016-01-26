@@ -115,7 +115,7 @@ services.factory('StockCards', function($resource){
 });
 
 services.factory('Forecast', function($resource){
-    return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements',{facilityId: '@facilityId', programId: '@programId'},{'query':  {method:'GET', isArray:true}});
+    return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements',{facilityId: '@facilityId', programId: '@programId'},{});
 });
 
 services.factory('ProgramProducts',function($resource){
@@ -151,7 +151,7 @@ services.factory('SaveVaccineInventoryConfigurations',function($resource){
 });
 
 services.factory('VaccineInventoryConfigurations',function($resource){
-    return $resource('/vaccine/inventory/configuration/getAll.json',{},{});
+    return $resource('/vaccine/inventory/configuration/getProductConfigurations.json',{},{});
 });
 
 services.factory('ManufacturerList', function ($resource) {
@@ -427,4 +427,20 @@ services.factory('StatuVaccinationSupply', function ($resource) {
 });
 services.factory("SendVaccineMessages",function($resource){
     return $resource('/vaccine/messages/send.json',{}, {post: {method:'POST'}});
+});
+
+services.factory('RefreshStockRequirements', function($resource){
+    return $resource('/rest-api/facility/:facilityId/program/:programId/refreshStockRequirements',{facilityId: '@facilityId', programId: '@programId'},{});
+});
+
+services.factory('AllVaccineInventoryConfigurations',function($resource){
+    return $resource('/vaccine/inventory/configuration/getAll.json',{},{});
+});
+
+services.factory('Lot',function($resource){
+    return $resource('/vaccine/inventory/lot/create.json',{},{create:{method:'PUT'}});
+});
+
+services.factory('FacilityTypeAndProgramProducts',function($resource){
+    return $resource('/vaccine/inventory/programProducts/facilityId/:facilityId/programId/:programId.json',{facilityId:'@facilityId',programId:'@programId'},{});
 });

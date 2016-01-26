@@ -47,10 +47,11 @@
         <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
         <strong><a href="/public/pages/vaccine/inventory/index.html#/receive" openlmis-message="stock.initialize.stock"></a></strong>
     </div>
-<form name="issueForm2" ng-show="stockCardsByCategory.length > 0" novalidate>
+<form name="issueForm" ng-show="stockCardsByCategory.length > 0" novalidate>
     <div>
 
     <ng-include src="'/public/pages/vaccine/inventory/stock-movement/partials/header.html'"></ng-include>
+        <div class="alert alert-danger" ng-show="showNoProductErrorMessage" openlmis-message="error.message.no.product.to.issue"></div>
     <div class="rnr-table" ng-form="issueForm">
 
         <table id="podTable" class="table table-bordered" fixed-table-header>

@@ -53,7 +53,13 @@ public class VaccineInventoryConfigurationController extends BaseController {
     //TODO @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_PROGRAM_PRODUCT')")
     public ResponseEntity<OpenLmisResponse> save(@RequestBody List<VaccineInventoryProductConfiguration> configurations) {
         service.save(configurations);
-        return OpenLmisResponse.response("productConfigurations", service.getAll());
+        return OpenLmisResponse.response("Configurations", service.getAll());
+    }
+
+    @RequestMapping(value = "getProductConfigurations", method = GET, headers = ACCEPT_JSON)
+    //TODO @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_PROGRAM_PRODUCT')")
+    public ResponseEntity<OpenLmisResponse> getAll() {
+        return OpenLmisResponse.response("Configurations", service.getAll());
     }
 
     @RequestMapping(value = "getAll", method = GET, headers = ACCEPT_JSON)
@@ -68,6 +74,5 @@ public class VaccineInventoryConfigurationController extends BaseController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 }
