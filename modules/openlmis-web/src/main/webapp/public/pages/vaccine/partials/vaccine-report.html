@@ -643,10 +643,10 @@
                                         <td>{{cc.equipmentName}}</td>
                                         <td>{{cc.model}}</td>
                                         <td>{{cc.energySource}}</td>
-                                        <td>{{cc.minTemp}}</td>
-                                        <td>{{cc.maxTemp}}</td>
-                                        <td>{{cc.minEpisodeTemp}}</td>
-                                        <td>{{cc.maxEpisodeTemp}}</td>
+                                        <td class="number">{{cc.minTemp}}</td>
+                                        <td class="number">{{cc.maxTemp}}</td>
+                                        <td class="number">{{cc.minEpisodeTemp}}</td>
+                                        <td class="number">{{cc.maxEpisodeTemp}}</td>
                                     </tr>
 
                                     </tbody>
@@ -686,11 +686,11 @@
                                     <tbody>
                                     <tr ng-repeat="ae in adverseEffect">
                                         <td>{{ae.productName}}</td>
-                                        <td>{{ae.cases}}</td>
+                                        <td class="number">{{ae.cases}}</td>
                                         <td>{{ae.batch}}</td>
                                         <td>{{ae.manufacturer}}</td>
                                         <td>{{ae.expiry | date : 'MMM, yyyy'}}</td>
-                                        <td>{{ae.isInvestigated === true ? 'Y' : 'N'}}</td>
+                                        <td>{{ae.isInvestigated === true ? 'Y' : ae.isInvestigated === false ? 'N' : ''}}</td>
 
 
                                     </tr>

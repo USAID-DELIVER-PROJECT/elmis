@@ -32,10 +32,10 @@ public interface VaccineReportMapper {
 
     @Select("select COALESCE(cases, 0) as cases, COALESCE(death, 0) as death, COALESCE(cum_cases, 0) as cumulative, disease_name as diseaseName \n" +
             "from vw_vaccine_disease_surveillance \n" +
-            "where report_id = #{reportId}")
+            "where report_id = #{reportId} order by display_order")
     List<DiseaseLineItem> getDiseaseSurveillance(@Param("reportId") Long reportId);
 
-    @Select("SELECT disease_name as diseaseName,\n" +
+    @Select("SELECT disease_name as diseaseName,display_order,\n" +
             " sum(COALESCE (cases, 0)) AS calculatedCumulativeCases,\n" +
             " sum(COALESCE (death, 0)) AS calculatedCumulativeDeaths\n" +
             "FROM\n" +
@@ -46,12 +46,12 @@ public interface VaccineReportMapper {
             "            and   period_year = (select extract(year from startdate) from processing_periods           \n" +
             "                            where id = (select periodid from vaccine_reports where id =  #{reportId}))\n" +
             " and facility_id=  #{facilityId} \n" +
-            "group by diseaseName")
+            "group by diseaseName, display_order order by display_order")
     @MapKey("diseaseName")
     @ResultType(HashMap.class)
     HashMap<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId );
 
-    @Select("SELECT disease_name as diseaseName,\n" +
+    @Select("SELECT disease_name as diseaseName, display_order,\n" +
             " sum(COALESCE (cases, 0)) AS calculatedCumulativeCases,\n" +
             " sum(COALESCE (death, 0)) AS calculatedCumulativeDeaths\n" +
             "FROM\n" +
@@ -62,7 +62,7 @@ public interface VaccineReportMapper {
             "            and   period_year = (select extract(year from startdate) from processing_periods \n" +
             "                          where id = #{periodId})\n" +
             " and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} ) " +
-            "group by diseaseName")
+            "group by diseaseName, display_order order by display_order")
     @MapKey("diseaseName")
     @ResultType(HashMap.class)
     HashMap<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
@@ -70,7 +70,7 @@ public interface VaccineReportMapper {
     @Select("Select id from vaccine_reports where facilityid = #{facilityId} and periodid = #{periodId}")
     Long getReportIdForFacilityAndPeriod(@Param("facilityId") Long facilityId, @Param("periodId") Long periodId);
 
-    @Select("select disease_name as diseaseName,\n" +
+    @Select("select disease_name as diseaseName, display_order,\n" +
             "SUM(COALESCE(cum_cases,0)) cumulative,\n" +
             "SUM(COALESCE(cum_deaths,0)) calculatedCumulativeDeaths,\n" +
             "SUM(COALESCE(cases, 0)) cases,\n" +
@@ -78,7 +78,7 @@ public interface VaccineReportMapper {
             "from vw_vaccine_disease_surveillance\n" +
             "INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id\n" +
             "where period_id = #{periodId} and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )\n" +
-            "group by disease_name \n")
+            "group by disease_name, display_order order by display_order \n")
     List<DiseaseLineItem> getDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select equipment_name as equipmentName, model, minTemp, maxTemp, minEpisodeTemp, maxEpisodeTemp, energy_source as energySource from vw_vaccine_cold_chain \n" +
