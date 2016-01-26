@@ -122,16 +122,16 @@ public class OrderSummaryReportDataProvider extends ReportDataProvider {
   }
 
   @Override
-  public HashMap<String, String> getExtendedHeader(Map filterCriteria) {
+  public Map<String, String> getExtendedHeader(Map filterCriteria) {
     OrderReportParam orderReportParam = getReportFilterData(filterCriteria);
-    HashMap<String, String> result = new HashMap<String, String>();
+    Map<String, String> result = new HashMap<>();
     result.put(ADDRESS, configurationService.getConfigurationStringValue(ConfigurationSettingKey.ORDER_REPORT_ADDRESS));
     result.put(CUSTOM_REPORT_TITLE, configurationService.getConfigurationStringValue(ConfigurationSettingKey.ORDER_REPORT_TITLE));
     result.put(ConfigurationSettingKey.ORDER_SUMMARY_SHOW_SIGNATURE_SPACE_FOR_CUSTOMER, configurationService.getConfigurationStringValue(ConfigurationSettingKey.ORDER_SUMMARY_SHOW_SIGNATURE_SPACE_FOR_CUSTOMER));
     result.put(ConfigurationSettingKey.ORDER_SUMMARY_SHOW_DISCREPANCY_SECTION, configurationService.getConfigurationStringValue(ConfigurationSettingKey.ORDER_SUMMARY_SHOW_DISCREPANCY_SECTION));
 
     Rnr rnr = requistionService.getLWById(orderReportParam.getOrderId());
-    String orderNo = (orderService.getOrderNumberConfiguration().getOrderNumberFor(rnr.getId(), programService.getById(rnr.getProgram().getId()), rnr.isEmergency()));
+    String orderNo = orderService.getOrderNumberConfiguration().getOrderNumberFor(rnr.getId(), programService.getById(rnr.getProgram().getId()), rnr.isEmergency());
     result.put(ORDER_NO, orderNo);
 
     final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mm a");

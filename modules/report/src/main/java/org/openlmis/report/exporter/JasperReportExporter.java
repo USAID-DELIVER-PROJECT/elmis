@@ -28,10 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Handles Exporting of Jasper reports
@@ -44,7 +41,7 @@ public class JasperReportExporter implements ReportExporter {
 
 
     @Override
-    public ByteArrayOutputStream exportReportBytesStream(InputStream reportInputStream, HashMap<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption) {
+    public ByteArrayOutputStream exportReportBytesStream(InputStream reportInputStream, Map<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption) {
 
         try{
 
@@ -64,7 +61,7 @@ public class JasperReportExporter implements ReportExporter {
     }
 
     @Override
-    public void exportReport(InputStream reportInputStream, HashMap<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption, HttpServletResponse response) {
+    public void exportReport(InputStream reportInputStream, Map<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption, HttpServletResponse response) {
 
         try{
 
@@ -86,7 +83,7 @@ public class JasperReportExporter implements ReportExporter {
         }
     }
 
-    private JasperPrint getJasperPrintResult(HashMap<String, Object> reportExtraParams, InputStream reportInputStream, ReportOutputOption outputOption,
+    private JasperPrint getJasperPrintResult(Map<String, Object> reportExtraParams, InputStream reportInputStream, ReportOutputOption outputOption,
                                              List<? extends ReportData> reportData) throws JRException {
 
         JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportInputStream);
