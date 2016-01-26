@@ -64,6 +64,7 @@ public class SMSManagementService {
         String urlString = pushSmsUrl+"&text="+content.replaceAll(" ","+")+"&to="+phoneNumber.toString();
 
         try {
+            smsRepository.SaveSMSMessage("Outgoing", content, phoneNumber, new Date(),false);
             URL url = new URL(urlString.toString());
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -75,7 +76,7 @@ public class SMSManagementService {
             while ((line = reader.readLine()) != null) {
                 buffer = buffer.append(line).append("\n");
             }
-            smsRepository.SaveSMSMessage("Outgoing", content, phoneNumber, new Date(),true);
+            
             System.out.println("Submit request= " + urlString.toString());
             System.out.println("response : "+buffer.toString());
             System.out.println("INFO : all sent disconnect.");
