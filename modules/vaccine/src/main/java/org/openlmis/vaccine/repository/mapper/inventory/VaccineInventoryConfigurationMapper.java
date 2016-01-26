@@ -23,6 +23,11 @@ public interface VaccineInventoryConfigurationMapper {
             " WHERE id=#{id}")
     VaccineInventoryProductConfiguration getById(Long id);
 
+    @Select("SELECT *" +
+            " FROM vaccine_inventory_product_configurations " +
+            " WHERE productid=#{productId}")
+    VaccineInventoryProductConfiguration getByProductId(Long productId);
+
     @Update("update vaccine_inventory_product_configurations " +
             " set " +
             " batchtracked = #{batchTracked}," +

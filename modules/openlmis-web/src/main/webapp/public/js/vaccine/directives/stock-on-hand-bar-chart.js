@@ -100,17 +100,21 @@ app.directive('stockchart', ['messageService',function(messageService) {
                                                  {
 
                                                      //Set Colors
+                                                     if(q > f.maximumStock)
+                                                     {
+                                                         color="blue";
+                                                     }
                                                      if(q<=f.maximumStock && q>f.reorderLevel)
                                                      {
                                                         color="green";
                                                      }
-                                                     else if(q<=f.reorderLevel && q>(f.quarterlyNeed*(f.isaCoefficients.bufferPercentage/100)))
+                                                     else if(q<=f.reorderLevel && q>f.bufferStock)
                                                      {
                                                         color="#e5e500";
                                                      }
-                                                     else if(q<=(f.quarterlyNeed*(f.isaCoefficients.bufferPercentage/100)))
+                                                     else if(q <f.bufferStock)
                                                      {
-                                                        color="red";
+                                                        color="#ff0000";
                                                      }
                                                      //Calculate MOS
                                                      if(f.isaValue >0){

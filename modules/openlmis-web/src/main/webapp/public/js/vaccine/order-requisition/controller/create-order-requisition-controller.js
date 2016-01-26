@@ -4,6 +4,7 @@
 function CreateVaccineOrderRequisition($scope, $dialog, $window, report, VaccineOrderRequisitionSubmit, $location) {
 
     $scope.report = new VaccineOrderRequisition(report);
+    console.log(JSON.stringify($scope.report));
 
     $scope.orderModal = false;
 

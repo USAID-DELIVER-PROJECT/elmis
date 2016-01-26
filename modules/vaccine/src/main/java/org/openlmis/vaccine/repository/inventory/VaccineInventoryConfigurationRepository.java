@@ -23,6 +23,9 @@ public class VaccineInventoryConfigurationRepository {
     public VaccineInventoryProductConfiguration getById(Long id) {
         return mapper.getById(id);
     }
+    public VaccineInventoryProductConfiguration getByProductId(Long productId) {
+        return mapper.getByProductId(productId);
+    }
 
     public Integer insert(VaccineInventoryProductConfiguration configuration) {
         return mapper.insert(configuration);

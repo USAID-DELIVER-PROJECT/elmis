@@ -12,6 +12,7 @@ import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
 import org.openlmis.stockmanagement.service.StockCardService;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
 import org.openlmis.vaccine.dto.StockRequirements;
+import org.openlmis.vaccine.dto.StockRequirements_;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,11 +44,11 @@ public class VaccineOrderRequisition extends BaseModel {
     private List<OrderRequisitionStockCardDTO> stockCards;
 
 
-    public void initiateOrder(List<StockRequirements> requirementsList, ProductService service, StockCardMapper stockCardMapper) {
+    public void initiateOrder(List<StockRequirements_> requirementsList, ProductService service, StockCardMapper stockCardMapper) {
         lineItems = new ArrayList<>();
 
 
-        for (StockRequirements stockRequirements : requirementsList) {
+        for (StockRequirements_ stockRequirements : requirementsList) {
 
 
             if (stockRequirements.getIsaValue() != null) {
@@ -56,10 +57,10 @@ public class VaccineOrderRequisition extends BaseModel {
                 lineItem.setOrderId(id);
                 lineItem.setProductId(stockRequirements.getProductId());
                 lineItem.setProductName(stockRequirements.getProductName());
-                lineItem.setMaxmonthsofstock(stockRequirements.getMaxMonthsOfStock());
+                //lineItem.setMaxmonthsofstock(stockRequirements.getMaxMonthsOfStock());
 
                 lineItem.setOverriddenisa(stockRequirements.getIsaValue());
-                lineItem.setEop(stockRequirements.getEop());
+               // lineItem.setEop(stockRequirements.getEop());
 
                 Product p = service.getById(stockRequirements.getProductId());
                 StockCard s = stockCardMapper.getByFacilityAndProduct(stockRequirements.getFacilityId(), p.getCode());
@@ -69,16 +70,16 @@ public class VaccineOrderRequisition extends BaseModel {
                 else {
                     lineItem.setStockOnHand(0L);
                 }
-                lineItem.setMinMonthsOfStock(stockRequirements.getMinMonthsOfStock());
+                //lineItem.setMinMonthsOfStock(stockRequirements.getMinMonthsOfStock());
                 lineItem.setOrderedDate(form.format(new Date()));
                 lineItem.setBufferStock(stockRequirements.getBufferStock());
 
                 lineItem.setMaximumStock(stockRequirements.getMaximumStock());
                 lineItem.setReOrderLevel(stockRequirements.getReorderLevel());
                 lineItem.setCategory(stockRequirements.getProductCategory());
-                lineItem.setPopulation(stockRequirements.getPopulation());
+                //lineItem.setPopulation(stockRequirements.getPopulation());
 
-                lineItem.setIsa(stockRequirements.getIsa());
+                //lineItem.setIsa(stockRequirements.getIsa());
 
 
                 lineItem.setMinimumStock(stockRequirements.getMinimumStock());

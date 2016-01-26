@@ -18,10 +18,10 @@ public class VaccineOrderRequisitionLineItem extends BaseModel {
     private Product product;
     private ProductCategory productCategory;
     private Integer displayOrder;
-    private Double maximumStock;
-    private Double minimumStock;
-    private Double reOrderLevel;
-    private Double bufferStock;
+    private Integer maximumStock;
+    private Integer minimumStock;
+    private Integer reOrderLevel;
+    private Integer bufferStock;
     private Long stockOnHand;
     private Long quantityRequested;
     private String orderedDate;

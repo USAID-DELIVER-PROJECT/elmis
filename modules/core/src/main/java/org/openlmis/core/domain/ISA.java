@@ -51,8 +51,7 @@ public class ISA extends BaseModel
 
   public Integer calculate(Long population)
   {
-    int isaValue = (int) Math.ceil(population * (this.whoRatio / 100) * this.dosesPerYear * this.wastageFactor / 12 * (1 + this.bufferPercentage / 100) + this.adjustmentValue);
-
+    int isaValue = (int) (population * (this.whoRatio / 100) * this.dosesPerYear * this.wastageFactor / 12  + this.adjustmentValue);
     if (this.minimumValue != null && isaValue < this.minimumValue)
       return this.minimumValue;
     if (this.maximumValue != null && isaValue > this.maximumValue)

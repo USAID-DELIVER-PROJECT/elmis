@@ -35,7 +35,7 @@ public class ProgramProductISATest
     ProgramProductISA programProductISA = new ProgramProductISA(3L, isa);
 
     Integer isaAmount = programProductISA.calculate(420L);
-    assertThat(isaAmount, is(108));
+    assertThat(isaAmount, is(82));
   }
 
   @Test public void builderShouldBeAbleToSetAllFields() throws Exception
