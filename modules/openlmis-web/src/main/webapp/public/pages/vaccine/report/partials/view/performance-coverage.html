@@ -39,15 +39,9 @@
                     <!--================================ filter start ====================-->
 
                     <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="false" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone" ></vaccine-zone-filter>
-                    <div class="horizontalFilters form-cell">
-                        <label for="product" class="labels"  openlmis-message="label.product"><span class="label-required">*</span></label>
-                        <div>
-                            <select id="product" ui-select2 class="input-large" ng-model="filter.product" ng-change="OnFilterChanged();">
-                                <option value="">---Select product---</option>
-                                <option ng-repeat="option in product" value="{{ option.id }}">{{ option.name }}</option>
-                            </select>
-                        </div>
-                    </div>
+                    <vaccine-product-filter class="form-cell horizontalFilters" default="defaultProduct"
+                                            cm-model="filter.product"
+                    "></vaccine-product-filter>
 
                     <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
                     <!--======================== filter end =========================-->
@@ -94,15 +88,15 @@
                         <th>{{getLocalMessage('label.coverage')}}</th>
                     </tr>
                     <tr>
+                        <th></th>
+                        <th></th>
+                        <th ng-show="!regionSelected"></th>
+                        <th></th>
                         <th>{{getLocalMessage('label.A')}}</th>
                         <th>{{getLocalMessage('label.B')}}</th>
-                        <th ng-show="!regionSelected">{{getLocalMessage('label.C')}}</th>
                         <th>{{getLocalMessage('label.C')}}</th>
                         <th>{{getLocalMessage('label.D')}}</th>
                         <th>{{getLocalMessage('label.E')}}</th>
-                        <th>{{getLocalMessage('label.coverage.equation')}}</th>
-                        <th>{{getLocalMessage('label.G')}}</th>
-                        <th>{{getLocalMessage('label.cumulative.coverage.equation')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -178,13 +172,14 @@
                         <th>{{getLocalMessage('label.coverage')}}</th>
                     </tr>
                     <tr>
+                        <th></th>
+                        <th></th>
+
                         <th>{{getLocalMessage('label.A')}}</th>
                         <th>{{getLocalMessage('label.B')}}</th>
+                        <th>{{getLocalMessage('label.C')}}</th>
                         <th>{{getLocalMessage('label.D')}}</th>
                         <th>{{getLocalMessage('label.E')}}</th>
-                        <th>{{getLocalMessage('label.coverage.equation')}}</th>
-                        <th>{{getLocalMessage('label.G')}}</th>
-                        <th>{{getLocalMessage('label.cumulative.coverage.equation')}}</th>
                     </tr>
                     </thead>
                     <tbody>

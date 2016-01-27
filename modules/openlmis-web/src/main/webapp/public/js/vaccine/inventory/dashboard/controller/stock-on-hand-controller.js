@@ -24,6 +24,7 @@ function StockOnHandController($scope,$window,UpdateDistributionsForNotification
     $scope.userPrograms = programs;
     $scope.date = new Date();
     $scope.selectedType = "0";//My facility selected by default;
+    $scope.stockLoaded=false;
 
 
     $scope.data = {"stockcards": null};//Set default chart stock cards data to null;
@@ -34,14 +35,16 @@ function StockOnHandController($scope,$window,UpdateDistributionsForNotification
     var loadStockCards=function(programId, facilityId){
         StockCardsByCategory.get(programId ,facilityId).then(function(data){
                $scope.stockCardsByCategory=data;
+               $scope.stockLoaded=true;
                if( $scope.stockCardsByCategory[0] !== undefined){
 
-                    Forecast.query({programId:programId ,facilityId:facilityId},
+                    Forecast.get({programId:programId ,facilityId:facilityId},
                     function(data){
                             $scope.data = {"stockcards": $scope.stockCardsByCategory[0].stockCards};
-                            $scope.data.forecasts=data;
+                            $scope.data.forecasts=data.stock_requirements;
                             $scope.showGraph=true;
                             $scope.init=false;
+
                      });
 
                }

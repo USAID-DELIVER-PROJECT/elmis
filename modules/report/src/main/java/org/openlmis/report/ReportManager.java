@@ -95,7 +95,7 @@ public class ReportManager {
        }
 
         List<? extends ReportData> dataSource = report.getReportDataProvider().getReportDataByFilterCriteria(params, DataSourceType.BEAN_COLLECTION_DATA_SOURCE);
-        HashMap<String, Object> extraParams = getReportExtraDataSourceParams(userId, params, outputOption, dataSource, report);
+        Map<String, Object> extraParams = getReportExtraDataSourceParams(userId, params, outputOption, dataSource, report);
 
        // Read the report template from file.
        InputStream reportInputStream =  this.getClass().getClassLoader().getResourceAsStream(report.getTemplate()) ;
@@ -110,7 +110,7 @@ public class ReportManager {
         }
 
         List<? extends ReportData> dataSource = report.getReportDataProvider().getReportDataByFilterCriteria(params, DataSourceType.BEAN_COLLECTION_DATA_SOURCE);
-        HashMap<String, Object> extraParams = getReportExtraDataSourceParams(userId, params, outputOption, dataSource, report);
+        Map<String, Object> extraParams = getReportExtraDataSourceParams(userId, params, outputOption, dataSource, report);
 
         // Read the report template from file.
         InputStream reportInputStream =  this.getClass().getClassLoader().getResourceAsStream(report.getTemplate()) ;
@@ -119,13 +119,13 @@ public class ReportManager {
 
     }
 
-    private  HashMap<String, Object> getReportExtraDataSourceParams(Integer userId,  Map<String, String[]> params , ReportOutputOption outputOption, List<? extends ReportData> dataSource, Report report){
+    private  Map<String, Object> getReportExtraDataSourceParams(Integer userId,  Map<String, String[]> params , ReportOutputOption outputOption, List<? extends ReportData> dataSource, Report report){
 
         User currentUser = userService.getById(Long.parseLong(String.valueOf(userId)));
         report.getReportDataProvider().setUserId(userId.longValue());
 
 
-        HashMap<String, Object> extraParams = getReportExtraParams(report, currentUser.getFirstName() + " " + currentUser.getLastName(), outputOption.name(), params ) ;
+        Map<String, Object> extraParams = getReportExtraParams(report, currentUser.getFirstName() + " " + currentUser.getLastName(), outputOption.name(), params ) ;
 
         //Setup message for a report when there is no data found
         if(dataSource != null && dataSource.size() == 0){
@@ -187,7 +187,7 @@ public class ReportManager {
       * @param filterCriteria
       * @return
      */
-    private HashMap<String, Object> getReportExtraParams(Report report, String generatedBy, String outputOption, Map<String, String[]> filterCriteria){
+    private Map<String, Object> getReportExtraParams(Report report, String generatedBy, String outputOption, Map<String, String[]> filterCriteria){
 
         if (report == null) return null;
 

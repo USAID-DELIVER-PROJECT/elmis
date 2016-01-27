@@ -16,6 +16,7 @@ import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
+import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.service.reports.VaccineReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,5 +105,9 @@ public class VaccineReportController extends BaseController {
         return OpenLmisResponse.response("adequaceyLevel",
                 service.getAdequacyLevelOfSupply(periodStart, periodEnd, districtId, product));
     }
+    @RequestMapping(value = "/vaccine_products", method = RequestMethod.GET)
+   public ResponseEntity<OpenLmisResponse> getVaccineProductsList(){
+        return OpenLmisResponse.response("products", this.service.getVaccineProductsList());
 
+    }
 }

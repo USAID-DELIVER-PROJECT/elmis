@@ -11,7 +11,7 @@
  */
 
 
-function ReceiveStockController($scope, StockCards,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,Distribution, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
+function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
 
     $scope.hasStock=homeFacility.hasStock;
     console.log($scope.hasStock);
@@ -26,17 +26,22 @@ function ReceiveStockController($scope, StockCards,$timeout,$window,$dialog,conf
     $scope.voucherNumberSearched=false;
     $scope.productsConfiguration=configurations.productsConfiguration;
     $scope.period=configurations.period;
-    $scope.loadProducts=function(programId){
+
+    $scope.loadProducts=function(facilityId,programId){
         VaccineProgramProducts.get({programId:programId},function(data){
             $scope.allProducts=data.programProductList;
             $scope.productsToDisplay=$scope.allProducts;
         });
+
+//        FacilityTypeAndProgramProducts.get({facilityId:facilityId, programId:programId},function(data){
+//
+//                console.log(data);
+//        });
     };
     $scope.loadProductLots=function(product)
     {
-         $scope.lotsToDisplay=null;
-
-
+         $scope.lotsToDisplay={};
+         $scope.productToAdd.lot="";
          if(product !==null)
          {
              var id=product.id;
@@ -64,8 +69,7 @@ function ReceiveStockController($scope, StockCards,$timeout,$window,$dialog,conf
     };
     $scope.receive=function()
     {
-
-        var callBack=function(result)
+      var callBack=function(result)
         {
             if(result)
             {
@@ -136,7 +140,6 @@ function ReceiveStockController($scope, StockCards,$timeout,$window,$dialog,conf
     };
 
     $scope.openReceive=function(){
-        console.log(JSON.stringify($scope.receivedProducts));
         var callBack=function(result)
                 {
                     if(result)
@@ -213,11 +216,11 @@ function ReceiveStockController($scope, StockCards,$timeout,$window,$dialog,conf
     {
            $scope.showPrograms=true;
            //TODO: load stock cards on program change
-           $scope.loadProducts($scope.userPrograms[0].id);
+           $scope.loadProducts(homeFacility.id,$scope.userPrograms[0].id);
     }
      else if($scope.userPrograms.length === 1){
           $scope.showPrograms=false;
-          $scope.loadProducts($scope.userPrograms[0].id);
+          $scope.loadProducts(homeFacility.id,$scope.userPrograms[0].id);
      }
 
     $scope.removeProduct=function(product)
@@ -322,6 +325,29 @@ function ReceiveStockController($scope, StockCards,$timeout,$window,$dialog,conf
         $scope.voucherNumberSearched=false;
      };
 
+     $scope.showNewLotModal=function(product){
+        $scope.newLotModal=true;
+        $scope.newLot={};
+        $scope.newLot.product=product.product;
+     };
+
+     $scope.closeNewLotModal=function(){
+         $scope.newLot={};
+         $scope.newLotModal=false;
+     };
+     $scope.createLot=function(){
+       var newLot={};
+       newLot.product=$scope.newLot.product;
+       newLot.lotCode=$scope.newLot.lotCode;
+       newLot.manufacturerName=$scope.newLot.manufacturerName;
+       newLot.expirationDate=$filter('date')($scope.newLot.expirationDate,"yyyy-MM-dd");
+        Lot.create(newLot,function(data){
+               $scope.newLotModal=false;
+               $scope.loadProductLots(data.lot.product);
+               //$scope.productToAdd.lot=data.lot;
+        });
+     };
+
 }
 ReceiveStockController.resolve = {
 
@@ -348,11 +374,11 @@ ReceiveStockController.resolve = {
             }, 100);
             return deferred.promise;
          },
-        configurations:function($q, $timeout, VaccineInventoryConfigurations) {
+        configurations:function($q, $timeout, AllVaccineInventoryConfigurations) {
           var deferred = $q.defer();
           var configurations={};
           $timeout(function () {
-          VaccineInventoryConfigurations.get(function(data)
+          AllVaccineInventoryConfigurations.get(function(data)
              {
                  configurations=data;
                  deferred.resolve(configurations);

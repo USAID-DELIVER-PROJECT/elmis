@@ -86,12 +86,12 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
             bgColor='Disitrict with alarm episode >8';
         }else if(value=='5_alarm_episode_less_min'){
             bgColor='Disitrict with alarm episode >2';
-        }else if(value=='4_max_temp_recorded'){
+        }else if(value=='8_max_temp_recorded'){
         bgColor=' Max. Temp Recorded';
-        }else if(value=='3_min_temp_recorded'){
+        }else if(value=='7_min_temp_recorded'){
             bgColor='Min. Temp Recorded';
         }else if(value=='2_temp_min_greater'){
-            bgColor='Districts with t min > 8';
+            bgColor='Districts with t max > 8';
         }
         else{
             bgColor='Districts with t min < 2';
@@ -105,9 +105,9 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
             bgColor=$scope.maxColorCode;
         }else if(value=='5_alarm_episode_less_min'){
             bgColor=$scope.minColorCode;
-        }else if(value=='4_max_temp_recorded'){
+        }else if(value=='8_max_temp_recorded'){
             bgColor='white';
-        }else if(value=='3_min_temp_recorded'){
+        }else if(value=='7_min_temp_recorded'){
             bgColor='white';
         }else if(value=='2_temp_min_greater'){
             bgColor=$scope.minColorCode;

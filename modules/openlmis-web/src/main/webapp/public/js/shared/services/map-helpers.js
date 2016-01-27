@@ -93,7 +93,12 @@ function zoomAndCenterMap (leafletData, $scope) {
         for (var j=0; j < coord.length; j++) {
           var points = coord[j];
           for(var p in points){
-            var latlng = L.GeoJSON.coordsToLatLng(points[p]);
+            var latlng;
+            if(angular.isNumber(points[p])){
+              latlng = L.GeoJSON.coordsToLatLng(points);
+            }else{
+              latlng = L.GeoJSON.coordsToLatLng(points[p]);
+            }
             latlngs.push(latlng);
           }
         }

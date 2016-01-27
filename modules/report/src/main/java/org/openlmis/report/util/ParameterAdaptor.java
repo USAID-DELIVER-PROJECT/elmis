@@ -12,7 +12,6 @@
 
 package org.openlmis.report.util;
 
-import groovyjarjarcommonscli.MissingArgumentException;
 import org.openlmis.report.annotations.RequiredParam;
 import org.openlmis.report.exception.RequiredParameterMissingException;
 

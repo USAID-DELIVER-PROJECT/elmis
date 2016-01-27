@@ -1194,8 +1194,8 @@ app.directive('vaccineDropoutFilter', ['DropoutProducts', 'messageService',
     }
 ]);
 
-app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSupervisedIvdPrograms',
-    function (ReportProductsByProgram, VaccineSupervisedIvdPrograms) {
+app.directive('vaccineProductFilter', ['VaccineProducts', 'VaccineSupervisedIvdPrograms',
+    function (VaccineProducts, VaccineSupervisedIvdPrograms) {
 
 
         return {
@@ -1206,29 +1206,24 @@ app.directive('vaccineProductFilter', ['ReportProductsByProgram', 'VaccineSuperv
                 onChange: '&'
             },
             controller: function ($scope) {
-                VaccineSupervisedIvdPrograms.get({}, function (data) {
-                    prog = data.programs[0].id;
-                    ReportProductsByProgram.get({
-                        programId: prog
-
-                    }, function (data) {
-                        $scope.products = data.productList;
+                    VaccineProducts.get({}, function (data) {
+                        $scope.products = data.products;
 
                     });
-                    if(!isUndefined($scope.default)){
-                        $scope.filterProduct = $scope.default;
-                    }else{
+                if(!isUndefined($scope.default)){
+                    $scope.filterProduct = $scope.default;
+                }else{
 
-                        $scope.filterProduct = 0;
-                    }
-                    $scope.$watch('filterProduct', function (newValues, oldValues) {
+                    $scope.filterProduct = 0;
+                }
+                $scope.$watch('filterProduct', function (newValues, oldValues) {
 
-                        $scope.$parent.OnFilterChanged();
-                        //if(!isUndefined($scope.onChange)){
-                            $scope.onChange();
-                       // }
-                    });
+                    $scope.$parent.OnFilterChanged();
+                    //if(!isUndefined($scope.onChange)){
+                    $scope.onChange();
+                    // }
                 });
+
             },
             templateUrl: 'filter-vaccine-product-template'
         };

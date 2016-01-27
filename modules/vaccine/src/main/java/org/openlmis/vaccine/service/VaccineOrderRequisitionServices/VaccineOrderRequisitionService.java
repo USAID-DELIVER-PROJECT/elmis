@@ -12,6 +12,7 @@ import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderStatus;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
 import org.openlmis.vaccine.dto.StockRequirements;
+import org.openlmis.vaccine.dto.StockRequirements_;
 import org.openlmis.vaccine.repository.VaccineOrderRequisitions.VaccineOrderRequisitionRepository;
 import org.openlmis.vaccine.repository.VaccineOrderRequisitions.VaccineOrderRequisitionStatusChangeRepository;
 import org.openlmis.vaccine.service.StockRequirementsService;
@@ -106,7 +107,7 @@ public class VaccineOrderRequisitionService {
 
         Date date = new Date();
         SupervisoryNode supervisoryNode = supervisoryNodeService.getFor(facilityService.getFacilityById(facilityId), programService.getById(programId));
-        List<StockRequirements> stockRequirements = stockRequirementsService.getStockRequirements(facilityId,programId);
+        List<StockRequirements_> stockRequirements = stockRequirementsService.getStockRequirements(facilityId,programId);
         orderRequisition = new VaccineOrderRequisition();
         orderRequisition.setPeriodId(periodId);
         orderRequisition.setProgramId(programId);

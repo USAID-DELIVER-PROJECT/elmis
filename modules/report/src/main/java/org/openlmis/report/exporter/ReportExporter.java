@@ -18,8 +18,8 @@ import org.openlmis.report.model.ReportData;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  Defines API for exporting reports.
@@ -35,7 +35,7 @@ public interface ReportExporter {
      * @param outputOption  -   <b>Report out put option </b>
      * @param response - <b>HttpServletResponse for writing the report to OutputStream</b>
      */
-    public void exportReport(InputStream reportInputStream,  HashMap<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption, HttpServletResponse response);
+    public void exportReport(InputStream reportInputStream, Map<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption, HttpServletResponse response);
 
     /**
      * This method return the exported report byte stream to save the output as a file or any operation
@@ -45,6 +45,6 @@ public interface ReportExporter {
      * @param outputOption
      * @return
      */
-    public ByteArrayOutputStream exportReportBytesStream(InputStream reportInputStream, HashMap<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption);
+    public ByteArrayOutputStream exportReportBytesStream(InputStream reportInputStream, Map<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption);
 
 }

@@ -33,14 +33,14 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,SettingsByKey, 
     SettingsByKey.get({key:'VCP_RED'},function(data){
         $scope.maxTemp=data.settings.value;
     });
-    SettingsByKey.get({key:'VCP_BLUE'},function(data){
+    SettingsByKey.get({key:'VCP_ORANGE'},function(data){
         $scope.average=data.settings.value;
     });
-    SettingsByKey.get({key:'VCP_ORANGE'},function(data){
+    SettingsByKey.get({key:'VCP_BLUE'},function(data){
         $scope.belowAverage=data.settings.value;
     });
     $scope.OnFilterChanged = function () {
-console.log('period start '+ $scope.filter.periodStart);
+      //console.log('period start '+ $scope.filter.periodStart);
         $scope.data = $scope.datarows = [];
         $scope.filter.facilityId='' ;
         $scope.filter.geographicZoneId = $scope.filter.zone;
@@ -106,9 +106,9 @@ console.log('period start '+ $scope.filter.periodStart);
         if(value=='4_dropoutGreaterThanHigh'){
             bgColor='DO >20%';
         }else if(value=='3_droOputBetweenMidAndHigh'){
-            bgColor='5% < DO <=10%';
+            bgColor='10% < DO <=20%';
         }else if(value=='2_dropOutBetweenMidAndMin'){
-            bgColor=' 10% < DO <=20%';
+            bgColor=' 5% < DO <=10%';
         }else{
             bgColor='DO <=5';
         }

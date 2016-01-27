@@ -17,6 +17,8 @@ import org.openlmis.ivdform.repository.mapper.reports.LogisticsLineItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class LogisticsLineItemRepository {
 
@@ -31,4 +33,15 @@ public class LogisticsLineItemRepository {
     mapper.update(item);
   }
 
+  public LogisticsLineItem getApprovedLineItemsFor(String programCode, String productCode, String facilityCode, Long periodId){
+    return mapper.getApprovedLineItemsFor(programCode, productCode,facilityCode, periodId);
+  }
+
+  public List<LogisticsLineItem> getPreviousPeriodLineItemsFor(String programCode, String productCode, String facilityCode, Long periodId){
+    return mapper.getPreviousPeriodLineItemsFor(programCode, productCode,facilityCode, periodId);
+  }
+
+  public List<LogisticsLineItem> getApprovedLineItemListFor(String programCode, String facilityCode,  Long periodId) {
+    return mapper.getApprovedLineItemListFor(programCode, facilityCode, periodId);
+  }
 }

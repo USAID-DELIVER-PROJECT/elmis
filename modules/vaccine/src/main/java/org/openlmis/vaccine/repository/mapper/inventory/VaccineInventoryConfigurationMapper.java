@@ -23,21 +23,34 @@ public interface VaccineInventoryConfigurationMapper {
             " WHERE id=#{id}")
     VaccineInventoryProductConfiguration getById(Long id);
 
+    @Select("SELECT *" +
+            " FROM vaccine_inventory_product_configurations " +
+            " WHERE productid=#{productId}")
+    VaccineInventoryProductConfiguration getByProductId(Long productId);
+
     @Update("update vaccine_inventory_product_configurations " +
             " set " +
             " batchtracked = #{batchTracked}," +
             " vvmtracked= #{vvmTracked}, " +
             " survivingInfants = #{survivingInfants}," +
-            " denominatorEstimateCategoryId = #{denominatorEstimateCategoryId} " +
+            " denominatorEstimateCategoryId = #{denominatorEstimateCategoryId}, " +
+            " schedule = #{schedule}, " +
+            " coverage = #{coverage}, " +
+            " presentation = #{presentation}, " +
+            " packedVolumePerDose = #{packedVolumePerDose}, " +
+            " administrationMode = #{administrationMode}, " +
+            " dilutionSyringe = #{dilutionSyringe}, " +
+            " volumePerCif = #{volumePerCif}, " +
+            " ordering = #{ordering} " +
             "WHERE id=#{id} "
     )
     Integer update(VaccineInventoryProductConfiguration configuration);
 
 
     @Insert("insert into vaccine_inventory_product_configurations  " +
-            " (type, productid, batchtracked, vvmtracked,survivingInfants,denominatorEstimateCategoryId) " +
+            " (type, productid, batchtracked, vvmtracked,survivingInfants,denominatorEstimateCategoryId,schedule,coverage,presentation,packedVolumePerDose,administrationMode,dilutionSyringe,volumePerCif,ordering) " +
             " values " +
-            " (#{type}, #{productId}, #{batchTracked}, #{vvmTracked},#{survivingInfants},#{denominatorEstimateCategoryId}) ")
+            " (#{type}, #{productId}, #{batchTracked}, #{vvmTracked},#{survivingInfants},#{denominatorEstimateCategoryId},#{schedule},#{coverage},#{presentation},#{packedVolumePerDose},#{administrationMode},#{dilutionSyringe},#{volumePerCif},#{ordering}) ")
     @Options(useGeneratedKeys = true)
     Integer insert(VaccineInventoryProductConfiguration configuration);
 

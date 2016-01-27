@@ -48,6 +48,9 @@ public class FacilityApprovedProductRepository {
     FacilityTypeApprovedProduct facilityTypeApprovedProduct) {
     return mapper.getBy(facilityTypeApprovedProduct.getProgramProduct().getId(), facilityTypeApprovedProduct.getFacilityType().getCode());
   }
+  public FacilityTypeApprovedProduct getFacilityApprovedProductByProgramProductIdAndFacilityTypeCode(Long programProductId, String facilityTypeCode) {
+    return mapper.getByProgramAndFacilityType(programProductId, facilityTypeCode);
+  }
 
   public List<FacilityTypeApprovedProduct> getAllBy(Long facilityTypeId, Long programId, String searchParam, Pagination pagination) {
     return mapper.getAllBy(facilityTypeId, programId, searchParam, pagination);

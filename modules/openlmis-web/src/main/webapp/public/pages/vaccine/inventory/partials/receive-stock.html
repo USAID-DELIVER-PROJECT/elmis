@@ -12,6 +12,7 @@
 <!DOCTYPE html>
 
 <style>
+    #FAFAFA
     .rnr-table .table-bordered td:last-child {
     border-right: 1px solid #ddd !important;
     }
@@ -21,21 +22,26 @@
     padding-bottom:4px !important;
     }
 
-    .rnr-table .table-bordered td.row-add-batch {
+    .table-bordered td.row-add-batch {
     border-right:none !important;
-    background:#078f97 !important;
+    background:#c7e5e7 !important;
     padding-top:8px !important;
-    }
-
-    .rnr-table .table-bordered td.row-add-batch-last {
-    background:#078f97 !important;
-    padding-top:8px !important;
+    border-top:1px solid #ddd;
 
     }
 
-    .rnr-table .table-bordered td.row-add {
-    background:#e0e0e0 !important;
-    padding:4px !important;
+    .table-bordered td.row-add-batch-last {
+    background:#c7e5e7 !important;
+    padding-top:8px !important;
+    border-top:1px solid #ddd;
+
+    }
+
+    .table-bordered td.row-add {
+    background:#e1f5f8 !important;
+    border-top:1px solid #ddd;
+
+    /*e1f5f8*/
     }
 
     .rnr-table .table-bordered tr td {
@@ -70,13 +76,28 @@
 
     }
     input[type="number"]{width:150px !important;margin-bottom:2px !important;margin:2px 3px !important}
+
+    table.receive{
+        background:#FAFAFA;
+    }
+    table.receive td, table.receive th{
+    border-top-color:#FAFAFA;
+    border-bottom-color:#FAFAFA;
+        padding:6px 6px 6px 6px;
+        text-align:left;
+    }
+    table.receive th{
+     /* border-bottom: 1px solid #ddd;*/
+    }
+
 </style>
 
 <div >
     <h2><span openlmis-message="label.vaccine.stock.receive"></span></h2>
     <div class="row-fluid" >
         <div class="span12" >
-            <div class="info-box padding2px" ng-show="hasStock">
+            <div ng-show="hasStock && !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')" >
+            <div class="info-box padding2px" >
                 <div class="requisition-head-block">
                     <form name="receivingForm">
                         <div class="row-fluid" >
@@ -114,25 +135,29 @@
                             </div>
 
                         </div>
-                        </form>
+                    </form>
                 </div>
+
             </div>
-            <div class="rnr-table" ng-show="!hasStock">
-               <ng-include src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html'"></ng-include>
-            </div>
-            <div class="rnr-table" ng-show="hasStock">
+            <div class="rnr-table">
                 <ng-include src="'/public/pages/vaccine/inventory/partials/voucher-receive-stock-partial.html'"></ng-include>
+            </div>
+            </div>
+
+            <div  ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock">
+                <ng-include src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html'"></ng-include>
             </div>
         </div>
     </div>
 
     <div form-toolbar id="action_buttons" class="action-buttons">
         <div class="form-cell button-row">
-            <input ng-show="hasStock" ng-disabled="(receivingForm.$invalid) || distribution == undefined "
+            <input ng-show="hasStock && !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')" ng-disabled="(receivingForm.$invalid) || distribution == undefined "
                    type="submit" id="submit-button" ng-click="receive()"
                    class="btn btn-primary save-button"
                    openlmis-message="button.submit"/>
-            <input ng-show="!hasStock" ng-disabled="false"
+
+            <input ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock" ng-disabled="receivedProducts.length == 0 || openReceiveForm.$invalid"
                    type="submit" id="submit-button2" ng-click="openReceive()"
                    class="btn btn-primary save-button"
                    openlmis-message="button.submit"/>

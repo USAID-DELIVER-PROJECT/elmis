@@ -30,7 +30,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
     var pageLineItems = [];
 
     $scope.homeFacility = $routeParams.facility;
-
+    $scope.showNoProductErrorMessage=false;
 
     var refreshPageLineItems = function () {
 
@@ -66,19 +66,15 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
 
     $scope.sumLots = function (c) {
-
+         $scope.showNoProductErrorMessage=false;
         var total = 0;
         c.lotsOnHand.forEach(function (l) {
             var x = ((l.quantity === '' || l.quantity === undefined) ? 0 : parseInt(l.quantity, 10));
             total = total + x;
 
         });
-
         $scope.total = total;
-
-
         c.sum = parseInt(c.quantityRequested, 10) - total;
-
     };
 
     $scope.save = function () {
@@ -88,11 +84,35 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
     var printTest = false;
 
     $scope.submit = function () {
-//        if ($scope.orderRequisitionForm.$error.required) {
-//            $scope.showError = true;
-//            $scope.error = "The form you submitted is invalid. Please revise and try again.";
-//            return;
-//        }
+        $scope.allProductsZero=true;
+
+        $scope.stockCardsByCategory.forEach(function (st) {
+            st.stockCards.forEach(function (s) {
+                    if( s.quantity > 0){
+                      $scope.allProductsZero=false;
+                    }
+                    else if(s.lotsOnHand.length >0)
+                    {
+                         s.lotsOnHand.forEach(function (l) {
+                           if(l.quantity >0)
+                           {
+                               $scope.allProductsZero=false;
+                           }
+                         });
+                    }
+              });
+        });
+
+        if($scope.issueForm.$invalid)
+        {
+            $scope.showError = true;
+            $scope.error = "The form you submitted is invalid. Please revise and try again.";
+            return;
+        }
+        if($scope.allProductsZero){
+             $scope.showNoProductErrorMessage=true;
+             return;
+        }
 
         var transaction = {};
         transaction.transactionList = [];
@@ -177,7 +197,6 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                     });
 
                 });
-                console.log(JSON.stringify(events));
               StockEvent.save({facilityId:homeFacility.id},events,function(data){
                    SaveDistribution.save(distribution,function(distribution) {
                         UpdateOrderRequisitionStatus.update({orderId: orderId}, function () {
@@ -246,11 +265,11 @@ StockMovementViewController.resolve = {
         return deferred.promise;
     },
 
-    configurations:function($q, $timeout, VaccineInventoryConfigurations) {
+    configurations:function($q, $timeout, AllVaccineInventoryConfigurations) {
                                  var deferred = $q.defer();
                                  var configurations={};
                                  $timeout(function () {
-                                    VaccineInventoryConfigurations.get(function(data)
+                                    AllVaccineInventoryConfigurations.get(function(data)
                                     {
                                           configurations=data;
                                           deferred.resolve(configurations);
