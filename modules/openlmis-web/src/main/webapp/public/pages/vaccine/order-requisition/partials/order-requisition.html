@@ -117,16 +117,33 @@
             <div form-toolbar id="action_buttons" class="action-buttons">
                 <div class="form-cell button-row">
 
-                <span ng-hide="viewOrder">
-                      <input id="submitButton" type="button" class="btn btn-primary submit-button" ng-click="submit()"
-                             openlmis-message="button.save.and.print" ng-disabled="selectedType==1"/> </span>
-                    &nbsp;&nbsp;&nbsp;
+                    <span ng-hide="viewOrder">
+                          <input id="submitButton" type="button" class="btn btn-primary submit-button" ng-click="submit()"
+                                 openlmis-message="button.save.and.print" ng-disabled="selectedType==1"/>
+                    </span>
 
-                    <span>  <input id="cancel" type="submit" id="cancel-button" ng-click="cancel()"
-                                   class="btn btn-primary save-button"
-                                   openlmis-message="button.cancel"/></span>
+                     <span ng-show="viewOrder">
+                          <input id="submitButton" type="button" class="btn btn-primary submit-button" ng-click="viewOrderPrint(reportId)"
+                                 openlmis-message="button.print" ng-disabled="selectedType==1"/>
+                    </span>
+
+                        &nbsp;&nbsp;&nbsp;
+
+                        <span ng-hide="cancelOrderRequest">  <input id="cancel" type="submit" id="cancel-button" ng-click="cancel()"
+                                       class="btn btn-primary save-button"
+                                       openlmis-message="button.cancel"/>
+                        </span>
+
+
+                        <span ng-show="cancelOrderRequest">
+                                       <input id="cancel" type="submit" id="cancel-button" ng-click="cancelViewOrder()"
+                                                  class="btn btn-primary save-button"
+                                                  openlmis-message="button.cancel"/>
+                        </span>
+
 
                 </div>
+            </div>
 
                 &nbsp;&nbsp;&nbsp;
                 <div class="toolbar-error" id="saveFailMessage" fade-out="3000" openlmis-message="error"
