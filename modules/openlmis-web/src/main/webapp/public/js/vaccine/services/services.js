@@ -425,6 +425,31 @@ services.factory('AdequacyLevelOfSupply', function ($resource) {
 services.factory('StatuVaccinationSupply', function ($resource) {
     return $resource('/vaccine/report/statusOfVaccinationSupplyReceive.json', {}, {});
 });
-services.factory("SendVaccineMessages",function($resource){
-    return $resource('/vaccine/messages/send.json',{}, {post: {method:'POST'}});
+services.factory("SendVaccineMessages",function($resource) {
+    return $resource('/vaccine/messages/send.json', {}, {post: {method: 'POST'}});
+});
+
+services.factory('SupervisoryNodeByFacilityAndRequisition', function ($resource) {
+    return $resource('/vaccine/orderRequisition/supervisoryNodeByFacilityAndRequisition/:facilityId.json', {facilityId: '@facilityId'}, {});
+});
+
+
+services.factory('ConsolidatedOrdersList', function ($resource) {
+    return $resource('/vaccine/orderRequisition/getConsolidatedOrderList/:program/:facilityId.json', {program: '@program',facilityId: '@facilityId'}, {});
+});
+
+services.factory('PrintConsolidatedList', function($resource) {
+    return $resource('/vaccine/orderRequisition/consolidate/print/:facilityId.json', {facilityId: '@facilityId'}, {});
+});
+
+services.factory('SaveDistributionList', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/saveConsolidatedDistributionList.json', {}, {save:{method:'POST'}});
+});
+
+services.factory('GetDistributionNotification', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/getAllDistributionsForNotification.json', {}, {});
+});
+
+services.factory('UpdateDistributionsForNotification', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/UpdateDistributionsForNotification/:id.json', {id:'@id'}, {});
 });
