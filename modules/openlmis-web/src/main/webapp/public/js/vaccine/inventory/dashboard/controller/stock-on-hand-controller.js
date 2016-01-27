@@ -11,7 +11,7 @@
  */
 
 
-function StockOnHandController($scope,$window,EquipmentNonFunctional,VaccinePendingRequisitions,programs,$location,homeFacility,VaccineOrderRequisitionLastReport, localStorageService,StockCardsByCategory,Forecast) {
+function StockOnHandController($scope,$window,UpdateDistributionsForNotification,GetDistributionNotification,EquipmentNonFunctional,VaccinePendingRequisitions,programs,$location,homeFacility,VaccineOrderRequisitionLastReport, localStorageService,StockCardsByCategory,Forecast) {
     $scope.createOrder = false;
     $scope.receiveConsignment = false;
     $scope.selectedProgramId = null;
@@ -155,8 +155,22 @@ function StockOnHandController($scope,$window,EquipmentNonFunctional,VaccinePend
             }
         });
 
+    //Remark Notification
+    GetDistributionNotification.get({}, function(data){
+        if(!isUndefined(data.remarks)){
+            $scope.messageInfo2 = 'Comments On the Order Requisition Submitted On :  '+data.remarks.orderDate;
+            $scope.remarks = data.remarks;
+        }
+    });
 
+    $scope.update = function(distributionId) {
+      if(distributionId !== null){
+        UpdateDistributionsForNotification.get({id:parseInt(distributionId,10)}, function (data) {
 
+            $location.path('/');
+        });
+    }
+    };
 }
 StockOnHandController.resolve = {
 
