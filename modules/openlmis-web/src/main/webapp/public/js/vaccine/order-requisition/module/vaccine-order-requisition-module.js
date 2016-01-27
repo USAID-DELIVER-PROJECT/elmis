@@ -21,7 +21,8 @@ angular.module('vaccine_order_requisition', ['openlmis', 'ngGrid', 'ui.bootstrap
         when('/details', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/details.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/information', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/information.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/view', {controller:ViewVaccineOrderRequisitionController, templateUrl:'partials/view.html',resolve:ViewVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
-        otherwise({redirectTo: '/order-requisition-list'});
+        when('/consolidate/:program/:facilityId/:homeFacility', {controller:ConsolidateOrderController, templateUrl:'partials/consolidate-order.html',resolve:ConsolidateOrderController.resolve,  reloadOnSearch: false}).
+            otherwise({redirectTo: '/view'});
 }]).directive('select2Blur', function () {
     return function (scope, elm, attrs) {
         angular.element("body").on('mousedown', function (e) {
