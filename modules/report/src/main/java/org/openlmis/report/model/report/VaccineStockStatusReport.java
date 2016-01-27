@@ -13,14 +13,19 @@
 
 package org.openlmis.report.model.report;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.dto.StockStatusReportProduct;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,12 +35,15 @@ public class VaccineStockStatusReport implements ReportData {
 
     private String product;
     private String district;
-    private Double soh;
+    private Integer soh;
     private Date lastUpdate;
     private String facilityName;
     private Double monthlyStock;
     private String facilityType;
     private int facilityId;
+    private int productId;
+
+    //private JSONPObject products;
 
     public String getLastUpdate(){
         return DateUtil.getFormattedDate(this.lastUpdate, "dd-MM-yyyy");
