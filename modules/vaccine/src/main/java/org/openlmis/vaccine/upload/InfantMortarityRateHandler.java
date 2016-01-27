@@ -1,6 +1,5 @@
 package org.openlmis.vaccine.upload;
 
-import com.sun.prism.impl.Disposer;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.BaseModel;
 import org.openlmis.core.upload.AbstractModelPersistenceHandler;
