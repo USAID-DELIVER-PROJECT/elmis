@@ -24,7 +24,7 @@ public class VaccineReportBuilder {
     @Override
     public VaccineReport instantiate(PropertyLookup<VaccineReport> lookup) {
       VaccineReport item = new VaccineReport();
-      item.setProgramId(1L);
+      item.setProgramId(5L);
       item.setFacilityId(1L);
       item.setPeriodId(1L);
       item.setSupervisoryNodeId(1L);

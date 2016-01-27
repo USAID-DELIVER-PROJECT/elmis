@@ -12,6 +12,7 @@
 
 package org.openlmis.ivdform.repository.mapper.reports;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -32,6 +33,7 @@ import org.openlmis.db.categories.IntegrationTests;
 import org.openlmis.ivdform.builders.reports.LogisticsLineItemBuilder;
 import org.openlmis.ivdform.builders.reports.VaccineReportBuilder;
 import org.openlmis.ivdform.domain.reports.LogisticsLineItem;
+import org.openlmis.ivdform.domain.reports.ReportStatus;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -44,6 +46,7 @@ import java.util.List;
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.openlmis.core.builder.ProcessingPeriodBuilder.defaultProcessingPeriod;
@@ -78,9 +81,11 @@ public class LogisticsLineItemMapperIT {
 
   private Product product;
 
+  private Facility facility;
+
   @Before
   public void setUp() throws Exception {
-    Facility facility = make(a(FacilityBuilder.defaultFacility));
+    facility = make(a(FacilityBuilder.defaultFacility));
     facilityMapper.insert(facility);
 
     ProcessingSchedule processingSchedule = make(a(ProcessingScheduleBuilder.defaultProcessingSchedule));
@@ -136,4 +141,56 @@ public class LogisticsLineItemMapperIT {
     List<LogisticsLineItem> lineItemList = logisticsLineItemMapper.getLineItems(report.getId());
     assertThat(lineItemList, hasSize(1));
   }
+
+  @Test
+  public void shouldGetApprovedLineItemForProductWhenThereIsApprovedReport() throws Exception {
+
+
+
+    LogisticsLineItem lineItem = make(a(LogisticsLineItemBuilder.defaultLogisticsLineItem));
+    lineItem.setProductId(product.getId());
+    lineItem.setClosingBalance(20L);
+    lineItem.setReportId(report.getId());
+    logisticsLineItemMapper.insert(lineItem);
+
+    report.setStatus(ReportStatus.APPROVED);
+    ivdFormMapper.update(report);
+
+    LogisticsLineItem response = logisticsLineItemMapper.getApprovedLineItemFor( "VACCINES", lineItem.getProductCode(), facility.getCode(), report.getPeriodId());
+    assertThat(response, is(Matchers.notNullValue()));
+    assertThat(response.getClosingBalance(), is(lineItem.getClosingBalance()));
+  }
+
+  @Test
+  public void shouldGetNullApprovedLineItemForProductWhenThereIsNoApprovedReportForSpecifiedPeriod() throws Exception {
+
+    LogisticsLineItem lineItem = make(a(LogisticsLineItemBuilder.defaultLogisticsLineItem));
+    lineItem.setProductId(product.getId());
+    lineItem.setClosingBalance(40L);
+    lineItem.setReportId(report.getId());
+    logisticsLineItemMapper.insert(lineItem);
+
+    report.setStatus(ReportStatus.DRAFT);
+    ivdFormMapper.update(report);
+
+    LogisticsLineItem response = logisticsLineItemMapper.getApprovedLineItemFor( "VACCINES", lineItem.getProductCode(), facility.getCode(), report.getPeriodId());
+    assertThat(response, is(nullValue()));
+  }
+
+  @Test
+  public void shouldGetApprovedLineItemListForFacility() throws Exception {
+
+    LogisticsLineItem lineItem = make(a(LogisticsLineItemBuilder.defaultLogisticsLineItem));
+    lineItem.setProductId(product.getId());
+    lineItem.setClosingBalance(40L);
+    lineItem.setReportId(report.getId());
+    logisticsLineItemMapper.insert(lineItem);
+
+    report.setStatus(ReportStatus.APPROVED);
+    ivdFormMapper.update(report);
+
+    List<LogisticsLineItem> lineItems = logisticsLineItemMapper.getApprovedLineItemListFor("VACCINES", facility.getCode(), report.getPeriodId());
+    assertThat(lineItems.get(0).getClosingBalance(), is(lineItem.getClosingBalance()));
+  }
+  
 }
