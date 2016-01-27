@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.SupervisoryNode;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class OrderRequisitionDTO {
+public class OrderRequisitionDTO extends SupervisoryNode{
 
     Long id;
     Long periodId;
@@ -42,7 +43,8 @@ public class OrderRequisitionDTO {
     //Used to view pending requisition
 
     String facilityName;
-    Date orderDate;
+    String orderDate;
+    Long orderId;
 
 
 
@@ -59,6 +61,10 @@ public class OrderRequisitionDTO {
     String productCategory;
 
     Boolean emergency;
+
+    String productName;
+
+    String productCode;
 
 
 
