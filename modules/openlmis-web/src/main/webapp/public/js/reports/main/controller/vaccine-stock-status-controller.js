@@ -31,7 +31,12 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
 
         VaccineStockStatusReport.get($scope.getSanitizedParameter(), function (data) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
-                $scope.data = data.pages.rows;
+                //$scope.data = data.pages.rows;
+               var groupByFacility = _.groupBy(data.pages.rows,'facilityId');
+
+                $scope.data = $.map(groupByFacility,function(value,index){
+                    return [value];
+                });
                 $scope.paramsChanged($scope.tableParams);
             }
         });
