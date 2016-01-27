@@ -61,7 +61,7 @@
 
                             <div class="form-field">
                                 <input name="endTime" id="endTime" type="text"
-                                       ui-date
+                                       ui-date="{maxDate:'today', dateFormat: 'dd/mm/yy', changeYear: true}"
                                        ui-date-format
                                        ng-model="filter.endTime"
                                        ng-change="OnFilterChanged()"
