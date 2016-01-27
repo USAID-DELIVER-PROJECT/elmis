@@ -79,4 +79,11 @@ public class VaccineOrderRequisitionRepository {
     public List<OrderRequisitionStockCardDTO> getAllByFacility(Long facilityId, Long programId) {
         return orderRequisitionMapper.getAllByFacility(facilityId, programId);
     }
+
+    public List<OrderRequisitionDTO>getSupervisoryNodeByFacility(Long facilityId){
+        return orderRequisitionMapper.getSupervisoryNodeByFacility(facilityId);
+    }
+    public List<OrderRequisitionDTO>getConsolidatedList(Long program,String facilityIds){
+        return orderRequisitionMapper.getConsolidatedList(program,facilityIds);
+    }
 }

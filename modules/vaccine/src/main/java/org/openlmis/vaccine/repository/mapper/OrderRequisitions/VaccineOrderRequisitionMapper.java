@@ -149,8 +149,8 @@ public interface VaccineOrderRequisitionMapper {
     @Select("select * from supervisory_nodes where facilityId = #{facilityId} ")
     List<OrderRequisitionDTO>getSupervisoryNodeByFacility(@Param("facilityId") Long facilityId);
 
-   @Select(" select o.id orderId, facilityId, (select name from facilities where id = o.facilityId) facilityName,  " +
-           "li.quantityRequested,li.productName,p.code productCode  " +
+   @Select(" select o.periodId, o.id orderId, facilityId, (select name from facilities where id = o.facilityId) facilityName,  " +
+           "li.quantityRequested,li.productName,p.code productCode,p.id productId  " +
            " from vaccine_order_requisitions o  " +
            "JOIN vaccine_order_requisition_line_items li ON o.id = li.orderId " +
            "JOIN products p ON li.productId = p.Id " +

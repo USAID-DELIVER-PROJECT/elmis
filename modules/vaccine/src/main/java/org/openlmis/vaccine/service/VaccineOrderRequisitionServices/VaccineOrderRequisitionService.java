@@ -65,6 +65,12 @@ public class VaccineOrderRequisitionService {
     ProductService service;
 
 
+    public static String  getCommaSeparatedIds(List<Long> idList){
+
+        return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
+    }
+
+
     @Transactional
     public VaccineOrderRequisition initialize(Long periodId, Long programId, Long facilityId, Long userId) {
         VaccineOrderRequisition orderRequisition = orderRequisitionRepository.getByFacilityProgram(periodId, programId, facilityId);
@@ -233,4 +239,10 @@ public class VaccineOrderRequisitionService {
         return orderRequisitionRepository.getAllByFacility(facilityId,programId);
     }
 
+    public List<OrderRequisitionDTO>getSupervisoryNodeByFacility(Long facilityId){
+        return orderRequisitionRepository.getSupervisoryNodeByFacility(facilityId);
+    }
+    public List<OrderRequisitionDTO>getConsolidatedList(Long program,List<Long> facilityIds){
+        return orderRequisitionRepository.getConsolidatedList(program,getCommaSeparatedIds(facilityIds));
+    }
 }
