@@ -64,6 +64,14 @@
                                  required="true"
                                  class="form-cell horizontalFilters">
                     </zone-filter>
+                    <regimen-category-filter ng-if="fltr.name == 'regimen-category'"
+                                 required="true"
+                                 class="form-cell horizontalFilters">
+                    </regimen-category-filter>
+                    <regimen-filter ng-if="fltr.name == 'regimen'"
+                                    required="true"
+                                    class="form-cell horizontalFilters">
+                    </regimen-filter>
                     <facility-type-filter ng-if="fltr.name == 'facility-type'"
                                           class="form-cell horizontalFilters"
                                           required="true">
