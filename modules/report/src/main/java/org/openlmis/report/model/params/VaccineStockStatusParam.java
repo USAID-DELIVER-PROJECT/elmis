@@ -27,5 +27,7 @@ public class VaccineStockStatusParam extends BaseParam implements ReportParamete
     @RequiredParam
     private Long program;
 
+    private String productCategory;
+
 
 }
