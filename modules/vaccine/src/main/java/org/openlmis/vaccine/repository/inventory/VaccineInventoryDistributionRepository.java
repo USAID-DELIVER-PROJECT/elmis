@@ -82,4 +82,12 @@ public class VaccineInventoryDistributionRepository {
     {
         return mapper.getFacilityVoucherNumberCode(facilityId);
     }
+
+    public VaccineDistribution getAllDistributionsForNotification(Long facilityId)
+    {
+        return mapper.getAllDistributionsForNotification(facilityId);
+    }
+    public Long updateNotification(Long Id){
+        return mapper.updateNotification(Id);
+    }
 }

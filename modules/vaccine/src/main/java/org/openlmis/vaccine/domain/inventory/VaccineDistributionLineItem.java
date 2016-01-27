@@ -23,5 +23,6 @@ public class VaccineDistributionLineItem extends BaseModel {
     private Long quantity;
     private Integer vvmStatus;
     private Long quantityRequested;
+    private String remarks;
 }
 

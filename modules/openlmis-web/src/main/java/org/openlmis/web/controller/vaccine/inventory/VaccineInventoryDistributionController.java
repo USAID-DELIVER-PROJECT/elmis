@@ -13,6 +13,8 @@ package org.openlmis.web.controller.vaccine.inventory;
 
 
 import org.apache.ibatis.annotations.Param;
+import org.openlmis.core.domain.Facility;
+import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
@@ -24,11 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -39,6 +43,8 @@ public class VaccineInventoryDistributionController extends BaseController {
 
     @Autowired
     VaccineInventoryDistributionService service;
+    @Autowired
+    FacilityService facilityService;
 
     @RequestMapping(value = "save", method = POST, headers = ACCEPT_JSON)
     //TODO @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_PROGRAM_PRODUCT')")
@@ -67,5 +73,29 @@ public class VaccineInventoryDistributionController extends BaseController {
         Long userId = loggedInUserId(request);
         return OpenLmisResponse.response("distribution", service.getDistributionByVoucherNumber(userId,voucherNumber));
     }
+
+    @RequestMapping(value = "saveConsolidatedDistributionList", method = POST, headers = ACCEPT_JSON)
+    @Transactional
+    public ResponseEntity<OpenLmisResponse> saveConsolidatedDistributionList(@RequestBody List<VaccineDistribution> distribution, HttpServletRequest request) {
+        Long userId = loggedInUserId(request);
+        return OpenLmisResponse.response("distributionIds", service.saveConsolidatedList(distribution, userId));
+    }
+
+
+    @RequestMapping(value = "getAllDistributionsForNotification", method = GET, headers = ACCEPT_JSON)
+    @Transactional
+    public ResponseEntity<OpenLmisResponse> getAllDistributionsForNotification(HttpServletRequest request) {
+        Long userId = loggedInUserId(request);
+        Facility homeFacility = facilityService.getHomeFacility(userId);
+        Long facilityId = homeFacility.getId();
+        return OpenLmisResponse.response("remarks", service.getAllDistributionsForNotification(facilityId));
+    }
+
+    @RequestMapping(value = "UpdateDistributionsForNotification/{id}", method = GET)
+    public ResponseEntity<OpenLmisResponse> getAllDistributionsForNotification(@PathVariable Long id, HttpServletRequest request) {
+        return OpenLmisResponse.response("updated", service.UpdateNotification(id));
+    }
+
+
 
 }

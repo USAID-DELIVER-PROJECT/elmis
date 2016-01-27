@@ -25,14 +25,14 @@ public interface VaccineInventoryDistributionMapper {
     List<Facility> getOneLevelSupervisedFacities(@Param("facilityId") Long facilityId);
 
     @Insert("insert into vaccine_distributions " +
-            " (tofacilityid, fromfacilityid, vouchernumber, distributiondate, periodid,orderid,status, distributiontype, createdby, createddate, modifiedby,modifieddate )" +
+            " (tofacilityid, fromfacilityid, vouchernumber, distributiondate, periodid,orderid,status, distributiontype, createdby, createddate, modifiedby,modifieddate,remarks )" +
             " values " +
-            " (#{toFacilityId}, #{fromFacilityId}, #{voucherNumber}, #{distributionDate}, #{periodId}, #{orderId}, #{status},#{distributionType}, #{createdBy},NOW(),#{modifiedBy},NOW()) ")
+            " (#{toFacilityId}, #{fromFacilityId}, #{voucherNumber}, #{distributionDate}, #{periodId}, #{orderId}, #{status},#{distributionType}, #{createdBy},NOW(),#{modifiedBy},NOW(),#{remarks}) ")
     @Options(useGeneratedKeys = true)
     Integer saveDistribution(VaccineDistribution vaccineDistribution);
 
     @Update("update vaccine_distributions set " +
-            " status=#{status}, modifiedby=#{modifiedBy}, modifieddate=NOW() " +
+            " status=#{status}, modifiedby=#{modifiedBy}, modifieddate=NOW(),remarks = #{reameks} " +
             " where id=#{id}"
     )
     Integer updateDistribution(VaccineDistribution vaccineDistribution);
@@ -153,4 +153,15 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select("Select * from vw_vaccine_distribution_voucher_no_fields WHERE facilityid=#{facilityId}")
     VoucherNumberCode getFacilityVoucherNumberCode(@Param("facilityId") Long facilityId);
+
+    @Select("select vd.Id, count(remarks) total, remarks, to_char(o.createdDate,'dd-MM-YYYY' ) orderDate   " +
+            " from vaccine_distributions vd" +
+            " JOIN vaccine_order_requisitions o on vd.orderId = O.ID  " +
+            "where toFacilityId = #{facilityId} and notified = false and  " +
+            " vd.status = 'PENDING' and remarks is not Null  group by remarks,vd.Id,o.createdDate  order by vd.Id  DESC limit 1 ")
+    VaccineDistribution getAllDistributionsForNotification(@Param("facilityId") Long facilityId);
+
+    @Select(" update vaccine_distributions SET notified = true WHERE id = #{Id} ")
+    Long updateNotification(@Param("Id") Long Id);
+
 }
