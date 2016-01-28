@@ -103,16 +103,13 @@ public class CompletenessAndTimelinessQueryBuilder {
         Date startDate   = (Date) params.get("startDate");
         Date endDate     = (Date) params.get("endDate");
 
-        String sql = "SELECT a.period_name, \n" +
-                "       a.year, \n" +
-                "       a.month, \n" +
-                "       a.geographiczoneid, \n" +
-                "       a.expected, \n" +
-                "       a.reported, \n" +
-                "       a.ontime, \n" +
-                "       a.late, \n" +
-                "       Trunc((a.reported::numeric/a.expected::numeric)*100,2) percent_reported, \n" +
-                "       Trunc((a.late::    numeric/a.expected::numeric)*100,2) percent_late \n" +
+        String sql = "SELECT " +
+                "    a.year,  \n" +
+                "    a.month,  \n" +
+                "    sum(a.expected) expected,\n" +
+                "    sum(a.reported) reported,  \n" +
+                "    sum(a.ontime) ontime,  \n" +
+                "    sum(a.late) late \n"+
                 "FROM   ( WITH temp AS \n" +
                 "       ( \n" +
                 "                 SELECT    pp.NAME                                period_name, \n" +
@@ -159,7 +156,8 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                group by 1, 2, 3, 4\n" +
                 "                \n" +
                 ") as a\n" +
-                "order by 1, 2, 3";
+                " group by 1,2 " +
+                " order by 1, 2, 3";
         return sql;
     }
 
