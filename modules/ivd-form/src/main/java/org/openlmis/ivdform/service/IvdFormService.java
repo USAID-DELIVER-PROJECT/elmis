@@ -262,7 +262,7 @@ public class IvdFormService {
     reportStatusChangeRepository.insert(change);
   }
 
-  public FacilityIvdSummary getStockInfoFor(String facilityCode, String programCode, Long periodId) {
+  public FacilityIvdSummary getStockStatusForAllProductsInFacility(String facilityCode, String programCode, Long periodId) {
     FacilityIvdSummary summary = new FacilityIvdSummary(facilityCode, programCode, periodId);
     List<LogisticsLineItem> list = logisticsLineItemRepository.getApprovedLineItemListFor(programCode, facilityCode, periodId);
     if (!emptyIfNull(list).isEmpty()) {
@@ -273,7 +273,7 @@ public class IvdFormService {
       summary.setEquipments(report.getColdChainLineItems());
 
       summary.setStatus(STOCK_STATUS_FOUND);
-      summary.setProducts(new ArrayList<>());
+      summary.setProducts(new ArrayList<StockStatusSummary>());
       for (LogisticsLineItem item : list) {
         summary.getProducts().add(populateStockStatusSummary(facilityCode, item.getProductCode(), programCode, periodId, item));
       }
@@ -283,7 +283,7 @@ public class IvdFormService {
     return summary;
   }
 
-  public StockStatusSummary getStockInfoFor(String facilityCode, String productCode, String programCode, Long periodId) {
+  public StockStatusSummary getStockStatusForProductInFacility(String facilityCode, String productCode, String programCode, Long periodId) {
     LogisticsLineItem periodicLLI = logisticsLineItemRepository.getApprovedLineItemFor(programCode, productCode, facilityCode, periodId);
     return populateStockStatusSummary(facilityCode, productCode, programCode, periodId, periodicLLI);
   }

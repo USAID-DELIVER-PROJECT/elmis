@@ -25,8 +25,10 @@ import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.db.categories.UnitTests;
+import org.openlmis.ivdform.builders.reports.VaccineReportBuilder;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
+import org.openlmis.ivdform.dto.RoutineReportDTO;
 import org.openlmis.ivdform.service.IvdFormService;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -39,6 +41,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.natpryce.makeiteasy.MakeItEasy.a;
+import static com.natpryce.makeiteasy.MakeItEasy.make;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -49,7 +54,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @PrepareForTest({Date.class})
-public class VaccineReportControllerTest {
+public class IvdFormControllerTest {
 
   @Mock
   IvdFormService service;
@@ -134,5 +139,53 @@ public class VaccineReportControllerTest {
 
     // the status would have changed.
     assertThat(report, is(response.getBody().getData().get("report")));
+  }
+
+  @Test
+  public void shouldGetViewPeriods() throws Exception {
+    Date currentDate = new Date();
+    List<ReportStatusDTO> periods = new ArrayList<>();
+    when(service.getReportedPeriodsFor(1L, 1L)).thenReturn(periods);
+    whenNew(Date.class).withNoArguments().thenReturn(currentDate);
+
+    ResponseEntity<OpenLmisResponse> response = controller.getViewPeriods(1L, 1L);
+
+    assertThat(periods, is(response.getBody().getData().get("periods")));
+  }
+
+  @Test
+  public void shouldGetPendingFormsForApproval() throws Exception {
+    RoutineReportDTO dto = new RoutineReportDTO();
+    dto.setStatus("REPORT_FOUND");
+    List<RoutineReportDTO> pendingForms = asList(dto);
+    when(service.getApprovalPendingForms(1L, 1L)).thenReturn( pendingForms );
+
+    ResponseEntity<OpenLmisResponse> response = controller.getPendingFormsForApproval(1L, httpServletRequest);
+
+    verify(service).getApprovalPendingForms(1L, 1L);
+    assertThat(pendingForms, is(response.getBody().getData().get("pending_submissions")));
+
+  }
+
+  @Test
+  public void shouldApprove() throws Exception {
+    VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
+    doNothing().when(service).approve(report, 1L);
+
+    ResponseEntity<OpenLmisResponse> response = controller.approve(report, httpServletRequest);
+
+    assertThat(report, is(response.getBody().getData().get("report")));
+    verify(service).approve(report, 1L);
+  }
+
+  @Test
+  public void shouldReject() throws Exception {
+    VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
+    doNothing().when(service).reject(report, 1L);
+
+    ResponseEntity<OpenLmisResponse> response = controller.reject(report, httpServletRequest);
+
+    assertThat(report, is(response.getBody().getData().get("report")));
+    verify(service).reject(report, 1L);
   }
 }
