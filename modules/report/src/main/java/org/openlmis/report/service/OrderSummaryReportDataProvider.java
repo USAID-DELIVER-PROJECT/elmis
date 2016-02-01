@@ -23,7 +23,7 @@ import org.openlmis.core.service.ProcessingPeriodService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.order.service.OrderService;
 import org.openlmis.report.mapper.OrderSummaryReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.OrderReportParam;
 import org.openlmis.report.service.lookup.ReportLookupService;
 import org.openlmis.report.util.ParameterAdaptor;
@@ -79,12 +79,7 @@ public class OrderSummaryReportDataProvider extends ReportDataProvider {
   private ProgramService programService;
 
   @Override
-  protected List<? extends ReportData> getResultSet(Map<String, String[]> filterCriteria) {
-    return getReportBody(filterCriteria, filterCriteria, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-  }
-
-  @Override
-  public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+  public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
     OrderReportParam orderReportParam =   getReportFilterData(filterCriteria);
     orderReportParam.setTitle(getTitle(orderReportParam));

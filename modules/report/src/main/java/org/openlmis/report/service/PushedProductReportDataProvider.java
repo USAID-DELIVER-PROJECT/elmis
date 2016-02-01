@@ -13,9 +13,8 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
-import org.openlmis.core.repository.GeographicZoneRepository;
 import org.openlmis.report.mapper.PushedProductReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.OrderFillRateReportParam;
 import org.openlmis.report.util.ParameterAdaptor;
 import org.openlmis.report.util.SelectedFilterHelper;
@@ -36,18 +35,10 @@ public class PushedProductReportDataProvider extends ReportDataProvider {
   private PushedProductReportMapper reportMapper;
 
   @Autowired
-  private GeographicZoneRepository geographicZoneMapper;
-
-  @Autowired
   private SelectedFilterHelper selectedFilterHelper;
 
   @Override
-  protected List<? extends ReportData> getResultSet(Map<String, String[]> params) {
-    return getReportBody(params, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-  }
-
-  @Override
-  public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sorter, int page, int pageSize) {
+  public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sorter, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
     return reportMapper.getPushedProducts(ParameterAdaptor.parse(filterCriteria, OrderFillRateReportParam.class), rowBounds, this.getUserId());
   }

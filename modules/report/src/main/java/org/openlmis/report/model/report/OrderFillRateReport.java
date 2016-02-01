@@ -13,37 +13,43 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
-import javax.persistence.Column;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderFillRateReport implements ReportData {
+public class OrderFillRateReport implements ResultRow {
 
     private String facility;
-    @Column(name = "approved")
+
     private Integer approved;
-    @Column(name="receipts")
+
     private Integer receipts;
-    @Column( name = "productcode")
+
     private String productcode;
-    @Column( name = "product")
+
     private String product;
+
     private Integer item_fill_rate;
+
     private String ORDER_FILL_RATE;
-    @Column(name="facilitytype")
+
     private String facilityType;
-    @Column(name="supplyingfacility")
+
     private String supplyingFacility ;
-    @Column(name="category")
+
     private String category;
+
     private Integer totalproductsreceived;
+
     private Integer totalproductsapproved;
+
     private String name;
+
     private String nameLabel;
+
     private String count;
 
 }

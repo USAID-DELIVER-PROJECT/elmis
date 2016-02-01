@@ -13,14 +13,14 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import javax.persistence.Column;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class CCERepairManagementReport implements ReportData {
+public class CCERepairManagementReport implements ResultRow {
 
     @Column(name = "facility_id")
     private  int facility_id;

@@ -13,13 +13,13 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CCEStorageCapacityReport implements ReportData {
+public class CCEStorageCapacityReport implements ResultRow {
 
   private String siteName;
   private String refrigeratorCapacityCurrent;

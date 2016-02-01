@@ -15,7 +15,7 @@ package org.openlmis.report.service;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.mapper.NonReportingFacilityReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.dto.NameCount;
 import org.openlmis.report.model.params.NonReportingFacilityParam;
 import org.openlmis.report.model.report.MasterReport;
@@ -45,13 +45,13 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
   private SelectedFilterHelper filterHelper;
 
   @Override
-  protected List<? extends ReportData> getResultSet(Map<String, String[]> filterCriteria) {
+  public List<? extends ResultRow> getResultSet(Map<String, String[]> filterCriteria) {
     RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
     return reportMapper.getReport(getFilterParameters(filterCriteria), rowBounds, this.getUserId());
   }
 
   @Override
-  public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+  public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
     NonReportingFacilityParam nonReportingFacilityParam = getFilterParameters(filterCriteria);
     List<MasterReport> reportList = new ArrayList<>();
@@ -95,7 +95,7 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
     report.setSummary(summary);
     reportList.add(report);
 
-    List<? extends ReportData> list;
+    List<? extends ResultRow> list;
     list = reportList;
     return list;
   }

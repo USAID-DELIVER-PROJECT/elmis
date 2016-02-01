@@ -18,7 +18,6 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.StockImbalanceQueryBuilder;
-import org.openlmis.report.model.ReportData;
 import org.openlmis.report.model.ReportParameter;
 import org.openlmis.report.model.report.StockImbalanceReport;
 import org.springframework.stereotype.Repository;

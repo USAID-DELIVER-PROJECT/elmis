@@ -16,12 +16,12 @@ package org.openlmis.report.model.report;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ColdChainTemperature implements ReportData {
+public class ColdChainTemperature implements ResultRow {
 
     String zone_name;
     String region_name;

@@ -20,13 +20,11 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.VaccineTemperatureReportQueryBuilder;
-import org.openlmis.report.model.ReportData;
 import org.openlmis.report.model.params.ColdChainTemperatureReportParam;
 import org.openlmis.report.model.report.ColdChainTemperature;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface ColdChainTemperaturesReportMapper {

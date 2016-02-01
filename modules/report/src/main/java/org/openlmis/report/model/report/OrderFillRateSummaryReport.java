@@ -12,7 +12,7 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import javax.persistence.Column;
 
@@ -20,7 +20,7 @@ import javax.persistence.Column;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderFillRateSummaryReport implements ReportData {
+public class OrderFillRateSummaryReport implements ResultRow {
     private String OrderFillRateStatus;
     private Integer TotalOrderFillRate;
     private String facility;

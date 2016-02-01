@@ -13,7 +13,7 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import javax.persistence.Column;
 
@@ -21,7 +21,7 @@ import javax.persistence.Column;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockImbalanceReport implements ReportData {
+public class StockImbalanceReport implements ResultRow {
     private String facilityType;
     private String facility;
     private String districtName;

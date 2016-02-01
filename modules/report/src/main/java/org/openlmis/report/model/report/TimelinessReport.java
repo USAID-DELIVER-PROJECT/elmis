@@ -15,7 +15,7 @@ package org.openlmis.report.model.report;
 
 import lombok.*;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import java.util.Date;
 
@@ -24,7 +24,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimelinessReport implements ReportData {
+public class TimelinessReport implements ResultRow {
 
     private Integer zoneId;
     private String district;

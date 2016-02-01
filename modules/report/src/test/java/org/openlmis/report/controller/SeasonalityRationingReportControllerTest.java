@@ -27,7 +27,7 @@ import org.openlmis.db.categories.UnitTests;
 import org.openlmis.report.Report;
 import org.openlmis.report.ReportManager;
 import org.openlmis.report.model.Pages;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.report.SeasonalRationingReport;
 import org.openlmis.report.service.SeasonalRationingReportDataProvider;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -81,7 +81,7 @@ public class SeasonalityRationingReportControllerTest {
         int pageSize = 1;
         int maxSize = 1;
 
-        List<ReportData> expectedSeasonalityReportData = new ArrayList<>(1);
+        List<ResultRow> expectedSeasonalityReportData = new ArrayList<>(1);
         expectedSeasonalityReportData.add(  new SeasonalRationingReport());
 
         Pages expectedPage = new Pages(pageSize, maxSize, expectedSeasonalityReportData);

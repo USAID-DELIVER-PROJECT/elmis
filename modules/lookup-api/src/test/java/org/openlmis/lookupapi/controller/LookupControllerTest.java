@@ -1,4 +1,4 @@
-package org.openlmis.restapi.controller;
+package org.openlmis.lookupapi.controller;
 
 import org.apache.ibatis.session.RowBounds;
 import org.junit.Before;
@@ -11,8 +11,8 @@ import org.mockito.Mock;
 import org.openlmis.core.domain.FacilityTypeApprovedProduct;
 import org.openlmis.core.domain.ProgramProduct;
 import org.openlmis.db.categories.UnitTests;
+import org.openlmis.lookupapi.service.LookupService;
 import org.openlmis.report.model.dto.*;
-import org.openlmis.report.service.lookup.ReportLookupService;
 import org.openlmis.restapi.response.RestResponse;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -37,7 +37,8 @@ public class LookupControllerTest {
   Principal principal;
   RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
   @Mock
-  private ReportLookupService lookupService;
+  private LookupService lookupService;
+
   @InjectMocks
   private LookupController controller;
 
@@ -67,7 +68,7 @@ public class LookupControllerTest {
     when(RestResponse.response("products", new ArrayList<ProductList>())).thenReturn(expectResponse);
     when(lookupService.getFullProductList(rowBounds)).thenReturn(new ArrayList<org.openlmis.core.domain.Product>());
 
-    ResponseEntity<RestResponse> response = controller.getProducts(1,10,false);
+    ResponseEntity<RestResponse> response = controller.getProducts(1, 10, false);
 
     assertThat(response, is(expectResponse));
   }
@@ -76,7 +77,7 @@ public class LookupControllerTest {
   @Test
   public void shouldGetProductByCode() throws Exception {
     when(lookupService.getProductByCode("123")).thenReturn(new Product());
-    ResponseEntity<RestResponse> response = controller.getProductByCode( "123");
+    ResponseEntity<RestResponse> response = controller.getProductByCode("123");
     verify(lookupService).getProductByCode("123");
   }
 
@@ -114,7 +115,7 @@ public class LookupControllerTest {
 
     when(lookupService.getAllFacilities(rowBounds)).thenReturn(new ArrayList<Facility>());
 
-    ResponseEntity<RestResponse> response = controller.getFacilities(1,10, false);
+    ResponseEntity<RestResponse> response = controller.getFacilities(1, 10, false);
 
     assertThat(response, is(expectResponse));
   }
@@ -169,7 +170,7 @@ public class LookupControllerTest {
   public void shouldGetProgramByCode() throws Exception {
 
     when(lookupService.getProgramByCode("123")).thenReturn(new Program());
-    ResponseEntity<RestResponse> response = controller.getProgramByCode( "123");
+    ResponseEntity<RestResponse> response = controller.getProgramByCode("123");
     verify(lookupService).getProgramByCode("123");
   }
 
@@ -212,4 +213,4 @@ public class LookupControllerTest {
   }
 
 
-} 
+}

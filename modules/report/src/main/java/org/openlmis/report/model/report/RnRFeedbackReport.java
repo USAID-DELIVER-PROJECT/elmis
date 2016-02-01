@@ -13,7 +13,7 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import javax.persistence.Column;
 
@@ -21,7 +21,7 @@ import javax.persistence.Column;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RnRFeedbackReport implements ReportData {
+public class RnRFeedbackReport implements ResultRow {
     private String product;
     private String productCode;
     @Column( name = "facility_name")

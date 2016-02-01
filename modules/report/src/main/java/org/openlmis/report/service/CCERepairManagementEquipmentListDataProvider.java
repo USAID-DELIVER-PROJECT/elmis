@@ -16,9 +16,8 @@ import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.report.mapper.CCERepairManagementReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.CCERepairManagementEquipmentListParam;
-import org.openlmis.report.model.report.CCERepairManagementEquipmentList;
 import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,13 +40,7 @@ public class CCERepairManagementEquipmentListDataProvider extends ReportDataProv
   private CCERepairManagementEquipmentListParam CCERepairManagementEquipmentListParam = null;
 
   @Override
-  protected List<? extends ReportData> getResultSet(Map<String, String[]> params) {
-
-    return CCERepairManagementReportMapper.getEquipmentList(getReportFilterData(params), this.getUserId());
-  }
-
-  @Override
-  public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+  public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
     return  CCERepairManagementReportMapper.getEquipmentList(getReportFilterData(filterCriteria), this.getUserId());
 

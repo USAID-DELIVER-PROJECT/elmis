@@ -10,10 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.report;
+package org.openlmis.report.model;
 
+public interface ResultRow {
 
-public enum DataSourceType {
-    BEAN_COLLECTION_DATA_SOURCE,
-    RESULT_SET_DATA_SOURCE
 }

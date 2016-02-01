@@ -14,8 +14,8 @@ package org.openlmis.report.service;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.openlmis.report.DataSourceType;
-import org.openlmis.report.model.ReportData;
+import org.apache.ibatis.session.RowBounds;
+import org.openlmis.report.model.ResultRow;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,16 +23,15 @@ import java.util.Map;
 
 public abstract class ReportDataProvider {
 
-  @Getter @Setter
+  @Getter
+  @Setter
   private Long userId;
 
-  public final List<? extends ReportData> getReportDataByFilterCriteria(Map<String, String[]> params, DataSourceType dataSourceType){
-    return getResultSet(params);
+  public List<? extends ResultRow> getResultSet(Map<String, String[]> params){
+    return getReportBody(params, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
   }
 
-  protected abstract List<? extends ReportData> getResultSet(Map<String, String[]> params);
-
-  public abstract List<? extends ReportData> getReportBody(Map<String, String[]> filter, Map<String, String[]> sorter, int page, int pageSize);
+  public abstract List<? extends ResultRow> getReportBody(Map<String, String[]> filter, Map<String, String[]> sorter, int page, int pageSize);
 
   public Map<String,String> getExtendedHeader(Map params){
       return Collections.emptyMap();
