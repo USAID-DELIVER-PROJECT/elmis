@@ -68,6 +68,7 @@
     <import resource="classpath:/applicationContext-authentication.xml"/>
     <import resource="classpath:/applicationContext-core.xml"/>
     <import resource="classpath:/applicationContext-restapi.xml"/>
+    <import resource="classpath:/applicationContext-lookup-api.xml"/>
     <import resource="classpath:/applicationContext-shipment.xml"/>
     <import resource="classpath:/applicationContext-reporting.xml"/>
     <import resource="classpath:/applicationContext-report.xml"/>

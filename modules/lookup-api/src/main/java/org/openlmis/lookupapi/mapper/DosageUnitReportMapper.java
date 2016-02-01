@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.report.mapper.lookup;
+package org.openlmis.lookupapi.mapper;
 
 import org.apache.ibatis.annotations.Select;
 import org.openlmis.report.model.dto.DosageUnit;

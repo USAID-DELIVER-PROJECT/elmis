@@ -21,7 +21,6 @@ services.factory('AverageConsumptionReport', function ($resource) {
     return $resource('/reports/reportdata/averageConsumption.json', {}, {});
 });
 
-
 services.factory('ReportRegimenCategories', function($resource){
    return $resource('/reports/regimenCategories.json', {}, {}) ;
 } );
@@ -151,16 +150,6 @@ services.factory('ReportRegimens',function ($resource){
     return $resource('/reports/regiments.json', {}, {}) ;
 });
 
-services.factory('ReportGeographicLevels',function ($resource){
-    return $resource('/reports/geographicLevels.json', {}, {}) ;
-});
-
-//deprecated: use "AllFacilities" service instead
-services.factory('GetFacilityCompleteList',function($resource){
-  return $resource('/reports/allFacilities.json',{},{});
-});
-
-
 services.factory('ColdChainEquipmentService',function($resource){
     return $resource('/reports/reportdata/coldChainEquipment.json',{},{});
 });
@@ -176,86 +165,10 @@ services.factory('ReportPeriods', function ($resource) {
 services.factory('ReportPeriodsByScheduleAndYear', function ($resource) {
     return $resource('/reports/schedules/:scheduleId/year/:year/periods.json', {}, {});
 });
-services.factory('AllReportPeriods', function ($resource) {
-    return $resource('/reports/allPeriods.json', {}, {});
-});
-
-services.factory('ReportFilteredPeriods', function ($resource) {
-    return $resource('/reports/periods.json', {}, {});
-});
 
 services.factory('ReportGeographicZones', function ($resource) {
     return $resource('/reports/geographicZones.json', {}, {});
 });
-
-services.factory('GeographicZone', function ($resource) {
-    return $resource('/geographicZone/:id.json', {}, {update:{method:'PUT'}});
-});
-
-services.factory('CreateGeographicZone', function ($resource) {
-    return $resource('/geographicZone/insert.json', {}, {update:{method:'POST'}});
-});
-
-services.factory('GeographicLevels', function($resource) {
-    return $resource('/geographicLevels.json',{},{});
-});
-
-services.factory('GetGeographicZone',function($resource){
-    return $resource('/geographicZone/getDetails/:id.json',{},{});
-});
-
-services.factory('SetGeographicZone',function($resource){
-    return $resource('/geographicZone/setDetails.json',{},{update:{method:'POST'}});
-});
-
-services.factory('Supplylinelist', function ($resource) {
-    return $resource('/supplylineslist.json', {}, {});
-});
-
-
-
-services.factory('Supplyline', function ($resource) {
-    return $resource('/supplylines/:id.json', {}, {update:{method:'PUT'}});
-});
-
-services.factory('SupplylineDelete', function ($resource) {
-    return $resource('/supplylineDelete/:id.json', {}, {update:{method:'PUT'}});
-});
-
-//Parameters are passed for searching geographic zones.
-services.factory('GeographicZoneList', function ($resource) {
-    return $resource('/geographicZones.json', {}, {});
-});
-
-services.factory('ProductList', function ($resource) {
-    return $resource('/productslist.json', {}, {});
-});
-
-services.factory('GeographicZoneCompleteList', function ($resource) {
-    return $resource('/geographicZone/getList.json', {}, {});
-});
-
-services.factory('RequisitionGroupCompleteList',function($resource){
-    return $resource('/requisitionGroup/getList.json',{},{});
-});
-
-services.factory('SaveRequisitionGroup',function($resource){
-    return $resource('/requisitionGroup/insert.json',{},{});
-});
-
-services.factory('GetRequisitionGroup',function($resource){
-    return $resource('/requisitionGroup/getDetails/:id.json',{},{});
-});
-
-services.factory('RemoveRequisitionGroup',function($resource){
-    return $resource('/requisitionGroup/remove/:id.json',{},{});
-});
-
-services.factory('FacilityCompleteListInRequisitionGroup',function($resource){
-    return $resource('/facilities/getListInRequisitionGroup/:id.json',{},{});
-});
-
-
 
 services.factory('GetFacilityByFacilityType',function($resource){
     return $resource('/facilities/facilityType/:facilityTypeId.json',{},{});
@@ -274,29 +187,8 @@ services.factory('RemoveRequisitionGroupMember',function($resource){
     return $resource('/requisitionGroupMember/remove/:rgId/:facId.json',{},{});
 });
 
-services.factory("AllFacilites",function($resource)  {
-    return   $resource('/reports/allFacilities.json', {}, {});
-});
-
 services.factory("FacilitiesByProgramParams",function($resource)  {
-  //return   $resource('/reports/facilities/program/:program/schedule/:schedule/type/:type/requisitionGroup/:requisitionGroup.json', {}, {});
   return   $resource('/reports/facilities.json', {}, {});
-});
-
-services.factory('SupervisoryNodeCompleteList',function($resource){
-    return $resource('/supervisoryNode/getList.json',{},{});
-});
-
-services.factory('SaveSupervisoryNode',function($resource){
-    return $resource('/supervisoryNode/insert.json',{},{});
-});
-
-services.factory('GetSupervisoryNode',function($resource){
-    return $resource('/supervisoryNode/getDetails/:id.json',{},{});
-});
-
-services.factory('RemoveSupervisoryNode',function($resource){
-    return $resource('/supervisoryNode/remove/:id.json',{},{});
 });
 
 services.factory('Settings',function($resource){
@@ -434,12 +326,7 @@ services.factory('UserSupervisoryNodes', function($resource){
 services.factory('UserGeographicZoneTree',function ($resource){
     return $resource('/reports/geographic-zones/tree.json', {}, {});
 });
-/*services.factory('UserDefaultSupervisoryNode', function($resource){
-   return $resource('/reports/user/default-supervisory-node.json',{},{});
-});*/
-/*services.factory('ProgramListBySupervisoryNodes', function ($resource) {
-    return $resource('/reports/supervisory-nodes/programs.json', {}, {});
-});*/
+
 services.factory('UserSupervisedActivePrograms', function ($resource) {
     return $resource('/reports/user/programs.json', {}, {});
 });
@@ -498,9 +385,7 @@ services.factory('StockedOutAlerts', function($resource){
 services.factory('NotificationAlerts', function($resource) {
     return $resource('/dashboard/notification/alerts.json', {}, {});
 });
-/*services.factory('DashboardNotificationsDetail', function($resource){
-   return $resource('/dashboard/notifications/:alertId/:detailTable.json',{},{});
-});*/
+
 services.factory('DashboardNotificationsDetail', function($resource){
     return $resource('/dashboard/notifications/:programId/:periodId/:zoneId/:productId/:detailTable.json',{},{});
 });
@@ -559,9 +444,6 @@ services.factory("UserRoleAssignmentsSummary1", function($resource){
 
 });
 
-/*services.factory("RnRStatusSummary",function($resource){
-    return $resource('/dashboard/rnrstatusSummary/requisitionGroup/:requisitionGroupId.json',{},{});
-});*/
 
 services.factory("totalRnRCreatedByRequisitionGroup",function($resource){
     return $resource('/dashboard//RnRCreateForRequisitionGroup',{},{});
@@ -579,9 +461,6 @@ services.factory("SendMessages",function($resource){
 });
 
 
-/*services.factory("RnRStatusByRequisitionGroupAndPeriodDetails ",function($resource){
-    $resource('/dashboard/RnRStatusByRequisitionGroupDetails.json',{},{});
-});*/
 
 services.factory('RnRStatusDetail', function($resource){
   return $resource('/dashboard/rnrStatus-detail.json',{},{});
@@ -918,10 +797,6 @@ services.factory('Countries', function ($resource) {
         },
         remove: {method:'DELETE'}
     });
-
-//    resource.disable = function (pathParams, success, error) {
-//        $resource('/countries/:id.json', {}, {update: {method: 'DELETE'}}).update(pathParams, {}, success, error);
-//    };
 
     return resource;
 });

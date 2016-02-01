@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.restapi.controller;
+package org.openlmis.lookupapi.controller;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -19,21 +19,18 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.*;
+import org.openlmis.lookupapi.service.LookupService;
 import org.openlmis.report.model.dto.Facility;
 import org.openlmis.report.model.dto.FacilityType;
 import org.openlmis.report.model.dto.Program;
-import org.openlmis.report.service.lookup.ReportLookupService;
 import org.openlmis.restapi.response.RestResponse;
 import org.openlmis.rnr.domain.LossesAndAdjustmentsType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import static org.openlmis.restapi.response.RestResponse.error;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Controller
 @NoArgsConstructor
@@ -68,12 +65,12 @@ public class LookupController {
   public static final String REGIMEN_CONSTITUENT_DOSAGES = "regimen-constituent-dosages";
 
   @Autowired
-  private ReportLookupService lookupService;
+  private LookupService lookupService;
 
   @ApiOperation(value = "Product Categories", notes = "Returns a list of product categories", response = ProductCategory.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = ProductCategory.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = ProductCategory.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/product-categories", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getProductCategories() {
@@ -82,8 +79,8 @@ public class LookupController {
 
   @ApiOperation(value = "Products", notes = "Returns a list of products.", response = Product.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = Product.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = Product.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/products", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getProducts(@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -97,8 +94,8 @@ public class LookupController {
 
   @ApiOperation(value = "Product Detail by Code", notes = "Returns details of a product", response = Product.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = Product.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = Product.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/product/{code}", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getProductByCode(@PathVariable("code") String code) {
@@ -107,8 +104,8 @@ public class LookupController {
 
   @ApiOperation(value = "Dosage Units", notes = "Returns a list of Dosage Units.", response = DosageUnit.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = DosageUnit.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = DosageUnit.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/dosage-units", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getDosageUnits() {
@@ -117,8 +114,8 @@ public class LookupController {
 
   @ApiOperation(value = "Facility Types", notes = "List of Facility Types.", response = FacilityType.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = FacilityType.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = FacilityType.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/facility-types", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getFacilityTypes() {
@@ -127,8 +124,8 @@ public class LookupController {
 
   @ApiOperation(value = "Facilities", notes = "Returns a list of facilities.", response = Facility.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = Facility.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = Facility.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/facilities", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getFacilities(@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -140,8 +137,8 @@ public class LookupController {
 
   @ApiOperation(value = "Facility Detail by Code", notes = "Returns Facility Detail by Code", response = Facility.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = Facility.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = Facility.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/facility/{code}", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getFacilityByCode(@PathVariable("code") String code) {
@@ -151,8 +148,8 @@ public class LookupController {
 
   @ApiOperation(value = "Programs", notes = "Returns a list of Programs.", response = Program.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = Program.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = Program.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/programs", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getPrograms() {
@@ -161,8 +158,8 @@ public class LookupController {
 
   @ApiOperation(value = "Program Products", notes = "Returns a complete list of Products supported by Program.", response = ProgramProduct.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = ProgramProduct.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = ProgramProduct.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/program-products", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getProgramProducts() {
@@ -171,8 +168,8 @@ public class LookupController {
 
   @ApiOperation(value = "Facility Type Approved Products", notes = "Returns a complete list of Facility type supported by Program.", response = FacilityTypeApprovedProduct.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = FacilityTypeApprovedProduct.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = FacilityTypeApprovedProduct.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/facility-approved-products", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getFacilityApprovedProducts() {
@@ -181,8 +178,8 @@ public class LookupController {
 
   @ApiOperation(value = "Program detail By Code", notes = "Returns program detail by code", response = Program.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = Program.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = Program.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/program/{code}", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getProgramByCode(@PathVariable("code") String code) {
@@ -191,8 +188,8 @@ public class LookupController {
 
   @ApiOperation(value = "Loss and Adjustment Types", notes = "Returns loss and adjustment types", response = LossesAndAdjustmentsType.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = LossesAndAdjustmentsType.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = LossesAndAdjustmentsType.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/losses-adjustments-types", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getLossesAdjustmentsTypes() {
@@ -201,8 +198,8 @@ public class LookupController {
 
   @ApiOperation(value = "Processing Periods", notes = "Returns all processing periods", response = org.openlmis.report.model.dto.ProcessingPeriod.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = org.openlmis.report.model.dto.ProcessingPeriod.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = org.openlmis.report.model.dto.ProcessingPeriod.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/processing-periods", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getProcessingPeriods() {
@@ -212,8 +209,8 @@ public class LookupController {
 
   @ApiOperation(value = "Processing Schedules", notes = "Returns list of processing schedule groups", response = ProcessingSchedule.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = ProcessingSchedule.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = ProcessingSchedule.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/processing-schedules", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getProcessingSchedules() {
@@ -222,8 +219,8 @@ public class LookupController {
 
   @ApiOperation(value = "Geographic Zones", notes = "Returns list of geographic zones", response = GeographicZone.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = GeographicZone.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = GeographicZone.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/geographic-zones", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getGeographicZones() {
@@ -233,8 +230,8 @@ public class LookupController {
 
   @ApiOperation(value = "Geographic Levels", notes = "Returns list of geographic levels", response = GeographicLevel.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = GeographicLevel.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = GeographicLevel.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/geographic-levels", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getGeographicLevels() {
@@ -244,8 +241,8 @@ public class LookupController {
 
   @ApiOperation(value = "Regimens", notes = "Returns list of regimens", response = Regimen.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = Regimen.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = Regimen.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/regimens", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getRegimens() {
@@ -255,8 +252,8 @@ public class LookupController {
 
   @ApiOperation(value = "Regimen Categories", notes = "Returns list of regimen categories", response = RegimenCategory.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = RegimenCategory.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = RegimenCategory.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/regimen-categories", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getRegimenCategories() {
@@ -266,8 +263,8 @@ public class LookupController {
 
   @ApiOperation(value = "Dosage Frequencies", notes = "Returns list of dosage frequencies", response = DosageFrequency.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = DosageFrequency.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = DosageFrequency.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/dosage-frequencies", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getDosageFrequencies() {
@@ -277,8 +274,8 @@ public class LookupController {
 
   @ApiOperation(value = "Regimen Product Combinations", notes = "Returns list of regimen product combinations", response = RegimenProductCombination.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = RegimenProductCombination.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = RegimenProductCombination.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/regimen-product-combinations", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getRegimenProductCombinations() {
@@ -288,8 +285,8 @@ public class LookupController {
 
   @ApiOperation(value = "Regimen Combination Constituents", notes = "Returns list of regimen combination constituents", response = RegimenCombinationConstituent.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = RegimenCombinationConstituent.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = RegimenCombinationConstituent.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/regimen-combination-constituents", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getRegimenCombinationConstituents() {
@@ -299,8 +296,8 @@ public class LookupController {
 
   @ApiOperation(value = "Regimen Constituents' Dosages", notes = "Returns list of dosages for regimen constituents", response = RegimenConstituentDosage.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Successful request", response = RegimenConstituentDosage.class),
-      @ApiResponse(code = 500, message = "Internal server error")}
+    @ApiResponse(code = 200, message = "Successful request", response = RegimenConstituentDosage.class),
+    @ApiResponse(code = 500, message = "Internal server error")}
   )
   @RequestMapping(value = "/rest-api/lookup/regimen-constituent-dosages", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity getRegimenConstituentDosages() {
@@ -311,9 +308,9 @@ public class LookupController {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<RestResponse> handleException(Exception ex) {
     if (ex instanceof AccessDeniedException) {
-      return error(FORBIDDEN_EXCEPTION, FORBIDDEN);
+      return RestResponse.error(FORBIDDEN_EXCEPTION, HttpStatus.FORBIDDEN);
     }
-    return error(UNEXPECTED_EXCEPTION, INTERNAL_SERVER_ERROR);
+    return RestResponse.error(UNEXPECTED_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
 }

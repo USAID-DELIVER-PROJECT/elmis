@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.report.mapper.lookup;
+package org.openlmis.lookupapi.mapper;
 
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -18,12 +18,6 @@ import org.openlmis.core.domain.GeographicLevel;
 
 import java.util.List;
 
-/**
- * e-lmis
- * Created by: Henok Getachew
- * Date: Jun 18, 2013
- * Time: 11:44 AM
- */
 @Repository
 public interface GeographicLevelReportMapper {
 
