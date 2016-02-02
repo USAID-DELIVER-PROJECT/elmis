@@ -76,7 +76,7 @@ public class IVDNotificationService {
         else if (report.getStatus().equals(ReportStatus.APPROVED)) {
             userList.add(userService.getById(userId));
             emailMessageKey = ConfigurationSettingKey.EMAIL_TEMPLATE_FOR_IVD_FORM_APPROVED;
-            emailSubjectKey = ConfigurationSettingKey.EMAIL_SUBJECT_APPROVAL;
+            emailSubjectKey = ConfigurationSettingKey.EMAIL_SUBJECT_IVD_FORM_APPROVAL;
         }
         else if(report.getStatus().equals(ReportStatus.REJECTED)) {
             userList.add(userService.getById(userId));
