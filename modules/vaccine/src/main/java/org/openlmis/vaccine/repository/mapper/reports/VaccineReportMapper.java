@@ -18,6 +18,7 @@ import org.openlmis.ivdform.domain.reports.*;
 import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.mapper.reports.builder.AdequacyLevelReportQueryBuilder;
+import org.openlmis.vaccine.repository.mapper.reports.builder.ClassificationVaccineUtilizationPerformanceQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.CompletenessAndTimelinessQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceCoverageQueryBuilder;
 import org.springframework.stereotype.Repository;
@@ -469,4 +470,11 @@ public interface VaccineReportMapper {
             "     order by pp.displayorder "
     )
    public List<Product> getVaccineProductsList();
+
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationVaccineUtilizationPerformanceByZone")
+    List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
 }

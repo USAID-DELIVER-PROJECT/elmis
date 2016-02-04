@@ -110,4 +110,15 @@ public class VaccineReportController extends BaseController {
         return OpenLmisResponse.response("products", this.service.getVaccineProductsList());
 
     }
+
+    @RequestMapping(value = "/classificationVaccineUtilizationPerformance", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> classificationVaccineUtilizationPerformance(@RequestParam(value = "periodStart", required = false) String periodStart,
+                                                                                        @RequestParam(value = "periodEnd", required = false) String periodEnd,
+                                                                                        @RequestParam("zone") Long zone,
+                                                                                        @RequestParam("product") Long product) {
+
+
+        return OpenLmisResponse.response("classificationVaccineUtilizationPerformance",
+                service.getClassificationVaccineUtilizationPerformance(periodStart, periodEnd, zone, product));
+    }
 }

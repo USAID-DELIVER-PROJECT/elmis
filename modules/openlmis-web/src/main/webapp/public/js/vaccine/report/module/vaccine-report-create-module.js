@@ -41,6 +41,10 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
                  controller: AdequacyLevelOfSupplyController,
                  templateUrl:'partials/view/adequacy-level-of-supply.html'
              }).
+            when('/classification-vaccine-utilization-performance', {
+                controller: ClassificationVaccineUtilizationPerformanceController,
+                templateUrl:'partials/view/classification-vaccine-utilization-performance.html'
+            }).
 
             otherwise({redirectTo: '/list'});
     }]).config(function (angularCombineConfigProvider) {

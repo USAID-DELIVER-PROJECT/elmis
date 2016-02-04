@@ -174,4 +174,8 @@ public HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReportForF
     return this.mapper.getVaccineProductsList();
   }
 
+  public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(Date startDate, Date endDate, Long zoneId, Long productId) {
+    return mapper.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId);
+  }
+
 }

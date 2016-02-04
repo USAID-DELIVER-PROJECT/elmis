@@ -477,3 +477,7 @@ services.factory('FacilityTypeAndProgramProducts',function($resource) {
         programId: '@programId'
     }, {});
 });
+
+services.factory('ClassificationVaccineUtilizationPerformance', function ($resource) {
+    return $resource('/vaccine/report/classificationVaccineUtilizationPerformance.json', {}, {});
+});
