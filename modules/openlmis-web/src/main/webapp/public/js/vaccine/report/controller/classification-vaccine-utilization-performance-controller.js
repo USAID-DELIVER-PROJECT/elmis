@@ -107,7 +107,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, $routePar
                     preport.period_class.push({
                         period_name: preport.report.period_name,
                         classification: preport.report.classification
-                    })
+                    });
 
 
                 }
