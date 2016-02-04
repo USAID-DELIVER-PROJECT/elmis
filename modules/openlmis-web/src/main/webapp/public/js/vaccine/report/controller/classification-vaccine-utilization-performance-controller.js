@@ -80,7 +80,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, $routePar
         _.each($scope.zonereport, function (dreport) {
 
             parentReport.push({report: dreport, period_class: childReport});
-            periodsWithReport.push(dreport.period_name)
+            periodsWithReport.push(dreport.period_name);
         });
 
 
