@@ -43,6 +43,7 @@
 <div >
     <div class="row-fluid">
         <div class="span12">
+            <h2><span openlmis-message="label.vaccine.distribution"></span></h2>
             <div class="info-box padding2px">
                 <div class="requisition-head-block">
                     <div class="row-fluid">
@@ -134,7 +135,8 @@
                             openlmis-message="label.products"></th>
                     </tr>
                     <tr>
-                        <th colspan="2" class="p-column" ng-repeat="product in routineFacility.productsToIssue">
+                        <th style="text-align:center" colspan="2" class="p-column"
+                            ng-repeat="product in routineFacility.productsToIssue">
                             {{product.name}}
                         </th>
                     </tr>
@@ -183,15 +185,15 @@
             <div class="row-fluid ">
                 <div class="info-box span12">
                     <div class="span4">
+                        <strong for="facilityLabel" openlmis-message="label.vaccine.stock.distributed.to"></strong>
+                        <span id='facility2' ng-bind="facilityToIssue.name"></span>
+                    </div>
+                    <div class="span4">
                         <strong id="received-date-label" openlmis-message="label.vaccine.issue.date"> </strong>
                         <span class="label-required">*</span>:&nbsp;
                         <input ng-required="true" id="receivingDate" name="issueDate" type="text"
                                ui-date="{dateFormat: 'dd/mm/yy', changeYear: false, maxDate:'today',minDate:period.stringStartDate}"
                                ng-model="facilityToIssue.issueDate"/>
-                    </div>
-                    <div class="span4">
-                        <strong id='facilityLabel2' openlmis-message="label.facility"> </strong>:&nbsp;
-                        <span id='facility2' ng-bind="facilityToIssue.name"></span>
                     </div>
                     <div class="span4">
                         <strong id='issueTypeLabel' openlmis-message="label.type"> </strong>:&nbsp;

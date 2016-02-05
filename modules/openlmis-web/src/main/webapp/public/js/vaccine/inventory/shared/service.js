@@ -29,7 +29,7 @@ services.factory('StockCardsByCategory', function($resource,StockCards,$q, $time
                                               var product= _.filter(programProducts, function(obj) {
                                                   return obj.product.primaryName === s.product.primaryName;
                                               });
-                                                s.displayOrder=product[0].productCategory.displayOrder;
+                                                s.displayOrder=product[0].id;
                                                 s.productCategory=product[0].productCategory;
                                         });
                                         stockCards=_.sortBy(stockCards,'displayOrder');
@@ -75,7 +75,9 @@ services.factory('FacilityWithProducts', function($resource,$timeout,$q,StockCar
                          if(program != null){
                                 StockCards.get({facilityId:homeFacilityId},function(s){
                                     FacilityDistributionForecastAndLastPeriod.get({facilityId:facility.id,programId:program.id},function(distributionForecastAndPeriod){
+                                     console.log(JSON.stringify(distributionForecastAndPeriod.forecast));
                                         QuantityRequired.get({facilityCode:facility.code,programCode:program.code,periodId:distributionForecastAndPeriod.lastPeriod[0].id},function(report){
+                                             console.log(JSON.stringify(report));
                                              var facilityWithProducts=new FacilitiesWithProducts(facility,s.stockCards,distributionForecastAndPeriod,report);
                                              deferred.resolve(facilityWithProducts);
                                         });

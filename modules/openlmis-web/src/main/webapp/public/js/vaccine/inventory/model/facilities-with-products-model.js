@@ -34,7 +34,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                   var programProduct= _.filter(programProducts, function(obj) {
                         return obj.product.primaryName === stockCard.product.primaryName;
                   });
-                  product.displayOrder=programProduct[0].productCategory.displayOrder;
+                  product.displayOrder=programProduct[0].id;
                   product.productCategory=programProduct[0].productCategory;
 
                   //Set Quantity Required
@@ -81,6 +81,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                   productsToIssue.push(product);
            });
            productsToIssue=_.sortBy(productsToIssue,'displayOrder');
+//           productsToIssue=_.sortBy(productsToIssue,'productCategory');
            var byCategory=_.groupBy(productsToIssue,function(p){
                return p.productCategory.name;
            });

@@ -29,7 +29,7 @@
     .orange{
         color:orange;
     }
-    input[type="number"]{width:150px !important;margin-bottom:2px !important;margin:2px 3px !important}
+    input[type="number"]{width:150px !important;}
     .rnr-table .table-bordered tr th.col-quantity{
     min-width:100px !important;
     max-width:100px !important;
@@ -65,16 +65,17 @@
                         <span openlmis-message="header.batch.number"></span>
                     </div>
                 </th>
+                <th class="col-vvmStatus">
+                    <div class="regimen-heading">
+                        <span openlmis-message="header.vvm.status"></span>
+                    </div>
+                </th>
                 <th class="col-expiryDate">
                     <div class="regimen-heading">
                         <span openlmis-message="label.expiryDate"></span>
                     </div>
                 </th>
-                 <th class="col-vvmStatus" >
-                     <div class="regimen-heading">
-                         <span openlmis-message="header.vvm.status"></span>
-                     </div>
-                 </th>
+
                 <th class="col-quantityRemain">
                     <div class="regimen-heading">
                         <span openlmis-message="header.soh.per.batch"></span>
@@ -118,12 +119,11 @@
                     ng-class="{'last-row':c.lotsOnHand.length===1,'skip':c.lotsOnHand.length===0}">
                     <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.lotCode"></span>
                 </td>
-
-                <td class="col-lot cell-input  disabled number" ng-class="{'last-row':c.lotsOnHand.length===1}">
-                    <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.expirationDate"></span>
-                </td>
                 <td class="col-available cell-input number disabled" ng-class="{'last-row':c.lotsOnHand.length===1}">
                     <span class="cell-text" ng-bind="c.lotsOnHand[0].customProps.vvmstatus "></span>
+                </td>
+                <td class="col-lot cell-input  disabled number" ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.expirationDate | date:'MMM-yyyy'"></span>
                 </td>
 
                 <td class="col-available cell-input number disabled" ng-class="{'last-row':c.lotsOnHand.length===1}">
@@ -145,13 +145,13 @@
 
                 <td rowspan="{{c.lotsOnHand.length}}" class="col-available cell-input number disabled"
                     ng-class="{'last-row':c.lotsOnHand.length===1}">
-                    <span class="cell-text" ng-bind="c.quantityRequested "></span>
+                    <span class="cell-text" ng-bind="c.quantityRequested | number "></span>
                 </td>
 
                 <td rowspan="{{c.lotsOnHand.length}}" id="gap" class="col-gap cell-input  last-row disabled">
                     <span
                         class="cell-text {{(total < c.quantityRequested)?'red':(c.sum == 0 )?'blue':'orange'}}"
-                        ng-bind="c.sum"></span>
+                        ng-bind="c.sum | number"></span>
                 </td>
 
             </tr>
@@ -160,14 +160,14 @@
                     ng-class="{'last-row':$last}">
                     <span class="cell-text" ng-bind="lot.lot.lotCode"></span>
                 </td>
-
-
-                <td class="col-available cell-input col-general disabled number" ng-class="{'last-row':$last}">
-                    <span class="cell-text" ng-bind="lot.lot.expirationDate"></span>
-                </td>
                 <td class="col-available cell-input col-general number disabled" ng-class="{'last-row':$last}">
                     <span class="cell-text" ng-bind="lot.customProps.vvmstatus"></span>
                 </td>
+
+                <td class="col-available cell-input col-general disabled number" ng-class="{'last-row':$last}">
+                    <span class="cell-text" ng-bind="lot.lot.expirationDate | date:'MMM-yyyy'"></span>
+                </td>
+
 
                 <td class="col-available cell-input col-general number disabled" ng-class="{'last-row':$last}">
                     <span   class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
