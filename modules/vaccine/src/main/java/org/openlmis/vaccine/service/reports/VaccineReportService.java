@@ -352,4 +352,20 @@ public class VaccineReportService {
     public List<Product> getVaccineProductsList() {
         return this.repository.getVaccineProductsList();
     }
+
+    public Map<String, List<Map<String, Object>>> getClassificationVaccineUtilizationPerformance(String periodStart, String periodEnd, Long zoneId, Long productId) {
+
+        Date startDate = null, endDate = null;
+
+        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
+        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
+
+        Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
+
+        result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId));
+
+        result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
+
+        return result;
+    }
 }
