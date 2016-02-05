@@ -81,7 +81,7 @@ public class VaccineReportService {
     private HashMap<String, DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
 
-            return repository.getCumFacilityDiseaseSurveillance(reportId,facilityId);
+            return repository.getCumFacilityDiseaseSurveillance(reportId, facilityId);
         }
 
         return repository.getCumDiseaseSurveillanceAggregateReport(periodId, zoneId);
@@ -174,7 +174,7 @@ public class VaccineReportService {
         try {
 
 
-            if (zoneId == -1|| zoneId==0) {
+            if (zoneId == -1 || zoneId == 0) {
                 zoneId = getNationalZoneId();
             }
 
@@ -354,18 +354,22 @@ public class VaccineReportService {
     }
 
     public Map<String, List<Map<String, Object>>> getClassificationVaccineUtilizationPerformance(String periodStart, String periodEnd, Long zoneId, Long productId) {
-
-        Date startDate = null, endDate = null;
-
-        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
-        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
-
         Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
+        try {
 
-        result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId));
 
-        result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
+            Date startDate = null, endDate = null;
 
+            startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
+            endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
+
+
+            result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId));
+
+            result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
+        } catch (Exception ex) {
+            System.out.println(" the error is :" + ex);
+        }
         return result;
     }
 }

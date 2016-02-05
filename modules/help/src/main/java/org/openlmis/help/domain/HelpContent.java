@@ -38,21 +38,8 @@ import org.openlmis.upload.annotation.ImportField;
 public class HelpContent extends BaseModel{
 
     private HelpTopic helpTopic;
-//    private
     private String name;
     private String htmlContent;
     private String imageLink;
-//    @JsonIgnore
-//    @Override
-//    public String toString() {
-//        final StringBuffer sb = new StringBuffer("HelpContent{");
-//        sb.append("id=").append(id);
-//
-//        sb.append("helpTopic=").append(helpTopic.getId());
-//        sb.append(", name='").append(name).append('\'');
-//        sb.append(", htmlContent='").append(htmlContent).append('\'');
-//        sb.append(", imageLink='").append(imageLink).append('\'');
-//        sb.append('}');
-//        return sb.toString();
-//    }
+
 }

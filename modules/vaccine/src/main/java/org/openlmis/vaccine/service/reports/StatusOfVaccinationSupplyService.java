@@ -19,8 +19,6 @@ import org.openlmis.vaccine.repository.reports.PerformanceByDropoutRateByDistric
 import org.openlmis.vaccine.repository.reports.StatusOfVaccinationSuppliesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,8 +36,8 @@ public class StatusOfVaccinationSupplyService {
         boolean isRegionReport = false;
         List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesFacilityDistrictList = null;
         List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRegionList = null;
-        HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> facilityOrDistrictPopulationMap = null;
-        HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap = null;
+        Map<String, StatusOfVaccinationSuppliesRecievedDetail> facilityOrDistrictPopulationMap = null;
+        Map<String, StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap = null;
         PerformanceByDropoutRateParam filterParam = null;
         filterParam = ReportsCommonUtilService.prepareParam(filterCriteria);
         isRegionReport = filterParam.getGeographic_zone_id() == 0 ? true : false;
@@ -68,7 +66,7 @@ public class StatusOfVaccinationSupplyService {
     }
 
     private void extractPopulationInformation(List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesFacilityDistrictList,
-                                              HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> populationListMap, int geoLevel) {
+                                              Map<String, StatusOfVaccinationSuppliesRecievedDetail> populationListMap, int geoLevel) {
         for (StatusOfVaccinationSuppliesRecievedDetail vaccinationSuppliesRecievedDetail : statusOfVaccinationSuppliesFacilityDistrictList) {
             Long population = 0l;
             String geoLevelName = "";

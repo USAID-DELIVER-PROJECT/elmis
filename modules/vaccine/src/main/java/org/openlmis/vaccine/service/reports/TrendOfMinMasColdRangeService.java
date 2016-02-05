@@ -11,10 +11,10 @@
  */
 
 package org.openlmis.vaccine.service.reports;
-import org.apache.ibatis.annotations.Param;
+
 import org.openlmis.vaccine.domain.reports.*;
 import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
-import org.openlmis.vaccine.repository.mapper.reports.TrendOfMinMaxColdChainRangeMapper;
+
 import org.openlmis.vaccine.repository.reports.PerformanceByDropoutRateByDistrictRepository;
 import org.openlmis.vaccine.repository.reports.TrendMinMaxColdRangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,35 +30,35 @@ public class TrendOfMinMasColdRangeService {
     private TrendMinMaxColdRangeRepository repository;
     @Autowired
     private PerformanceByDropoutRateByDistrictRepository dropoutRateByDistrictRepository;
-    private List<Date> columnNameList = null;
+    private List<Date> columnNameList ;
 
     public TrendOfMinMaxColdChainTempratureReport loadTrendMinMaxColdChainTempratureReports(
             Map<String, String[]> filterCriteria
     ) {
-        TrendOfMinMaxColdChainTempratureReport coldChainTempratureReport = null;
-        boolean isFacilityReport = false;
-        boolean isRegionReport = false;
-        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList = null;
-        List<TrendMinMaxColdChainColumnRangeValues> districtFacilitySummaryColumnList = null;
-        List<TrendMinMaxColdChainColumnRangeValues> regionSummaryColumnList = null;
-        PerformanceByDropoutRateParam filterParam = null;
+        TrendOfMinMaxColdChainTempratureReport coldChainTempratureReport;
+        boolean isFacilityReport ;
+        boolean isRegionReport;
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList;
+        List<TrendMinMaxColdChainColumnRangeValues> districtFacilitySummaryColumnList;
+        List<TrendMinMaxColdChainColumnRangeValues> regionSummaryColumnList=null;
+        PerformanceByDropoutRateParam filterParam ;
         filterParam = ReportsCommonUtilService.prepareParam(filterCriteria);
         isRegionReport = filterParam.getGeographic_zone_id() == 0 ? true : false;
         isFacilityReport = dropoutRateByDistrictRepository.isDistrictLevel(filterParam.getGeographic_zone_id());
 
         columnNameList = ReportsCommonUtilService.extractColumnValues(filterParam);
-        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListAggeregateForDistrict = null;
-        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListAggeregateForRegion = null;
-        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListRegion = null;
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListAggeregateForDistrict ;
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListAggeregateForRegion ;
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListRegion =null;
         if (isFacilityReport) {
             coldChainTempratureDetailList = repository.loadTrendMinMaxColdChainTempratureReports(filterParam);
-//            coldChainTempratureDetailListAggeregateForDistrict = this.buildReportTree(coldChainTempratureDetailList, ReportsCommonUtilService.DISTRICT_REPORT);
-            coldChainTempratureDetailListAggeregateForRegion =coldChainTempratureDetailList;// this.buildReportTree(coldChainTempratureDetailListAggeregateForDistrict, ReportsCommonUtilService.REGION_REPORT);
+
+            coldChainTempratureDetailListAggeregateForRegion =coldChainTempratureDetailList;
             districtFacilitySummaryColumnList = this.prepareColumnRangesForSummary(this.columnNameList, coldChainTempratureDetailList);
             coldChainTempratureReport = this.aggregateReport(coldChainTempratureDetailList);
         } else {
             if (isRegionReport) {
-                List<TrendOfMinMaxColdChainTempratureDetail> valueList = null;
+                List<TrendOfMinMaxColdChainTempratureDetail> valueList ;
                 valueList = this.repository.loadTrendMinMaxColdChainTempratureRegionReports(filterParam);
                 coldChainTempratureDetailListRegion =
                         this.buildReportTree(valueList, ReportsCommonUtilService.REGION_REPORT);
@@ -136,9 +136,8 @@ public class TrendOfMinMasColdRangeService {
         float maxtemp = 0f;
         float minepisodetemp = 0f;
         float maxepisodetemp = 0f;
-        String regionName = "";
-        String districtName = "";
-        String facilityName;
+        String regionName ;
+        String districtName ;
         TrendOfMinMaxColdChainTempratureDetail trendOfMinMaxColdChainTempratureDetail = new TrendOfMinMaxColdChainTempratureDetail();
         if (coldChainTempratureDetailChildList != null && coldChainTempratureDetailChildList.size() > 0) {
             regionName = coldChainTempratureDetailChildList.get(0).getRegion_name();
@@ -163,13 +162,13 @@ public class TrendOfMinMasColdRangeService {
 
 
     public List<TrendMinMaxColdChainColumnRangeValues> prepareColumnRangesForSummary(List<Date> columnNames, List<TrendOfMinMaxColdChainTempratureDetail> trendOfMinMaxColdChainTempratureDetailList) {
-        List<TrendMinMaxColdChainColumnRangeValues> trendMinMaxColdChainColumnRangeValuesList = null;
-        Map<String, Map<Date, Float>> columnRangeValues = null;
+        List<TrendMinMaxColdChainColumnRangeValues> trendMinMaxColdChainColumnRangeValuesList ;
+        Map<String, Map<Date, Float>> columnRangeValues ;
         columnRangeValues = this.intializeColRangeValues(columnNames);
         for (TrendOfMinMaxColdChainTempratureDetail coldChainTempratureDetail : trendOfMinMaxColdChainTempratureDetailList) {
             Date dateString = coldChainTempratureDetail.getPeriod_name();
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy");
-            Date columngName = null;
+            Date columngName =null;
             try {
                 columngName = dateFormat.parse(dateFormat.format(dateString));
             } catch (ParseException e) {
@@ -243,8 +242,7 @@ public class TrendOfMinMasColdRangeService {
             columnRangeValues.get(ReportsCommonUtilService.TEMP_GREATER_MIN).put(columnNameList.get(i), 0f);
             columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_LESS_MIN).put(columnNameList.get(i), 0f);
             columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_GREATER_MIN).put(columnNameList.get(i), 0f);
-//            columnRangeValues.get(ReportsCommonUtilService.MIN_TEMP_RECORDED).put(columnNameList.get(i), 1000000f);
-//            columnRangeValues.get(ReportsCommonUtilService.MAX_TEMP_RECORDED).put(columnNameList.get(i), 0f);
+
         }
         return columnRangeValues;
     }
@@ -283,6 +281,7 @@ public class TrendOfMinMasColdRangeService {
     private static void order(List<TrendMinMaxColdChainColumnRangeValues> trendMinMaxColdChainColumnRangeValues) {
 
         Collections.sort(trendMinMaxColdChainColumnRangeValues, new Comparator() {
+            @Override
             public int compare(Object o1, Object o2) {
 
                 String x1 = ((TrendMinMaxColdChainColumnRangeValues) o1).getRangeName();
