@@ -1,4 +1,4 @@
-CREATE TABLE manufacturers
+CREATE TABLE IF NOT EXISTS manufacturers
 (
   id serial PRIMARY KEY,
   name character varying(1000) NOT NULL,
