@@ -15,11 +15,14 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
      $scope.distribute=function(){
         $scope.allProductsZero=true;
         $scope.clearErrorMessages();
-        $scope.facilityToIssue.productsToIssue.forEach(function(product){
-            if(product.quantity > 0)
-            {
-                 $scope.allProductsZero=false;
-            }
+        $scope.facilityToIssue.productsToIssueByCategory.forEach(function(category){
+            category.productsToIssue.forEach(function(product){
+                if(product.quantity > 0)
+                {
+                  $scope.allProductsZero=false;
+                }
+            });
+
         });
         if($scope.issueForm.$invalid)
         {
@@ -37,11 +40,14 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
 
          distribution.fromFacilityId = $scope.homeFacility.id;
          distribution.toFacilityId= $scope.facilityToIssue.id;
+         distribution.programId=$scope.userPrograms[0].id;
          distribution.distributionDate = $scope.facilityToIssue.issueDate;
          distribution.lineItems=[];
          distribution.distributionType=$scope.facilityToIssue.type;
          distribution.status="PENDING";
-         $scope.facilityToIssue.productsToIssue.forEach(function(product){
+         $scope.facilityToIssue.productsToIssueByCategory.forEach(function(category){
+
+            category.productsToIssue.forEach(function(product){
              if(product.quantity >0)
              {
                  var list = {};
@@ -87,6 +93,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
              }
              distribution.lineItems.push(list);
             }
+            });
          });
          StockEvent.save({facilityId:$scope.homeFacility.id},events, function (data) {
              if(data.success)
@@ -94,8 +101,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
                 $scope.closeIssueModal();
                 $scope.message=data.success;
                 SaveDistribution.save(distribution,function(distribution){
-                    $scope.resetUnscheduledFacility();
-                    $scope.loadSupervisedFacilities($scope.userPrograms[0].id,$scope.homeFacility.id);
+                    $scope.selectedRoutineFacility = null;
                     $scope.print(distribution.distributionId);
                     });
               }

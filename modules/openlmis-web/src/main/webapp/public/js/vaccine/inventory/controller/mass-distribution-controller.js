@@ -11,46 +11,54 @@
  */
 
 
-function MassDistributionController($scope,$location, $window,configurations,$timeout,facilityDistributed,homeFacility,FacilitiesWithProducts,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
+function MassDistributionController($scope,$location, $window,configurations,$timeout,homeFacility,OneLevelSupervisedFacilities,FacilityWithProducts,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
 
      $scope.userPrograms=configurations.programs;
-     console.log(configurations);
      $scope.period=configurations.period;
      $scope.homeFacility=homeFacility;
      $scope.facilityDisplayName=homeFacility.name;
      $scope.toIssue=[];
-     $scope.distributionType='SCHEDULED';
-     $scope.pageSize =8;
-     $scope.currentPage=1;
+     $scope.distributionType='ROUTINE';
      $scope.UnScheduledFacility=undefined;
-     $scope.loadSupervisedFacilities=function(programId,facilityId){
-         FacilitiesWithProducts.get(programId,facilityId).then(function(data){
-                $scope.allScheduledFacilities =data.scheduled;
-                $scope.allScheduledFacilitiesCopy=angular.copy($scope.allScheduledFacilities);
-                $scope.allUnScheduledFacilities =data.unscheduled;
-                $scope.allUnScheduledFacilitiesCopy=angular.copy($scope.allUnScheduledFacilities);
-                $scope.numberOfPages = Math.ceil( $scope.allScheduledFacilities.length / $scope.pageSize) || 1;
-                $scope.page();
+
+     $scope.loadSupervisedFacilities=function(programId){
+           OneLevelSupervisedFacilities.get({programId:programId},function(data){
+                $scope.supervisedFacilities=data.facilities;
+           });
+     };
+
+     $scope.loadFacilityDistributionData=function(){
+        $scope.routineFacility=undefined;
+        if($scope.selectedRoutineFacility != null)
+         FacilityWithProducts.get($scope.selectedProgram,$scope.selectedRoutineFacility,$scope.homeFacility.id).then(function(data){
+                $scope.routineFacility=data;
          });
      };
 
-    $scope.loadUnScheduledFacility=function(){
-          $scope.UnScheduledFacility=_.findWhere($scope.allUnScheduledFacilities,{id:$scope.UnScheduledFacilityId});
-    };
-    $scope.clearUnscheduled=function(){
-        $scope.allUnScheduledFacilities=$scope.allUnScheduledFacilitiesCopy;
-        $scope.UnScheduledFacility=undefined;
-        $scope.UnScheduledFacilityId='';
-    };
+//     $scope.$watch('currentPage', function () {
+//         if ($scope.currentPage > 0) {
+//           $scope.page = $scope.currentPage;
+//           $scope.loadSupervisedFacilities($scope.userPrograms[0].id,homeFacility.id);
+//         }
+//      });
+//
+//    $scope.loadUnScheduledFacility=function(){
+//          $scope.UnScheduledFacility=_.findWhere($scope.allUnScheduledFacilities,{id:$scope.UnScheduledFacilityId});
+//    };
+//    $scope.clearRoutine=function(){
+//        $scope.allUnScheduledFacilities=$scope.allUnScheduledFacilitiesCopy;
+//        $scope.UnScheduledFacility=undefined;
+//        $scope.UnScheduledFacilityId='';
+//    };
 
-     $scope.showLots=function(facility,product)
-     {
-          $scope.oldProductLots = angular.copy(product.lots);
-          $scope.currentProduct=product;
-          $scope.currentFacility=facility.name;
-          $scope.currentLotsTotal=$scope.currentProduct.quantity;
-          $scope.lotsModal = true;
-     };
+//     $scope.showLots=function(facility,product)
+//     {
+//          $scope.oldProductLots = angular.copy(product.lots);
+//          $scope.currentProduct=product;
+//          $scope.currentFacility=facility.name;
+//          $scope.currentLotsTotal=$scope.currentProduct.quantity;
+//          $scope.lotsModal = true;
+//     };
 
      $scope.closeModal=function(){
           $scope.currentProduct.lots=$scope.oldProductLots;
@@ -70,7 +78,7 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
            if(product.lots !== undefined)
            {
             $(product.lots).each(function (index, lotObject) {
-                           if(lotObject.quantity !== undefined){
+                           if(lotObject.quantity !== undefined && lotObject.quantity !== null){
                                  totalCurrentLots = totalCurrentLots + parseInt(lotObject.quantity,10);
                            }
                        });
@@ -150,21 +158,17 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
 
         });
      }
-     $scope.page=function(){
-        if($scope.allScheduledFacilities !== undefined)
-        {
-            $scope.ScheduledFacilities = $scope.allScheduledFacilities.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
-        }
-     };
      if($scope.userPrograms.length > 1)
      {
           $scope.showPrograms=true;
           //TODO: load stock cards on program change
-          $scope.loadSupervisedFacilities($scope.userPrograms[0].id,homeFacility.id);
+          $scope.selectedProgram=$scope.userPrograms[0];
+          $scope.loadSupervisedFacilities($scope.userPrograms[0]);
      }
      else if($scope.userPrograms.length === 1){
            $scope.showPrograms=false;
-           $scope.loadSupervisedFacilities($scope.userPrograms[0].id,homeFacility.id);
+           $scope.selectedProgram=$scope.userPrograms[0];
+           $scope.loadSupervisedFacilities($scope.userPrograms[0].id);
      }
 
      $scope.showIssueModal=function(facility, type){
@@ -194,7 +198,7 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
 
      $scope.showPODModal=function(facility){
         $scope.podModal=true;
-        $scope.facilityPOD=_.findWhere($scope.ScheduledFacilities, {id:facility.id});
+        $scope.facilityPOD=facility;
      };
 
      $scope.closePODModal=function(){
@@ -206,10 +210,6 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
           var url = '/vaccine/orderRequisition/issue/print/'+distributionId;
            $window.open(url, '_blank');
      };
-
-     $scope.$watch('currentPage', function () {
-          $scope.page();
-     });
 
      $scope.loadRights = function () {
             $scope.rights = localStorageService.get(localStorageKeys.RIGHT);
@@ -288,7 +288,7 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
 
          if (!$scope.query.length) {
            $scope.allScheduledFacilities = $scope.allScheduledFacilitiesCopy;
-            $scope.page();
+            //$scope.page();
            return;
          }
 
@@ -298,7 +298,7 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
              $scope.allScheduledFacilities.push(facility);
            }
          });
-         $scope.page();
+       //  $scope.page();
      };
      $scope.saveAll=function(){
         $scope.allScheduledFacilities.forEach(function(facility){
@@ -335,17 +335,5 @@ MassDistributionController.resolve = {
                                 });
                              }, 100);
                              return deferred.promise;
-        },
-         facilityDistributed:function($q, $timeout,FacilityDistributed) {
-             var deferred = $q.defer();
-             var configurations={};
-             $timeout(function () {
-                FacilityDistributed.get(function(data)
-                {
-                      distributions=data.Distributions;
-                      deferred.resolve(distributions);
-                });
-             }, 100);
-             return deferred.promise;
         }
 };

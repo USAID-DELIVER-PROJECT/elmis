@@ -20,7 +20,6 @@
     td.col-action{width:100px;max-width:100px;min-width:100px}
     .rnr-table .left-table input[type="submit"]{width:80px !important;margin:4px 2px 5px 2px !important}
     a span{font-size:12px}
-    input[type="number"] {width:100px !important;float:left !important}
     #popupModel2 {width:80%; }
     table tr.pod td {
     background-color: #F0F0F0;
@@ -31,14 +30,7 @@
     color:#055e74;
     }
 
-    table td.disabled, .rnr-table .table-bordered td.disabled {
-    background-color: #F0F0F0;
-    }
-    .rnr-table .table-bordered tr td.skip{
-    background: linear-gradient(to bottom, #f9f9f9 0%, #e0e0e0 100%) !important;
-    }
-    input[type="number"].ng-invalid-max{border:1px solid #F00 !important}
-    input[type="number"]{position:relative;width:88% !important;margin-bottom:2px !important;margin:2px 3px !important}
+
 
     .rnr-table .table-bordered tr td.error{
     background:#f00 !important;
@@ -57,21 +49,9 @@
                         <div class="span12" style="padding: 10px;">
                             <div class="row-fluid">
                                 <div class="span3">
-                                    <input type="radio" name="type" ng-checked="true" ng-click="clearUnscheduled()" value="SCHEDULED"
-                                           ng-model="distributionType"></span>
-                                    <strong id='routineLabel' openlmis-message="label.vaccine.stock.scheduled"> </strong>:&nbsp;
-                                </div>
-                                <div class="span3">
-                                    <input type="radio" name="type" value="UNSCHEDULED"
-                                           ng-model="distributionType"></span>
-                                    <strong id='UnScheduledLabel'
-                                            openlmis-message="label.vaccine.stock.unscheduled"> </strong>:&nbsp;
-                                </div>
-                                <div class="span3">
                                     <strong id='facilityLabel' openlmis-message="label.facility"> </strong>:&nbsp;
                                     <span id='facility' ng-bind="facilityDisplayName"></span>
                                 </div>
-
                             </div>
                         </div>
 
@@ -80,14 +60,18 @@
             </div>
         </div>
         <br/>
-        <div class="rnr-table" style="background-color: #f9f9f9; padding: 5px">
-        <input ng-show="distributionType==='SCHEDULED'" id="searchProduct" class="search-query" type="text" ng-model="query"
-               ng-change="updateCurrentScheduledFacilities()"
-               openlmis-message="placeholder.filter.facility"/>
-        <br/>
-        <div ng-show="distributionType==='SCHEDULED' && ScheduledFacilities.length === 0"
-             openlmis-message="label.vaccine.stock.no.scheduled.facilities"></div>
-        <div ng-show="distributionType==='SCHEDULED' && ScheduledFacilities.length >0" adjust-height bottom-offset="180"
+
+        <div class="rnr-table" style="background-color: #fff; padding: 5px">
+            <select style="min-width:300px !important" ui-select2
+                    ng-change="loadFacilityDistributionData()"
+                    ng-model="selectedRoutineFacility"
+                    ng-options="f as f.name for f in supervisedFacilities">
+                <option value="" openlmis-message="placeholder.select.facility"></option>
+            </select>
+            <br/>
+            <br/>
+
+            <div ng-show="routineFacility" adjust-height bottom-offset="180"
              ng-show="true" tab-scroll>
 
             <div class="float-left left-table parent">
@@ -95,10 +79,20 @@
                 <table class="table table-bordered" fixed-table-header id="fullSupplyFrozenTable">
                     <thead>
                     <tr>
-                        <th colspan="2">&nbsp;</th>
+                        <th colspan="2" ng-if="routineFacility.status !=='RECEIVED'">
+                            <span openlmis-message="header.issue.type" class="cell-text"></span>:
+                            <strong id='routineLabel2' openlmis-message="label.vaccine.stock.routine"> </strong>
+                        </th>
+                        <th colspan="2" ng-if="routineFacility.status ==='RECEIVED'">
+                            <span openlmis-message="header.issue.type" class="cell-text"></span>:
+                            <strong id='EmergencyLabel2' openlmis-message="label.vaccine.stock.emergency"> </strong>
+                        </th>
                     </tr>
                     <tr>
-                        <th colspan="2">&nbsp;</th>
+                        <th colspan="2">
+                            <span openlmis-message="label.period" class="cell-text"></span>:
+                            <strong id='periodLabel' ng-bind="routineFacility.currentPeriod.name"> </strong>
+                        </th>
                     </tr>
                     <tr>
                         <th openlmis-message="label.facility"></th>
@@ -107,18 +101,22 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-class="{'pod':(facility.status === 'PENDING')}" ng-repeat="facility in ScheduledFacilities"
-                        ng-if="facility.status !=='RECEIVED'"
-                        ng-click="setSelectedFacility(facility)"
+                    <tr ng-class="{'pod':(facility.status === 'PENDING')}"
+                        ng-click="setSelectedFacility(routineFacility)"
                         style="{{getSelectedFacilityColor(facility)}}">
                         <td class="col-facility">
-                            <span class="cell-text">{{facility.name}}</span>
+                            <span class="cell-text">{{routineFacility.name}}</span>
                         </td>
                         <td style="width:100px;max-width:100px;min-width:100px" class="col-action">
-                            <input ng-show="facility.status === undefined || facility.status !=='PENDING'"
-                                   ng-click="showIssueModal(facility,'SCHEDULED')"
+                            <input ng-show="(routineFacility.status !== 'RECEIVED' && routineFacility.status === undefined && routineFacility.status !=='PENDING')"
+                                   ng-click="showIssueModal(routineFacility,'ROUTINE')"
                                    type="submit" class="btn btn-primary" openlmis-message="button.add">
-                            <input ng-show="facility.status === 'PENDING'" ng-click="showPODModal(facility)"
+                            <input ng-show="routineFacility.status ==='RECEIVED'"
+                                   ng-click="showIssueModal(routineFacility,'EMERGENCE')"
+                                   type="submit" class="btn btn-primary" openlmis-message="button.add">
+                            <input uib-popover="I appeared on mouse enter!" popover-trigger="mouseenter"
+                                   ng-show="routineFacility.status === 'PENDING'"
+                                   ng-click="showPODModal(routineFacility)"
                                    type="submit"
                                    class="btn btn-primary" value="POD" openlmis-message="button.vaccine.stock.pod">
                         </td>
@@ -127,124 +125,57 @@
                 </table>
             </div>
 
-            <div class="float-left right-table parent" custom-horizontal-scroll>
+                <div ng-if="routineFacility.status != 'RECEIVED'" class="float-left right-table parent"
+                     custom-horizontal-scroll>
                 <table class="table table-bordered" fixed-table-header>
                     <thead>
                     <tr>
-                        <th colspan="{{ScheduledFacilities[0].productsToIssue.length *2}}"
+                        <th colspan="{{routineFacility.productsToIssue.length *2}}"
                             openlmis-message="label.products"></th>
                     </tr>
                     <tr>
-                        <th colspan="2" class="p-column" ng-repeat="product in ScheduledFacilities[0].productsToIssue">
+                        <th colspan="2" class="p-column" ng-repeat="product in routineFacility.productsToIssue">
                             {{product.name}}
                         </th>
                     </tr>
                     <tr colspan="2">
                         <th style="max-width:80px;width:80px;min-width:80px"
-                            ng-repeat-start="product in ScheduledFacilities[0].productsToIssue"
+                            ng-repeat-start="product in routineFacility.productsToIssue"
                             openlmis-message="label.vaccine.stock.quantity.required">
                         </th>
-                        <th class="p-column" ng-repeat-end openlmis-message="label.vaccine.stock.quantity.toissue"></th>
+                        <th style="max-width:80px;width:80px;min-width:80px" class="p-column" ng-repeat-end
+                            openlmis-message="label.vaccine.stock.quantity.toissue"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-class="{'pod':(facility.status === 'PENDING')}" ng-repeat="facility in ScheduledFacilities"
-                        ng-if="facility.status !=='RECEIVED'"
-                        ng-click="setSelectedFacility(facility)"
+                    <tr ng-class="{'pod':(routineFacility.status === 'PENDING')}"
+                        ng-if="routineFacility.status !=='RECEIVED'"
+                        ng-click="setSelectedFacility(routineFacility)"
                         style="{{getSelectedFacilityColor(facility)}}"
                             >
-                        <td ng-repeat-start="product in facility.productsToIssue">
-                            <span ng-bind="product.required"></span>
+                        <td class="col-facility" ng-repeat-start="product in routineFacility.productsToIssue">
+                            <span style="float:left;margin:9px 2px 10px 3px;padding-left:10px;"
+                                  ng-bind="product.quantityRequired"></span>
                         </td>
-                        <td class="col-facility p-column" ng-repeat-end>
-                            <span style="margin:9px 2px 10px 3px;padding-left:10px" ng-if="(facility.status === undefined || facility.status === 'PENDING') && product.quantity !==0"
+                        <td style="text-align:left !important" class="col-facility p-column" ng-repeat-end>
+                            <span style="float:left;margin:9px 2px 10px 3px;padding-left:2px;"
+                                  ng-if="(routineFacility.status === undefined || routineFacility.status === 'PENDING') && product.quantity !==0"
                                   ng-bind="product.quantity"></span>
-                            <span style="margin:9px 2px 10px 3px;padding-left:10px" ng-if="(facility.status === undefined || facility.status === 'PENDING') && product.quantity ===0">0</span>
+                            <span style="float:left;margin:9px 2px 10px 3px;padding-left:2px;"
+                                  ng-if="(routineFacility.status === undefined || routineFacility.status === 'PENDING') && product.quantity ===0">0</span>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="clear-both"><br/></div>
-            <openlmis-pagination ng-show="ScheduledFacilities.length > 0" num-pages="numberOfPages"
-                                 current-page="currentPage"
-                                 max-size="10"
-                                 error-pages="errorPages"></openlmis-pagination>
+
         </div>
-
-        <div ng-show="distributionType==='UNSCHEDULED'">
-            <select style="min-width:300px !important" ui-select2
-                    ng-click="loadUnScheduledFacility()"
-                    ng-disabled="productToAdd.lots.length >0" ng-model="UnScheduledFacilityId"
-                    ng-options="f.id as f.name for f in allUnScheduledFacilities">
-                <option value="" openlmis-message="placeholder.select.facility"></option>
-            </select>
-            <br/>
-            <br/>
-
-            <div class="row-fluid" ng-show='UnScheduledFacilityId !==undefined && UnScheduledFacilityId >0'>
-
-                <div class="float-left left-table parent">
-                    <table class="table table-bordered" fixed-table-header id="UnScheduledFixedTable">
-                        <thead>
-                        <tr>
-                            <th colspan="2">&nbsp;</th>
-                        </tr>
-                        <tr>
-                            <th openlmis-message="label.facility"></th>
-                            <th style="width:100px;max-width:100px;min-width:100px" class="col-action"
-                                openlmis-message="label.action"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-class=""
-                            ng-click="setSelectedFacility(UnScheduledFacility)"
-                                >
-                            <td class="col-facility">
-                                <span class="cell-text">{{UnScheduledFacility.name}}</span>
-                            </td>
-                            <td style="width:100px;max-width:100px;min-width:100px" class="col-action">
-                                <input ng-show="facility.status === undefined || facility.status !=='PENDING'"
-                                       ng-click="showIssueModal(UnScheduledFacility,'UNSCHEDULED')"
-                                       type="submit" class="btn btn-primary"
-                                       openlmis-message="button.add">
-
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="float-left right-table parent" custom-horizontal-scroll>
-                    <table class="table table-bordered" fixed-table-header>
-                        <thead>
-                        <tr>
-                            <th colspan="{{UnScheduledFacility.productsToIssue.length *2}}"
-                                openlmis-message="label.products"></th>
-                        </tr>
-                        <tr>
-                            <th ng-repeat="product in UnScheduledFacility.productsToIssue">
-                                {{product.name}}
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="col-facility p-column" ng-repeat="product in UnScheduledFacility.productsToIssue">
-                                <span style="margin:30px 2px 30px 3px !important;padding-left:10px" ng-bind="product.quantity"></span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-
     </div>
     </div>
 
 
-    <div ng-controller="SaveIssueController" id="popup-box" ng-form="issueForm" modal="issueModal" options="{'backdrop':'static', 'escape':false}" style="width:80% !important;margin-left:-40% !important">
+    <div ng-controller="SaveIssueController" id="popup-box" ng-form="issueForm" modal="issueModal"
+         options="{'backdrop':'static', 'escape':false}" style="width:80% !important;margin-left:-40% !important;">
         <div class="modal-header">
             <h3 openlmis-message="label.vaccine.stock.issue.voucher"></h3>
         </div>
@@ -271,61 +202,91 @@
             <div class="alert alert-danger" ng-show="showNoProductErrorMessage" openlmis-message="error.message.no.product.to.issue"></div>
             <div class="alert alert-danger" ng-show="showFormErrorMessage" openlmis-message="error.message.invalid.form"></div>
             <div class="rnr-table">
-            <table id="podTable2" class="table table-bordered">
+                <table id="issueTable" class="table table-bordered">
                 <thead>
                 <tr>
                     <th class="col-lot"><span openlmis-message="label.product"></span></th>
-                    <th class="col-lot "><span openlmis-message="label.stock.batch"></span></th>
-                    <th class="col-lot "><span openlmis-message="label.stock.vvm"></span></th>
-                    <th class="col-lot "><span openlmis-message="header.stock.in.Hand "></span></th>
-                    <th class="col-quantity "><span openlmis-message="label.stock.quantity"></span></th>
-                    <th class="col-quantity "><span openlmis-message="header.total.issued"></span></th>
-                    <th class="col-quantity "><span openlmis-message="header.doses.requested"></span></th>
+                    <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                            openlmis-message="label.stock.batch"></span></th>
+                    <th class="col-lot " style="max-width:100px !important; width:100px !important"><span
+                            openlmis-message="label.stock.vvm"></span></th>
+                    <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                            openlmis-message="label.expiration.date "></span></th>
+                    <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                            openlmis-message="header.stock.in.Hand "></span></th>
+                    <th class="col-quantity " style="max-width:150px !important; width:150px !important"><span
+                            openlmis-message="label.stock.quantity"></span></th>
+                    <th class="col-quantity " style="max-width:120px !important; width:120px !important"><span
+                            openlmis-message="header.total.issued"></span></th>
+                    <th style="max-width:120px !important; width:120px !important"
+                        ng-if="routineFacility.status !== 'RECEIVED'" class="col-quantity "><span
+                            openlmis-message="header.doses.requested"></span></th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr ng-repeat-start="product in facilityToIssue.productsToIssue" >
-                    <td class="cell-input disabled" rowspan="{{product.lots.length}}">
+                    <tbody ng-repeat="category in facilityToIssue.productsToIssueByCategory">
+                    <tr>
+                        <td class="productCategory" id="vaccine" colspan="10">
+                            {{category.productCategory}}
+                        </td>
+                    </tr>
+                    <tr ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
+                        ng-repeat-start="product in category.productsToIssue">
+                        <td class="cell-input disabled last-row" rowspan="{{product.lots.length}}">
                         <span class="cell-text"  ng-bind="product.name"></span>
                     </td>
-                    <td class="cell-input disabled" ng-class="{'skip':product.lots === undefined}">
+                        <td class="cell-input disabled"
+                            ng-class="{'skip':product.lots === undefined,'last-row':product.lots.length==1}">
                         <span class="cell-text" ng-bind="product.lots[0].lotCode"></span>
                     </td>
-                    <td class="cell-input disabled" ng-class="{'skip':product.lots === undefined}">
+                        <td class="cell-input disabled"
+                            ng-class="{'skip':product.lots === undefined,'last-row':product.lots.length==1}">
                         <span class="cell-text" ng-bind="product.lots[0].vvmStatus"></span>
                     </td>
-                    <td  class="cell-input disabled " >
-                        <span class="cell-text"  ng-bind="product.lots[0].quantityOnHand" ng-show="product.lots.length > 0" ></span>
-                        <span class="cell-text" ng-bind="product.totalQuantityOnHand" ng-show="product.lots === undefined" ></span>
+                        <td class="cell-input disabled"
+                            ng-class="{'skip':product.lots === undefined,'last-row':product.lots.length==1}">
+                            <span class="cell-text" ng-bind="product.lots[0].expirationDate | date:'MMM-yyyy'"></span>
+                        </td>
+                        <td class="cell-input disabled "
+                            ng-class="{'last-row':product.lots.length==1, 'max-error':(product.lots[0].quantityOnHand < product.lots[0].quantity)}">
+                            <span class="cell-text" ng-bind="product.lots[0].quantityOnHand | number"
+                                  ng-show="product.lots.length > 0"></span>
+                            <span class="cell-text" ng-bind="product.totalQuantityOnHand | number"
+                                  ng-show="product.lots === undefined"></span>
                     </td>
-                    <td class="col-general cell-input">
+                        <td class="col-general cell-input" ng-class="{'last-row':product.lots.length==1}">
                             <input ng-show="product.lots.length > 0" min="{{0}}" max="{{product.lots[0].quantityOnHand}}" name="quantity" ng-model="product.lots[0].quantity"
-                            ng-change="updateCurrentTotal(product)" style="width:100%" numeric-validator="positiveInteger"
+                                   ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
                             maxlength="8" type="number"/>
-                        <input  ng-show="product.lots === undefined" min="{{0}}" max="{{product.totalQuantityOnHand}}" name="quantity" ng-model="product.quantity"
-                               ng-change="updateCurrentTotal(product)" style="width:100%" numeric-validator="positiveInteger"
+                            <input ng-show="product.lots === undefined" min="{{0}}"
+                                   max="{{product.totalQuantityOnHand}}" name="quantity" ng-model="product.quantity"
+                                   ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
                                maxlength="8" type="number"/>
                     </td>
-                    <td class="cell-input disabled" rowspan="{{product.lots.length}}">
-                        <span class="cell-text" ng-bind="product.quantity"></span>
+                        <td class="cell-input disabled last-row" rowspan="{{product.lots.length}}">
+                            <span class="cell-text" ng-bind="product.quantity | number"></span>
                     </td>
-                    <td class="cell-input disabled" rowspan="{{product.lots.length}}">
-                        <span class="cell-text" ng-bind="product.required"></span>
+                        <td ng-if="routineFacility.status !== 'RECEIVED'" class="cell-input disabled last-row"
+                            rowspan="{{product.lots.length}}">
+                            <span class="cell-text" ng-bind="product.quantityRequired | number"></span>
                     </td>
                 </tr>
-                <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first" >
-                    <td class="cell-input disabled">
+                    <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first" ng-class="color">
+                        <td class="cell-input disabled" ng-class="{'last-row':$last}">
                         <span class="cell-text" ng-bind="lot.lotCode"></span>
                     </td>
-                    <td class="cell-input disabled">
+                        <td class="cell-input disabled" ng-class="{'last-row':$last}">
                         <span class="cell-text" ng-bind="lot.vvmStatus"></span>
                     </td>
-                    <td class="cell-input disabled">
-                        <span class="cell-text" ng-bind="lot.quantityOnHand"></span>
+                        <td class="cell-input disabled" ng-class="{'last-row':$last}">
+                            <span class="cell-text" ng-bind="lot.expirationDate | date:'MMM-yyyy'"></span>
+                        </td>
+                        <td class="cell-input disabled"
+                            ng-class="{'last-row':$last, 'max-error':lot.quantityOnHand < lot.quantity}">
+                            <span class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
                     </td>
-                    <td class="col-general cell-input">
+                        <td class="col-general cell-input" ng-class="{'last-row':$last}">
                         <input ng-show="product.lots.length > 0" min="{{0}}" max="{{lot.quantityOnHand}}" name="lotQuantity{{$index}}" ng-model="lot.quantity"
-                               ng-change="updateCurrentTotal(product)" style="width:100%" numeric-validator="positiveInteger"
+                               ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
                                maxlength="8" type="number"/>
                     </td>
                 </tr>
@@ -338,13 +299,14 @@
             <input type="button" id="issueSubmit" class="btn btn-primary save-button"
                    ng-click="distribute()"
                    ng-disabled="issueForm.$invalid "
-                   openlmis-message="button.save"/>
+                   openlmis-message="button.save.and.print"/>
             <input type="button" ng-click="closeIssueModal();" class="btn btn-cancel"
                    openlmis-message="button.cancel"/>
         </div>
     </div>
 
-    <div ng-controller="SavePODController" id="popup-box2" ng-form="podForm" modal="podModal" options="{'backdrop':'static', 'escape':false}" style="width:70% !important;margin-left:-35% !important">
+    <div ng-controller="SavePODController" id="popup-box2" ng-form="podForm" modal="podModal"
+         options="{'backdrop':'static', 'escape':false}" style="width:60% !important;margin-left:-30% !important">
         <div class="modal-header">
             <h3 openlmis-message="label.vaccine.stock.pod"></h3>
         </div>
@@ -378,15 +340,22 @@
                     <th class="col-quantity "><span openlmis-message="label.stock.quantity"></span></th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr ng-repeat-start="product in facilityPOD.productsToIssue">
+                <tbody ng-repeat="category in facilityPOD.productsToIssueByCategory">
+                <tr>
+                    <td class="productCategory" id="category" colspan="10">
+                        {{category.productCategory}}
+                    </td>
+                </tr>
+                <tr ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
+                    ng-repeat-start="product in category.productsToIssue">
                     <td  class="cell-input disabled" rowspan="{{product.lots.length}}">
                         <span class="cell-text" ng-bind="product.name"></span>
                     </td>
                     <td class="cell-input disabled"  ng-class="{'skip':product.lots === undefined}">
                         <span class="cell-text" ng-bind="product.lots[0].lotCode"></span>
                     </td>
-                    <td  class="cell-input disabled" ng-class="{'skip':product.lots === undefined}">
+                    <td class="cell-input disabled"
+                        ng-class="{'skip':product.lots[0].vvmStatus === null || (product.lots===undefined && product.vvmStatus === undefined)}">
                         <span class="cell-text" ng-bind="product.lots[0].vvmStatus"></span>
                     </td>
                     <td class="col-general cell-input">
@@ -395,11 +364,11 @@
                         <input ng-show="product.lots === undefined" type="number" ng-model="product.quantity"/>
                     </td>
                 </tr>
-                <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first">
-                    <td class="col-general cell-input">
+                <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first" ng-class="color">
+                    <td class="col-general cell-input disabled">
                         <span class="cell-text" ng-bind="lot.lotCode"></span>
                     </td>
-                    <td class="col-general cell-input">
+                    <td class="col-general cell-input disabled">
                         <span class="cell-text" ng-bind="lot.vvmStatus"></span>
                     </td>
                     <td class="col-general cell-input">
@@ -423,9 +392,6 @@
 
     <div form-toolbar id="action_buttons" class="action-buttons">
         <div class="form-cell button-row">
-
-            <!--<input id="save-all" type="submit"  ng-click="saveAll()" class="btn btn-primary save-button"-->
-                   <!--openlmis-message="button.save"/>-->
 
             <input id="cancel" type="submit" id="cancel-button" ng-click="cancel()" class="btn btn-primary save-button"
                    openlmis-message="button.cancel"/>
