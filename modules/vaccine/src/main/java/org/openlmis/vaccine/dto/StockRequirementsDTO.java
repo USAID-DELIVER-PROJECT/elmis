@@ -37,7 +37,7 @@ import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.
 @NoArgsConstructor
 @JsonSerialize(include = NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StockRequirements_ extends BaseModel
+public class StockRequirementsDTO extends BaseModel
 {
     Long programId;
     Long facilityId;
@@ -57,7 +57,6 @@ public class StockRequirements_ extends BaseModel
   Integer maximumStock;
 
   Integer reorderLevel;
-
 
   Integer isaValue;
 
