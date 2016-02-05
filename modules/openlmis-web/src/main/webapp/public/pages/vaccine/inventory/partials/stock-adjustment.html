@@ -8,39 +8,6 @@
 ~ You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
 -->
 <!DOCTYPE html>
-<style>
-    table td.disabled, .rnr-table .table-bordered td.disabled {
-    background-color: #F0F0F0;
-
-    }
-    .rnr-table .table-bordered td.col-lot, .rnr-table .table-bordered td.col-available{
-    padding-left:10px !important;
-    padding-right:10px !important;
-
-    }
-
-    .rnr-table .table-bordered td.last-row {
-    border-bottom: 1px solid #ccc !important;
-    padding-bottom:4px !important;
-    }
-
-    .rnr-table .table-bordered tr td.col-product, .rnr-table .table-bordered tr th.col-product{
-    min-width:100px !important;
-    min-width:160px !important;
-    }
-    .rnr-table .table-bordered tr th.col-quantity,.rnr-table .table-bordered tr th.col-available, .rnr-table
-    .table-bordered tr th.col-affected{
-    min-width:100px !important;
-    min-width:100px !important;
-    }
-
-    .rnr-table .table-bordered tr td.skip{
-    background: linear-gradient(to bottom, #f9f9f9 0%, #e0e0e0 100%) !important;
-    }
-    input[type="number"]{width:130px !important;margin-bottom:2px !important;margin:2px 3px !important}
-    span.adj-error{color:#FF0000 !important}
-
-</style>
 <div>
     <h2><span openlmis-message="label.vaccine.stock.adjustment"></span></h2>
     <div class="info-box padding2px">
@@ -69,16 +36,18 @@
     <hr/>
     <div class="rnr-table" ng-form="adjustmentForm">
 
-        <table id="podTable" class="table table-bordered" fixed-table-header>
+        <table id="adjustmentTable" class="table table-bordered" fixed-table-header>
             <thead>
             <tr>
                 <th class="col-product "><span openlmis-message="label.products"></span></th>
                 <th class="col-quantity "><span openlmis-message="label.stock.total.quantity"></span></th>
                 <th class="col-lot"><span openlmis-message="label.stock.batch"></span></th>
                 <th class="col-available"><span openlmis-message="label.stock.onhand"></span></th>
-                <th class="col-count"><span openlmis-message="label.stock.physical.count"></span></th>
+                <th class="col-count" style="max-width:150px !important; width:150px !important"><span
+                        openlmis-message="label.stock.physical.count"></span></th>
                 <th class="col-count"><span openlmis-message="label.stock.vvm"></span></th>
-                <th style="min-width:5px !important" class="col-skip"><span openlmis-message="label.skip"></span></th>
+                <th style="min-width:5px !important;width:10px !important" class="col-skip"><span
+                        openlmis-message="label.skip"></span></th>
                 <th class="col-reason"><span openlmis-message="label.stock.adjustment.reasons"></span></th>
                 <th class="col-affected"><span openlmis-message="label.stock.amount.affected"></span></th>
                 <th class="col-validation"><span openlmis-message="label.stock.validation"></span></th>
@@ -90,7 +59,8 @@
                     {{stock.productCategory}}
                 </td>
             </tr>
-            <tr ng-repeat-start="c in stock.stockCards" style="border-bottom:2px solid #333">
+            <tr ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
+                ng-repeat-start="c in stock.stockCards" style="border-bottom:2px solid #333">
                 <td rowspan="{{c.lotsOnHand.length}}" class="col-product cell-input last-row disabled">
                     <span class="cell-text" ng-bind="c.product.primaryName"></span>
                 </td>
@@ -183,7 +153,7 @@
 
                 </td>
             </tr>
-            <tr ng-repeat-end ng-repeat="lot in c.lotsOnHand" ng-show="!$first">
+            <tr ng-repeat-end ng-repeat="lot in c.lotsOnHand" ng-show="!$first" ng-class="color">
                 <td class="col-lot  cell-input disabled" ng-class="{'last-row':$last}">
                     <span class="cell-text" ng-bind="lot.lot.lotCode"></span>
                 </td>
