@@ -471,8 +471,20 @@ public interface VaccineReportMapper {
     )
    public List<Product> getVaccineProductsList();
 
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationVaccineForFacility")
+   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForFacility(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
     @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationVaccineUtilizationPerformanceByZone")
-    List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(
+    public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationForRegion")
+    public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForRegion(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,

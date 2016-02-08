@@ -22,6 +22,7 @@ import org.openlmis.core.service.*;
 import org.openlmis.ivdform.domain.reports.*;
 import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
+import org.openlmis.vaccine.repository.mapper.reports.PerformanceByDropoutRateByDistrictMapper;
 import org.openlmis.vaccine.repository.reports.VaccineReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,8 @@ public class VaccineReportService {
     public static final String VACCINE_REPORT_VACCINE_CATEGORY_CODE = "VACCINE_REPORT_VACCINE_CATEGORY_CODE";
     public static final String VACCINE_REPORT_VITAMINS_CATEGORY_CODE = "VACCINE_REPORT_VITAMINS_CATEGORY_CODE";
     public static final String VACCINE_REPORT_SYRINGES_CATEGORY_CODE = "VACCINE_REPORT_SYRINGES_CATEGORY_CODE";
-
+    @Autowired
+    private PerformanceByDropoutRateByDistrictMapper dropoutRateByDistrictMapper;
 
     @Autowired
     VaccineReportRepository repository;
@@ -177,8 +179,8 @@ public class VaccineReportService {
 
             if (zoneId == -1 || zoneId == 0) {
                 districtId = getNationalZoneId();
-            }else {
-                districtId=zoneId;
+            } else {
+                districtId = zoneId;
             }
 
             if ((facilityCode == null || facilityCode.isEmpty()) && periodId != 0) {
@@ -205,8 +207,8 @@ public class VaccineReportService {
 
         if (zoneId == -1 || zoneId == 0) {
             districtId = getNationalZoneId();
-        }else {
-            districtId=zoneId;
+        } else {
+            districtId = zoneId;
         }
         try {
 
@@ -241,7 +243,7 @@ public class VaccineReportService {
     public Map<String, List<Map<String, Object>>> getPerformanceCoverageReportData(String periodStart, String periodEnd,
                                                                                    Long districtId, Long productId) {
 
-        Date startDate , endDate ;
+        Date startDate, endDate;
 
         startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
         endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
@@ -272,7 +274,7 @@ public class VaccineReportService {
     public Map<String, List<Map<String, Object>>> getCompletenessAndTimelinessReportData(String periodStart, String periodEnd,
                                                                                          Long districtId, Long productId) {
 
-        Date startDate , endDate ;
+        Date startDate, endDate;
 
         startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
         endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
@@ -293,7 +295,7 @@ public class VaccineReportService {
                                                                            Long productId) {
 
 
-        Date startDate , endDate ;
+        Date startDate, endDate;
 
         startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
         endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
@@ -360,16 +362,26 @@ public class VaccineReportService {
 
     public Map<String, List<Map<String, Object>>> getClassificationVaccineUtilizationPerformance(String periodStart, String periodEnd, Long zoneId, Long productId) {
         Map<String, List<Map<String, Object>>> result = new HashMap<>();
+        boolean regionReport;
+        boolean facilityReport;
+        regionReport = zoneId == 0 ? true : false;
+        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) != 0;
         try {
 
 
-            Date startDate , endDate;
+            Date startDate, endDate;
 
             startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
             endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
+            if (regionReport) {
+                result.put("regionReport", repository.getClassificationVaccineUtilizationPerformanceRegion(startDate, endDate, zoneId, productId));
+            }
+            if (facilityReport) {
+                result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceFacility(startDate, endDate, zoneId, productId));
+            } else {
+                result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId));
+            }
 
-
-            result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId));
 
             result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
         } catch (Exception ex) {

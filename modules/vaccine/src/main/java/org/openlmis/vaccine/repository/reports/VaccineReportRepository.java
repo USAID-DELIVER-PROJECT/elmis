@@ -73,7 +73,7 @@ public Map<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateReport(Lon
     return mapper.getVaccineCoverageAggregateReportByGeoZone(periodId, zoneId);
   }
 public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacility( Long reportId, Long facilityId){
-  return mapper.calculateVaccineCoverageReport(reportId,facilityId);
+  return mapper.calculateVaccineCoverageReport(reportId, facilityId);
 }
   public Map<String, VaccineCoverageReport> calculateVaccineCoverageReport( Long periodId, Long zoneId){
     return mapper.calculateAggeregatedVaccineCoverageReport(periodId, zoneId);
@@ -174,8 +174,14 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
     return this.mapper.getVaccineProductsList();
   }
 
+  public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceFacility(Date startDate, Date endDate, Long zoneId, Long productId) {
+    return mapper.getClassificationVaccineUtilizationPerformanceForFacility(startDate, endDate, zoneId, productId);
+  }
   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(Date startDate, Date endDate, Long zoneId, Long productId) {
     return mapper.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId);
+  }
+  public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceRegion(Date startDate, Date endDate, Long zoneId, Long productId) {
+    return mapper.getClassificationVaccineUtilizationPerformanceForRegion(startDate, endDate, zoneId, productId);
   }
 
 }
