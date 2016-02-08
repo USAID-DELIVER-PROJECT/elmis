@@ -51,7 +51,9 @@ public interface LotMapper {
       " WHERE loh.stockcardid = #{stockCardId}" +
       "   AND LOWER(l.lotnumber) = LOWER(#{lot.lotCode})" +
       "   AND LOWER(l.manufacturername) = LOWER(#{lot.manufacturerName})" +
-      "   AND l.expirationdate = #{lot.expirationDate}")
+      "   AND EXTRACT(year from l.expirationdate) = date_part('year', #{lot.expirationDate}::TIMESTAMP)" +
+      "   AND EXTRACT(month from l.expirationdate) = date_part('month', #{lot.expirationDate}::TIMESTAMP)"
+      )
   @Results({
       @Result(
           property = "lot", column = "lotId", javaType = Lot.class,
