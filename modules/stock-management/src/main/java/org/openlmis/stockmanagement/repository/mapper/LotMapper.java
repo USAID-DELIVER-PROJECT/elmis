@@ -24,7 +24,8 @@ public interface LotMapper {
       " FROM lots" +
       " WHERE LOWER(lotnumber) = LOWER(#{lotCode})" +
       "   AND LOWER(manufacturername) = LOWER(#{manufacturerName})" +
-      "   AND expirationdate = #{expirationDate}")
+      "   AND EXTRACT(year from expirationdate) = date_part('year', #{expirationDate}::TIMESTAMP)" +
+      "  AND EXTRACT(month from expirationdate) = date_part('month', #{expirationDate}::TIMESTAMP)")
   @Results({
       @Result(
           property = "product", column = "productId", javaType = Product.class,
