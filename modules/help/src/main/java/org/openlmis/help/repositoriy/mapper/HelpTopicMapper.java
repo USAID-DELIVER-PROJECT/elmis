@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.help.Repository.mapper;
+package org.openlmis.help.repositoriy.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.openlmis.help.domain.HelpDocument;

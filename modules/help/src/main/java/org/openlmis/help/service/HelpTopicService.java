@@ -13,9 +13,9 @@ package org.openlmis.help.service;
 
 import org.openlmis.core.domain.Role;
 import org.openlmis.core.service.RoleRightsService;
-import org.openlmis.help.repository.HelpContentRepository;
-import org.openlmis.help.repository.HelpTopicRepository;
-import org.openlmis.help.repository.HelpTopicRoleRepository;
+import org.openlmis.help.repositoriy.HelpContentRepository;
+import org.openlmis.help.repositoriy.HelpTopicRepository;
+import org.openlmis.help.repositoriy.HelpTopicRoleRepository;
 import org.openlmis.help.domain.HelpContent;
 import org.openlmis.help.domain.HelpDocument;
 import org.openlmis.help.domain.HelpTopic;
