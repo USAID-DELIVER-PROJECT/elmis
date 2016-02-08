@@ -17,6 +17,8 @@ import org.openlmis.vaccine.domain.reports.BundledDistributionVaccinationSupplyD
 import org.openlmis.vaccine.domain.reports.BundledDistributionVaccinationSupplyRegion;
 import org.openlmis.vaccine.domain.reports.BundledDistributionVaccinationSupplyReport;
 import org.openlmis.vaccine.repository.reports.BundledDistributionVaccinationSuppliesRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,13 +28,16 @@ import java.util.List;
 public class BundledDistributionVaccinationSuppliesService {
     @Autowired
     private BundledDistributionVaccinationSuppliesRepository vaccinationSuppliesRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(VaccineReportService.class);
+
+
     public BundledDistributionVaccinationSupplyReport getBundledDistributionVaccinationSupplies(Long year, Long productId){
-        System.out.println(" year and product id is "+ year + " "+ productId);
+
         List<BundledDistributionVaccinationSupplies> vaccinationSupplyList=null;
         BundledDistributionVaccinationSupplyRegion vaccinationSupplyRegion=null;
         BundledDistributionVaccinationSupplyDistrict vaccinationSupplyDistrict=null;
         BundledDistributionVaccinationSupplyReport vaccinationSupplyReport=null;
-        Long totalPopulation=0l;
+        Long totalPopulation=0L;
         try {
             vaccinationSupplyReport= new BundledDistributionVaccinationSupplyReport();
             vaccinationSupplyList=vaccinationSuppliesRepository.getBundledDistributionVaccinationSupplies(year, productId);
@@ -46,19 +51,13 @@ public class BundledDistributionVaccinationSuppliesService {
             }
             vaccinationSupplyReport.setTotalPopulation(totalPopulation);
         }catch (Exception ex){
-            System.out.println("Exception "+ ex.getMessage());
+            LOGGER.warn("Exception "+ ex.getMessage(),ex);
         }
 
         System.out.println(" year and product id is "+ year + " "+ productId + "  "+vaccinationSupplyList.size());
         return  vaccinationSupplyReport;
     }
 
-    public BundledDistributionVaccinationSupplyReport prepareReport(List<BundledDistributionVaccinationSupplies> vaccinationSuppliesList){
-        BundledDistributionVaccinationSupplyReport vaccinationSupplyReport= new BundledDistributionVaccinationSupplyReport();
-        for(BundledDistributionVaccinationSupplies vaccinationSupplies: vaccinationSuppliesList){
-            //if()
-        }
-        return vaccinationSupplyReport;
-    }
+
 }
 

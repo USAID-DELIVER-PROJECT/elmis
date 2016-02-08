@@ -24,7 +24,7 @@ import org.openlmis.core.domain.OrderQuantityAdjustmentType;
 import org.openlmis.core.service.OrderQuantityAdjustmentFactorService;
 import org.openlmis.core.service.OrderQuantityAdjustmentTypeService;
 import org.openlmis.db.categories.UnitTests;
-import org.openlmis.web.controller.seasonalRationing.SeasonRationingLookupController;
+import org.openlmis.web.controller.seasonaling.SeasonRationingLookupController;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import static org.mockito.Mockito.atLeastOnce;

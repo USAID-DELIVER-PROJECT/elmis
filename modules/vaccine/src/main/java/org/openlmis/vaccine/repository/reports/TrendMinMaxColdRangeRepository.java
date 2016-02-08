@@ -17,9 +17,7 @@ import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
 import org.openlmis.vaccine.repository.mapper.reports.TrendOfMinMaxColdChainRangeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,25 +28,25 @@ public class TrendMinMaxColdRangeRepository {
     public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainTempratureReports(
             PerformanceByDropoutRateParam filterCriteria
     ){
-        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList;
         coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureReports(filterCriteria);
-        Map<String,TrendOfMinMaxColdChainTempratureDetail> facilityPopulationListMap= this.getFacilityVaccineTargetInformation(filterCriteria);
+
         return  coldChainTempratureDetailList;
     }
     public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainDistrictTempratureReports(
             PerformanceByDropoutRateParam filterCriteria
     ){
-        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList;
         coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureDisrictReports(filterCriteria);
-        Map<String,TrendOfMinMaxColdChainTempratureDetail> districtPopulationListMap= this.getDistrictVaccineTargetInformation(filterCriteria);
+
         return  coldChainTempratureDetailList;
     }
     public List<TrendOfMinMaxColdChainTempratureDetail> loadTrendMinMaxColdChainTempratureRegionReports(
             PerformanceByDropoutRateParam filterCriteria
     ){
-        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList=null;
+        List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList;
         coldChainTempratureDetailList=mapper.loadTrendMinMaxColdChainTempratureRegionReports(filterCriteria);
-        Map<String,TrendOfMinMaxColdChainTempratureDetail> regionPoulationListMap=this.getRegionVaccineTargetInformation(filterCriteria);
+
         return  coldChainTempratureDetailList;
     }
 

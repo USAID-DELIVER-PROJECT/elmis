@@ -16,7 +16,7 @@ import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
-import org.openlmis.report.model.dto.Product;
+
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.service.reports.VaccineReportService;
 import org.springframework.beans.factory.annotation.Autowired;

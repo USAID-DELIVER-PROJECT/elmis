@@ -14,7 +14,6 @@
 
 package org.openlmis.vaccine.repository.mapper.reports.builder;
 
-import org.apache.ibatis.annotations.Select;
 import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
 import org.openlmis.vaccine.repository.mapper.reports.builder.helpers.PerformanceByDropOutRateHelper;
 
@@ -27,6 +26,9 @@ public class PerformanceByDropoutRateQueryBuilder {
     public  static final String DISTRICT_NAME=" d.district_name";
     public  static final String FACILITY_CRITERIA="filterCriteria";
     public  static final String PERIOD_NAME="to_date(i.period_name, 'Mon YYYY')  period_name";
+    public  static final String START_DATE="i.period_start_date";
+    public  static final String END_DATE="i.period_end_date";
+    public  static final String PRODUCT_ID="i.product_id";
     public  static final String VACCINE_COVERAGE_VIEW="vw_vaccine_coverage i";
     public  static final String DISTRICTS_VIEW=" vw_districts d ON i.geographic_zone_id = d.district_id";
     public  static final String VACCINE_REPORTS_VIEW="vaccine_reports vr ON i.report_id = vr.ID";
@@ -64,38 +66,40 @@ public class PerformanceByDropoutRateQueryBuilder {
 
     private static void writePredicates(PerformanceByDropoutRateParam param) {
         WHERE(PROGRAM_FILTER_ENABLED);
-        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodStartDate("i.period_start_date"));
-        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodEndDate("i.period_end_date"));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodStartDate(START_DATE));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodEndDate(END_DATE));
         if (param.getFacility_id() != null && param.getFacility_id()!=0L) {
             WHERE(PerformanceByDropOutRateHelper.isFilteredFacilityId("i.facility_id"));
         }
-        WHERE(PerformanceByDropOutRateHelper.isFilteredProductId("i.product_id"));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredProductId(PRODUCT_ID));
         WHERE(PerformanceByDropOutRateHelper.isFilteredGeographicZoneId("d.parent", "d.region_id", "d.district_id"));
 
 
     }
 
-    public String getByDistrictQuery(Map params) {
+    public String getByDistrictQuery() {
         String query ;
-        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get(FACILITY_CRITERIA);
+
         BEGIN();
         SELECT(REGION_NAME);
         SELECT(DISTRICT_NAME);
         SELECT("   sum( i.denominator) target");
 
         SELECT(PERIOD_NAME);
-        SELECT(" sum(  i.bcg_1) bcg_vaccinated");
+
         SELECT(" sum(   i.dtp_1) dtp1_vaccinated");
+        SELECT(" sum(  i.bcg_1) bcg_vaccinated");
         SELECT("  sum( i.mr_1) mr_vaccinated");
         SELECT(" sum( i.dtp_3) dtp3_vaccinated");
-        SELECT(" case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) " +
-                "- sum(i.mr_1)) / sum(i.bcg_1::numeric)) * 100 else 0 end bcg_mr_dropout");
         SELECT("   case when sum(i.dtp_1) > 0 " +
                 "then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1::numeric)) * 100 else 0 end dtp1_dtp3_dropout");
+        SELECT(" case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) " +
+                "- sum(i.mr_1)) / sum(i.bcg_1::numeric)) * 100 else 0 end bcg_mr_dropout");
+
         FROM(VACCINE_COVERAGE_VIEW);
         JOIN(DISTRICTS_VIEW);
-        JOIN(VACCINE_REPORTS_VIEW);
         JOIN(PROGRAM_PRODUCTS);
+        JOIN(VACCINE_REPORTS_VIEW);
         JOIN(PRODUCT_CATEGORIES);
         writePredicatesForDistrict();
         GROUP_BY("d.region_name, i.period_name, d.district_name,   i.period_start_date");
@@ -105,9 +109,8 @@ public class PerformanceByDropoutRateQueryBuilder {
         query = SQL();
         return query;
     }
-    public String getDistrict(Map params) {
+    public String getDistrict() {
         String query ;
-        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get(FACILITY_CRITERIA);
         BEGIN();
         SELECT(REGION_NAME);
         SELECT(DISTRICT_NAME);
@@ -127,17 +130,16 @@ public class PerformanceByDropoutRateQueryBuilder {
 
     private static void writePredicatesForDistrict() {
         WHERE(PROGRAM_FILTER_ENABLED);
-        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodStartDate("i.period_start_date"));
-        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodEndDate("i.period_end_date"));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodStartDate(START_DATE));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodEndDate(END_DATE));
 
-        WHERE(PerformanceByDropOutRateHelper.isFilteredProductId("i.product_id"));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredProductId(PRODUCT_ID));
         WHERE(PerformanceByDropOutRateHelper.isFilteredGeographicZoneId("d.parent", "d.region_id", "d.district_id"));
 
 
     }
-    public String getByRegionQuery(Map params) {
+    public String getByRegionQuery() {
         String query ;
-        PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get(FACILITY_CRITERIA);
         BEGIN();
         SELECT(REGION_NAME);
 
@@ -157,7 +159,7 @@ public class PerformanceByDropoutRateQueryBuilder {
         JOIN(VACCINE_REPORTS_VIEW);
         JOIN(PROGRAM_PRODUCTS);
         JOIN(PRODUCT_CATEGORIES);
-        writePredicatesForRegion(filter);
+        writePredicatesForRegion();
         GROUP_BY("d.region_name,  i.period_name,  i.period_start_date");
         ORDER_BY("d.region_name,   to_date(i.period_name, 'Mon YYYY'),  i.period_start_date");
 
@@ -165,12 +167,12 @@ public class PerformanceByDropoutRateQueryBuilder {
         query = SQL();
         return query;
     }
-    private static void writePredicatesForRegion(PerformanceByDropoutRateParam param) {
+    private static void writePredicatesForRegion() {
         WHERE(PROGRAM_FILTER_ENABLED);
-        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodStartDate("i.period_start_date"));
-        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodEndDate("i.period_end_date"));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodStartDate(START_DATE));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredPeriodEndDate(END_DATE));
 
-        WHERE(PerformanceByDropOutRateHelper.isFilteredProductId("i.product_id"));
+        WHERE(PerformanceByDropOutRateHelper.isFilteredProductId(PRODUCT_ID));
 
 
 

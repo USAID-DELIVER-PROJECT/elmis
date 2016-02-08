@@ -78,7 +78,7 @@ public class VaccineReportService {
         return repository.getDiseaseSurveillanceAggregateReport(periodId, zoneId);
     }
 
-    private HashMap<String, DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private Map<String, DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
 
             return repository.getCumFacilityDiseaseSurveillance(reportId, facilityId);
@@ -109,7 +109,7 @@ public class VaccineReportService {
         return repository.getVaccineCoverageAggregateReport(periodId, zoneId);
     }
 
-    private HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private Map<String, VaccineCoverageReport> calculateVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
         if (facilityId != null && facilityId != 0) {
             return repository.calculateVaccineCoverageReportForFacility(reportId, facilityId);
         }
@@ -171,21 +171,24 @@ public class VaccineReportService {
 
     public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long periodId, Long zoneId) {
         List<HashMap<String, Object>> vaccineUsageTrend = null;
+        Long districtId;
         try {
 
 
             if (zoneId == -1 || zoneId == 0) {
-                zoneId = getNationalZoneId();
+                districtId = getNationalZoneId();
+            }else {
+                districtId=zoneId;
             }
 
-            if ((facilityCode == null || facilityCode.isEmpty()) && periodId != 0) { // Return aggregated data for selected geographic zone
-                vaccineUsageTrend = repository.vaccineUsageTrendByGeographicZone(periodId, zoneId, productCode);
+            if ((facilityCode == null || facilityCode.isEmpty()) && periodId != 0) {
+                vaccineUsageTrend = repository.vaccineUsageTrendByGeographicZone(periodId, districtId, productCode);
             } else {
                 vaccineUsageTrend = repository.vaccineUsageTrend(facilityCode, productCode);
 
             }
         } catch (Exception ex) {
-            System.out.println("Error Message: " + ex.getMessage());
+            LOGGER.warn("Error Message: ", ex);
         }
         return vaccineUsageTrend;
     }
@@ -194,33 +197,35 @@ public class VaccineReportService {
 
         Map<String, Object> data = new HashMap();
         Long reportId = null;
-
-        if (facilityId != null && facilityId != 0) { // Return aggregated data for the selected geozone
+        Long districtId;
+        if (facilityId != null && facilityId != 0) {
             reportId = getReportIdForFacilityAndPeriod(facilityId, periodId);
 
         }
 
         if (zoneId == -1 || zoneId == 0) {
-            zoneId = getNationalZoneId();
+            districtId = getNationalZoneId();
+        }else {
+            districtId=zoneId;
         }
         try {
 
 
-            data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, zoneId));
-            data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
-            data.put("cumDiseaseSurveillance", this.getCumulativeDiseaseSurveillance(reportId, facilityId, periodId, zoneId));
-            data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
-            data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, zoneId));
-            data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, zoneId));
-            data.put("vitaminSupplementation", getVitaminSupplementationReport(reportId, facilityId, periodId, zoneId));
-            data.put("adverseEffect", getAdverseEffectReport(reportId, facilityId, periodId, zoneId));
-            data.put("coldChain", getColdChain(reportId, facilityId, periodId, zoneId));
-            data.put("targetPopulation", getTargetPopulation(facilityId, periodId, zoneId));
-            data.put("syringes", getSyringeAndSafetyBoxReport(reportId, facilityId, periodId, zoneId));
-            data.put("vitamins", getVitaminsReport(reportId, facilityId, periodId, zoneId));
-            data.put("dropOuts", getDropOuts(reportId, facilityId, periodId, zoneId));
+            data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, districtId));
+            data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, districtId));
+            data.put("cumDiseaseSurveillance", this.getCumulativeDiseaseSurveillance(reportId, facilityId, periodId, districtId));
+            data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, districtId));
+            data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, districtId));
+            data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, districtId));
+            data.put("vitaminSupplementation", getVitaminSupplementationReport(reportId, facilityId, periodId, districtId));
+            data.put("adverseEffect", getAdverseEffectReport(reportId, facilityId, periodId, districtId));
+            data.put("coldChain", getColdChain(reportId, facilityId, periodId, districtId));
+            data.put("targetPopulation", getTargetPopulation(facilityId, periodId, districtId));
+            data.put("syringes", getSyringeAndSafetyBoxReport(reportId, facilityId, periodId, districtId));
+            data.put("vitamins", getVitaminsReport(reportId, facilityId, periodId, districtId));
+            data.put("dropOuts", getDropOuts(reportId, facilityId, periodId, districtId));
         } catch (Exception ex) {
-            System.out.println(ex);
+
             LOGGER.warn("error while loading Reporting summary:... ", ex);
 
         }
@@ -236,12 +241,12 @@ public class VaccineReportService {
     public Map<String, List<Map<String, Object>>> getPerformanceCoverageReportData(String periodStart, String periodEnd,
                                                                                    Long districtId, Long productId) {
 
-        Date startDate = null, endDate = null;
+        Date startDate , endDate ;
 
         startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
         endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
 
-        Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
+        Map<String, List<Map<String, Object>>> result = new HashMap<>();
 
         GeographicZone zone = geographicZoneService.getById(districtId);
 
@@ -267,12 +272,12 @@ public class VaccineReportService {
     public Map<String, List<Map<String, Object>>> getCompletenessAndTimelinessReportData(String periodStart, String periodEnd,
                                                                                          Long districtId, Long productId) {
 
-        Date startDate = null, endDate = null;
+        Date startDate , endDate ;
 
         startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
         endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
 
-        Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
+        Map<String, List<Map<String, Object>>> result = new HashMap<>();
 
         result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId));
         result.put("summary", repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
@@ -288,12 +293,12 @@ public class VaccineReportService {
                                                                            Long productId) {
 
 
-        Date startDate = null, endDate = null;
+        Date startDate , endDate ;
 
         startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
         endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
 
-        Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
+        Map<String, List<Map<String, Object>>> result = new HashMap<>();
 
         /*List<Map<String, Object>> adequacyResultList =  repository.getAdequacyLevelOfSupplyByDistrict(startDate, endDate, districtId, productId);
         List<Map<String, Object>> generatedPeriodList = getSummaryPeriodList(startDate, endDate);
@@ -329,12 +334,12 @@ public class VaccineReportService {
 
         DateTime temp = periodStart.withDayOfMonth(1);
 
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> list = new ArrayList<>();
 
 
         while (monthDiff >= 0) {
 
-            Map<String, Object> period = new HashMap<String, Object>();
+            Map<String, Object> period = new HashMap<>();
             period.put("year", temp.getYear());
             period.put("month", temp.getMonthOfYear());
             period.put("monthString", temp.toString("MMM"));
@@ -354,11 +359,11 @@ public class VaccineReportService {
     }
 
     public Map<String, List<Map<String, Object>>> getClassificationVaccineUtilizationPerformance(String periodStart, String periodEnd, Long zoneId, Long productId) {
-        Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
+        Map<String, List<Map<String, Object>>> result = new HashMap<>();
         try {
 
 
-            Date startDate = null, endDate = null;
+            Date startDate , endDate;
 
             startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
             endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
@@ -368,7 +373,7 @@ public class VaccineReportService {
 
             result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
         } catch (Exception ex) {
-            System.out.println(" the error is :" + ex);
+            LOGGER.warn("Error Message: ", ex);
         }
         return result;
     }

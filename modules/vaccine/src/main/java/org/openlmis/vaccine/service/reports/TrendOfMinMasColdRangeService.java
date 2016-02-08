@@ -30,7 +30,7 @@ public class TrendOfMinMasColdRangeService {
     private TrendMinMaxColdRangeRepository repository;
     @Autowired
     private PerformanceByDropoutRateByDistrictRepository dropoutRateByDistrictRepository;
-    private List<Date> columnNameList ;
+
 
     public TrendOfMinMaxColdChainTempratureReport loadTrendMinMaxColdChainTempratureReports(
             Map<String, String[]> filterCriteria
@@ -46,7 +46,7 @@ public class TrendOfMinMasColdRangeService {
         isRegionReport = filterParam.getGeographic_zone_id() == 0 ? true : false;
         isFacilityReport = dropoutRateByDistrictRepository.isDistrictLevel(filterParam.getGeographic_zone_id());
 
-        columnNameList = ReportsCommonUtilService.extractColumnValues(filterParam);
+        List<Date> columnNameList = ReportsCommonUtilService.extractColumnValues(filterParam);
         List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListAggeregateForDistrict ;
         List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListAggeregateForRegion ;
         List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailListRegion =null;
@@ -54,7 +54,7 @@ public class TrendOfMinMasColdRangeService {
             coldChainTempratureDetailList = repository.loadTrendMinMaxColdChainTempratureReports(filterParam);
 
             coldChainTempratureDetailListAggeregateForRegion =coldChainTempratureDetailList;
-            districtFacilitySummaryColumnList = this.prepareColumnRangesForSummary(this.columnNameList, coldChainTempratureDetailList);
+            districtFacilitySummaryColumnList = this.prepareColumnRangesForSummary(columnNameList, coldChainTempratureDetailList);
             coldChainTempratureReport = this.aggregateReport(coldChainTempratureDetailList);
         } else {
             if (isRegionReport) {
@@ -62,17 +62,17 @@ public class TrendOfMinMasColdRangeService {
                 valueList = this.repository.loadTrendMinMaxColdChainTempratureRegionReports(filterParam);
                 coldChainTempratureDetailListRegion =
                         this.buildReportTree(valueList, ReportsCommonUtilService.REGION_REPORT);
-                regionSummaryColumnList = this.prepareColumnRangesForSummary(this.columnNameList, valueList);
+                regionSummaryColumnList = this.prepareColumnRangesForSummary(columnNameList, valueList);
 
             }
             coldChainTempratureDetailListAggeregateForDistrict = this.repository.loadTrendMinMaxColdChainDistrictTempratureReports(filterParam);
             coldChainTempratureDetailListAggeregateForRegion =coldChainTempratureDetailListAggeregateForDistrict;// this.buildReportTree(coldChainTempratureDetailListAggeregateForDistrict, ReportsCommonUtilService.REGION_REPORT);
-            districtFacilitySummaryColumnList = this.prepareColumnRangesForSummary(this.columnNameList, coldChainTempratureDetailListAggeregateForDistrict);
+            districtFacilitySummaryColumnList = this.prepareColumnRangesForSummary(columnNameList, coldChainTempratureDetailListAggeregateForDistrict);
             coldChainTempratureReport = this.aggregateReport(coldChainTempratureDetailListAggeregateForDistrict);
         }
 
 
-        coldChainTempratureReport.setColumnNames(this.columnNameList);
+        coldChainTempratureReport.setColumnNames(columnNameList);
         coldChainTempratureReport.setChainTempratureDetailReportTree(coldChainTempratureDetailListAggeregateForRegion);
         coldChainTempratureReport.setChainTempratureDetailRegionReportTree(coldChainTempratureDetailListRegion);
         coldChainTempratureReport.setDistrictFacilitySummaryColumnList(districtFacilitySummaryColumnList);

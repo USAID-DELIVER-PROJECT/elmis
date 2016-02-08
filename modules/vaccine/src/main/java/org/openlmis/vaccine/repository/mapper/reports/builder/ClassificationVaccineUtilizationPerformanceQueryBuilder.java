@@ -50,12 +50,12 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                 "  t.period_name, \n" +
                 "  period_start_date, \n" +
                 "  count(t.facility_name) facility_count, \n" +
-                "  max(\n" +
-                "    case when t.usage_denominator between 1 \n" +
-                "    and 200 then 'A' when t.usage_denominator between 201 \n" +
-                "    and 400 then 'B' when t.usage_denominator between 401 \n" +
-                "    and 500 then 'C' else 'D' end\n" +
-                "  ) classification \n" +
+                "  \n" +
+                "    case when sum(t.usage_denominator) between 1 \n" +
+                "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
+                "    and 3999 then 'B' when sum(t.usage_denominator) between 4000 \n" +
+                "    and 4999 then 'C' else 'D' end\n" +
+                "  classification \n" +
                 " from \n" +
                 "  temp t \n" +
                 "  join vw_districts vd on t.geographic_zone_id = vd.district_id \n"

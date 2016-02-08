@@ -9,18 +9,20 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openlmis.web.controller.seasonalRationing;
+package org.openlmis.web.controller.seasonaling;
 
+import org.apache.log4j.Logger;
 import org.openlmis.core.domain.OrderQuantityAdjustmentFactor;
 import org.openlmis.core.domain.OrderQuantityAdjustmentProduct;
 import org.openlmis.core.domain.OrderQuantityAdjustmentType;
 import org.openlmis.core.exception.DataException;
-import org.openlmis.core.service.MessageService;
+
 import org.openlmis.core.service.OrderQuantityAdjustmentFactorService;
 import org.openlmis.core.service.OrderQuantityAdjustmentProductService;
 import org.openlmis.core.service.OrderQuantityAdjustmentTypeService;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.core.web.OpenLmisResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -45,11 +47,9 @@ public class SeasonRationingLookupController extends BaseController {
     public static final String ADJUSTMENTFACTOR = "adjustmentFactor";
     public static final String ADJUSTMENTFACTORLIST = "adjustmentFactorList";
     public static final String ADJUSTMENT_PRODUCTS = "adjustmentProducts";
-
-
-    @Autowired
-    MessageService messageService;
-
+    private static final Logger LOGGER = Logger.getLogger(SeasonRationingLookupController.class);
+    public  static final  String DUPLICATE_CODE_EXCEPTION="Duplicate Code Exists in DB.";
+    public  static final  String SUCCESSULLY_DELETED="Deleted successfully";
     @Autowired
     private OrderQuantityAdjustmentTypeService quantityAdjustmentTypeService;
     @Autowired
@@ -61,7 +61,7 @@ public class SeasonRationingLookupController extends BaseController {
     public ResponseEntity<OpenLmisResponse> saveSeasonalityRationingType(OrderQuantityAdjustmentType quantityAdjustmentType, boolean createOperation) {
         try {
             if (createOperation) {
-                System.out.println("creating " + quantityAdjustmentType.getName());
+
                 this.quantityAdjustmentTypeService.addOrderQuantityAdjustmentType(quantityAdjustmentType);
             } else {
                 this.quantityAdjustmentTypeService.updateOrderQuantityAdjustmentType(quantityAdjustmentType);
@@ -71,14 +71,14 @@ public class SeasonRationingLookupController extends BaseController {
             response.getBody().addData(SEASONALRATIONINGTYPELIST, this.quantityAdjustmentTypeService.loadOrderQuantityAdjustmentTypeList());
             return response;
         } catch (DuplicateKeyException exp) {
-            System.out.println(exp.getStackTrace());
-            return OpenLmisResponse.error("Duplicate Code Exists in DB.", HttpStatus.BAD_REQUEST);
+            LOGGER.warn(DUPLICATE_CODE_EXCEPTION,exp);
+            return OpenLmisResponse.error(DUPLICATE_CODE_EXCEPTION, HttpStatus.BAD_REQUEST);
         } catch (DataException e) {
-            System.out.println(e.getStackTrace());
+            LOGGER.warn(" data exception", e);
             return error(e, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return OpenLmisResponse.error("Duplicate Code Exists in DB.", HttpStatus.BAD_REQUEST);
+            LOGGER.warn(" exception", e);
+            return OpenLmisResponse.error(DUPLICATE_CODE_EXCEPTION, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -113,14 +113,14 @@ public class SeasonRationingLookupController extends BaseController {
 
     @RequestMapping(value = "/seasonalityRationingTypes/{id}", method = DELETE)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_SEASONALITY_RATIONING')")
-    public ResponseEntity<OpenLmisResponse> removeSeasonRationingType(@PathVariable("id") long id, HttpServletRequest request) {
-        System.out.println(" here deleting " +id);
+    public ResponseEntity<OpenLmisResponse> removeSeasonRationingType(@PathVariable("id") long id) {
+
         OrderQuantityAdjustmentType quantityAdjustmentType= new OrderQuantityAdjustmentType();
         quantityAdjustmentType.setId(Long.valueOf(id));
         this.quantityAdjustmentTypeService.deleteOrderQuantityAdjustmentType(quantityAdjustmentType);
-        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.success(("'" + quantityAdjustmentType.getId()) + "Deleted successfully");
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.success(("'" + quantityAdjustmentType.getId()) + SUCCESSULLY_DELETED);
         response.getBody().addData(SEASONALRATIONINGTYPE, quantityAdjustmentType);
-        System.out.println(" here deleting " + quantityAdjustmentType.getName());
+
 
         response.getBody().addData(SEASONALRATIONINGTYPELIST, this.quantityAdjustmentTypeService.loadOrderQuantityAdjustmentTypeList());
         return response;
@@ -135,10 +135,10 @@ public class SeasonRationingLookupController extends BaseController {
 
     @RequestMapping(value = "/seasonalityRationingTypes_remove", method = RequestMethod.POST, headers = "Accept=application/json")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_SEASONALITY_RATIONING')")
-    public ResponseEntity<OpenLmisResponse> deleteSeasonalRationingType(@RequestBody OrderQuantityAdjustmentType quantityAdjustmentType, HttpServletRequest request) {
-        System.out.println(" here deleting " + quantityAdjustmentType.getName());
+    public ResponseEntity<OpenLmisResponse> deleteSeasonalRationingType(@RequestBody OrderQuantityAdjustmentType quantityAdjustmentType) {
+
         this.quantityAdjustmentTypeService.deleteOrderQuantityAdjustmentType(quantityAdjustmentType);
-        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.success(("'" + quantityAdjustmentType.getId()) + "Deleted successfully");
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.success(("'" + quantityAdjustmentType.getId()) + SUCCESSULLY_DELETED);
         response.getBody().addData(SEASONALRATIONINGTYPE, quantityAdjustmentType);
         response.getBody().addData(SEASONALRATIONINGTYPELIST, this.quantityAdjustmentTypeService.loadOrderQuantityAdjustmentTypeList());
 
@@ -157,7 +157,7 @@ public class SeasonRationingLookupController extends BaseController {
     public ResponseEntity<OpenLmisResponse> saveAdjustmentFactor(OrderQuantityAdjustmentFactor adjustmentFactor, boolean createOperation) {
         try {
             if (createOperation) {
-                System.out.println("creating " + adjustmentFactor.getName());
+
                 this.adjustmentFactorService.addOrderQuantityAdjustmentFactor(adjustmentFactor);
             } else {
                 this.adjustmentFactorService.updateOrderQuantityAdjustmentFactor(adjustmentFactor);
@@ -167,14 +167,14 @@ public class SeasonRationingLookupController extends BaseController {
             response.getBody().addData(ADJUSTMENTFACTORLIST, this.quantityAdjustmentTypeService.loadOrderQuantityAdjustmentTypeList());
             return response;
         } catch (DuplicateKeyException exp) {
-            System.out.println(exp.getStackTrace());
-            return OpenLmisResponse.error("Duplicate Code Exists in DB.", HttpStatus.BAD_REQUEST);
+            LOGGER.warn("", exp);
+            return OpenLmisResponse.error(DUPLICATE_CODE_EXCEPTION, HttpStatus.BAD_REQUEST);
         } catch (DataException e) {
-            System.out.println(e.getStackTrace());
+            LOGGER.warn("", e);
             return error(e, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return OpenLmisResponse.error("Duplicate Code Exists in DB.", HttpStatus.BAD_REQUEST);
+            LOGGER.warn("", e);
+            return OpenLmisResponse.error(DUPLICATE_CODE_EXCEPTION, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -209,10 +209,10 @@ public class SeasonRationingLookupController extends BaseController {
 
     @RequestMapping(value = "/adjustmentFactors/{id}", method = DELETE)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_SEASONALITY_RATIONING')")
-    public ResponseEntity<OpenLmisResponse> removeAdjustmentFactor(@PathVariable("id") long id, HttpServletRequest request) {
+    public ResponseEntity<OpenLmisResponse> removeAdjustmentFactor(@PathVariable("id") long id) {
         OrderQuantityAdjustmentFactor adjustmentFactor = new OrderQuantityAdjustmentFactor();
         adjustmentFactor.setId(Long.valueOf(id));
-        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.success(("'" + adjustmentFactor.getId()) + "Deleted successfully");
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.success(("'" + adjustmentFactor.getId()) + SUCCESSULLY_DELETED);
         response.getBody().addData(ADJUSTMENTFACTOR, adjustmentFactor);
         this.adjustmentFactorService.deleteOrderQuantityAdjustmentFactor(adjustmentFactor);
         response.getBody().addData(SEASONALRATIONINGTYPELIST, this.quantityAdjustmentTypeService.loadOrderQuantityAdjustmentTypeList());
@@ -227,10 +227,10 @@ public class SeasonRationingLookupController extends BaseController {
 
     @RequestMapping(value = "/adjustmentFactors_remove", method = RequestMethod.POST, headers = "Accept=application/json")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_SEASONALITY_RATIONING')")
-    public ResponseEntity<OpenLmisResponse> deleteAdjustmentFactor(@RequestBody OrderQuantityAdjustmentFactor adjustmentFactor, HttpServletRequest request) {
-        System.out.println(" here deleting " + adjustmentFactor.getName());
+    public ResponseEntity<OpenLmisResponse> deleteAdjustmentFactor(@RequestBody OrderQuantityAdjustmentFactor adjustmentFactor) {
+
         this.adjustmentFactorService.deleteOrderQuantityAdjustmentFactor(adjustmentFactor);
-        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.success(("'" + adjustmentFactor.getId()) + "Deleted successfully");
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.success(("'" + adjustmentFactor.getId()) + SUCCESSULLY_DELETED);
         response.getBody().addData(ADJUSTMENTFACTOR, adjustmentFactor);
         response.getBody().addData(ADJUSTMENTFACTORLIST, this.adjustmentFactorService.loadOrderQuantityAdjustmentFactor());
 
@@ -259,6 +259,7 @@ public class SeasonRationingLookupController extends BaseController {
             adjustmentProduct.setModifiedBy(userId);
             this.adjustmentProductService.save(adjustmentProduct);
         } catch (DataException e) {
+            LOGGER.warn("",e);
             response = OpenLmisResponse.error(e, BAD_REQUEST);
             return response;
         }

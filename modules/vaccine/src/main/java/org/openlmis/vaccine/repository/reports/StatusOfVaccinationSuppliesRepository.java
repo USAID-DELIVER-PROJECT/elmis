@@ -30,7 +30,7 @@ public class StatusOfVaccinationSuppliesRepository {
     public List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForFacilityReports(
             PerformanceByDropoutRateParam filterCriteria
     ) {
-        List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRecievedDetailList = null;
+        List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRecievedDetailList ;
         statusOfVaccinationSuppliesRecievedDetailList = this.mapper.loadStatusOfVaccineSupplyForFacilityReports(filterCriteria);
         return statusOfVaccinationSuppliesRecievedDetailList;
     }
@@ -38,7 +38,7 @@ public class StatusOfVaccinationSuppliesRepository {
     public List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForDistrict(
             PerformanceByDropoutRateParam filterCriteria
     ) {
-        List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRecievedDetailList = null;
+        List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRecievedDetailList ;
         statusOfVaccinationSuppliesRecievedDetailList = this.mapper.loadStatusOfVaccineSupplyForDistrict(filterCriteria);
         return statusOfVaccinationSuppliesRecievedDetailList;
     }
@@ -46,7 +46,7 @@ public class StatusOfVaccinationSuppliesRepository {
     public List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForRegionReports(
             PerformanceByDropoutRateParam filterCriteria
     ) {
-        List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRecievedDetailList = null;
+        List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRecievedDetailList ;
         statusOfVaccinationSuppliesRecievedDetailList = this.mapper.loadStatusOfVaccineSupplyForRegionReports(filterCriteria);
         return statusOfVaccinationSuppliesRecievedDetailList;
     }
@@ -54,21 +54,21 @@ public class StatusOfVaccinationSuppliesRepository {
     public Map<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForFacilityReports(
            PerformanceByDropoutRateParam filterCriteria
     ){
-        Map<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap= null;
+        Map<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap;
         regionPopulationMap=this.mapper.loadPopulationForFacilityReports(filterCriteria);
         return regionPopulationMap;
     }
     public Map<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForDistrict(
              PerformanceByDropoutRateParam filterCriteria
     ){
-        Map<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap= null;
+        Map<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap;
         regionPopulationMap=this.mapper.loadPopulationForDistrict(filterCriteria);
         return regionPopulationMap;
     }
     public Map<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForRegionReports(
              PerformanceByDropoutRateParam filterCriteria
     ){
-        Map<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap= null;
+        Map<String,StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap;
         regionPopulationMap=this.mapper.loadPopulationForRegionReports(filterCriteria);
         return regionPopulationMap;
     }

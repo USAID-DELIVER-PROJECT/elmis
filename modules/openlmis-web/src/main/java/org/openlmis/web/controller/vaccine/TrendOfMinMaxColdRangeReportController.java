@@ -22,17 +22,15 @@ package org.openlmis.web.controller.vaccine;/*
  * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
  */
 
+import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
-import org.openlmis.vaccine.domain.reports.PerformanceByDisrictReport;
 import org.openlmis.vaccine.domain.reports.TrendOfMinMaxColdChainTempratureReport;
-import org.openlmis.vaccine.service.reports.PerformanceByDropoutRateByDistrictService;
 import org.openlmis.vaccine.service.reports.TrendOfMinMasColdRangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,20 +38,19 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/vaccine/report/")
 public class TrendOfMinMaxColdRangeReportController {
     public static final String TREND_MIN_MAX_COLD_RANGE_REPORT = "trendMinMaxColdRangeReport";
-
+    private static final Logger LOGGER = Logger.getLogger(TrendOfMinMaxColdRangeReportController.class);
     @Autowired
     private TrendOfMinMasColdRangeService service;
 
     @RequestMapping(value = "trendOfMinMaxColdRange", method = RequestMethod.GET, headers = "Accept=application/json")
-    public ResponseEntity<OpenLmisResponse> getTrendColdRangeReportList(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                                                        @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+    public ResponseEntity<OpenLmisResponse> getTrendColdRangeReportList(
                                                                         HttpServletRequest request) {
         TrendOfMinMaxColdChainTempratureReport trendOfMinMaxColdChainTempratureReport = null;
 
         try {
             trendOfMinMaxColdChainTempratureReport = service.loadTrendMinMaxColdChainTempratureReports(request.getParameterMap());
         } catch (Exception ex) {
-            System.out.println(" Exception is :" + ex.getMessage());
+            LOGGER.warn(" Exception is :" , ex);
         }
 
         return OpenLmisResponse.response(TREND_MIN_MAX_COLD_RANGE_REPORT, trendOfMinMaxColdChainTempratureReport);

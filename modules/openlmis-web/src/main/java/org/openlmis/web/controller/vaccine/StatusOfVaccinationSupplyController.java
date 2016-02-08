@@ -14,11 +14,12 @@
 
 package org.openlmis.web.controller.vaccine;
 
+import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.vaccine.domain.reports.StatusOfVaccinationSuppliesReceivedReport;
-import org.openlmis.vaccine.domain.reports.TrendOfMinMaxColdChainTempratureReport;
+
 import org.openlmis.vaccine.service.reports.StatusOfVaccinationSupplyService;
-import org.openlmis.vaccine.service.reports.TrendOfMinMasColdRangeService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,20 +33,19 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/vaccine/report/")
 public class StatusOfVaccinationSupplyController {
     public static final String STATUS_VACCINATION_SUPPLY_RECEIVE = "statusOfVaccinationSupplyReceiveReport";
-
+    private static final Logger LOGGER = Logger.getLogger(StatusOfVaccinationSupplyController.class);
     @Autowired
     private StatusOfVaccinationSupplyService service;
 
     @RequestMapping(value = "statusOfVaccinationSupplyReceive", method = RequestMethod.GET, headers = "Accept=application/json")
-    public ResponseEntity<OpenLmisResponse> getStatusOfVaccinationSupplyReceiveList(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                                                        @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+    public ResponseEntity<OpenLmisResponse> getStatusOfVaccinationSupplyReceiveList(
                                                                         HttpServletRequest request) {
         StatusOfVaccinationSuppliesReceivedReport suppliesReceivedReport = null;
 
         try {
             suppliesReceivedReport = service.loadStatusOfVaccineSupplyReport(request.getParameterMap());
         } catch (Exception ex) {
-            System.out.println(" Exception is :" + ex.getMessage());
+            LOGGER.warn(" Exception is :" , ex);
         }
 
         return OpenLmisResponse.response(STATUS_VACCINATION_SUPPLY_RECEIVE, suppliesReceivedReport);
