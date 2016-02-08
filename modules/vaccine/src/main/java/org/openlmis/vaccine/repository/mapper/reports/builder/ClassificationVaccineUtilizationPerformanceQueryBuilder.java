@@ -52,9 +52,9 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                 "  count(t.facility_name) facility_count, \n" +
                 "  \n" +
                 "    case when sum(t.usage_denominator) between 1 \n" +
-                "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
-                "    and 3999 then 'B' when sum(t.usage_denominator) between 4000 \n" +
-                "    and 4999 then 'C' else 'D' end\n" +
+                "    and 1999 then 'Class_A' when sum(t.usage_denominator) between 2000 \n" +
+                "    and 3999 then 'Class_B' when sum(t.usage_denominator) between 4000 \n" +
+                "    and 4999 then 'Class_C' else 'Class_D' end\n" +
                 "  classification \n" +
                 " from \n" +
                 "  temp t \n" +
