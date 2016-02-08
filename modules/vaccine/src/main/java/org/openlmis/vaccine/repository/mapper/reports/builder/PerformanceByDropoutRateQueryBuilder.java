@@ -79,14 +79,11 @@ public class PerformanceByDropoutRateQueryBuilder {
 
     public String getByDistrictQuery() {
         String query ;
-
         BEGIN();
         SELECT(REGION_NAME);
         SELECT(DISTRICT_NAME);
         SELECT("   sum( i.denominator) target");
-
         SELECT(PERIOD_NAME);
-
         SELECT(" sum(   i.dtp_1) dtp1_vaccinated");
         SELECT(" sum(  i.bcg_1) bcg_vaccinated");
         SELECT("  sum( i.mr_1) mr_vaccinated");
@@ -95,11 +92,10 @@ public class PerformanceByDropoutRateQueryBuilder {
                 "then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1::numeric)) * 100 else 0 end dtp1_dtp3_dropout");
         SELECT(" case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) " +
                 "- sum(i.mr_1)) / sum(i.bcg_1::numeric)) * 100 else 0 end bcg_mr_dropout");
-
         FROM(VACCINE_COVERAGE_VIEW);
         JOIN(DISTRICTS_VIEW);
-        JOIN(PROGRAM_PRODUCTS);
         JOIN(VACCINE_REPORTS_VIEW);
+        JOIN(PROGRAM_PRODUCTS);
         JOIN(PRODUCT_CATEGORIES);
         writePredicatesForDistrict();
         GROUP_BY("d.region_name, i.period_name, d.district_name,   i.period_start_date");

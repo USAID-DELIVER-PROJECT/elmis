@@ -47,14 +47,14 @@ public class BundledDistributionVaccinationSuppliesService {
             vaccinationSupplyReport.setVaccinationSupplyRegion(vaccinationSupplyRegion);
             vaccinationSupplyReport.setVaccinationSupplyDistrict(vaccinationSupplyDistrict);
             for (BundledDistributionVaccinationSupplies vaccinationSupplies: vaccinationSupplyList){
-                totalPopulation+=vaccinationSupplies.getPopulation();
+                totalPopulation=   totalPopulation+vaccinationSupplies.getPopulation();
             }
             vaccinationSupplyReport.setTotalPopulation(totalPopulation);
         }catch (Exception ex){
             LOGGER.warn("Exception "+ ex.getMessage(),ex);
         }
 
-        System.out.println(" year and product id is "+ year + " "+ productId + "  "+vaccinationSupplyList.size());
+
         return  vaccinationSupplyReport;
     }
 
