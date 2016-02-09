@@ -128,21 +128,24 @@
     .tr.ng-scope {
         width: 37px !important;
     }
-    td.cell-input{
+
+    td.cell-input {
         align-content: center;
     }
-    .highlight{
-        border-color: red;
+
+    .highlight {
+        border-color: #F84072;
     }
 
     input.ng-invalid {
-        background:#F84072;
-/*
-        border: 2px red solid;
-*/
-        border-color: red;
+        border-color: #F84072;
+        /*
+                border: 2px red solid;
+        */
+        border-color: #F84072;
 
     }
+
     /*   .rnr-table .right-table table thead th span {
            text-align: left!important;
        }*/
@@ -221,7 +224,7 @@
                             {{product.productName}} <br> &nbsp; &nbsp;
 
 
-                            <span style=" text-align: right" >
+                            <span style=" text-align: right">
 
                                 &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
                                 &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
@@ -248,17 +251,14 @@
                               <span>
 
                                   <input ng-init="product.editable = true" ng-bind="product.quantityRequested | number"
-                                         ng-disabled="product.editable" class="cell-text" ng-required="(sumQuantityRequested(product) > getTotalStockOnHand(product))"
+                                         ng-disabled="product.editable" class="cell-text"
                                          style="margin-left:10px;margin-right: 10px;width: 90%;"
-                                         type="number" ng-model="product.quantityRequested"
-                                         ng-class="{highlight:(sumQuantityRequested(product) > getTotalStockOnHand(product))}"
-                                         numeric-validator="positiveInteger" ng-change="sumQuantityRequested(product)"/>&nbsp;
+                                         type="number" ng-model="product.quantityRequested" name="quantityRequested"
+                                         ng-class="highlightRequired(product.quantityRequested) || totalQuantityHighlighted(sumQuantityRequested(product), getTotalStockOnHand(product))"
+                                         numeric-validator="positiveInteger" ng-change="sumQuantityRequested(product)"
+                                         ng-required="true"/>&nbsp;
                                     <input type="checkbox" ng-model="product.editable" ng-checked="true"/>
                               </span>
-
-                                   <span class="rnr-form-error" id="product.quantityRequested" ng-if="(sumQuantityRequested(product) > getTotalStockOnHand(product))"
-                                         style="display:none;" openlmis-message="error.number.only" ng-required="true">
-                                   </span>
 
                         </td>
                         <td class="cell-input">
@@ -274,9 +274,10 @@
                 </table>
             </div>
 
+
             <div form-toolbar id="action_buttons" class="action-buttons">
                 <div class="form-cell button-row">
-                    <input ng-disabled="consolidatedListForm.$invalid || consolidatedListForm.$error" id="submitButton"
+                    <input id="submitButton"
                            type="submit" id="submit-button" class="btn btn-primary save-button"
                            openlmis-message="button.save.and.print" ng-click="submitConsolidated()"/>
                     <input id="cancelButton" type="button" class="btn btn-cancel cancel-button"
@@ -287,7 +288,6 @@
 
                 <div class="toolbar-error" id="saveErrorMsgDiv">
                     <span openlmis-message="error" ng-show="error"></span>&nbsp;
-                    <span ng-show="errorProgram" ng-bind="errorProgram"></span>
                 </div>
                 <div class="toolbar-success" id="saveSuccessMsgDiv" openlmis-message="message" ng-show="message"></div>
             </div>
