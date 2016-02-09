@@ -43,6 +43,10 @@ public class VaccineStockStatusReport implements ReportData {
     private int facilityId;
     private int productId;
 
+    private Long isaValue;
+
+    private Integer mos;
+
     //private JSONPObject products;
 
     public String getLastUpdate(){
