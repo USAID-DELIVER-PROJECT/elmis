@@ -1,4 +1,4 @@
-function newVaccineOrderRequisitionController($scope,$rootScope,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location, ViewOrderRequisitionVaccineReportPeriods) {
+function newVaccineOrderRequisitionController($scope,$rootScope,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location, GetFacilityForVaccineOrderRequisition) {
 
     $rootScope.viewOrder = false;
     $rootScope.receive = false;
@@ -10,7 +10,7 @@ function newVaccineOrderRequisitionController($scope,$rootScope,VaccineOrderRequ
 
     var id = parseInt($scope.programs[0].id,10);
     var facilityId = parseInt($scope.facility.id,10);
-
+    var facilityTypeCode = getFacilityTypeCode;
 
     $scope.requisitionTypes = [];
     $scope.requisitionTypes = [{id: '0', name: 'Unscheduled Reporting'}, {id: '1', name: 'Scheduled Reporting'}];
@@ -42,10 +42,21 @@ function newVaccineOrderRequisitionController($scope,$rootScope,VaccineOrderRequ
                                 $location.path('/create/' + data.report.id + '/' + data.report.programId);
                             });
                         }
-                        else {
+                        else
+
+                            {
                             $location.path('/details');
-                            $scope.message = "Your Previous Requisition Submitted On " + lastReport.orderDate + "" +
-                                " has not yet Received. ";
+
+                                if(facilityTypeCode === 'rvs'){
+                                    $scope.showMessage = true;
+                                    $scope.message = "Your Previous Requisition Submitted On " + lastReport.orderDate + "" +
+                                        " has not yet been Processed. ";
+
+                                }else{
+                                    $scope.message = "Your Previous Requisition Submitted On " + lastReport.orderDate + "" +
+                                        " has not yet Received.   Please:";
+                                }
+
                         }
 
                     });
@@ -78,7 +89,6 @@ function newVaccineOrderRequisitionController($scope,$rootScope,VaccineOrderRequ
         ]
     };
 
-
     $scope.initiate = function (period) {
 
         VaccineOrderRequisitionLastReport.get({facilityId:parseInt(facilityId,10),programId:parseInt(id,10)}, function(data) {
@@ -88,8 +98,18 @@ function newVaccineOrderRequisitionController($scope,$rootScope,VaccineOrderRequ
                 var lastReport = data.lastReport;
 
                 if (!angular.isUndefined(lastReport) && lastReport.emergency === false && lastReport.status === 'SUBMITTED') {
-                    $scope.message = "Your Previous Requisition Submitted On " + lastReport.orderDate + "" +
-                        " has not yet Received. ";
+
+                        if(facilityTypeCode === 'rvs'){
+                            $scope.showMessage = true;
+
+                            $scope.message = "Your Previous Requisition Submitted On " + lastReport.orderDate + "" +
+                                " has not yet been Processed. ";
+
+                        }else{
+                            $scope.message = "Your Previous Requisition Submitted On " + lastReport.orderDate + "" +
+                                " has not yet Received.   Please:";
+                        }
+
                     return $scope.message;
                 }
             }
@@ -152,6 +172,24 @@ newVaccineOrderRequisitionController.resolve = {
             UserHomeFacility.get({}, function (data) {
                 deferred.resolve(data.homeFacility);
             });
+        }, 100);
+
+        return deferred.promise;
+    },
+
+    getFacilityTypeCode: function ($q, $timeout, UserHomeFacility,GetFacilityForVaccineOrderRequisition) {
+        var deferred = $q.defer();
+
+        $timeout(function () {
+
+            UserHomeFacility.get({}, function (data) {
+
+                GetFacilityForVaccineOrderRequisition.get({facilityId: parseInt(data.homeFacility.id, 10)},
+                    function (data) {
+                        deferred.resolve(data.facility.facilityType.code);
+                    });
+            });
+
         }, 100);
 
         return deferred.promise;
