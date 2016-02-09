@@ -329,6 +329,18 @@
                         <property name="recordHandler" ref="facilityProgramProductISAHandler"/>
                     </bean>
                 </entry>
+
+                <entry key="infantMortalityRateDTO">
+                    <bean class="org.openlmis.web.model.UploadBean">
+                        <property name="displayName" value="label.infant.mortality.rate"/>
+                        <property name="importableClass">
+                            <value type="java.lang.Class">org.openlmis.vaccine.dto.InfantMortalityRateDTO</value>
+                        </property>
+                        <property name="recordHandler" ref="infantMortalityRateHandler"/>
+                    </bean>
+                </entry>
+
+
             </map>
         </constructor-arg>
     </bean>
