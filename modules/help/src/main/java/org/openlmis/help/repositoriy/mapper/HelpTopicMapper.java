@@ -19,9 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * Created by seifu on 10/20/2014.
- */
+
 @Repository
 public interface HelpTopicMapper {
     @Insert({"INSERT INTO elmis_help_topic",
@@ -56,9 +54,7 @@ public interface HelpTopicMapper {
             " WHERE id=#{id};")
     void updateHelpTopic(HelpTopic HelpTopic);
 
-    /*
-    this selects all help topics
-     */
+
     @Select("SELECT * FROM elmis_help_topic  ")
     List<HelpTopic> getList();
 

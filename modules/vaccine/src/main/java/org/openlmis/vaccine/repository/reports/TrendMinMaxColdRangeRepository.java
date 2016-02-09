@@ -50,25 +50,5 @@ public class TrendMinMaxColdRangeRepository {
         return  coldChainTempratureDetailList;
     }
 
-    //////////////////////////////////////////////////
 
-    private Map<String,TrendOfMinMaxColdChainTempratureDetail> getFacilityVaccineTargetInformation(
-            PerformanceByDropoutRateParam filterCriteria
-    ){
-     return this.mapper.getFacilityVaccineTargetInformation(filterCriteria);
-    }
-
-
-    private Map<String,TrendOfMinMaxColdChainTempratureDetail> getDistrictVaccineTargetInformation(
-            PerformanceByDropoutRateParam filterCriteria
-    ){
-        return this.mapper.getDistrictVaccineTargetInformation(filterCriteria);
-    }
-
-
-    private Map<String,TrendOfMinMaxColdChainTempratureDetail> getRegionVaccineTargetInformation(
-             PerformanceByDropoutRateParam filterCriteria
-    ){
-        return this.mapper.getRegionVaccineTargetInformation(filterCriteria);
-    }
 }

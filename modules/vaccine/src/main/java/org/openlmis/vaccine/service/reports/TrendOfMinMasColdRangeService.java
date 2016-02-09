@@ -17,6 +17,8 @@ import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
 
 import org.openlmis.vaccine.repository.reports.PerformanceByDropoutRateByDistrictRepository;
 import org.openlmis.vaccine.repository.reports.TrendMinMaxColdRangeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +32,7 @@ public class TrendOfMinMasColdRangeService {
     private TrendMinMaxColdRangeRepository repository;
     @Autowired
     private PerformanceByDropoutRateByDistrictRepository dropoutRateByDistrictRepository;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrendOfMinMasColdRangeService.class);
 
     public TrendOfMinMaxColdChainTempratureReport loadTrendMinMaxColdChainTempratureReports(
             Map<String, String[]> filterCriteria
@@ -66,7 +68,7 @@ public class TrendOfMinMasColdRangeService {
 
             }
             coldChainTempratureDetailListAggeregateForDistrict = this.repository.loadTrendMinMaxColdChainDistrictTempratureReports(filterParam);
-            coldChainTempratureDetailListAggeregateForRegion =coldChainTempratureDetailListAggeregateForDistrict;// this.buildReportTree(coldChainTempratureDetailListAggeregateForDistrict, ReportsCommonUtilService.REGION_REPORT);
+            coldChainTempratureDetailListAggeregateForRegion =coldChainTempratureDetailListAggeregateForDistrict;
             districtFacilitySummaryColumnList = this.prepareColumnRangesForSummary(columnNameList, coldChainTempratureDetailListAggeregateForDistrict);
             coldChainTempratureReport = this.aggregateReport(coldChainTempratureDetailListAggeregateForDistrict);
         }
@@ -87,7 +89,7 @@ public class TrendOfMinMasColdRangeService {
         float maxtemp = coldChainTempratureDetailList.get(0).getMaxtemp();
         float minepisodetemp = coldChainTempratureDetailList.get(0).getMinepisodetemp();
         float maxepisodetemp =coldChainTempratureDetailList.get(0).getMaxepisodetemp();
-        Long targetpopulation = 0l;
+        Long targetpopulation = 0L;
         TrendOfMinMaxColdChainTempratureReport coldChainTempratureReport = new TrendOfMinMaxColdChainTempratureReport();
         for (TrendOfMinMaxColdChainTempratureDetail coldChainTempratureDetail : coldChainTempratureDetailList) {
             mintemp= mintemp>coldChainTempratureDetail.getMintemp()?coldChainTempratureDetail.getMintemp():mintemp;
@@ -172,7 +174,7 @@ public class TrendOfMinMasColdRangeService {
             try {
                 columngName = dateFormat.parse(dateFormat.format(dateString));
             } catch (ParseException e) {
-                e.printStackTrace();
+              LOGGER.warn(e.getMessage(),e);
             }
             float tempMinValue = coldChainTempratureDetail.getMintemp();
             float tempMaxValue = coldChainTempratureDetail.getMaxtemp();
@@ -196,22 +198,22 @@ public class TrendOfMinMasColdRangeService {
             }
             if (tempMinValue < 2) {
 
-                Float tempLessMinValue = columnRangeValues.get(ReportsCommonUtilService.TEMP_MIN).get(columngName) + 1l;
+                Float tempLessMinValue = columnRangeValues.get(ReportsCommonUtilService.TEMP_MIN).get(columngName) + 1L;
                 columnRangeValues.get(ReportsCommonUtilService.TEMP_MIN).put(columngName, tempLessMinValue);
             } else if (tempMaxValue > 8) {
 
-                Float tempGreaterMinValue = columnRangeValues.get(ReportsCommonUtilService.TEMP_GREATER_MIN).get(columngName) + 1l;
+                Float tempGreaterMinValue = columnRangeValues.get(ReportsCommonUtilService.TEMP_GREATER_MIN).get(columngName) + 1L;
                 columnRangeValues.get(ReportsCommonUtilService.TEMP_GREATER_MIN).put(columngName, tempGreaterMinValue);
 
             }
             if (minAlarmEpisodeValue > 2) {
 
-                Float minAlarmLessMinValue = columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_LESS_MIN).get(columngName) + 1l;
+                Float minAlarmLessMinValue = columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_LESS_MIN).get(columngName) + 1L;
                 columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_LESS_MIN).put(columngName, minAlarmLessMinValue);
             }
             if (maxAlarmEpisodeValue > 8) {
 
-                Float minAlarmGreaterMinValue = columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_GREATER_MIN).get(columngName) + 1l;
+                Float minAlarmGreaterMinValue = columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_GREATER_MIN).get(columngName) + 1L;
                 columnRangeValues.get(ReportsCommonUtilService.ALARM_EPISODES_GREATER_MIN).put(columngName, minAlarmGreaterMinValue);
             }
 
