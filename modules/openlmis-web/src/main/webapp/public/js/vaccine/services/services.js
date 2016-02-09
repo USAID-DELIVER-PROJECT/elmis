@@ -477,3 +477,7 @@ services.factory('FacilityTypeAndProgramProducts',function($resource) {
         programId: '@programId'
     }, {});
 });
+
+services.factory('GetFacilityForVaccineOrderRequisition',function($resource){
+    return $resource('/vaccine/orderRequisition/facilities/:facilityId.json',{facilityId:'@facilityId'},{});
+});
