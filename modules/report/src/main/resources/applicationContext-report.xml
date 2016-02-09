@@ -389,7 +389,7 @@
 
                 <bean class="org.openlmis.report.Report">
                     <property name="reportKey" value="vaccine_stock_status"/>
-                    <property name="template" value="vaccine-stock-status-report_2.jasper"/>
+                    <property name="template" value="vaccine-stock-status-report.jasper"/>
                     <property name="reportDataProvider" ref="vaccineStockStatusReportDataProvider"/>
                     <property name="id" value="RP-replacement-plan"/>
                     <property name="name" value="Vaccine Stock Status Report"/>
