@@ -138,7 +138,7 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
     }
 
     private static String writePredicates(PerformanceByDropoutRateParam param) {
-        String predicate = "";
+        String predicate ;
 
         predicate = "where  s.program_id = (SELECT id FROM programs p WHERE p.enableivdform = TRUE )";
         predicate+=" and ";

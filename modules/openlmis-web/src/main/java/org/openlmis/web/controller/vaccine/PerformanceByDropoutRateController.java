@@ -12,11 +12,12 @@
 
 package org.openlmis.web.controller.vaccine;
 
+import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
-import org.openlmis.report.model.dto.Product;
+
 import org.openlmis.vaccine.domain.reports.DropoutProduct;
 import org.openlmis.vaccine.domain.reports.PerformanceByDisrictReport;
-import org.openlmis.vaccine.domain.reports.PerformanceByDropoutRateByDistrict;
+
 import org.openlmis.vaccine.service.reports.PerformanceByDropoutRateByDistrictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,18 +34,17 @@ import java.util.List;
 public class PerformanceByDropoutRateController {
     public static final  String PERFORMANCE_BY_DROPOUT_RATE_LIST="PerformanceByDropoutRateList";
     public static final  String DROPOUT_PRODUCT_LIST="dropoutProductsList";
+    private static final Logger LOGGER = Logger.getLogger(PerformanceByDropoutRateController.class);
   @Autowired
     private PerformanceByDropoutRateByDistrictService service;
     @RequestMapping(value = "performanceByDropoutRateByDistrict", method = RequestMethod.GET, headers = "Accept=application/json")
-    public ResponseEntity<OpenLmisResponse> getPerformanceByDropoutRateList(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                                                            @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                                                            HttpServletRequest request){
+    public ResponseEntity<OpenLmisResponse> getPerformanceByDropoutRateList( HttpServletRequest request){
         PerformanceByDisrictReport performanceByDropoutRateByDistrictList=null;
 
         try {
             performanceByDropoutRateByDistrictList=service.loadPerformanceByDropoutRateDistrictReports(request.getParameterMap());
         }catch (Exception ex){
-            System.out.println(" Exception is :" +ex.getMessage());
+            LOGGER.warn(" Exception is :" ,ex);
         }
 
        return OpenLmisResponse.response(PERFORMANCE_BY_DROPOUT_RATE_LIST, performanceByDropoutRateByDistrictList);

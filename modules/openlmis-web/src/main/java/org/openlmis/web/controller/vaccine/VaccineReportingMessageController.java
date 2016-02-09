@@ -15,6 +15,7 @@
 package org.openlmis.web.controller.vaccine;
 
 import lombok.NoArgsConstructor;
+import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.email.service.EmailService;
@@ -34,14 +35,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class VaccineReportingMessageController {
     @Autowired
     private EmailService emailService;
-
+    private static final Logger LOGGER = Logger.getLogger(TrendOfMinMaxColdRangeReportController.class);
     @RequestMapping(value = "/send", method = RequestMethod.POST, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> send(
             @RequestBody MessageCollection messages
     ) {
 
         for (MessageDto dto : messages.getMessages()) {
-            System.out.println(messages.getMessages().size());
+            LOGGER.info(messages.getMessages().size());
             queueSimpleMail(dto);
 
         }
@@ -54,7 +55,7 @@ public class VaccineReportingMessageController {
         message.setTo("teklutesfayeh@gmail.com");
         message.setSubject("Reporting rate notice");
         message.setText(dto.getMessage());
-        System.out.println("here i am");
+        LOGGER.info("here i am");
         emailService.send(message);
     }
 }

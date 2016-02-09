@@ -26,24 +26,18 @@ public class BundledDistributionVaccinationSuppliesRepository {
     @Autowired
     private BundledDistributionVaccinationSuppliesMapper vaccinationSuppliesMapper;
   public  List<BundledDistributionVaccinationSupplies> getBundledDistributionVaccinationSupplies(Long year, Long productId){
-      List<BundledDistributionVaccinationSupplies> vaccinationSuppliesList=null;
-      System.out.println(" year and product id is "+ year + " "+ productId);
+      List<BundledDistributionVaccinationSupplies> vaccinationSuppliesList;
       vaccinationSuppliesList=vaccinationSuppliesMapper.getBundledDistributionVaccinationSupplies(year,productId);
-      System.out.println(" year and product id is "+ year + " "+ productId + "  "+vaccinationSuppliesList.size());
       return vaccinationSuppliesList;
     }
     public  BundledDistributionVaccinationSupplyDistrict getBundledDistributionVaccinationSuppliesDistrictSummary(Long year, Long productId){
-        BundledDistributionVaccinationSupplyDistrict vaccinationSupplyDistrict=null;
-        System.out.println(" year and product id is "+ year + " "+ productId);
+        BundledDistributionVaccinationSupplyDistrict vaccinationSupplyDistrict;
         vaccinationSupplyDistrict=vaccinationSuppliesMapper.getBundledDistributionVaccinationSuppliesDistrictSummary(year,productId);
-
         return vaccinationSupplyDistrict;
     }
     public BundledDistributionVaccinationSupplyRegion getBundledDistributionVaccinationSuppliesRegionSummary(Long year, Long productId){
-        BundledDistributionVaccinationSupplyRegion vaccinationSupplyRegion=null;
-        System.out.println(" year and product id is "+ year + " "+ productId);
+        BundledDistributionVaccinationSupplyRegion vaccinationSupplyRegion;
         vaccinationSupplyRegion=vaccinationSuppliesMapper.getBundledDistributionVaccinationSuppliesRegionSummary(year,productId);
-
         return vaccinationSupplyRegion;
     }
 

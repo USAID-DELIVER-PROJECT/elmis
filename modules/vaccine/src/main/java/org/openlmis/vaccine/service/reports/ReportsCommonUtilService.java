@@ -1,12 +1,17 @@
 package org.openlmis.vaccine.service.reports;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ReportsCommonUtilService {
+    private ReportsCommonUtilService(){
+
+    }
     public static final int REGION_REPORT = 1;
     public static final int DISTRICT_REPORT = 2;
     public static final int FACILLITY_REPORT = 3;
@@ -20,7 +25,7 @@ public class ReportsCommonUtilService {
     public static final String MAX_TEMP_RECORDED = "8_max_temp_recorded";
     public static final String ALARM_EPISODES_LESS_MIN = "5_alarm_episode_less_min";
     public static final String ALARM_EPISODES_GREATER_MIN = "6_alarm_episode_greater_min";
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceByDropoutRateByDistrictService.class);
     public static List<Date> extractColumnValues(PerformanceByDropoutRateParam filterParam) {
         String periodStart = filterParam.getPeriod_start_date();
         String periodEnd = filterParam.getPeriod_end_date();
@@ -45,7 +50,7 @@ public class ReportsCommonUtilService {
             }
 
         } catch (ParseException e) {
-            e.printStackTrace();
+           LOGGER.warn("error while parsing: ", e);
         }
         return columnNames;
     }
@@ -57,7 +62,6 @@ public class ReportsCommonUtilService {
             filterParam.setFacility_id(filterCriteria.get("facility") == null || filterCriteria.get("facility").length <= 0 || StringUtils.isBlank(filterCriteria.get("facility")[0]) ? 0 : Long.parseLong(filterCriteria.get("facility")[0])); //defaults to 0
             filterParam.setGeographic_zone_id(filterCriteria.get("geographicZoneId") == null || StringUtils.isBlank(filterCriteria.get("geographicZoneId")[0]) ? 0 : Long.parseLong(filterCriteria.get("geographicZoneId")[0]));
             filterParam.setPeriod_end_date(StringUtils.isBlank(filterCriteria.get("periodEnd")[0]) ? null : filterCriteria.get("periodEnd")[0]);
-
             filterParam.setPeriod_start_date(StringUtils.isBlank(filterCriteria.get("periodStart")[0]) ? null : filterCriteria.get("periodStart")[0]);
             filterParam.setProduct_id(filterCriteria.get("productId") == null || StringUtils.isBlank(filterCriteria.get("productId")[0]) ? 0 : Long.parseLong(filterCriteria.get("productId")[0]));
 

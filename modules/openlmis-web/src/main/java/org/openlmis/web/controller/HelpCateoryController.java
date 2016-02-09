@@ -12,7 +12,6 @@
 package org.openlmis.web.controller;
 
 
-
 import org.apache.log4j.Logger;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.web.controller.BaseController;
@@ -58,7 +57,7 @@ public class HelpCateoryController extends BaseController {
     public static final String UPLOAD_FILE_SUCCESS = "upload.file.successful";
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
-    public static final Logger LOGGER = Logger.getLogger(HelpCateoryController.class);
+    private static final Logger LOGGER = Logger.getLogger(HelpCateoryController.class);
     @Autowired
     private HelpTopicService helpTopicService;
     @Value("${help.document.uploadLocation}")
@@ -97,42 +96,43 @@ public class HelpCateoryController extends BaseController {
             response.getBody().addData(HELPTOPICLIST, this.helpTopicService.buildHelpTopicTree(null, true));
             return response;
         } catch (DuplicateKeyException exp) {
+            LOGGER.warn("DuplicateKeyException exp", exp);
 
             return OpenLmisResponse.error("Duplicate Code Exists in DB.", HttpStatus.BAD_REQUEST);
         } catch (DataException e) {
-
+            LOGGER.warn("DataException exp", e);
             return error(e, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-
-            return OpenLmisResponse.error("Duplicate Code Exists in DB.", HttpStatus.BAD_REQUEST);
+            LOGGER.warn("Exception exp", e);
+            return OpenLmisResponse.error("Duplicate Code Exists ", HttpStatus.BAD_REQUEST);
         }
     }
 
 
     @RequestMapping(value = "/helpTopicList", method = RequestMethod.GET, headers = "Accept=application/json")
-      public ResponseEntity<OpenLmisResponse> getHelpToicsList() {
-       return OpenLmisResponse.response(HELPTOPICLIST, this.helpTopicService.buildHelpTopicTree(null, true));
+    public ResponseEntity<OpenLmisResponse> getHelpToicsList() {
+        return OpenLmisResponse.response(HELPTOPICLIST, this.helpTopicService.buildHelpTopicTree(null, true));
     }
 
 
     @RequestMapping(value = "/helpTopicDetail/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CONFIGURE_HELP_CONTENT')")
     public ResponseEntity<OpenLmisResponse> getHelpTopicDetail(@PathVariable("id") Long id) {
-        //System.out.println(" here calling");
+
         HelpTopic helpTopic = this.helpTopicService.get(id);
         return OpenLmisResponse.response(HELPTOPICDETAIL, helpTopic);
     }
 
     @RequestMapping(value = "/updateHelpTopic", method = RequestMethod.POST, headers = "Accept=application/json")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CONFIGURE_HELP_CONTENT')")
-    public ResponseEntity<OpenLmisResponse> update(@RequestBody HelpTopic helpTopic, HttpServletRequest request) {
-        //System.out.println(" updating ");
+    public ResponseEntity<OpenLmisResponse> update(@RequestBody HelpTopic helpTopic) {
+
         this.helpTopicService.updateHelpTopicRole(helpTopic);
         HelpTopic updatedHelpTopic = this.helpTopicService.get(helpTopic.getId());
         return OpenLmisResponse.response(HELPTOPICDETAIL, updatedHelpTopic);
     }
 
-    // supply line list for view
+
     @RequestMapping(value = "/helpTopicForCreate", method = RequestMethod.GET, headers = "Accept=application/json")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CONFIGURE_HELP_CONTENT')")
     public ResponseEntity<OpenLmisResponse> intializeHelptopic() {
@@ -141,7 +141,7 @@ public class HelpCateoryController extends BaseController {
         return OpenLmisResponse.response(HELPTOPICDETAIL, helpTopic);
     }
 
-    // supply line list for view
+
     @RequestMapping(value = "/userHelpTopicList", method = RequestMethod.GET, headers = "Accept=application/json")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CONFIGURE_HELP_CONTENT')")
     public ResponseEntity<OpenLmisResponse> getUserHelpToicsList(HttpServletRequest request) {
@@ -152,88 +152,75 @@ public class HelpCateoryController extends BaseController {
     }
 
     ///////////////////////////////////////////////////////////////
-//   video image and file uploads
+
     @RequestMapping(value = "/uploadDocument", method = RequestMethod.POST)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CONFIGURE_HELP_CONTENT')")
     public ResponseEntity<OpenLmisResponse> uploadHelpDocuments(MultipartFile helpDocuments, String documentType, HttpServletRequest request) {
         FileOutputStream outputStream = null;
         try {
-
-            String fileName = null;
-            String fileType = null;
+            String fileName;
             Long userId = loggedInUserId(request);
-
-            String filePath = null;
-            String uriPath = null;
-            byte[] byteFile = null;
-            InputStream inputStream = null;
-            uriPath = request.getRequestURL().toString();
-            int index = uriPath.indexOf("/uploadDocument");
-            uriPath = uriPath.substring(0, index);
+            String filePath;
+            byte[] byteFile;
+            InputStream inputStream;
             HelpDocument helpDocument = new HelpDocument();
             inputStream = helpDocuments.getInputStream();
             int val = inputStream.available();
             byteFile = new byte[val];
             inputStream.read(byteFile);
             fileName = helpDocuments.getOriginalFilename();
-            fileType = helpDocuments.getContentType();
-
-
             filePath = this.fileStoreLocation + fileName;
-
             helpDocument.setDocumentType(documentType);
             helpDocument.setFileUrl(fileName);
             helpDocument.setCreatedDate(new Date());
             helpDocument.setCreatedBy(userId);
-            File file= new File(filePath);
-            File directory=new File(this.fileStoreLocation);
+            File file = new File(filePath);
+            File directory = new File(this.fileStoreLocation);
 
-            boolean isFileExist=directory.exists();
-            if(isFileExist) {
-                boolean isWritePermitted= directory.canWrite();
+            boolean isFileExist = directory.exists();
+            if (isFileExist) {
+                boolean isWritePermitted = directory.canWrite();
                 if (isWritePermitted) {
                     outputStream = new FileOutputStream(file);
 
                     outputStream.write(byteFile);
                     outputStream.flush();
+                    outputStream.close();
                     this.helpTopicService.uploadHelpDocument(helpDocument);
                     return this.successPage(1);
                 } else {
-                    return this.errorPage("No Permission To Upload At Specified Path");
+                    return errorPage("No Permission To Upload At Specified Path");
                 }
-            }else{
-                return this.errorPage("Upload Path do not Exist");
+            } else {
+                return errorPage("Upload Path do not Exist");
             }
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            return this.errorPage("Cannot upload in this location");
+            LOGGER.warn("Cannot upload in this location",ex);
+            return errorPage("Cannot upload in this location");
         }
 
     }
 
-    private ResponseEntity<OpenLmisResponse> successPage(int recordsProcessed) {
+    private  ResponseEntity<OpenLmisResponse> successPage(int recordsProcessed) {
         Map<String, String> responseMessages = new HashMap<>();
         String message = messageService.message(UPLOAD_FILE_SUCCESS, recordsProcessed);
         responseMessages.put(SUCCESS, message);
         return response(responseMessages, OK, TEXT_HTML_VALUE);
     }
-    private ResponseEntity<OpenLmisResponse> errorPage(String message) {
+
+    private static ResponseEntity<OpenLmisResponse> errorPage(String message) {
         Map<String, String> responseMessages = new HashMap<>();
-//        String message = "File Location Not Authorized";//messageService.message(UploadException);
         responseMessages.put(ERROR, message);
-        return response(responseMessages,NOT_FOUND , TEXT_HTML_VALUE);
+        return response(responseMessages, NOT_FOUND, TEXT_HTML_VALUE);
     }
 
     ///////////////////////////////////////
     @RequestMapping(value = "/loadDocumentList", method = RequestMethod.GET, headers = "Accept=application/json")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CONFIGURE_HELP_CONTENT')")
-    public ResponseEntity<OpenLmisResponse> loadHelpDocumentList(HttpServletRequest request) {
-        List<HelpDocument> helpDocumentList = null;
-        String uriPath = null;
-
-
+    public ResponseEntity<OpenLmisResponse> loadHelpDocumentList() {
+        List<HelpDocument> helpDocumentList ;
+        String uriPath ;
         helpDocumentList = this.helpTopicService.loadHelpDocumentList();
-
         uriPath = this.fileAccessBaseUrl;
 
         for (HelpDocument helpDocument : helpDocumentList) {
@@ -242,18 +229,20 @@ public class HelpCateoryController extends BaseController {
         }
         return OpenLmisResponse.response(HELPDOCUMENTLIST, helpDocumentList);
     }
+
     @RequestMapping(value = "/site_content/{content_name}", method = RequestMethod.GET, headers = "Accept=application/json")
 
-    public ResponseEntity<OpenLmisResponse> getSiteContent(@PathVariable("content_name") String content_name) {
+    public ResponseEntity<OpenLmisResponse> getSiteContent(@PathVariable("content_name") String contentName) {
 
-        HelpTopic siteContent = this.helpTopicService.getSiteContent(content_name);
+        HelpTopic siteContent = this.helpTopicService.getSiteContent(contentName);
         return OpenLmisResponse.response(SITECONTENT, siteContent);
     }
+
     @RequestMapping(value = "/general_content/{content_key}", method = RequestMethod.GET, headers = "Accept=application/json")
 
-    public ResponseEntity<OpenLmisResponse> getContentBykey(@PathVariable("content_key") String content_key) {
+    public ResponseEntity<OpenLmisResponse> getContentBykey(@PathVariable("content_key") String contentKey) {
 
-        HelpTopic siteContent = this.helpTopicService.getContentByKey(content_key);
+        HelpTopic siteContent = this.helpTopicService.getContentByKey(contentKey);
         return OpenLmisResponse.response(SITECONTENT, siteContent);
     }
 

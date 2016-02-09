@@ -23,6 +23,5 @@ import org.openlmis.core.domain.BaseModel;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DropoutProduct  extends BaseModel {
-    private Long id;
     private String dropout;
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class VaccineDashboardRepository {
@@ -26,7 +27,7 @@ public class VaccineDashboardRepository {
     @Autowired
     VaccineDashboardMapper mapper;
 
-    public HashMap<String, Object> getReportingSummary(  Long user){
+    public Map<String, Object> getReportingSummary(  Long user){
         return mapper.getReportingSummary(user);
     }
 
@@ -34,7 +35,7 @@ public class VaccineDashboardRepository {
         return mapper.getReportingDetails(userId);
     }
 
-    public HashMap<String, Object> getRepairingSummary(Long userId){
+    public Map<String, Object> getRepairingSummary(Long userId){
         return mapper.getRepairingSummary( userId);
     }
 
@@ -42,7 +43,7 @@ public class VaccineDashboardRepository {
         return mapper.getRepairingDetails(userId);
     }
 
-    public HashMap<String, Object> getInvestigatingSummary(Long userId){
+    public Map<String, Object> getInvestigatingSummary(Long userId){
         return mapper.getInvestigatingSummary(userId);
     }
 

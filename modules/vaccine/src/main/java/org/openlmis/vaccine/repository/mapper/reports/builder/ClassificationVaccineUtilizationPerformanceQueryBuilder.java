@@ -20,6 +20,116 @@ import java.util.Map;
 
 public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
 
+    public static String  selectClassificationForRegion(Map params) {
+
+        Long zoneId = (Long) params.get("zoneId");
+        Date startDate = (Date) params.get("startDate");
+        Date endDate = (Date) params.get("endDate");
+        Long productId = (Long) params.get("productId");
+
+
+        String sql = "" +
+                "with temp as (\n" +
+                "select\n" +
+                "geographic_zone_name,\n" +
+                "geographic_zone_id,\n" +
+                "period_name,\n" +
+                "period_start_date,\n" +
+                "facility_name,\n" +
+                "usage_denominator\n" +
+                "from\n" +
+                " vw_vaccine_class\n" +
+                " where\n" +
+                "product_id = "+productId+" \n" +
+                " and period_start_date >= '"+startDate+"' \n" +
+                " and period_start_date <= '"+endDate+"' \n" +
+                ") \n" +
+                " select \n" +
+                "  vd.region_name, \n" +
+                "  t.period_name, \n" +
+                "  period_start_date, \n" +
+                "  count(t.facility_name) facility_count, \n" +
+                "  \n" +
+                "    case when sum(t.usage_denominator) between 1 \n" +
+                "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
+                "    and 3999 then 'B' when sum(t.usage_denominator) between 4000 \n" +
+                "    and 4999 then 'C' else 'D' end\n" +
+                "  classification \n" +
+                " from \n" +
+                "  temp t \n" +
+                "  join vw_districts vd on t.geographic_zone_id = vd.district_id \n"
+                + writePredicate(zoneId) +
+                " group by \n" +
+                "  1, \n" +
+                "  2, \n" +
+                "  3 \n" +
+                "order by \n" +
+                "  geographic_zone_name, \n" +
+                "  period_start_date";
+
+
+
+        return sql;
+
+    }
+
+    public static String  selectClassificationVaccineForFacility(Map params) {
+
+        Long zoneId = (Long) params.get("zoneId");
+        Date startDate = (Date) params.get("startDate");
+        Date endDate = (Date) params.get("endDate");
+        Long productId = (Long) params.get("productId");
+
+
+        String sql = "" +
+                "with temp as (\n" +
+                "select\n" +
+                "geographic_zone_name,\n" +
+                "geographic_zone_id,\n" +
+                "period_name,\n" +
+                "period_start_date,\n" +
+                "facility_name,\n" +
+                "usage_denominator\n" +
+                "from\n" +
+                " vw_vaccine_class\n" +
+                " where\n" +
+                "product_id = "+productId+" \n" +
+                " and period_start_date >= '"+startDate+"' \n" +
+                " and period_start_date <= '"+endDate+"' \n" +
+                ") \n" +
+                " select \n" +
+                "  vd.region_name, \n" +
+                "  t.geographic_zone_name, \n" +
+                "  t.period_name, \n" +
+                "  period_start_date, \n" +
+                " t.facility_name , \n" +
+                "  \n" +
+                "    case when sum(t.usage_denominator) between 1 \n" +
+                "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
+                "    and 3999 then 'B' when sum(t.usage_denominator) between 4000 \n" +
+                "    and 4999 then 'C' else 'D' end\n" +
+                "  classification \n" +
+                " from \n" +
+                "  temp t \n" +
+                "  join vw_districts vd on t.geographic_zone_id = vd.district_id \n"
+                + writePredicate(zoneId) +
+                " group by \n" +
+                "  1, \n" +
+                "  2, \n" +
+                "  3, \n" +
+                "  4 ," +
+                " 5\n" +
+                "order by \n" +
+                "  geographic_zone_name, \n" +
+                "  period_start_date";
+
+
+
+        return sql;
+
+    }
+
+
     public static String  selectClassificationVaccineUtilizationPerformanceByZone(Map params) {
 
         Long zoneId = (Long) params.get("zoneId");
@@ -50,12 +160,12 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                 "  t.period_name, \n" +
                 "  period_start_date, \n" +
                 "  count(t.facility_name) facility_count, \n" +
-                "  max(\n" +
-                "    case when t.usage_denominator between 1 \n" +
-                "    and 200 then 'A' when t.usage_denominator between 201 \n" +
-                "    and 400 then 'B' when t.usage_denominator between 401 \n" +
-                "    and 500 then 'C' else 'D' end\n" +
-                "  ) classification \n" +
+                "  \n" +
+                "    case when sum(t.usage_denominator) between 1 \n" +
+                "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
+                "    and 3999 then 'B' when sum(t.usage_denominator) between 4000 \n" +
+                "    and 4999 then 'C' else 'D' end\n" +
+                "  classification \n" +
                 " from \n" +
                 "  temp t \n" +
                 "  join vw_districts vd on t.geographic_zone_id = vd.district_id \n"
@@ -74,6 +184,7 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
         return sql;
 
     }
+
 
 
 

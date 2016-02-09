@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface VaccineDashboardMapper {
@@ -53,7 +54,7 @@ public interface VaccineDashboardMapper {
             "            sum(case when reporting_status = 'L' then 1 else 0 end) late, \n" +
             "            sum(case when reporting_status = 'N' then 1 else 0 end) not_reported  \n" +
             "             from temp t")
-    HashMap<String, Object> getReportingSummary(@Param("userId") Long userId);
+    Map<String, Object> getReportingSummary(@Param("userId") Long userId);
 
 /* */
     @Select("with temp as ( \n" +
@@ -90,7 +91,7 @@ public interface VaccineDashboardMapper {
             "                 and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
             "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))) \n" +
             "            ) a" )
-    HashMap<String, Object> getRepairingSummary(@Param("userId")Long userId);
+    Map<String, Object> getRepairingSummary(@Param("userId")Long userId);
 
 /* */
         @Select("select facility_id, facility_name, geographic_zone_name district, equipment_name, model, \n" +
@@ -116,7 +117,7 @@ public interface VaccineDashboardMapper {
                 "                    vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
                 "                     )  \n" +
                 "                ) a ")
-        HashMap<String, Object> getInvestigatingSummary(@Param("userId")Long userId);
+        Map<String, Object> getInvestigatingSummary(@Param("userId")Long userId);
 
 /* */
         @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case, aefi_batch, aefi_date, aefi_notes \n" +

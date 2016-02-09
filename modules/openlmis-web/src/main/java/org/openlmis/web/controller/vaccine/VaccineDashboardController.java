@@ -11,6 +11,7 @@
  */
 package org.openlmis.web.controller.vaccine;
 
+import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.vaccine.service.VaccineDashboardService;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class VaccineDashboardController  extends BaseController {
 
     @Autowired
     VaccineDashboardService service;
-
+    private static final Logger LOGGER = Logger.getLogger(VaccineDashboardController.class);
     @RequestMapping(value = "summary.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getReportingSummary(HttpServletRequest request){
         Long userId = this.loggedInUserId(request);
@@ -43,7 +43,7 @@ public class VaccineDashboardController  extends BaseController {
         summary.put("investigating", service.getInvestigatingSummary(userId));
         }catch (Exception ex){
 
-            System.out.println("for user" + userId + " " +ex.getMessage());
+            LOGGER.warn("for user" + userId + " " + ex.getMessage(),ex);
         }
         return OpenLmisResponse.response("summary", summary);
     }
