@@ -59,6 +59,8 @@
                     </div>
                 </div>
             </div>
+            <div class="alert alert-success" id="saveSuccessMsgDiv" openlmis-message="message.issue.successful"
+                 ng-show="message"></div>
         </div>
         <br/>
 
@@ -69,10 +71,18 @@
                     ng-options="f as f.name for f in supervisedFacilities">
                 <option value="" openlmis-message="placeholder.select.facility"></option>
             </select>
+
             <br/>
             <br/>
 
-            <div ng-show="routineFacility" adjust-height bottom-offset="180"
+            <div class="alert alert-danger" ng-show='routineFacility && routineFacility.productsToIssue.length ===0'>
+                <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
+                <strong><a href="/public/pages/vaccine/inventory/index.html#/receive"
+                           openlmis-message="stock.initialize.stock"></a></strong>
+            </div>
+
+            <div ng-show="routineFacility && routineFacility.productsToIssue.length >0" adjust-height
+                 bottom-offset="180"
              ng-show="true" tab-scroll>
 
             <div class="float-left left-table parent">
@@ -222,7 +232,7 @@
                             openlmis-message="header.total.issued"></span></th>
                     <th style="max-width:120px !important; width:120px !important"
                         ng-if="routineFacility.status !== 'RECEIVED'" class="col-quantity "><span
-                            openlmis-message="header.doses.requested"></span></th>
+                            openlmis-message="label.vaccine.stock.quantity.required"></span></th>
                 </tr>
                 </thead>
                     <tbody ng-repeat="category in facilityToIssue.productsToIssueByCategory">
@@ -403,8 +413,7 @@
             <span openlmis-message="error" ng-show="error"></span>&nbsp;
             <span ng-show="errorProgram" ng-bind="errorProgram"></span>
         </div>
-        <div class="toolbar-success" id="saveSuccessMsgDiv" openlmis-message="message.issue.successful"
-             ng-show="message"></div>
+
     </div>
 
 </div>

@@ -29,7 +29,8 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
 
      $scope.loadFacilityDistributionData=function(){
         $scope.routineFacility=undefined;
-        if($scope.selectedRoutineFacility != null)
+        $scope.message=false;
+        if($scope.selectedRoutineFacility !== null)
          FacilityWithProducts.get($scope.selectedProgram,$scope.selectedRoutineFacility,$scope.homeFacility.id).then(function(data){
                 $scope.routineFacility=data;
          });
@@ -306,6 +307,11 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
                $scope.showIssueModal(facility,"SCHEDULED");
             }
         });
+     };
+     $scope.showMessages=function(){
+         $scope.message=true;
+         $scope.selectedRoutineFacility = null;
+         $scope.routineFacility=false;
      };
 
 }

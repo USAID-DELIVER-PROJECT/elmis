@@ -72,7 +72,7 @@ services.factory('FacilityWithProducts', function($resource,$timeout,$q,StockCar
      function get(program,facility, homeFacilityId) {
          var deferred =$q.defer();
                      $timeout(function(){
-                         if(program != null){
+                         if(program !== null){
                                 StockCards.get({facilityId:homeFacilityId},function(s){
                                     FacilityDistributionForecastAndLastPeriod.get({facilityId:facility.id,programId:program.id},function(distributionForecastAndPeriod){
                                      console.log(JSON.stringify(distributionForecastAndPeriod.forecast));
@@ -333,7 +333,7 @@ services.factory('StockCardsForProgramByCategory', function ($resource,StockCard
                                      var lotsAscExpiration=_.sortBy(s.lotsOnHand,'lot.expirationDate');
                                      var lotsDescExpiration=lotsAscExpiration.reverse();
                                      //s.lotsOnHand=lotsDescExpiration;
-                                     var lotAscVVM=_.sortBy(lotsDescExpiration,'customProps.vvmstatus');
+                                     var lotAscVVM=_.sortBy(s.lotsOnHand,'customProps.vvmstatus');
 
                                      s.lotsOnHand=lotAscVVM.reverse();
 

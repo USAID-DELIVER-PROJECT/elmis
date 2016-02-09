@@ -42,7 +42,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                   forecastProduct=_.findWhere(forecast,{productId:stockCard.product.id});
                   if(reportProduct !== undefined && forecastProduct !==undefined )
                   {
-                    var quantityRequired=forecastProduct.maximumStock-reportProduct.stockStatus
+                    var quantityRequired=forecastProduct.maximumStock-reportProduct.stockStatus;
                     product.quantityRequired=(quantityRequired >0)?quantityRequired:0;
                   }
                   else{

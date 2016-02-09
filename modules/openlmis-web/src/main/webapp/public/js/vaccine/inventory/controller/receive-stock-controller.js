@@ -86,9 +86,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                         event.lot={};
                         event.lot.lotCode=l.lot.lotCode;
                         event.lot.manufacturerName=l.lot.manufacturerName;
-                        var expirationDate=new Date(l.lot.expirationDate);
-                        expirationDate.setDate(expirationDate.getDate() +1);
-                        event.lot.expirationDate=expirationDate;
+                        event.lot.expirationDate=l.lot.expirationDate;
                         event.customProps={};
                         if(l.vvmStatus !==undefined)
                         {
@@ -118,8 +116,10 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                  if(data.success)
                  {
                      $scope.message=true;
-                      $scope.distribution.status='RECEIVED';
+                     $scope.distribution.status='RECEIVED';
+                     $scope.distribution.programId=$scope.selectedProgramId;
                      SaveDistribution.save($scope.distribution,function(distribution){
+                         console.log(distribution);
                          $timeout(function(){
                                $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
                          },900);
@@ -216,10 +216,13 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
     {
            $scope.showPrograms=true;
            //TODO: load stock cards on program change
+           $scope.selectedProgramId=$scope.userPrograms[0].id;
            $scope.loadProducts(homeFacility.id,$scope.userPrograms[0].id);
+           $scope.selectedProgramId=$scope.userPrograms[0].id;
     }
      else if($scope.userPrograms.length === 1){
           $scope.showPrograms=false;
+          $scope.selectedProgramId=$scope.userPrograms[0].id;
           $scope.loadProducts(homeFacility.id,$scope.userPrograms[0].id);
      }
 
@@ -311,6 +314,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
         Distribution.get({voucherNumber:$scope.receivedProducts.voucherNumber},function(data){
             if(data.distribution !==null){
                  $scope.distribution=data.distribution;
+                 console.log(JSON.stringify($scope.distribution));
                 }
             else{
                 $scope.distribution=undefined;

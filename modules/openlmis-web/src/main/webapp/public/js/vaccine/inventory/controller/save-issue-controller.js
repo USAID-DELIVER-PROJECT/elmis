@@ -98,12 +98,11 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
          StockEvent.save({facilityId:$scope.homeFacility.id},events, function (data) {
              if(data.success)
              {
-                $scope.closeIssueModal();
-                $scope.message=data.success;
                 SaveDistribution.save(distribution,function(distribution){
-                    $scope.selectedRoutineFacility = null;
+                    $scope.showMessages();
+                    $scope.closeIssueModal();
                     $scope.print(distribution.distributionId);
-                    });
+                });
               }
          });
      };

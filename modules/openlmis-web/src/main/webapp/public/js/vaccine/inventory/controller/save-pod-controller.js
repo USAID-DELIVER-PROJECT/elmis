@@ -79,15 +79,16 @@ function SavePODController($scope,$location, $window,$timeout,StockEvent,SaveDis
                  }
                  });
               });
-              $scope.closePODModal();
+
               SaveDistribution.save(distribution,function(data){
                  if(events.length >0)
                  {
                     StockEvent.save({facilityId:$scope.homeFacility.id},events, function (data) {
-                         $scope.message=data.success;
+
                     });
                  }
-                $scope.loadSupervisedFacilities($scope.userPrograms[0].id,$scope.homeFacility.id);
               });
+              $scope.closePODModal();
+              $scope.showMessages();
           };
 }
