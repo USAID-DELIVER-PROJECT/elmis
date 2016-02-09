@@ -1,4 +1,5 @@
 function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequisitionStatus, SaveDistributionList, $filter, $location, $window, $routeParams, StockEvent) {
+    $scope.inputClass = false;
 
     $scope.consolidatedOrders = $scope.stockCards = [];
     $scope.stockCards = stockCards;
@@ -61,7 +62,44 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
         $location.path('/');
     };
 
+    $scope.highlightRequired = function (value) {
+
+        if ($scope.inputClass && (isUndefined(value)) || (value === 0) ) {
+            return "required-error";
+        }
+        return null;
+    };
+
+    $scope.validate = function(val,val2){
+     return val > val2;
+    };
+
+
+    $scope.totalQuantityHighlighted = function(val1, val2){
+        if((val1 > val2)){
+            return "required-error";
+
+        }
+        return null;
+    };
+
+    var validateForm = function () {
+
+        if ($scope.consolidatedListForm.$error.required) {
+            $scope.inputClass = true;
+            $scope.error = "form.error";
+            $scope.message = "";
+            return false;
+        }
+    return true;
+
+    };
     $scope.submitConsolidated = function () {
+
+        if(!validateForm())
+            return;
+
+
 
         var events = [];
 
@@ -83,6 +121,7 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
             angular.forEach(facility, function (product) {
 
                 var lineItem = {};
+
 
                 if (product.quantityRequested > 0) {
                     var event = {};
