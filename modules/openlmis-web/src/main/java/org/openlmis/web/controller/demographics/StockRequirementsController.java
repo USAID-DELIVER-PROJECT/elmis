@@ -96,11 +96,4 @@ public class StockRequirementsController extends BaseController
         return OpenLmisResponse.response("stock_requirements", stockRequirementsService.getStockRequirements(facilityId,programId));
     }
 
-    @RequestMapping(value = "/rest-api/facility/{facilityId}/program/{programId}/refreshStockRequirements", method = GET, headers = ACCEPT_JSON)
-    @Transactional
-    public ResponseEntity<OpenLmisResponse> refreshStockRequrements(@PathVariable("facilityId") Long facilityId, @PathVariable("programId") Long programId, HttpServletRequest request) {
-        return OpenLmisResponse.response("stock_requirements", stockRequirementsService.setStockRequirements(facilityId,programId));
-    }
-
-
 }

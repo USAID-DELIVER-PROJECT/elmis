@@ -76,8 +76,7 @@ public interface StockRequirementsMapper {
             " bufferstock = #{bufferStock}, " +
             " maximumstock = #{maximumStock}," +
             " modifieddate= NOW() " +
-            "WHERE id=#{id} "
+            "WHERE facilityid=#{facilityId} AND productid=#{productId} AND year=#{year}  "
     )
     Integer updateBundling(StockRequirementsDTO requirements);
-
 }

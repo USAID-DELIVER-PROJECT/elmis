@@ -38,10 +38,6 @@ public class StockRequirementsRepository {
         return mapper.save(stockRequirements);
     }
 
-    public Integer deleteFacilityStockRequirements(Long programId, Long facilityId,Integer year){
-        return mapper.deleteFacilityStockRequirements(programId,facilityId,year);
-    }
-
     public Integer resetFacilityStockRequirements(Long programId, Long facilityId, int year) {
         return mapper.resetFacilityStockRequirements(programId, facilityId, year);
     }
