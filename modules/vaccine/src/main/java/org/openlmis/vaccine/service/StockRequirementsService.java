@@ -17,7 +17,7 @@ import org.openlmis.core.service.FacilityProgramProductService;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProductService;
 import org.openlmis.vaccine.domain.inventory.VaccineInventoryProductConfiguration;
-import org.openlmis.vaccine.dto.StockRequirements_;
+import org.openlmis.vaccine.dto.StockRequirementsDTO;
 import org.openlmis.vaccine.dto.StockRequirements;
 import org.openlmis.demographics.service.PopulationService;
 import org.openlmis.vaccine.repository.StockRequirementsRepository;
@@ -36,40 +36,25 @@ import java.util.*;
 public class StockRequirementsService
 {
     @Autowired
+    ProductService productService;
+    @Autowired
     private FacilityService facilityService = null;
-
     @Autowired
     private FacilityApprovedProductRepository facilityApprovedProductRepository = null;
-
     @Autowired
     private FacilityProgramProductService facilityProgramProductService = null;
-
     @Autowired
     private PopulationService populationService = null;
-
     @Autowired
     private VaccineInventoryConfigurationService vaccineConfigurationService;
-
     private List<StockRequirements> stockRequirements;
-
     @Autowired
     private StockRequirementsRepository repository;
-
     @Autowired
     private ConfigurationSettingService configurationSettingService;
 
-    @Autowired
-    ProductService productService;
 
-    public List<StockRequirements_> getStockRequirements(final Long facilityId, Long programId){
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int year = cal.get(Calendar.YEAR);
-        return repository.getAll(programId, facilityId,year);
-    }
-
-    public List<StockRequirements_> setStockRequirements(final Long facilityId, Long programId)
+    public List<StockRequirementsDTO> getStockRequirements(Long facilityId, Long programId)
     {
 
         //Delete all forecast for a facility and program
@@ -78,40 +63,36 @@ public class StockRequirementsService
         cal.setTime(date);
         int year = cal.get(Calendar.YEAR);
 
-        repository.deleteFacilityStockRequirements(programId,facilityId,year);
+        repository.resetFacilityStockRequirements(programId, facilityId, year);
+
         //Get facility in order to access its catchment population
         Facility facility = facilityService.getById(facilityId);
         if(facility == null)
             return null;
 
         List<FacilityTypeApprovedProduct> facilityTypeApprovedProducts = facilityApprovedProductRepository.getAllByFacilityAndProgramId(facilityId, programId);
-
-        stockRequirements = new ArrayList<>();
-
         List<FacilityProgramProduct> programProductsByProgram = facilityProgramProductService.getActiveProductsForProgramAndFacility(programId, facilityId);
+        //Catch non reference facilityProgram product used for supplies to speed up
+        List<FacilityProgramProduct> programProductsByProgramCopy = facilityProgramProductService.getActiveProductsForProgramAndFacility(programId, facilityId);
 
         //1. Filter vaccines only here.
         for (FacilityProgramProduct facilityProgramProduct : programProductsByProgram)
         {
 
-
-            //For Vaccine Program: Get Vaccine product configuration to make forecast by bundling
-            VaccineInventoryProductConfiguration vaccineProductConfiguration=vaccineConfigurationService.getByProductId(facilityProgramProduct.getProduct().getId());
-
-
-
-
             //Set productId
             Long productId = facilityProgramProduct.getProduct().getId();
-
 
             //Set minStock, maxStock, and eop
             for(FacilityTypeApprovedProduct facilityTypeApprovedProduct : facilityTypeApprovedProducts)
             {
+
                 if(productId.equals(facilityTypeApprovedProduct.getProgramProduct().getProduct().getId()))
                 {
-                    StockRequirements requirements = new StockRequirements();
 
+                    StockRequirements requirements = new StockRequirements();
+                    StockRequirementsDTO existingRequirements = repository.getByProductId(programId, facilityId, productId, year);
+                    //For Vaccine Program: Get Vaccine product configuration to make forecast by bundling
+                    VaccineInventoryProductConfiguration vaccineProductConfiguration = vaccineConfigurationService.getByProductId(productId);
                     //Program info
                     requirements.setProgramId(programId);
                     //Set facility info
@@ -142,13 +123,19 @@ public class StockRequirementsService
                     requirements.setMinMonthsOfStock(facilityTypeApprovedProduct.getMinMonthsOfStock());
                     requirements.setMaxMonthsOfStock(facilityTypeApprovedProduct.getMaxMonthsOfStock());
                     requirements.setEop(facilityTypeApprovedProduct.getEop());
-                    save(requirements);
+
+                    if (existingRequirements != null && requirements.getIsaValue() != 0) {
+                        requirements.setId(existingRequirements.getId());
+                        update(requirements);
+                    } else {
+                        save(requirements);
+                    }
 
                     if(vaccineProductConfiguration !=null && vaccineProductConfiguration.getAdministrationMode() != null){
-                        setVaccineAdministrationModeRequirement(programProductsByProgram, requirements,vaccineProductConfiguration.getAdministrationMode());
+                        setVaccineAdministrationModeRequirement(programProductsByProgramCopy, requirements, vaccineProductConfiguration.getAdministrationMode());
                     }
                     if(vaccineProductConfiguration !=null && vaccineProductConfiguration.getDilutionSyringe() != null){
-                        setVaccineDilutionSyringeRequirement(programProductsByProgram,requirements,vaccineProductConfiguration.getDilutionSyringe());
+                        setVaccineDilutionSyringeRequirement(programProductsByProgramCopy, requirements, vaccineProductConfiguration.getDilutionSyringe());
                     }
 
                 }
@@ -161,32 +148,36 @@ public class StockRequirementsService
 
     private void save(StockRequirements requirements)
     {
-        StockRequirements_ existingRequirement=repository.getByProductId(requirements.getProgramId(), requirements.getFacilityId(),requirements.getProductId(),requirements.getYear());
+        StockRequirementsDTO existingRequirement = repository.getByProductId(requirements.getProgramId(), requirements.getFacilityId(), requirements.getProductId(), requirements.getYear());
         if(requirements.getIsaValue() >0 && existingRequirement==null) {
             repository.save(requirements);
         }
 
     }
 
-    private void update(StockRequirements_ requirements) {
+    private void update(StockRequirements requirements) {
         repository.update(requirements);
+    }
+
+    private void updateBundling(StockRequirementsDTO requirements) {
+        repository.updateBundling(requirements);
     }
 
 
 
     //For Vaccine Program
-    private void setVaccineAdministrationModeRequirement(List<FacilityProgramProduct> programProductsByProgram,StockRequirements vaccineRequirements, Long supplyProductId){
+    private void setVaccineAdministrationModeRequirement(List<FacilityProgramProduct> programProductsByProgram, StockRequirements vaccineRequirements, Long supplyProductId) {
+
         Date date = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int year = cal.get(Calendar.YEAR);
 
-        StockRequirements_ existingRequirement=repository.getByProductId(vaccineRequirements.getProgramId(), vaccineRequirements.getFacilityId(),supplyProductId,year);
-        StockRequirements newSupplyRequirements = new StockRequirements();
-
         for(FacilityProgramProduct facilityProgramProduct:programProductsByProgram)
         {
             if(supplyProductId.equals(facilityProgramProduct.getProduct().getId())) {
+                StockRequirementsDTO existingRequirement = repository.getByProductId(vaccineRequirements.getProgramId(), vaccineRequirements.getFacilityId(), supplyProductId, year);
+                StockRequirements newSupplyRequirements = new StockRequirements();
 
                 newSupplyRequirements.setProgramId(vaccineRequirements.getProgramId());
                 newSupplyRequirements.setFacilityId(vaccineRequirements.getFacilityId());
@@ -219,19 +210,17 @@ public class StockRequirementsService
                     newSupplyRequirements.setProductCategory(category.getName());
                 }
                 if (existingRequirement != null) {
-                    if(newSupplyRequirements.getIsaValue() != null) {
-                        existingRequirement.setAnnualNeed(existingRequirement.getAnnualNeed() + newSupplyRequirements.getAnnualNeed());
+
+                    existingRequirement.setAnnualNeed(existingRequirement.getAnnualNeed() + newSupplyRequirements.getAnnualNeed());
                         existingRequirement.setSupplyPeriodNeed(existingRequirement.getSupplyPeriodNeed() + newSupplyRequirements.getSupplyPeriodNeed());
                         existingRequirement.setReorderLevel(existingRequirement.getReorderLevel() + newSupplyRequirements.getReorderLevel());
                         existingRequirement.setBufferStock(existingRequirement.getBufferStock() + newSupplyRequirements.getBufferStock());
                         existingRequirement.setMaximumStock(existingRequirement.getMaximumStock() + newSupplyRequirements.getMaximumStock());
                         existingRequirement.setIsaValue(existingRequirement.getIsaValue() + newSupplyRequirements.getIsaValue());
-                        update(existingRequirement);
-                    }
+                        updateBundling(existingRequirement);
 
-                }else if(existingRequirement==null){
+                } else {
                       save(newSupplyRequirements);
-
                 }
                 setSafetyBox(programProductsByProgram,newSupplyRequirements);
 
@@ -248,7 +237,7 @@ public class StockRequirementsService
         cal.setTime(date);
         int year = cal.get(Calendar.YEAR);
         StockRequirements newSupplyRequirements = new StockRequirements();
-        StockRequirements_ existingRequirement=repository.getByProductId(vaccineRequirements.getProgramId(), vaccineRequirements.getFacilityId(),supplyProductId,year);
+        StockRequirementsDTO existingRequirement = repository.getByProductId(vaccineRequirements.getProgramId(), vaccineRequirements.getFacilityId(), supplyProductId, year);
 
         for(FacilityProgramProduct facilityProgramProduct:programProductsByProgram)
         {
@@ -294,18 +283,18 @@ public class StockRequirementsService
                         existingRequirement.setBufferStock(existingRequirement.getBufferStock() + newSupplyRequirements.getBufferStock());
                         existingRequirement.setMaximumStock(existingRequirement.getMaximumStock() + newSupplyRequirements.getMaximumStock());
                         existingRequirement.setIsaValue(existingRequirement.getIsaValue() + newSupplyRequirements.getIsaValue());
-                        update(existingRequirement);
+                        updateBundling(existingRequirement);
                     }
                 }
                 else{
                     save(newSupplyRequirements);
                 }
-                setSafetyBox(programProductsByProgram,newSupplyRequirements);
+                setSafetyBox(programProductsByProgram, newSupplyRequirements);
             }
         }
     }
 
-    private void setSafetyBox(List<FacilityProgramProduct> programProductsByProgram, StockRequirements supplyRequirements){
+    private void setSafetyBox(List<FacilityProgramProduct> programProductsByProgram, StockRequirements supplyRequirements) {
        ConfigurationSetting configurationSetting=configurationSettingService.getByKey("VACCINE_STOCK_REQUIREMENTS_SAFETY_BOX_CODE");
         if(configurationSetting != null)
         {
@@ -313,7 +302,7 @@ public class StockRequirementsService
             if(safetyBox != null)
             {
                 StockRequirements newSafetyBoxRequirements = new StockRequirements();
-                StockRequirements_ existingRequirement=repository.getByProductId(supplyRequirements.getProgramId(), supplyRequirements.getFacilityId(),safetyBox.getId(),supplyRequirements.getYear());
+                StockRequirementsDTO existingRequirement = repository.getByProductId(supplyRequirements.getProgramId(), supplyRequirements.getFacilityId(), safetyBox.getId(), supplyRequirements.getYear());
 
                 for(FacilityProgramProduct facilityProgramProduct:programProductsByProgram){
 
@@ -331,6 +320,7 @@ public class StockRequirementsService
                         }
                         newSafetyBoxRequirements.setIsa(isa);
                         Double safetyBoxIsaValue=((supplyRequirements.getAnnualNeed()/100)*isa.getWastageFactor())/12;
+                        safetyBoxIsaValue = (safetyBoxIsaValue < 1) ? 1 : safetyBoxIsaValue;
                         newSafetyBoxRequirements.setIsaValue(safetyBoxIsaValue.intValue());
 
                         FacilityTypeApprovedProduct facilityTypeApprovedProduct=facilityApprovedProductRepository.getFacilityApprovedProductByProgramProductIdAndFacilityTypeCode(facilityProgramProduct.getId(), supplyRequirements.getFacilityCode());
@@ -351,7 +341,7 @@ public class StockRequirementsService
                                 existingRequirement.setBufferStock(existingRequirement.getBufferStock() + newSafetyBoxRequirements.getBufferStock());
                                 existingRequirement.setMaximumStock(existingRequirement.getMaximumStock() + newSafetyBoxRequirements.getMaximumStock());
                                 existingRequirement.setIsaValue(existingRequirement.getIsaValue() + newSafetyBoxRequirements.getIsaValue());
-                                update(existingRequirement);
+                                updateBundling(existingRequirement);
                             }
                         }
                         else{

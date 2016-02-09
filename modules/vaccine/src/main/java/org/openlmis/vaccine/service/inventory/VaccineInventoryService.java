@@ -47,6 +47,7 @@ public class VaccineInventoryService {
         return facilityApprovedProductRepository.getAllByFacilityAndProgramId(facilityId,programId);
     }
 
+    //TODO To delete this code on production
     public Integer deleteRequisitions() {
         return repository.deleteOrderRequisitions();
     }
@@ -54,4 +55,13 @@ public class VaccineInventoryService {
     public Integer deleteDistributions() {
         return repository.deleteDistributions();
     }
+
+    public Integer deleteStockCards() {
+        return repository.deleteStockCards();
+    }
+
+    public Integer deleteLots() {
+        return repository.deleteLots();
+    }
+    //TODO End To delete
 }

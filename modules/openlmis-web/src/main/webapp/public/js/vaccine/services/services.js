@@ -276,7 +276,7 @@ services.factory('EquipmentNonFunctional',function($resource){
 });
 
 services.factory('OneLevelSupervisedFacilities',function($resource){
-    return $resource('/vaccine/inventory/distribution/supervised-facilities',{},{});
+    return $resource('/vaccine/inventory/distribution/supervised-facilities/:programId.json',{programId: '@programId'},{});
 });
 services.factory('ViewBundledDistributionVaccinationSupplies', function ($resource) {
 
@@ -480,4 +480,12 @@ services.factory('FacilityTypeAndProgramProducts',function($resource) {
 
 services.factory('ClassificationVaccineUtilizationPerformance', function ($resource) {
     return $resource('/vaccine/report/classificationVaccineUtilizationPerformance.json', {}, {});
+});
+
+services.factory('QuantityRequired',function($resource){
+     return $resource('/rest-api/ivd/facility-stock-status',{facilityCode:'@facilityCode',programCode:'@programCode',periodId:'@periodId'},{});
+});
+
+services.factory('FacilityDistributionForecastAndLastPeriod', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/facility-distribution-forecast-lastPeriod/:facilityId/:programId.json',{facilityCode:'@facilityCode',programCode:'@programCode',periodId:'@periodId'}, {});
 });

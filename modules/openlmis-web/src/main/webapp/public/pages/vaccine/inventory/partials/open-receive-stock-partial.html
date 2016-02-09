@@ -123,7 +123,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat-start="product in receivedProducts" style="border-bottom:2px solid #333" ng-form="receivingForm2">
+        <tr ng-repeat-start="product in receivedProducts" style="border-bottom:2px solid #333" ng-form="receivingForm2"
+            ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')">
             <td rowspan="{{product.lots.length}}" class="col-product cell-input last-row disabled">
                 <span class="cell-text" ng-bind="product.product.primaryName"></span>
             </td>
@@ -155,7 +156,7 @@
                 <a class="close" ng-click="removeProduct(product)">&times;</a>
             </td>
         </tr>
-        <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first">
+        <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first" ng-class="color">
             <td ng-if="product.batchTracked" ng-class="{'last-row':$last}"
                 class="col-lot  cell-input cell-text disabled">
                 <span class="cell-text" ng-bind="lot.lot.lotCode"></span>

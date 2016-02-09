@@ -12,10 +12,13 @@ package org.openlmis.vaccine.service.inventory;
 
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.Program;
+import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.MessageService;
+import org.openlmis.core.service.ProcessingScheduleService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
@@ -34,23 +37,21 @@ import java.util.List;
 @NoArgsConstructor
 public class VaccineInventoryDistributionService {
 
+    public static final String cvsRegionCode = "label.vaccine.voucher.number.region.for.cvs";
+    public static final String cvsDistrictCode = "label.vaccine.voucher.number.district.for.cvs";
+    public static final String rvsDistrictCode = "label.vaccine.voucher.number.district.for.rvs";
     @Autowired
     VaccineInventoryDistributionRepository repository;
-
     @Autowired
     ProgramService programService;
-
     @Autowired
     FacilityService facilityService;
-
     @Autowired
     MessageService messageService;
-
-    public static final String cvsRegionCode = "label.vaccine.voucher.number.region.for.cvs";
-
-    public static final String cvsDistrictCode = "label.vaccine.voucher.number.district.for.cvs";
-
-    public static final String rvsDistrictCode = "label.vaccine.voucher.number.district.for.rvs";
+    @Autowired
+    ProcessingScheduleService processingScheduleService;
+    @Autowired
+    ProcessingPeriodRepository processingPeriodRepository;
 
     public List<Facility> getFacilities(Long userId) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
@@ -62,19 +63,17 @@ public class VaccineInventoryDistributionService {
         return repository.getOneLevelSupervisedFacilities(facilityId);
     }
 
+
     public Long save(VaccineDistribution distribution, Long userId) {
         //Get supervised facility period
         Facility homeFacility = facilityService.getHomeFacility(userId);
-        Long facilityId = homeFacility.getId();
-        List<Program> programs = programService.getAllIvdPrograms();
-        Long programId = programs.get(0).getId();
+        Long homeFacilityId = homeFacility.getId();
+        ProcessingPeriod period = getCurrentPeriod(distribution.getToFacilityId(), distribution.getProgramId());
 
-        ProcessingPeriod period = getCurrentPeriod(facilityId, programId, distribution.getDistributionDate());
         if (period != null) {
             distribution.setPeriodId(period.getId());
         }
-
-        distribution.setVoucherNumber(generateVoucherNumber(facilityId, programId));
+        distribution.setVoucherNumber(generateVoucherNumber(homeFacilityId, distribution.getProgramId()));
 
         if (distribution.getId() != null) {
             distribution.setModifiedBy(userId);
@@ -107,12 +106,12 @@ public class VaccineInventoryDistributionService {
     }
 
     private String generateVoucherNumber(Long facilityId, Long programId) {
-        VoucherNumberCode voucherNumberCode = new VoucherNumberCode();
-        voucherNumberCode = repository.getFacilityVoucherNumberCode(facilityId);
+
+        VoucherNumberCode voucherNumberCode = repository.getFacilityVoucherNumberCode(facilityId);
 
         String lastVoucherNumber = repository.getLastVoucherNumber();
-        String newVoucherNumber = null;
-        Long newSerial = null;
+        String newVoucherNumber;
+        Long newSerial;
 
         Date date = new Date();
         Calendar cal = Calendar.getInstance();
@@ -150,44 +149,31 @@ public class VaccineInventoryDistributionService {
         return newVoucherNumber;
     }
 
-    public List<VaccineDistribution> getDistributedFacilitiesByPeriod(Long userId) {
-        Facility homeFacility = facilityService.getHomeFacility(userId);
-        Long facilityId = homeFacility.getId();
-        List<Program> programs = programService.getAllIvdPrograms();
-        Long programId = (programs == null) ? null : programs.get(0).getId();
-
-        ProcessingPeriod period = getCurrentPeriod(facilityId, programId, new Date());
+    public VaccineDistribution getDistributionForFacilityByPeriod(Long facilityId, Long programId) {
+        ProcessingPeriod period = getCurrentPeriod(facilityId, programId);
         if (period != null) {
-            return repository.getDistributedFacilitiesByPeriod(period.getId());
+            return repository.getDistributionForFacilityByPeriod(facilityId, period.getId());
         } else {
             Date date = new Date();
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
             int month = cal.get(Calendar.MONTH) + 1;
             int year = cal.get(Calendar.YEAR);
-            return repository.getDistributedFacilitiesByMonth(month, year);
+            return repository.getDistributionForFacilityByMonth(facilityId, month, year);
         }
     }
 
-    public List<VaccineDistribution> getDistributedFacilitiesByDate(Long userId) {
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int month = cal.get(Calendar.MONTH) + 1;
-        int year = cal.get(Calendar.YEAR);
-        return repository.getDistributedFacilitiesByMonth(month, year);
+    public ProcessingPeriod getCurrentPeriod(Long facilityId, Long programId) {
+        Date programStartDate = programService.getProgramStartDate(facilityId, programId);
+        return processingScheduleService.getCurrentPeriod(facilityId, programId, programStartDate);
     }
 
-    public ProcessingPeriod getCurrentPeriod(Long facilityId, Long programId, Date distributionDate) {
-        return repository.getCurrentPeriod(facilityId, programId, distributionDate);
-    }
-
-    public ProcessingPeriod getCurrentPeriod(Long userId) {
+    public ProcessingPeriod getSupervisedCurrentPeriod(Long userId) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long facilityId = homeFacility.getId();
         List<Program> programs = programService.getAllIvdPrograms();
         Long programId = (programs == null) ? null : programs.get(0).getId();
-        return repository.getCurrentPeriod(facilityId, programId, new Date());
+        return repository.getSupervisedCurrentPeriod(facilityId, programId, new Date());
     }
 
     public VaccineDistribution getById(Long id) {
@@ -213,46 +199,12 @@ public class VaccineInventoryDistributionService {
 
     public List<VaccineDistribution> saveConsolidatedList(List<VaccineDistribution> distributionList, Long userId) {
 
-        for (VaccineDistribution distribute : distributionList) {
+        for (VaccineDistribution distribution : distributionList) {
 
-
-            //Get supervised facility period
-            Facility homeFacility = facilityService.getHomeFacility(userId);
-            Long facilityId = homeFacility.getId();
-            List<Program> programs = programService.getAllIvdPrograms();
-            Long programId = programs.get(0).getId();
-
-            ProcessingPeriod period = getCurrentPeriod(facilityId, programId, distribute.getDistributionDate());
-            if (period != null) {
-                distribute.setPeriodId(period.getId());
-            }
-
-            distribute.setVoucherNumber(generateVoucherNumber(facilityId, programId));
-
-            if (distribute.getId() != null) {
-                distribute.setModifiedBy(userId);
-                repository.updateDistribution(distribute);
-            } else {
-                distribute.setCreatedBy(userId);
-                repository.saveDistribution(distribute);
-            }
-
-
-            for (VaccineDistributionLineItem lineItem : distribute.getLineItems()) {
-                lineItem.setDistributionId(distribute.getId());
-                if (lineItem.getId() != null) {
-                    repository.updateDistributionLineItem(lineItem);
-                } else {
-                    repository.saveDistributionLineItem(lineItem);
-                }
-
-            }
-
+            save(distribution, userId);
         }
 
         return distributionList;
-
-
     }
 
     public VaccineDistribution getAllDistributionsForNotification(Long facilityId) {
@@ -261,6 +213,11 @@ public class VaccineInventoryDistributionService {
 
     public Long UpdateNotification(Long Id){
         return repository.updateNotification(Id);
+    }
+
+    public List<ProcessingPeriod> getLastPeriod(Long facilityId, Long programId) {
+        ProcessingPeriod currentPeriod = getCurrentPeriod(facilityId, programId);
+        return processingPeriodRepository.getNPreviousPeriods(currentPeriod, 1);
     }
 
 }
