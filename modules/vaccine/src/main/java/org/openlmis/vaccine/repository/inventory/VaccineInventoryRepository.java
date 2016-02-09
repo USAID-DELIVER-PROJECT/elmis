@@ -19,6 +19,8 @@ public class VaccineInventoryRepository {
         return mapper.getLotsByProductId(productId);
     }
 
+
+    //TODO To delete this code on production
     public Integer deleteOrderRequisitions(){
         if(mapper.deleteRequisitionLineItems() >0)
         {
@@ -36,4 +38,17 @@ public class VaccineInventoryRepository {
         }else
             return null;
     }
+
+    public Integer deleteStockCards() {
+        mapper.deleteEntryKeyValue();
+        mapper.deleteEntries();
+        mapper.deleteLotsOnHand();
+        return mapper.deleteStockCards();
+    }
+
+    public Integer deleteLots() {
+        return mapper.deleteLots();
+    }
+    //TODO End To delete this code on production
+
 }
