@@ -64,7 +64,7 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                 "  2, \n" +
                 "  3 \n" +
                 "order by \n" +
-                "  geographic_zone_name, \n" +
+                "  vd.region_name, \n" +
                 "  period_start_date";
 
 
@@ -102,7 +102,7 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                 "  t.geographic_zone_name, \n" +
                 "  t.period_name, \n" +
                 "  period_start_date, \n" +
-                " t.facility_name , \n" +
+                " t.facility_name  facility_name, \n" +
                 "  \n" +
                 "    case when sum(t.usage_denominator) between 1 \n" +
                 "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
@@ -120,7 +120,8 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                 "  4 ," +
                 " 5\n" +
                 "order by \n" +
-                "  geographic_zone_name, \n" +
+                "  geographic_zone_name," +
+                " t.facility_name,\n" +
                 "  period_start_date";
 
 
