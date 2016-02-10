@@ -44,27 +44,5 @@ public interface TrendOfMinMaxColdChainRangeMapper {
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
 
-    /*
 
-     */
-    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getFacilityVaccineTargetInformation")
-    @MapKey("facility_name")
-    @ResultType(HashMap.class)
-    public Map<String,TrendOfMinMaxColdChainTempratureDetail> getFacilityVaccineTargetInformation(
-            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
-    );
-
-    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getDistrictVaccineTargetInformation")
-    @MapKey("district_name")
-    @ResultType(HashMap.class)
-    public Map<String,TrendOfMinMaxColdChainTempratureDetail> getDistrictVaccineTargetInformation(
-            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
-    );
-
-    @SelectProvider(type = TrendOfMinMaxColdRangeBuilder.class, method = "getRegionVaccineTargetInformation")
-    @MapKey("region_name")
-    @ResultType(HashMap.class)
-    public Map<String,TrendOfMinMaxColdChainTempratureDetail> getRegionVaccineTargetInformation(
-            @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
-    );
 }

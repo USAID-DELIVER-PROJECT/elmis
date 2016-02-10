@@ -365,7 +365,7 @@ public class VaccineReportService {
         boolean regionReport;
         boolean facilityReport;
         regionReport = zoneId == 0 ? true : false;
-        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) != 0;
+        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) >0?true:false;
         try {
 
 
@@ -375,9 +375,10 @@ public class VaccineReportService {
             endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
             if (regionReport) {
                 result.put("regionReport", repository.getClassificationVaccineUtilizationPerformanceRegion(startDate, endDate, zoneId, productId));
+
             }
             if (facilityReport) {
-                result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceFacility(startDate, endDate, zoneId, productId));
+                result.put("facilityReport", repository.getClassificationVaccineUtilizationPerformanceFacility(startDate, endDate, zoneId, productId));
             } else {
                 result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId));
             }

@@ -25,10 +25,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.openlmis.core.domain.BaseModel;
-import org.openlmis.upload.Importable;
-import org.openlmis.upload.annotation.ImportField;
+
 
 
 @EqualsAndHashCode(callSuper = false)
