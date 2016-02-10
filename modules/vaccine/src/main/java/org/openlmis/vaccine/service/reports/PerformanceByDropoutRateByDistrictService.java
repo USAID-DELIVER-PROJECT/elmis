@@ -297,13 +297,16 @@ public class PerformanceByDropoutRateByDistrictService {
 
     private static void order(List<PerformanceByDropoutRange> performanceByDropoutRangeList) {
 
-        Collections.sort(performanceByDropoutRangeList, (Object o1, Object o2) -> {
+        Collections.sort(performanceByDropoutRangeList, new Comparator<PerformanceByDropoutRange>() {
+            @Override
+            public int compare(PerformanceByDropoutRange o1, PerformanceByDropoutRange o2) {
+
 
             String x1 = ((PerformanceByDropoutRange) o1).getRangeName();
             String x2 = ((PerformanceByDropoutRange) o2).getRangeName();
 
             return x1.compareTo(x2);
-        });
+        }});
 
     }
 

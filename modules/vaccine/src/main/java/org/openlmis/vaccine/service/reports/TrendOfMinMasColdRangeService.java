@@ -283,12 +283,16 @@ public class TrendOfMinMasColdRangeService {
 
     private static void order(List<TrendMinMaxColdChainColumnRangeValues> trendMinMaxColdChainColumnRangeValues) {
 
-        Collections.sort(trendMinMaxColdChainColumnRangeValues, (Object o1, Object o2) -> {
+        Collections.sort(trendMinMaxColdChainColumnRangeValues, new Comparator<TrendMinMaxColdChainColumnRangeValues>() {
+            @Override
+            public int compare(TrendMinMaxColdChainColumnRangeValues o1, TrendMinMaxColdChainColumnRangeValues o2) {
 
-            String x1 = ((TrendMinMaxColdChainColumnRangeValues) o1).getRangeName();
-            String x2 = ((TrendMinMaxColdChainColumnRangeValues) o2).getRangeName();
 
-            return x1.compareTo(x2);
+                String x1 = ((TrendMinMaxColdChainColumnRangeValues) o1).getRangeName();
+                String x2 = ((TrendMinMaxColdChainColumnRangeValues) o2).getRangeName();
+
+                return x1.compareTo(x2);
+            }
         });
     }
 }
