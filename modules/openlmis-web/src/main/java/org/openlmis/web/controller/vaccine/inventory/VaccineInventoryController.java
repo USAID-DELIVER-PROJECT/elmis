@@ -82,6 +82,7 @@ public class VaccineInventoryController extends BaseController {
          return OpenLmisResponse.response("lot", service.insertLot(lot));
     }
 
+    //TODO To delete this code on production
     @RequestMapping(value = "delete-requisitions", method = GET, headers = ACCEPT_JSON)
     public ResponseEntity deleteRequisitions(){
         return OpenLmisResponse.response("deleteRequisitions", service.deleteRequisitions());
@@ -91,4 +92,15 @@ public class VaccineInventoryController extends BaseController {
     public ResponseEntity deleteDistributions(){
         return OpenLmisResponse.response("deleteDistributions", service.deleteDistributions());
     }
+
+    @RequestMapping(value = "delete-stock-cards", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity deleteStockCards() {
+        return OpenLmisResponse.response("deleteStockCards", service.deleteStockCards());
+    }
+
+    @RequestMapping(value = "delete-lots", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity deleteLots() {
+        return OpenLmisResponse.response("deleteLots", service.deleteLots());
+    }
+    //TODO  End To delete this code on production
 }

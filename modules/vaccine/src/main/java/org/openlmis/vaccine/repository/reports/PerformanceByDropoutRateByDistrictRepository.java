@@ -12,16 +12,12 @@
 
 package org.openlmis.vaccine.repository.reports;
 
-import org.apache.ibatis.annotations.Param;
-import org.openlmis.core.domain.Product;
 import org.openlmis.vaccine.domain.reports.DropoutProduct;
 import org.openlmis.vaccine.domain.reports.PerformanceByDropoutRateByDistrict;
 import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
 import org.openlmis.vaccine.repository.mapper.reports.PerformanceByDropoutRateByDistrictMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Component
@@ -30,17 +26,17 @@ public class PerformanceByDropoutRateByDistrictRepository {
     PerformanceByDropoutRateByDistrictMapper mapper;
 
     public List<PerformanceByDropoutRateByDistrict> loadPerformanceByDropoutRateDistrictReports(PerformanceByDropoutRateParam filterCriteria) {
-        List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList = null;
+        List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList ;
         performanceByDropoutRateByDistrictList = mapper.loadPerformanceByDropoutRateDistrictReports(filterCriteria);
         return performanceByDropoutRateByDistrictList;
     }
     public List<PerformanceByDropoutRateByDistrict> loadPerformanceByDropoutRateFacillityReports(PerformanceByDropoutRateParam filterCriteria) {
-        List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList = null;
+        List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList ;
         performanceByDropoutRateByDistrictList = mapper.loadPerformanceByDropoutRateFacilityReports(filterCriteria);
         return performanceByDropoutRateByDistrictList;
     }
     public List<PerformanceByDropoutRateByDistrict> loadPerformanceByDropoutRateRegionReports(PerformanceByDropoutRateParam filterCriteria) {
-        List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList = null;
+        List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList ;
         performanceByDropoutRateByDistrictList = mapper.loadPerformanceByDropoutRateRegionReports(filterCriteria);
         return performanceByDropoutRateByDistrictList;
     }
@@ -49,8 +45,8 @@ public class PerformanceByDropoutRateByDistrictRepository {
         return goegraphicZoneId!=0 &&mapper.isDistrictLevel(goegraphicZoneId)>0;
 }
     public List<DropoutProduct> loadDropoutProductList(){
-        List<DropoutProduct> productList=null;
-        productList= this.mapper.loadDropoutProductList();
-        return  productList;
+
+        return this.mapper.loadDropoutProductList();
+
     }
 }

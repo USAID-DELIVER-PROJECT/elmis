@@ -16,7 +16,7 @@ import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
-import org.openlmis.report.model.dto.Product;
+
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.service.reports.VaccineReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,5 +109,16 @@ public class VaccineReportController extends BaseController {
    public ResponseEntity<OpenLmisResponse> getVaccineProductsList(){
         return OpenLmisResponse.response("products", this.service.getVaccineProductsList());
 
+    }
+
+    @RequestMapping(value = "/classificationVaccineUtilizationPerformance", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> classificationVaccineUtilizationPerformance(@RequestParam(value = "periodStart", required = false) String periodStart,
+                                                                                        @RequestParam(value = "periodEnd", required = false) String periodEnd,
+                                                                                        @RequestParam("zone") Long zone,
+                                                                                        @RequestParam("product") Long product) {
+
+
+        return OpenLmisResponse.response("classificationVaccineUtilizationPerformance",
+                service.getClassificationVaccineUtilizationPerformance(periodStart, periodEnd, zone, product));
     }
 }

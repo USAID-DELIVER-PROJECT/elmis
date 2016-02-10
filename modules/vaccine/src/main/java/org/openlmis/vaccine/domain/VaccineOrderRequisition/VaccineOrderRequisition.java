@@ -9,10 +9,8 @@ import org.openlmis.core.domain.*;
 import org.openlmis.core.service.ProductService;
 import org.openlmis.stockmanagement.domain.StockCard;
 import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
-import org.openlmis.stockmanagement.service.StockCardService;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
-import org.openlmis.vaccine.dto.StockRequirements;
-import org.openlmis.vaccine.dto.StockRequirements_;
+import org.openlmis.vaccine.dto.StockRequirementsDTO;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,11 +42,11 @@ public class VaccineOrderRequisition extends BaseModel {
     private List<OrderRequisitionStockCardDTO> stockCards;
 
 
-    public void initiateOrder(List<StockRequirements_> requirementsList, ProductService service, StockCardMapper stockCardMapper) {
+    public void initiateOrder(List<StockRequirementsDTO> requirementsList, ProductService service, StockCardMapper stockCardMapper) {
         lineItems = new ArrayList<>();
 
 
-        for (StockRequirements_ stockRequirements : requirementsList) {
+        for (StockRequirementsDTO stockRequirements : requirementsList) {
 
 
             if (stockRequirements.getIsaValue() != null) {

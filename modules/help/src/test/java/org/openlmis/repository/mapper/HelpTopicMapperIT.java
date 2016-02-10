@@ -18,7 +18,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openlmis.core.query.QueryExecutor;
 import org.openlmis.db.categories.IntegrationTests;
-import org.openlmis.help.Repository.mapper.HelpTopicMapper;
+import org.openlmis.help.repositoriy.mapper.HelpTopicMapper;
 import org.openlmis.help.domain.HelpTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

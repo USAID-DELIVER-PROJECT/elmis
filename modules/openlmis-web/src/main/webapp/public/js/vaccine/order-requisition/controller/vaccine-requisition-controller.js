@@ -1,4 +1,4 @@
-function newVaccineOrderRequisitionController($scope,$rootScope,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location, GetFacilityForVaccineOrderRequisition) {
+function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location, GetFacilityForVaccineOrderRequisition) {
 
     $rootScope.viewOrder = false;
     $rootScope.receive = false;
@@ -11,6 +11,8 @@ function newVaccineOrderRequisitionController($scope,$rootScope,getFacilityTypeC
     var id = parseInt($scope.programs[0].id,10);
     var facilityId = parseInt($scope.facility.id,10);
     var facilityTypeCode = getFacilityTypeCode;
+    var rFacilityTypeCode = settings;
+    console.log(rFacilityTypeCode);
 
     $scope.requisitionTypes = [];
     $scope.requisitionTypes = [{id: '0', name: 'Unscheduled Reporting'}, {id: '1', name: 'Scheduled Reporting'}];
@@ -47,7 +49,7 @@ function newVaccineOrderRequisitionController($scope,$rootScope,getFacilityTypeC
                             {
                             $location.path('/details');
 
-                                if(facilityTypeCode === 'rvs'){
+                                if(facilityTypeCode === rFacilityTypeCode){
                                     $scope.showMessage = true;
                                     $scope.message = "Your Previous Requisition Submitted On " + lastReport.orderDate + "" +
                                         " has not yet been Processed. ";
@@ -99,7 +101,10 @@ function newVaccineOrderRequisitionController($scope,$rootScope,getFacilityTypeC
 
                 if (!angular.isUndefined(lastReport) && lastReport.emergency === false && lastReport.status === 'SUBMITTED') {
 
-                        if(facilityTypeCode === 'rvs'){
+
+
+
+                    if(facilityTypeCode === rFacilityTypeCode){
                             $scope.showMessage = true;
 
                             $scope.message = "Your Previous Requisition Submitted On " + lastReport.orderDate + "" +
@@ -190,6 +195,18 @@ newVaccineOrderRequisitionController.resolve = {
                     });
             });
 
+        }, 100);
+
+        return deferred.promise;
+    },
+
+    settings: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+
+        $timeout(function () {
+            SettingsByKey.get({key:'VACCINE_FACILITY_TYPE_CODE'}, function (data) {
+                deferred.resolve(data.settings);
+            });
         }, 100);
 
         return deferred.promise;

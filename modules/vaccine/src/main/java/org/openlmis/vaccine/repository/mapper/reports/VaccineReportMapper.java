@@ -18,6 +18,7 @@ import org.openlmis.ivdform.domain.reports.*;
 import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.vaccine.repository.mapper.reports.builder.AdequacyLevelReportQueryBuilder;
+import org.openlmis.vaccine.repository.mapper.reports.builder.ClassificationVaccineUtilizationPerformanceQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.CompletenessAndTimelinessQueryBuilder;
 import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceCoverageQueryBuilder;
 import org.springframework.stereotype.Repository;
@@ -49,7 +50,7 @@ public interface VaccineReportMapper {
             "group by diseaseName, display_order order by display_order")
     @MapKey("diseaseName")
     @ResultType(HashMap.class)
-    HashMap<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId );
+    Map<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId );
 
     @Select("SELECT disease_name as diseaseName, display_order,\n" +
             " sum(COALESCE (cases, 0)) AS calculatedCumulativeCases,\n" +
@@ -65,7 +66,7 @@ public interface VaccineReportMapper {
             "group by diseaseName, display_order order by display_order")
     @MapKey("diseaseName")
     @ResultType(HashMap.class)
-    HashMap<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    Map<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("Select id from vaccine_reports where facilityid = #{facilityId} and periodid = #{periodId}")
     Long getReportIdForFacilityAndPeriod(@Param("facilityId") Long facilityId, @Param("periodId") Long periodId);
@@ -141,7 +142,7 @@ public interface VaccineReportMapper {
 
     @MapKey("product_name")
     @ResultType(HashMap.class)
-    HashMap<String, VaccineCoverageReport> calculateVaccineCoverageReport(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId);
+    Map<String, VaccineCoverageReport> calculateVaccineCoverageReport(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId);
 
     @Select("" +
             "select \n" +
@@ -170,7 +171,7 @@ public interface VaccineReportMapper {
 
     @MapKey("product_name")
     @ResultType(HashMap.class)
-    HashMap<String, VaccineCoverageReport> calculateAggeregatedVaccineCoverageReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    Map<String, VaccineCoverageReport> calculateAggeregatedVaccineCoverageReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select \n" +
             "product_name,\n" +
@@ -469,4 +470,23 @@ public interface VaccineReportMapper {
             "     order by pp.displayorder "
     )
    public List<Product> getVaccineProductsList();
+
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationVaccineForFacility")
+   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForFacility(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationVaccineUtilizationPerformanceByZone")
+    public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationForRegion")
+    public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForRegion(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
 }

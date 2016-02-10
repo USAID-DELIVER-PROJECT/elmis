@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function VaccineForecastingController($scope,$routeParams,$location,programs,homeFacility,StockRequirementsData, RefreshStockRequirements){
+function VaccineForecastingController($scope,$routeParams,$location,programs,homeFacility,StockRequirementsData){
 
     $scope.pageLineItems1 = [];
     $scope.pageLineItems = [];
@@ -41,21 +41,12 @@ function VaccineForecastingController($scope,$routeParams,$location,programs,hom
         $location.search('page', $scope.currentPage);
     });
 
-
-    $scope.$on('$routeUpdate', function () {
-        refreshPageLineItems();
-    });
-
     $scope.greaterThan = function(prop,val){
         return function(item){
             return item[prop] > val;
         };
     };
-    $scope.refreshStockRequirements=function(){
-        RefreshStockRequirements.get({programId:parseInt(program,10), facilityId:parseInt(homeFacility.id,10)},function(data){
-            refreshPageLineItems();
-        });
-    };
+
 
 }
 

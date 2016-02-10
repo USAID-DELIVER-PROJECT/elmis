@@ -20,7 +20,6 @@ import org.openlmis.vaccine.repository.reports.StatusOfVaccinationSuppliesReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,14 +32,14 @@ public class StatusOfVaccinationSupplyService {
 
 
     public StatusOfVaccinationSuppliesReceivedReport loadStatusOfVaccineSupplyReport(Map<String, String[]> filterCriteria) {
-        StatusOfVaccinationSuppliesReceivedReport suppliesReceivedReport = null;
-        boolean isFacilityReport = false;
-        boolean isRegionReport = false;
-        List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesFacilityDistrictList = null;
+        StatusOfVaccinationSuppliesReceivedReport suppliesReceivedReport ;
+        boolean isFacilityReport ;
+        boolean isRegionReport ;
+        List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesFacilityDistrictList;
         List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesRegionList = null;
-        HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> facilityOrDistrictPopulationMap = null;
-        HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap = null;
-        PerformanceByDropoutRateParam filterParam = null;
+        Map<String, StatusOfVaccinationSuppliesRecievedDetail> facilityOrDistrictPopulationMap ;
+        Map<String, StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap ;
+        PerformanceByDropoutRateParam filterParam ;
         filterParam = ReportsCommonUtilService.prepareParam(filterCriteria);
         isRegionReport = filterParam.getGeographic_zone_id() == 0 ? true : false;
         isFacilityReport = dropoutRateByDistrictRepository.isDistrictLevel(filterParam.getGeographic_zone_id());
@@ -68,11 +67,11 @@ public class StatusOfVaccinationSupplyService {
     }
 
     private void extractPopulationInformation(List<StatusOfVaccinationSuppliesRecievedDetail> statusOfVaccinationSuppliesFacilityDistrictList,
-                                              HashMap<String, StatusOfVaccinationSuppliesRecievedDetail> populationListMap, int geoLevel) {
+                                              Map<String, StatusOfVaccinationSuppliesRecievedDetail> populationListMap, int geoLevel) {
         for (StatusOfVaccinationSuppliesRecievedDetail vaccinationSuppliesRecievedDetail : statusOfVaccinationSuppliesFacilityDistrictList) {
-            Long population = 0l;
-            String geoLevelName = "";
-            StatusOfVaccinationSuppliesRecievedDetail populationInfo = null;
+            Long population;
+            String geoLevelName ;
+            StatusOfVaccinationSuppliesRecievedDetail populationInfo ;
             if (geoLevel == ReportsCommonUtilService.FACILLITY_REPORT) {
                 geoLevelName = vaccinationSuppliesRecievedDetail.getFacility_name();
             } else if (geoLevel == ReportsCommonUtilService.DISTRICT_REPORT) {
@@ -82,7 +81,7 @@ public class StatusOfVaccinationSupplyService {
             }
             geoLevelName+="_"+vaccinationSuppliesRecievedDetail.getPeriod_name();
             populationInfo = populationListMap.get(geoLevelName);
-            population = populationInfo != null ? populationInfo.getTargetpopulation() : 0l;
+            population = populationInfo != null ? populationInfo.getTargetpopulation() : 0L;
             vaccinationSuppliesRecievedDetail.setTargetpopulation(population);
         }
     }
@@ -95,7 +94,7 @@ public class StatusOfVaccinationSupplyService {
         float totalUsed = 0f;
         float totalWasted = 0f;
         float totalAdminstered = 0f;
-        Long totalPopulation = 0l;
+        Long totalPopulation = 0L;
         for (StatusOfVaccinationSuppliesRecievedDetail statusOfVaccinationSuppliesRecievedDetail : statusOfVaccinationSuppliesFacilityDistrictList) {
 
             totalReceived += statusOfVaccinationSuppliesRecievedDetail.getReceived();

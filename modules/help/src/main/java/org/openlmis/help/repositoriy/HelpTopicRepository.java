@@ -11,9 +11,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.help.Repository;
+package org.openlmis.help.repositoriy;
 
-import org.openlmis.help.Repository.mapper.HelpTopicMapper;
+import org.openlmis.help.repositoriy.mapper.HelpTopicMapper;
 import org.openlmis.help.domain.HelpDocument;
 import org.openlmis.help.domain.HelpTopic;
 import org.openlmis.help.domain.SiteConstantEnum;
@@ -31,7 +31,6 @@ public class HelpTopicRepository {
         Long id;
 
         id= this.mapper.insert(helpTopic);
-//        helpTopic.setId(id);
         return id;
     }
     public List<HelpTopic> getHelpTopicList() {
@@ -74,12 +73,12 @@ public List<HelpTopic> loadChildrenOfHelpTopic(Long loggedUserId, HelpTopic pare
         return this.mapper.loadHelpDocumentList();
     }
   public HelpTopic  getSiteContent(String contentName){
-      HelpTopic siteContent=null;
+      HelpTopic siteContent;
       siteContent=this.mapper.getSiteContent(SiteConstantEnum.SITE_CONTENT.getValue(),contentName);
       return siteContent;
     }
     public HelpTopic  getContentByKey(String contentName){
-        HelpTopic siteContent=null;
+        HelpTopic siteContent;
         siteContent=this.mapper.getContentByKey(contentName);
         return siteContent;
     }

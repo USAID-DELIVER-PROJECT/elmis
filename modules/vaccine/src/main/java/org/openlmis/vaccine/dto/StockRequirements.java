@@ -69,7 +69,18 @@ public class StockRequirements extends BaseModel
 
   Integer bufferStock;
 
-    String wapi;
+    //If anyone likes this pattern that this method is intended to support, the method should be generalized and moved elsewhere
+    public static String getJSONArray(List<StockRequirements> items) {
+        StringBuilder builder = new StringBuilder("[");
+        for (int i = 0; i < items.size(); i++) {
+            builder.append(items.get(i).getJSON());
+            if (i < items.size() - 1)
+                builder.append(",");
+        }
+        builder.append("]");
+
+        return builder.toString();
+    }
 
   public Integer getIsaValue()
   {
@@ -139,7 +150,6 @@ public class StockRequirements extends BaseModel
     }
   }
 
-
   public Integer getBufferStock(){
       if(bufferStock ==null) {
           if (getSupplyPeriodNeed() == null && isa == null)
@@ -151,7 +161,6 @@ public class StockRequirements extends BaseModel
           return bufferStock;
       }
   }
-
 
   public String getJSON()
   {
@@ -232,22 +241,6 @@ public class StockRequirements extends BaseModel
 
 
     builder.append("}");
-
-    return builder.toString();
-  }
-
-
-  //If anyone likes this pattern that this method is intended to support, the method should be generalized and moved elsewhere
-  public static String getJSONArray(List<StockRequirements> items)
-  {
-    StringBuilder builder = new StringBuilder("[");
-    for(int i=0; i<items.size(); i++)
-    {
-      builder.append(items.get(i).getJSON());
-      if(i < items.size() - 1)
-        builder.append(",");
-    }
-    builder.append("]");
 
     return builder.toString();
   }

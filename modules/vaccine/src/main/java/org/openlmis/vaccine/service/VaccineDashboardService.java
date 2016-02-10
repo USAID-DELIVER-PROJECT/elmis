@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @NoArgsConstructor
@@ -33,9 +34,9 @@ public class VaccineDashboardService {
     @Autowired
     VaccineDashboardRepository repository;
 
-    public HashMap<String, Object> getReportingSummary(Long userId) {
+    public Map<String, Object> getReportingSummary(Long userId) {
 
-        HashMap<String, Object> reportingSummaryList = null;
+        Map<String, Object> reportingSummaryList=null ;
         try {
             reportingSummaryList = repository.getReportingSummary(userId);
         } catch (Exception ex) {
@@ -45,7 +46,7 @@ public class VaccineDashboardService {
     }
 
     public List<HashMap<String, Object>> getReportingDetails(Long userId) {
-        List<HashMap<String, Object>> reportingDetails=null;
+        List<HashMap<String, Object>> reportingDetails = null;
         try {
         reportingDetails= repository.getReportingDetails(userId);
         } catch (Exception ex) {
@@ -55,8 +56,8 @@ public class VaccineDashboardService {
         return reportingDetails;
     }
 
-    public HashMap<String, Object> getRepairingSummary(Long userId) {
-        HashMap<String, Object> repairingDetailList = null;
+    public Map<String, Object> getRepairingSummary(Long userId) {
+        Map<String, Object> repairingDetailList = null;
         try {
 
 
@@ -79,8 +80,8 @@ public class VaccineDashboardService {
         return repairingDetailList;
     }
 
-    public HashMap<String, Object> getInvestigatingSummary(Long userId) {
-        HashMap<String, Object> repairingDetailList = null;
+    public Map<String, Object> getInvestigatingSummary(Long userId) {
+        Map<String, Object> repairingDetailList = null;
         try {
 
 
@@ -345,7 +346,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList = repository.getDistrictStock(period, product);;
+            repairingDetailList = repository.getDistrictStock(period, product);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }

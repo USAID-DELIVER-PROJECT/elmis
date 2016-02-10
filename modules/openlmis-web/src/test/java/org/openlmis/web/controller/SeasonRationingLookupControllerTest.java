@@ -24,7 +24,7 @@ import org.openlmis.core.domain.OrderQuantityAdjustmentType;
 import org.openlmis.core.service.OrderQuantityAdjustmentFactorService;
 import org.openlmis.core.service.OrderQuantityAdjustmentTypeService;
 import org.openlmis.db.categories.UnitTests;
-import org.openlmis.web.controller.seasonalRationing.SeasonRationingLookupController;
+import org.openlmis.web.controller.seasonaling.SeasonRationingLookupController;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import static org.mockito.Mockito.atLeastOnce;
@@ -79,7 +79,7 @@ public class SeasonRationingLookupControllerTest {
     @Test
     public void testRemoveSeasonRationingType() {
         OrderQuantityAdjustmentType adjustmentType = new OrderQuantityAdjustmentType();
-        lookupController.removeSeasonRationingType(1l, servletRequest);
+        lookupController.removeSeasonRationingType(1l);
         verify(typeService).deleteOrderQuantityAdjustmentType(adjustmentType);
 
     }
@@ -94,7 +94,7 @@ public class SeasonRationingLookupControllerTest {
     @Test
     public void testDeleteSeasonalRationingType() {
         OrderQuantityAdjustmentType adjustmentType = new OrderQuantityAdjustmentType();
-        lookupController.deleteSeasonalRationingType(adjustmentType, servletRequest);
+        lookupController.deleteSeasonalRationingType(adjustmentType);
         verify(typeService).deleteOrderQuantityAdjustmentType(adjustmentType);
     }
 
@@ -131,7 +131,7 @@ public class SeasonRationingLookupControllerTest {
 
     @Test
     public void testRemoveAdjustmentFactor() {
-        this.lookupController.removeAdjustmentFactor(1l, servletRequest);
+        this.lookupController.removeAdjustmentFactor(1l);
         verify(this.factorService, atLeastOnce()).deleteOrderQuantityAdjustmentFactor(Matchers.any(OrderQuantityAdjustmentFactor.class));
     }
 
@@ -144,7 +144,7 @@ public class SeasonRationingLookupControllerTest {
     @Test
     public void testDeleteAdjustmentFactor() {
         OrderQuantityAdjustmentFactor adjustmentFactor = new OrderQuantityAdjustmentFactor();
-        this.lookupController.deleteAdjustmentFactor(adjustmentFactor, servletRequest);
+        this.lookupController.deleteAdjustmentFactor(adjustmentFactor);
         verify(this.factorService).deleteOrderQuantityAdjustmentFactor(adjustmentFactor);
     }
 

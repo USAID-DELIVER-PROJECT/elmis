@@ -15,45 +15,45 @@
 package org.openlmis.vaccine.repository.mapper.reports;
 
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.mapping.ResultSetType;
 import org.openlmis.vaccine.domain.reports.StatusOfVaccinationSuppliesRecievedDetail;
 import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
 import org.openlmis.vaccine.repository.mapper.reports.builder.StatusOfVaccinationSuppliesQueryBuilder;
 import org.springframework.stereotype.Repository;
-
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Repository
 public interface StatusOfVaccinationSupplyStatusMapper {
     @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getStatusOfVaccineSupplyForFacility")
-    public List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForFacilityReports(
+    List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForFacilityReports(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
     @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getStatusOfVaccineSupplyForDistrict")
-    public List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForDistrict(
+    List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForDistrict(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
     @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getStatusOfVaccineSupplyForRegion")
-    public List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForRegionReports(
+    List<StatusOfVaccinationSuppliesRecievedDetail> loadStatusOfVaccineSupplyForRegionReports(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
     /////////////////////////////////////////////////////
     @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getPopulationForFacility")
     @MapKey("facility_name")
     @ResultType(HashMap.class)
-    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForFacilityReports(
+    Map<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForFacilityReports(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
     @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getPopulationForDistrict")
     @MapKey("district_name")
     @ResultType(HashMap.class)
-    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForDistrict(
+    Map<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForDistrict(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
     @SelectProvider(type=StatusOfVaccinationSuppliesQueryBuilder.class, method="getPopulationForRegion")
     @MapKey("region_name")
     @ResultType(HashMap.class)
-    public HashMap<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForRegionReports(
+    Map<String,StatusOfVaccinationSuppliesRecievedDetail> loadPopulationForRegionReports(
             @Param("filterCriteria") PerformanceByDropoutRateParam filterCriteria
     );
 }

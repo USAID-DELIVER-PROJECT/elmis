@@ -16,17 +16,7 @@ public class PerformanceByDropOutRateHelper {
     private PerformanceByDropOutRateHelper(){
 
     }
-    /*
 
-
-    String period_start_date;
-    String period_end_date;
-    Long period_id;
-    Long product_id;
-    Long program_id;
-    Long geographic_zone_id;
-    Long facility_id;
-     */
     public static String isFilteredPeriodStartDate(String field) {
         return String.format("%s >= to_date(#{filterCriteria.period_start_date}::text, 'YYYY-MM-DD')", field);
     }

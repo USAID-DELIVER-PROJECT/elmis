@@ -26,7 +26,7 @@
     <import resource="classpath*:test-applicationContext-db.xml"/>
     <import resource="classpath*:test-applicationContext-core.xml"/>
 
-    <context:component-scan base-package="org.openlmis.help.Repository.mapper"/>
+    <context:component-scan base-package="org.openlmis.help.repositoriy.mapper"/>
 
     <tx:annotation-driven proxy-target-class="true"/>
 

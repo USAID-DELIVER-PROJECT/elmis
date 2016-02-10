@@ -116,6 +116,7 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
             distribution.status = "PENDING";
             distribution.distributionType = "SCHEDULED";
             distribution.remarks = facility[0].remarks;
+            distribution.programId = $routeParams.program;
             distribution.lineItems = [];
 
             angular.forEach(facility, function (product) {
@@ -220,6 +221,7 @@ ConsolidateOrderController.resolve = {
 
         return deferred.promise;
     }
+
 
 
 };

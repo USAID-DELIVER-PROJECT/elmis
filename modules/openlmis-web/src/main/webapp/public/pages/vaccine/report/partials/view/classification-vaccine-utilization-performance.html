@@ -1,0 +1,169 @@
+<!--
+~ This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+~
+~ This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+~
+~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+~
+~ You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+-->
+<style>
+    #summary-table{
+        table-layout: fixed;
+        width: 100% !important;
+        border: 1px solid #000;
+        margin-top:43px;
+    }
+    .rnr-table {
+        padding-top: 0px !important;
+    }
+    .aggregate-row{
+        border-top: 2px #000 solid !important;
+    }
+    h2 {
+        line-height: 40px;
+    }
+</style>
+<h1></h1>
+<div class="row-fluid">
+    <div class="box span12">
+        <div class="box-header">
+            <h2 openlmis-message="report.title.classification.vaccine.utilization.performance"><i class="icon-edit"></i><span class="break"></span></h2>
+            <div class="box-icon">
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+        </div>
+        <div class="app-form">
+            <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                <div  class="clearfix">
+
+                    <!--================================ filter start ====================-->
+
+                    <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility" faccility="false" pro="filter.program" user_geo_level="user_geo_level" zones="zones" val="filter.zone" ></vaccine-zone-filter>
+                    <div class="horizontalFilters form-cell">
+                        <label for="product" class="labels"  openlmis-message="label.product"><span class="label-required">*</span></label>
+                        <div>
+                            <select id="product" ui-select2 class="input-large" ng-model="filter.product" ng-change="OnFilterChanged();">
+                                <option value="">---Select product---</option>
+                                <option ng-repeat="option in product" value="{{ option.id }}">{{ option.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
+                    <!--======================== filter end =========================-->
+                </div>
+            </form>
+            <div style="margin:2px !important;font-size:10px;"  ng-show="periodStartDate" class="row">
+                <div class="span4">
+                    <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate | date:'MMM dd, yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate | date:'MMM dd, yyyy'}}{{wr}}
+                </div>
+            </div>
+            <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                <div class="span11 ">
+                    <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <table class="table table-bordered" ng-show="zoneMainReport.length < 1">
+                <tr>
+                    <td>No data to show under selected filters</td>
+                </tr>
+            </table>
+            <div>
+
+                <div id="parent" ng-show="zoneMainReport.length > 0">
+                    <h2 ng-show="!regionSelected">District Level</h2>
+                    <h2 ng-show="regionSelected">Region Level</h2>
+                    <table id="vbfixTable" class="rnr-table table-bordered table">
+                        <thead>
+                        <tr>
+                            <th rowspan="2">{{getLocalMessage('label.region')}}</th>
+                            <th rowspan="2">{{getLocalMessage('label.district')}}</th>
+                            <th rowspan="2">{{getLocalMessage('label.total.health.facility')}}</th>
+
+                            <th ng-repeat="p in periodlist">{{p}}</th>
+
+                        </tr>
+
+
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in zoneMainReport">
+                            <td>{{ row.report.region_name }}  </td>
+                            <td>{{ row.report.geographic_zone_name }}</td>
+                            <td>{{ row.report.facility_count }} </td>
+
+                            <td ng-repeat="pc in row.period_class track by $index">
+                                {{pc.classification}}
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td>
+                                {{getLocalMessage('label.total')}}
+                            </td>
+
+                            <td class="number">
+                                {{ totalDistricts | number}}
+                            </td>
+
+                            <td class="number">
+                                {{totalFacilities | number}}
+                            </td>
+
+                            <td colspan=" {{ periodlist.length }}">
+
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                    <h2>{{getLocalMessage('label.distribution.classification.vaccine.utilization.performance')}}</h2>
+
+                    <table class="rnr-table table-bordered table">
+
+                        <thead>
+                        <tr>
+                            <th>{{getLocalMessage('label.districts.with')}}</th>
+                            <th ng-repeat="p in periodlist">{{p}}</th>
+                        </tr>
+                        <tbody>
+                        <tr ng-repeat="dc in zoneSummary">
+                            <td style="background-color : {{dc.classColour}}">
+                                {{dc.classDescription}}  {{dc.classification}}
+                            </td>
+
+                            <td class="number" ng-repeat="classCount in dc.classCountArray track by $index" style="background-color : {{dc.classColour}}">
+                                {{classCount}}
+                            </td>
+                        </tr>
+
+                        </tbody>
+                        </thead>
+
+                    </table>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

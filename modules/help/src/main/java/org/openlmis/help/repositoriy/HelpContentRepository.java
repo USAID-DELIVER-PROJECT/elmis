@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.help.Repository;
+package org.openlmis.help.repositoriy;
 
-import org.openlmis.help.Repository.mapper.HelpContentMapper;
+import org.openlmis.help.repositoriy.mapper.HelpContentMapper;
 import org.openlmis.help.domain.HelpContent;
 import org.openlmis.help.domain.HelpTopic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ public class HelpContentRepository {
     @Autowired
     private HelpContentMapper mapper;
     public void add(HelpContent helpContent){
-        //System.out.println(" help content to be save is "+helpContent);
         this.mapper.insert(helpContent);
     }
     public List<HelpContent> getHelpContentList(){

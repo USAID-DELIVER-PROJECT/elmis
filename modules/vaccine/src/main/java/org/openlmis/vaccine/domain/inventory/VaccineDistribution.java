@@ -23,6 +23,8 @@ public class VaccineDistribution extends BaseModel {
 
     Long toFacilityId;
 
+    Long programId;
+
     Long fromFacilityId;
 
     Facility fromFacility;

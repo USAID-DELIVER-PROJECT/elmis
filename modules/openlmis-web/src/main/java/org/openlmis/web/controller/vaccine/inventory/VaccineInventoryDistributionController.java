@@ -13,14 +13,18 @@ package org.openlmis.web.controller.vaccine.inventory;
 
 
 import org.apache.ibatis.annotations.Param;
-import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.*;
 import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProgramProductService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
+import org.openlmis.vaccine.service.StockRequirementsService;
 import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,40 +38,56 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
 @RequestMapping(value = "/vaccine/inventory/distribution")
 public class VaccineInventoryDistributionController extends BaseController {
+    private static final String PROGRAMS = "programs";
+    private static final String FACILITIES = "facilities";
+    private static final String PROGRAM_PRODUCT_LIST = "programProductList";
+    private static final String FORECAST = "forecast";
+    private static final String CURRENT_PERIOD = "currentPeriod";
+    private static final String DISTRIBUTION = "distribution";
+    private static final String LAST_PERIOD = "lastPeriod";
 
     @Autowired
     VaccineInventoryDistributionService service;
     @Autowired
     FacilityService facilityService;
 
+    @Autowired
+    ProgramProductService programProductService;
+
+    @Autowired
+    StockRequirementsService requirementsService;
+
     @RequestMapping(value = "save", method = POST, headers = ACCEPT_JSON)
-    //TODO @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_PROGRAM_PRODUCT')")
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
     @Transactional
     public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineDistribution distribution, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
         return OpenLmisResponse.response("distributionId", service.save(distribution, userId));
     }
 
-    @RequestMapping(value = "get-distributed", method = GET, headers = ACCEPT_JSON)
-    //TODO @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_PROGRAM_PRODUCT')")
-    public ResponseEntity<OpenLmisResponse> getAll(HttpServletRequest request) {
+    @RequestMapping(value = "get-distributed/{facilityId}/{programId}", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getAll(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
-        return OpenLmisResponse.response("Distributions", service.getDistributedFacilitiesByPeriod(userId));
+        return OpenLmisResponse.response("Distributions", service.getDistributionForFacilityByPeriod(facilityId, programId));
     }
 
-    @RequestMapping(value = "supervised-facilities", method = GET, headers = ACCEPT_JSON)
-    public ResponseEntity<OpenLmisResponse> getOneLevelSupervisedFacilities(HttpServletRequest request) {
+    @RequestMapping(value = "supervised-facilities/{programId}.json", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getUserSupervisedFacilities(@PathVariable Long programId, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
-        return OpenLmisResponse.response("facilities", service.getFacilities(userId));
+        return OpenLmisResponse.response(FACILITIES, facilityService.getUserSupervisedFacilities(userId, programId, RightName.MANAGE_STOCK));
     }
 
     @RequestMapping(value = "by-voucher-number", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
     public ResponseEntity<OpenLmisResponse> getDistributionByVoucherNumber(@Param("voucherNumber") String voucherNumber,
                                                                            HttpServletRequest request) {
         Long userId = loggedInUserId(request);
@@ -75,6 +95,7 @@ public class VaccineInventoryDistributionController extends BaseController {
     }
 
     @RequestMapping(value = "saveConsolidatedDistributionList", method = POST, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
     @Transactional
     public ResponseEntity<OpenLmisResponse> saveConsolidatedDistributionList(@RequestBody List<VaccineDistribution> distribution, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
@@ -83,6 +104,7 @@ public class VaccineInventoryDistributionController extends BaseController {
 
 
     @RequestMapping(value = "getAllDistributionsForNotification", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
     @Transactional
     public ResponseEntity<OpenLmisResponse> getAllDistributionsForNotification(HttpServletRequest request) {
         Long userId = loggedInUserId(request);
@@ -92,10 +114,29 @@ public class VaccineInventoryDistributionController extends BaseController {
     }
 
     @RequestMapping(value = "UpdateDistributionsForNotification/{id}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
     public ResponseEntity<OpenLmisResponse> getAllDistributionsForNotification(@PathVariable Long id, HttpServletRequest request) {
         return OpenLmisResponse.response("updated", service.UpdateNotification(id));
     }
 
+    @RequestMapping(value = "last-period/{facilityId}/{programId}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getSupervisedLastPeriod(@PathVariable Long facilityId, @PathVariable Long programId,
+                                                                    HttpServletRequest request) {
+        return OpenLmisResponse.response("last-period", service.getLastPeriod(facilityId, programId));
+    }
 
+    @RequestMapping(value = "facility-distribution-forecast-lastPeriod/{facilityId}/{programId}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getDataByFacility(@PathVariable Long facilityId, @PathVariable Long programId,
+                                                              HttpServletRequest request) {
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(DISTRIBUTION, service.getDistributionForFacilityByPeriod(facilityId, programId));
+        response.getBody().addData(LAST_PERIOD, service.getLastPeriod(facilityId, programId));
+        response.getBody().addData(CURRENT_PERIOD, service.getCurrentPeriod(facilityId, programId));
+        response.getBody().addData(FORECAST, requirementsService.getStockRequirements(facilityId, programId));
+        response.getBody().addData(PROGRAM_PRODUCT_LIST, programProductService.getByProgram(new Program(programId)));
+
+        return response;
+    }
 
 }

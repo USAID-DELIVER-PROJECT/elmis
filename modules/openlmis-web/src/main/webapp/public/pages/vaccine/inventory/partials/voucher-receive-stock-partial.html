@@ -1,4 +1,4 @@
-<div ng-show="distribution ===undefined && voucherNumberSearched" class="alert alert-danger">{{voucherNumberSearched}}
+<div ng-show="distribution ===undefined && voucherNumberSearched" class="alert alert-danger">
     <span openlmis-message="alert.no.distribution"></span><strong> {{receivedProducts.voucherNumber}}</strong>
 </div>
                 <div ng-show="distribution !==undefined">
@@ -21,6 +21,7 @@
                     <tbody>
 
                     <tr ng-repeat-start="product in distribution.lineItems" style="border-bottom:2px solid #333"
+                        ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
                         ng-form="receivingForm2">
                         <td rowspan="{{product.lots.length}}" class="col-product cell-input last-row disabled">
                             <span class="cell-text" ng-bind="product.product.primaryName"></span>
@@ -61,7 +62,7 @@
                         <td colspan="3" rowspan="{{product.lots.length}}" class="col-product cell-input last-row disabled"></td>
 
                     </tr>
-                    <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first">
+                    <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first" ng-class="color">
                         <td  ng-class="{'last-row':$last}"
                             class="col-lot cell-input cell-text disabled">
                             <span class="cell-text" ng-bind="lot.lot.lotCode"></span>

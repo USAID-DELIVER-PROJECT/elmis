@@ -5,14 +5,12 @@ import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
 import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
-import org.openlmis.stockmanagement.service.StockCardService;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisitionStatusChange;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderStatus;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
-import org.openlmis.vaccine.dto.StockRequirements;
-import org.openlmis.vaccine.dto.StockRequirements_;
+import org.openlmis.vaccine.dto.StockRequirementsDTO;
 import org.openlmis.vaccine.repository.VaccineOrderRequisitions.VaccineOrderRequisitionRepository;
 import org.openlmis.vaccine.repository.VaccineOrderRequisitions.VaccineOrderRequisitionStatusChangeRepository;
 import org.openlmis.vaccine.service.StockRequirementsService;
@@ -107,7 +105,7 @@ public class VaccineOrderRequisitionService {
 
         Date date = new Date();
         SupervisoryNode supervisoryNode = supervisoryNodeService.getFor(facilityService.getFacilityById(facilityId), programService.getById(programId));
-        List<StockRequirements_> stockRequirements = stockRequirementsService.getStockRequirements(facilityId,programId);
+        List<StockRequirementsDTO> stockRequirements = stockRequirementsService.getStockRequirements(facilityId, programId);
         orderRequisition = new VaccineOrderRequisition();
         orderRequisition.setPeriodId(periodId);
         orderRequisition.setProgramId(programId);
