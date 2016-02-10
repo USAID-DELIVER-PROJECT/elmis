@@ -15,10 +15,14 @@ function SavePODController($scope,$location, $window,$timeout,StockEvent,SaveDis
      $scope.updatePOD=function(){
               var distribution={};
               distribution.id=$scope.facilityPOD.distributionId;
+              distribution.toFacilityId=$scope.facilityPOD.id;
+              distribution.programId=$scope.userPrograms[0].id;
               distribution.status="RECEIVED";
               distribution.lineItems=[];
               var events =[];
-              $scope.facilityPOD.productsToIssue.forEach(function(product){
+              $scope.facilityPOD.productsToIssueByCategory.forEach(function(category){
+
+                 category.productsToIssue.forEach(function(product){
                  if(product.quantity >0)
                  {
                      var list = {};
@@ -73,16 +77,18 @@ function SavePODController($scope,$location, $window,$timeout,StockEvent,SaveDis
                      }
                      distribution.lineItems.push(list);
                  }
+                 });
               });
-              $scope.closePODModal();
+
               SaveDistribution.save(distribution,function(data){
                  if(events.length >0)
                  {
                     StockEvent.save({facilityId:$scope.homeFacility.id},events, function (data) {
-                         $scope.message=data.success;
+
                     });
                  }
-                $scope.loadSupervisedFacilities($scope.userPrograms[0].id,$scope.homeFacility.id);
               });
+              $scope.closePODModal();
+              $scope.showMessages();
           };
 }

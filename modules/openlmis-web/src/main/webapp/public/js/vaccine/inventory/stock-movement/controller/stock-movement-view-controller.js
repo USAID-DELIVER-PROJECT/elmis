@@ -127,6 +127,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
                 distribution.fromFacilityId = homeFacility.id;
                 distribution.toFacilityId= toFacilityId;
+                distribution.programId=program[0].id;
                 distribution.distributionDate = $scope.stockCardsByCategory[0].issueDate;
                 distribution.periodId = periodId;
                 distribution.orderId = orderId;
@@ -198,6 +199,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
                 });
               StockEvent.save({facilityId:homeFacility.id},events,function(data){
+                    console.log(distribution.programId);
                    SaveDistribution.save(distribution,function(distribution) {
                         UpdateOrderRequisitionStatus.update({orderId: orderId}, function () {
                             print(distribution.distributionId);

@@ -69,7 +69,7 @@ public class VaccineInventoryConfigurationController extends BaseController {
         OpenLmisResponse response=new OpenLmisResponse();
         response.addData("productsConfiguration",service.getAll());
         response.addData("programs",programService.getAllIvdPrograms());
-        response.addData("period",distributionService.getCurrentPeriod(userId));
+        response.addData("period", distributionService.getSupervisedCurrentPeriod(userId));
         response.addData("geographicZone",distributionService.getFacilityGeographicZone(userId));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
