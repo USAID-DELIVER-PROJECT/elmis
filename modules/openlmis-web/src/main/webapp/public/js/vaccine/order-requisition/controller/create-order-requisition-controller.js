@@ -4,7 +4,6 @@
 function CreateVaccineOrderRequisition($scope, $dialog, $window, report, VaccineOrderRequisitionSubmit, $location) {
 
     $scope.report = new VaccineOrderRequisition(report);
-    console.log(JSON.stringify($scope.report));
 
     $scope.orderModal = false;
 
@@ -12,12 +11,14 @@ function CreateVaccineOrderRequisition($scope, $dialog, $window, report, Vaccine
 
     $scope.productFormChange = function () {
         $scope.selectedType = 0;
+        $scope.calculateVial = false;
         $scope.report = new VaccineOrderRequisition(report);
 
     };
 
     $scope.productFormChange1 = function () {
         $scope.selectedType = 1;
+        $scope.calculateVial = true;
         $scope.report = new VaccineOrderRequisition2(report);
 
     };

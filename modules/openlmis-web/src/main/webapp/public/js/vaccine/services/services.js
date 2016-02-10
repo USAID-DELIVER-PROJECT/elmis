@@ -478,6 +478,10 @@ services.factory('FacilityTypeAndProgramProducts',function($resource) {
     }, {});
 });
 
+services.factory('GetFacilityForVaccineOrderRequisition',function($resource){
+    return $resource('/vaccine/orderRequisition/facilities/:facilityId.json',{facilityId:'@facilityId'},{});
+});
+
 services.factory('ClassificationVaccineUtilizationPerformance', function ($resource) {
     return $resource('/vaccine/report/classificationVaccineUtilizationPerformance.json', {}, {});
 });
