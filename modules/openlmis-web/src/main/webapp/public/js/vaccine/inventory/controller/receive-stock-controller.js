@@ -11,10 +11,9 @@
  */
 
 
-function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
+function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
 
     $scope.hasStock=homeFacility.hasStock;
-    console.log($scope.hasStock);
     $scope.userPrograms=configurations.programs;
     $scope.facilityDisplayName=homeFacility.name;
     $scope.selectedProgramId=null;
@@ -26,17 +25,16 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
     $scope.voucherNumberSearched=false;
     $scope.productsConfiguration=configurations.productsConfiguration;
     $scope.period=configurations.period;
+    $scope.manufacturers = manufacturers;
 
     $scope.loadProducts=function(facilityId,programId){
-        VaccineProgramProducts.get({programId:programId},function(data){
-            $scope.allProducts=data.programProductList;
-            $scope.productsToDisplay=$scope.allProducts;
+        FacilityTypeAndProgramProducts.get({facilityId:facilityId, programId:programId},function(data){
+                var allProducts=data.facilityProduct
+                $scope.allProducts=_.sortBy(allProducts,function(product){
+                    return product.programProduct.product.id;
+                });
+                $scope.productsToDisplay=$scope.allProducts;
         });
-
-//        FacilityTypeAndProgramProducts.get({facilityId:facilityId, programId:programId},function(data){
-//
-//                console.log(data);
-//        });
     };
     $scope.loadProductLots=function(product)
     {
@@ -62,6 +60,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                 ProductLots.get({productId:product.id},function(data){
                      $scope.allLots=data.lots;
                      $scope.lotsToDisplay=$scope.allLots;
+                     console.log(JSON.stringify($scope.allLots));
                 });
              }
 
@@ -274,7 +273,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
     {
              var toExclude = _.pluck(_.pluck(receivedProducts, 'product'), 'primaryName');
              $scope.productsToDisplay = $.grep($scope.allProducts, function (productObject) {
-                  return $.inArray(productObject.product.primaryName, toExclude) == -1;
+                  return $.inArray(productObject.programProduct.product.primaryName, toExclude) == -1;
               });
     }
 
@@ -389,5 +388,15 @@ ReceiveStockController.resolve = {
              });
           }, 100);
           return deferred.promise;
-        }
+        },
+        manufacturers : function($q, $timeout, $route, ManufacturerList){
+                    var deferred = $q.defer();
+
+                    $timeout(function () {
+                      ManufacturerList.get(function (data) {
+                        deferred.resolve(data.manufacturers);
+                      });
+                    }, 100);
+                    return deferred.promise;
+                  }
 };
