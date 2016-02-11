@@ -14,11 +14,8 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
-import org.openlmis.core.service.ProcessingPeriodService;
-import org.openlmis.core.service.ProgramService;
 import org.openlmis.report.mapper.StockedOutReportMapper;
-import org.openlmis.report.mapper.lookup.FacilityTypeReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.StockedOutReportParam;
 import org.openlmis.report.util.ParameterAdaptor;
 import org.openlmis.report.util.SelectedFilterHelper;
@@ -40,28 +37,11 @@ public class StockedOutReportDataProvider extends ReportDataProvider {
   @Autowired
   private StockedOutReportMapper reportMapper;
 
-  private StockedOutReportParam stockedOutReportParam = null;
-
   @Autowired
   private SelectedFilterHelper selectedFilterHelper;
 
-  @Autowired
-  private ProcessingPeriodService periodService;
-  
-  @Autowired
-  private ProgramService programService;
-
-  @Autowired
-  private FacilityTypeReportMapper facilityType;
-
   @Override
-  protected List<? extends ReportData> getResultSet(Map<String, String[]> filterCriteria) {
-    RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-    return reportMapper.getReport(getReportFilterData(filterCriteria), null, rowBounds,this.getUserId());
-  }
-
-  @Override
-  public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+  public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
     return reportMapper.getReport(getReportFilterData(filterCriteria), sortCriteria, rowBounds, this.getUserId());
   }

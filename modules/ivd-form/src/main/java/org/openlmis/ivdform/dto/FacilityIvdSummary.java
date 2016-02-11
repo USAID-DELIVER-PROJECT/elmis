@@ -10,13 +10,6 @@ import java.util.List;
 @Setter
 public class FacilityIvdSummary {
 
-
-  public FacilityIvdSummary(String facilityCode, String programCode, Long periodId) {
-    this.facilityCode = facilityCode;
-    this.programCode = programCode;
-    this.periodId = periodId;
-  }
-
   private String facilityCode;
 
   private String programCode;
@@ -25,8 +18,15 @@ public class FacilityIvdSummary {
 
   private Long periodId;
 
-  List<StockStatusSummary> products;
+  private List<StockStatusSummary> products;
 
-  List<ColdChainLineItem> equipments;
+  private List<ColdChainLineItem> equipments;
+
+  public FacilityIvdSummary(String facilityCode, String programCode, Long periodId) {
+    this.facilityCode = facilityCode;
+    this.programCode = programCode;
+    this.periodId = periodId;
+  }
+
 
 }

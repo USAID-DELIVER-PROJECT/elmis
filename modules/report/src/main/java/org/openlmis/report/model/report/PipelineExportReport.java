@@ -13,14 +13,14 @@ package org.openlmis.report.model.report;
 
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PipelineExportReport implements ReportData {
+public class PipelineExportReport implements ResultRow {
 
     private String line;
     private String id;

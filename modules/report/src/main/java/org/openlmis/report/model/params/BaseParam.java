@@ -16,10 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.openlmis.report.model.ReportParameter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class BaseParam {
+public abstract class BaseParam implements ReportParameter{
 
   @Getter @Setter
   private Long userId;

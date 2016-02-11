@@ -22,7 +22,13 @@ import org.openlmis.db.categories.UnitTests;
 import org.openlmis.ivdform.domain.reports.LogisticsLineItem;
 import org.openlmis.ivdform.repository.mapper.reports.LogisticsLineItemMapper;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @Category(UnitTests.class)
@@ -47,5 +53,32 @@ public class LogisticsLineItemRepositoryTest {
     LogisticsLineItem lineItem = new LogisticsLineItem();
     repository.update(lineItem);
     verify(mapper).update(lineItem);
+  }
+
+  @Test
+  public void shouldGetPreviousPeriodLineItemsForProvidedParameters() throws Exception {
+    LogisticsLineItem lineItem = new LogisticsLineItem();
+    when(mapper.getUpTo3PreviousPeriodLineItemsFor("Program", "Product","facilityCode", 2L)).thenReturn(asList(lineItem));
+    List<LogisticsLineItem> response = repository.getUpTo3PreviousPeriodLineItemsFor("Program", "Product","facilityCode", 2L);
+    verify(mapper).getUpTo3PreviousPeriodLineItemsFor("Program", "Product","facilityCode", 2L);
+    assertThat(response.get(0), is(lineItem));
+  }
+
+  @Test
+  public void shouldGetApprovedLineItemListForProvidedParameters() throws Exception {
+    LogisticsLineItem lineItem = new LogisticsLineItem();
+    when(mapper.getApprovedLineItemListFor("Program", "facilityCode", 2L)).thenReturn(asList(lineItem));
+    List<LogisticsLineItem> response = repository.getApprovedLineItemListFor("Program","facilityCode", 2L);
+    verify(mapper).getApprovedLineItemListFor("Program","facilityCode", 2L);
+    assertThat(response.get(0), is(lineItem));
+  }
+
+  @Test
+  public void shouldGetApprovedLineItemForProvidedParameters() throws Exception {
+    LogisticsLineItem lineItem = new LogisticsLineItem();
+    when(mapper.getApprovedLineItemFor("Program", "Product","facilityCode", 2L)).thenReturn(lineItem);
+    LogisticsLineItem response = repository.getApprovedLineItemFor("Program", "Product","facilityCode", 2L);
+    verify(mapper).getApprovedLineItemFor("Program", "Product","facilityCode", 2L);
+    assertThat(response, is(lineItem));
   }
 }

@@ -20,7 +20,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.RnRFeedbackReportQueryBuilder;
 import org.openlmis.report.model.ReportParameter;
 import org.openlmis.report.model.report.RnRFeedbackReport;
-import org.openlmis.report.model.ReportData;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

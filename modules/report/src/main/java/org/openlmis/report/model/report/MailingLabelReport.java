@@ -13,7 +13,7 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import javax.persistence.Column;
 
@@ -27,7 +27,7 @@ import javax.persistence.Column;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MailingLabelReport implements ReportData {
+public class MailingLabelReport implements ResultRow {
 
     @Column(name = "F.code")
     private String code;

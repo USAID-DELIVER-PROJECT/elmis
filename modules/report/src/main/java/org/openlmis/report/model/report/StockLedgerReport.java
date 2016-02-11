@@ -17,14 +17,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockLedgerReport implements ReportData{
+public class StockLedgerReport implements ResultRow {
 
     private Date date;
     private String unitOfMeasure;

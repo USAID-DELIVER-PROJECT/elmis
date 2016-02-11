@@ -18,12 +18,9 @@ import org.apache.ibatis.session.RowBounds;
 
 import org.openlmis.core.domain.Role;
 import org.openlmis.core.domain.SupervisoryNode;
-import org.openlmis.core.service.ProgramService;
 
-import org.openlmis.core.service.RoleRightsService;
-import org.openlmis.core.service.SupervisoryNodeService;
 import org.openlmis.report.mapper.UserSummaryReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import org.openlmis.report.model.dto.Program;
 import org.openlmis.report.model.params.UserSummaryParams;
@@ -41,14 +38,6 @@ public class UserSummaryReportProvider extends ReportDataProvider {
 
     private UserSummaryParams userSummaryParam = null;
 
-    @Autowired
-    private ProgramService programService;
-
-    @Autowired
-    private SupervisoryNodeService supervisoryNodeService;
-    @Autowired
-    private RoleRightsService roleRightsService;
-
 
     @Autowired
     public UserSummaryReportProvider(UserSummaryReportMapper mapper) {
@@ -56,14 +45,7 @@ public class UserSummaryReportProvider extends ReportDataProvider {
     }
 
     @Override
-    protected List<? extends ReportData> getResultSet(Map<String, String[]> filterCriteria) {
-        RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-
-        return reportMapper.getReport(getReportFilterData(filterCriteria), null, rowBounds);
-    }
-
-    @Override
-    public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return reportMapper.getReport(getReportFilterData(filterCriteria), sortCriteria, rowBounds);
     }

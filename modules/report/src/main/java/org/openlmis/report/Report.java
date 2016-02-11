@@ -11,26 +11,26 @@
  */
 package org.openlmis.report;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.service.ReportDataProvider;
-import org.openlmis.report.model.ReportData;
 
-/**
- */
-@Data
+@Getter
+@Setter
 public class Report {
 
-  public String reportKey;
-  public String template;
-  public ReportDataProvider reportDataProvider;
-  public ReportData filterOption;
-  /**
-   *  report properties used by report design
-   */
-  public String title;
-  public String subTitle;
-  public String name;
-  public String id;
-  public String version;
+  private String reportKey;
+  private String template;
+  private ReportDataProvider reportDataProvider;
+  private ResultRow filterOption;
+
+
+  // report properties used by report design
+  private String title;
+  private String subTitle;
+  private String name;
+  private String id;
+  private String version;
 
 }

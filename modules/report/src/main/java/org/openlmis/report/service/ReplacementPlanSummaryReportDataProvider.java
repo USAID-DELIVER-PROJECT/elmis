@@ -17,7 +17,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.report.mapper.ReplacementPlanSummaryMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import org.openlmis.report.model.params.ReplacementPlanReportParam;
 import org.openlmis.report.util.SelectedFilterHelper;
@@ -43,15 +43,9 @@ public class ReplacementPlanSummaryReportDataProvider extends ReportDataProvider
     @Autowired
     private FacilityService facilityService;
 
-
-    @Override
-    protected List<? extends ReportData> getResultSet(Map<String, String[]> params) {
-        return getReportBody(params, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-    }
-
     @Override
     @Transactional
-    public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sorter, int page, int pageSize) {
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sorter, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return mapper.getReport(geReportFilteredData(filterCriteria), rowBounds, this.getUserId());
 

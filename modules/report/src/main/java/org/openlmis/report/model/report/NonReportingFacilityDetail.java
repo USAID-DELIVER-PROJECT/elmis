@@ -13,13 +13,13 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NonReportingFacilityDetail implements ReportData {
+public class NonReportingFacilityDetail implements ResultRow {
 
     private String id;
     private String code;

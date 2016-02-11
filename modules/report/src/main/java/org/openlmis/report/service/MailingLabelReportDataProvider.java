@@ -14,20 +14,13 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
-import org.openlmis.core.domain.Facility;
-import org.openlmis.core.repository.mapper.GeographicZoneMapper;
-import org.openlmis.core.service.FacilityService;
-import org.openlmis.core.service.ProgramService;
 import org.openlmis.report.mapper.MailingLabelReportMapper;
-import org.openlmis.report.mapper.lookup.FacilityTypeReportMapper;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.MailingLabelReportParam;
-import org.openlmis.report.model.report.MailingLabelReport;
-import org.openlmis.report.model.ReportData;
 import org.openlmis.report.util.ParameterAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,50 +28,12 @@ import java.util.Map;
 @NoArgsConstructor
 public class MailingLabelReportDataProvider extends ReportDataProvider {
 
-  @Autowired
-  private FacilityService facilityService;
 
   @Autowired
   private MailingLabelReportMapper mailingLabelReportMapper;
 
-  @Autowired
-  private FacilityTypeReportMapper facilityTypeMapper;
-
-  @Autowired
-  private GeographicZoneMapper geographicZoneMapper;
-
-  @Autowired
-  private ProgramService programService;
-
-  private MailingLabelReportParam mailingLabelReportParam = null;
-
-  private ReportData getMailingLabelReport(Facility facility) {
-    if (facility == null) return null;
-    return new MailingLabelReport();
-  }
-
   @Override
-  protected List<? extends ReportData> getResultSet(Map<String, String[]> params) {
-
-    return getReportBody(params, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-
-  }
-
-  private List<ReportData> getListMailingLabelsReport(List<Facility> facilityList) {
-
-    if (facilityList == null) return null;
-
-    List<ReportData> facilityReportList = new ArrayList<>(facilityList.size());
-
-    for (Facility facility : facilityList) {
-      facilityReportList.add(getMailingLabelReport(facility));
-    }
-
-    return facilityReportList;
-  }
-
-  @Override
-  public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sorterCriteria, int page, int pageSize) {
+  public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sorterCriteria, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
     return mailingLabelReportMapper.SelectFilteredSortedPagedFacilities(getReportFilterData(filterCriteria), rowBounds);
   }

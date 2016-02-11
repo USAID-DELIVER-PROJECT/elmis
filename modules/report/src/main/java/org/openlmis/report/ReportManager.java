@@ -20,7 +20,7 @@ import org.openlmis.core.service.MessageService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.report.exception.ReportException;
 import org.openlmis.report.exporter.ReportExporter;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,17 +38,9 @@ import java.util.Map;
 @AllArgsConstructor
 public class ReportManager {
 
-    private ReportAccessAuthorizer reportAccessAuthorizer;
-
     private ReportExporter reportExporter;
 
-    private List<Report> reports;
-
     private Map<String,Report> reportsByKey;
-
-    private List<String> reportKeys;
-
-    private Report report;
 
     @Autowired
     private UserService userService;
@@ -59,25 +51,17 @@ public class ReportManager {
     @Autowired
     private ConfigurationSettingService configurationService;
 
-    public ReportManager(ReportAccessAuthorizer reportAccessAuthorizer, ReportExporter reportExporter, List<Report> reports) {
-
+    public ReportManager(ReportExporter reportExporter, List<Report> reports) {
         this(reports);
         this.reportExporter = reportExporter;
-        this.reportAccessAuthorizer = reportAccessAuthorizer;
     }
 
     private ReportManager(List<Report> reports){
-
-        this.reports = reports;
-
         if(reports != null){
-
             reportsByKey = new HashMap<>();
-
             for (Report report: reports){
                 reportsByKey.put(report.getReportKey(),report);
             }
-
         }
     }
 
@@ -94,12 +78,10 @@ public class ReportManager {
            throw new ReportException("invalid report");
        }
 
-        List<? extends ReportData> dataSource = report.getReportDataProvider().getReportDataByFilterCriteria(params, DataSourceType.BEAN_COLLECTION_DATA_SOURCE);
+        List<? extends ResultRow> dataSource = report.getReportDataProvider().getResultSet(params);
         Map<String, Object> extraParams = getReportExtraDataSourceParams(userId, params, outputOption, dataSource, report);
 
-       // Read the report template from file.
        InputStream reportInputStream =  this.getClass().getClassLoader().getResourceAsStream(report.getTemplate()) ;
-
         reportExporter.exportReport(reportInputStream, extraParams, dataSource, outputOption, response);
     }
 
@@ -109,7 +91,7 @@ public class ReportManager {
             throw new ReportException("invalid report");
         }
 
-        List<? extends ReportData> dataSource = report.getReportDataProvider().getReportDataByFilterCriteria(params, DataSourceType.BEAN_COLLECTION_DATA_SOURCE);
+        List<? extends ResultRow> dataSource = report.getReportDataProvider().getResultSet(params);
         Map<String, Object> extraParams = getReportExtraDataSourceParams(userId, params, outputOption, dataSource, report);
 
         // Read the report template from file.
@@ -119,11 +101,10 @@ public class ReportManager {
 
     }
 
-    private  Map<String, Object> getReportExtraDataSourceParams(Integer userId,  Map<String, String[]> params , ReportOutputOption outputOption, List<? extends ReportData> dataSource, Report report){
+    private  Map<String, Object> getReportExtraDataSourceParams(Integer userId, Map<String, String[]> params , ReportOutputOption outputOption, List<? extends ResultRow> dataSource, Report report){
 
         User currentUser = userService.getById(Long.parseLong(String.valueOf(userId)));
         report.getReportDataProvider().setUserId(userId.longValue());
-
 
         Map<String, Object> extraParams = getReportExtraParams(report, currentUser.getFirstName() + " " + currentUser.getLastName(), outputOption.name(), params ) ;
 
@@ -141,8 +122,6 @@ public class ReportManager {
         return extraParams;
     }
 
-
-
     /**
      *
      * @param reportKey
@@ -151,7 +130,6 @@ public class ReportManager {
      * @param response
      */
     public void showReport(Integer userId, String reportKey, Map<String, String[]> params, ReportOutputOption outputOption, HttpServletResponse response){
-
         showReport(userId, getReportByKey(reportKey), params, outputOption, response);
     }
 
@@ -166,15 +144,16 @@ public class ReportManager {
     public ByteArrayOutputStream exportReportBytesStream(Integer userId, String reportKey, Map<String, String[]> params, String outputOption){
 
         switch (outputOption.toUpperCase()) {
-            case "PDF":
-                return exportReportBytesStream(userId, getReportByKey(reportKey), params, ReportOutputOption.CSV.PDF);
+            case "CSV":
+                return exportReportBytesStream(userId, getReportByKey(reportKey), params, ReportOutputOption.CSV);
             case "XLS":
                 return exportReportBytesStream(userId, getReportByKey(reportKey), params, ReportOutputOption.XLS);
             case "HTML":
                 return exportReportBytesStream(userId, getReportByKey(reportKey), params, ReportOutputOption.HTML);
+            case "PDF":
+            default:
+                return exportReportBytesStream(userId, getReportByKey(reportKey), params, ReportOutputOption.PDF);
         }
-
-        return null;
     }
 
 
@@ -189,7 +168,9 @@ public class ReportManager {
      */
     private Map<String, Object> getReportExtraParams(Report report, String generatedBy, String outputOption, Map<String, String[]> filterCriteria){
 
-        if (report == null) return null;
+        if (report == null) {
+            return null;
+        }
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put(Constants.REPORT_NAME, report.getName());
@@ -197,7 +178,7 @@ public class ReportManager {
         params.put(Constants.REPORT_TITLE, messageService.message(report.getTitle()));
         params.put(Constants.REPORT_SUB_TITLE, report.getSubTitle());
         params.put(Constants.REPORT_VERSION, report.getVersion());
-        params.put(Constants.REPORT_OUTPUT_OPTION, outputOption.toString());
+        params.put(Constants.REPORT_OUTPUT_OPTION, outputOption);
         ConfigurationSetting configuration =  configurationService.getByKey(Constants.LOGO_FILE_NAME_KEY);
         params.put(Constants.LOGO,this.getClass().getClassLoader().getResourceAsStream(configuration != null ? configuration.getValue() : "logo.png"));
         params.put(Constants.GENERATED_BY, generatedBy);
@@ -219,14 +200,6 @@ public class ReportManager {
 
         return params;
 
-    }
-
-    /*
-        Returns list of report keys of all registered Reports that are managed by ReportManager class.
-        This report keys can be used for generating tree view(report navigation) on the web.
-     */
-    public List<String> getReportKeys() {
-        return (List<String>) reportsByKey.keySet();
     }
 
     public Report getReportByKey(String reportKey){

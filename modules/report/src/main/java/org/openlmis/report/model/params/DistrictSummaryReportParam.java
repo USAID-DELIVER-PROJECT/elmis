@@ -16,38 +16,28 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.openlmis.report.annotations.RequiredParam;
 import org.openlmis.report.model.ReportParameter;
-
-import java.text.DateFormat;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DistrictSummaryReportParam
-    extends BaseParam implements ReportParameter {
+  extends BaseParam implements ReportParameter {
 
-  private int rgroupId;
-  private String rgroup;
-  private int programId;
-  private String program;
-  private int scheduleId;
-  private String schedule;
-  private Long periodId;
-  private String period;
-  private Integer year;
-  private int zoneId;
-  private String zone;
+  private Long requisitionGroup;
 
+  @RequiredParam
+  private Long program;
 
-  @Override
-  public String toString() {
-    DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT);
-    StringBuilder filtersValue = new StringBuilder("");
-    filtersValue.append("Period : ").append(this.period).append("\n").
-        append("Schedule : ").append(this.schedule).append("\n").
-        append("Program : ").append(this.program).append("\n").
-        append("Geographic Zone : ").append(this.zone).append("\n");
-    return filtersValue.toString();
-  }
+  private Long schedule;
+
+  @RequiredParam
+  private Long period;
+
+  private Long year;
+
+  private Long zone;
+
 }
