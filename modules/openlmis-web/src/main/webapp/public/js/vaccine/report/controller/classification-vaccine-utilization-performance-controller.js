@@ -244,17 +244,16 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                 unformattedReport[i].wastage_rate = wastage_rate;
                 unformattedReport[i].classification = determineClass(coverage_rate, wastage_rate);
                 unformattedReport[i].hide = unformattedReport[i].year_number == $scope.year && unformattedReport[i].month_number < $scope.month ? true : false;
-                console.log("district  " + getKey(unformattedReport[i], type) + "  year " + unformattedReport[i].year_number
-                    + " month " + unformattedReport[i].month_number
-                    + " population " + unformattedReport[i].population
-
-                    + " tot_population " + unformattedReport[i].total_population
-                    + " usage_rate " + unformattedReport[i].usage_rate
-                    + " coverage_rate " + unformattedReport[i].coverage_rate
-                    + " wastage_rate " + unformattedReport[i].wastage_rate
-                    + " hidden " + unformattedReport[i].hide +
-                    " year " + $scope.year
-                    + " month number is " + $scope.month);
+                console.log("district  " + getKey(unformattedReport[i], type) + "  year " + unformattedReport[i].year_number  +
+                    " month " + unformattedReport[i].month_number+
+                     " population " + unformattedReport[i].population+
+                     " tot_population " + unformattedReport[i].total_population+
+                     " usage_rate " + unformattedReport[i].usage_rate+
+                     " coverage_rate " + unformattedReport[i].coverage_rate+
+                     " wastage_rate " + unformattedReport[i].wastage_rate+
+                     " hidden " + unformattedReport[i].hide +
+                    " year " + $scope.year+
+                    " month number is " + $scope.month);
 
             }
         }
