@@ -396,7 +396,6 @@ public class VaccineReportService {
         return result;
     }
     private static  Date getStartOfTheYearDate(Date date){
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         Calendar calendar =Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.MONTH, Calendar.JANUARY);
