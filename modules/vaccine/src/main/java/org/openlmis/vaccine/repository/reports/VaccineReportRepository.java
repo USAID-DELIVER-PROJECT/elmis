@@ -175,13 +175,14 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
   }
 
   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceFacility(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassificationVaccineUtilizationPerformanceForFacility(startDate, endDate, zoneId, productId);
+    return mapper.getClassificationVaccineUtilizationPerformanceForFacility1(startDate, endDate, zoneId, productId);
   }
   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId);
+   
+    return mapper.getClassificationVaccineUtilizationPerformanceForDistrict1(startDate, endDate, zoneId, productId);
   }
   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceRegion(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassificationVaccineUtilizationPerformanceForRegion(startDate, endDate, zoneId, productId);
+    return mapper.getClassificationVaccineUtilizationPerformanceForRegion1(startDate, endDate, zoneId, productId);
   }
 
 }

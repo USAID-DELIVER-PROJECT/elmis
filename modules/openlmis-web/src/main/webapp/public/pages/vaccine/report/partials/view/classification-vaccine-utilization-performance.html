@@ -83,7 +83,7 @@
                             <th rowspan="2">{{getLocalMessage('label.district')}}</th>
                             <th rowspan="2">{{getLocalMessage('label.total.health.facility')}}</th>
 
-                            <th ng-repeat="p in periodlist">{{p}}</th>
+                            <th ng-if="p.hide!=true " ng-repeat="p in periodlist">{{p.period_name}}</th>
 
                         </tr>
 
@@ -96,7 +96,12 @@
 
                                       ng-bind="row.report.region_name"></span>
                             </td>
-                            <td>{{ row.report.geographic_zone_name }}</td>
+                            <td>
+                               <span  ng-if="zoneMainReport[$index-1].report.geographic_zone_name!=row.report.geographic_zone_name "
+
+                                      ng-bind="row.report.geographic_zone_name"></span>
+                            </td>
+
                             <td ng-if=" facilityReport==true"
 
 
@@ -106,7 +111,7 @@
 
                                 ng-bind=" row.report.facility_count"> </td>
 
-                            <td ng-style="{'background-color':getCellColor(pc.classification)  }" ng-repeat="pc in row.period_class track by $index">
+                            <td ng-if="pc.hide!=true" ng-style="{'background-color':getCellColor(pc.classification)  }" ng-repeat="pc in row.period_class track by $index">
                                 {{pc.classification}}
                             </td>
 
@@ -133,14 +138,15 @@
                         </tbody>
                     </table>
 
-                    <h2>{{getLocalMessage('label.distribution.classification.vaccine.utilization.performance')}}</h2>
+                    <h2> <span ng-if="facilityReport">{{getLocalMessage('label.distribution.classification.vaccine.utilization.performance.facility')}}</span></h2>
+                    <h2> <span ng-if="!facilityReport">{{getLocalMessage('label.distribution.classification.vaccine.utilization.performance.district')}}</span></h2>
 
                     <table class="rnr-table table-bordered table">
 
                         <thead>
                         <tr>
                             <th>{{getLocalMessage('label.districts.with')}}</th>
-                            <th ng-repeat="p in periodlist">{{p}}</th>
+                            <th ng-if="p.hide!=true" ng-repeat="p in periodlist">{{p.period_name}}</th>
                         </tr>
                         <tbody>
                         <tr ng-repeat="dc in zoneSummary">
@@ -148,8 +154,8 @@
                                 {{dc.classDescription}}  {{dc.classification}}
                             </td>
 
-                            <td class="number" ng-repeat="classCount in dc.classCountArray track by $index" style="background-color : {{dc.classColour}}">
-                                {{classCount}}
+                            <td ng-if="c.hide!=true" class="number" ng-repeat="c in dc.classCountArray track by $index" style="background-color : {{dc.classColour}}">
+                                {{c.classCount}}
                             </td>
                         </tr>
 
@@ -187,7 +193,7 @@
 
                                 <th rowspan="2">{{getLocalMessage('label.total.health.facility')}}</th>
 
-                                <th ng-repeat="p in periodlist">{{p}}</th>
+                                <th ng-if="p.hide!=true" ng-repeat="p in periodlist">{{p.period_name}}</th>
 
                             </tr>
 
@@ -203,7 +209,7 @@
 
                                     ng-bind=" row.report.facility_count"> </td>
 
-                                <td ng-style="{'background-color':getCellColor(pc.classification)  }" ng-repeat="pc in row.period_class track by $index">
+                                <td ng-if="pc.hide!=true" ng-style="{'background-color':getCellColor(pc.classification)  }" ng-repeat="pc in row.period_class track by $index">
                                     {{pc.classification}}
                                 </td>
 
@@ -227,14 +233,14 @@
                             </tbody>
                         </table>
 
-                        <h2>{{getLocalMessage('label.distribution.classification.vaccine.utilization.performance')}}</h2>
+                        <h2>{{getLocalMessage('label.distribution.classification.vaccine.utilization.performance.region')}}</h2>
 
                         <table class="rnr-table table-bordered table">
 
                             <thead>
                             <tr>
                                 <th>{{getLocalMessage('label.districts.with')}}</th>
-                                <th ng-repeat="p in periodlist">{{p}}</th>
+                                <th  ng-if="p.hide!=true" ng-repeat="p in periodlist">{{p.period_name}}</th>
                             </tr>
                             <tbody>
                             <tr ng-repeat="dc in regionSummary">
@@ -242,8 +248,8 @@
                                     {{dc.classDescription}}  {{dc.classification}}
                                 </td>
 
-                                <td class="number" ng-repeat="classCount in dc.classCountArray track by $index" style="background-color : {{dc.classColour}}">
-                                    {{classCount}}
+                                <td  ng-if="classCount.hide!=true" class="number" ng-repeat="classCount in dc.classCountArray track by $index" style="background-color : {{dc.classColour}}">
+                                    {{classCount.classCount}}
                                 </td>
                             </tr>
 

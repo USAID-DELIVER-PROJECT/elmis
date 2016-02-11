@@ -15,188 +15,172 @@
 package org.openlmis.vaccine.repository.mapper.reports.builder;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Date;
 import java.util.Map;
 
 public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
 
-    public static String  selectClassificationForRegion(Map params) {
 
-        Long zoneId = (Long) params.get("zoneId");
+    public static String selectClassficationUtilizationPerformanceForFacility(Map params) {
+
+        String query = "" +
+              " select stock.region_name,  \n" +
+                "stock.district_name geographic_zone_name,\n" +
+                "stock.facility_name,       \n" +
+                "to_char(stock.period_start_date, 'Mon YYYY')  period_name ," +
+                "stock.period_start_date::date period, \n" +
+                "extract( month from stock.period_start_date) month_number,\n" +
+                "extract( year from stock.period_start_date) year_number," +
+                "cov.target_population population,\n" +
+                "cov.vaccinated vaccinated,\n" +
+                "stock.used\n" +
+                "from (\n" +
+                "select    \n" +
+                "            facility_id,\n" +
+                "            period_start_date::date period_start_date,\n" +
+                "            sum(coalesce(denominator,0)) target_population,            \n" +
+                "            sum(coalesce(within_outside_total, 0)) vaccinated\n" +
+                "            from vw_vaccine_coverage   \n" +
+                "            inner join vw_districts vd on vd.district_id = geographic_zone_id  \n" +
+                writePredicate(params) +
+                "            group by 1,2) cov\n" +
+                "join (\n" +
+                "select      vd.region_name,\n" +
+                "            vd.district_id ,\n" +
+                "            vd.district_name ,\n" +
+                "            facility_id,\n" +
+                "            facility_name,            \n" +
+                "            period_start_date,\n" +
+                "            coalesce(usage_denominator,0)::numeric used \n" +
+                "            from vw_vaccine_stock_status  \n" +
+                "            inner join vw_districts vd on vd.district_id = geographic_zone_id \n" +
+                writePredicate(params) +
+                "            ) stock\n" +
+                "on cov.facility_id = stock.facility_id and cov.period_start_date::date =  stock.period_start_date::date\n" +
+                "order by 1,2,3,5\n";
+
+        return query;
+    }
+    public static String selectClassficationUtilizationPerformanceForDistrict(Map params) {
+
+        String query = " with temp as ( select " +
+                "stock.region_name,  \n" +
+                "stock.district_name geographic_zone_name,\n" +
+                "stock.facility_name,       \n" +
+                "to_char(stock.period_start_date, 'Mon YYYY')  period_name ," +
+                "stock.period_start_date::date period, \n" +
+                "extract( month from stock.period_start_date) month_number,\n" +
+                "extract( year from stock.period_start_date) year_number," +
+                "cov.target_population population,\n" +
+                "cov.vaccinated vaccinated,\n" +
+                "stock.used\n" +
+                "from (\n" +
+                "select    \n" +
+                "            facility_id,\n" +
+                "            period_start_date::date period_start_date,\n" +
+                "            sum(coalesce(denominator,0)) target_population,            \n" +
+                "            sum(coalesce(within_outside_total, 0)) vaccinated\n" +
+                "            from vw_vaccine_coverage   \n" +
+                "            inner join vw_districts vd on vd.district_id = geographic_zone_id  \n" +
+                writePredicate(params) +
+                "            group by 1,2) cov\n" +
+                "join (\n" +
+                "select      vd.region_name,\n" +
+                "            vd.district_id ,\n" +
+                "            vd.district_name ,\n" +
+                "            facility_id,\n" +
+                "            facility_name,            \n" +
+                "            period_start_date,\n" +
+                "            coalesce(usage_denominator,0)::numeric used \n" +
+                "            from vw_vaccine_stock_status  \n" +
+                "            inner join vw_districts vd on vd.district_id = geographic_zone_id \n" +
+                writePredicate(params) +
+                "            ) stock\n" +
+                "on cov.facility_id = stock.facility_id and cov.period_start_date::date =  stock.period_start_date::date)" +
+                " select " +
+                "region_name,  " +
+                "geographic_zone_name," +
+                "period_name ," +
+                "period, " +
+                "month_number," +
+                "year_number," +
+                " count(facility_name) facility_count,       " +
+                " sum(population) population," +
+                " sum(vaccinated) vaccinated," +
+                "sum(used) used" +
+                " from temp " +
+                "group by 1,2,3,4 ,5,6" +
+                "order by 1,2,4,5";
+
+        return query;
+    }
+    public static String selectClassficationUtilizationPerformanceForRegion(Map params) {
+
+        String query = " with temp as ( select " +
+                "stock.region_name,  \n" +
+                "stock.district_name geographic_zone_name,\n" +
+                "stock.facility_name,       \n" +
+                "to_char(stock.period_start_date, 'Mon YYYY')  period_name ," +
+                "stock.period_start_date::date period, " +
+                "extract( month from stock.period_start_date) month_number,\n" +
+                "extract( year from stock.period_start_date) year_number," +
+                "cov.target_population population,\n" +
+                "cov.vaccinated vaccinated,\n" +
+                "stock.used\n" +
+                "from (\n" +
+                "select    \n" +
+                "            facility_id,\n" +
+                "            period_start_date::date period_start_date,\n" +
+                "            sum(coalesce(denominator,0)) target_population,            \n" +
+                "            sum(coalesce(within_outside_total, 0)) vaccinated\n" +
+                "            from vw_vaccine_coverage   \n" +
+                "            inner join vw_districts vd on vd.district_id = geographic_zone_id  \n" +
+                writePredicate(params) +
+                "            group by 1,2) cov\n" +
+                "join (\n" +
+                "select      vd.region_name,\n" +
+                "            vd.district_id ,\n" +
+                "            vd.district_name ,\n" +
+                "            facility_id,\n" +
+                "            facility_name,            \n" +
+                "            period_start_date,\n" +
+                "            coalesce(usage_denominator,0)::numeric used \n" +
+                "            from vw_vaccine_stock_status  \n" +
+                "            inner join vw_districts vd on vd.district_id = geographic_zone_id \n" +
+                writePredicate(params) +
+                "            ) stock\n" +
+                "on cov.facility_id = stock.facility_id and cov.period_start_date::date =  stock.period_start_date::date)" +
+                " select " +
+                "region_name,  " +
+                "period_name ," +
+                "period," +
+                " month_number," +
+                "year_number, " +
+                "count(geographic_zone_name) district_count," +
+                " count(facility_name) facility_count,       " +
+                " sum(population) population," +
+                " sum(vaccinated) vaccinated," +
+                "sum(used) used" +
+                " from temp " +
+                "group by 1,2,3,4,5" +
+                "order by 1,3,4,5";
+
+        return query;
+    }
+    private static String writePredicate(Map params) {
+        Long zone = (Long) params.get("zoneId");
         Date startDate = (Date) params.get("startDate");
         Date endDate = (Date) params.get("endDate");
         Long productId = (Long) params.get("productId");
-
-
-        String sql = "" +
-                "with temp as (\n" +
-                "select\n" +
-                "geographic_zone_name,\n" +
-                "geographic_zone_id,\n" +
-                "period_name,\n" +
-                "period_start_date,\n" +
-                "facility_name,\n" +
-                "usage_denominator\n" +
-                "from\n" +
-                " vw_vaccine_class\n" +
-                " where\n" +
-                "product_id = "+productId+" \n" +
-                " and period_start_date >= '"+startDate+"' \n" +
-                " and period_start_date <= '"+endDate+"' \n" +
-                ") \n" +
-                " select \n" +
-                "  vd.region_name, \n" +
-                "  t.period_name, \n" +
-                "  period_start_date, \n" +
-                "  count(t.facility_name) facility_count, \n" +
-                "  \n" +
-                "    case when sum(t.usage_denominator) between 1 \n" +
-                "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
-                "    and 3999 then 'B' when sum(t.usage_denominator) between 4000 \n" +
-                "    and 4999 then 'C' else 'D' end\n" +
-                "  classification \n" +
-                " from \n" +
-                "  temp t \n" +
-                "  join vw_districts vd on t.geographic_zone_id = vd.district_id \n"
-                + writePredicate(zoneId) +
-                " group by \n" +
-                "  1, \n" +
-                "  2, \n" +
-                "  3 \n" +
-                "order by \n" +
-                "  vd.region_name, \n" +
-                "  period_start_date";
-
-
-
-        return sql;
-
-    }
-
-    public static String  selectClassificationVaccineForFacility(Map params) {
-
-        Long zoneId = (Long) params.get("zoneId");
-        Date startDate = (Date) params.get("startDate");
-        Date endDate = (Date) params.get("endDate");
-        Long productId = (Long) params.get("productId");
-
-
-        String sql = "" +
-                "with temp as (\n" +
-                "select\n" +
-                "geographic_zone_name,\n" +
-                "geographic_zone_id,\n" +
-                "period_name,\n" +
-                "period_start_date,\n" +
-                "facility_name,\n" +
-                "usage_denominator\n" +
-                "from\n" +
-                " vw_vaccine_class\n" +
-                " where\n" +
-                "product_id = "+productId+" \n" +
-                " and period_start_date >= '"+startDate+"' \n" +
-                " and period_start_date <= '"+endDate+"' \n" +
-                ") \n" +
-                " select \n" +
-                "  vd.region_name, \n" +
-                "  t.geographic_zone_name, \n" +
-                "  t.period_name, \n" +
-                "  period_start_date, \n" +
-                " t.facility_name  facility_name, \n" +
-                "  \n" +
-                "    case when sum(t.usage_denominator) between 1 \n" +
-                "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
-                "    and 3999 then 'B' when sum(t.usage_denominator) between 4000 \n" +
-                "    and 4999 then 'C' else 'D' end\n" +
-                "  classification \n" +
-                " from \n" +
-                "  temp t \n" +
-                "  join vw_districts vd on t.geographic_zone_id = vd.district_id \n"
-                + writePredicate(zoneId) +
-                " group by \n" +
-                "  1, \n" +
-                "  2, \n" +
-                "  3, \n" +
-                "  4 ," +
-                " 5\n" +
-                "order by \n" +
-                "  geographic_zone_name," +
-                " t.facility_name,\n" +
-                "  period_start_date";
-
-
-
-        return sql;
-
-    }
-
-
-    public static String  selectClassificationVaccineUtilizationPerformanceByZone(Map params) {
-
-        Long zoneId = (Long) params.get("zoneId");
-        Date startDate = (Date) params.get("startDate");
-        Date endDate = (Date) params.get("endDate");
-        Long productId = (Long) params.get("productId");
-
-
-        String sql = "" +
-                "with temp as (\n" +
-                "select\n" +
-                "geographic_zone_name,\n" +
-                "geographic_zone_id,\n" +
-                "period_name,\n" +
-                "period_start_date,\n" +
-                "facility_name,\n" +
-                "usage_denominator\n" +
-                "from\n" +
-                " vw_vaccine_class\n" +
-                " where\n" +
-                "product_id = "+productId+" \n" +
-                " and period_start_date >= '"+startDate+"' \n" +
-                " and period_start_date <= '"+endDate+"' \n" +
-                ") \n" +
-                " select \n" +
-                "  vd.region_name, \n" +
-                "  t.geographic_zone_name, \n" +
-                "  t.period_name, \n" +
-                "  period_start_date, \n" +
-                "  count(t.facility_name) facility_count, \n" +
-                "  \n" +
-                "    case when sum(t.usage_denominator) between 1 \n" +
-                "    and 1999 then 'A' when sum(t.usage_denominator) between 2000 \n" +
-                "    and 3999 then 'B' when sum(t.usage_denominator) between 4000 \n" +
-                "    and 4999 then 'C' else 'D' end\n" +
-                "  classification \n" +
-                " from \n" +
-                "  temp t \n" +
-                "  join vw_districts vd on t.geographic_zone_id = vd.district_id \n"
-                + writePredicate(zoneId) +
-                " group by \n" +
-                "  1, \n" +
-                "  2, \n" +
-                "  3, \n" +
-                "  4 \n" +
-                "order by \n" +
-                "  geographic_zone_name, \n" +
-                "  period_start_date";
-
-
-
-        return sql;
-
-    }
-
-
-
-
-    private static String writePredicate(Long zoneId) {
-
-        String predicate = "";
-        if (zoneId != 0 && zoneId != null) {
-
-            predicate = " where (vd.district_id = "+zoneId+" or vd.region_id = "+zoneId+" or vd.parent = "+zoneId+")";
-
-        }
+        String predicate = "            where product_id =" + productId   +
+                "            and period_start_date::date >= '" + startDate + "' and " +
+                "period_end_date <= '" + endDate +
+                "'           and extract(year from period_end_date) = extract(year from '" + startDate + "'::date)             \n" +
+                "            and (vd.parent = " + zone + " or vd.district_id = " + zone + " or vd.region_id = " + zone + "or 0=" + zone+" ) ";
         return predicate;
     }
+
 }
