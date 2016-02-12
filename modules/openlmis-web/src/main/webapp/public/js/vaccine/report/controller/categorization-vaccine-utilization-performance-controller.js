@@ -280,7 +280,7 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
 
         var coverageRate;
 
-        if(isBCGMr($scope.product)==true){
+        if(isBCGMr($scope.product)===true){
 
             coverageRate=dReport.total_bcg_1/(dReport.total_population*0.1);
         }else{
@@ -291,7 +291,7 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
     }
     function calculateDropOutRate(dReport){
         var dropOutRate;
-        if(isBCGMr( $scope.filter.product)==true){
+        if(isBCGMr( $scope.filter.product)===true){
             dropOutRate=((dReport.total_bcg_1-dReport.total_mr_1)/dReport.total_bcg_1)*100;
         }else{
             dropOutRate=((dReport.total_dtp_1-dReport.total_dtp_3)/dReport.total_dtp_1)*100;
