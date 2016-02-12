@@ -28,11 +28,12 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     defaultProduct,
                                     defaultPeriodTrend,
                                     defaultMonthlyPeriod,
-                                    SettingsByKey, messageService, $modal, repairingDetail,
+                                    SettingsByKey, messageService, $modal,
+                                    repairingDetail,
                                     reparingDetailList,
                                     reportingDetail,
                                     reportingDetailList,
-                                    InvestigatingDetails,
+                                   InvestigatingDetails,
                                     investigatingDetailList,
                                     ContactList
 ) {
@@ -49,8 +50,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.defaultMonthlyPeriod = defaultMonthlyPeriod;
     $scope.label = {zone: messageService.get('label.zone'), period: messageService.get('label.period')};
 
-
-//Instantiate Monthly Sessions charting options
     $scope.monthlySessions = {
         dataPoints: [],
         dataColumns: [{
@@ -718,7 +717,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
 
     VaccineDashboardSummary.get({}, function (data) {
-
         $scope.reportingPerformance = data.summary.reportingSummary;
 
         $scope.repairing = data.summary.repairing;
@@ -815,24 +813,27 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         };
     $scope.getBackGroundColor=function(_index) {
         var bgColor='';
-        alert(bgColor);
+
         if(_index%2===0){
             bgColor='red';
         }else if(value>10) {
             bgColor = 'white';
         }
-alert(bgColor);
+
         return bgColor;
     };
 
 }
     VaccineDashboardController.resolve = {
+
         dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey) {
+
             var deferred = $q.defer();
             var helps = {};
             $timeout(function () {
                 HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function (data) {
                     helps.coverageHelp = data.siteContent;
+
                 });
                 HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function (data) {
                     helps.wastageHelp = data.siteContent;
@@ -854,7 +855,9 @@ alert(bgColor);
             $timeout(function () {
 
                 SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_PRODUCT'}, function (data) {
+
                     if (isUndefined(data.settings) || isUndefined(data.settings.value)) {
+
                         deferred.resolve(0);
                     } else {
 
@@ -889,6 +892,7 @@ alert(bgColor);
         },
         defaultMonthlyPeriod: function ($q, $timeout, SettingsByKey) {
             var deferred = $q.defer();
+
             $timeout(function () {
 
                 SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_MONTHLY_PERIOD'}, function (data) {
@@ -911,10 +915,9 @@ alert(bgColor);
             $timeout(function () {
 
                 reportingDetail.get(function (data) {
-                    if (!isUndefined(data.reportingDetails)) {
 
                         deferred.resolve(data);
-                    }
+
 
                 });
 
@@ -928,10 +931,10 @@ alert(bgColor);
             $timeout(function () {
 
                 repairingDetail.get(function (data) {
-                    if (!isUndefined(data.repairingDetails)) {
+
 
                         deferred.resolve(data);
-                    }
+
 
                 });
 
@@ -945,10 +948,9 @@ alert(bgColor);
             $timeout(function () {
 
                 InvestigatingDetails.get(function (data) {
-                    if (!isUndefined(data.investigatingDetails)) {
 
                         deferred.resolve(data);
-                    }
+
 
                 });
 
