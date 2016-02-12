@@ -358,7 +358,7 @@ public class VaccineReportService {
         return list;
     }
 
-    public List<Product> getVaccineProductsList() {
+    public List<Map<String, Object>> getVaccineProductsList() {
         return this.repository.getVaccineProductsList();
     }
 
@@ -389,7 +389,41 @@ public class VaccineReportService {
 
 
             result.put("summaryPeriodLists", getPaddingSummaryPeriodList(startDate, endDate));
-            result.put("summaryAllPeriodLists", getPaddingSummaryPeriodList(startDate, endDate));
+
+        } catch (Exception ex) {
+            LOGGER.warn("Error Message: ", ex);
+        }
+        return result;
+    }
+
+    public Map<String, List<Map<String, Object>>> getCategorizationVaccineUtilizationPerformance(String periodStart, String periodEnd, Long zoneId, Long productId) {
+        Map<String, List<Map<String, Object>>> result = new HashMap<>();
+        boolean regionReport;
+        boolean facilityReport;
+        regionReport = zoneId == 0 ? true : false;
+        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) >0?true:false;
+        try {
+
+
+            Date startDate;
+            Date endDate;
+            Date yearStartDate;
+            startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
+            endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
+            yearStartDate=getStartOfTheYearDate(startDate);
+            if (regionReport) {
+                result.put("regionReport", repository.getCategorizationVaccineUtilizationPerformanceRegion(yearStartDate, endDate, zoneId, productId));
+
+            }
+            if (facilityReport) {
+                result.put("facilityReport", repository.getCategorizationVaccineUtilizationPerformanceFacility(yearStartDate, endDate, zoneId, productId));
+            } else {
+                result.put("zoneReport", repository.getCategorizationVaccineUtilizationPerformanceByZone(yearStartDate, endDate, zoneId, productId));
+            }
+
+
+            result.put("summaryPeriodLists", getPaddingSummaryPeriodList(startDate, endDate));
+
         } catch (Exception ex) {
             LOGGER.warn("Error Message: ", ex);
         }

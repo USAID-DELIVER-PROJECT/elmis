@@ -112,13 +112,23 @@ public class VaccineReportController extends BaseController {
     }
 
     @RequestMapping(value = "/classificationVaccineUtilizationPerformance", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> classificationVaccineUtilizationPerformance(@RequestParam(value = "periodStart", required = false) String periodStart,
+     public ResponseEntity<OpenLmisResponse> classificationVaccineUtilizationPerformance(@RequestParam(value = "periodStart", required = false) String periodStart,
+                                                                                         @RequestParam(value = "periodEnd", required = false) String periodEnd,
+                                                                                         @RequestParam("zone") Long zone,
+                                                                                         @RequestParam("product") Long product) {
+
+
+        return OpenLmisResponse.response("classificationVaccineUtilizationPerformance",
+                service.getClassificationVaccineUtilizationPerformance(periodStart, periodEnd, zone, product));
+    }
+    @RequestMapping(value = "/categorizationVaccineUtilizationPerformance", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> categorizationVaccineUtilizationPerformance(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                                                         @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                                                         @RequestParam("zone") Long zone,
                                                                                         @RequestParam("product") Long product) {
 
 
-        return OpenLmisResponse.response("classificationVaccineUtilizationPerformance",
-                service.getClassificationVaccineUtilizationPerformance(periodStart, periodEnd, zone, product));
+        return OpenLmisResponse.response("categorizationVaccineUtilizationPerformance",
+                service.getCategorizationVaccineUtilizationPerformance(periodStart, periodEnd, zone, product));
     }
 }
