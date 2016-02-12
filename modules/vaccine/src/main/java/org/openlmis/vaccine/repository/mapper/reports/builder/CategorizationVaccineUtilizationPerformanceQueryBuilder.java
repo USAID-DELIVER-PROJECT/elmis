@@ -108,11 +108,7 @@ public class CategorizationVaccineUtilizationPerformanceQueryBuilder {
                 "            sum(dtp_3) dtp_3 " +
                 "           from vw_vaccine_coverage   " +
                 "            inner join vw_districts vd on vd.district_id = geographic_zone_id  " +
-                "            where product_id = 2412 " +
-                "            and period_start_date::date >= '2015-01-01' and period_end_date <= '2015-12-31'" +
-                "            and extract(year from period_end_date) = (select extract(year from startdate)" +
-                "             from processing_periods where id = 47)             " +
-                "            and (vd.parent = 437 or vd.district_id = 437 or vd.region_id = 437 or vd.zone_id = 437 ) " +
+                writePredicate(params) +
                 "            group by 1,2,3,4,5,6,7,8)" +
                 "            select " +
                 "            region_name,                      " +
