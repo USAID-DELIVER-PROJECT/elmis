@@ -168,7 +168,7 @@
                             </tr>
                             <tbody>
                             <tr ng-repeat="dc in zoneSummary">
-                                <td style="background-color : {{dc.classColour}}">
+                                <td style="min-width: 315px; background-color : {{dc.classColour}}">
                                     {{dc.classDescription}} {{dc.classification}}
                                 </td>
 
@@ -214,14 +214,14 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="row in regionMainReport">
-                                <td>{{ row.report.region_name }}</td>
+                                <td style="min-width: 105px;">{{ row.report.region_name }}</td>
 
 
-                                <td
+                                <td style="min-width: 90px;"
 
 
                                         ng-bind=" row.report.facility_count"></td>
-                                <td
+                                <td style="min-width: 90px;"
 
 
                                         ng-bind=" row.report.population|number"></td>
@@ -264,7 +264,7 @@
                             </tr>
                             <tbody>
                             <tr ng-repeat="dc in regionSummary">
-                                <td style="background-color : {{dc.classColour}}">
+                                <td style="min-width: 305px; background-color : {{dc.classColour}}">
                                     {{dc.classDescription}} {{dc.classification}}
                                 </td>
 
