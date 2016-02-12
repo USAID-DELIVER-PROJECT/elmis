@@ -120,6 +120,11 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                     _childeren.push({
                         period_name: unformatedReportList[jj].period_name,
                         classification: unformatedReportList[jj].classification,
+                        total_population:unformatedReportList[jj].total_population,
+                        total_vaccinated:unformatedReportList[jj].total_vaccinated,
+                        vaccinated: unformatedReportList[jj].vaccinated,
+                        total_used:unformatedReportList[jj].total_used,
+                        used:unformatedReportList[jj].used,
                         hide: unformatedReportList[jj].hide
                     });
                     parentReport[ii].period_class = _childeren;
@@ -143,6 +148,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
         var totalDistricts = 0;
         var totalFacilities = 0;
+        var totalPopulation=0;
         var districts = _.pluck($scope.zonereport, 'geographic_zone_name'),
             facilities = _.pluck($scope.zonereport, 'facility_count');
         console.log("facility count");
@@ -150,18 +156,20 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         totalDistricts = _.uniq(districts).length;
         _.each($scope.zoneMainReport, function (facility) {
             totalFacilities += facility.report.facility_count;
+            totalPopulation+=facility.report.population;
         });
         $scope.totalDistricts = totalDistricts;
         $scope.totalFacilities = totalFacilities;
+        $scope.totalPopulation=totalPopulation;
     }
 
 
     function getDistrictSummeryReportData(unformattedReport) {
         var vaccineUtilClasses = [
-            {class: 'A', displayName: 'Class A', description: 'Good Access & Good Utilisation', classColour: '#52C552'},
-            {class: 'B', displayName: 'Class B', description: 'Good Access & Poor Utilisation', classColour: '#dce6f1'},
-            {class: 'C', displayName: 'Class C', description: 'Poor Access & Good Utilisation', classColour: '#E4E44A'},
-            {class: 'D', displayName: 'Class D', description: 'Poor Access & Poor Utilisation', classColour: '#ff0000'}
+            {class: 'A', displayName: 'Class_A', description: 'Good Access & Good Utilisation', classColour: '#52C552'},
+            {class: 'B', displayName: 'Class_B', description: 'Good Access & Poor Utilisation', classColour: '#dce6f1'},
+            {class: 'C', displayName: 'Class_C', description: 'Poor Access & Good Utilisation', classColour: '#E4E44A'},
+            {class: 'D', displayName: 'Class_D', description: 'Poor Access & Poor Utilisation', classColour: '#ff0000'}
 
         ], arr = [], tempArr = [], classCount = 0,hideInfo=[];
 
@@ -234,7 +242,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                     total_used = unformattedReport[i].used;
                 }
                 usage_rate = total_vaccinated / total_used * 100;
-                coverage_rate = total_vaccinated / (total_population * target * 0.01);
+                coverage_rate = total_vaccinated / (total_population * target * 0.1);
                 wastage_rate = 100 - usage_rate;
                 unformattedReport[i].total_population = total_population;
                 unformattedReport[i].total_vaccinated = total_vaccinated;
@@ -272,7 +280,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         } else if (coverage >= minCoverage && wastage > minWastage) {
             classfication = "B";
         } else {
-            classfication = "A";
+            classfication = "D";
         }
         return classfication;
     }
