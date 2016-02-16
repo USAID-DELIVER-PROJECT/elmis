@@ -1499,4 +1499,66 @@ app.directive('rangePagination',['SettingsByKey', function(SettingsByKey){
 }]);
 
 
+app.directive('productWithoutDescriptionFilter', ['ReportProductsByProgramWithoutDescriptions', 'messageService', '$routeParams',
+    function (ReportProductsByProgramWithoutDescriptions, messageService, $routeParams) {
 
+        var onPgCascadedVarsChanged = function ($scope, attr) {
+            if (isUndefined($scope.filter.program) || $scope.filter.program === 0)
+                return;
+
+            var program = (angular.isDefined($scope.filter.program)) ? $scope.filter.program : 0;
+
+            ReportProductsByProgramWithoutDescriptions.get({
+                programId: program
+            }, function (data) {
+                $scope.products = data.productList;
+                if (!attr.required) {
+                    $scope.products.unshift({
+                        'name': messageService.get('report.filter.select.indicator.product'),
+                        id: -1
+                    });
+                    $scope.products.unshift({
+                        'name': messageService.get('report.filter.all.products'),
+                        id: 0
+                    });
+                }
+
+            });
+
+        };
+
+        return {
+            restrict: 'E',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('product', attr);
+                if (!$routeParams.product && !attr.required) {
+                    scope.products = [{
+                        'name': messageService.get('report.filter.all.products'),
+                        id: 0
+                    }];
+                }
+
+                // this is what filters products based on product categories selected.
+                scope.productCFilter = function (option) {
+                    var show = (
+                        _.isEmpty(scope.filter.productCategory) ||
+                        _.isUndefined(scope.filter.productCategory) ||
+                        parseInt(scope.filter.productCategory, 10) === 0 ||
+                        option.categoryId == scope.filter.productCategory ||
+                        option.id === -1 ||
+                        option.id === 0
+                    );
+                    return show;
+                };
+
+                var onFiltersChanged = function () {
+                    onPgCascadedVarsChanged(scope, attr);
+                };
+                scope.subscribeOnChanged('product', 'product-category', onFiltersChanged, false);
+                scope.subscribeOnChanged('product', 'program', onFiltersChanged, true);
+            },
+            templateUrl: 'filter-product-without-description-template'
+        };
+
+    }
+]);

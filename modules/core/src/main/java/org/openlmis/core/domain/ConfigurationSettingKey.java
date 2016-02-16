@@ -25,8 +25,14 @@ public class ConfigurationSettingKey {
   public static final String EMAIL_SUBJECT_APPROVAL = "EMAIL_SUBJECT_APPROVAL";
   public static final String EMAIL_TEMPLATE_APPROVAL = "EMAIL_TEMPLATE_APPROVAL";
   public static final String RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR = "RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR";
+  public static final String EMAIL_TEMPLATE_FOR_IVD_FORM_SUBMISSION = "EMAIL_TEMPLATE_FOR_IVD_FORM_SUBMISSION";
+  public static final String EMAIL_TEMPLATE_FOR_IVD_FORM_APPROVED = "EMAIL_TEMPLATE_FOR_IVD_FORM_APPROVED";
+  public static final String EMAIL_TEMPLATE_FOR_IVD_FORM_REJECTION = "EMAIL_TEMPLATE_FOR_IVD_FORM_REJECTION";
+  public static final String EMAIL_SUBJECT_IVD_FORM_SUBMISSION = "EMAIL_SUBJECT_IVD_FORM_SUBMISSION";
+  public static final String EMAIL_SUBJECT_IVD_FORM_APPROVAL = "EMAIL_SUBJECT_IVD_FORM_APPROVAL";
+  public static final String EMAIL_SUBJECT_IVD_FORM_REJECTION = "EMAIL_SUBJECT_IVD_FORM_REJECTION";
 
-  private ConfigurationSettingKey(){
+    private ConfigurationSettingKey(){
 
   }
 }

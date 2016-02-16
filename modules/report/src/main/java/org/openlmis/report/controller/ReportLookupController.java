@@ -563,4 +563,9 @@ public class ReportLookupController extends BaseController {
     return OpenLmisResponse.response(VACCINE_CUSTOM_PERIODS, customerPeriodDates);
   }
 
+  @RequestMapping(value = "/program-products-with-no-descriptions/{programId}.json", method = GET, headers = BaseController.ACCEPT_JSON)
+  public List<Product> getProgramProductsWithoutDescriptions(@PathVariable("programId") Long programId) {
+    return this.reportLookupService.getProductsActiveUnderProgramWithoutDescriptions(programId);
+  }
+
 }

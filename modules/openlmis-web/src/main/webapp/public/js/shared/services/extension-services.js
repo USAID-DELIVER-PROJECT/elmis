@@ -1269,6 +1269,11 @@ services.factory('StockLedgerReport',function($resource){
 });
 
 
+services.factory('ReportProductsByProgramWithoutDescriptions',function($resource){
+    return $resource('/reports/program-products-with-no-descriptions/:programId.json',{},{});
+});
+
+
 
 /*
 services.factory('VaccineStockStatusReport', function ($resource) {

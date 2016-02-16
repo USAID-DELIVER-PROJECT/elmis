@@ -122,4 +122,30 @@ public interface ProductReportMapper {
     List<Product> getRmnchProducts();
 
 
+
+    @Select("SELECT p.id, p.primaryname as name, p.code, pp.productcategoryid as categoryid, " +
+            "CASE WHEN p.tracer = true THEN 'Indicator Product' ELSE 'Regular' END tracer" +
+            " " +
+            "   FROM " +
+            "       products as p " +
+            "             join product_forms as form on form.id = p.formid " +
+            "             join dosage_units as du on du.id = p.dosageunitid" +
+            "         join program_products pp on p.id = pp.productId " +
+            "     where pp.programId = #{programId} and pp.active = true " +
+            " order by name "
+    )
+    List<Product> getProductsForProgramPickCategoryFromProgramProductWDescriptions(Long programId);
+
+    @Select("SELECT p.id, p.primaryname as name, p.code, pp.productcategoryid categoryid, " +
+            "CASE WHEN p.tracer = true THEN 'Indicator Product' ELSE 'Regular' END tracer" +
+            " " +
+            "   FROM " +
+            "       products as p " +
+            "             join product_forms as form on form.id = p.formid " +
+            "             join dosage_units as du on du.id = p.dosageunitid" +
+            "         join program_products pp on p.id = pp.productId " +
+            "     where pp.programId = #{programId} and pp.active = true " +
+            " order by name "
+    )
+    List<Product> getProductsForProgramWithoutDescriptions(Long programId);
 }
