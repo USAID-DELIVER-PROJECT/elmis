@@ -485,6 +485,9 @@ services.factory('GetFacilityForVaccineOrderRequisition',function($resource){
 services.factory('ClassificationVaccineUtilizationPerformance', function ($resource) {
     return $resource('/vaccine/report/classificationVaccineUtilizationPerformance.json', {}, {});
 });
+services.factory('CategorizationVaccineUtilizationPerformance', function ($resource) {
+    return $resource('/vaccine/report/categorizationVaccineUtilizationPerformance.json', {}, {});
+});
 
 services.factory('QuantityRequired',function($resource){
      return $resource('/rest-api/ivd/facility-stock-status',{facilityCode:'@facilityCode',programCode:'@programCode',periodId:'@periodId'},{});

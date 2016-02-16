@@ -170,18 +170,30 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
     public List<Map<String,Object>> getAdequacyLevelOfSupplyByRegion(Date startDate, Date endDate, Long districtId, Long productId) {
         return mapper.getAdequacyLevelOfSupplyReportDataByRegion(startDate, endDate, districtId, productId);
     }
- public List<Product> getVaccineProductsList(){
+ public List<Map<String, Object>> getVaccineProductsList(){
     return this.mapper.getVaccineProductsList();
   }
 
   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceFacility(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassificationVaccineUtilizationPerformanceForFacility(startDate, endDate, zoneId, productId);
+    return mapper.getClassificationVaccineUtilizationPerformanceForFacility1(startDate, endDate, zoneId, productId);
   }
   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassificationVaccineUtilizationPerformanceByZone(startDate, endDate, zoneId, productId);
+   
+    return mapper.getClassificationVaccineUtilizationPerformanceForDistrict1(startDate, endDate, zoneId, productId);
   }
   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceRegion(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassificationVaccineUtilizationPerformanceForRegion(startDate, endDate, zoneId, productId);
+    return mapper.getClassificationVaccineUtilizationPerformanceForRegion1(startDate, endDate, zoneId, productId);
+  }
+
+  public List<Map<String,Object>> getCategorizationVaccineUtilizationPerformanceFacility(Date startDate, Date endDate, Long zoneId, Long productId) {
+    return mapper.getCategorizationVaccineUtilizationPerformanceForFacility(startDate, endDate, zoneId, productId);
+  }
+  public List<Map<String,Object>> getCategorizationVaccineUtilizationPerformanceByZone(Date startDate, Date endDate, Long zoneId, Long productId) {
+
+    return mapper.getCategorizationVaccineUtilizationPerformanceForDistrict(startDate, endDate, zoneId, productId);
+  }
+  public List<Map<String,Object>> getCategorizationVaccineUtilizationPerformanceRegion(Date startDate, Date endDate, Long zoneId, Long productId) {
+    return mapper.getCategorizationVaccineUtilizationPerformanceForRegion(startDate, endDate, zoneId, productId);
   }
 
 }
