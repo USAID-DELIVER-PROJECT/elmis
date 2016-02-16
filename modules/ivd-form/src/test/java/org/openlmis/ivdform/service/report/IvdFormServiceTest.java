@@ -100,6 +100,9 @@ public class IvdFormServiceTest {
   @Mock
   AnnualFacilityDemographicEstimateService annualFacilityDemographicEstimateService;
 
+  @Mock
+  IVDNotificationService ivdNotificationService;
+
   @InjectMocks
   IvdFormService service;
 
