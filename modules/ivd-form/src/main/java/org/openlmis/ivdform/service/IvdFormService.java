@@ -220,7 +220,7 @@ public class IvdFormService {
     return results;
   }
 
-  private ReportStatusDTO createReportStatusDto(Long facilityId, Long programId, VaccineReport report) {
+  private static ReportStatusDTO createReportStatusDto(Long facilityId, Long programId, VaccineReport report) {
     ReportStatusDTO reportStatusDTO = new ReportStatusDTO();
     reportStatusDTO.setPeriodName(report.getPeriod().getName());
     reportStatusDTO.setPeriodId(report.getPeriod().getId());
@@ -262,7 +262,7 @@ public class IvdFormService {
     reportStatusChangeRepository.insert(change);
   }
 
-  public FacilityIvdSummary getStockInfoFor(String facilityCode, String programCode, Long periodId) {
+  public FacilityIvdSummary getStockStatusForAllProductsInFacility(String facilityCode, String programCode, Long periodId) {
     FacilityIvdSummary summary = new FacilityIvdSummary(facilityCode, programCode, periodId);
     List<LogisticsLineItem> list = logisticsLineItemRepository.getApprovedLineItemListFor(programCode, facilityCode, periodId);
     if (!emptyIfNull(list).isEmpty()) {
@@ -283,8 +283,8 @@ public class IvdFormService {
     return summary;
   }
 
-  public StockStatusSummary getStockInfoFor(String facilityCode, String productCode, String programCode, Long periodId) {
-    LogisticsLineItem periodicLLI = logisticsLineItemRepository.getApprovedLineItemsFor(programCode, productCode, facilityCode, periodId);
+  public StockStatusSummary getStockStatusForProductInFacility(String facilityCode, String productCode, String programCode, Long periodId) {
+    LogisticsLineItem periodicLLI = logisticsLineItemRepository.getApprovedLineItemFor(programCode, productCode, facilityCode, periodId);
     return populateStockStatusSummary(facilityCode, productCode, programCode, periodId, periodicLLI);
   }
 
@@ -298,7 +298,7 @@ public class IvdFormService {
       response.setProductId(periodicLLI.getProductId());
       response.setStatus(STOCK_STATUS_FOUND);
 
-      List<LogisticsLineItem> previousThreeSubmissions = logisticsLineItemRepository.getPreviousPeriodLineItemsFor(programCode, productCode, facilityCode, periodId);
+      List<LogisticsLineItem> previousThreeSubmissions = logisticsLineItemRepository.getUpTo3PreviousPeriodLineItemsFor(programCode, productCode, facilityCode, periodId);
       response.setAmc(calculateAMC(previousThreeSubmissions));
     } else {
       response.setStatus(STOCK_STATUS_NOT_FOUND);

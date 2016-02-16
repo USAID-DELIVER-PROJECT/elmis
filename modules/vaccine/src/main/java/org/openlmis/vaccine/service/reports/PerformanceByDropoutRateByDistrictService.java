@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
 @Component
 public class PerformanceByDropoutRateByDistrictService {
     @Autowired
@@ -44,15 +45,15 @@ public class PerformanceByDropoutRateByDistrictService {
         boolean isFailityReport;
         boolean isRegionReport;
         PerformanceByDisrictReport performanceByDisrictReport;
-        Map<String, List<PerformanceByDropoutRateByDistrict>> stringPerformanceByDropoutRateByDistrictMap ;
+        Map<String, List<PerformanceByDropoutRateByDistrict>> stringPerformanceByDropoutRateByDistrictMap;
         Map<String, List<PerformanceByDropoutRateByDistrict>> stringPerformanceByDropoutRateByRegionMap = null;
-        Map<String, Map<Date, Long>> columnRangeValues ;
+        Map<String, Map<Date, Long>> columnRangeValues;
         Map<String, Map<Date, Long>> regionColumnRangeValues;
-        List<Date> columnNames ;
+        List<Date> columnNames;
         List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList;
         List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByRegionList = null;
 
-        PerformanceByDropoutRateParam filterParam ;
+        PerformanceByDropoutRateParam filterParam;
         filterParam = prepareParam(filterCriteria);
         isRegionReport = filterParam.getGeographic_zone_id() == 0 ? true : false;
 
@@ -104,7 +105,7 @@ public class PerformanceByDropoutRateByDistrictService {
             try {
                 columngName = dateFormat.parse(dateFormat.format(dateString));
             } catch (ParseException e) {
-                LOGGER.warn(" error while preparing:",e);
+                LOGGER.warn(" error while preparing:", e);
             }
             float value = performanceByDropoutRateByDistrict.getBcg_mr_dropout();
 
@@ -136,7 +137,6 @@ public class PerformanceByDropoutRateByDistrictService {
         Map<String, List<PerformanceByDropoutRateByDistrict>> stringPerformanceByDropoutRateByDistrictMap = new HashMap<>();
 
         for (PerformanceByDropoutRateByDistrict performanceByDropoutRateByDistrict : performanceByDropoutRateByDistrictList) {
-
 
 
             String districtName = performanceByDropoutRateByDistrict.getRegion_name();
@@ -180,7 +180,6 @@ public class PerformanceByDropoutRateByDistrictService {
         performanceByDisrictReport.setTotal_bcg_mr_dropout(total_bcg_mr_dropout);
         return performanceByDisrictReport;
     }
-
 
 
     public Map<String, Map<Date, Long>> intializeColRangeValues(List<Date> columnNameList) {
@@ -280,11 +279,11 @@ public class PerformanceByDropoutRateByDistrictService {
         PerformanceByDropoutRateParam filterParam = null;
         if (filterCriteria != null) {
             filterParam = new PerformanceByDropoutRateParam();
-            filterParam.setFacility_id(filterCriteria.get("facility")==null ||filterCriteria.get("facility").length<=0||StringUtils.isBlank(filterCriteria.get("facility")[0]) ? 0 : Long.parseLong(filterCriteria.get("facility")[0])); //defaults to 0
+            filterParam.setFacility_id(filterCriteria.get("facility") == null || filterCriteria.get("facility").length <= 0 || StringUtils.isBlank(filterCriteria.get("facility")[0]) ? 0 : Long.parseLong(filterCriteria.get("facility")[0])); //defaults to 0
             filterParam.setGeographic_zone_id(filterCriteria.get("geographicZoneId") == null || StringUtils.isBlank(filterCriteria.get("geographicZoneId")[0]) ? 0 : Long.parseLong(filterCriteria.get("geographicZoneId")[0]));
             filterParam.setPeriod_end_date(StringUtils.isBlank(filterCriteria.get("periodEnd")[0]) ? null : filterCriteria.get("periodEnd")[0]);
             filterParam.setPeriod_start_date(StringUtils.isBlank(filterCriteria.get("periodStart")[0]) ? null : filterCriteria.get("periodStart")[0]);
-            filterParam.setProduct_id(filterCriteria.get("productId")==null || StringUtils.isBlank(filterCriteria.get("productId")[0]) ? 0 : Long.parseLong(filterCriteria.get("productId")[0]));
+            filterParam.setProduct_id(filterCriteria.get("productId") == null || StringUtils.isBlank(filterCriteria.get("productId")[0]) ? 0 : Long.parseLong(filterCriteria.get("productId")[0]));
         }
         return filterParam;
 
@@ -292,22 +291,24 @@ public class PerformanceByDropoutRateByDistrictService {
 
     public List<DropoutProduct> loadDropoutProductList() {
 
-        return  this.repository.loadDropoutProductList();
+        return this.repository.loadDropoutProductList();
 
     }
+
     private static void order(List<PerformanceByDropoutRange> performanceByDropoutRangeList) {
 
-        Collections.sort(performanceByDropoutRangeList, new Comparator() {
+        Collections.sort(performanceByDropoutRangeList, new Comparator<PerformanceByDropoutRange>() {
             @Override
-            public int compare(Object o1, Object o2) {
+            public int compare(PerformanceByDropoutRange o1, PerformanceByDropoutRange o2) {
 
-                String x1 = ((PerformanceByDropoutRange) o1).getRangeName();
-                String x2 = ((PerformanceByDropoutRange) o2).getRangeName();
 
-                return x1.compareTo(x2);
-            }
+            String x1 = ((PerformanceByDropoutRange) o1).getRangeName();
+            String x2 = ((PerformanceByDropoutRange) o2).getRangeName();
 
-        });
+            return x1.compareTo(x2);
+        }});
+
     }
+
 
 }

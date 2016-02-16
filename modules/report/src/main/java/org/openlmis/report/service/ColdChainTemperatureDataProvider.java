@@ -15,7 +15,7 @@ package org.openlmis.report.service;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.mapper.ColdChainTemperaturesReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.ColdChainTemperatureReportParam;
 import org.openlmis.report.util.SelectedFilterHelper;
 import org.openlmis.report.util.StringHelper;
@@ -33,17 +33,9 @@ public class ColdChainTemperatureDataProvider extends ReportDataProvider {
     @Autowired
     private ColdChainTemperaturesReportMapper reportMapper;
 
-    @Autowired
-    private SelectedFilterHelper filterHelper;
-
-    @Override
-    protected List<? extends ReportData> getResultSet(Map<String, String[]> params) {
-        return getReportBody(params, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-    }
-
     @Override
     @Transactional
-    public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return reportMapper.getReportData(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
     }
@@ -59,32 +51,32 @@ public class ColdChainTemperatureDataProvider extends ReportDataProvider {
     }
 
     @Transactional
-    public List<? extends ReportData> getMainReportMinMaxAggregate(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getMainReportMinMaxAggregate(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return reportMapper.getMainReportMinMaxAggregate(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
     }
 
     @Transactional
-    public List<? extends ReportData> getMainReportAggregateMinMaxTempRecorded(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getMainReportAggregateMinMaxTempRecorded(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return reportMapper.getMainReportAggregateMinMaxTempRecorded(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
     }
 
     @Transactional
-    public List<? extends ReportData> getMainReportAggregateTotal(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getMainReportAggregateTotal(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return reportMapper.getMainReportAggregateTotal(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
     }
 
 
     @Transactional
-    public List<? extends ReportData> getSubReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getSubReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return reportMapper.getSubReportData(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
     }
 
     @Transactional
-    public List<? extends ReportData> getSubReportData(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getSubReportData(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return reportMapper.getSubReportData(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
     }

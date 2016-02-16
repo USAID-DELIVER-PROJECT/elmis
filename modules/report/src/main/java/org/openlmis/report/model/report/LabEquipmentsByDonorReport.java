@@ -15,14 +15,14 @@ package org.openlmis.report.model.report;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import javax.persistence.Column;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LabEquipmentsByDonorReport implements ReportData {
+public class LabEquipmentsByDonorReport implements ResultRow {
 
     @Column(name = "facilityname")
     private String facilityname;

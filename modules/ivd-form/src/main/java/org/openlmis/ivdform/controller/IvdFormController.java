@@ -93,7 +93,7 @@ public class IvdFormController extends BaseController {
 
   @RequestMapping(value = "approval-pending")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
-  public ResponseEntity<OpenLmisResponse> pendingForApproval(@RequestParam("program") Long programId, HttpServletRequest request){
+  public ResponseEntity<OpenLmisResponse> getPendingFormsForApproval(@RequestParam("program") Long programId, HttpServletRequest request){
     return OpenLmisResponse.response(PENDING_SUBMISSIONS, service.getApprovalPendingForms(this.loggedInUserId(request), programId));
   }
 

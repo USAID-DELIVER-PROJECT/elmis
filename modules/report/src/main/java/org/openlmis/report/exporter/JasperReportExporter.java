@@ -16,9 +16,10 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.*;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.service.MessageService;
 import org.openlmis.report.ReportOutputOption;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,59 +37,44 @@ import java.util.*;
 @Component
 public class JasperReportExporter implements ReportExporter {
 
+    private static final String OPENLMIS_REPORT_PDF = "openlmisReport.pdf";
+    private static final String CONTENT_DISPOSITION = "Content-Disposition";
+    private static final String INLINE_FILENAME = "inline; filename=";
     @Autowired
     private MessageService messageService;
 
 
     @Override
-    public ByteArrayOutputStream exportReportBytesStream(InputStream reportInputStream, Map<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption) {
+    public ByteArrayOutputStream exportReportBytesStream(InputStream reportInputStream, Map<String, Object> reportExtraParams, List<? extends ResultRow> reportData, ReportOutputOption outputOption) {
 
         try{
-
-            JasperPrint jasperPrint = getJasperPrintResult(reportExtraParams, reportInputStream, outputOption, reportData);
-
+            JasperPrint jasperPrint = getJasperPrint(reportExtraParams, reportInputStream, outputOption, reportData);
             String reportOutputFileName = reportExtraParams != null ? ((String) reportExtraParams.get(Constants.REPORT_NAME)) : "";
-
-            //Jasper export handler
             return export(outputOption, reportOutputFileName, jasperPrint);
-
         } catch (JRException e) {
-
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
-
-        return null;
     }
 
     @Override
-    public void exportReport(InputStream reportInputStream, Map<String, Object> reportExtraParams, List<? extends ReportData> reportData, ReportOutputOption outputOption, HttpServletResponse response) {
+    public void exportReport(InputStream reportInputStream, Map<String, Object> reportExtraParams, List<? extends ResultRow> reportData, ReportOutputOption outputOption, HttpServletResponse response) {
 
         try{
 
-            JasperPrint jasperPrint = getJasperPrintResult(reportExtraParams, reportInputStream, outputOption, reportData);
-
+            JasperPrint jasperPrint = getJasperPrint(reportExtraParams, reportInputStream, outputOption, reportData);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
             String reportOutputFileName = reportExtraParams != null ? ((String) reportExtraParams.get(Constants.REPORT_NAME)) : "";
-
-            //Jasper export handler
             export(outputOption, reportOutputFileName, jasperPrint, response, byteArrayOutputStream);
-
-            //Write to servlet output stream
             writeToServletOutputStream(response, byteArrayOutputStream);
-
         } catch (JRException e) {
-
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    private JasperPrint getJasperPrintResult(Map<String, Object> reportExtraParams, InputStream reportInputStream, ReportOutputOption outputOption,
-                                             List<? extends ReportData> reportData) throws JRException {
+    private JasperPrint getJasperPrint(Map<String, Object> reportExtraParams, InputStream reportInputStream, ReportOutputOption outputOption,
+                                       List<? extends ResultRow> reportData) throws JRException {
 
         JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportInputStream);
-
-        //removes pagination in exel output. It allows to remove repeating column header
         if(reportExtraParams != null && (outputOption != null && !outputOption.equals(ReportOutputOption.PDF))){
             reportExtraParams.put(JRParameter.IS_IGNORE_PAGINATION, Boolean.TRUE);
         }
@@ -104,14 +90,10 @@ public class JasperReportExporter implements ReportExporter {
         JasperPrint jasperPrint = null;
 
         //Check for empty report data. Fill empty datasource when there is no data to fill
-        if(reportData.size() == 0){
-
+        if(CollectionUtils.isEmpty(reportData)){
             jasperPrint = JasperFillManager.fillReport(jasperReport, reportExtraParams , new JREmptyDataSource());
-
         } else{
-
             jasperPrint =  JasperFillManager.fillReport(jasperReport, reportExtraParams , new JRBeanCollectionDataSource(reportData,false));
-
         }
 
         return jasperPrint;
@@ -134,10 +116,7 @@ public class JasperReportExporter implements ReportExporter {
                 return exportXls(jasperPrint, outputFileName, response, byteArrayOutputStream);
             case CSV:
                 return exportCsv(jasperPrint, outputFileName, response, byteArrayOutputStream);
-            case HTML:
-                return exportHtml(jasperPrint, outputFileName, response, byteArrayOutputStream);
         }
-
         return response;
     }
 
@@ -152,9 +131,9 @@ public class JasperReportExporter implements ReportExporter {
         switch (outputOption){
 
             case PDF:
-                return exportPdfByteArrayOutputStream(jasperPrint, outputFileName);
+                return exportPdfByteArrayOutputStream(jasperPrint);
             case XLS:
-                return exportXlsByteArrayOutputStream(jasperPrint, outputFileName);
+                return exportXlsByteArrayOutputStream(jasperPrint);
             case CSV:
                 return exportCsvByteArrayOutputStream(jasperPrint, outputFileName);
             case HTML:
@@ -216,7 +195,7 @@ public class JasperReportExporter implements ReportExporter {
         }
     }
 
-    private ByteArrayOutputStream exportXlsByteArrayOutputStream(JasperPrint jasperPrint, String outputFileName) {
+    private static ByteArrayOutputStream exportXlsByteArrayOutputStream(JasperPrint jasperPrint) {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -234,17 +213,14 @@ public class JasperReportExporter implements ReportExporter {
 
 
         try {
-
             exporter.exportReport();
-
             return byteArrayOutputStream;
-
         } catch (JRException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private ByteArrayOutputStream exportPdfByteArrayOutputStream(JasperPrint jasperPrint, String outputFileName) {
+    private static ByteArrayOutputStream exportPdfByteArrayOutputStream(JasperPrint jasperPrint) {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -271,7 +247,7 @@ public class JasperReportExporter implements ReportExporter {
      * @param byteArrayOutputStream
      * @return
      */
-    private HttpServletResponse exportPdf(JasperPrint jasperPrint, String outputFileName, HttpServletResponse response, ByteArrayOutputStream byteArrayOutputStream){
+    private static HttpServletResponse exportPdf(JasperPrint jasperPrint, String outputFileName, HttpServletResponse response, ByteArrayOutputStream byteArrayOutputStream){
 
         JRPdfExporter exporter = new JRPdfExporter();
 
@@ -285,31 +261,10 @@ public class JasperReportExporter implements ReportExporter {
             throw new RuntimeException(e);
         }
 
-        String fileName = outputFileName.isEmpty()? "openlmisReport.pdf" : outputFileName+".pdf";
-        response.setHeader("Content-Disposition", "inline; filename="+ fileName);
+        String fileName = outputFileName.isEmpty()? OPENLMIS_REPORT_PDF : outputFileName + ".pdf";
+        response.setHeader(CONTENT_DISPOSITION, INLINE_FILENAME + fileName);
 
         response.setContentType(Constants.MEDIA_TYPE_PDF);
-        response.setContentLength(byteArrayOutputStream.size());
-
-        return response;
-    }
-
-    private HttpServletResponse exportHtml(JasperPrint jasperPrint, String outputFileName, HttpServletResponse response, ByteArrayOutputStream byteArrayOutputStream){
-
-        JRHtmlExporter exporter = new JRHtmlExporter();
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, byteArrayOutputStream);
-        exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN, Boolean.FALSE);
-        exporter.setParameter(JRHtmlExporterParameter.ZOOM_RATIO, 1.5F);
-
-        try {
-            exporter.exportReport();
-
-        } catch (JRException e) {
-            throw new RuntimeException(e);
-        }
-
-        response.setContentType(Constants.MEDIA_TYPE_HTML);
         response.setContentLength(byteArrayOutputStream.size());
 
         return response;
@@ -346,7 +301,7 @@ public class JasperReportExporter implements ReportExporter {
         }
 
         String fileName = outputFileName.isEmpty()? "openlmisReport.xls" : outputFileName+".xls";
-        response.setHeader("Content-Disposition", "inline; filename=" + fileName);
+        response.setHeader(CONTENT_DISPOSITION, INLINE_FILENAME + fileName);
 
         response.setContentType(Constants.MEDIA_TYPE_EXCEL);
         response.setContentLength(byteArrayOutputStream.size());
@@ -383,7 +338,7 @@ public class JasperReportExporter implements ReportExporter {
         }
 
         String fileName = outputFileName.isEmpty()? "openlmisReport.csv" : outputFileName+".csv";
-        response.setHeader("Content-Disposition", "inline; filename=" + fileName);
+        response.setHeader(CONTENT_DISPOSITION, INLINE_FILENAME + fileName);
 
         response.setContentType(Constants.MEDIA_TYPE_EXCEL);
         response.setContentLength(byteArrayOutputStream.size());
@@ -396,17 +351,13 @@ public class JasperReportExporter implements ReportExporter {
      * @param response
      * @param byteArrayOutputStream
      */
-    private void writeToServletOutputStream(HttpServletResponse response, ByteArrayOutputStream byteArrayOutputStream) {
+    private static void writeToServletOutputStream(HttpServletResponse response, ByteArrayOutputStream byteArrayOutputStream) {
         ServletOutputStream outputStream = null;
         try {
-
             outputStream = response.getOutputStream();
-
             byteArrayOutputStream.writeTo(outputStream);
-
         }catch (Exception e) {
             throw new RuntimeException(e);
-
         }finally {
             if(outputStream != null){
                 try {

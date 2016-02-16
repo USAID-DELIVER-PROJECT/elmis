@@ -33,12 +33,12 @@ public class LogisticsLineItemRepository {
     mapper.update(item);
   }
 
-  public LogisticsLineItem getApprovedLineItemsFor(String programCode, String productCode, String facilityCode, Long periodId){
-    return mapper.getApprovedLineItemsFor(programCode, productCode,facilityCode, periodId);
+  public LogisticsLineItem getApprovedLineItemFor(String programCode, String productCode, String facilityCode, Long periodId){
+    return mapper.getApprovedLineItemFor(programCode, productCode,facilityCode, periodId);
   }
 
-  public List<LogisticsLineItem> getPreviousPeriodLineItemsFor(String programCode, String productCode, String facilityCode, Long periodId){
-    return mapper.getPreviousPeriodLineItemsFor(programCode, productCode,facilityCode, periodId);
+  public List<LogisticsLineItem> getUpTo3PreviousPeriodLineItemsFor(String programCode, String productCode, String facilityCode, Long periodId){
+    return mapper.getUpTo3PreviousPeriodLineItemsFor(programCode, productCode,facilityCode, periodId);
   }
 
   public List<LogisticsLineItem> getApprovedLineItemListFor(String programCode, String facilityCode,  Long periodId) {

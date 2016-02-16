@@ -52,9 +52,12 @@ var OrderRequisitionLineItem = function(stockCards,report){
             (this.whoRatio / 100) * this.dosesPerYear * this.wastageFactor / 12 *
             (1 + this.bufferPercentage / 100) + this.adjustmentValue ),10);
         this.isaValue = isaVal;
-        console.log(this.product.code);
         return isaVal;
 
+    };
+
+    OrderRequisitionLineItem.prototype.getTotalByVial = function(){
+        return Number(this.product.dosesPerDispensingUnit);
     };
 
 };

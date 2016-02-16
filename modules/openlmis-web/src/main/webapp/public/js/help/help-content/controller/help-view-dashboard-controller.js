@@ -9,9 +9,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function HelpTreeViewController($scope, $timeout ,$resource,$location, $route,HelpUsertopicList){
+function HelpTreeViewController($scope, $location, HelpUsertopicList){
     var tree;
-
     var rawTreeData;
     var myTreeData = getTree(rawTreeData, 'id', 'parentHelpTopic');
     $scope.tree_data = myTreeData;

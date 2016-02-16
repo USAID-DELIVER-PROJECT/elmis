@@ -13,25 +13,20 @@
 
 package org.openlmis.report.model.report;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.report.model.ReportData;
-import org.openlmis.report.model.dto.StockStatusReportProduct;
+import org.openlmis.report.model.ResultRow;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VaccineStockStatusReport implements ReportData {
+public class VaccineStockStatusReport implements ResultRow {
 
     private String product;
     private String district;
@@ -42,6 +37,10 @@ public class VaccineStockStatusReport implements ReportData {
     private String facilityType;
     private int facilityId;
     private int productId;
+
+    private Long isaValue;
+
+    private Integer mos;
 
     //private JSONPObject products;
 

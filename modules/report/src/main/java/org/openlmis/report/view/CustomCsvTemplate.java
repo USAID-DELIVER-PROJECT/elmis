@@ -43,6 +43,7 @@ public class CustomCsvTemplate extends AbstractView {
       writeReportData(queryModel, reportContent, writer);
       writer.flush();
     } catch (IOException e) {
+      LOGGER.error("Could not write CSV to stream. Please see errors for details.", e);
       throw new DataException(e.getMessage());
     }
   }

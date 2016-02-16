@@ -15,12 +15,8 @@ package org.openlmis.vaccine.repository.mapper.reports;
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.ivdform.domain.reports.*;
-import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
-import org.openlmis.vaccine.repository.mapper.reports.builder.AdequacyLevelReportQueryBuilder;
-import org.openlmis.vaccine.repository.mapper.reports.builder.ClassificationVaccineUtilizationPerformanceQueryBuilder;
-import org.openlmis.vaccine.repository.mapper.reports.builder.CompletenessAndTimelinessQueryBuilder;
-import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceCoverageQueryBuilder;
+import org.openlmis.vaccine.repository.mapper.reports.builder.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -459,32 +455,41 @@ public interface VaccineReportMapper {
                                                                          @Param("productId") Long productId);
 
 
-    @Select("SELECT p.id, coalesce(p.primaryname,'') as name, p.code, pp.productcategoryid as categoryid,  \n" +
-            "    CASE WHEN p.tracer = true THEN 'Indicator Product' ELSE 'Regular' END tracer \n" +
-            "      \n" +
-            "       from products p \n" +
-            "join program_products pp on p.id = pp.productid\n" +
-            "join product_categories pc on pp.productcategoryid = pc.id\n" +
-            "where  pc.code = (select value from configuration_settings where key = 'VACCINE_REPORT_VACCINE_CATEGORY_CODE')\n" +
-            " and pp.active = true\n" +
-            "     order by pp.displayorder "
-    )
-   public List<Product> getVaccineProductsList();
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getVaccineProducts")
+   public List<Map<String, Object>> getVaccineProductsList();
 
-    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationVaccineForFacility")
-   public List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForFacility(
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassficationUtilizationPerformanceForFacility")
+                                                                                                                                                  public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForFacility1(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
             @Param("productId") Long productId);
-    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationVaccineUtilizationPerformanceByZone")
-    public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceByZone(
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassficationUtilizationPerformanceForDistrict")
+    public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForDistrict1(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
             @Param("productId") Long productId);
-    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassificationForRegion")
-    public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForRegion(
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectClassficationUtilizationPerformanceForRegion")
+    public  List<Map<String,Object>> getClassificationVaccineUtilizationPerformanceForRegion1(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+    @SelectProvider(type = CategorizationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectCategorizationUtilizationPerformanceForFacility")
+    public  List<Map<String,Object>> getCategorizationVaccineUtilizationPerformanceForFacility(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+    @SelectProvider(type = CategorizationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectCategorizationUtilizationPerformanceForDistrict")
+    public  List<Map<String,Object>> getCategorizationVaccineUtilizationPerformanceForDistrict(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+    @SelectProvider(type = CategorizationVaccineUtilizationPerformanceQueryBuilder.class, method = "selectCategorizationUtilizationPerformanceForRegion")
+    public  List<Map<String,Object>> getCategorizationVaccineUtilizationPerformanceForRegion(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,

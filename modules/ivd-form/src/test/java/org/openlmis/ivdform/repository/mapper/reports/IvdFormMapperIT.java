@@ -116,9 +116,9 @@ public class IvdFormMapperIT {
     VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
     report.setPeriodId(processingPeriod.getId());
     report.setFacilityId(facility.getId());
-    Integer count = ivdFormMapper.insert(report);
+    ivdFormMapper.insert(report);
 
-    VaccineReport returnedReport = ivdFormMapper.getByPeriodFacilityProgram(facility.getId(), processingPeriod.getId(), 1L);
+    VaccineReport returnedReport = ivdFormMapper.getByPeriodFacilityProgram(facility.getId(), processingPeriod.getId(), report.getProgramId());
     assertThat(returnedReport.getId(), is(report.getId()));
   }
 

@@ -18,7 +18,6 @@ import org.openlmis.core.domain.FacilityType;
 import org.openlmis.core.domain.PriceSchedule;
 import org.openlmis.core.dto.FacilityContact;
 import org.openlmis.core.dto.FacilityGeoTreeDto;
-import org.openlmis.core.dto.FacilityImages;
 import org.openlmis.core.dto.FacilitySupervisor;
 import org.springframework.stereotype.Repository;
 
@@ -377,9 +376,6 @@ public interface FacilityMapper {
       "WHERE ",
       " active = true and facilityId = #{facilityId}"})
   List<FacilityContact> getEmailContacts(Long facilityId);
-
-  @Select("SELECT * from odk_submission_data where facilityId = #{facilityId}")
-  List<FacilityImages> getFacilityImages(Long facilityId);
 
     @Select("SELECT DISTINCT userid as userId, username as name, email as contact   \n" +
             "            FROM role_assignments  \n" +

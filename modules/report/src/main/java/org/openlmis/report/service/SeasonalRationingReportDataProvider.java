@@ -16,7 +16,7 @@ package org.openlmis.report.service;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.mapper.SeasonalRationingReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.SeasonalRationingReportParam;
 import org.openlmis.report.util.SelectedFilterHelper;
 import org.openlmis.report.util.StringHelper;
@@ -37,12 +37,7 @@ public class SeasonalRationingReportDataProvider  extends ReportDataProvider {
     private SeasonalRationingReportMapper reportMapper;
 
     @Override
-    protected List<? extends ReportData> getResultSet(Map<String, String[]> filterCriteria) {
-        return getReportBody(filterCriteria, null, RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-    }
-
-    @Override
-    public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         return reportMapper.getFilteredSortedPagedSeasonalRationingReport(getReportFilterData(filterCriteria), sortCriteria, rowBounds, this.getUserId());
     }

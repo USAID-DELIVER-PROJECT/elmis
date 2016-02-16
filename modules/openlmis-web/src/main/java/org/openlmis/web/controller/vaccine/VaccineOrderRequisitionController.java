@@ -314,5 +314,10 @@ public class VaccineOrderRequisitionController extends BaseController {
     }
 
 
+    @RequestMapping(value = "facilities/{id}", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getFacility(@PathVariable(value = "id") Long id) {
+        return response("facility", facilityService.getById(id));
+    }
+
 
 }

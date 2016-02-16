@@ -20,7 +20,7 @@ import org.openlmis.report.model.ReportParameter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderFillRateReportParam extends BaseParam implements ReportParameter {
+public class OrderFillRateReportParam extends BaseParam {
 
   @RequiredParam
   private Long program;

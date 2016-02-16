@@ -13,14 +13,14 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import javax.persistence.Column;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegimenSummaryReport implements ReportData {
+public class RegimenSummaryReport implements ResultRow {
 
     @Column(name = "regimen")
     private String regimen;

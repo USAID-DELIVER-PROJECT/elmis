@@ -18,7 +18,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.MailingLabelReportQueryBuilder;
 import org.openlmis.report.model.ReportParameter;
 import org.openlmis.report.model.report.MailingLabelReport;
-import org.openlmis.report.model.ReportData;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

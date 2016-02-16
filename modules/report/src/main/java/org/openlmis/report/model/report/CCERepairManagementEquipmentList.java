@@ -15,14 +15,14 @@ package org.openlmis.report.model.report;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import javax.persistence.Column;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class CCERepairManagementEquipmentList implements ReportData {
+public class CCERepairManagementEquipmentList implements ResultRow {
 
     @Column(name = "region")
     private  String region;

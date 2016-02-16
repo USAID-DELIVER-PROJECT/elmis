@@ -74,7 +74,7 @@ public interface LogisticsLineItemMapper {
     "    and r.periodId = #{periodId} " +
     "    and r.status = 'APPROVED' " +
     " limit 1")
-  LogisticsLineItem getApprovedLineItemsFor(@Param("programCode") String programCode, @Param("productCode") String productCode, @Param("facilityCode") String facilityCode, @Param("periodId") Long periodId);
+  LogisticsLineItem getApprovedLineItemFor(@Param("programCode") String programCode, @Param("productCode") String productCode, @Param("facilityCode") String facilityCode, @Param("periodId") Long periodId);
 
   @Select("SELECT * FROM vaccine_report_logistics_line_items rli " +
     " JOIN vaccine_reports r on r.id = rli.reportId " +
@@ -85,7 +85,6 @@ public interface LogisticsLineItemMapper {
     "    and r.periodId = #{periodId} " +
     "    and r.status = 'APPROVED' " )
   List<LogisticsLineItem> getApprovedLineItemListFor(@Param("programCode") String programCode, @Param("facilityCode") String facilityCode, @Param("periodId") Long periodId);
-
 
 
   @Select("SELECT * FROM vaccine_report_logistics_line_items rli " +
@@ -99,5 +98,5 @@ public interface LogisticsLineItemMapper {
     "    and r.status = 'APPROVED' " +
     " ORDER BY r.periodId DESC " +
     " limit 3")
-  List<LogisticsLineItem> getPreviousPeriodLineItemsFor(@Param("programCode") String programCode, @Param("productCode") String productCode, @Param("facilityCode") String facilityCode, @Param("periodId") Long periodId);
+  List<LogisticsLineItem> getUpTo3PreviousPeriodLineItemsFor(@Param("programCode") String programCode, @Param("productCode") String productCode, @Param("facilityCode") String facilityCode, @Param("periodId") Long periodId);
 }

@@ -14,13 +14,13 @@
 package org.openlmis.report.model.report.vaccine;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReplacementPlanSummary implements ReportData {
+public class ReplacementPlanSummary implements ResultRow {
 
 
     private String serialNumber;

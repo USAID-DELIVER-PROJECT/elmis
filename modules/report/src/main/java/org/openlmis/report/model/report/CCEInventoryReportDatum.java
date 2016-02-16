@@ -14,7 +14,7 @@ package org.openlmis.report.model.report;
 
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -27,7 +27,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CCEInventoryReportDatum implements ReportData {
+public class CCEInventoryReportDatum implements ResultRow {
 
     private Integer equipmentId;
     private String manufacturer;

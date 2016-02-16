@@ -14,9 +14,8 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
-import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.report.mapper.RegimenSummaryReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.ReportParameter;
 import org.openlmis.report.model.params.RegimenSummaryReportParam;
 import org.openlmis.report.util.ParameterAdaptor;
@@ -37,8 +36,6 @@ public class RegimenDistributionReportDataProvider extends ReportDataProvider {
   @Autowired
   private RegimenSummaryReportMapper reportMapper;
 
-  @Autowired
-  private ConfigurationSettingService configurationService;
 
   @Value("${report.status.considered.accepted}")
   private String configuredAcceptedRnrStatuses;
@@ -46,20 +43,8 @@ public class RegimenDistributionReportDataProvider extends ReportDataProvider {
   @Autowired
   private SelectedFilterHelper filterHelper;
 
-  @Autowired
-  public RegimenDistributionReportDataProvider(RegimenSummaryReportMapper mapper, ConfigurationSettingService configurationService) {
-    this.reportMapper = mapper;
-    this.configurationService = configurationService;
-  }
-
   @Override
-  protected List<? extends ReportData> getResultSet(Map<String, String[]> filterCriteria) {
-    RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-    return reportMapper.getRegimenDistributionReport(getReportFilterData(filterCriteria), null, rowBounds, this.getUserId());
-  }
-
-  @Override
-  public List<? extends ReportData> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+  public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
     return reportMapper.getRegimenDistributionReport(getReportFilterData(filterCriteria), SortCriteria, rowBounds, this.getUserId());
   }

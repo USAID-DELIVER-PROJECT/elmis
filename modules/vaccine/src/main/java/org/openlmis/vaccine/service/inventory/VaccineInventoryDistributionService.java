@@ -202,12 +202,14 @@ public class VaccineInventoryDistributionService {
 
     public List<VaccineDistribution> saveConsolidatedList(List<VaccineDistribution> distributionList, Long userId) {
 
-        for (VaccineDistribution distribution : distributionList) {
+        for (VaccineDistribution distribute : distributionList) {
 
-            save(distribution, userId);
+            save(distribute,userId);
+
         }
 
         return distributionList;
+
     }
 
     public VaccineDistribution getAllDistributionsForNotification(Long facilityId) {

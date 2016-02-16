@@ -12,13 +12,13 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DistrictSummaryReport implements ReportData {
+public class DistrictSummaryReport implements ResultRow {
 
     private String facility;
     private Double totalcost;
