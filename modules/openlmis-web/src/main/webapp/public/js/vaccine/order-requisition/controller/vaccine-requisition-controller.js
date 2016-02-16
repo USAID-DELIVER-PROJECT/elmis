@@ -207,12 +207,10 @@ newVaccineOrderRequisitionController.resolve = {
 
         $timeout(function () {
 
-            if(!isUndefined(messageService.get('label.configuration.vaccine.facility.type.code')) || messageService.get('label.configuration.vaccine.facility.type.code') !== null)
-            {
-            SettingsByKey.get({key:messageService.get('label.configuration.vaccine.facility.type.code')}, function (data) {
+            SettingsByKey.get({key:'VACCINE_FACILITY_TYPE_CODE'}, function (data) {
                 deferred.resolve(data.settings.value);
             });
-            }
+
         }, 100);
 
         return deferred.promise;
