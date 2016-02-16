@@ -96,14 +96,15 @@
     <h2><span openlmis-message="label.vaccine.stock.receive"></span></h2>
     <div class="row-fluid" >
         <div class="span12" >
-            <div ng-show="hasStock && !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')" >
+            <div ng-show="hasStock ">
             <div class="info-box padding2px" >
                 <div class="requisition-head-block">
                     <form name="receivingForm">
                         <div class="row-fluid" >
-                            <div class="span12" style="padding-top:18px;padding-left:30px">
+                            <div class="span12" style="padding-top:18px;">
                                 <div class="row-fluid">
-                                    <div class="span4 input-append">
+                                    <div class="span4 input-append"
+                                         ng-show=" !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
                                         <button id="searchOptionButton" class="btn dropdown-toggle">
                                             <span id="selectedSearchOption" openlmis-message="label.stock.issue.voucher"></span>
                                         </button>
@@ -114,13 +115,21 @@
                                         </button>
 
                                     </div>
+                                    <div class="span4" ng-show=" hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
+                                        <strong id="voucher-number"
+                                                openlmis-message="label.stock.issue.voucher"> </strong>:&nbsp;
+                                        <input type="text" name="voucherNumber" ng-required="true"
+                                               ng-model="receivedProducts.voucherNumber" ng-change="clear()"/>
+
+                                    </div>
                                     <div class="span4" >
-                                        <div ng-show="distribution !== undefined">
-                                        <strong id="received-date-label"
-                                                openlmis-message="label.stock.received.date"> </strong>:&nbsp;
-                                        <input ng-required="distribution !== undefined && !noVoucherNumber" id="receivingDate" name="receivingDate" type="text"
-                                               ui-date="{dateFormat: 'dd/mm/yy', changeYear: false,maxDate:'today',minDate:period.stringStartDate}"
-                                               ng-model="receivedProducts.date"/>
+                                        <div ng-show="distribution !== undefined || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
+                                            <strong id="received-date-label"
+                                                    openlmis-message="label.stock.received.date"> </strong>:&nbsp;
+                                            <input ng-required="distribution !== undefined && !noVoucherNumber"
+                                                   id="receivingDate" name="receivingDate" type="text"
+                                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: false,maxDate:'today',minDate:period.stringStartDate}"
+                                                   ng-model="receivedProducts.date"/>
 
                                         </div>
                                     </div>
@@ -137,13 +146,11 @@
                         </div>
                     </form>
                 </div>
-
             </div>
-            <div class="rnr-table">
+                <div class="rnr-table" ng-show=" !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
                 <ng-include src="'/public/pages/vaccine/inventory/partials/voucher-receive-stock-partial.html'"></ng-include>
             </div>
             </div>
-
             <div  ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock">
                 <ng-include src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html'"></ng-include>
             </div>

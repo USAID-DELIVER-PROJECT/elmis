@@ -60,7 +60,6 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$ti
                 ProductLots.get({productId:product.id},function(data){
                      $scope.allLots=data.lots;
                      $scope.lotsToDisplay=$scope.allLots;
-                     console.log(JSON.stringify($scope.allLots));
                 });
              }
 
@@ -118,7 +117,6 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$ti
                      $scope.distribution.status='RECEIVED';
                      $scope.distribution.programId=$scope.selectedProgramId;
                      SaveDistribution.save($scope.distribution,function(distribution){
-                         console.log(distribution);
                          $timeout(function(){
                                $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
                          },900);
