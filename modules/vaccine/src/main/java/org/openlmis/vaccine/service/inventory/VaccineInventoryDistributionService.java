@@ -68,11 +68,14 @@ public class VaccineInventoryDistributionService {
         //Get supervised facility period
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long homeFacilityId = homeFacility.getId();
-        ProcessingPeriod period = getCurrentPeriod(distribution.getToFacilityId(), distribution.getProgramId());
-
+        ProcessingPeriod period = null;
+        if (null != distribution.getToFacilityId() && null != distribution.getProgramId()) {
+            period = getCurrentPeriod(distribution.getToFacilityId(), distribution.getProgramId());
+        }
         if (period != null) {
             distribution.setPeriodId(period.getId());
         }
+
         distribution.setVoucherNumber(generateVoucherNumber(homeFacilityId, distribution.getProgramId()));
 
         if (distribution.getId() != null) {

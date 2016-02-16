@@ -127,7 +127,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
                 distribution.fromFacilityId = homeFacility.id;
                 distribution.toFacilityId= toFacilityId;
-                distribution.programId=program[0].id;
+                distribution.programId=program[0].id;programId;
                 distribution.distributionDate = $scope.stockCardsByCategory[0].issueDate;
                 distribution.periodId = periodId;
                 distribution.orderId = orderId;
