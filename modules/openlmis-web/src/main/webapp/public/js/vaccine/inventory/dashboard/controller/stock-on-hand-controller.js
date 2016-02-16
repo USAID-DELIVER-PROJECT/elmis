@@ -12,6 +12,7 @@
 
 
 function StockOnHandController($scope,$window,UpdateDistributionsForNotification,GetDistributionNotification,EquipmentNonFunctional,VaccinePendingRequisitions,programs,$location,homeFacility,VaccineOrderRequisitionLastReport, localStorageService,StockCardsByCategory,Forecast) {
+
     $scope.createOrder = false;
     $scope.receiveConsignment = false;
     $scope.selectedProgramId = null;
@@ -85,7 +86,6 @@ function StockOnHandController($scope,$window,UpdateDistributionsForNotification
             $scope.filter={};
         }
     };
-     //When the filter change reload Data
     $scope.OnFilterChanged = function () {
             $scope.showGraph=false;
             $scope.data={"stockcards": null};
@@ -93,10 +93,8 @@ function StockOnHandController($scope,$window,UpdateDistributionsForNotification
             {
                $scope.selectedFacilityId = $scope.filter.facilityId;
             }
-//            if($scope.selectedProgramId !== null && $scope.selectedFacilityId !== null)
-//             {
+
                 loadStockCards(parseInt($scope.selectedProgramId,10),parseInt($scope.selectedFacilityId,10));
-//             }
      };
 
     //Load Right to check if user level can Send Requisition ond do stock adjustment
@@ -158,7 +156,6 @@ function StockOnHandController($scope,$window,UpdateDistributionsForNotification
             }
         });
 
-    //Remark Notification
     GetDistributionNotification.get({}, function(data){
         if(!isUndefined(data.remarks)){
             $scope.messageInfo2 = 'Comments On the Order Requisition Submitted On :  '+data.remarks.orderDate;
