@@ -1,4 +1,4 @@
-function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location, GetFacilityForVaccineOrderRequisition) {
+function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location) {
 
     $rootScope.viewOrder = false;
     $rootScope.receive = false;
@@ -11,9 +11,10 @@ function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFaci
     var id = parseInt($scope.programs[0].id,10);
     var facilityId = parseInt($scope.facility.id,10);
     var facilityTypeCode = getFacilityTypeCode;
-    var rFacilityTypeCode = settings;
-    console.log(rFacilityTypeCode);
 
+    if(!isUndefined(settings) && settings !== null) {
+        var rFacilityTypeCode = settings;
+    }
     $scope.requisitionTypes = [];
     $scope.requisitionTypes = [{id: '0', name: 'Unscheduled Reporting'}, {id: '1', name: 'Scheduled Reporting'}];
 
@@ -47,6 +48,7 @@ function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFaci
                         else
 
                             {
+
                             $location.path('/details');
 
                                 if(facilityTypeCode === rFacilityTypeCode){
@@ -200,13 +202,17 @@ newVaccineOrderRequisitionController.resolve = {
         return deferred.promise;
     },
 
-    settings: function ($q, $timeout, SettingsByKey) {
+    settings: function ($q, $timeout, SettingsByKey,messageService) {
         var deferred = $q.defer();
 
         $timeout(function () {
-            SettingsByKey.get({key:'VACCINE_FACILITY_TYPE_CODE'}, function (data) {
-                deferred.resolve(data.settings);
+
+            if(!isUndefined(messageService.get('label.configuration.vaccine.facility.type.code')) || messageService.get('label.configuration.vaccine.facility.type.code') !== null)
+            {
+            SettingsByKey.get({key:messageService.get('label.configuration.vaccine.facility.type.code')}, function (data) {
+                deferred.resolve(data.settings.value);
             });
+            }
         }, 100);
 
         return deferred.promise;
