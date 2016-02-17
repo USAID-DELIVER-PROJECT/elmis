@@ -261,7 +261,6 @@ public interface VaccineDashboardMapper {
         @Select("SELECT\n" +
                 "i.period_name,\n" +
                 "i.period_start_date, \n" +
-                "sum(i.denominator) target,\n" +
                 "sum(i.bcg_1) bcg_vaccinated, \n" +
                 "sum(i.dtp_1) dtp1_vaccinated,\n" +
                 "sum(i.mr_1) mr_vaccinated, \n" +
@@ -269,7 +268,7 @@ public interface VaccineDashboardMapper {
                 "case when sum(COALESCE(i.bcg_1,0)) > 0 then ( (sum(COALESCE(i.bcg_1,0)) - sum(COALESCE(i.mr_1,0))) / sum(COALESCE(i.bcg_1,0))::numeric) * 100 else 0 end bcg_mr_dropout, \n" +
                 "case when sum(COALESCE(i.dtp_1,0)) > 0 then ( (sum(COALESCE(i.dtp_1,0)) - sum(COALESCE(i.dtp_3,0))) / sum(COALESCE(i.dtp_1,0))::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
                 "FROM\n" +
-                "vw_vaccine_coverage i\n" +
+                "vw_vaccine_dropout i\n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
                 "JOIN vaccine_reports vr ON i.report_id = vr. ID\n" +
                 "JOIN program_products pp ON pp.programid = vr.programid\n" +
@@ -287,7 +286,6 @@ public interface VaccineDashboardMapper {
         @Select("SELECT\n" +
                 "i.geographic_zone_id,\n" +
                 "i.geographic_zone_name,\n" +
-                "sum(i.denominator) target,\n" +
                 "sum(i.bcg_1) bcg_vaccinated, \n" +
                 "sum(i.dtp_1) dtp1_vaccinated,\n" +
                 "sum(i.mr_1) mr_vaccinated, \n" +
@@ -295,7 +293,7 @@ public interface VaccineDashboardMapper {
                 "case when sum(COALESCE(i.bcg_1,0)) > 0 then ( (sum(COALESCE(i.bcg_1,0)) - sum(COALESCE(i.mr_1,0))) / sum(COALESCE(i.bcg_1,0))::numeric) * 100 else 0 end bcg_mr_dropout, \n" +
                 "case when sum(COALESCE(i.dtp_1,0)) > 0 then ( (sum(COALESCE(i.dtp_1,0)) - sum(COALESCE(i.dtp_3,0))) / sum(COALESCE(i.dtp_1,0))::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
                 "FROM\n" +
-                "vw_vaccine_coverage i\n" +
+                "vw_vaccine_dropout i\n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
                 "JOIN vaccine_reports vr ON i.report_id = vr. ID\n" +
                 "JOIN program_products pp ON pp.programid = vr.programid\n" +
@@ -317,7 +315,7 @@ public interface VaccineDashboardMapper {
                 "case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,\n" +
                 "case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
                 "FROM  \n" +
-                "vw_vaccine_coverage i  \n" +
+                "vw_vaccine_dropout i  \n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
                 "JOIN vaccine_reports vr ON i.report_id = vr.ID  \n" +
                 "JOIN program_products pp ON pp.programid = vr.programid  \n" +
@@ -340,7 +338,7 @@ public interface VaccineDashboardMapper {
                 "case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,\n" +
                 "case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
                 "FROM  \n" +
-                "vw_vaccine_coverage i  \n" +
+                "vw_vaccine_dropout i  \n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
                 "JOIN vaccine_reports vr ON i.report_id = vr.ID  \n" +
                 "JOIN program_products pp ON pp.programid = vr.programid  \n" +

@@ -126,9 +126,10 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.monthlyDropout = {
         dataPoints: [],
         dataColumns: [{
-            "id": "bcg_mr_dropout", "name": messageService.get('label.bcg.mr.dropout'), "type": "bar"
+            "id": "bcg_mr_dropout", "name": messageService.get('label.bcg.mr.dropout'), "type": "line"
         },
-            {"id": "dtp1_dtp3_dropout", "name": messageService.get('label.dtp.dropout'), "type": "bar"}
+            {"id": "bcg_vaccinated", "name": messageService.get('label.dtp.dropout'), "type": "bar"},
+            {"id": "mr_vaccinated", "name": messageService.get('label.dtp.dropout'), "type": "bar"}
         ],
         dataX: {"id": "period_name"}
     };
@@ -502,6 +503,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 product: $scope.filter.monthlyDropout.product
             }, function (data) {
                 $scope.monthlyDropout.dataPoints = data.monthlyDropout;
+                alert("datapoints:" +  JSON.stringify($scope.monthlyDropout.dataPoints));
             });
         }
     };
