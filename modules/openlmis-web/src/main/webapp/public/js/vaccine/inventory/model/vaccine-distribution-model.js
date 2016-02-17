@@ -5,7 +5,7 @@ var VaccineDistribution = function (existingDistribution,receivedProducts,orderN
         if(supervisorId !== undefined)
         {
             distribution.id=(existingDistribution === undefined)?null:existingDistribution.id;
-            distribution.fromFacilityId = supervisorId;
+            distribution.fromFacilityId =(supervisorId === null)?homeFacilityId:supervisorId ;
             distribution.toFacilityId=homeFacilityId ;
             distribution.voucherNumber=orderNumber;
             distribution.programId=programId;
@@ -17,7 +17,7 @@ var VaccineDistribution = function (existingDistribution,receivedProducts,orderN
                 if(product.quantity >0)
                 {
                    var productItem = {};
-                   var existingProduct=undefined;
+                   var existingProduct;
                    if(existingDistribution !==undefined)
                    {
                        existingProduct=_.findWhere(existingDistribution.lineItems,{productId:product.product.id});
@@ -36,7 +36,7 @@ var VaccineDistribution = function (existingDistribution,receivedProducts,orderN
                            if(l.quantity !==null && l.quantity >0)
                            {
                                var lotItem = {};
-                               var existingLot=undefined;
+                               var existingLot;
                                if(existingProduct !==undefined && existingProduct.lots !==undefined && existingProduct.lots.length >0)
                                {
                                    existingLot=_.findWhere(existingProduct.lots,{lotId:l.lot.id});

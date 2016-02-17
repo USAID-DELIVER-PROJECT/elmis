@@ -100,7 +100,7 @@
             <div class="info-box padding2px" >
                 <div class="requisition-head-block">
                     <div class="row-fluid" ng-form="receivingForm">
-                            <div class="span12" style="padding-top:18px;">
+                        <div class="span12" style="padding:18px 10px 18px 10px">
                                 <div class="row-fluid">
                                     <div class="span4 input-append"
                                          ng-show=" !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
@@ -123,13 +123,26 @@
                                                ng-model="orderNumber" ng-change="clear()"/>
 
                                     </div>
-                                    <div class="span4" >
-                                        <div ng-show="distribution !== undefined || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
+                                    <div class="span4"
+                                         ng-show="distribution !== undefined && !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
+                                        <div>
                                             <strong id="received-date-label"
                                                     openlmis-message="label.stock.received.date"> </strong>
                                             <span class="label-required">*</span>:&nbsp;
                                             <input ng-required="(distribution !== undefined && !noVoucherNumber) || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')"
                                                    id="receivingDate" name="receivingDate" type="text"
+                                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: false,maxDate:'today',minDate:period.stringStartDate}"
+                                                   ng-model="occurredDate"/>
+
+                                        </div>
+                                    </div>
+                                    <div class="span4" ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
+                                        <div>
+                                            <strong id="received-date-label1"
+                                                    openlmis-message="label.stock.received.date"> </strong>
+                                            <span class="label-required">*</span>:&nbsp;
+                                            <input ng-required="(distribution !== undefined && !noVoucherNumber) || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')"
+                                                   id="receivingDate1" name="receivingDate" type="text"
                                                    ui-date="{dateFormat: 'dd/mm/yy', changeYear: false,maxDate:'today',minDate:period.stringStartDate}"
                                                    ng-model="orderDate"/>
 
@@ -160,13 +173,14 @@
 
     <div form-toolbar id="action_buttons" class="action-buttons">
         <div class="form-cell button-row">
-            <input ng-show="hasStock && !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')" ng-disabled="(receivingForm.$invalid) || distribution == undefined "
+            <input ng-show="hasStock && !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')"
+                   ng-disabled="occurredDate ==null || distribution == undefined "
                    type="submit" id="submit-button" ng-click="receive()"
                    class="btn btn-primary save-button"
                    openlmis-message="button.submit"/>
 
             <input ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock"
-                   ng-disabled="receivedProducts.length == 0 || orderNumber ===undefined || orderDate===orderDate"
+                   ng-disabled="receivedProducts.length == 0 ||(hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderNumber ==null) || (hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderDate==null)"
                    type="submit" id="submit-button2" ng-click="openReceive()"
                    class="btn btn-primary save-button"
                    openlmis-message="button.submit"/>

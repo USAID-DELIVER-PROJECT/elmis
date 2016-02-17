@@ -157,6 +157,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                                        event.facilityId=toFacilityId;
                                        event.lotId= l.lot.id;
                                        event.quantity= l.quantity;
+                                       event.occurred=$scope.stockCardsByCategory[0].issueDate;
                                        event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
                                        events.push(event);
 
@@ -181,6 +182,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                                    event.productCode= s.product.code;
                                    event.facilityId=toFacilityId;
                                    event.quantity= s.quantity;
+                                   event.occurred=$scope.stockCardsByCategory[0].issueDate;
                                    event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
                                    events.push(event);
                                    lineItem.quantity=s.quantity;

@@ -65,6 +65,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
                              event.type="ISSUE";
                              event.productCode =product.productCode;
                              event.facilityId=$scope.facilityToIssue.id;
+                             event.occurred=$scope.facilityToIssue.issueDate;
                              event.customProps={};
                              event.customProps.occurred=$scope.facilityToIssue.issueDate;
                              event.customProps.issuedto=$scope.facilityToIssue.name;
@@ -85,6 +86,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
                  event.type="ISSUE";
                  event.productCode =product.productCode;
                  event.facilityId=$scope.facilityToIssue.id;
+                 event.occurred=$scope.facilityToIssue.issueDate;
                  event.customProps={};
                  event.customProps.occurred=$scope.facilityToIssue.issueDate;
                  event.customProps.issuedto=$scope.facilityToIssue.name;
