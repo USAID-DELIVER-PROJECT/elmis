@@ -25,7 +25,8 @@ CREATE OR REPLACE VIEW vw_vaccine_dropout AS
      d.bcg_1,
      d.mr_1,
      d.dtp_1,
-     d.dtp_3
+     d.dtp_3,
+     d.within_outside_total
     FROM ((((( SELECT a.program_id,
              a.period_id,
              a.facility_id,
@@ -36,7 +37,8 @@ CREATE OR REPLACE VIEW vw_vaccine_dropout AS
              sum(a.bcg_1) AS bcg_1,
              sum(a.mr_1) AS mr_1,
              sum(a.dtp_1) AS dtp_1,
-             sum(a.dtp_3) AS dtp_3
+             sum(a.dtp_3) AS dtp_3,
+             sum(within_outside_total) within_outside_total
             FROM ( WITH temp AS (
                           SELECT vaccine_reports.programid AS program_id,
                              processing_periods.id AS period_id,
@@ -96,7 +98,12 @@ CREATE OR REPLACE VIEW vw_vaccine_dropout AS
                                         FROM configuration_settings
                                        WHERE ((configuration_settings.key)::text = 'VACCINE_DROPOUT_DTP'::text)))::text) AND (vaccine_report_coverage_line_items.doseid = 3)) THEN (COALESCE(vaccine_report_coverage_line_items.regularmale, 0) + COALESCE(vaccine_report_coverage_line_items.regularfemale, 0))
                                      ELSE 0
-                                 END AS dtp_3
+                                 END AS dtp_3,
+                                 CASE
+                                     WHEN vaccine_report_coverage_line_items.doseid = 1 THEN 
+                                        COALESCE(regularmale, 0) + COALESCE(regularfemale, 0) + COALESCE(outreachmale, 0) + COALESCE(outreachfemale, 0) 
+                                     ELSE 0
+                                 END within_outside_total
                             FROM ((((((vaccine_report_coverage_line_items
                               JOIN vaccine_reports ON ((vaccine_report_coverage_line_items.reportid = vaccine_reports.id)))
                               JOIN processing_periods ON ((vaccine_reports.periodid = processing_periods.id)))
@@ -124,7 +131,8 @@ CREATE OR REPLACE VIEW vw_vaccine_dropout AS
                      b.bcg_1,
                      b.mr_1,
                      b.dtp_1,
-                     b.dtp_3
+                     b.dtp_3,
+                     b.within_outside_total
                     FROM temp b) a
            GROUP BY a.program_id, a.period_id, a.facility_id, a.report_id, a.dropout_code) d
       JOIN facilities f ON ((d.facility_id = f.id)))
