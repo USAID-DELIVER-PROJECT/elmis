@@ -1,7 +1,15 @@
-function ViewVaccineOrderRequisitionController($scope, $window, $rootScope, SupervisoryNodeByFacilityAndRequisition, VaccinePendingRequisitions, programs, $routeParams, facility, $location, messageService) {
+function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $rootScope, SupervisoryNodeByFacilityAndRequisition, VaccinePendingRequisitions, programs, $routeParams, facility, $location, messageService) {
     var program = programs;
     var facilit = facility;
 
+    $scope.stockLoaded=false;
+
+    StockCards.get({facilityId: parseInt(facilit.id, 10)}, function (data) {
+            if (!isUndefined(data.stockCards) || data.stockCards.length > 0)
+             $scope.stockCards = data.stockCards;
+            else
+                $scope.stockLoaded=true;
+    });
 
     $scope.pageSize = parseInt(10, 10);
 
@@ -211,7 +219,9 @@ function ViewVaccineOrderRequisitionController($scope, $window, $rootScope, Supe
     };
 
     $scope.consolidateOrder = function () {
+
         $location.path('/consolidate/' + $routeParams.program + '/' + $routeParams.facilityId + '/'+$routeParams.homeFacility);
+
     };
 
     $scope.distributeToFacility = function (row) {

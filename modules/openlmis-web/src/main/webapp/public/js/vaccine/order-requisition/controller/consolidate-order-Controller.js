@@ -202,17 +202,22 @@ ConsolidateOrderController.resolve = {
     },
 
 
-    stockCards: function ($q, $timeout, StockCards, $routeParams) {
+    stockCards: function ($q, $timeout, StockCards, $routeParams,$rootScope) {
         var deferred = $q.defer();
         $timeout(function () {
             if (isUndefined($routeParams.program) && isUndefined($routeParams.facilityId)) {
-                return null;
+
+
+
+                return  null;
             } else {
                 StockCards.get({facilityId: $routeParams.homeFacility},
 
                     function (data) {
                         if (!isUndefined(data.stockCards) || data.stockCards.length > 0)
                             deferred.resolve(data.stockCards);
+                        else
+                            $rootScope.noStockCardMessage = ' No Stock Found in your store.';
                     });
             }
 

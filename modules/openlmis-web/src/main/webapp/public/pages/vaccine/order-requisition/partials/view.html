@@ -14,7 +14,13 @@
     <div class="alert alert-info" id="noRequisitionSelectedMsgDiv" ng-show="noRequisitionSelectedMessage"
          openlmis-message="noRequisitionSelectedMessage"></div>
 
+    <div class="alert alert-danger"  ng-show='stockLoaded === true'>
+        <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
+        <strong><a href="/public/pages/vaccine/inventory/index.html#/receive" openlmis-message="stock.initialize.stock"></a></strong>
+    </div>
+
     <div class="row-fluid">
+
         <div class="span5 offset7 search-in-category right-justified">
             <div class="input-append input-prepend">
 
@@ -55,10 +61,9 @@
                 <div class="form-cell button-row" ng-show="gridOption == true">
 
                     <span>
-                           <input id="submitButton" type="button" class="btn btn-primary submit-button" ng-click="consolidateOrder()"
+                           <input ng-disabled="stockLoaded === true" id="submitButton" type="button" class="btn btn-primary submit-button" ng-click="consolidateOrder()"
                                   openlmis-message="button.print.consolidated"/>
                     </span>
-
                 </div>
 
             </div>
