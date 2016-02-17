@@ -1,4 +1,4 @@
-function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location) {
+function newVaccineOrderRequisitionController($scope,StockCards,$rootScope,settings,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location) {
 
     $rootScope.viewOrder = false;
     $rootScope.receive = false;
@@ -11,6 +11,18 @@ function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFaci
     var id = parseInt($scope.programs[0].id,10);
     var facilityId = parseInt($scope.facility.id,10);
     var facilityTypeCode = getFacilityTypeCode;
+
+
+    $scope.stockLoaded=false;
+
+    StockCards.get({facilityId: parseInt(facilityId, 10)}, function (data) {
+        if (!isUndefined(data.stockCards) || data.stockCards.length > 0)
+            $scope.stockCards = data.stockCards;
+        else
+            $scope.stockLoaded=true;
+    });
+
+
 
     if(!isUndefined(settings) && settings !== null) {
         var rFacilityTypeCode = settings;
@@ -202,7 +214,7 @@ newVaccineOrderRequisitionController.resolve = {
         return deferred.promise;
     },
 
-    settings: function ($q, $timeout, SettingsByKey,messageService) {
+    settings: function ($q, $timeout, SettingsByKey) {
         var deferred = $q.defer();
 
         $timeout(function () {
