@@ -68,11 +68,15 @@ public class VaccineInventoryDistributionService {
         //Get supervised facility period
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long homeFacilityId = homeFacility.getId();
-        ProcessingPeriod period = getCurrentPeriod(distribution.getToFacilityId(), distribution.getProgramId());
-
+        ProcessingPeriod period = null;
+        if (null != distribution.getToFacilityId() && null != distribution.getProgramId()) {
+            period = getCurrentPeriod(distribution.getToFacilityId(), distribution.getProgramId());
+        }
         if (period != null) {
             distribution.setPeriodId(period.getId());
         }
+
+        if (null == distribution.getVoucherNumber())
         distribution.setVoucherNumber(generateVoucherNumber(homeFacilityId, distribution.getProgramId()));
 
         if (distribution.getId() != null) {
@@ -125,25 +129,32 @@ public class VaccineInventoryDistributionService {
         } else {
             newSerial = 1L;
         }
-        String[] nationalCodes = voucherNumberCode.getNational().split("\\s+");
-        String nationalCode = (nationalCodes.length > 1) ? (nationalCodes[0].substring(0, 2).toUpperCase() + nationalCodes[1].substring(0, 1).toUpperCase()) : (nationalCodes[0].substring(0, 3).toUpperCase());
 
+        String nationalCode = "";
+        if (null != voucherNumberCode.getNational()) {
+            String[] nationalCodes = voucherNumberCode.getNational().split("\\s+");
+            nationalCode = (nationalCodes.length > 1) ? (nationalCodes[0].substring(0, 2).toUpperCase() + nationalCodes[1].substring(0, 1).toUpperCase()) : (nationalCodes[0].substring(0, 3).toUpperCase());
+        }
         String regionCode = "";
-        if (voucherNumberCode.getRegion().equalsIgnoreCase("cvs-region-code")) {
-            regionCode = messageService.message(cvsRegionCode);
-        } else {
-            String[] regionCodes = voucherNumberCode.getRegion().split("\\s+");
-            regionCode = (regionCodes.length > 1) ? (regionCodes[0].substring(0, 2).toUpperCase() + regionCodes[1].substring(0, 1).toUpperCase()) : (regionCodes[0].substring(0, 3).toUpperCase());
+        if (null != voucherNumberCode.getRegion()) {
+            if (voucherNumberCode.getRegion().equalsIgnoreCase("cvs-region-code")) {
+                regionCode = messageService.message(cvsRegionCode);
+            } else {
+                String[] regionCodes = voucherNumberCode.getRegion().split("\\s+");
+                regionCode = (regionCodes.length > 1) ? (regionCodes[0].substring(0, 2).toUpperCase() + regionCodes[1].substring(0, 1).toUpperCase()) : (regionCodes[0].substring(0, 3).toUpperCase());
+            }
         }
         String districtCode = "";
-        if (voucherNumberCode.getDistrict().equalsIgnoreCase("cvs-district-code")) {
+        if (null != voucherNumberCode.getDistrict()) {
+            if (voucherNumberCode.getDistrict().equalsIgnoreCase("cvs-district-code")) {
 
-            districtCode = messageService.message(cvsDistrictCode);
-        } else if (voucherNumberCode.getDistrict().equalsIgnoreCase("rvs-district-code")) {
-            districtCode = messageService.message(rvsDistrictCode);
-        } else {
-            String[] districtCodes = voucherNumberCode.getDistrict().split("\\s+");
-            districtCode = (districtCodes.length > 1) ? (districtCodes[0].substring(0, 2).toUpperCase() + districtCodes[1].substring(0, 1).toUpperCase()) : (districtCodes[0].substring(0, 3).toUpperCase());
+                districtCode = messageService.message(cvsDistrictCode);
+            } else if (voucherNumberCode.getDistrict().equalsIgnoreCase("rvs-district-code")) {
+                districtCode = messageService.message(rvsDistrictCode);
+            } else {
+                String[] districtCodes = voucherNumberCode.getDistrict().split("\\s+");
+                districtCode = (districtCodes.length > 1) ? (districtCodes[0].substring(0, 2).toUpperCase() + districtCodes[1].substring(0, 1).toUpperCase()) : (districtCodes[0].substring(0, 3).toUpperCase());
+            }
         }
         newVoucherNumber = nationalCode + "/" + regionCode + "/" + districtCode + "/" + year + "/" + newSerial;
         return newVoucherNumber;
@@ -221,5 +232,14 @@ public class VaccineInventoryDistributionService {
         ProcessingPeriod currentPeriod = getCurrentPeriod(facilityId, programId);
         return processingPeriodRepository.getNPreviousPeriods(currentPeriod, 1);
     }
+
+    public VaccineDistribution getDistributionByToFacility(Long facilityId) {
+        return repository.getDistributionByToFacility(facilityId);
+    }
+
+    public Long getSupervisorFacilityId(Long facilityId) {
+        return repository.getSupervisorFacilityId(facilityId);
+    }
+
 
 }

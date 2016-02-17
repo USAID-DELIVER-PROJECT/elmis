@@ -23,6 +23,7 @@ import org.openlmis.vaccine.service.StockRequirementsService;
 import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -52,6 +53,7 @@ public class VaccineInventoryDistributionController extends BaseController {
     private static final String CURRENT_PERIOD = "currentPeriod";
     private static final String DISTRIBUTION = "distribution";
     private static final String LAST_PERIOD = "lastPeriod";
+    private static final String SUPERVISOR_ID = "supervisorId";
 
     @Autowired
     VaccineInventoryDistributionService service;
@@ -137,6 +139,19 @@ public class VaccineInventoryDistributionController extends BaseController {
         response.getBody().addData(PROGRAM_PRODUCT_LIST, programProductService.getByProgram(new Program(programId)));
 
         return response;
+    }
+
+    @RequestMapping(value = "distribution-supervisorid/{facilityId}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getDistributionByToFacilityId(@PathVariable Long facilityId,
+                                                                          HttpServletRequest request) {
+        if (null == facilityId) {
+            return OpenLmisResponse.error(messageService.message("error.facility.unknown"), HttpStatus.BAD_REQUEST);
+        } else {
+            ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(DISTRIBUTION, service.getDistributionByToFacility(facilityId));
+            response.getBody().addData(SUPERVISOR_ID, service.getSupervisorFacilityId(facilityId));
+            return response;
+        }
     }
 
 }

@@ -11,13 +11,12 @@
  */
 
 
-function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
+function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution,DistributionWithSupervisorId, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
 
     $scope.hasStock=homeFacility.hasStock;
-    console.log($scope.hasStock);
     $scope.userPrograms=configurations.programs;
     $scope.facilityDisplayName=homeFacility.name;
-    $scope.selectedProgramId=null;
+    $scope.homeFacilityId=homeFacility.id;
     $scope.receivedProducts=[];
     $scope.productToAdd={};
     $scope.productToAdd.lots=[];
@@ -26,17 +25,16 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
     $scope.voucherNumberSearched=false;
     $scope.productsConfiguration=configurations.productsConfiguration;
     $scope.period=configurations.period;
+    $scope.manufacturers = manufacturers;
 
     $scope.loadProducts=function(facilityId,programId){
-        VaccineProgramProducts.get({programId:programId},function(data){
-            $scope.allProducts=data.programProductList;
-            $scope.productsToDisplay=$scope.allProducts;
+        FacilityTypeAndProgramProducts.get({facilityId:facilityId, programId:programId},function(data){
+                var allProducts=data.facilityProduct;
+                $scope.allProducts=_.sortBy(allProducts,function(product){
+                    return product.programProduct.product.id;
+                });
+                $scope.productsToDisplay=$scope.allProducts;
         });
-
-//        FacilityTypeAndProgramProducts.get({facilityId:facilityId, programId:programId},function(data){
-//
-//                console.log(data);
-//        });
     };
     $scope.loadProductLots=function(product)
     {
@@ -87,12 +85,14 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                         event.lot.lotCode=l.lot.lotCode;
                         event.lot.manufacturerName=l.lot.manufacturerName;
                         event.lot.expirationDate=l.lot.expirationDate;
+                        event.occurred=$scope.occurredDate;
                         event.customProps={};
                         if(l.vvmStatus !==undefined)
                         {
                             event.customProps.vvmStatus=l.vvmStatus;
                         }
                         event.customProps.receivedFrom=$scope.distribution.fromFacility.name;
+                        event.customProps.occurred=$scope.occurredDate;
                         events.push(event);
                     });
                 }
@@ -107,6 +107,8 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                             event.customProps={"vvmStatus":p.vvmStatus};
                         }
                         event.customProps.receivedFrom=$scope.distribution.fromFacility.name;
+                        event.occurred=$scope.occurredDate;
+                        event.customProps.occurred=$scope.occurredDate;
                         events.push(event);
                 }
 
@@ -119,7 +121,6 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                      $scope.distribution.status='RECEIVED';
                      $scope.distribution.programId=$scope.selectedProgramId;
                      SaveDistribution.save($scope.distribution,function(distribution){
-                         console.log(distribution);
                          $timeout(function(){
                                $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
                          },900);
@@ -144,7 +145,17 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                 {
                     if(result)
                     {
+                        var distribution={};
+                        var today=new Date();
+                        DistributionWithSupervisorId.get({facilityId:homeFacility.id},function(data){
+                                  var existingDistribution=(data.distribution !==null)?data.distribution:undefined;
+                                  var supervisorId=(data.supervisorId !== null)?data.supervisorId:undefined;
+                                  distribution=new VaccineDistribution(existingDistribution, $scope.receivedProducts,$scope.orderNumber,$scope.orderDate,supervisorId,$scope.homeFacilityId,$scope.selectedProgramId);
+                                  console.log(JSON.stringify(distribution));
+                         });
+
                         var events=[];
+
                         $scope.receivedProducts.forEach(function(p){
                         if(p.lots !==undefined && p.lots.length >0)
                         {
@@ -157,15 +168,15 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                                 event.lot={};
                                 event.lot.lotCode=l.lot.lotCode;
                                 event.lot.manufacturerName=l.lot.manufacturerName;
-                                var expirationDate=new Date(l.lot.expirationDate);
-                                expirationDate.setDate(expirationDate.getDate() +1);
-                                event.lot.expirationDate=expirationDate;
+                                event.lot.expirationDate=l.lot.expirationDate;
+                                event.occurred=($scope.hasStock)?$scope.orderDate:today;
                                 event.customProps={};
                                 if(l.vvmStatus !==undefined)
                                 {
                                     event.customProps.vvmStatus=l.vvmStatus;
                                 }
                                 event.customProps.receivedFrom="";
+                                event.customProps.occurred=($scope.hasStock)?$scope.orderDate:today;
                                 events.push(event);
                             });
                         }
@@ -175,10 +186,13 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
                                 event.facilityId=homeFacility.id;
                                 event.productCode=p.product.code;
                                 event.quantity=p.quantity;
+                                event.occurred=($scope.hasStock)?$scope.orderDate:today;
+                                event.customProps={};
                                 if(p.vvmStatus !==undefined)
                                 {
-                                    event.customProps={"vvmStatus":p.vvmStatus};
+                                    event.customProps.vvmStatus=p.vvmStatus;
                                 }
+                                event.customProps.occurred=($scope.hasStock)?$scope.orderDate:today;
                                 events.push(event);
                         }
 
@@ -186,14 +200,17 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
 
 
                     StockEvent.update({facilityId:homeFacility.id},events, function (data) {
-                         if(data.success)
+                         if(data.success && $scope.hasStock)
                          {
-                             $scope.message=true;
-                            $timeout(function(){
-                             $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
-                            },900);
+                           SaveDistribution.save(distribution,function(distribution){
+
+                           });
 
                          }
+                         $scope.message=true;
+                         $timeout(function(){
+                              $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                          },900);
                     });
 
                     }
@@ -216,7 +233,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
     {
            $scope.showPrograms=true;
            //TODO: load stock cards on program change
-           $scope.selectedProgramId=$scope.userPrograms[0].id;
+           $scope.selectedProgram=$scope.userPrograms[0];
            $scope.loadProducts(homeFacility.id,$scope.userPrograms[0].id);
            $scope.selectedProgramId=$scope.userPrograms[0].id;
     }
@@ -274,7 +291,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,$timeout,$window,
     {
              var toExclude = _.pluck(_.pluck(receivedProducts, 'product'), 'primaryName');
              $scope.productsToDisplay = $.grep($scope.allProducts, function (productObject) {
-                  return $.inArray(productObject.product.primaryName, toExclude) == -1;
+                  return $.inArray(productObject.programProduct.product.primaryName, toExclude) == -1;
               });
     }
 
@@ -389,5 +406,15 @@ ReceiveStockController.resolve = {
              });
           }, 100);
           return deferred.promise;
-        }
+        },
+        manufacturers : function($q, $timeout, $route, ManufacturerList){
+                    var deferred = $q.defer();
+
+                    $timeout(function () {
+                      ManufacturerList.get(function (data) {
+                        deferred.resolve(data.manufacturers);
+                      });
+                    }, 100);
+                    return deferred.promise;
+                  }
 };
