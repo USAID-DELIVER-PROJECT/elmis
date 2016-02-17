@@ -38,7 +38,7 @@ public class CategorizationVaccineUtilizationPerformanceQueryBuilder {
                 "            sum(mr_1) mr_1," +
                 "            sum(dtp_1) dtp_1," +
                 "            sum(dtp_3) dtp_3 " +
-                "           from vw_vaccine_coverage   " +
+                "           from vw_vaccine_dropout   " +
                 "            inner join vw_districts vd on vd.district_id = geographic_zone_id  " +
                 writePredicate(params) +
                 "            group by 1,2,3,4,5,6,7,8" +
@@ -65,7 +65,7 @@ public class CategorizationVaccineUtilizationPerformanceQueryBuilder {
                 "            sum(mr_1) mr_1," +
                 "            sum(dtp_1) dtp_1," +
                 "            sum(dtp_3) dtp_3 " +
-                "           from vw_vaccine_coverage   " +
+                "           from vw_vaccine_dropout   " +
                 "            inner join vw_districts vd on vd.district_id = geographic_zone_id  " +
                 writePredicate(params) +
                 "            group by 1,2,3,4,5,6,7,8)" +
@@ -106,7 +106,7 @@ public class CategorizationVaccineUtilizationPerformanceQueryBuilder {
                 "            sum(mr_1) mr_1," +
                 "            sum(dtp_1) dtp_1," +
                 "            sum(dtp_3) dtp_3 " +
-                "           from vw_vaccine_coverage   " +
+                "           from vw_vaccine_dropout   " +
                 "            inner join vw_districts vd on vd.district_id = geographic_zone_id  " +
                 writePredicate(params) +
                 "            group by 1,2,3,4,5,6,7,8)" +

@@ -54,6 +54,10 @@
         </div>
     </div>
 
+    <div class="alert alert-danger"  ng-show='stockLoaded === true'>
+        <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
+        <strong><a href="/public/pages/vaccine/inventory/index.html#/receive" openlmis-message="stock.initialize.stock"></a></strong>
+    </div>
 
     <div class="alert alert-info row-fluid" style="width: auto" id="saveSuccessMsgDiv" ng-show="message">
         <div>
@@ -68,7 +72,7 @@
         <div class="row-fluid ">
             <div class="span6 init-rnr-grid">
                 <div class="gridStyle small" ng-grid="periodGridOptions"
-                     ng-show="!(periodGridData.length == 0) && !(periodGridData.emergency)"></div>
+                     ng-show="!(periodGridData.length == 0) && !(periodGridData.emergency) && stockLoaded === false"></div>
             </div>
             <!-- <div class="clearfix"></div>-->
             <div class="span6 padding2px" style="text-align:right;"><br>

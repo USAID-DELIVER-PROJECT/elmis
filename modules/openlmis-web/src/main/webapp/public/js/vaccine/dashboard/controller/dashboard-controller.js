@@ -33,16 +33,19 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     reparingDetailList,
                                     reportingDetail,
                                     reportingDetailList,
-                                   InvestigatingDetails,
+                                    InvestigatingDetails,
                                     investigatingDetailList,
-                                    ContactList
-) {
+                                    ContactList) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
     $scope.sessions = {
         openPanel: true
     };
+
+    var bcgVaccinated=" BCG Vaccinated";
+    var mrVaccinated=" MR Vaccinated";
+    var bcgDropout=" BCG Droput";
 
     $scope.dashboardHelps = dashboardSlidesHelp;
     $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
@@ -126,21 +129,36 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.monthlyDropout = {
         dataPoints: [],
         dataColumns: [{
-            "id": "bcg_mr_dropout", "name": messageService.get('label.bcg.mr.dropout'), "type": "bar"
+            "id": "bcg_mr_dropout", "name": bcgDropout, "type": "line"
         },
-            {"id": "dtp1_dtp3_dropout", "name": messageService.get('label.dtp.dropout'), "type": "bar"}
+            {"id": "bcg_vaccinated", "name": bcgVaccinated, "type": "bar"},
+            {"id": "mr_vaccinated", "name": mrVaccinated, "type": "bar"}
         ],
         dataX: {"id": "period_name"}
     };
+
     $scope.districtDropout = {
         dataPoints: [],
         dataColumns: [{
-            "id": "bcg_mr_dropout", "name": messageService.get('label.bcg.mr.dropout'), "type": "bar"
+            "id": "bcg_mr_dropout", "name": bcgDropout, "type": "line"
         },
-            {"id": "dtp1_dtp3_dropout", "name": messageService.get('label.dtp.dropout'), "type": "bar"}
+            {"id": "bcg_vaccinated", "name": bcgVaccinated, "type": "bar"},
+            {"id": "mr_vaccinated", "name": mrVaccinated, "type": "bar"}
         ],
         dataX: {"id": "geographic_zone_name"}
     };
+
+    $scope.facilityDropout = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "bcg_mr_dropout", "name": bcgDropout, "type": "line"
+        },
+            {"id": "bcg_vaccinated", "name": bcgVaccinated, "type": "bar"},
+            {"id": "mr_vaccinated", "name": mrVaccinated, "type": "bar"}
+        ],
+        dataX: {"id": "facility_name"}
+    };
+
 
     $scope.monthlyStock = {
         dataPoints: [],
@@ -187,15 +205,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             "id": "wastage_rate", "name": messageService.get('label.wastage'), "type": "line"
         },
             {"id": "usage_rate", "name": messageService.get('label.actual'), "type": "bar"}
-        ],
-        dataX: {"id": "facility_name"}
-    };
-    $scope.facilityDropout = {
-        dataPoints: [],
-        dataColumns: [{
-            "id": "bcg_mr_dropout", "name": messageService.get('label.bcg.mr.dropout'), "type": "line"
-        },
-            {"id": "dtp1_dtp3_dropout", "name": messageService.get('label.dtp.dropout'), "type": "bar"}
         ],
         dataX: {"id": "facility_name"}
     };
@@ -419,7 +428,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 period: $scope.filter.facilityDropout.period,
                 product: $scope.filter.facilityDropout.product
             }, function (data) {
-                $scope.facilityDropout.data = data.facilityDropout;
+                $scope.facilityDropout.data = dropoutSelector(data.facilityDropout);
+                alert("facility:"+ "period is " + $scope.filter.facilityDropout.period + " * product is "+ $scope.filter.facilityDropout.product + "*" + JSON.stringify($scope.facilityDropout.data));
                 if (!isUndefined($scope.facilityDropout.data)) {
                     $scope.filter.totalfacilityDropout = $scope.facilityDropout.data.length;
                 } else {
@@ -501,7 +511,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 startDate: $scope.filter.monthlyDropout.startDate, endDate: $scope.filter.monthlyDropout.endDate,
                 product: $scope.filter.monthlyDropout.product
             }, function (data) {
-                $scope.monthlyDropout.dataPoints = data.monthlyDropout;
+                $scope.monthlyDropout.dataPoints = dropoutSelector(data.monthlyDropout);
+                 alert("monthly:" + JSON.stringify($scope.monthlyDropout.dataPoints));
             });
         }
     };
@@ -511,7 +522,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 period: $scope.filter.districtDropout.period,
                 product: $scope.filter.districtDropout.product
             }, function (data) {
-                $scope.districtDropout.dataPoints = data.districtDropout;
+                $scope.districtDropout.dataPoints = dropoutSelector(data.districtDropout);
+                   alert("district:" + "period is " + $scope.filter.facilityDropout.period + " * product is "+ $scope.filter.facilityDropout.product + "*" + JSON.stringify($scope.districtDropout.dataPoints));
             });
         }
     };
@@ -755,9 +767,9 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             windowClass: 'my-modal-popup',
             resolve: {
                 items: function () {
-                    var list=reportingDetailList.reportingDetails;
-                    for(i=0;i<list.length;i++){
-                        list[i].checked=false;
+                    var list = reportingDetailList.reportingDetails;
+                    for (i = 0; i < list.length; i++) {
+                        list[i].checked = false;
                     }
 
                     return list;
@@ -787,179 +799,208 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             }
         });
     };
-        $scope.openInvestigatingDetailDialog = function (size) {
+    $scope.openInvestigatingDetailDialog = function (size) {
 
-            var modalInstance = $modal.open({
-                animation: $scope.animationsEnabled,
-                templateUrl: 'investigating.html',
-                controller: 'ModalInstanceCtrl',
-                size: 'lg',
-                windowClass: 'my-modal-popup',
-                resolve: {
-                    items: function () {
+        var modalInstance = $modal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'investigating.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'lg',
+            windowClass: 'my-modal-popup',
+            resolve: {
+                items: function () {
 
-                        return investigatingDetailList.investigatingDetails;
-                    }
+                    return investigatingDetailList.investigatingDetails;
                 }
-            });
-            modalInstance.result.then(function (selectedItem) {
-                $scope.selected = selectedItem;
-            }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
-        };
-        $scope.toggleAnimation = function () {
-            $scope.animationsEnabled != $scope.animationsEnabled;
-        };
-    $scope.getBackGroundColor=function(_index) {
-        var bgColor='';
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+    $scope.toggleAnimation = function () {
+        $scope.animationsEnabled != $scope.animationsEnabled;
+    };
+    $scope.getBackGroundColor = function (_index) {
+        var bgColor = '';
 
-        if(_index%2===0){
-            bgColor='red';
-        }else if(value>10) {
+        if (_index % 2 === 0) {
+            bgColor = 'red';
+        } else if (value > 10) {
             bgColor = 'white';
         }
 
         return bgColor;
     };
-
-}
-    VaccineDashboardController.resolve = {
-
-        dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey) {
-
-            var deferred = $q.defer();
-            var helps = {};
-            $timeout(function () {
-                HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function (data) {
-                    helps.coverageHelp = data.siteContent;
-
-                });
-                HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function (data) {
-                    helps.wastageHelp = data.siteContent;
-                });
-                HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function (data) {
-                    helps.sessionsHelp = data.siteContent;
-                });
-                HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function (data) {
-                    helps.dropoutHelp = data.siteContent;
-                });
-
-                deferred.resolve(helps);
-
-            }, 100);
-            return deferred.promise;
-        },
-        defaultProduct: function ($q, $timeout, SettingsByKey) {
-            var deferred = $q.defer();
-            $timeout(function () {
-
-                SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_PRODUCT'}, function (data) {
-
-                    if (isUndefined(data.settings) || isUndefined(data.settings.value)) {
-
-                        deferred.resolve(0);
-                    } else {
-
-                        deferred.resolve(data.settings.value);
-                    }
-
-                });
-
-            }, 100);
-
-            return deferred.promise;
-
-        },
-        defaultPeriodTrend: function ($q, $timeout, SettingsByKey) {
-            var deferred = $q.defer();
-            $timeout(function () {
-
-                SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_PERIOD_TREND'}, function (data) {
-                    if (isUndefined(data.settings) || isUndefined(data.settings.value)) {
-                        deferred.resolve(1);
-                    } else {
-
-                        deferred.resolve(data.settings.value);
-                    }
-
-                });
-
-            }, 100);
-
-            return deferred.promise;
-
-        },
-        defaultMonthlyPeriod: function ($q, $timeout, SettingsByKey) {
-            var deferred = $q.defer();
-
-            $timeout(function () {
-
-                SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_MONTHLY_PERIOD'}, function (data) {
-                    if (isUndefined(data.settings) || isUndefined(data.settings.value)) {
-                        deferred.resolve(0);
-                    } else {
-
-                        deferred.resolve(data.settings.value);
-                    }
-
-                });
-
-            }, 100);
-
-            return deferred.promise;
-
-        },
-        reportingDetailList: function ($q, $timeout, reportingDetail) {
-            var deferred = $q.defer();
-            $timeout(function () {
-
-                reportingDetail.get(function (data) {
-
-                        deferred.resolve(data);
+    function dropoutSelector(dropoutList) {
+        $scope.bcgMRDropoutId = '2412';
+        $scope.dtpDropoutId = '2421';
+        var data=[];
+        var len = dropoutList.length;
 
 
-                });
 
-            }, 100);
-
-            return deferred.promise;
-
-        },
-        reparingDetailList: function ($q, $timeout, repairingDetail) {
-            var deferred = $q.defer();
-            $timeout(function () {
-
-                repairingDetail.get(function (data) {
+        if ($scope.filter.monthlyDropout.product === $scope.dtpDropoutId) {
+            // alert($scope.filter.monthlyDropout.product);
+            bcgDropout=messageService.get('label.dtp.dropout');
+            bcgVaccinated=messageService.get('label.dtp1.vaccinated');
+            mrVaccinated =messageService.get('label.dtp3.vaccinated');
 
 
-                        deferred.resolve(data);
-
-
-                });
-
-            }, 100);
-
-            return deferred.promise;
-
-        },
-        investigatingDetailList: function ($q, $timeout, InvestigatingDetails) {
-            var deferred = $q.defer();
-            $timeout(function () {
-
-                InvestigatingDetails.get(function (data) {
-
-                        deferred.resolve(data);
-
-
-                });
-
-            }, 100);
-
-            return deferred.promise;
-
+            for (var i=0; i < len; i++) {
+                dropoutList[i].bcg_vaccinated= dropoutList[i].dtp1_vaccinated;
+                dropoutList[i].mr_vaccinated= dropoutList[i].dtp3_vaccinated;
+                dropoutList[i].bcg_mr_dropout= dropoutList[i].dtp1_dtp3_dropout;
+            }
+        }else{
+            bcgDropout=messageService.get('label.bcg.mr.dropout');
+            bcgVaccinated=messageService.get('label.bcg.vaccinated');
+            mrVaccinated=messageService.get('label.mr.vaccinated');
         }
 
+        // alert(bcgDropout + "*" + bcgVaccinated + "*" + mrVaccinated);
+
+        return dropoutList;
+    }
+
+}
+VaccineDashboardController.resolve = {
+
+    dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey) {
+
+        var deferred = $q.defer();
+        var helps = {};
+        $timeout(function () {
+            HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function (data) {
+                helps.coverageHelp = data.siteContent;
+
+            });
+            HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function (data) {
+                helps.wastageHelp = data.siteContent;
+            });
+            HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function (data) {
+                helps.sessionsHelp = data.siteContent;
+            });
+            HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function (data) {
+                helps.dropoutHelp = data.siteContent;
+            });
+
+            deferred.resolve(helps);
+
+        }, 100);
+        return deferred.promise;
+    },
+    defaultProduct: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+        $timeout(function () {
+
+            SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_PRODUCT'}, function (data) {
+
+                if (isUndefined(data.settings) || isUndefined(data.settings.value)) {
+
+                    deferred.resolve(0);
+                } else {
+
+                    deferred.resolve(data.settings.value);
+                }
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    },
+    defaultPeriodTrend: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+        $timeout(function () {
+
+            SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_PERIOD_TREND'}, function (data) {
+                if (isUndefined(data.settings) || isUndefined(data.settings.value)) {
+                    deferred.resolve(1);
+                } else {
+
+                    deferred.resolve(data.settings.value);
+                }
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    },
+    defaultMonthlyPeriod: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+
+        $timeout(function () {
+
+            SettingsByKey.get({key: 'VACCINE_DASHBOARD_DEFAULT_MONTHLY_PERIOD'}, function (data) {
+                if (isUndefined(data.settings) || isUndefined(data.settings.value)) {
+                    deferred.resolve(0);
+                } else {
+
+                    deferred.resolve(data.settings.value);
+                }
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    },
+    reportingDetailList: function ($q, $timeout, reportingDetail) {
+        var deferred = $q.defer();
+        $timeout(function () {
+
+            reportingDetail.get(function (data) {
+
+                deferred.resolve(data);
 
 
-    };
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    },
+    reparingDetailList: function ($q, $timeout, repairingDetail) {
+        var deferred = $q.defer();
+        $timeout(function () {
+
+            repairingDetail.get(function (data) {
+
+
+                deferred.resolve(data);
+
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    },
+    investigatingDetailList: function ($q, $timeout, InvestigatingDetails) {
+        var deferred = $q.defer();
+        $timeout(function () {
+
+            InvestigatingDetails.get(function (data) {
+
+                deferred.resolve(data);
+
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    }
+
+
+};

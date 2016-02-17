@@ -261,7 +261,6 @@ public interface VaccineDashboardMapper {
         @Select("SELECT\n" +
                 "i.period_name,\n" +
                 "i.period_start_date, \n" +
-                "sum(i.denominator) target,\n" +
                 "sum(i.bcg_1) bcg_vaccinated, \n" +
                 "sum(i.dtp_1) dtp1_vaccinated,\n" +
                 "sum(i.mr_1) mr_vaccinated, \n" +
@@ -269,7 +268,7 @@ public interface VaccineDashboardMapper {
                 "case when sum(COALESCE(i.bcg_1,0)) > 0 then ( (sum(COALESCE(i.bcg_1,0)) - sum(COALESCE(i.mr_1,0))) / sum(COALESCE(i.bcg_1,0))::numeric) * 100 else 0 end bcg_mr_dropout, \n" +
                 "case when sum(COALESCE(i.dtp_1,0)) > 0 then ( (sum(COALESCE(i.dtp_1,0)) - sum(COALESCE(i.dtp_3,0))) / sum(COALESCE(i.dtp_1,0))::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
                 "FROM\n" +
-                "vw_vaccine_coverage i\n" +
+                "vw_vaccine_dropout i\n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
                 "JOIN vaccine_reports vr ON i.report_id = vr. ID\n" +
                 "JOIN program_products pp ON pp.programid = vr.programid\n" +
@@ -287,7 +286,6 @@ public interface VaccineDashboardMapper {
         @Select("SELECT\n" +
                 "i.geographic_zone_id,\n" +
                 "i.geographic_zone_name,\n" +
-                "sum(i.denominator) target,\n" +
                 "sum(i.bcg_1) bcg_vaccinated, \n" +
                 "sum(i.dtp_1) dtp1_vaccinated,\n" +
                 "sum(i.mr_1) mr_vaccinated, \n" +
@@ -295,7 +293,7 @@ public interface VaccineDashboardMapper {
                 "case when sum(COALESCE(i.bcg_1,0)) > 0 then ( (sum(COALESCE(i.bcg_1,0)) - sum(COALESCE(i.mr_1,0))) / sum(COALESCE(i.bcg_1,0))::numeric) * 100 else 0 end bcg_mr_dropout, \n" +
                 "case when sum(COALESCE(i.dtp_1,0)) > 0 then ( (sum(COALESCE(i.dtp_1,0)) - sum(COALESCE(i.dtp_3,0))) / sum(COALESCE(i.dtp_1,0))::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
                 "FROM\n" +
-                "vw_vaccine_coverage i\n" +
+                "vw_vaccine_dropout i\n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
                 "JOIN vaccine_reports vr ON i.report_id = vr. ID\n" +
                 "JOIN program_products pp ON pp.programid = vr.programid\n" +
@@ -314,10 +312,14 @@ public interface VaccineDashboardMapper {
                 "SELECT \n" +
                 "d.district_name,  \n" +
                 "i.facility_name,\n" +
-                "case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,\n" +
-                "case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
+                "i.bcg_1 bcg_vaccinated, \n" +
+                "i.dtp_1 dtp1_vaccinated,\n" +
+                "i.mr_1 mr_vaccinated, \n" +
+                "i.dtp_3 dtp3_vaccinated,\n" +
+                "case when i.bcg_1 > 0 then(i.bcg_1 - i.mr_1) / i.bcg_1::numeric * 100 else 0 end bcg_mr_dropout, \n" +
+                "case when i.dtp_1 > 0 then(i.dtp_1 - i.dtp_3) / i.dtp_1::numeric * 100 else 0 end dtp1_dtp3_dropout \n" +
                 "FROM  \n" +
-                "vw_vaccine_coverage i  \n" +
+                "vw_vaccine_dropout i  \n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
                 "JOIN vaccine_reports vr ON i.report_id = vr.ID  \n" +
                 "JOIN program_products pp ON pp.programid = vr.programid  \n" +
@@ -328,8 +330,7 @@ public interface VaccineDashboardMapper {
                 "and i.period_id = #{period} \n" +
                 "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
-                "GROUP BY 1,2\n" +
-                "ORDER BY 2;")
+                "ORDER BY 1,2;")
         List<HashMap<String, Object>> getFacilityDropout(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
 /* */
         @Select("SELECT \n" +
@@ -337,10 +338,10 @@ public interface VaccineDashboardMapper {
                 "i.facility_name,\n" +
                 "i.period_name,\n" +
                 "i.period_start_date,\n" +
-                "case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,\n" +
-                "case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout\n" +
+                "case when i.bcg_1 > 0 then(i.bcg_1 - i.mr_1) / i.bcg_1::numeric * 100 else 0 end bcg_mr_dropout, \n" +
+                "case when i.dtp_1 > 0 then(i.dtp_1 - i.dtp_3) / i.dtp_1::numeric * 100 else 0 end dtp1_dtp3_dropout \n" +
                 "FROM  \n" +
-                "vw_vaccine_coverage i  \n" +
+                "vw_vaccine_dropout i  \n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
                 "JOIN vaccine_reports vr ON i.report_id = vr.ID  \n" +
                 "JOIN program_products pp ON pp.programid = vr.programid  \n" +
@@ -351,8 +352,7 @@ public interface VaccineDashboardMapper {
                 "and i.period_start_date::date >= #{startDate} and i.period_end_date::date <= #{endDate}\n" +
                 "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
-                "GROUP BY 1,2,3,4\n" +
-                "ORDER BY 2;")
+                "ORDER BY 1,2;")
         List<HashMap<String, Object>> getFacilityDropoutDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
 
