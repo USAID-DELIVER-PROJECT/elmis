@@ -92,4 +92,12 @@ public class VaccineInventoryDistributionRepository {
         return mapper.updateNotification(Id);
     }
 
+    public VaccineDistribution getDistributionByToFacility(Long facilityId) {
+        return mapper.getDistributionByToFacility(facilityId);
+    }
+
+    public Long getSupervisorFacilityId(Long facilityId) {
+        return mapper.getSupervisorFacilityId(facilityId);
+    }
+
 }

@@ -99,8 +99,7 @@
             <div ng-show="hasStock ">
             <div class="info-box padding2px" >
                 <div class="requisition-head-block">
-                    <form name="receivingForm">
-                        <div class="row-fluid" >
+                    <div class="row-fluid" ng-form="receivingForm">
                             <div class="span12" style="padding-top:18px;">
                                 <div class="row-fluid">
                                     <div class="span4 input-append"
@@ -117,19 +116,22 @@
                                     </div>
                                     <div class="span4" ng-show=" hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
                                         <strong id="voucher-number"
-                                                openlmis-message="label.stock.issue.voucher"> </strong>:&nbsp;
-                                        <input type="text" name="voucherNumber" ng-required="true"
-                                               ng-model="receivedProducts.voucherNumber" ng-change="clear()"/>
+                                                openlmis-message="label.stock.order.number"> </strong>
+                                        <span class="label-required">*</span>:&nbsp;
+                                        <input ng-reqiured=" hasPermission('OPEN_STOCK_RECEIVING_PROCESS')" type="text"
+                                               name="orderNumber" ng-required="true"
+                                               ng-model="orderNumber" ng-change="clear()"/>
 
                                     </div>
                                     <div class="span4" >
                                         <div ng-show="distribution !== undefined || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
                                             <strong id="received-date-label"
-                                                    openlmis-message="label.stock.received.date"> </strong>:&nbsp;
-                                            <input ng-required="distribution !== undefined && !noVoucherNumber"
+                                                    openlmis-message="label.stock.received.date"> </strong>
+                                            <span class="label-required">*</span>:&nbsp;
+                                            <input ng-required="(distribution !== undefined && !noVoucherNumber) || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')"
                                                    id="receivingDate" name="receivingDate" type="text"
                                                    ui-date="{dateFormat: 'dd/mm/yy', changeYear: false,maxDate:'today',minDate:period.stringStartDate}"
-                                                   ng-model="receivedProducts.date"/>
+                                                   ng-model="orderDate"/>
 
                                         </div>
                                     </div>
@@ -144,7 +146,6 @@
                             </div>
 
                         </div>
-                    </form>
                 </div>
             </div>
                 <div class="rnr-table" ng-show=" !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
@@ -164,7 +165,8 @@
                    class="btn btn-primary save-button"
                    openlmis-message="button.submit"/>
 
-            <input ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock" ng-disabled="receivedProducts.length == 0 || openReceiveForm.$invalid"
+            <input ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock"
+                   ng-disabled="receivedProducts.length == 0 || orderNumber ===undefined || orderDate===orderDate"
                    type="submit" id="submit-button2" ng-click="openReceive()"
                    class="btn btn-primary save-button"
                    openlmis-message="button.submit"/>

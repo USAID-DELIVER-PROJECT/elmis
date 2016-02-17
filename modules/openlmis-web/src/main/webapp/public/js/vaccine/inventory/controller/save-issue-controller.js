@@ -40,7 +40,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
 
          distribution.fromFacilityId = $scope.homeFacility.id;
          distribution.toFacilityId= $scope.facilityToIssue.id;
-         distribution.programId=$scope.userPrograms[0].id;
+         distribution.programId=$scope.selectedProgram.id;
          distribution.distributionDate = $scope.facilityToIssue.issueDate;
          distribution.lineItems=[];
          distribution.distributionType=$scope.facilityToIssue.type;

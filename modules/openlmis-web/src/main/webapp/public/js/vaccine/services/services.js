@@ -496,3 +496,7 @@ services.factory('QuantityRequired',function($resource){
 services.factory('FacilityDistributionForecastAndLastPeriod', function ($resource) {
     return $resource('/vaccine/inventory/distribution/facility-distribution-forecast-lastPeriod/:facilityId/:programId.json',{facilityCode:'@facilityCode',programCode:'@programCode',periodId:'@periodId'}, {});
 });
+
+services.factory('DistributionWithSupervisorId',function($resource){
+     return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
+});

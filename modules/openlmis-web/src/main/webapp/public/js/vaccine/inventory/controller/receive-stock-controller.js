@@ -11,12 +11,12 @@
  */
 
 
-function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
+function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution,DistributionWithSupervisorId, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
 
     $scope.hasStock=homeFacility.hasStock;
     $scope.userPrograms=configurations.programs;
     $scope.facilityDisplayName=homeFacility.name;
-    $scope.selectedProgramId=null;
+    $scope.homeFacilityId=homeFacility.id;
     $scope.receivedProducts=[];
     $scope.productToAdd={};
     $scope.productToAdd.lots=[];
@@ -115,7 +115,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$ti
                  {
                      $scope.message=true;
                      $scope.distribution.status='RECEIVED';
-                     $scope.distribution.programId=$scope.selectedProgramId;
+                     $scope.distribution.programId=$scope.selectedProgram.id;
                      SaveDistribution.save($scope.distribution,function(distribution){
                          $timeout(function(){
                                $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
@@ -141,7 +141,16 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$ti
                 {
                     if(result)
                     {
+                        var distribution={};
+                        DistributionWithSupervisorId.get({facilityId:homeFacility.id},function(data){
+                                  var existingDistribution=(data.distribution !==null)?data.distribution:undefined;
+                                  var supervisorId=(data.supervisorId !== null)?data.supervisorId:undefined;
+                                  distribution=new VaccineDistribution(existingDistribution, $scope.receivedProducts,$scope.orderNumber,$scope.orderDate,supervisorId,$scope.homeFacilityId,$scope.selectedProgramId);
+                                  console.log(JSON.stringify(distribution));
+                         });
+
                         var events=[];
+
                         $scope.receivedProducts.forEach(function(p){
                         if(p.lots !==undefined && p.lots.length >0)
                         {
@@ -185,10 +194,13 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$ti
                     StockEvent.update({facilityId:homeFacility.id},events, function (data) {
                          if(data.success)
                          {
-                             $scope.message=true;
-                            $timeout(function(){
-                             $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
-                            },900);
+                           SaveDistribution.save(distribution,function(distribution){
+                               $scope.message=true;
+                               $timeout(function(){
+                                   $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                               },900);
+
+                           });
 
                          }
                     });
@@ -213,7 +225,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,$ti
     {
            $scope.showPrograms=true;
            //TODO: load stock cards on program change
-           $scope.selectedProgramId=$scope.userPrograms[0].id;
+           $scope.selectedProgram=$scope.userPrograms[0];
            $scope.loadProducts(homeFacility.id,$scope.userPrograms[0].id);
            $scope.selectedProgramId=$scope.userPrograms[0].id;
     }
