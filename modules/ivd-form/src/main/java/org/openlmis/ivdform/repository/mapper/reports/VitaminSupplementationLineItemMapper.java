@@ -30,8 +30,9 @@ public interface VitaminSupplementationLineItemMapper {
 
   @Update("UPDATE vaccine_report_vitamin_supplementation_line_items " +
       " SET" +
-      " maleValue = #{maleValue}, " +
-      " femaleValue = #{femaleValue} " +
+      " maleValue = #{maleValue} " +
+      " , skipped = #{skipped}" +
+      " , femaleValue = #{femaleValue} " +
       " , modifiedBy = #{modifiedBy} " +
       " , modifiedDate = NOW()" +
       " WHERE id = #{id}")
