@@ -1230,8 +1230,8 @@ app.directive('vaccineProductFilter', ['VaccineProducts', 'VaccineSupervisedIvdP
     }
 ]);
 
-app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', 'messageService',
-    function (GetVaccineReportPeriodTree,  messageService) {
+app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodFlat', 'messageService','SettingsByKey',
+    function (GetVaccineReportPeriodFlat,  messageService,SettingsByKey) {
         return {
             restrict: 'E',
             scope: {
@@ -1242,25 +1242,31 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', '
             controller: function($scope){
 
                 $scope.period_placeholder = messageService.get('label.select.period');
-
+                SettingsByKey.get({key:'VACCINE_LATE_REPORTING_DAYS'}, function(data, er){ $scope.cutoffdate =  data.settings.value;});
                 $scope.$evalAsync(function () {
                     //Load period tree
-                    GetVaccineReportPeriodTree.get({}, function (data) {
+                    GetVaccineReportPeriodFlat.get({}, function (data) {
                         $scope.periods = data.vaccinePeriods.periods;
-                        $scope.filter = {defaultPeriodId : data.vaccinePeriods.currentPeriodId};
+
+                        var defaultPeriodId=  utils.getVaccineMonthlyDefaultPeriod( $scope.periods,$scope.cutoffdate);
+
+                        $scope.filter = {defaultPeriodId : defaultPeriodId};
                         if (!angular.isUndefined($scope.periods)) {
                             if ($scope.periods.length === 0)
                                 $scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
                         }
+                        $scope.period=defaultPeriodId;
+
                     });
                 });
-                if(!isUndefined($scope.default)){
-                    $scope.period = $scope.default;
-                }else{
-
-                    $scope.period = 0;
-                }
+                //if(!isUndefined($scope.default)){
+                //    $scope.period = $scope.default;
+                //}else{
+                //
+                //    $scope.period = 0;
+                //}
                 $scope.$watch('period', function(newVal, oldVal){
+
                     $scope.onChange();
                     $scope.$parent.OnFilterChanged();
                 });
