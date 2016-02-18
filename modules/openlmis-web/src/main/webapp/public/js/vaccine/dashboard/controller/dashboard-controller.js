@@ -137,7 +137,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.monthlyWastage = {
         dataPoints: [],
         dataColumns: [{
-            "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "bar"
+            "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "line"
         }
         ],
         dataX: {"id": "period_name"}
@@ -190,7 +190,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.facilitySessions = {
         dataPoints: [],
         dataColumns: [{
-            "id": "fixed_sessions", "name": messageService.get('label.fixed.sessions'), "type": "line"
+            "id": "fixed_sessions", "name": messageService.get('label.fixed.sessions'), "type": "bar"
         },
             {"id": "outreach_sessions", "name": messageService.get('label.outreach.sessions'), "type": "bar"}
         ],
