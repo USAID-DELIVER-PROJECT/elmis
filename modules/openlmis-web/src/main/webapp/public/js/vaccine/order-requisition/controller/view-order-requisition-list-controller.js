@@ -32,7 +32,6 @@
             if ($scope.selectedProgramId) requisitionQueryParameters.programId = $scope.selectedProgramId;
 
             VaccineOrderRequisitionsForViewing.get(requisitionQueryParameters, function (data) {
-                 console.log(data.search);
                 $scope.requisitions = $scope.filteredRequisitions = data.search;
 
                 setRequisitionsFoundMessage();
@@ -95,7 +94,6 @@
             };
             if ($scope.selectedProgramId) data.programId = $scope.selectedProgramId;
             navigateBackService.setData(data);
-            console.log($scope.selectedItems[0].id);
             $window.location = '/public/pages/vaccine/order-requisition/index.html#/create/'+parseInt($scope.selectedItems[0].id,10)+'/'+parseInt($scope.selectedProgramId,10);
         };
 
