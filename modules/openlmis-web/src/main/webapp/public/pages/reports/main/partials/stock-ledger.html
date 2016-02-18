@@ -30,10 +30,10 @@
                 <form ng-submit="filterGrid()" name="filterForm" novalidate>
                     <div filter-container class="clearfix">
                         <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
-                        <product-filter class="form-cell horizontalFilters" required="true"></product-filter>
-                        <vaccine-Facility-By-Supervisory-Node-Filter class="form-cell horizontalFilters"  required="true"></vaccine-Facility-By-Supervisory-Node-Filter>
-
-
+                        <product-without-description-filter class="form-cell horizontalFilters"
+                                                            required="true"></product-without-description-filter>
+                        <vaccine-Facility-By-Supervisory-Node-Filter class="form-cell horizontalFilters"
+                                                                     required="true"></vaccine-Facility-By-Supervisory-Node-Filter>
 
                         <div class="form-cell horizontalFilters">
                             <label for="startTime" class="labels">
@@ -44,7 +44,7 @@
 
                             <div class="form-field">
                                 <input name="startTime" id="startTime" type="text"
-                                       ui-date
+                                       ui-date="{maxDate:'today', dateFormat: 'dd/mm/yy', changeYear: false}"
                                        ui-date-format
                                        ng-model="filter.startTime"
                                        ng-change="OnFilterChanged()"/>
@@ -105,7 +105,7 @@
                             <tbody>
                             <tr ng-repeat="row in datarows">
                                 <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
-                                <td data-title="getLocalMessage('label.date')" style="width:40%" >{{
+                                <td data-title="getLocalMessage('label.date')" style="width:40%">{{
                                     row.date | date:'dd-MM-yyyy' }}
                                 </td>
                                 <td data-title="'Store Name (To/From)'" style="width:30%" sortable="">{{

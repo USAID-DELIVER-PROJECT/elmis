@@ -724,4 +724,10 @@ public class ReportLookupService {
 
   }
 
+  public List<Product> getProductsActiveUnderProgramWithoutDescriptions(Long programId) {
+    if (configurationService.getBoolValue("ALLOW_PRODUCT_CATEGORY_PER_PROGRAM")) {
+      return productMapper.getProductsForProgramPickCategoryFromProgramProductWDescriptions(programId);
+    }
+    return productMapper.getProductsForProgramWithoutDescriptions(programId);
+  }
 }

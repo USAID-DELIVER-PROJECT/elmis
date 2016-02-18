@@ -108,6 +108,9 @@ public class IvdFormService {
   @Autowired
   GeographicZoneService geographicZoneService;
 
+  @Autowired
+  IVDNotificationService ivdNotificationService;
+
   private static final String DATE_FORMAT = "yyyy-MM-dd";
 
   @Transactional
@@ -134,6 +137,7 @@ public class IvdFormService {
     repository.update(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.SUBMITTED, userId);
     reportStatusChangeRepository.insert(change);
+    ivdNotificationService.sendIVDStatusChangeNofitication(report, userId);
   }
 
   private VaccineReport createNewVaccineReport(Long facilityId, Long programId, Long periodId) {
@@ -250,16 +254,20 @@ public class IvdFormService {
 
   public void approve(VaccineReport report, Long userId) {
     report.setStatus(ReportStatus.APPROVED);
+    Long reportSubmitterUserId = getReportSubmitterUserId(report.getId());
     repository.update(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.APPROVED, userId);
     reportStatusChangeRepository.insert(change);
+    ivdNotificationService.sendIVDStatusChangeNofitication(report, reportSubmitterUserId);
   }
 
   public void reject(VaccineReport report, Long userId) {
     report.setStatus(ReportStatus.REJECTED);
+    Long reportSubmitterUserId = getReportSubmitterUserId(report.getId());
     repository.update(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.REJECTED, userId);
     reportStatusChangeRepository.insert(change);
+    ivdNotificationService.sendIVDStatusChangeNofitication(report, reportSubmitterUserId);
   }
 
   public FacilityIvdSummary getStockStatusForAllProductsInFacility(String facilityCode, String programCode, Long periodId) {
@@ -305,6 +313,11 @@ public class IvdFormService {
     }
     return response;
   }
+
+    private Long getReportSubmitterUserId(Long vaccineReportId){
+        VaccineReport previousReport =  repository.getById(vaccineReportId);
+        return previousReport != null ? previousReport.getModifiedBy() : null;
+    }
 
   private static Long calculateAMC(List<LogisticsLineItem> previousThree) {
     Long sum = 0L;

@@ -40,7 +40,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
 
          distribution.fromFacilityId = $scope.homeFacility.id;
          distribution.toFacilityId= $scope.facilityToIssue.id;
-         distribution.programId=$scope.userPrograms[0].id;
+         distribution.programId=$scope.selectedProgram.id;
          distribution.distributionDate = $scope.facilityToIssue.issueDate;
          distribution.lineItems=[];
          distribution.distributionType=$scope.facilityToIssue.type;
@@ -65,6 +65,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
                              event.type="ISSUE";
                              event.productCode =product.productCode;
                              event.facilityId=$scope.facilityToIssue.id;
+                             event.occurred=$scope.facilityToIssue.issueDate;
                              event.customProps={};
                              event.customProps.occurred=$scope.facilityToIssue.issueDate;
                              event.customProps.issuedto=$scope.facilityToIssue.name;
@@ -85,6 +86,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
                  event.type="ISSUE";
                  event.productCode =product.productCode;
                  event.facilityId=$scope.facilityToIssue.id;
+                 event.occurred=$scope.facilityToIssue.issueDate;
                  event.customProps={};
                  event.customProps.occurred=$scope.facilityToIssue.issueDate;
                  event.customProps.issuedto=$scope.facilityToIssue.name;

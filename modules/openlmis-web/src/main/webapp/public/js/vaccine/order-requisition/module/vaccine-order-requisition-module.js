@@ -13,11 +13,9 @@ angular.module('vaccine_order_requisition', ['openlmis', 'ngGrid', 'ui.bootstrap
     .config(['$routeProvider', function ($routeProvider) {
 
         $routeProvider.
-        when('/order-requisition', {controller:VaccineOrderRequisitionController, templateUrl:'partials/order-requisition.html',resolve:VaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/initiate', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/initiate.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/create/:id/:programId',{controller:CreateVaccineOrderRequisition,templateUrl:'partials/order-requisition.html',resolve:CreateVaccineOrderRequisition.resolve,reloadOnSearch:false}).
         when('/search', {controller:ViewOrderRequisitionList, templateUrl:'partials/view/view.html',resolve:ViewOrderRequisitionList.resolve,  reloadOnSearch: false}).
-        when('/view-order-requisition/:id/:facility', {controller:VaccineOrderRequisitionController, templateUrl:'partials/view-order.html',resolve:VaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/details', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/details.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/information', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/information.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
         when('/view', {controller:ViewVaccineOrderRequisitionController, templateUrl:'partials/view.html',resolve:ViewVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).

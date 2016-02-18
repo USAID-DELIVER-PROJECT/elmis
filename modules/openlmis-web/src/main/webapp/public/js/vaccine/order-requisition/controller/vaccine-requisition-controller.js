@@ -1,4 +1,4 @@
-function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location, GetFacilityForVaccineOrderRequisition) {
+function newVaccineOrderRequisitionController($scope,StockCards,$rootScope,settings,getFacilityTypeCode,VaccineOrderRequisitionReportPeriods,localStorageService,VaccineOrderRequisitionLastReport,VaccineOrderRequisitionReportInitiateEmergency, programs, facility, messageService, VaccineOrderRequisitionReportInitiate, $location) {
 
     $rootScope.viewOrder = false;
     $rootScope.receive = false;
@@ -11,9 +11,22 @@ function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFaci
     var id = parseInt($scope.programs[0].id,10);
     var facilityId = parseInt($scope.facility.id,10);
     var facilityTypeCode = getFacilityTypeCode;
-    var rFacilityTypeCode = settings;
-    console.log(rFacilityTypeCode);
 
+
+    $scope.stockLoaded=false;
+
+    StockCards.get({facilityId: parseInt(facilityId, 10)}, function (data) {
+        if (!isUndefined(data.stockCards) || data.stockCards.length > 0)
+            $scope.stockCards = data.stockCards;
+        else
+            $scope.stockLoaded=true;
+    });
+
+
+
+    if(!isUndefined(settings) && settings !== null) {
+        var rFacilityTypeCode = settings;
+    }
     $scope.requisitionTypes = [];
     $scope.requisitionTypes = [{id: '0', name: 'Unscheduled Reporting'}, {id: '1', name: 'Scheduled Reporting'}];
 
@@ -47,6 +60,7 @@ function newVaccineOrderRequisitionController($scope,$rootScope,settings,getFaci
                         else
 
                             {
+
                             $location.path('/details');
 
                                 if(facilityTypeCode === rFacilityTypeCode){
@@ -204,9 +218,11 @@ newVaccineOrderRequisitionController.resolve = {
         var deferred = $q.defer();
 
         $timeout(function () {
+
             SettingsByKey.get({key:'VACCINE_FACILITY_TYPE_CODE'}, function (data) {
-                deferred.resolve(data.settings);
+                deferred.resolve(data.settings.value);
             });
+
         }, 100);
 
         return deferred.promise;

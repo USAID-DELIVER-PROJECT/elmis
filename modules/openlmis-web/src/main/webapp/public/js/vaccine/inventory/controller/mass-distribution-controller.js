@@ -36,31 +36,6 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
          });
      };
 
-//     $scope.$watch('currentPage', function () {
-//         if ($scope.currentPage > 0) {
-//           $scope.page = $scope.currentPage;
-//           $scope.loadSupervisedFacilities($scope.userPrograms[0].id,homeFacility.id);
-//         }
-//      });
-//
-//    $scope.loadUnScheduledFacility=function(){
-//          $scope.UnScheduledFacility=_.findWhere($scope.allUnScheduledFacilities,{id:$scope.UnScheduledFacilityId});
-//    };
-//    $scope.clearRoutine=function(){
-//        $scope.allUnScheduledFacilities=$scope.allUnScheduledFacilitiesCopy;
-//        $scope.UnScheduledFacility=undefined;
-//        $scope.UnScheduledFacilityId='';
-//    };
-
-//     $scope.showLots=function(facility,product)
-//     {
-//          $scope.oldProductLots = angular.copy(product.lots);
-//          $scope.currentProduct=product;
-//          $scope.currentFacility=facility.name;
-//          $scope.currentLotsTotal=$scope.currentProduct.quantity;
-//          $scope.lotsModal = true;
-//     };
-
      $scope.closeModal=function(){
           $scope.currentProduct.lots=$scope.oldProductLots;
           evaluateTotal($scope.currentProduct);

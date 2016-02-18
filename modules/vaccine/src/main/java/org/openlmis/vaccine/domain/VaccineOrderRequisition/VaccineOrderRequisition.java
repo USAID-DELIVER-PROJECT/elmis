@@ -55,10 +55,8 @@ public class VaccineOrderRequisition extends BaseModel {
                 lineItem.setOrderId(id);
                 lineItem.setProductId(stockRequirements.getProductId());
                 lineItem.setProductName(stockRequirements.getProductName());
-                //lineItem.setMaxmonthsofstock(stockRequirements.getMaxMonthsOfStock());
 
                 lineItem.setOverriddenisa(stockRequirements.getIsaValue());
-               // lineItem.setEop(stockRequirements.getEop());
 
                 Product p = service.getById(stockRequirements.getProductId());
                 StockCard s = stockCardMapper.getByFacilityAndProduct(stockRequirements.getFacilityId(), p.getCode());
@@ -68,17 +66,12 @@ public class VaccineOrderRequisition extends BaseModel {
                 else {
                     lineItem.setStockOnHand(0L);
                 }
-                //lineItem.setMinMonthsOfStock(stockRequirements.getMinMonthsOfStock());
                 lineItem.setOrderedDate(form.format(new Date()));
                 lineItem.setBufferStock(stockRequirements.getBufferStock());
 
                 lineItem.setMaximumStock(stockRequirements.getMaximumStock());
                 lineItem.setReOrderLevel(stockRequirements.getReorderLevel());
                 lineItem.setCategory(stockRequirements.getProductCategory());
-                //lineItem.setPopulation(stockRequirements.getPopulation());
-
-                //lineItem.setIsa(stockRequirements.getIsa());
-
 
                 lineItem.setMinimumStock(stockRequirements.getMinimumStock());
                 lineItem.setAnnualNeed(stockRequirements.getAnnualNeed());
