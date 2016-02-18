@@ -163,10 +163,10 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
 
     function getDistrictSummeryReportData(unformattedReport) {
         var vaccineUtilClasses = [
-            {class: '1', displayName: 'Cat_A', description: 'Good Access & Good Utilisation', classColour: '#52C552'},
-            {class: '2', displayName: 'Cat_B', description: 'Good Access & Poor Utilisation', classColour: '#dce6f1'},
-            {class: '3', displayName: 'Cat_C', description: 'Poor Access & Good Utilisation', classColour: '#E4E44A'},
-            {class: '4', displayName: 'Cat_D', description: 'Poor Access & Poor Utilisation', classColour: '#ff0000'}
+            {class: '1', displayName: 'Cat_1', description: 'Good Access & Good Utilisation', classColour: '#52C552'},
+            {class: '2', displayName: 'Cat_2', description: 'Good Access & Poor Utilisation', classColour: '#dce6f1'},
+            {class: '3', displayName: 'Cat_3', description: 'Poor Access & Good Utilisation', classColour: '#E4E44A'},
+            {class: '4', displayName: 'Cat_4', description: 'Poor Access & Poor Utilisation', classColour: '#ff0000'}
 
         ], arr = [], tempArr = [], classCount = 0, hideInfo = [];
 
@@ -304,15 +304,15 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
         return $scope.filter.product == $scope.bcgMRDropoutId?true:false;
     }
 
-    function determineClass(coverage, wastage) {
+    function determineClass(coverage, dropout) {
         var minDropout = 10;
         var minCoverage = 90;
         var classfication;
-        if (coverage >= minCoverage && wastage <= minDropout) {
+        if (coverage >= minCoverage && dropout <= minDropout) {
             classfication = "1";
-        } else if (coverage < minCoverage && wastage <= minDropout) {
+        } else if (coverage < minCoverage && dropout <= minDropout) {
             classfication = "3";
-        } else if (coverage >= minCoverage && wastage > minDropout) {
+        } else if (coverage >= minCoverage && dropout > minDropout) {
             classfication = "2";
         } else {
             classfication = "4";

@@ -29,7 +29,7 @@ public class PerformanceByDropoutRateQueryBuilder {
     public  static final String START_DATE="i.period_start_date";
     public  static final String END_DATE="i.period_end_date";
     public  static final String PRODUCT_ID="i.product_id";
-    public  static final String VACCINE_COVERAGE_VIEW="vw_vaccine_coverage i";
+    public  static final String VACCINE_COVERAGE_VIEW="vw_vaccine_dropout i";
     public  static final String DISTRICTS_VIEW=" vw_districts d ON i.geographic_zone_id = d.district_id";
     public  static final String VACCINE_REPORTS_VIEW="vaccine_reports vr ON i.report_id = vr.ID";
     public  static final String PROGRAM_PRODUCTS="program_products pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id";

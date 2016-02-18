@@ -162,4 +162,20 @@ public interface VaccineInventoryDistributionMapper {
     @Select(" update vaccine_distributions SET notified = true WHERE id = #{Id} ")
     Long updateNotification(@Param("Id") Long Id);
 
+    @Select("SELECT *" +
+            " FROM vaccine_distributions " +
+            " WHERE tofacilityid=#{facilityId} AND  status='PENDING' order by createddate ASC LIMIT 1")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "fromFacilityId", column = "fromFacilityId"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "fromFacility", column = "fromFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    VaccineDistribution getDistributionByToFacility(@Param("facilityId") Long facilityId);
+
+    @Select("select sn2.facilityid from supervisory_nodes sn1 " +
+            " join supervisory_nodes sn2 on sn1.parentid=sn2.id " +
+            " where sn1.facilityId=#{facilityId}")
+    Long getSupervisorFacilityId(@Param("facilityId") Long facilityId);
+
 }
