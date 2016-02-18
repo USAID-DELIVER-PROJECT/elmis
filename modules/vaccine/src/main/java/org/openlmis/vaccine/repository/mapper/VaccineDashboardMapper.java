@@ -338,6 +338,10 @@ public interface VaccineDashboardMapper {
                 "i.facility_name,\n" +
                 "i.period_name,\n" +
                 "i.period_start_date,\n" +
+                "i.bcg_1 bcg_vaccinated, \n" +
+                "i.dtp_1 dtp1_vaccinated,\n" +
+                "i.mr_1 mr_vaccinated, \n" +
+                "i.dtp_3 dtp3_vaccinated,\n" +
                 "case when i.bcg_1 > 0 then(i.bcg_1 - i.mr_1) / i.bcg_1::numeric * 100 else 0 end bcg_mr_dropout, \n" +
                 "case when i.dtp_1 > 0 then(i.dtp_1 - i.dtp_3) / i.dtp_1::numeric * 100 else 0 end dtp1_dtp3_dropout \n" +
                 "FROM  \n" +
