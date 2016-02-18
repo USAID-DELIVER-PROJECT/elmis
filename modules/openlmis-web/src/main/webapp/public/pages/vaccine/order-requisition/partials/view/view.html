@@ -55,7 +55,7 @@
                             <span class="label-required"> *&nbsp;</span>
                         </label>
                         <input name="startDate" id="startDate" type="text"
-                               ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}" ui-date-format="dd-mm-yy"
+                               ui-date="{dateFormat: 'yy-mm-dd', changeYear: true}" ui-date-format="yy-mm-dd"
                                readonly ng-model="startDate"
                                ng-change="setEndDateOffset()" ng-required="true"/>
 
@@ -69,8 +69,8 @@
                             <span class="label-required"> *&nbsp;</span>
                         </label>
                         <input name="endDate" id="endDate" type="text"
-                               ui-date="{minDate:endDateOffset, dateFormat: 'dd/mm/yy', changeYear: true}"
-                               ui-date-format="dd-mm-yy"
+                               ui-date="{minDate:endDateOffset, dateFormat: 'yy-mm-dd', changeYear: false}"
+                               ui-date-format="yy-mm-dd"
                                readonly
                                ng-model="endDate" ng-required="true"
                                ng-disabled="!startDate"/>

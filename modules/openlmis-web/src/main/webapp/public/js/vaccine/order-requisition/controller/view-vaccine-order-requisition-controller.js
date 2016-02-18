@@ -242,12 +242,6 @@ function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $root
     $rootScope.cancelViewOrder = function () {
         $location.path('/view');
     };
-
-    $rootScope.viewOrderPrint = function (reportId) {
-
-        var url = '/vaccine/orderRequisition/' + reportId + '/print';
-        $window.open(url, '_blank');
-    };
 }
 
 
