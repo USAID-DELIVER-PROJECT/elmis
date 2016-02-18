@@ -363,6 +363,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 product: $scope.filter.facilityDropout.product
             }, function (data) {
                 $scope.facilityDropout.data = dropoutSelector(data.facilityDropout, $scope.filter.facilityDropout.product);
+
                 $scope.facilityDropoutPagination();
                 if (!isUndefined($scope.facilityDropout.data)) {
                     $scope.filter.totalfacilityDropout = $scope.facilityDropout.data.length;
