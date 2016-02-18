@@ -43,9 +43,9 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         openPanel: true
     };
 
-    var bcgVaccinated=" BCG Vaccinated";
-    var mrVaccinated=" MR Vaccinated";
-    var bcgDropout=" BCG Droput";
+    var bcgVaccinated = " BCG Vaccinated";
+    var mrVaccinated = " MR Vaccinated";
+    var bcgDropout = " BCG Droput";
 
     $scope.dashboardHelps = dashboardSlidesHelp;
     $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
@@ -198,9 +198,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     };
 
 
-
-
-
 // stock
     $scope.monthlyStock = {
         dataPoints: [],
@@ -232,8 +229,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         ],
         dataX: {"id": "period_name"}
     };
-
-
 
 
 //////////////////
@@ -341,8 +336,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 endDate: $scope.filter.monthlyDropout.endDate,
                 product: $scope.filter.monthlyDropout.product
             }, function (data) {
-                $scope.monthlyDropout.dataPoints = dropoutSelector(data.monthlyDropout);
-                 // alert("monthly:" + JSON.stringify($scope.monthlyDropout.dataPoints));
+                $scope.monthlyDropout.dataPoints = dropoutSelector(data.monthlyDropout, $scope.filter.monthlyDropout.product);
+                // alert("monthly:" + JSON.stringify($scope.monthlyDropout.dataPoints));
             });
         }
     };
@@ -353,20 +348,22 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 period: $scope.filter.districtDropout.period,
                 product: $scope.filter.districtDropout.product
             }, function (data) {
-                $scope.districtDropout.dataPoints = dropoutSelector(data.districtDropout);
-                   // alert("district:" + "period is " + $scope.filter.facilityDropout.period + " * product is "+ $scope.filter.facilityDropout.product + "*" + JSON.stringify($scope.districtDropout.dataPoints));
+                $scope.districtDropout.dataPoints = dropoutSelector(data.districtDropout, $scope.filter.districtDropout.product);
+                //alert("district:" + "period is " +$scope.filter.districtDropout.period + " * product is "+ $scope.filter.districtDropout.product + "*" + JSON.stringify($scope.districtDropout.dataPoints));
             });
         }
     };
 
     $scope.facilityDropoutCallback = function () {
+
         if (!isUndefined($scope.filter.facilityDropout.period) && !isUndefined($scope.filter.facilityDropout.product) && $scope.filter.facilityDropout.product !== 0) {
+
             VaccineDashboardFacilityTrend.dropout({
                 period: $scope.filter.facilityDropout.period,
                 product: $scope.filter.facilityDropout.product
             }, function (data) {
-                $scope.facilityDropout.data = dropoutSelector(data.facilityDropout);
-                // alert("facility:"+ "period is " + $scope.filter.facilityDropout.period + " * product is "+ $scope.filter.facilityDropout.product + "*" + JSON.stringify($scope.facilityDropout.data));
+                $scope.facilityDropout.data = dropoutSelector(data.facilityDropout, $scope.filter.facilityDropout.product);
+                $scope.facilityDropoutPagination();
                 if (!isUndefined($scope.facilityDropout.data)) {
                     $scope.filter.totalfacilityDropout = $scope.facilityDropout.data.length;
                 } else {
@@ -394,7 +391,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 product: $scope.filter.detailDropout.product
             }, function (data) {
 
-                $scope.dropoutDetails = data.facilityDropoutDetails;
+                $scope.dropoutDetails = dropoutSelector(data.facilityDropoutDetails, $scope.filter.detailDropout.product);
+
                 $scope.dropoutPeriodsList = _.uniq(_.pluck($scope.dropoutDetails, 'period_name'));
                 var facilities = _.uniq(_.pluck($scope.dropoutDetails, 'facility_name'));
 
@@ -588,11 +586,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     };
 
 
-
-
-
-
-
 /////////////////
 // Stock Status
 ////////////////
@@ -620,7 +613,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     };
 
 
-
     $scope.formatValue = function (value, ratio, id) {
         return $filter('number')(value);
     };
@@ -638,8 +630,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.getDetail = function (facility, period) {
         return _.findWhere($scope.coverageDetails, {facility_name: facility, period_name: period});
     };
-
-
 
 
     /* $scope.$watchCollection('[filter.monthlyCoverage.startDate, filter.monthlyCoverage.endDate, filter.monthlyCoverage.product]', function(newValues, oldValues){
@@ -908,30 +898,29 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
         return bgColor;
     };
-    function dropoutSelector(dropoutList) {
+    function dropoutSelector(dropoutList, selectedProduct) {
         $scope.bcgMRDropoutId = '2412';
         $scope.dtpDropoutId = '2421';
-        var data=[];
+        var data = [];
         var len = dropoutList.length;
 
 
-
-        if ($scope.filter.monthlyDropout.product === $scope.dtpDropoutId) {
+        if (dropoutList, selectedProduct === $scope.dtpDropoutId) {
             // alert($scope.filter.monthlyDropout.product);
-            bcgDropout=messageService.get('label.dtp.dropout');
-            bcgVaccinated=messageService.get('label.dtp1.vaccinated');
-            mrVaccinated =messageService.get('label.dtp3.vaccinated');
+            bcgDropout = messageService.get('label.dtp.dropout');
+            bcgVaccinated = messageService.get('label.dtp1.vaccinated');
+            mrVaccinated = messageService.get('label.dtp3.vaccinated');
 
 
-            for (var i=0; i < len; i++) {
-                dropoutList[i].bcg_vaccinated= dropoutList[i].dtp1_vaccinated;
-                dropoutList[i].mr_vaccinated= dropoutList[i].dtp3_vaccinated;
-                dropoutList[i].bcg_mr_dropout= dropoutList[i].dtp1_dtp3_dropout;
+            for (var i = 0; i < len; i++) {
+                dropoutList[i].bcg_vaccinated = dropoutList[i].dtp1_vaccinated;
+                dropoutList[i].mr_vaccinated = dropoutList[i].dtp3_vaccinated;
+                dropoutList[i].bcg_mr_dropout = dropoutList[i].dtp1_dtp3_dropout;
             }
-        }else{
-            bcgDropout=messageService.get('label.bcg.mr.dropout');
-            bcgVaccinated=messageService.get('label.bcg.vaccinated');
-            mrVaccinated=messageService.get('label.mr.vaccinated');
+        } else {
+            bcgDropout = messageService.get('label.bcg.mr.dropout');
+            bcgVaccinated = messageService.get('label.bcg.vaccinated');
+            mrVaccinated = messageService.get('label.mr.vaccinated');
         }
 
         // alert(bcgDropout + "*" + bcgVaccinated + "*" + mrVaccinated);

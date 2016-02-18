@@ -1235,7 +1235,7 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodTree', '
         return {
             restrict: 'E',
             scope: {
-                period: '=cmModel',
+                period: '=cmmodel',
                 default: '=default',
                 onChange: '&'
             },
