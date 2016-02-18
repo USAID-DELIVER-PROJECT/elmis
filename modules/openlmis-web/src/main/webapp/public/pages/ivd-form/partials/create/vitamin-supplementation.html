@@ -18,6 +18,12 @@
     <table class="table table-bordered">
       <thead>
         <tr class="text-row">
+          <th class="col-skipped">
+            <span openlmis-message="header.label.skip"></span>
+            <br />
+            <a href="" id="selectAll" ng-click="report.setSkip('vitaminSupplementationLineItems', true)" openlmis-message="label.select.all"></a>&nbsp;|
+            <a href="" id="selectNone" ng-click="report.setSkip('vitaminSupplementationLineItems', false)" openlmis-message="label.select.none"></a>
+          </th>
           <th class="span5">
             <span openlmis-message="label.vaccine.vitamin.name"></span>
           </th>
@@ -37,6 +43,11 @@
       </thead>
       <tbody>
         <tr class="text-row" ng-repeat="vitamin in report.vitaminSupplementationLineItems">
+          <td class="cell-input center col-skipped" style="text-align:center;">
+             <span>
+                <input type="checkbox" ng-model="vitamin.skipped"/>
+            </span>
+          </td>
           <td class="cell-input">
             <span class="cell-text">{{vitamin.vitaminName}}</span>
           </td>
@@ -44,9 +55,31 @@
             <span class="cell-text">{{vitamin.ageGroup}}</span>
           </td>
           <td class="cell-input col-general">
-            <input maxlength="8" ng-disabled="!report.editable" ng-model="vitamin.maleValue" numeric-validator="positiveInteger" type="text"/></td>
+            <span
+              class="input-error-parent-cell">
+                <input
+                  ng-required="true"
+                  ng-class="highlightRequired(report.validate, vitamin.maleValue, vitamin.skipped)"
+                  maxlength="8"
+                  ng-disabled="!report.editable || vitamin.skipped"
+                  ng-model="vitamin.maleValue"
+                  numeric-validator="positiveInteger"
+                  type="text" />
+            </span>
+          </td>
           <td class="cell-input col-general">
-            <input maxlength="8" ng-disabled="!report.editable" ng-model="vitamin.femaleValue" numeric-validator="positiveInteger" type="text"/></td>
+            <span
+              class="input-error-parent-cell">
+              <input
+                ng-required="true"
+                ng-class="highlightRequired(report.validate, vitamin.femaleValue, vitamin.skipped)"
+                maxlength="8"
+                ng-disabled="!report.editable || vitamin.skipped"
+                ng-model="vitamin.femaleValue"
+                numeric-validator="positiveInteger"
+                type="text"/>
+            </span>
+          </td>
           <td class="cell-input col-general" style="text-align: right">
             <span class="number cell-text">{{toNumber(vitamin.maleValue) + toNumber(vitamin.femaleValue)}}</span>
           </td>
