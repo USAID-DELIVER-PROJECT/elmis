@@ -89,7 +89,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
         var sortedList = periodsWithReport.sort(function (obj1, obj2) {
 
-            var val = ((parseInt(obj1.year_number) < parseInt(obj2.year_number) ) || ((parseInt(obj1.year_number) === parseInt(obj2.year_number)) && ( parseInt(obj1.month_number) < parseInt(obj2.month_number)))) === true ? -11 : 11;
+            var val = ((parseInt(obj1.year_number,10) < parseInt(obj2.year_number,10) ) || ((parseInt(obj1.year_number,10) === parseInt(obj2.year_number,10)) && ( parseInt(obj1.month_number,10) < parseInt(obj2.month_number,10)))) === true ? -11 : 11;
 
             return val;
         });
