@@ -26,6 +26,8 @@ import org.openlmis.core.domain.Product;
 @AllArgsConstructor
 public class LogisticsLineItem extends BaseModel {
 
+  private Boolean skipped = false;
+
   private Long reportId;
   private Long productId;
   private String productCode;

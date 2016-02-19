@@ -27,6 +27,8 @@ import org.openlmis.ivdform.domain.VaccineProductDose;
 @AllArgsConstructor
 public class VaccineCoverageItem extends BaseModel {
 
+  private Boolean skipped = false;
+
   private Long reportId;
   private Long productId;
 

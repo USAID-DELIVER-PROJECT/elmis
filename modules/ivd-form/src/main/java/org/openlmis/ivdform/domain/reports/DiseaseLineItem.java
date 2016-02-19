@@ -25,6 +25,8 @@ import org.openlmis.core.domain.BaseModel;
 @AllArgsConstructor
 public class DiseaseLineItem extends BaseModel {
 
+  private Boolean skipped = false;
+
   private Long reportId;
 
   private Long diseaseId;

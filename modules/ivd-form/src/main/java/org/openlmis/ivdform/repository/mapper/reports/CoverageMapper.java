@@ -33,6 +33,7 @@ public interface CoverageMapper {
   @Update("UPDATE vaccine_report_coverage_line_items " +
       " SET " +
       " reportId = #{reportId} " +
+      " , skipped = #{skipped}" +
       " , productId = #{productId} " +
       " , doseId  = #{doseId} " +
       " , displayName = #{displayName}  " +
