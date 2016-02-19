@@ -55,9 +55,9 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,SettingsByKey, 
            PerformanceByDropoutRateByDistrict.get(param, function (data) {
                if (data !== undefined) {
 
-                   $scope.data = dropoutSelector(data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList, $scope.filter.product);
+                   $scope.data = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
                    $scope.datarows = $scope.data;
-                   $scope.regionrows = dropoutSelector(data.PerformanceByDropoutRateList.performanceByDropOutRegionsList, $scope.filter.product);
+                   $scope.regionrows = data.PerformanceByDropoutRateList.performanceByDropOutRegionsList;
                    $scope.reportType = data.PerformanceByDropoutRateList.facillityReport;
                    $scope.columnVals = data.PerformanceByDropoutRateList.columnNames;
                    $scope.regionColumnVals = data.PerformanceByDropoutRateList.regionColumnsValueList;
@@ -198,32 +198,5 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,SettingsByKey, 
     }
 
 
-    function dropoutSelector(dropoutList, selectedProduct) {
-        $scope.bcgMRDropoutId = '2412';
-        $scope.dtpDropoutId = '2421';
-        var data = [];
-        var len = dropoutList.length;
 
-
-        if (dropoutList, selectedProduct === $scope.dtpDropoutId) {
-
-            alert(" before formatting " + JSON.stringify(dropoutList));
-
-            for (var i = 0; i < len; i++) {
-                alert(" before formatting of i " + JSON.stringify(dropoutList[i]));
-                var childLen= dropoutList[i].performanceByDropoutRateByDistrictList.length;
-                alert(childLen);
-                for ( var j=0;j < childLen; j++) {
-                    dropoutList[i].performanceByDropoutRateByDistrictList[j].bcg_vaccinated =  dropoutList[i].performanceByDropoutRateByDistrictList[j].dtp1_vaccinated;
-                    dropoutList[i].performanceByDropoutRateByDistrictList[j].mr_vaccinated = dropoutList[i].performanceByDropoutRateByDistrictList[j].dtp3_vaccinated;
-                    dropoutList[i].performanceByDropoutRateByDistrictList[j].bcg_mr_dropout =  dropoutList[i].performanceByDropoutRateByDistrictList[j].dtp1_dtp3_dropout;
-                }
-            }
-        }
-
-        alert(" after formatting " + JSON.stringify(dropoutList));
-
-
-        return dropoutList;
-    }
 }

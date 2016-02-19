@@ -25,7 +25,7 @@ public class PerformanceByDropoutRateQueryBuilder {
     public  static final String REGION_NAME="d.region_name";
     public  static final String DISTRICT_NAME=" d.district_name";
     public  static final String FACILITY_CRITERIA="filterCriteria";
-    public  static final String PERIOD_NAME="to_date(i.period_name, 'Mon YYYY')  period_name";
+    public  static final String PERIOD_NAME="to_date(to_char(i.period_start_date, 'Mon YYYY'), 'Mon YYYY')    period_name";
     public  static final String START_DATE="i.period_start_date";
     public  static final String END_DATE="i.period_end_date";
     public  static final String PRODUCT_ID="i.product_id";
@@ -59,7 +59,7 @@ public class PerformanceByDropoutRateQueryBuilder {
         JOIN(PRODUCT_CATEGORIES);
         writePredicates(filter);
         GROUP_BY("1,2,3,4,5,6");
-        ORDER_BY("1,2,4,5");
+        ORDER_BY("1,2,4," + START_DATE);
         query = SQL();
         return query;
     }
@@ -99,7 +99,7 @@ public class PerformanceByDropoutRateQueryBuilder {
         JOIN(PRODUCT_CATEGORIES);
         writePredicatesForDistrict();
         GROUP_BY("d.region_name, i.period_name, d.district_name,   i.period_start_date");
-        ORDER_BY("d.region_name, d.district_name,  to_date(i.period_name, 'Mon YYYY'),   i.period_start_date");
+        ORDER_BY("d.region_name, d.district_name,  i.period_start_date,   i.period_start_date");
 
 
         query = SQL();
@@ -117,7 +117,7 @@ public class PerformanceByDropoutRateQueryBuilder {
         JOIN(PRODUCT_CATEGORIES);
         writePredicatesForDistrict();
         GROUP_BY("d.region_name, d.district_name,  i.period_name,  i.period_start_date");
-        ORDER_BY("d.region_name, d.district_name, to_date(i.period_name, 'Mon YYYY'),  i.period_start_date");
+        ORDER_BY("d.region_name, d.district_name,  i.period_start_date,  i.period_start_date");
 
 
         query = SQL();
@@ -157,7 +157,7 @@ public class PerformanceByDropoutRateQueryBuilder {
         JOIN(PRODUCT_CATEGORIES);
         writePredicatesForRegion();
         GROUP_BY("d.region_name,  i.period_name,  i.period_start_date");
-        ORDER_BY("d.region_name,   to_date(i.period_name, 'Mon YYYY'),  i.period_start_date");
+        ORDER_BY("d.region_name,    i.period_start_date,  i.period_start_date");
 
 
         query = SQL();
