@@ -58,7 +58,7 @@ public class PerformanceByDropoutRateQueryBuilder {
         JOIN(PROGRAM_PRODUCTS);
         JOIN(PRODUCT_CATEGORIES);
         writePredicates(filter);
-        GROUP_BY("1,2,3,4,5,6");
+        GROUP_BY("1,2,3,4,5,6,"+START_DATE);
         ORDER_BY("1,2,4," + START_DATE);
         query = SQL();
         return query;
