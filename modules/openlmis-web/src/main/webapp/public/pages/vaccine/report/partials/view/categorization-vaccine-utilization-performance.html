@@ -127,7 +127,8 @@
                                 <td ng-if="pc.hide!=true"
                                     ng-style="{'background-color':getCellColor(pc.classification)  }"
                                     ng-repeat="pc in row.period_class track by $index">
-                                    Cat_{{pc.classification}}
+                                    <span ng-if="pc.classification!=''"> Cat_{{pc.classification}}</span>
+
                                 </td>
 
                             </tr>
@@ -168,7 +169,7 @@
                             </tr>
                             <tbody>
                             <tr ng-repeat="dc in zoneSummary">
-                                <td style="min-width: 315px; background-color : {{dc.classColour}}">
+                                <td style="min-width: 280px;max-width: 280px;  background-color : {{dc.classColour}}">
                                     {{dc.classDescription}} {{dc.classification}}
                                 </td>
 
@@ -214,10 +215,10 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="row in regionMainReport">
-                                <td style="min-width: 105px;">{{ row.report.region_name }}</td>
+                                <td style="min-width: 90px;">{{ row.report.region_name }}</td>
 
 
-                                <td style="min-width: 90px;"
+                                <td style="min-width: 80px;"
 
 
                                         ng-bind=" row.report.facility_count"></td>
@@ -229,7 +230,7 @@
                                 <td ng-if="pc.hide!=true"
                                     ng-style="{'background-color':getCellColor(pc.classification)  }"
                                     ng-repeat="pc in row.period_class track by $index">
-                                    Cat_{{pc.classification}}
+                                    <span ng-if="pc.classification!=''"> Cat_{{pc.classification}}</span>
                                 </td>
 
                             </tr>
@@ -264,7 +265,7 @@
                             </tr>
                             <tbody>
                             <tr ng-repeat="dc in regionSummary">
-                                <td style="min-width: 305px; background-color : {{dc.classColour}}">
+                                <td style="min-width: 280px;max-width: 280px; background-color : {{dc.classColour}}">
                                     {{dc.classDescription}} {{dc.classification}}
                                 </td>
 
