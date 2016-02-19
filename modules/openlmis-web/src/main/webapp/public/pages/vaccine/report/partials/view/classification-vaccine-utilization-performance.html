@@ -130,7 +130,7 @@
                                 <td ng-if="pc.hide!=true"
                                     ng-style="{'background-color':getCellColor(pc.classification)  }"
                                     ng-repeat="pc in row.period_class track by $index">
-                                    Class_{{pc.classification}}
+                                  <span ng-if="pc.classification!=''"> Class_{{pc.classification}}</span>
                                 </td>
 
                             </tr>
@@ -232,7 +232,7 @@
                                 <td ng-if="pc.hide!=true"
                                     ng-style="{'background-color':getCellColor(pc.classification)  }"
                                     ng-repeat="pc in row.period_class track by $index">
-                                    Class_{{pc.classification}}
+                                    <span ng-if="pc.classification!=''"> Class_{{pc.classification}}</span>
                                 </td>
 
                             </tr>

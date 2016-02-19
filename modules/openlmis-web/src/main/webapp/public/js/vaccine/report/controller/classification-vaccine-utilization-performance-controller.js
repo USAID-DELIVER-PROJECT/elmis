@@ -54,17 +54,17 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
                 if ($scope.facilityReport === true) {
                     extractPeriod($scope.facilityReportList);
-                    $scope.zoneMainReport = reformatZoneReportResult($scope.facilityReportList, 1);
+                    $scope.zoneMainReport = reformatZoneReportResult($scope.facilityReportList, $scope.periodlist, 1);
                     $scope.zoneSummary = getDistrictSummeryReportData($scope.facilityReportList);
 
                 }
                 else {
                     extractPeriod($scope.zonereport);
-                    $scope.zoneMainReport = reformatZoneReportResult($scope.zonereport, 2);
+                    $scope.zoneMainReport = reformatZoneReportResult($scope.zonereport, $scope.periodlist, 2);
                     $scope.zoneSummary = getDistrictSummeryReportData($scope.zonereport);
                 }
                 if ($scope.regionReport === true) {
-                    $scope.regionMainReport = reformatZoneReportResult($scope.regionReportList, 3);
+                    $scope.regionMainReport = reformatZoneReportResult($scope.regionReportList, $scope.periodlist, 3);
                     $scope.regionSummary = getDistrictSummeryReportData($scope.regionReportList);
                 } else {
                     $scope.regionMainReport = [];
@@ -78,17 +78,29 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
         _.each(unformatedReportList, function (dreport) {
             if (!hasKeyPeriod(periodsWithReport, dreport.period_name)) {
-                periodsWithReport.push({period_name: dreport.period_name, hide: dreport.hide});
+                periodsWithReport.push({
+                    year_number: dreport.year_number,
+                    month_number: dreport.month_number,
+                    period_name: dreport.period_name,
+                    hide: dreport.hide
+                });
             }
         });
 
-        $scope.periodlist = periodsWithReport;
+        var sortedList = periodsWithReport.sort(function (obj1, obj2) {
+
+            var val = ((parseInt(obj1.year_number) < parseInt(obj2.year_number) ) || ((parseInt(obj1.year_number) === parseInt(obj2.year_number)) && ( parseInt(obj1.month_number) < parseInt(obj2.month_number)))) === true ? -11 : 11;
+
+            return val;
+        });
+
+        $scope.periodlist = sortedList;
 
     }
 
     function hasKeyPeriod(periods, period_name) {
-        var len =periods.length;
-        for(var i=0;i <len;i ++){
+        var len = periods.length;
+        for (var i = 0; i < len; i++) {
 
             if (periods[i].period_name === period_name) {
 
@@ -98,14 +110,14 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         return false;
     }
 
-    function reformatZoneReportResult(unformatedReportList, type) {
+    function reformatZoneReportResult(unformatedReportList, columns, type) {
 
         var parentReport = [], childReport = [];
         var repKey;
         _.each(unformatedReportList, function (dreport) {
             repKey = getKey(dreport, type);
-            if (hasKey(parentReport, repKey)) {
-            } else {
+            if (hasKey(parentReport, repKey)===false) {
+
                 parentReport.push({report: dreport, period_class: childReport, repKey: repKey});
             }
         });
@@ -113,33 +125,61 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         for (var ii = 0; ii < parentReport.length; ii++) {
 
             var _childeren = [];
-            for (var jj = 0; jj < unformatedReportList.length; jj++) {
+            for (var jj = 0; jj < columns.length; jj++) {
 
-                if (parentReport[ii].repKey === ( getKey(unformatedReportList[jj], type))
-                ) {
-                    _childeren.push({
-                        period_name: unformatedReportList[jj].period_name,
-                        classification: unformatedReportList[jj].classification,
-                        total_population:unformatedReportList[jj].total_population,
-                        total_vaccinated:unformatedReportList[jj].total_vaccinated,
-                        vaccinated: unformatedReportList[jj].vaccinated,
-                        total_used:unformatedReportList[jj].total_used,
-                        used:unformatedReportList[jj].used,
-                        hide: unformatedReportList[jj].hide
-                    });
-                    parentReport[ii].period_class = _childeren;
-                }
+                _childeren.push(getChild(parentReport[ii].repKey, columns[jj].period_name,unformatedReportList, type, columns[jj].hide));
             }
+            parentReport[ii].period_class = _childeren;
+
+
         }
         return parentReport;
     }
 
+    function getChild(_parent, _periodName, _rawData, _dataType, _hidden) {
+        var len = _rawData.length;
+        var child;
+        var found;
+
+        var _index;
+        for ( _index = 0; _index < _rawData.length;_index++) {
+
+            if ((_parent ===  getKey(_rawData[_index], _dataType)) && (_rawData[_index].period_name === _periodName)) {
+                child = {
+                    period_name: _rawData[_index].period_name,
+                    classification: _rawData[_index].classification,
+                    total_population: _rawData[_index].total_population,
+                    total_vaccinated: _rawData[_index].total_vaccinated,
+                    vaccinated: _rawData[_index].vaccinated,
+                    total_used: _rawData[_index].total_used,
+                    used: _rawData[_index].used,
+                    hide: _hidden
+                };
+
+                return child;
+            }
+
+        }
+        child = {
+            period_name: _periodName,
+            classification: '',
+            total_population: 0,
+            total_vaccinated: 0,
+            vaccinated: 0,
+            total_used: 0,
+            used: 0,
+            hide: _hidden
+        };
+
+        return child;
+    }
+
     function getKey(dreport, type) {
         var repKey = dreport.region_name;
-        if (type == 1) {
-            repKey = repKey + "_" + dreport.facility_count + "_" + dreport.geographic_zone_name + "_" + dreport.facility_name;
-        } else if (type == 2) {
-            repKey = dreport.region_name + "_" + dreport.facility_count + "_" + dreport.geographic_zone_name;
+        if (type === 1) {
+            repKey = repKey +  "_" + dreport.geographic_zone_name + "_" + dreport.facility_name;
+        } else if (type === 2) {
+            repKey = dreport.region_name +  "_" + dreport.geographic_zone_name;
         }
         return repKey;
     }
@@ -148,7 +188,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
         var totalDistricts = 0;
         var totalFacilities = 0;
-        var totalPopulation=0;
+        var totalPopulation = 0;
         var districts = _.pluck($scope.zonereport, 'geographic_zone_name'),
             facilities = _.pluck($scope.zonereport, 'facility_count');
         console.log("facility count");
@@ -156,11 +196,11 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         totalDistricts = _.uniq(districts).length;
         _.each($scope.zoneMainReport, function (facility) {
             totalFacilities += facility.report.facility_count;
-            totalPopulation+=facility.report.population;
+            totalPopulation += facility.report.population;
         });
         $scope.totalDistricts = totalDistricts;
         $scope.totalFacilities = totalFacilities;
-        $scope.totalPopulation=totalPopulation;
+        $scope.totalPopulation = totalPopulation;
     }
 
 
@@ -171,7 +211,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
             {class: 'C', displayName: 'Class_C', description: 'Poor Access & Good Utilisation', classColour: '#E4E44A'},
             {class: 'D', displayName: 'Class_D', description: 'Poor Access & Poor Utilisation', classColour: '#ff0000'}
 
-        ], arr = [], tempArr = [], classCount = 0,hideInfo=[];
+        ], arr = [], tempArr = [], classCount = 0, hideInfo = [];
 
 
         _.each(vaccineUtilClasses, function (vacClass) {
@@ -181,7 +221,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                     period_name: period.period_name,
                     classification: vacClass.class
                 }).length;
-                tempArr.push({classCount:classCount, hide:period.hide});
+                tempArr.push({classCount: classCount, hide: period.hide});
                 hideInfo.push(period.hide);
             });
             arr.push({
@@ -189,7 +229,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                 classDescription: vacClass.description,
                 classColour: vacClass.classColour,
                 classCountArray: tempArr,
-                hideInfo:hideInfo
+                hideInfo: hideInfo
             });
         });
         $scope.vaccineUtilClasses = vaccineUtilClasses;
@@ -213,8 +253,10 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
             return '#dce6f1';
         } else if (classification == 'C') {
             return '#E4E44A';
-        } else {
+        }else if (classification == 'D') {
             return '#ff0000';
+        }  else {
+            return '#ffffff';
         }
 
     };
@@ -252,15 +294,16 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                 unformattedReport[i].wastage_rate = wastage_rate;
                 unformattedReport[i].classification = determineClass(coverage_rate, wastage_rate);
                 unformattedReport[i].hide = unformattedReport[i].year_number == $scope.year && unformattedReport[i].month_number < $scope.month ? true : false;
-                console.log("district  " + getKey(unformattedReport[i], type) + "  year " + unformattedReport[i].year_number  +
-                    " month " + unformattedReport[i].month_number+
-                     " population " + unformattedReport[i].population+
-                     " tot_population " + unformattedReport[i].total_population+
-                     " usage_rate " + unformattedReport[i].usage_rate+
-                     " coverage_rate " + unformattedReport[i].coverage_rate+
-                     " wastage_rate " + unformattedReport[i].wastage_rate+
-                     " hidden " + unformattedReport[i].hide +
-                    " year " + $scope.year+
+                console.log("district  " + getKey(unformattedReport[i], type) + "  year " + unformattedReport[i].year_number +
+                    " month " + unformattedReport[i].month_number +
+                    " population " + unformattedReport[i].population +
+                    " population " + unformattedReport[i].population +
+                    " tot_population " + unformattedReport[i].total_population +
+                    " usage_rate " + unformattedReport[i].usage_rate +
+                    " coverage_rate " + unformattedReport[i].coverage_rate +
+                    " wastage_rate " + unformattedReport[i].wastage_rate +
+                    " hidden " + unformattedReport[i].hide +
+                    " year " + $scope.year +
                     " month number is " + $scope.month);
 
             }
