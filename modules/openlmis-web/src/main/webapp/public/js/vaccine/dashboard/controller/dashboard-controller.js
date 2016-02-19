@@ -404,13 +404,13 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                     $scope.facilityDropoutDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'bcg_mr_dropout',
+                        indicator:  messageService.get('label.bcg.mr.dropout'),
                         indicatorValues: $scope.getIndicatorValues(facility, 'bcg_mr_dropout', $scope.dropoutDetails)
                     });
                     $scope.facilityDropoutDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'dtp1_dtp3_dropout',
+                        indicator:messageService.get('label.dtp.dropout'),
                         indicatorValues: $scope.getIndicatorValues(facility, 'dtp1_dtp3_dropout', $scope.dropoutDetails)
                     });
 
@@ -489,13 +489,13 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                     $scope.facilityWastageDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'wastage_rate',
+                        indicator: 'Wastage Rate',
                         indicatorValues: $scope.getIndicatorValues(facility, 'wastage_rate', $scope.wastageDetails)
                     });
                     $scope.facilityWastageDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'usage_rate',
+                        indicator: 'Usage Rate',
                         indicatorValues: $scope.getIndicatorValues(facility, 'usage_rate', $scope.wastageDetails)
                     });
 
@@ -570,13 +570,13 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                     $scope.facilitySessionsDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'fixed_sessions',
+                        indicator: 'Fixed Sessions',
                         indicatorValues: $scope.getIndicatorValues(facility, 'fixed_sessions', $scope.sessionsDetails)
                     });
                     $scope.facilitySessionsDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'outreach_sessions',
+                        indicator: 'Outreach Sessions',
                         indicatorValues: $scope.getIndicatorValues(facility, 'outreach_sessions', $scope.sessionsDetails)
                     });
 
