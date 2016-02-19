@@ -932,23 +932,60 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 }
 VaccineDashboardController.resolve = {
 
-    dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey) {
+    dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey,messageService) {
 
         var deferred = $q.defer();
         var helps = {};
         $timeout(function () {
             HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function (data) {
-                helps.coverageHelp = data.siteContent;
+
+
+                if(!isUndefined(data.siteContent)){
+
+                    helps.coverageHelp = data.siteContent;
+
+                }else{
+
+                    helps.coverageHelp={htmlContent: messageService.get('content.help.default')};
+
+                }
 
             });
             HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function (data) {
-                helps.wastageHelp = data.siteContent;
+
+                if(!isUndefined(data.siteContent)){
+
+                    helps.wastageHelp = data.siteContent;
+
+                }else{
+
+                    helps.wastageHelp= {htmlContent: messageService.get('content.help.default')};
+
+                }
             });
             HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function (data) {
-                helps.sessionsHelp = data.siteContent;
+
+                if(!isUndefined(data.siteContent)){
+
+                    helps.sessionsHelp = data.siteContent;
+
+                }else{
+
+                    helps.sessionsHelp= {htmlContent: messageService.get('content.help.default')};
+
+                }
             });
             HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function (data) {
-                helps.dropoutHelp = data.siteContent;
+
+                if(!isUndefined(data.siteContent)){
+
+                    helps.dropoutHelp = data.siteContent;
+
+                }else{
+
+                    helps.dropoutHelp= {htmlContent: messageService.get('content.help.default')};
+
+                }
             });
 
             deferred.resolve(helps);

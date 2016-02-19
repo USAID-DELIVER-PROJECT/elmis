@@ -50,7 +50,8 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                 "                  sum(coalesce(denominator,0)) target_population,            " +
                 "                  sum(coalesce(within_outside_total, 0)) vaccinated" +
                 "                  from vw_vaccine_coverage   " +
-                "                  inner join vw_districts vd on vd.district_id = geographic_zone_id  " +
+                "                  inner join vw_districts vd on vd.district_id = geographic_zone_id " +
+                "    " +
                 writePredicate(params) +
                 "                  group by 1,2) cov" +
                 "      join (" +
@@ -175,6 +176,46 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                 "      order by 1,3,4,5";
     }
 
+    //////////////////
+    public String getFacilityPopulationInformation(Map params) {
+        Long productId = (Long) params.get("productId");
+        Long zone = (Long) params.get("zoneId");
+        return " select year, region_name, district_name, facility_name, " +
+                " denominator, population from vw_vaccine_population_denominator vd " +
+                " where programid = 82 and " +
+                " productid = " + productId +
+                "  and (vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) ";
+
+
+    }
+        public String getDistrictPopulationInformation(Map params) {
+                Long productId = (Long) params.get("productId");
+                Long zone = (Long) params.get("zoneId");
+                return " select year, region_name, district_name, " +
+                        "coalesce(sum(denominator),0) denominator, " +
+                        "coalesce(sum(population),0) population \n" +
+                        "from vw_vaccine_population_denominator vd " +
+                        " where programid = 82 and " +
+                        " productid = " + productId +
+                        "  and (vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) " +
+                        " group by 1,2,3";
+
+
+        }
+        public String getRegionPopulationInformation(Map params) {
+                Long productId = (Long) params.get("productId");
+                Long zone = (Long) params.get("zoneId");
+                return " select year, region_name,  " +
+                        "coalesce(sum(denominator),0) denominator, " +
+                        "coalesce(sum(population),0) population \n" +
+                        "from vw_vaccine_population_denominator vd " +
+                        " where programid = 82 and " +
+                        " productid = " + productId +
+                        "  and ( vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) " +
+                        " group by 1,2";
+
+
+        }
     private String writePredicate(Map params) {
         Long zone = (Long) params.get("zoneId");
         Date startDate = (Date) params.get("startDate");

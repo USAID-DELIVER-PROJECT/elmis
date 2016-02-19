@@ -367,7 +367,7 @@ public class VaccineReportService {
         boolean regionReport;
         boolean facilityReport;
         regionReport = zoneId == 0 ? true : false;
-        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) >0?true:false;
+        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) > 0 ? true : false;
         try {
 
 
@@ -376,15 +376,17 @@ public class VaccineReportService {
             Date yearStartDate;
             startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
             endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
-            yearStartDate=getStartOfTheYearDate(startDate);
+            yearStartDate = getStartOfTheYearDate(startDate);
             if (regionReport) {
                 result.put("regionReport", repository.getClassificationVaccineUtilizationPerformanceRegion(yearStartDate, endDate, zoneId, productId));
-
+                result.put("regionPopulation", repository.getClassficationVaccinePopulationForRegion(yearStartDate, endDate, zoneId, productId));
             }
             if (facilityReport) {
                 result.put("facilityReport", repository.getClassificationVaccineUtilizationPerformanceFacility(yearStartDate, endDate, zoneId, productId));
+                result.put("facilityPopulation", repository.getClassficationVaccinePopulationForFacility(yearStartDate, endDate, zoneId, productId));
             } else {
                 result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(yearStartDate, endDate, zoneId, productId));
+                result.put("districtPopulation", repository.getClassficationVaccinePopulationForDistrict(yearStartDate, endDate, zoneId, productId));
             }
 
 
@@ -401,7 +403,7 @@ public class VaccineReportService {
         boolean regionReport;
         boolean facilityReport;
         regionReport = zoneId == 0 ? true : false;
-        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) >0?true:false;
+        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) > 0 ? true : false;
         try {
 
 
@@ -410,7 +412,7 @@ public class VaccineReportService {
             Date yearStartDate;
             startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
             endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
-            yearStartDate=getStartOfTheYearDate(startDate);
+            yearStartDate = getStartOfTheYearDate(startDate);
             if (regionReport) {
                 result.put("regionReport", repository.getCategorizationVaccineUtilizationPerformanceRegion(yearStartDate, endDate, zoneId, productId));
 
@@ -429,22 +431,23 @@ public class VaccineReportService {
         }
         return result;
     }
-    private static  Date getStartOfTheYearDate(Date date){
-        Calendar calendar =Calendar.getInstance();
+
+    private static Date getStartOfTheYearDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.MONTH, Calendar.JANUARY);
-        calendar.set(Calendar.DATE,1);
+        calendar.set(Calendar.DATE, 1);
         return calendar.getTime();
     }
 
     private static List<Map<String, Object>> getPaddingSummaryPeriodList(Date startDate, Date endDate) {
-        Date yearStartDate=getStartOfTheYearDate(startDate);
-        List<Map<String, Object>> paddingDateList=getSummaryPeriodList(yearStartDate,new DateTime(startDate).minusMonths(1).toDate());
-        for(Map paddingMapDate: paddingDateList){
-            paddingMapDate.put("hide","true");
+        Date yearStartDate = getStartOfTheYearDate(startDate);
+        List<Map<String, Object>> paddingDateList = getSummaryPeriodList(yearStartDate, new DateTime(startDate).minusMonths(1).toDate());
+        for (Map paddingMapDate : paddingDateList) {
+            paddingMapDate.put("hide", "true");
         }
-        List<Map<String, Object>> summaryateList=getSummaryPeriodList(startDate,endDate);
+        List<Map<String, Object>> summaryateList = getSummaryPeriodList(startDate, endDate);
         paddingDateList.addAll(summaryateList);
-        return  paddingDateList;
+        return paddingDateList;
     }
 }
