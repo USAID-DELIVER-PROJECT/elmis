@@ -301,7 +301,7 @@
             </accordion-heading>
 
             <div class="reporting-header" style="padding: 0; margin:0; border: none; background: none">
-                <span><span style="font-size: 1em">Reporting</span><span openlmis-message="label.expected"></span>: <a
+                <span><span style="font-size: 1em; background: lightblue;">Reporting</span><span openlmis-message="label.expected"></span>: <a
                         ng-click="openDetailDialog()"
                         href="">{{reportingPerformance.expected | number}} </a>
                 </span>
@@ -312,15 +312,15 @@
                         ng-click="openDetailDialog()"
                         href=""> {{reportingPerformance.late | number}} </a></span>
 
-                <span><span style="font-size: 1em">Supplying</span><span openlmis-message="label.orders"></span>: {{supplying.orders | number}}<a
+                <span><span style="font-size: 1em; background: lightblue;">Supplying</span><span openlmis-message="label.orders"></span>: {{supplying.orders | number}}<a
                         href="">8</a></span>
                 <span><span openlmis-message="label.fulfilled"></span>: {{supplying.fulfilled | number}}<a href="">3</a></span>
 
-                <span><span style="font-size: 1em">Repairing</span><span
+                <span><span style="font-size: 1em; background: lightblue;">Repairing</span><span
                         openlmis-message="label.refrigerator.repair.tickets"></span>: <a
                         ng-click="openRepairingDetailDialog()"
                         href=""> {{repairing.repairing}}</a> </span>
-                <span><span style="font-size: 1em">Investigating</span><span openlmis-message="label.aefi"></span>:  <a
+                <span><span style="font-size: 1em; background: lightblue;">Investigating</span><span openlmis-message="label.aefi"></span>:  <a
                         ng-click="openInvestigatingDetailDialog()"
                         href="">{{investigating.count}}</a></span>
 
