@@ -557,11 +557,11 @@ public interface VaccineDashboardMapper {
                 "SELECT\n" +
                 "vss.period_name,\n" +
                 "vss.period_start_date::date period_start,\n" +
-                "COALESCE(vss.closing_balance,0) cb,\n" +
+                "COALESCE(vss.closing_balance,0)*220 cb,\n" +
                 "COALESCE(vss.quantity_issued,0) issued\n" +
                 "FROM\n" +
                 "vw_vaccine_stock_status vss\n" +
-                "where period_start_date >= #{startDate} and period_end_date <= #{endDate} and product_id = #{product}\n" +
+                "where period_start_date >= #{startDate} and period_end_date <= #{endDate} and product_id = #{product} \n" +
                 "ORDER BY\n" +
                 "period_start_date\n" +
                 ") SELECT\n" +
