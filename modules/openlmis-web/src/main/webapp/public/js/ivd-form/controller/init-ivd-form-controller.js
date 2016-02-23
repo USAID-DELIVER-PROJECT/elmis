@@ -69,7 +69,7 @@ function InitIvdFormController($scope, programs, VaccineReportFacilities, Vaccin
     columnDefs: [
       {field: 'periodName', displayName: messageService.get("label.periods")},
       {field: 'statusMessage', displayName: messageService.get("label.ivd.status")},
-      {field: '', displayName: '', cellTemplate: getActionButton('row.entity.showButton')}
+      {field: '', displayName: messageService.get('label.action'), cellTemplate: getActionButton('row.entity.showButton')}
     ]
   };
 
