@@ -18,12 +18,6 @@
       <table class="table table-bordered">
         <thead>
         <tr class="text-row">
-          <th class="col-skipped">
-            <span openlmis-message="header.label.skip"></span>
-            <br />
-            <a href="" id="selectAll" ng-click="report.setSkip('diseaseLineItems', true)" openlmis-message="label.select.all"></a>&nbsp;|
-            <a href="" id="selectNone" ng-click="report.setSkip('diseaseLineItems', false)" openlmis-message="label.select.none"></a>
-          </th>
           <th class="span5">
             <span openlmis-message="label.vaccine.disease.name"></span>
           </th>
@@ -43,11 +37,6 @@
         </thead>
         <tbody>
         <tr ng-repeat="disease in report.diseaseLineItems">
-          <td class="cell-input center col-skipped" style="text-align:center;">
-            <span>
-              <input type="checkbox" ng-model="disease.skipped"/>
-            </span>
-          </td>
           <td class="cell-input">
             <span class="cell-text">{{disease.diseaseName}}</span>
           </td>
