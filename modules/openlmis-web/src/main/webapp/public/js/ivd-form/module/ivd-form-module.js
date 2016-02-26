@@ -43,6 +43,11 @@ angular.module('ivd-form-module', ['openlmis', 'ngGrid', 'ui.bootstrap.modal', '
                 templateUrl: 'partials/approve/approve.html',
                 resolve: ApproveIvdFormDetailController.resolve
             }).
+            when('/preview/:id', {
+                controller : ViewIvdFormController,
+                templateUrl: 'partials/print/view.html',
+                resolve: ViewIvdFormController.resolve
+            }).
             otherwise({redirectTo: '/list'});
     }]);
 
