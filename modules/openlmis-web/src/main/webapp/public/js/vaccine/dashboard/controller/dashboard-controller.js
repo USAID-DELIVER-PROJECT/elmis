@@ -35,7 +35,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     reportingDetailList,
                                     InvestigatingDetails,
                                     investigatingDetailList,
-                                    ContactList) {
+                                    ContactList,isDistrictUser) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -46,7 +46,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     var bcgVaccinated = " BCG Vaccinated";
     var mrVaccinated = " MR Vaccinated";
     var bcgDropout = " BCG Droput";
-
+$scope.district_user_level=isDistrictUser.district_user;
     $scope.dashboardHelps = dashboardSlidesHelp;
     $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
     $scope.defaultProduct = defaultProduct;
@@ -73,7 +73,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.districtCoverage = {
         dataPoints: [],
         dataColumns: [{
-            "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"
+            "id": "coverage", "name": messageService.get('label.coverage'), "type": "scatter"
         },
             {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"},
             {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
@@ -85,7 +85,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.facilityCoverage = {
         dataPoints: [],
         dataColumns: [{
-            "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"
+            "id": "coverage", "name": messageService.get('label.coverage'), "type": "scatter"
         },
             {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"},
             {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
@@ -112,7 +112,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.districtDropout = {
         dataPoints: [],
         dataColumns: [{
-            "id": "bcg_mr_dropout", "name": bcgDropout, "type": "line"
+            "id": "bcg_mr_dropout", "name": bcgDropout, "type": "scatter"
         },
             {"id": "bcg_vaccinated", "name": bcgVaccinated, "type": "bar"},
             {"id": "mr_vaccinated", "name": mrVaccinated, "type": "bar"}
@@ -123,7 +123,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.facilityDropout = {
         dataPoints: [],
         dataColumns: [{
-            "id": "bcg_mr_dropout", "name": bcgDropout, "type": "line"
+            "id": "bcg_mr_dropout", "name": bcgDropout, "type": "scatter"
         },
             {"id": "bcg_vaccinated", "name": bcgVaccinated, "type": "bar"},
             {"id": "mr_vaccinated", "name": mrVaccinated, "type": "bar"}
@@ -146,7 +146,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.districtWastage = {
         dataPoints: [],
         dataColumns: [{
-            "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "bar"
+            "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "scatter"
         }
         ],
         dataX: {"id": "geographic_zone_name"}
@@ -155,7 +155,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.facilityWastage = {
         dataPoints: [],
         dataColumns: [{
-            "id": "wastage_rate", "name": messageService.get('label.wastage'), "type": "line"
         },
             {"id": "usage_rate", "name": messageService.get('label.actual'), "type": "bar"}
         ],
@@ -1102,6 +1101,22 @@ VaccineDashboardController.resolve = {
         return deferred.promise;
 
     }
+    ,
+    isDistrictUser: function ($q, $timeout, IsDistrictUser) {
+        var deferred = $q.defer();
+        $timeout(function () {
 
+            IsDistrictUser.get(function (data) {
+
+                deferred.resolve(data);
+
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    }
 
 };

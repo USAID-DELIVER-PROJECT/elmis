@@ -124,5 +124,8 @@ public class VaccineDashboardRepository {
     public List<HashMap<String, Object>> getDistrictStock(Long period, Long product){
         return mapper.getDistrictStock(period, product);
     }
+    public Long isDistrictUser(Long userId){
+        return mapper.isDistrictUser(userId);
+    }
 
 }

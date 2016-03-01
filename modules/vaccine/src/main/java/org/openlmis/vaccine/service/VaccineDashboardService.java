@@ -352,5 +352,14 @@ public class VaccineDashboardService {
         }
         return repairingDetailList;
     }
+    public  boolean isDistrictUser(Long userId){
+        boolean districtUser = false;
+        try {
+            districtUser= repository.isDistrictUser(userId)>0;
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return districtUser;
+    }
 
 }

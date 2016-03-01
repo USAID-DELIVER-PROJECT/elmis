@@ -500,3 +500,11 @@ services.factory('FacilityDistributionForecastAndLastPeriod', function ($resourc
 services.factory('DistributionWithSupervisorId',function($resource){
      return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
 });
+
+services.factory('DistributionWithSupervisorId',function($resource){
+    return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
+});
+
+services.factory('IsDistrictUser',function($resource){
+    return $resource('/vaccine/dashboard/isDistrictUser.json',{},{});
+});
