@@ -184,7 +184,7 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
 
      $scope.print = function(distributionId){
           var url = '/vaccine/orderRequisition/issue/print/'+distributionId;
-           $window.open(url, '_blank');
+          $window.open(url, '_blank');
      };
 
      $scope.loadRights = function () {

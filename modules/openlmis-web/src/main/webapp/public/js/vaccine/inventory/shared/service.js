@@ -75,9 +75,7 @@ services.factory('FacilityWithProducts', function($resource,$timeout,$q,StockCar
                          if(program !== null){
                                 StockCards.get({facilityId:homeFacilityId},function(s){
                                     FacilityDistributionForecastAndLastPeriod.get({facilityId:facility.id,programId:program.id},function(distributionForecastAndPeriod){
-                                     console.log(JSON.stringify(distributionForecastAndPeriod.forecast));
                                         QuantityRequired.get({facilityCode:facility.code,programCode:program.code,periodId:distributionForecastAndPeriod.lastPeriod[0].id},function(report){
-                                             console.log(JSON.stringify(report));
                                              var facilityWithProducts=new FacilitiesWithProducts(facility,s.stockCards,distributionForecastAndPeriod,report);
                                              deferred.resolve(facilityWithProducts);
                                         });
@@ -112,7 +110,6 @@ services.factory('VaccineOrderRequisitionByCategory', function ($resource, Vacci
                         var overallData = data.report;
 
                         var lineItems = data.report.lineItems;
-                         console.log(JSON.stringify(lineItems));
                         lineItems.forEach(function(s){
 
                            // s.displayOrder=s.productId;

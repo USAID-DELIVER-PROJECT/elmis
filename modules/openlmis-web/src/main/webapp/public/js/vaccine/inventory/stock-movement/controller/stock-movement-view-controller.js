@@ -9,7 +9,7 @@
  */
 
 
-function StockMovementViewController($scope, $window,SaveDistribution,StockEvent,configurations, UpdateOrderRequisitionStatus,VaccineLastStockMovement, StockCardsByCategoryAndRequisition, StockCardsForProgramByCategory, $dialog, homeFacility, programs, $routeParams, $location) {
+function StockMovementViewController($scope, $window,$timeout,SaveDistribution,StockEvent,configurations, UpdateOrderRequisitionStatus,VaccineLastStockMovement, StockCardsByCategoryAndRequisition, StockCardsForProgramByCategory, $dialog, homeFacility, programs, $routeParams, $location) {
 
     var orderId = parseInt($routeParams.id, 10);
     var programId = parseInt($routeParams.programId, 10);
@@ -47,7 +47,6 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
                 $scope.numberOfPages = Math.ceil(pageLineItems.length / $scope.pageSize) || 1;
                 $scope.currentPage = (utils.isValidPage($routeParams.page, $scope.numberOfPages)) ? parseInt($routeParams.page, 10) : 1;
                 $scope.stockCardsByCategory = $scope.pageLineItems.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
-              // console.log(JSON.stringify($scope.stockCardsByCategory));
             });
         }
 
@@ -85,7 +84,7 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
     $scope.submit = function () {
         $scope.allProductsZero=true;
-
+        var printWindow;
         $scope.stockCardsByCategory.forEach(function (st) {
             st.stockCards.forEach(function (s) {
                     if( s.quantity > 0){
@@ -201,14 +200,18 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
                 });
               StockEvent.save({facilityId:homeFacility.id},events,function(data){
-                    console.log(distribution.programId);
                    SaveDistribution.save(distribution,function(distribution) {
-                        UpdateOrderRequisitionStatus.update({orderId: orderId}, function () {
-                            print(distribution.distributionId);
-                            $scope.message = "label.form.Submitted.Successfully";
-                         });
+                       $scope.message = "label.form.Submitted.Successfully";
+                       var url = '/vaccine/orderRequisition/issue/print/'+distribution.distributionId;
+                       printWindow.location.href=url;
+                       $timeout(function(){
+                           console.log()
+                           $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+
+                       },900);
                    });
                });
+               printWindow= $window.open('about:blank','_blank');
 
             }
         };
@@ -224,15 +227,6 @@ function StockMovementViewController($scope, $window,SaveDistribution,StockEvent
 
 
     };
-
-    var print = function(distributionId){
-              var url = '/vaccine/orderRequisition/issue/print/'+distributionId;
-               $window.open(url, '_blank');
-
-               $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
-
-         };
-
 
     $scope.cancel = function () {
         $window.location = '/public/pages/vaccine/order-requisition/index.html#/view';
