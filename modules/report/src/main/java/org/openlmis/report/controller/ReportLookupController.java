@@ -572,7 +572,6 @@ public class ReportLookupController extends BaseController {
     return this.reportLookupService.getProductsActiveUnderProgramWithoutDescriptions(programId);
   }
   @RequestMapping(value="/roles/getList",method= RequestMethod.GET, headers = ACCEPT_JSON)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_ROLE')")
   public ResponseEntity<OpenLmisResponse> getRoleList(HttpServletRequest request){
     return OpenLmisResponse.response("roles", roleRightsService.getAllRoles());
   }
