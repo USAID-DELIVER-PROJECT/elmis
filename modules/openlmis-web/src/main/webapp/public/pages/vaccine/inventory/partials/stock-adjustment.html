@@ -88,10 +88,10 @@
                     <input ng-if="c.lotsOnHand.length >0" name="physical-count_0"
                            ng-required="!c.lotsOnHand[0].isSkipped"
                            ng-disabled="c.lotsOnHand[0].isSkipped" ng-model="c.lotsOnHand[0].quantity" maxlength="8"
-                           type="number" min="1"/>
+                           type="number" min="0"/>
                     <input ng-if="c.lotsOnHand.length ===0" name="physical-count_0" ng-required="!c.isSkipped"
                            ng-disabled="c.isSkipped" ng-model="c.quantity" maxlength="8"
-                           type="number" min="1"/>
+                           type="number" min="0"/>
                 </td>
                 <td ng-if="vvmTracked(c)" class="col-count cell-input col-general"
                     ng-class="{'disabled':c.lotsOnHand[0].isSkipped,'':!c.lotsOnHand[0].isSkipped, 'last-row':c.lotsOnHand.length===1}">
@@ -171,7 +171,7 @@
                 </td>
                 <td ng-class="{'last-row':$last,'disabled':lot.isSkipped}" class="col-count cell-input col-general ">
                     <input name="physical-count_{{lot.$index}}" ng-required="!lot.isSkipped" ng-disabled="lot.isSkipped"
-                           ng-model="lot.quantity" maxlength="5" type="number" min="1"/>
+                           ng-model="lot.quantity" maxlength="5" type="number" min="0"/>
                 </td>
                 <td ng-if="vvmTracked(c)" ng-class="{'last-row':$last,'disabled':lot.isSkipped}"
                     class="col-count cell-input col-general ">
@@ -222,13 +222,13 @@
     </div>
 
     <div class="modal-body">
-        <div ng-if="currentStockLot.quantityOnHand >0" class="alert" ng-class="{'alert-danger':(currentStockLot.quantity-currentStockLot.quantityOnHand !== currentStockLot.totalAdjustments),
+        <div ng-if="currentStockLot.quantityOnHand >=0" class="alert" ng-class="{'alert-danger':(currentStockLot.quantity-currentStockLot.quantityOnHand !== currentStockLot.totalAdjustments),
                                        'alert-info':(currentStockLot.quantity-currentStockLot.quantityOnHand === currentStockLot.totalAdjustments)}">
             <span openlmis-message="label.stock.add.adjustment.reason"></span>&nbsp;<b>
             {{currentStockLot.quantity-currentStockLot.quantityOnHand}}</b>&nbsp;<span
                 openlmis-message="label.stock.quantity"></span>
         </div>
-        <div ng-if="currentStockLot.quantityOnHand ==undefined && currentStockLot.totalQuantityOnHand >0" class="alert"
+        <div ng-if="currentStockLot.quantityOnHand ==undefined && currentStockLot.totalQuantityOnHand >=0" class="alert"
              ng-class="{'alert-danger':(currentStockLot.quantity-currentStockLot.totalQuantityOnHand !== currentStockLot.totalAdjustments),
                                        'alert-info':(currentStockLot.quantity-currentStockLot.totalQuantityOnHand === currentStockLot.totalAdjustments)}">
             <span openlmis-message="label.stock.add.adjustment.reason"></span>&nbsp;<b>
