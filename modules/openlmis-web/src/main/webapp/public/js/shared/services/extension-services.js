@@ -434,7 +434,9 @@ services.factory('UserSummaryReport', function($resource){
 services.factory('GetAllRoles', function ($resource) {
     return $resource('/roles/getList.json', {},{});
 });
-
+services.factory('GetAllRolesForReport', function ($resource) {
+    return $resource('/reports/roles/getList.json', {},{});
+});
 services.factory('UserRoleAssignmentsSummary', function($resource){
     return $resource('/reports/UserRoleAssignments/getUserRoleAssignments',{},{});
 });

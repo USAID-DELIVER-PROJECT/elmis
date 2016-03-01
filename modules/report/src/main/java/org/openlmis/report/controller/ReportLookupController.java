@@ -17,6 +17,7 @@ import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.SupervisoryNode;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProcessingScheduleService;
+import org.openlmis.core.service.RoleRightsService;
 import org.openlmis.core.service.SupervisoryNodeService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
@@ -27,11 +28,13 @@ import org.openlmis.report.model.report.OrderFillRateSummaryReport;
 import org.openlmis.report.service.lookup.ReportLookupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,7 +86,8 @@ public class ReportLookupController extends BaseController {
   private ReportLookupService reportLookupService;
   @Autowired
   private FacilityService facilityService;
-
+  @Autowired
+  private RoleRightsService roleRightsService;
   @Autowired
   private ProcessingScheduleService processingScheduleService;
 
@@ -135,7 +139,7 @@ public class ReportLookupController extends BaseController {
   public ResponseEntity<OpenLmisResponse> getFacilityLevels(@RequestParam("program") Long programId,
                                                             HttpServletRequest request) {
     return OpenLmisResponse.response(FACILITY_LEVELS, this.reportLookupService.getFacilityLevels(programId,
-      loggedInUserId(request)));
+            loggedInUserId(request)));
   }
 
   @RequestMapping(value = "/regimenCategories", method = GET, headers = BaseController.ACCEPT_JSON)
@@ -567,5 +571,9 @@ public class ReportLookupController extends BaseController {
   public List<Product> getProgramProductsWithoutDescriptions(@PathVariable("programId") Long programId) {
     return this.reportLookupService.getProductsActiveUnderProgramWithoutDescriptions(programId);
   }
-
+  @RequestMapping(value="/roles/getList",method= RequestMethod.GET, headers = ACCEPT_JSON)
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_ROLE')")
+  public ResponseEntity<OpenLmisResponse> getRoleList(HttpServletRequest request){
+    return OpenLmisResponse.response("roles", roleRightsService.getAllRoles());
+  }
 }

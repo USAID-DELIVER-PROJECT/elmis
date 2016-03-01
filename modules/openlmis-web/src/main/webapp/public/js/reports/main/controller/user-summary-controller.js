@@ -10,18 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function UserSummaryReportController($scope, $window, ReportProgramsBySupervisoryNode, UserRoleAssignmentsSummary, UserSupervisoryNodes, GetAllRoles) {
+function UserSummaryReportController($scope, $window, ReportProgramsBySupervisoryNode, UserRoleAssignmentsSummary, UserSupervisoryNodes, GetAllRolesForReport) {
+
     $scope.filterObject = {};
 
     $scope.$on('$viewContentLoaded', function () {
         $scope.loadUserSummary();
     });
+
     $scope.loadUserSummary = function () {
 
 
-        $scope.filter.max = 10000;
+        //$scope.filter.max = 10000;
         UserRoleAssignmentsSummary.get($scope.filterObject, function (data) {
             $scope.total = 0;
+
             $scope.UserRolePieChartData = [];
             if (!isUndefined(data.userRoleAssignmentSummary)) {
 
@@ -134,7 +137,7 @@ function UserSummaryReportController($scope, $window, ReportProgramsBySupervisor
 
     });
 
-    GetAllRoles.get(function (data) {
+    GetAllRolesForReport.get(function (data) {
         $scope.roles = data.roles;
         $scope.roles.unshift({'name': '-- All Roles --'});
 
