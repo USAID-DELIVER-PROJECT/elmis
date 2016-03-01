@@ -16,6 +16,9 @@
   <table class="table table-bordered">
     <thead>
     <tr class="text-row">
+      <th class="col-skipped">
+        <span openlmis-message="header.label.skip"></span>
+      </th>
       <th class="span5"><span openlmis-message="label.vaccine.vitamin.name"></span></th>
       <th class="span1"><span openlmis-message="label.vaccine.vitamin.age.group"></span></th>
       <th class="span1"><span openlmis-message="label.vaccine.vitamin.supplementation.male"></span></th>
@@ -25,6 +28,11 @@
     </thead>
     <tbody>
     <tr class="text-row" ng-repeat="vitamin in report.vitaminSupplementationLineItems">
+        <td class="cell-input center col-skipped" style="text-align:center;">
+               <span>
+                  <input ng-disabled="true" type="checkbox" ng-model="vitamin.skipped"/>
+              </span>
+        </td>
         <td class="cell-input"><span class="cell-text">{{vitamin.vitaminName}}</span></td>
         <td class="cell-input"><span class="cell-text">{{vitamin.ageGroup}}</span></td>
         <td class="cell-input col-general"><input  disabled numeric-validator="positiveInteger" maxlength="8" type="text" ng-model="vitamin.maleValue" /></td>

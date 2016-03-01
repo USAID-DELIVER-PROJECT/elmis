@@ -76,12 +76,15 @@ public class IVDNotificationServiceTest {
         report.setPeriod(period);
         report.setFacility(facility);
         report.setProgramId(1L);
+        report.setId(1L);
+        report.setModifiedBy(1L);
 
         userList = new ArrayList<>();
         user = new User();
         user.setId(1L);
         user.setEmail("email@rmail");
         userList.add(user);
+        user.setUserName("username");
 
     }
 
@@ -97,8 +100,9 @@ public class IVDNotificationServiceTest {
         when(programService.getById(1L)).thenReturn(new Program(1L));
         when(userService.getById(userId)).thenReturn(user);
         when(userService.filterForActiveUsers(userList)).thenReturn((ArrayList<User>) userList);
+        when(userService.getById(report.getModifiedBy())).thenReturn(user);
 
-        notificationService.sendIVDStatusChangeNofitication(report, userId);
+        notificationService.sendIVDStatusChangeNotification(report, userId);
 
         verify(emailService).queueHtmlMessage(eq(user.getEmail()), eq(setting.getValue()), eq(setting.getValue()), anyMap());
 
@@ -117,7 +121,8 @@ public class IVDNotificationServiceTest {
         when(userService.getById(userId)).thenReturn(user);
         when(userService.filterForActiveUsers(userList)).thenReturn((ArrayList<User>) userList);
 
-        notificationService.sendIVDStatusChangeNofitication(report, userId);
+
+        notificationService.sendIVDStatusChangeNotification(report, userId);
 
         verify(emailService, never()).queueHtmlMessage(eq(user.getEmail()), eq(setting.getValue()), eq(setting.getValue()), anyMap());
     }

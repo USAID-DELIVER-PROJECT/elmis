@@ -16,6 +16,9 @@
   <table class="table table-bordered" ng-show="report.coldChainLineItems.length > 0">
     <thead>
     <tr class="text-row">
+      <th rowspan="2" class="col-skipped" style="width: 30px">
+        <span openlmis-message="header.label.skip"></span>
+      </th>
       <th rowspan="2" class="span3"><span openlmis-message="label.vaccine.cc.asset"></span></th>
       <th rowspan="2" class="span2"><span openlmis-message="label.vaccine.cc.serial"></span></th>
       <th rowspan="2"  class="span2"><span openlmis-message="label.vaccine.cc.model"></span></th>
@@ -36,6 +39,11 @@
     </thead>
     <tbody>
     <tr ng-repeat="item in report.coldChainLineItems">
+      <td class="cell-input center col-skipped" style="text-align:center;">
+             <span>
+              <input ng-disabled="true" type="checkbox" ng-model="item.skipped"/>
+            </span>
+      </td>
       <td class="col-product cell-input"><span class="cell-text">{{item.equipmentName}}</span></td>
       <td class="cell-input col-beginningBalance"><span class="cell-text">{{item.serial}}</span></td>
       <td class="cell-input col-beginningBalance"><span class="cell-text">{{item.model}}</span></td>

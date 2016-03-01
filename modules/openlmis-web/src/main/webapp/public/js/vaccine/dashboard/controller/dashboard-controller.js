@@ -184,6 +184,7 @@ $scope.district_user_level=isDistrictUser.district_user;
         },
             {"id": "fixed_sessions", "name": messageService.get('label.fixed.sessions'), "type": "bar"}],
         dataX: {"id": "geographic_zone_name"}
+
     };
 
     $scope.facilitySessions = {
@@ -204,7 +205,11 @@ $scope.district_user_level=isDistrictUser.district_user;
             "id": "mos", "name": messageService.get('label.mos'), "type": "bar"
         }
         ],
-        dataX: {"id": "period_name"}
+        dataX: {"id": "period_name"},
+        grid: {
+            min: 3,
+            max: 6
+        }
     };
     $scope.districtStock = {
         dataPoints: [],
