@@ -1105,8 +1105,7 @@ VaccineDashboardController.resolve = {
 
         return deferred.promise;
 
-    }
-    ,
+    },
     isDistrictUser: function ($q, $timeout, IsDistrictUser) {
         var deferred = $q.defer();
         $timeout(function () {
