@@ -11,7 +11,7 @@
  */
 
 
-function MassDistributionController($scope,$location, $window,configurations,$timeout,homeFacility,OneLevelSupervisedFacilities,FacilityWithProducts,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
+function MassDistributionController($scope,$location, $document,$window,configurations,$timeout,homeFacility,OneLevelSupervisedFacilities,FacilityWithProducts,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
 
      $scope.userPrograms=configurations.programs;
      $scope.period=configurations.period;
@@ -20,7 +20,7 @@ function MassDistributionController($scope,$location, $window,configurations,$ti
      $scope.toIssue=[];
      $scope.distributionType='ROUTINE';
      $scope.UnScheduledFacility=undefined;
-
+     $scope.maxModalBodyHeight='max-height:'+parseInt($document.height() * 0.46,10)+'px !important';
      $scope.loadSupervisedFacilities=function(programId){
            OneLevelSupervisedFacilities.get({programId:programId},function(data){
                 $scope.supervisedFacilities=data.facilities;

@@ -188,11 +188,11 @@
 
     <div ng-controller="SaveIssueController" id="popup-box" ng-form="issueForm" modal="issueModal"
          options="{'backdrop':'static', 'escape':false}"
-         style="margin-bottom:20px !important;margin-top:-25% !important;width:80% !important;margin-left:-40% !important;">
+         style="width:80% !important;margin-left:-40% !important;">
         <div class="modal-header">
             <h3 openlmis-message="label.vaccine.stock.issue.voucher"></h3>
         </div>
-        <div class="modal-body" style="max-height: !important">
+        <div class="modal-body" style="{{maxModalBodyHeight}}">
             <div class="row-fluid ">
                 <div class="info-box span12">
                     <div class="span4">
@@ -228,7 +228,7 @@
                     <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
                             openlmis-message="header.stock.in.Hand "></span></th>
                     <th class="col-quantity " style="max-width:150px !important; width:150px !important"><span
-                            openlmis-message="label.stock.quantity"></span></th>
+                            openlmis-message="header.stock.quantity.to.issue"></span></th>
                     <th class="col-quantity " style="max-width:120px !important; width:120px !important"><span
                             openlmis-message="header.total.issued"></span></th>
                     <th style="max-width:120px !important; width:120px !important"
@@ -298,7 +298,9 @@
                             <span class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
                     </td>
                         <td class="col-general cell-input" ng-class="{'last-row':$last}">
-                        <input ng-show="product.lots.length > 0" min="{{0}}" max="{{lot.quantityOnHand}}" name="lotQuantity{{$index}}" ng-model="lot.quantity"
+                            <input ng-disabled="(product.quantityRequired < product.lots[$index -1].quantityOnHand) || (product.quantityRequested > product.lots[$index -1].quantityOnHand && (product.lots[$index -1].quantity ===undefined || (product.lots[$index -1].quantity < product.lots[$index -1].quantityOnHand)))"
+                                   ng-show="product.lots.length > 0" min="{{0}}" max="{{lot.quantityOnHand}}"
+                                   name="lotQuantity{{$index}}" ng-model="lot.quantity"
                                ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
                                maxlength="8" type="number"/>
                     </td>
@@ -319,11 +321,11 @@
     </div>
 
     <div ng-controller="SavePODController" id="popup-box2" ng-form="podForm" modal="podModal"
-         options="{'backdrop':'static', 'escape':false}" style="width:60% !important;margin-left:-30% !important">
+         options="{'backdrop':'static', 'escape':false}" style="width:70% !important;margin-left:-35% !important">
         <div class="modal-header">
             <h3 openlmis-message="label.vaccine.stock.pod"></h3>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="{{maxModalBodyHeight}}">
             <div class="row-fluid ">
                 <div class="info-box span12">
                     <div class="span4">
@@ -350,7 +352,7 @@
                     <th class="col-product"><span openlmis-message="label.product"></span></th>
                     <th class="col-lot "><span openlmis-message="label.stock.batch"></span></th>
                     <th class="col-lot "><span openlmis-message="header.vvm.status"></span></th>
-                    <th class="col-quantity "><span openlmis-message="label.stock.quantity"></span></th>
+                    <th class="col-quantity "><span openlmis-message="header.stock.quantity.issued"></span></th>
                 </tr>
                 </thead>
                 <tbody ng-repeat="category in facilityPOD.productsToIssueByCategory">

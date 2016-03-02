@@ -84,7 +84,7 @@
 
                 <th class="col-quantity">
                     <div class="regimen-heading">
-                        <span openlmis-message="header.doses.issued"></span>
+                        <span openlmis-message="header.stock.quantity.to.issue"></span>
                     </div>
                 </th>
 
@@ -175,7 +175,9 @@
 
                 <td ng-class="{'last-row':$last} " class="col-count cell-input col-general number disabled">
                   <span class="cell-text " >
-                      <input name="quantityToIssue_{{$parent.$index}}_{{$index}}" numeric-validator="positiveInteger" maxlength="8" max="{{lot.quantityOnHand}}"
+                      <input ng-disabled="(c.quantityRequested < c.lotsOnHand[$index -1].quantityOnHand) || (c.quantityRequested > c.lotsOnHand[$index -1].quantityOnHand && (c.lotsOnHand[$index -1].quantity ===undefined || (c.lotsOnHand[$index -1].quantity < c.lotsOnHand[$index -1].quantityOnHand)))"
+                             name="quantityToIssue_{{$parent.$index}}_{{$index}}" numeric-validator="positiveInteger"
+                             maxlength="8" max="{{lot.quantityOnHand}}"
                              ng-model="lot.quantity" ng-change="sumLots(c)" type="number" style="width: 180px;!important;"/>
                   </span>
                     <span class="field-error" ng-show="c.lotsOnHand[0].quantity.$error.required && showError"
@@ -184,8 +186,6 @@
                                     ></span>
 
                 </td>
-                <td rowspan="{{lot.length}}" ng-show="!$last"></td>
-
             </tr>
             </tbody>
         </table>
