@@ -494,7 +494,7 @@ describe("Services", function () {
       program.get({},
           function (data) {
             successStub();
-            expect(data.programs).toEqual({});
+            expect(data.programs).toEqual([]);
           },
           function () {
             failureStub();
