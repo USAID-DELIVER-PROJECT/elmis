@@ -25,4 +25,21 @@ var LogisticsLineItem = function(lineItem) {
     }
   };
 
+  //TODO: Define the children immunized filed in logistic line item
+  LogisticsLineItem.prototype.setChildrenImmunized = function(){
+    this.childrenImmunized = 5000;
+  };
+
+  LogisticsLineItem.prototype.setUsageRate = function(){
+      this.usageRate =  (this.childrenImmunized / (utils.parseIntWithBaseTen(this.quantityIssued) + utils.parseIntWithBaseTen(this.closingBalance))).toFixed(2);
+  };
+
+  LogisticsLineItem.prototype.setWastageRate = function(){
+    this.wastageRate = (100 - this.usageRate).toFixed(2);
+  };
+
+  this.setChildrenImmunized();
+  this.setUsageRate();
+  this.setWastageRate();
+
 };

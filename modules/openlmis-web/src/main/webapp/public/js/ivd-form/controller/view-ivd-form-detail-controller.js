@@ -24,6 +24,10 @@ function ViewIvdFormDetailController($scope, $location, report, discardingReason
     $location.path('/view');
   };
 
+  $scope.cancelToApprovePage = function(){
+    $location.path('/approve');
+  };
+
   $scope.operationalStatuses = operationalStatuses;
 
   $scope.showAdverseEffect = function (effect, editMode) {
@@ -65,6 +69,22 @@ function ViewIvdFormDetailController($scope, $location, report, discardingReason
     }
     return false;
   };
+
+
+  $scope.getDiscardingReasonName = function(reasoneId){
+     var reason = _.findWhere($scope.discardingReasons, {id: parseInt(reasoneId, 10)});
+     return reason.name;
+  };
+
+  $scope.getVitaminAStock = function(){
+    return _.where($scope.report.logisticsLineItems, {productCategory: 'Vitamins'});
+  };
+
+  $scope.getSafeInjectionEquipment = function(){
+    return _.where($scope.report.logisticsLineItems, {productCategory: 'Syringes and safety boxes'});
+  };
+
+  $scope.facilityDemographicEstimateColumns = ['Live Birth', 'Surviving Infants', 'Children under 2 Years', 'Adolescent girls', 'Pregnant Women' ];
 
 }
 ViewIvdFormDetailController.resolve = {

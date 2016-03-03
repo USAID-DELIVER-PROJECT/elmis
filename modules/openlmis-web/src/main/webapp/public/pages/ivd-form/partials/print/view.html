@@ -4,13 +4,14 @@
             display: none;
         }
 
+        body {
+            background: #fff !important;
+        }
+
     }
-
-  
-
 </style>
-<div id="ivd-print-view" class="container-fluid">
 
+<div id="ivd-print-view" class="container-fluid">
     <div class="row-fluid">
         <div class="span12">
             <table id="ivd-tbl-identification" class="table table-bordered">
@@ -22,10 +23,10 @@
                 <tbody>
                 <tr>
                     <td><strong>1. Identification</strong></td>
-                    <td>March</td>
-                    <td>2015</td>
-                    <td>Arusha MC</td>
-                    <td>Gibondo</td>
+                    <td>{{report.period.name}}</td>
+                    <td>{{report.period.stringYear}}</td>
+                    <td>{{report.facility.name}}</td>
+                    <td>{{report.facility.geographicZone.name}}</td>
                     <td colspan="6" width="64%" class="center">Target Population</td>
                 </tr>
                 <tr style="border-bottom: 0px;">
@@ -36,28 +37,26 @@
                     <td class="flat-td" rowspan="3"><strong>District</strong></td>
 
                     <th>Population</th>
+
                     <th>live birth</th>
                     <th>0-11 months</th>
                     <th>12-23 months</th>
                     <th>Girls of 9 years</th>
                     <th>Preg Women</th>
                 </tr>
-                <tr>
-                    <td>201</td>
-                    <td>4005</td>
-                    <td>414</td>
-                    <td>415</td>
-                    <td>7456</td>
-                    <td>325</td>
+                <tr >
+                    <td >Annual Target</td>
+                    <td ng-repeat="fdeCols in facilityDemographicEstimateColumns ">
+                        <span ng-repeat="fde in report.facilityDemographicEstimates" ng-if="fdeCols === fde.category.name"> {{fde.value}}</span>
+                    </td >
                 </tr>
-                <tr>
-                    <td>23</td>
-                    <td>7</td>
-                    <td>72</td>
-                    <td>952</td>
-                    <td>338</td>
-                    <td>112</td>
+                <tr >
+                    <td >Monthly Target</td>
+                    <td ng-repeat="fdeCols in facilityDemographicEstimateColumns ">
+                        <span ng-repeat="fde in report.facilityDemographicEstimates" ng-if="fdeCols === fde.category.name"> {{fde.value/12 | number : 0}}</span>
+                    </td >
                 </tr>
+
                 </tbody>
             </table>
         </div>
@@ -71,31 +70,17 @@
             <thead>
             <tr>
                 <th></th>
-                <th>Population</th>
                 <th>Cases this month</th>
-                <th>Cases cummulative</th>
+                <th>Cases cumulative</th>
                 <th>Death this month</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>Fever and rash illness</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">AFP cases</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">Neonatal Tetanus</td>
-                <td></td>
-                <td></td>
-                <td></td>
+            <tr ng-repeat="ds in report.diseaseLineItems">
+                <td>{{ds.diseaseName}}</td>
+                <td>{{ds.cases}}</td>
+                <td>{{ds.cumulative}}</td>
+                <td>{{ds.death}}</td>
             </tr>
             </tbody>
         </table>
@@ -116,9 +101,9 @@
                     <td>Outreach cancelled</td>
                 </tr>
                 <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
+                    <td>{{report.fixedImmunizationSessions}}</td>
+                    <td>{{report.outreachImmunizationSessions}}</td>
+                    <td>{{report.outreachImmunizationSessionsCanceled}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -162,59 +147,31 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>BCG</td>
-                        <td>1</td>
-                        <td>50</td>
-                        <td>40</td>
-                        <td>90</td>
-                        <td>45%</td>
-                        <td>30</td>
-                        <td>40</td>
-                        <td>70</td>
-                        <td>160</td>
-                        <td>80%</td>
-                        <td>270</td>
-                        <td>45%</td>
-                        <td>210</td>
-                        <td>210</td>
-                    </tr>
-                    <tr>
-                        <td rowspan="2">OPV</td>
-                        <td>0</td>
-                        <td>50</td>
-                        <td>40</td>
-                        <td>90</td>
-                        <td>45%</td>
-                        <td>30</td>
-                        <td>40</td>
-                        <td>70</td>
-                        <td>160</td>
-                        <td>80%</td>
-                        <td>270</td>
-                        <td>45%</td>
-                        <td>210</td>
-                        <td>210</td>
-                    </tr><tr>
-                        <td>1</td>
-                        <td>50</td>
-                        <td>40</td>
-                        <td>90</td>
-                        <td>45%</td>
-                        <td>30</td>
-                        <td>40</td>
-                        <td>70</td>
-                        <td>160</td>
-                        <td>80%</td>
-                        <td>270</td>
-                        <td>45%</td>
-                        <td>210</td>
-                        <td>210</td>
-                    </tr>
-
+                <tr ng-repeat-start="(productId, productGroup) in report.coverageLineItemViews"></tr>
+                <tr ng-repeat-start="dose in productGroup">
+                    <td ng-if="$index == 0" rowspan="{{productGroup.length * 2}}"><span class="cell-text">{{dose.product.primaryName}}</span></td>
+                    <td ><span class="cell-text number">{{dose.displayName}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.regularMale}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.regularFemale}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.getTotalRegular() | number : 0}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getRegularCoveragePercentage() | number : 2}}%</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.outreachMale}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.outreachFemale}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.getTotalOutreach() | number : 0}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getMonthlyTotal() | number : 0}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number"> {{ dose.getMonthlyCoverage() | number : 2 }} %</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.getTotalAnnualRegular() | number : 0}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getTotalAnnualRegularCoveragePercentage() | number : 2}}%</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getTotalAnnualOutreach() | number : 0}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getAnnualTotal() | number : 0}}</span></td>
+                </tr>
+                </tr>
+                <tr ng-repeat-end></tr>
+                <tr ng-repeat-end></tr>
                 </tbody>
             </table>
-        </div>
+    </div>
+
         <div class="span3">
             <!-- ========= Drop-out rate DTP-HepB-Hib1/DTP-HepB-Hib3 (%) ==== -->
             <table class="table table-bordered">
@@ -264,18 +221,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td rowspan="2">Vitamin A</td>
-                    <td>9 months</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>9</td>
-                </tr>
-                <tr>
-                    <td>18 months</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>9</td>
+                <tr ng-repeat="vt in report.vitaminSupplementationLineItems" >
+                    <td rowspan="{{report.vitaminSupplementationLineItems.length}}"
+                        ng-show="vt.vitaminName !== report.vitaminSupplementationLineItems[$index-1].vitaminName">{{vt.vitaminName}}</td>
+                    <td>{{vt.ageGroup}}</td>
+                    <td>{{vt.maleValue}}</td>
+                    <td>{{vt.femaleValue}}</td>
+                    <td>{{vt.femaleValue + vt.maleValue}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -285,9 +237,9 @@
     <div class="row-fluid">
         <h5>4. Other Major Immunization Activities</h5>
             <div class="span9 offset1 summary-text">
+                {{report.majorImmunizationActivities}}
             </div>
     </div>
-
     <!-- ====== Vaccines Vaccination, VitA ====--->
     <div class="row-fluid">
         <h5>5. Vaccines Vaccination, VitA</h5>
@@ -310,7 +262,6 @@
                     <th>USAGE RATE (F/(C+D))*100</th>
                     <th>WASTAGE RATE(100-G)</th>
                 </tr>
-
                 </thead>
                 <tbody>
                 <tr>
@@ -326,31 +277,18 @@
                     <td>G</td>
                     <td>H</td>
                 </tr>
-                <tr>
-                    <td>BCG</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>OPV</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                <tr style="height: 31px" ng-repeat="product in report.logisticsLineItems"">
+                        <td class="right-justified"><span class="cell-text">{{product.productName}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.openingBalance}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.quantityReceived}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.quantityIssued}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.quantityDiscardedUnopened}}</span></td>
+                        <td class="right-justified"><span class="cell-text">{{getDiscardingReasonName(product.discardingReasonId)}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.closingBalance}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.daysStockedOut}}</span></td>
+                        <td>{{product.childrenImmunized}}*</td>
+                        <td>{{product.usageRate}}</td>
+                        <td>{{product.wastageRate}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -378,24 +316,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>ADS_0.05ml</td>
-                    <td>200</td>
-                    <td>300</td>
-                    <td>250</td>
-                    <td>10</td>
-                    <td>240</td>
-                    <td></td>
-                </tr><tr>
-                    <td>ADS_0.5ml</td>
-                    <td>200</td>
-                    <td>300</td>
-                    <td>250</td>
-                    <td>10</td>
-                    <td>240</td>
-                    <td></td>
+                <tr ng-repeat="vit in getSafeInjectionEquipment()">
+                    <td>{{vit.productName}}</td>
+                    <td>{{vit.openingBalance}}</td>
+                    <td>{{vit.quantityReceived}}</td>
+                    <td>{{vit.quantityIssued}}</td>
+                    <td>*</td>
+                    <td>{{vit.closingBalance}}</td>
+                    <td>{{vit.daysStockedOut}}</td>
                 </tr>
-
                 </tbody>
             </table>
         </div>
@@ -418,22 +347,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Vit.A 100,000 IU</td>
-                    <td>100</td>
-                    <td>50</td>
-                    <td>40</td>
-                    <td>5</td>
-                    <td>105</td>
+                <tr ng-repeat="vit in getVitaminAStock()">
+                    <td>{{vit.productName}}</td>
+                    <td>{{vit.openingBalance}}</td>
+                    <td>{{vit.quantityReceived}}</td>
+                    <td>{{vit.quantityIssued}}</td>
+                    <td>*</td>
+                    <td>{{vit.closingBalance}}</td>
                 </tr>
-                <tr>
-                    <td>Vit.A 200,000 IU</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+
 
                 </tbody>
             </table>
@@ -455,16 +377,25 @@
                     <th colspan="2">No. of Alarm Episode</th>
 
                 </tr>
+                <tr>
+                    <th>Type</th>
+                    <th>Model</th>
+                    <th>Energy source</th>
+                    <th>Min</th>
+                    <th>Max</th>
+                    <th>Low Temp</th>
+                    <th>High Temp</th>
+                </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
+                <tr ng-repeat="cc in report.coldChainLineItems">
+                    <td>{{cc.type}}</td>
+                    <td>{{cc.model}}</td>
+                    <td>{{cc.energySource}}</td>
+                    <td>{{cc.minTemp}}</td>
+                    <td>{{cc.maxTemp}}</td>
+                    <td>{{cc.minEpisodeTemp}}</td>
+                    <td>{{cc.maxEpisodeTemp}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -488,22 +419,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
+                <tr ng-repeat="aefi in report.adverseEffectLineItems">
+                    <td>{{aefi.productName}}</td>
+                    <td>{{aefi.cases}}</td>
+                    <td>{{aefi.batch}}</td>
+                    <td>{{aefi.manufacturer}}</td>
+                    <td>{{aefi.expiry | date}}</td>
+                    <td>{{aefi.isInvestigated ? 'Y' : 'N'}}</td>
                 </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                </tr>
+
                 </tbody>
             </table>
         </div>
@@ -513,26 +437,28 @@
     <div class="row-fluid">
         <h5>9. Submission</h5>
         <div class="span2">
-            <strong>Date Prepared<br> 2015/2/06</strong>
+            <strong>Date Prepared<br><br> _____________</strong>
         </div>
         <div class="span2">
-            <strong>Date Submitted<br> 2015/2/07</strong>
+            <strong>Date Submitted<br><br> ____________</strong>
         </div>
         <div class="span3">
-            <strong>Name and signature</strong><br> _____________
+            <strong>Name and signature<br><br> _____________</strong>
         </div>
         <div class="span3">
-            <strong>Date received at district level<br> 2015/2/09</strong>
+            <strong>Date received at district level<br><br/> {{report.submissionDate | date}}</strong>
         </div>
     </div>
 </div>
-
 
 <div form-toolbar id="action_buttons" class="action-buttons hide-on-print">
     <div class="form-cell button-row">
         <input id="print-IVD-form" type="button" class="btn btn-primary cancel-button "
                openlmis-message="button.print"
                onclick="window.print();"/>
+        <input id="cancelButton" type="button" class="btn btn-cancel cancel-button"
+               openlmis-message="button.cancel"
+               ng-click="cancelToApprovePage()"/>
     </div>
 
 </div>
