@@ -42,6 +42,7 @@ function UserSummaryReportController($scope, $window, ReportAllProgramsBySupervi
 
             } else {
                 $scope.UserRolePieChartData = [];
+                $scope.datarows=[];
             }
 
         });
@@ -66,7 +67,7 @@ function UserSummaryReportController($scope, $window, ReportAllProgramsBySupervi
         }
         ReportAllProgramsBySupervisoryNode.get({supervisoryNodeId: par}, function (data) {
             $scope.programs = data.programs;
-            $scope.programs.unshift({'name': '--All Programs--'});
+            $scope.programs.unshift({'name': '--All Programs--','id':'0'});
         });
 
         $scope.loadUserSummary();
@@ -128,7 +129,7 @@ function UserSummaryReportController($scope, $window, ReportAllProgramsBySupervi
 
     UserSupervisoryNodes.get(function (data) {
         $scope.supervisoryNodes = data.supervisoryNodes;
-        $scope.supervisoryNodes.unshift({'name': '-- All Supervisory Nodes --'});
+        $scope.supervisoryNodes.unshift({'name': '-- All Supervisory Nodes --','id':'0'});
         ReportAllProgramsBySupervisoryNode.get({supervisoryNodeId: $scope.filterObject.supervisoryNodeId}, function (data) {
             $scope.programs = data.programs;
             $scope.programs.unshift({'name': '--All Programs--'});
