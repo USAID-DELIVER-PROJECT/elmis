@@ -112,6 +112,13 @@ public class FacilityController extends BaseController {
       addPrograms(programService.getAll()).get();
   }
 
+  private ModelMap getFacilityResponse(@PathVariable(value = "programId") Long programId, Long userId, String... rights) {
+    ModelMap modelMap = new ModelMap();
+    List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, rights);
+    modelMap.put("facilities", facilities);
+    return modelMap;
+  }
+
   @RequestMapping(value = "/facilities/{id}", method = GET, headers = ACCEPT_JSON)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_FACILITY, MANAGE_USER')")
   public ResponseEntity<OpenLmisResponse> getFacility(@PathVariable(value = "id") Long id) {
@@ -121,21 +128,24 @@ public class FacilityController extends BaseController {
   @RequestMapping(value = "/create/requisition/supervised/{programId}/facilities.json", method = GET)
   public ResponseEntity<ModelMap> getUserSupervisedFacilitiesSupportingProgram(@PathVariable(value = "programId") Long programId,
                                                                                HttpServletRequest request) {
-    ModelMap modelMap = new ModelMap();
     Long userId = loggedInUserId(request);
-    List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, CREATE_REQUISITION,
-      AUTHORIZE_REQUISITION);
-    modelMap.put("facilities", facilities);
-    return new ResponseEntity<>(modelMap, HttpStatus.OK);
+    return new ResponseEntity<>(getFacilityResponse(programId, userId,  CREATE_REQUISITION,  AUTHORIZE_REQUISITION), HttpStatus.OK);
   }
+
+
+
+  @RequestMapping(value = "/manage-pod/supervised/{programId}/facilities.json", method = GET)
+  public ResponseEntity<ModelMap> getUserSupervisedFacilitiesForPOD(@PathVariable(value = "programId") Long programId,
+                                                                               HttpServletRequest request) {
+    Long userId = loggedInUserId(request);
+    return new ResponseEntity<>(getFacilityResponse(programId, userId,  MANAGE_POD,  COMPLETE_POD), HttpStatus.OK);
+  }
+
+
   @RequestMapping(value = "/users/{userId}/supervised/{programId}/facilities.json", method = GET)
   public ResponseEntity<ModelMap> getUserSupervisedFacilitiesSupportingProgram(@PathVariable(
         value = "programId") Long programId, @PathVariable("userId") Long userId) {
-    ModelMap modelMap = new ModelMap();
-    List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, CREATE_REQUISITION,
-            AUTHORIZE_REQUISITION);
-    modelMap.put("facilities", facilities);
-    return new ResponseEntity<>(modelMap, HttpStatus.OK);
+    return new ResponseEntity<>(getFacilityResponse(programId, userId, CREATE_REQUISITION, AUTHORIZE_REQUISITION), HttpStatus.OK);
   }
 
   @RequestMapping(value = "/facilities", method = POST, headers = ACCEPT_JSON)

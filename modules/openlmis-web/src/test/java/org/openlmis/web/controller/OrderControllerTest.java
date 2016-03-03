@@ -188,7 +188,6 @@ public class OrderControllerTest {
   public void shouldGetAllOrdersForPOD() {
     List<Order> ordersForPOD = null;
     when(orderService.searchByStatusAndRight(USER_ID,
-      MANAGE_POD,
       asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L)).thenReturn(ordersForPOD);
     mockStatic(OrderDTO.class);
     List<OrderDTO> orderDTOs = new ArrayList<>();
@@ -198,7 +197,6 @@ public class OrderControllerTest {
 
     assertThat((List<OrderDTO>) response.getBody().getData().get(ORDERS_FOR_POD), is(orderDTOs));
     verify(orderService).searchByStatusAndRight(USER_ID,
-      MANAGE_POD,
       asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L);
   }
 }

@@ -76,6 +76,17 @@ public class ProgramController extends BaseController {
     }
   }
 
+  @RequestMapping(value = "/manage-pod/programs", method = GET, headers = ACCEPT_JSON)
+  public List<Program> getProgramsForManagingPOD(@RequestParam(value = "facilityId", required = false) Long facilityId,
+                                                 HttpServletRequest request) {
+    String[] rights = {MANAGE_POD, COMPLETE_POD};
+    if (facilityId == null) {
+      return programService.getProgramForSupervisedFacilities(loggedInUserId(request), rights);
+    } else {
+      return programService.getProgramsSupportedByUserHomeFacilityWithRights(facilityId, loggedInUserId(request), rights);
+    }
+  }
+
   @RequestMapping(value = "/programs/pull", method = GET, headers = ACCEPT_JSON)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_USER, CONFIGURE_RNR, MANAGE_SUPPLY_LINE, MANAGE_FACILITY_APPROVED_PRODUCT, MANAGE_REQUISITION_GROUP')")
   public ResponseEntity<OpenLmisResponse> getAllPullPrograms() {

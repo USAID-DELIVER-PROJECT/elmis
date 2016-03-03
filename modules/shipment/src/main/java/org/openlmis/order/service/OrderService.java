@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.collections.Transformer;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.OrderConfigurationRepository;
+import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.service.*;
 import org.openlmis.fulfillment.shared.FulfillmentPermissionService;
 import org.openlmis.order.domain.DateFormat;
@@ -81,6 +82,12 @@ public class OrderService {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private FacilityService facilityService;
+
+  @Autowired
+  private CommaSeparator commaSeparator;
 
   public static String SUPPLY_LINE_MISSING_COMMENT = "order.ftpComment.supplyline.missing";
 
@@ -232,15 +239,17 @@ public class OrderService {
     return pageSize;
   }
 
-  public List<Order> searchByStatusAndRight(Long userId, String rightName, List<OrderStatus> statuses, Long programId, Long facilityId) {
-    List<FulfillmentRoleAssignment> fulfilmentRolesWithRight = roleAssignmentService.getFulfilmentRolesWithRight(userId, rightName);
+  public List<Order> searchByStatusAndRight(Long userId, List<OrderStatus> statuses, Long programId, Long facilityId) {
+    List<FulfillmentRoleAssignment> fulfilmentRolesWithRight = roleAssignmentService.getFulfilmentRolesWithRight(userId, RightName.MANAGE_POD);
+
+    String managedFacilities =  commaSeparator.commaSeparateIds(facilityService.getUserSupervisedFacilities(userId, programId, RightName.COMPLETE_POD));
 
     List<Order> orders = orderRepository.searchByWarehousesAndStatuses((List<Long>) collect(fulfilmentRolesWithRight, new Transformer() {
       @Override
       public Object transform(Object o) {
         return ((FulfillmentRoleAssignment) o).getFacilityId();
       }
-    }), statuses, programId, facilityId);
+    }), statuses, programId, facilityId, managedFacilities);
 
     orders = fillOrders(orders);
     sort(orders);
