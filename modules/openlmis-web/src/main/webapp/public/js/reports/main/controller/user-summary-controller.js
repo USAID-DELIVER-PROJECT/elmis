@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function UserSummaryReportController($scope, $window, ReportProgramsBySupervisoryNode, UserRoleAssignmentsSummary, UserSupervisoryNodes, GetAllRolesForReport) {
+function UserSummaryReportController($scope, $window, ReportAllProgramsBySupervisoryNode, UserRoleAssignmentsSummary, UserSupervisoryNodes, GetAllRolesForReport) {
 
     $scope.filterObject = {};
-
+    $scope.filterObject.supervisoryNodeId=0;
     $scope.$on('$viewContentLoaded', function () {
         $scope.loadUserSummary();
     });
@@ -64,7 +64,7 @@ function UserSummaryReportController($scope, $window, ReportProgramsBySupervisor
         if (!$scope.filterObject.supervisoryNodeId || $scope.filterObject.supervisoryNodeId === 'undefined' || $scope.filterObject.supervisoryNodeId === '') {
             par = 0;
         }
-        ReportProgramsBySupervisoryNode.get({supervisoryNodeId: par}, function (data) {
+        ReportAllProgramsBySupervisoryNode.get({supervisoryNodeId: par}, function (data) {
             $scope.programs = data.programs;
             $scope.programs.unshift({'name': '--All Programs--'});
         });
@@ -129,8 +129,7 @@ function UserSummaryReportController($scope, $window, ReportProgramsBySupervisor
     UserSupervisoryNodes.get(function (data) {
         $scope.supervisoryNodes = data.supervisoryNodes;
         $scope.supervisoryNodes.unshift({'name': '-- All Supervisory Nodes --'});
-
-        ReportProgramsBySupervisoryNode.get({supervisoryNodeId: $scope.filterObject.supervisoryNodeId}, function (data) {
+        ReportAllProgramsBySupervisoryNode.get({supervisoryNodeId: $scope.filterObject.supervisoryNodeId}, function (data) {
             $scope.programs = data.programs;
             $scope.programs.unshift({'name': '--All Programs--'});
         });

@@ -401,7 +401,12 @@ public class ReportLookupController extends BaseController {
     List<Program> programList = reportLookupService.getUserSupervisedActiveProgramsBySupervisoryNode(loggedInUserId(request), supervisoryNodeId);
     return OpenLmisResponse.response(PROGRAMS, programList);
   }
+  @RequestMapping(value = "/supervisory-node/{supervisoryNodeId}/allPrograms", method = GET, headers = BaseController.ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getAllProgramsForSupervisoryNode(@PathVariable("supervisoryNodeId") Long supervisoryNodeId, HttpServletRequest request) {
 
+    List<Program> programList = reportLookupService.getUserSupervisedActiveProgramsBySupervisoryNode( supervisoryNodeId);
+    return OpenLmisResponse.response(PROGRAMS, programList);
+  }
   @RequestMapping(value = "/user/supervisory-nodes", method = GET, headers = BaseController.ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getUserSupervisoryNodes(HttpServletRequest request) {
     List<SupervisoryNode> supervisoryNodes = reportLookupService.getAllSupervisoryNodesByUserHavingActiveProgram(loggedInUserId(request));

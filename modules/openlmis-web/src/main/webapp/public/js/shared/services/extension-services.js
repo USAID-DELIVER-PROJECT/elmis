@@ -369,6 +369,9 @@ services.factory('StockedOutFacilities', function($resource){
 services.factory('ReportProgramsBySupervisoryNode', function ($resource) {
     return $resource('/reports/supervisory-node/:supervisoryNodeId/programs.json', {}, {});
 });
+services.factory('ReportAllProgramsBySupervisoryNode', function ($resource) {
+    return $resource('/reports/supervisory-node/:supervisoryNodeId/allPrograms.json', {}, {});
+});
 
 services.factory('StockedOutFacilitiesByDistrict', function($resource){
     return $resource('/dashboard/geographic-zone/:zoneId/program/:programId/period/:periodId/product/:productId/stockedOutFacilities.json',{},{});
