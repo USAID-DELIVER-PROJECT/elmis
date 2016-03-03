@@ -97,7 +97,7 @@ function UserSummaryReportController($scope, $window, ReportAllProgramsBySupervi
             container: $("#userSummaryReportLegend"),
             noColumns: 1,
             labelBoxBorderColor: "none",
-            sorted: "descending",
+            sorted: "ascending",
             position: "w",
             backgroundOpacity: 1
         },
