@@ -346,7 +346,7 @@ public interface VaccineReportMapper {
     @Select("select\n" +
             "product_code, \n" +
             "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
-            "'BCG - MR ' \n" +
+            "'BCG - MR1 ' \n" +
             "else \n" +
             "'DTP-HepB-Hib1/DTP-HepB-Hib3' \n" +
             "end indicator,\n" +
@@ -371,7 +371,7 @@ public interface VaccineReportMapper {
 
     @Select("select product_code, \n" +
             "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
-            "'BCG - MR ' \n" +
+            "'BCG - MR1 ' \n" +
             "else \n" +
             "'DTP-HepB-Hib1/DTP-HepB-Hib3' \n" +
             "end indicator,\n" +
