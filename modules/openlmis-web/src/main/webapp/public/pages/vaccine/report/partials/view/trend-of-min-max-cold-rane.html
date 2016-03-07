@@ -98,10 +98,7 @@
                         <span openlmis-message="label.period"></span>
 
                     </th>
-                    <th rowspan="2" style="width: 10px">
-                        <span openlmis-message="label.population"></span>
 
-                    </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
                         <span openlmis-message="label.refrigerator.temprature"></span>
 
@@ -196,8 +193,7 @@
                     <td ng-bind="subRow.period_name| date:'MMM-yyyy'"
                         ng-style="{'text-align':'right'}"/>
 
-                    <td ng-bind="subRow.targetpopulation| number"
-                        ng-style="{'text-align':'right'}"/>
+
 
                     <td ng-bind="subRow.mintemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(subRow.mintemp)  ,'text-align':'right'}"/>
@@ -228,8 +224,7 @@
                         <span openlmis-message="label.total"></span>
                     </td>
 
-                    <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; " ng-bind="report.targetpopulation| number"></td>
+
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; " ng-bind="report.mintemp| number"></td>
@@ -298,10 +293,7 @@
                         <span openlmis-message="label.period"></span>
 
                     </th>
-                    <th rowspan="2" style="width: 10px">
-                        <span openlmis-message="label.population"></span>
 
-                    </th>
                     <th colspan="2" style=" text-align: center; vertical-align: middle">
                         <span openlmis-message="label.refrigerator.temprature"></span>
 
@@ -376,8 +368,7 @@
                             ></td>
                     <td ng-bind="row.period_name| date:'MMM-yyyy'"
                         ng-style="{'text-align':'right'}"/>
-                    <td ng-bind="row.targetpopulation| number"
-                        ng-style="{'text-align':'right'}"/>
+
                     <td ng-bind="row.mintemp| number"
                         ng-style="{'background-color':getBackGroundColorForTd(row.mintemp)  ,'text-align':'right'}"/>
 
@@ -406,8 +397,7 @@
                         <span openlmis-message="label.total"></span>
                     </td>
 
-                    <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
-                        style="text-align:right; " ng-bind="report.targetpopulation| number"></td>
+
 
                     <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"
                         style="text-align:right; " ng-bind="report.mintemp| number"></td>
