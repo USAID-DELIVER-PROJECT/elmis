@@ -179,6 +179,10 @@ public class FacilityRepository {
     return mapper.getHomeFacilityWithRights(userId, commaSeparateRightNames(rightNames));
   }
 
+  public Facility getHomeFacilityForRights(Long userId, Long programId , String... rightNames) {
+    return mapper.getHomeFacilityWithRightsByProgram(userId, programId, commaSeparateRightNames(rightNames));
+  }
+
   public FacilityType getFacilityTypeByCode(FacilityType facilityType) {
     facilityType = mapper.getFacilityTypeForCode(facilityType.getCode());
     if (facilityType == null) {
