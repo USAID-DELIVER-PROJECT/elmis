@@ -12,9 +12,8 @@ package org.openlmis.web.controller;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
-import org.openlmis.core.domain.Program;
 import org.openlmis.core.exception.DataException;
-import org.openlmis.core.service.ProgramService;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.order.domain.Order;
 import org.openlmis.order.service.OrderService;
@@ -24,7 +23,6 @@ import org.openlmis.pod.service.PODService;
 import org.openlmis.reporting.model.Template;
 import org.openlmis.reporting.service.JasperReportsViewFactory;
 import org.openlmis.reporting.service.TemplateService;
-import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -42,9 +40,11 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiForm
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
-import static org.openlmis.core.domain.RightName.*;
 import static org.openlmis.core.web.OpenLmisResponse.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 

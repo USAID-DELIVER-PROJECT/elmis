@@ -18,12 +18,12 @@ function ManagePODController($scope, OrdersForManagePOD, messageService, OrderPO
 
   $scope.onParamChanged = function(){
     $scope.orders = [];
-    if(!angular.isUndefined($scope.filter.program) && $scope.filter.program !== null){
+    if(utils.isNumber($scope.filter.program)){
       ManagePodFacilitiesForProgram.get({programId: $scope.filter.program}, function (data) {
         $scope.facilities = data.facilities;
       });
 
-      if($scope.option.all){
+      if($scope.option.all === true){
         OrdersForManagePOD.get({program: $scope.filter.program}, function (data) {
           $scope.orders = data.ordersForPOD;
         });
@@ -32,9 +32,12 @@ function ManagePODController($scope, OrdersForManagePOD, messageService, OrderPO
   };
 
   $scope.onFacilityChanged = function(){
-    OrdersForManagePOD.get({program: $scope.filter.program, facility: $scope.filter.facility}, function (data) {
-      $scope.orders = data.ordersForPOD;
-    });
+    if(utils.isNumber($scope.filter.facility)){
+      OrdersForManagePOD.get({program: $scope.filter.program, facility: $scope.filter.facility}, function (data) {
+        $scope.orders = data.ordersForPOD;
+      });
+    }
+
   };
 
   $scope.gridOptions = { data: 'orders',
