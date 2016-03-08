@@ -13,6 +13,7 @@ package org.openlmis.rnr.repository;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.repository.helper.CommaSeparator;
+import org.openlmis.core.repository.mapper.SignatureMapper;
 import org.openlmis.equipment.domain.EquipmentInventoryStatus;
 import org.openlmis.equipment.repository.mapper.EquipmentInventoryStatusMapper;
 import org.openlmis.rnr.domain.*;
@@ -60,6 +61,12 @@ public class RequisitionRepository {
   @Autowired
   private EquipmentInventoryStatusMapper equipmentInventoryStatusMapper;
 
+  @Autowired
+  private PatientQuantificationLineItemMapper patientQuantificationLineItemMapper;
+
+  @Autowired
+  private SignatureMapper signatureMapper;
+
 
   public void insert(Rnr requisition) {
     requisition.setStatus(INITIATED);
@@ -68,6 +75,15 @@ public class RequisitionRepository {
     insertLineItems(requisition, requisition.getNonFullSupplyLineItems());
     insertRegimenLineItems(requisition, requisition.getRegimenLineItems());
     insertEquipmentStatus(requisition, requisition.getEquipmentLineItems());
+  }
+
+  public void insertPatientQuantificationLineItems(Rnr rnr) {
+    for (PatientQuantificationLineItem patientQuantificationLineItem : rnr.getPatientQuantifications()) {
+      patientQuantificationLineItem.setRnrId(rnr.getId());
+      patientQuantificationLineItem.setModifiedBy(rnr.getModifiedBy());
+      patientQuantificationLineItem.setCreatedBy(rnr.getCreatedBy());
+      patientQuantificationLineItemMapper.insert(patientQuantificationLineItem);
+    }
   }
 
   private void insertEquipmentStatus(Rnr requisition, List<EquipmentLineItem> equipmentLineItems) {
@@ -249,7 +265,7 @@ public class RequisitionRepository {
                                                                    Integer pageSize, Long userId, String rightName, String sortBy,
                                                                    String sortDirection) {
     return requisitionMapper.getApprovedRequisitionsForCriteriaAndPageNumber(searchType, searchVal, pageNumber, pageSize,
-      userId, rightName, sortBy, sortDirection);
+            userId, rightName, sortBy, sortDirection);
   }
 
   public Integer getCountOfApprovedRequisitionsForCriteria(String searchType, String searchVal, Long userId, String rightName) {
@@ -282,5 +298,20 @@ public class RequisitionRepository {
 
   public String deleteRnR(Long rnrId) {
     return requisitionMapper.deleteRnR(rnrId.intValue());
+  }
+
+  public void updateClientFields(Rnr rnr) {
+    requisitionMapper.updateClientFields(rnr);
+  }
+
+  public List<Rnr> getRequisitionDetailsByFacility(Facility facility) {
+    return requisitionMapper.getRequisitionsWithLineItemsByFacility(facility);
+  }
+
+  public void insertRnrSignatures(Rnr rnr) {
+    for (Signature signature: rnr.getRnrSignatures()) {
+      signatureMapper.insertSignature(signature);
+      requisitionMapper.insertRnrSignature(rnr, signature);
+    }
   }
 }

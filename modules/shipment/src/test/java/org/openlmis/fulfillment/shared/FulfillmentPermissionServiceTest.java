@@ -18,11 +18,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.Program;
 import org.openlmis.core.domain.Right;
 import org.openlmis.core.service.RoleRightsService;
 import org.openlmis.db.categories.IntegrationTests;
 import org.openlmis.order.domain.Order;
 import org.openlmis.order.service.OrderService;
+import org.openlmis.rnr.domain.Rnr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,9 +79,14 @@ public class FulfillmentPermissionServiceTest {
 
     when(roleRightsService.getRightsForUserAndWarehouse(userId, orderId)).thenReturn(rights);
     Order order = mock(Order.class);
+    Rnr rnr = mock(Rnr.class);
+    when(order.getRnr()).thenReturn(rnr);
+    when(rnr.getFacility()).thenReturn(new Facility());
+    when(rnr.getProgram()).thenReturn(new Program());
     when(order.getSupplyingFacility()).thenReturn(new Facility(facilityID));
-    when(orderService.getOrder(orderId)).thenReturn(order);
+    when(roleRightsService.getRightsForUserAndFacilityProgram(userId, order.getRnr().getFacility(), order.getRnr().getProgram())).thenReturn(rights);
 
+    when(orderService.getOrder(orderId)).thenReturn(order);
     Boolean hasRight = fulfillmentPermissionService.hasPermission(userId, orderId, MANAGE_POD);
 
     assertThat(hasRight, is(false));

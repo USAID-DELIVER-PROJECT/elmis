@@ -10,10 +10,30 @@
 
 
 
-include "modules:core", "modules:authentication",
-        "modules:openlmis-web", "modules:db","modules:upload",
-        "modules:requisition","modules:email","modules:sms","test-modules:functional-tests","test-modules:service-tests",
-        "test-modules:test-core","modules:report", "modules:migration", "modules:distribution",
-        "modules:requisition","modules:email","modules:rest-api","test-modules:webservice-test",
-        "modules:shipment","test-modules:functional-tests","test-modules:test-core","modules:migration",
-        "modules:reporting","modules:odk-api", "modules:equipment","modules:help","modules:vaccine"
+include "modules:authentication",
+        "modules:core",
+        "modules:db",
+        "modules:demographics",
+        "modules:distribution",
+        "modules:email",
+        "modules:equipment",
+        "modules:export",
+        "modules:help",
+        "modules:ivd-form",
+        "modules:lookup-api",
+        "modules:migration",
+        "modules:openlmis-web",
+        "modules:report",
+        "modules:reporting",
+        "modules:requisition",
+        "modules:rest-api",
+        "modules:shipment",
+        "modules:sms",
+        "modules:stock-management",
+        "modules:upload",
+        "modules:vaccine"
+
+//        "test-modules:functional-tests",
+//        "test-modules:service-tests",
+//        "test-modules:test-core",
+//        "test-modules:webservice-test"

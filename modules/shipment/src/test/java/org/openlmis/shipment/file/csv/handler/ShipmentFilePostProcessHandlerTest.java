@@ -45,10 +45,10 @@ public class ShipmentFilePostProcessHandlerTest {
   @Mock
   private ShipmentService shipmentService;
 
-  @Mock(name = "ftpErrorChannel")
+  @Mock(name = "shipmentErrorChannel")
   private MessageChannel ftpErrorChannel;
 
-  @Mock(name = "ftpArchiveOutputChannel")
+  @Mock(name = "shipmentArchiveOutputChannel")
   private MessageChannel ftpArchiveOutputChannel;
 
   @Mock

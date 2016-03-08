@@ -1,0 +1,151 @@
+<!--
+* Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+*
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+*
+* This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+* You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<div class="row-fluid sortable ui-sortable">
+    <div class="box span12">
+        <div class="box-header">
+            <h2><i class="icon-edit"></i><span class="break" openlmis-message="report.title.stock.ledger.report"></span>
+            </h2>
+
+            <div class="box-icon">
+                <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                <a ng-click="section(1)" ng-show="show(0)" class="btn-minimize"><i class="icon-chevron-down"></i></a>
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+        </div>
+        <div>
+            <div class="app-form">
+
+                <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                    <div filter-container class="clearfix">
+                        <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+                        <product-without-description-filter class="form-cell horizontalFilters"
+                                                            required="true"></product-without-description-filter>
+                        <vaccine-Facility-By-Supervisory-Node-Filter class="form-cell horizontalFilters"
+                                                                     required="true"></vaccine-Facility-By-Supervisory-Node-Filter>
+
+                        <div class="form-cell horizontalFilters">
+                            <label for="startTime" class="labels">
+                                <span>Start Date</span>
+                                <span class="label-required"> *&nbsp;</span>
+
+                            </label>
+
+                            <div class="form-field">
+                                <input name="startTime" id="startTime" type="text"
+                                       ui-date="{maxDate:'today', dateFormat: 'dd/mm/yy', changeYear: false}"
+                                       ui-date-format
+                                       ng-model="filter.startTime"
+                                       ng-change="OnFilterChanged()"/>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-cell horizontalFilters">
+                            <label for="endTime" class="labels">
+                                <span>End Date</span>
+                                <span class="label-required"> *&nbsp;</span>
+                            </label>
+
+                            <div class="form-field">
+                                <input name="endTime" id="endTime" type="text"
+                                       ui-date="{maxDate:'today', dateFormat: 'dd/mm/yy', changeYear: true}"
+                                       ui-date-format
+                                       ng-model="filter.endTime"
+                                       ng-change="OnFilterChanged()"
+                                       ng-disabled="!filter.startTime"/>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <table client-side-sort-pagination class="table table-bordered" ng-show="data == undefined || data.length == 0">
+            <tr>
+                <td>No data to show under selected filters</td>
+            </tr>
+        </table>
+        <div ng-show="datarows.length > 0">
+            <div class="pull-right legend">Page: {{tableParams.page}}, Showing records {{ ((tableParams.page - 1) *
+                tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of {{tableParams.total}}
+            </div>
+
+            <div class="span12 offset1">
+
+                <div>
+                    <div class="pull-left" style="font-size:13px; font-weight: bold;">
+                        <span>Product Name</span> :<Strong> <span
+                            class="report-data">{{datarows[0].product}}</span></strong>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="container-fluid">
+                <div class="row-fluid">
+
+                    <div class="span12">
+                        <table ng-show="datarows.length > 0" class="table-bordered table table-striped"
+                               ng-table="tableParams">
+                            <tbody>
+                            <tr ng-repeat="row in datarows">
+                                <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
+                                <td data-title="getLocalMessage('label.date')" style="width:40%">{{
+                                    row.date | date:'dd-MM-yyyy' }}
+                                </td>
+                                <td data-title="'Store Name (To/From)'" style="width:30%" sortable="">{{
+                                    row.storeName }}
+                                </td>
+                                <td class="number" data-title="'Received Quantity'" style="width:30%"
+                                    sortable=" ">{{row.received > 0 && (row.received | number) || '' }}
+                                </td>
+                                <td class="number" data-title="'Issued Quantity'" style="width:30%" sortable=" ">
+                                    {{(row.issued | number) || ''}}
+                                </td>
+                                <td class="number" data-title="'Adjusted Quantity'" style="width:30%"
+                                    sortable="adjustment">{{(row.adjustment | number) || ''}}
+                                </td>
+                                <td data-title="'Batch Affected'" style="width:30%" sortable=" ">{{
+                                    row.lotNumber }}
+                                </td>
+                                <td data-title="'Expiration Date'" style="width:30%" sortable=" ">{{
+                                    row.expirationDate | date:'dd-MM-yyyy'}}
+                                </td>
+                                <td data-title="'VVM Status'" style="width:30%" sortable="vvmStatus">{{ row.vvmStatus
+                                    }}
+                                </td>
+                                <td class="number" data-title="'Lot On Hand'" style="width:30%" sortable=" ">{{
+                                    row.loh > 0 && (row.loh | number) || '' }}
+                                </td>
+
+                                <td class="number" data-title="getLocalMessage('label.stock.on.hand')" style="width:30%"
+                                    sortable=" ">{{ row.soh > 0 && (row.soh | number) || ''}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+

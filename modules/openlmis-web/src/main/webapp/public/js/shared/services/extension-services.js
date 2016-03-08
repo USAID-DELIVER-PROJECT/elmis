@@ -1,4 +1,14 @@
-
+/*
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+ *
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 services.factory('MailingLabels', function ($resource) {
     return $resource('/reports/reportdata/mailingLabels.json', {}, {});
 });
@@ -10,7 +20,6 @@ services.factory('ConsumptionReport', function ($resource) {
 services.factory('AverageConsumptionReport', function ($resource) {
     return $resource('/reports/reportdata/averageConsumption.json', {}, {});
 });
-
 
 services.factory('ReportRegimenCategories', function($resource){
    return $resource('/reports/regimenCategories.json', {}, {}) ;
@@ -119,6 +128,10 @@ services.factory('ReportRegimensByCategory',function ($resource){
     return $resource('/reports/regimenCategories/:regimenCategoryId/regimens.json', {}, {});
 });
 
+services.factory('GeographicLevels', function($resource) {
+    return $resource('/geographicLevels.json',{},{});
+});
+
 services.factory('ReportGeographicZonesByLevel',function ($resource){
     return $resource('/reports/geographicLevels/:geographicLevelId/zones.json', {}, {});
 });
@@ -134,20 +147,12 @@ services.factory('TreeGeographicZoneList',function ($resource){
 services.factory('TreeGeographicZoneListByProgram',function ($resource){
   return $resource('/reports//geographic-zones/tree-program.json', {}, {});
 });
-
+services.factory('TreeGeographicTreeByProgramNoZones',function ($resource){
+    return $resource('/reports/geographic-zones/tree-no-zones.json', {}, {});
+});
 services.factory('ReportRegimens',function ($resource){
     return $resource('/reports/regiments.json', {}, {}) ;
 });
-
-services.factory('ReportGeographicLevels',function ($resource){
-    return $resource('/reports/geographicLevels.json', {}, {}) ;
-});
-
-//deprecated: use "AllFacilities" service instead
-services.factory('GetFacilityCompleteList',function($resource){
-  return $resource('/reports/allFacilities.json',{},{});
-});
-
 
 services.factory('ColdChainEquipmentService',function($resource){
     return $resource('/reports/reportdata/coldChainEquipment.json',{},{});
@@ -164,86 +169,10 @@ services.factory('ReportPeriods', function ($resource) {
 services.factory('ReportPeriodsByScheduleAndYear', function ($resource) {
     return $resource('/reports/schedules/:scheduleId/year/:year/periods.json', {}, {});
 });
-services.factory('AllReportPeriods', function ($resource) {
-    return $resource('/reports/allPeriods.json', {}, {});
-});
-
-services.factory('ReportFilteredPeriods', function ($resource) {
-    return $resource('/reports/periods.json', {}, {});
-});
 
 services.factory('ReportGeographicZones', function ($resource) {
     return $resource('/reports/geographicZones.json', {}, {});
 });
-
-services.factory('GeographicZone', function ($resource) {
-    return $resource('/geographicZone/:id.json', {}, {update:{method:'PUT'}});
-});
-
-services.factory('CreateGeographicZone', function ($resource) {
-    return $resource('/geographicZone/insert.json', {}, {update:{method:'POST'}});
-});
-
-services.factory('GeographicLevels', function($resource) {
-    return $resource('/geographicLevels.json',{},{});
-});
-
-services.factory('GetGeographicZone',function($resource){
-    return $resource('/geographicZone/getDetails/:id.json',{},{});
-});
-
-services.factory('SetGeographicZone',function($resource){
-    return $resource('/geographicZone/setDetails.json',{},{update:{method:'POST'}});
-});
-
-services.factory('Supplylinelist', function ($resource) {
-    return $resource('/supplylineslist.json', {}, {});
-});
-
-
-
-services.factory('Supplyline', function ($resource) {
-    return $resource('/supplylines/:id.json', {}, {update:{method:'PUT'}});
-});
-
-services.factory('SupplylineDelete', function ($resource) {
-    return $resource('/supplylineDelete/:id.json', {}, {update:{method:'PUT'}});
-});
-
-//Parameters are passed for searching geographic zones.
-services.factory('GeographicZoneList', function ($resource) {
-    return $resource('/geographicZones.json', {}, {});
-});
-
-services.factory('ProductList', function ($resource) {
-    return $resource('/productslist.json', {}, {});
-});
-
-services.factory('GeographicZoneCompleteList', function ($resource) {
-    return $resource('/geographicZone/getList.json', {}, {});
-});
-
-services.factory('RequisitionGroupCompleteList',function($resource){
-    return $resource('/requisitionGroup/getList.json',{},{});
-});
-
-services.factory('SaveRequisitionGroup',function($resource){
-    return $resource('/requisitionGroup/insert.json',{},{});
-});
-
-services.factory('GetRequisitionGroup',function($resource){
-    return $resource('/requisitionGroup/getDetails/:id.json',{},{});
-});
-
-services.factory('RemoveRequisitionGroup',function($resource){
-    return $resource('/requisitionGroup/remove/:id.json',{},{});
-});
-
-services.factory('FacilityCompleteListInRequisitionGroup',function($resource){
-    return $resource('/facilities/getListInRequisitionGroup/:id.json',{},{});
-});
-
-
 
 services.factory('GetFacilityByFacilityType',function($resource){
     return $resource('/facilities/facilityType/:facilityTypeId.json',{},{});
@@ -262,29 +191,8 @@ services.factory('RemoveRequisitionGroupMember',function($resource){
     return $resource('/requisitionGroupMember/remove/:rgId/:facId.json',{},{});
 });
 
-services.factory("AllFacilites",function($resource)  {
-    return   $resource('/reports/allFacilities.json', {}, {});
-});
-
 services.factory("FacilitiesByProgramParams",function($resource)  {
-  //return   $resource('/reports/facilities/program/:program/schedule/:schedule/type/:type/requisitionGroup/:requisitionGroup.json', {}, {});
   return   $resource('/reports/facilities.json', {}, {});
-});
-
-services.factory('SupervisoryNodeCompleteList',function($resource){
-    return $resource('/supervisoryNode/getList.json',{},{});
-});
-
-services.factory('SaveSupervisoryNode',function($resource){
-    return $resource('/supervisoryNode/insert.json',{},{});
-});
-
-services.factory('GetSupervisoryNode',function($resource){
-    return $resource('/supervisoryNode/getDetails/:id.json',{},{});
-});
-
-services.factory('RemoveSupervisoryNode',function($resource){
-    return $resource('/supervisoryNode/remove/:id.json',{},{});
 });
 
 services.factory('Settings',function($resource){
@@ -354,7 +262,9 @@ services.factory('GetProductsCompleteListForAProgram',function($resource){
 services.factory('ReportProductsByProgram',function($resource){
     return $resource('/reports/program-products/:programId.json',{},{});
 });
-
+services.factory('VaccineProducts',function($resource){
+    return $resource('/vaccine/report/vaccine_products.json',{},{});
+});
 services.factory('GetApprovedProductForFacilityTypeDetail', function($resource){
     return $resource('/facilityApprovedProducts/facilityType/:facilityTypeId/program/:programId/product/:productId',{},{});
 });
@@ -389,7 +299,7 @@ services.factory('AggregateRegimenSummaryReport', function($resource){
 
 //It populate all programs with regimens
 services.factory('ReportRegimenPrograms', function ($resource) {
-    return $resource('/reports/regimenPrograms.json', {}, {});
+    return $resource('/reports/programs-supporting-regimen.json', {}, {});
 });
 
 services.factory('DistrictFinancialSummaryReport', function ($resource) {
@@ -420,12 +330,7 @@ services.factory('UserSupervisoryNodes', function($resource){
 services.factory('UserGeographicZoneTree',function ($resource){
     return $resource('/reports/geographic-zones/tree.json', {}, {});
 });
-/*services.factory('UserDefaultSupervisoryNode', function($resource){
-   return $resource('/reports/user/default-supervisory-node.json',{},{});
-});*/
-/*services.factory('ProgramListBySupervisoryNodes', function ($resource) {
-    return $resource('/reports/supervisory-nodes/programs.json', {}, {});
-});*/
+
 services.factory('UserSupervisedActivePrograms', function ($resource) {
     return $resource('/reports/user/programs.json', {}, {});
 });
@@ -468,6 +373,9 @@ services.factory('StockedOutFacilities', function($resource){
 services.factory('ReportProgramsBySupervisoryNode', function ($resource) {
     return $resource('/reports/supervisory-node/:supervisoryNodeId/programs.json', {}, {});
 });
+services.factory('ReportAllProgramsBySupervisoryNode', function ($resource) {
+    return $resource('/reports/supervisory-node/:supervisoryNodeId/allPrograms.json', {}, {});
+});
 
 services.factory('StockedOutFacilitiesByDistrict', function($resource){
     return $resource('/dashboard/geographic-zone/:zoneId/program/:programId/period/:periodId/product/:productId/stockedOutFacilities.json',{},{});
@@ -484,9 +392,7 @@ services.factory('StockedOutAlerts', function($resource){
 services.factory('NotificationAlerts', function($resource) {
     return $resource('/dashboard/notification/alerts.json', {}, {});
 });
-/*services.factory('DashboardNotificationsDetail', function($resource){
-   return $resource('/dashboard/notifications/:alertId/:detailTable.json',{},{});
-});*/
+
 services.factory('DashboardNotificationsDetail', function($resource){
     return $resource('/dashboard/notifications/:programId/:periodId/:zoneId/:productId/:detailTable.json',{},{});
 });
@@ -535,7 +441,9 @@ services.factory('UserSummaryReport', function($resource){
 services.factory('GetAllRoles', function ($resource) {
     return $resource('/roles/getList.json', {},{});
 });
-
+services.factory('GetAllRolesForReport', function ($resource) {
+    return $resource('/reports/roles/getList.json', {},{});
+});
 services.factory('UserRoleAssignmentsSummary', function($resource){
     return $resource('/reports/UserRoleAssignments/getUserRoleAssignments',{},{});
 });
@@ -545,9 +453,6 @@ services.factory("UserRoleAssignmentsSummary1", function($resource){
 
 });
 
-/*services.factory("RnRStatusSummary",function($resource){
-    return $resource('/dashboard/rnrstatusSummary/requisitionGroup/:requisitionGroupId.json',{},{});
-});*/
 
 services.factory("totalRnRCreatedByRequisitionGroup",function($resource){
     return $resource('/dashboard//RnRCreateForRequisitionGroup',{},{});
@@ -565,9 +470,6 @@ services.factory("SendMessages",function($resource){
 });
 
 
-/*services.factory("RnRStatusByRequisitionGroupAndPeriodDetails ",function($resource){
-    $resource('/dashboard/RnRStatusByRequisitionGroupDetails.json',{},{});
-});*/
 
 services.factory('RnRStatusDetail', function($resource){
   return $resource('/dashboard/rnrStatus-detail.json',{},{});
@@ -595,8 +497,8 @@ services.factory("PipelineExportReport", function($resource){
 
 });
 
-services.factory('GetProgramWithBudgetingApplies',function($resource){
-    return $resource('/reports/programsWithBudgetApplies.json',{},{});
+services.factory('ReportProgramsWithBudgeting',function($resource){
+    return $resource('/reports/programs-supporting-budget.json',{},{});
 
 });
 services.factory('RegimenDistributionReport',function($resource){
@@ -777,7 +679,13 @@ services.factory('HelpContentDetail', function ($resource) {
 services.factory('HelpUsertopicList', function ($resource) {
     return $resource('/userHelpTopicList.json', {}, {});
 });
-
+//load helptopic detail
+services.factory('SiteContent', function ($resource) {
+    return $resource('/site_content/:content_name.json', {}, {post:{method:'GET'}});
+});
+services.factory('HelpContentByKey', function ($resource) {
+    return $resource('/general_content/:content_key.json', {}, {post:{method:'GET'}});
+});
 services.factory('VaccineTargetUpdate', function ($resource) {
     return $resource('/vaccine/target/create.json', {}, {post:{method:'POST'}});
 });
@@ -898,10 +806,6 @@ services.factory('Countries', function ($resource) {
         },
         remove: {method:'DELETE'}
     });
-
-//    resource.disable = function (pathParams, success, error) {
-//        $resource('/countries/:id.json', {}, {update: {method: 'DELETE'}}).update(pathParams, {}, success, error);
-//    };
 
     return resource;
 });
@@ -1209,6 +1113,14 @@ services.factory('CustomReportList', function ($resource) {
     return $resource('/report-api/list.json', {}, {});
 });
 
+services.factory('CustomReportFullList', function ($resource) {
+    return $resource('/report-api/full-list.json', {}, {});
+});
+
+services.factory('SaveCustomReport', function ($resource) {
+    return $resource('/report-api/save.json', {}, {method: 'POST'});
+});
+
 services.factory('CustomReportValue', function ($resource) {
     return $resource('/report-api/report.json', {}, {});
 });
@@ -1216,6 +1128,178 @@ services.factory('CustomReportValue', function ($resource) {
 services.factory('PriceScheduleCategories', function ($resource) {
     return $resource('/priceScheduleCategories.json', {}, {});
 });
+
+services.factory('CCERepairManagement', function ($resource) {
+    return $resource('/reports/reportdata/cceRepairManagement.json', {}, {});
+});
+
+services.factory('CCERepairManagementEquipmentList', function ($resource) {
+    return $resource('/reports/reportdata/cceRepairManagementEquipmentList.json', {}, {});
+});
+
+services.factory('ReplacementPlanSummaryReport', function($resource){
+    return $resource('/reports/reportdata/replacementPlanSummary.json',{},{});
+});
+
+services.factory('EquipmentsInNeedForReplacement', function($resource){
+    return $resource('/reports/reportdata/equipmentsInNeedForReplacement.json',{},{});
+});
+
 services.factory('VaccineMonthlyReport', function ($resource){
     return $resource('/vaccine/report/vaccine-monthly-report.json', {}, {});
 });
+
+
+services.factory('VaccineUsageTrend', function ($resource){
+    return $resource('/vaccine/report/vaccine-usage-trend.json', {}, {});
+});
+
+services.factory('VaccineReportLegendContent', function ($resource) {
+    return $resource('/report_legend.json', {}, {});
+});
+
+services.factory("FacilityGeoTree",function($resource)  {
+    return   $resource('/geoFacilityTree.json', {}, {});
+});
+
+services.factory('GetLastPeriods', function($resource) {
+   return $resource('/reports/last-periods.json', {}, {});
+});
+
+services.factory('GetProgramPeriodTracerProductsTrend', function($resource) {
+    return $resource('/dashboard/program/:programId/period/:periodId/tracer-products-trend.json', {}, {});
+});
+
+services.factory('DashboardReportingPerformance', function($resource) {
+    return $resource('/dashboard/program/:programId/period/:periodId/reporting-performance.json', {}, {});
+});
+
+services.factory('DashboardDistrictStockSummary', function($resource) {
+    return $resource('/dashboard/program/:programId/period/:periodId/district-stock-summary.json', {}, {});
+});
+
+services.factory('DashboardFacilityStockSummary', function($resource) {
+    return $resource('/dashboard/program/:programId/period/:periodId/facility-stock-summary.json', {}, {});
+});
+
+services.factory('GetStockOutFacilitiesForProgramPeriodAndProductCode', function($resource) {
+    return $resource('/dashboard/program/:programId/period/:periodId/product/:productCode/stocked-out-facilities.json', {}, {});
+});
+
+
+services.factory('GetVaccineReportPeriodTree',function ($resource){
+    return $resource('/reports/vaccineYearSchedulePeriod', {}, {});
+});
+services.factory('GetVaccineReportPeriodFlat',function ($resource){
+    return $resource('/reports/vaccineYearSchedulePeriodFlat', {}, {});
+});
+services.factory("ELMISInterface",function($resource)  {
+    return   {
+        getInterface : function(){
+            return $resource('/ELMISInterface/:id.json', {}, {});
+        },
+
+        getInterfacesReference : function(){
+            return $resource('/ELMISAllActiveInterfaces.json', {}, {});
+          },
+
+        getFacilityMapping : function(){
+            return $resource('/ELMISInterfacesMapping/{facilityId}.json', {}, {});
+        },
+
+        getAllinterfaces : function(){
+            return $resource('/ELMISAllInterfaces.json');
+        }
+
+    };
+});
+
+services.factory('ELMISInterfaceSave', function ($resource) {
+    return $resource('/ELMISInterface.json', {}, {save:{method:'POST'}});
+});
+
+services.factory('FacilitiesByLevel', function($resource){
+    return $resource('/reports/facility-By-level.json',{},{});
+});
+
+
+services.factory('RequisitionReportService', function($resource){
+    return $resource('/reports/requisition-report.json',{},{});
+});
+
+services.factory('ProductReportService', function ($resource) {
+    return {
+        loadAllProducts: function () {
+            return $resource('/rest-api/lookup/products', {pageSize: 2000}, {});
+        },
+        loadProductReport: function () {
+            return $resource('/reports/single-product-report', {}, {save: {method: 'POST'}});
+        },
+        loadFacilityReport: function () {
+            return $resource('/reports/all-products-report', {}, {save: {method: 'POST'}});
+        }
+    };
+});
+
+services.factory('FacilityService',function($resource){
+    return {
+        allFacilities: function () {
+            return $resource('/rest-api/lookup/facilities', {page: 0,pageSize:2000}, {});
+        },
+        facilityTypes: function () {
+            return $resource('/rest-api/lookup/facility-types', {}, {});
+        }
+    };
+});
+
+services.factory('ColdChainTemperaturesReport', function($resource){
+    return $resource('/reports/reportdata/vaccineTemperature.json',{},{});
+});
+
+services.factory('GeographicZoneService',function($resource){
+    return {
+        loadGeographicZone: function () {
+            return $resource('/rest-api/lookup/geographic-zones', {}, {});
+        },
+        loadGeographicLevel: function () {
+            return $resource('/rest-api/lookup/geographic-levels', {}, {});
+        }
+    };
+});
+
+
+services.factory('VaccineStockStatusReport',function($resource){
+    return $resource('/reports/reportdata/vaccineStockStatus.json',{},{});
+});
+
+
+services.factory('StockLedgerReport',function($resource){
+    return $resource('/reports/reportdata/stockLedgerReport.json',{},{});
+});
+
+
+services.factory('ReportProductsByProgramWithoutDescriptions',function($resource){
+    return $resource('/reports/program-products-with-no-descriptions/:programId.json',{},{});
+});
+
+
+
+/*
+services.factory('VaccineStockStatusReport', function ($resource) {
+
+    return $resource(
+        '/reports/reportdata/vaccineStockStatus.json',
+        {},
+        {
+            'get': {
+                method: 'GET',
+                transformResponse: function (data) {
+                    console.log(data);
+
+                    return angular.fromJson(data);
+                },
+                isArray: true//since list property is an array
+            }
+        }
+    );
+});*/

@@ -102,6 +102,14 @@ services.factory('CreateRequisitionProgramList', function ($resource) {
   return $resource('/create/requisition/programs.json', {}, {});
 });
 
+services.factory('PodProgramList', function ($resource) {
+  return $resource('/manage-pod/programs.json', {}, {});
+});
+
+services.factory('ManagePodFacilitiesForProgram', function ($resource) {
+  return $resource('/manage-pod/supervised/:programId/facilities.json', {}, {});
+});
+
 services.factory('UserSupervisedFacilitiesForProgram', function ($resource) {
   return $resource('/create/requisition/supervised/:programId/facilities.json', {}, {});
 });
@@ -229,11 +237,17 @@ services.factory('ProgramProducts', function ($resource) {
 });
 
 services.factory('FacilityProgramProducts', function ($resource) {
-  return $resource('/facility/:facilityId/program/:programId/isa.json', {}, {update: {method: 'PUT'}});
+  return $resource('/facility/:facilityId/program/:programId.json', {}, {update: {method: 'PUT'}});
 });
 
 services.factory('ProgramProductsISA', function ($resource) {
   return $resource('/programProducts/:programProductId/isa/:isaId.json', {isaId: '@isaId'}, update);
+});
+
+services.factory('FacilityProgramProductsISA', function ($resource)
+{
+  //return $resource('/facility/:facilityId/programProducts/:programProductId/isa/:isaId.json', {isaId: '@isaId', facilityId: '@facilityId'}, update);
+  return $resource('/facility/:facilityId/programProducts/:programProductId/isa.json', {}, update);
 });
 
 services.factory('AllocationProgramProducts', function ($resource) {
@@ -439,4 +453,18 @@ services.factory('SupplyingDepots', function ($resource) {
   return $resource('/supplyLines/supplying-depots.json', {});
 });
 
+services.factory('UserFacilityWithViewVaccineOrderRequisition', function ($resource) {
+  return $resource('/user/facilities/view-order-requisition.json', {}, {});
+});
 
+services.factory('ProgramsToViewVaccineOrderRequisitions', function ($resource) {
+  return $resource('/facility/:facilityId/view/vaccine-order-requisition/programs.json', {}, {});
+});
+
+services.factory('VaccineOrderRequisitionsForViewing', function ($resource) {
+  return $resource('/vaccine/orderRequisition/search.json', {}, {});
+});
+
+services.factory('UserFacilityWithViewStockLedgerReport', function ($resource) {
+  return $resource('/user/facilities/view-ledger-report-facilities.json', {}, {});
+});

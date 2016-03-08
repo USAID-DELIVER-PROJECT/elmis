@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock-status-report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="259"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<subDataset name="dataset1" uuid="091a1376-c476-4867-9ced-423695e8c98e"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String"/>
+	<parameter name="COUNTRY_NAME" class="java.lang.String"/>
+	<parameter name="GENERATED_BY" class="java.lang.String"/>
+	<parameter name="REPORT_VERSION" class="java.lang.String"/>
+	<parameter name="REPORT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_OUTPUT_OPTION" class="java.lang.String"/>
+	<parameter name="OPERATOR_LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_SUB_TITLE" class="java.lang.String"/>
+	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
+	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="image_dir" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FACILITY_ID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[  SELECT toFacilityId facilityId,(SELECT name from facilities where id = vd.toFacilityId) facilityName,
+             li.quantity quantityRequested,
+             (SELECT primaryName from products where id = li.productId) productName
+             FROM vaccine_distributions vd
+             INNER JOIN vaccine_distribution_line_items li ON vd.id = li.distributionId
+               JOIN program_products pp ON li.productId = pp.productId
+              JOIN product_categories pc ON pp.productCategoryId = PC.ID
+
+ WHERE  vd.status = 'PENDING' AND  vd.id = ANY($P{FACILITY_ID}::int[])
+            order by  pc.displayOrder]]>
+	</queryString>
+	<field name="facilityid" class="java.lang.Integer"/>
+	<field name="facilityname" class="java.lang.String"/>
+	<field name="quantityrequested" class="java.lang.Integer"/>
+	<field name="productname" class="java.lang.String"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="75" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="64">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1? new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<image>
+				<reportElement x="0" y="2" width="80" height="62" uuid="d439be51-ccd2-444f-b3da-ab39c8dacd3c"/>
+				<imageExpression><![CDATA[$P{image_dir}+ "logo-tz.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="730" y="0" width="74" height="64" uuid="9d7c9338-b13a-4dae-b454-d2e4bb82934f"/>
+				<imageExpression><![CDATA[$P{image_dir}+ "vims-logo-tz.png"]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="89" y="22" width="641" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="9c832540-666f-4c99-b96a-11f07f5e5b72"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="16" isBold="true"/>
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{OPERATOR_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="89" y="2" width="641" height="20" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="abed13bb-d3bc-4bc8-a316-5bd27ddd61fb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.title.united.republic.tanzania}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="89" y="43" width="641" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="7e1eeb20-2ce7-4c5d-bad0-0c0b95baa4aa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.title.immunization}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="54">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1? new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="802" height="50" uuid="d05259ac-f804-45c0-9e67-0ebe6b43fc52"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="16" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{title.consolidated.vaccine.request}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<lastPageFooter>
+		<band height="108">
+			<line>
+				<reportElement x="165" y="100" width="212" height="1" uuid="727741dd-b6c9-44a2-b643-35a0fdd4570b"/>
+			</line>
+			<textField>
+				<reportElement x="13" y="61" width="152" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="e9789a15-76ef-45ad-874d-8472be2414e9"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.signature}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="165" y="81" width="212" height="1" uuid="e9d47a76-e32f-4381-a533-93f35c268d2a"/>
+			</line>
+			<textField>
+				<reportElement x="15" y="81" width="152" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="5ac4b229-2eee-497d-a5b5-e9b55d319d7e"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="13" y="33" width="152" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="604dd15d-4c0c-4a4b-ae0a-3a1d2f46b241"/>
+				<textElement>
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.authorized.by}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="167" y="52" width="210" height="1" uuid="b46493c9-0c67-4728-b4e9-7de91a2e6cab"/>
+			</line>
+			<line>
+				<reportElement x="1" y="15" width="804" height="1" uuid="911bdb13-a231-403b-bf0e-eba6b665a55c"/>
+			</line>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="240">
+			<crosstab>
+				<reportElement x="-2" y="0" width="804" height="240" backcolor="#F4F4F4" uuid="43d89977-df84-45ea-b619-53a11b02407a"/>
+				<rowGroup name="facilityname" width="70">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{facilityname}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="c84d2e7b-52a5-4ace-a16b-195048378d5e"/>
+								<textElement verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{facilityname}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="productname" height="30">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{productname}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="86" height="30" uuid="00aadb8a-f6a0-440a-a536-5b53bc92b96d"/>
+								<textElement verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{productname}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="quantityrequestedMeasure" class="java.lang.Integer">
+					<measureExpression><![CDATA[$F{quantityrequested}]]></measureExpression>
+				</measure>
+				<crosstabCell width="86" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="86" height="25" uuid="1fdd2c8f-a48f-489a-b68f-b981dd2691d6"/>
+							<textElement verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{quantityrequestedMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="facilityname">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="1997032c-f6e6-49ca-b2a1-8edf8e449a1e"/>
+							<textFieldExpression><![CDATA[$V{quantityrequestedMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="productname">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="8d9935c8-bb58-44c9-8b75-82d9bced3613"/>
+							<textFieldExpression><![CDATA[$V{quantityrequestedMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityname" columnTotalGroup="productname">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="5f2aee06-14f8-486e-87d6-87142da90b2c"/>
+							<textFieldExpression><![CDATA[$V{quantityrequestedMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

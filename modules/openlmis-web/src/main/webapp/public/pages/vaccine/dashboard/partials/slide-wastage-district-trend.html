@@ -1,0 +1,21 @@
+
+<div>Wastage By District</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.districtWastage.product" on-change="districtWastageCallback()"></vaccine-product-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtWastage.period"  class="form-cell horizontalFilters" on-change="districtWastageCallback()"></vaccine-monthly-period-tree-filter>
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="district_wastage" chart-data="districtWastage.dataPoints" chart-columns="districtWastage.dataColumns" chart-x="districtWastage.dataX" ng-show="districtWastage.dataPoints">
+    <chart-axis>
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.zone}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="districtWastage.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

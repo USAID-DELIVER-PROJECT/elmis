@@ -11,7 +11,7 @@ import org.openlmis.core.domain.ConfigurationSetting;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.web.model.ConfigurationDTO;
-import org.openlmis.web.response.OpenLmisResponse;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -62,20 +62,13 @@ public class SettingControllerTest {
   @Test
   public void shouldGetAllSettings() throws Exception {
     ArrayList<ConfigurationSetting> configSettingList = new ArrayList<ConfigurationSetting>();
-    configSettingList.add(new ConfigurationSetting());
-
-    ConfigurationDTO dto = new ConfigurationDTO();
-    dto.setList(configSettingList);
+    ConfigurationSetting setting = new ConfigurationSetting();
+    setting.setKey("123");
+    configSettingList.add(setting);
 
     when(configurationService.getConfigurations()).thenReturn(configSettingList);
-
-    ResponseEntity<OpenLmisResponse> expectResponse = new ResponseEntity<>(new OpenLmisResponse(), HttpStatus.OK);
-    when(OpenLmisResponse.response("settings", dto)).thenReturn(expectResponse);
-
-    ResponseEntity<OpenLmisResponse> response = controller.getAll();
-
+    controller.getAll();
     verify(configurationService).getConfigurations();
-    assertThat(response, is(expectResponse));
   }
 
 
@@ -98,7 +91,7 @@ public class SettingControllerTest {
   @Test
   public void shouldUpdateSettings() throws Exception {
     ConfigurationDTO configurationDTO = new ConfigurationDTO();
-    ResponseEntity<OpenLmisResponse> responseEntity = controller.updateSettings(configurationDTO);
+    controller.updateSettings(configurationDTO);
     verify(configurationService).update(configurationDTO.getList());
   }
 

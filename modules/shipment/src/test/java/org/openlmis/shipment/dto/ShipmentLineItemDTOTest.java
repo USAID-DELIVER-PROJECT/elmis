@@ -18,12 +18,12 @@ public class ShipmentLineItemDTOTest {
 
   private String orderId = "1";
   private String orderNumber = "123";
-  private String concatenatedOrderId = "EM000001R";
   private String facilityCode = "F001";
   private String programCode = "EM";
   private String productCode = "P001";
   private String quantityOrdered = "20";
   private String quantityShipped = "10";
+  private String batch = "12323";
   private String cost = "100";
   private String substitutedProductCode = "";
   private String substitutedProductName = "";
@@ -42,13 +42,12 @@ public class ShipmentLineItemDTOTest {
     ShipmentLineItemDTO shipmentLineItemDTO = new ShipmentLineItemDTO(
        orderNumber ,
        Long.parseLong(orderId),
-       concatenatedOrderId,
        facilityCode,
        programCode,
        null,
        quantityOrdered,
-       substitutedProductCode,
        quantityShipped,
+       batch,
        cost,
        substitutedProductCode,
        substitutedProductName,
@@ -69,13 +68,12 @@ public class ShipmentLineItemDTOTest {
     ShipmentLineItemDTO shipmentLineItemDTO = new ShipmentLineItemDTO(
         orderNumber ,
         null,
-        concatenatedOrderId,
         facilityCode,
         programCode,
         productCode,
         quantityOrdered,
-        substitutedProductCode,
         quantityShipped,
+        batch,
         cost,
         substitutedProductCode,
         substitutedProductName,
@@ -96,13 +94,12 @@ public class ShipmentLineItemDTOTest {
     ShipmentLineItemDTO shipmentLineItemDTO = new ShipmentLineItemDTO(
         orderNumber ,
         Long.parseLong(orderId),
-        concatenatedOrderId,
         null,
         programCode,
         productCode,
         quantityOrdered,
-        substitutedProductCode,
         quantityShipped,
+        batch,
         cost,
         substitutedProductCode,
         substitutedProductName,

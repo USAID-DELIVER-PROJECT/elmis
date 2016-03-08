@@ -8,56 +8,36 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-function ManagePODController($scope, OrdersForManagePOD, messageService, OrderPOD, CreateRequisitionProgramList, UserSupervisedFacilitiesForProgram, $location) {
+function ManagePODController($scope, OrdersForManagePOD, messageService, OrderPOD, PodProgramList, ManagePodFacilitiesForProgram, $location) {
 
-  CreateRequisitionProgramList.get(function(data){
+  $scope.option = {all: false};
+
+  PodProgramList.get(function(data){
     $scope.programs = data.programList;
   });
 
-  $scope.onProgramChanged = function(){
-
-    UserSupervisedFacilitiesForProgram.get({programId: $scope.filter.program}, function (data) {
-      $scope.facilities = data.facilities;
-    });
-
-    if($scope.option.all){
-      OrdersForManagePOD.get({program: $scope.filter.program}, function (data) {
-        $scope.orders = data.ordersForPOD || [];
+  $scope.onParamChanged = function(){
+    $scope.orders = [];
+    if(utils.isNumber($scope.filter.program)){
+      ManagePodFacilitiesForProgram.get({programId: $scope.filter.program}, function (data) {
+        $scope.facilities = data.facilities;
       });
-    }
 
+      if($scope.option.all === true){
+        OrdersForManagePOD.get({program: $scope.filter.program}, function (data) {
+          $scope.orders = data.ordersForPOD;
+        });
+      }
+    }
   };
 
   $scope.onFacilityChanged = function(){
-    OrdersForManagePOD.get({program: $scope.filter.program, facility: $scope.filter.facility}, function (data) {
-      $scope.orders = data.ordersForPOD || [];
-    });
-  };
-
-  $scope.toggleSlider = function () {
-    if (!$scope.facilitySelected) {
-      $scope.showSlider = !$scope.showSlider;
-      $scope.extraParams = {"virtualFacility": false, "enabled": null };
+    if(utils.isNumber($scope.filter.facility)){
+      OrdersForManagePOD.get({program: $scope.filter.program, facility: $scope.filter.facility}, function (data) {
+        $scope.orders = data.ordersForPOD;
+      });
     }
-  };
 
-  $scope.associate = function (facility) {
-    $scope.facilityId = facility.id;
-    $scope.facilitySelected = facility;
-    $scope.showSlider = !$scope.showSlider;
-  };
-
-  $scope.clearSelectedFacility = function (result) {
-    if (!result) return;
-
-    $scope.facilitySelected = null;
-    $scope.allSupportedPrograms = null;
-    $scope.user.homeFacilityRoles = null;
-    $scope.user.facilityId = null;
-
-    $timeout(function () {
-      angular.element("#searchFacility").focus();
-    });
   };
 
   $scope.gridOptions = { data: 'orders',

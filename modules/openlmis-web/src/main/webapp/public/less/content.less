@@ -1356,7 +1356,7 @@ h3 {
   }
 }
 
-input.required-error, textarea.required-error {
+select.required-error, input.required-error, textarea.required-error {
   border-color: #E9322D !important;
   &:focus {
     .box-shadow(0 0 6px #F8B9B7);
@@ -1855,6 +1855,13 @@ td .close {
   background-color: #efefef;
 }
 
+.grid-input-row-grey{
+  background-color: #efefef;
+}
+.input-adjusted {
+  height:28px !important;
+}
+
 .loader-icon {
   .square(100%);
   position: fixed;
@@ -2243,9 +2250,6 @@ input[placeholder].placeholder {
     text-align: right;
   }
   div {
-    &.has-overridden-isa {
-      background-color: #FFFFE7;
-    }
     .list-row {
       &:hover {
         background-color: transparent;
@@ -3195,4 +3199,12 @@ input[type="checkbox"].facilityCheckbox {
     padding: 4px;
     line-height: 6px;
   }
+}
+
+.number, td.number, th.number{
+  text-align: right;
+}
+
+.text-row, tr.text-row{
+  height: 35px;
 }

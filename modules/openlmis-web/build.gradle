@@ -8,9 +8,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
+
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.apache.tools.ant.taskdefs.condition.Os
-import org.gradle.api.tasks.Exec
 
 apply plugin: 'jetty'
 apply plugin: 'war'
@@ -53,7 +53,7 @@ task jsHint(type: GruntTask) {
 
 task karmaRun(type: Exec) {
     description = 'Runs jasmine specs and publishes js tests coverage report'
-    commandLine 'karma', 'start', 'karma.config.js', '--singleRun'
+    commandLine 'karma', 'start', 'karma.config.js'
 }
 
 task lesslint(type: GruntTask) {
@@ -163,17 +163,19 @@ dependencies {
             project(':modules:requisition'),
             project(':modules:core'),
             project(':modules:shipment'),
+            project(':modules:lookup-api'),
             project(':modules:rest-api'),
             project(':modules:reporting'),
             project(':modules:report'),
             project(':modules:distribution'),
-            project(':modules:odk-api'),
             project(':modules:equipment'),
+            project(':modules:demographics'),
+            project(':modules:ivd-form'),
             project(':modules:vaccine'),
-            project(':modules:help')
+            project(':modules:help'),
+            project(':modules:stock-management')
 
-
-    testCompile  project(path: ':modules:core', configuration: 'testFixtures'),
+    testCompile project(path: ':modules:core', configuration: 'testFixtures'),
             project(path: ':modules:rest-api', configuration: 'testFixtures'),
             project(path: ':modules:requisition', configuration: 'testFixtures'),
             project(path: ':modules:shipment', configuration: 'testFixtures'),
@@ -182,12 +184,21 @@ dependencies {
             project(path: ':modules:reporting', configuration: 'testFixtures')
 }
 
+sonarRunner {
+    sonarProperties {
+        properties["sonar.sources"] += 'src/main/webapp/public/js'
+        properties["sonar.sources"] += 'src/main/webapp/public/pages'
+        properties["sonar.sources"] += 'src/main/webapp/public/site'
+        properties["sonar.sources"] += 'src/main/webapp/public/less'
+        properties["sonar.tests"] += 'src/test/javascript/specs'
+    }
+}
+
 jettyRun {
     jettyRun.httpPort = 9091;
     contextPath = ''
     daemon = true;
     jettyRun.scanIntervalSeconds = 1
-    System.properties.get('environmentName', 'local')
     System.properties.get('defaultLocale', 'en')
 }
 

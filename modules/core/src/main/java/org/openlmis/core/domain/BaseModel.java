@@ -10,10 +10,13 @@
 
 package org.openlmis.core.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
 
@@ -22,7 +25,8 @@ import java.util.Date;
  * Most domain objects have BaseModel as a superclass which defines its primary attributes.
  */
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @JsonSerialize()
 public abstract class BaseModel {
@@ -43,5 +47,19 @@ public abstract class BaseModel {
 
   public BaseModel(Long id) {
     this.id = id;
+  }
+
+  protected static String getFormattedDate(Date date)
+  {
+    return DateUtil.getFormattedDate(date, "yyyy-dd-MM");
+  }
+
+  /**
+   * Returns weather this object has a domain identity.  That is, is it persistent.
+   *
+   * @return true if it has an id.  False otherwise.
+   */
+  public boolean hasId() {
+    return (null == id) ? false : true;
   }
 }

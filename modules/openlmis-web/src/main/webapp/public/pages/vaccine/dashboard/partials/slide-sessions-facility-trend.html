@@ -1,0 +1,22 @@
+
+<div>Coverage By Facility</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+           <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilitySessions.period"  class="form-cell horizontalFilters" on-change="facilitySessionsCallback()"></vaccine-monthly-period-tree-filter>
+            <range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalFacilitySessions" range="filter.facilitySessionsRange" offset="filter.facilitySessionsOffset" label-all="all facility" on-change="facilitySessionsPagination()"></range-pagination>
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="facility_sessions_chart" chart-data="facilitySessions.dataPoints" chart-columns="facilitySessions.dataColumns" chart-x="facilitySessions.dataX" ng-show="facilitySessions.dataPoints">
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.facility}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="facilitySessions.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

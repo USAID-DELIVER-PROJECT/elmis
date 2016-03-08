@@ -10,9 +10,14 @@
 
 package org.openlmis.restapi.service;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.Transformer;
 import org.apache.log4j.Logger;
+import org.apache.lucene.util.CollectionUtil;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.service.FacilityApprovedProductService;
@@ -32,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,34 +54,24 @@ import static org.openlmis.restapi.domain.ReplenishmentDTO.prepareForREST;
 public class RestRequisitionService {
 
   public static final boolean EMERGENCY = false;
-
+  private static final Logger logger = Logger.getLogger(RestRequisitionService.class);
   @Autowired
   private RequisitionService requisitionService;
-
   @Autowired
   private OrderService orderService;
-
   @Autowired
   private FacilityService facilityService;
-
   @Autowired
   private ProgramService programService;
-
   @Autowired
   private RnrTemplateService rnrTemplateService;
-
   @Autowired
   private RestRequisitionCalculator restRequisitionCalculator;
-
   @Autowired
   private ProcessingPeriodService processingPeriodService;
-
   @Autowired
   private FacilityApprovedProductService facilityApprovedProductService;
-
   private List<FacilityTypeApprovedProduct> nonFullSupplyFacilityApprovedProductByFacilityAndProgram;
-
-  private static final Logger logger = Logger.getLogger(RestRequisitionService.class);
 
   @Transactional
   public Rnr submitReport(Report report, Long userId) {
@@ -99,9 +95,24 @@ public class RestRequisitionService {
 
     requisitionService.save(rnr);
 
+    updateClientFields(report, rnr);
+    insertPatientQuantificationLineItems(report, rnr);
+
+    insertRnrSignatures(report, rnr, userId);
+
     rnr = requisitionService.submit(rnr);
 
     return requisitionService.authorize(rnr);
+  }
+
+  private void updateClientFields(Report report, Rnr rnr) {
+    Date clientSubmittedTime = report.getClientSubmittedTime();
+    rnr.setClientSubmittedTime(clientSubmittedTime);
+
+    String clientSubmittedNotes = report.getClientSubmittedNotes();
+    rnr.setClientSubmittedNotes(clientSubmittedNotes);
+
+    requisitionService.updateClientFields(rnr);
   }
 
   @Transactional
@@ -201,6 +212,28 @@ public class RestRequisitionService {
     }
   }
 
+  private void insertPatientQuantificationLineItems(Report report, Rnr rnr) {
+    if (report.getPatientQuantifications() != null) {
+      rnr.setPatientQuantifications(report.getPatientQuantifications());
+      requisitionService.insertPatientQuantificationLineItems(rnr);
+    }
+  }
+
+  private void insertRnrSignatures(Report report, Rnr rnr, final Long userId) {
+    if (report.getRnrSignatures() != null) {
+
+      List<Signature> rnrSignatures = new ArrayList(CollectionUtils.collect(report.getRnrSignatures(), new Transformer() {
+            @Override
+            public Object transform(Object input) {
+              ((Signature)input).setCreatedBy(userId);
+              ((Signature)input).setModifiedBy(userId);
+              return input;
+            }
+          }));
+          rnr.setRnrSignatures(rnrSignatures);
+      requisitionService.insertRnrSignatures(rnr);
+    }
+  }
 
   @Transactional
   public void approve(Report report, Long requisitionId, Long userId) {
@@ -287,5 +320,21 @@ public class RestRequisitionService {
         logger.error("could not copy field: " + column.getName());
       }
     }
+  }
+
+  public List<Report> getRequisitionsByFacility(String facilityCode) {
+    Facility facility = facilityService.getFacilityByCode(facilityCode);
+    if (facility == null) {
+      throw new DataException("error.facility.unknown");
+    }
+
+    List<Rnr> rnrList = requisitionService.getRequisitionsByFacility(facility);
+
+    return FluentIterable.from(rnrList).transform(new Function<Rnr, Report>() {
+      @Override
+      public Report apply(Rnr input) {
+        return Report.prepareForREST(input);
+      }
+    }).toList();
   }
 }

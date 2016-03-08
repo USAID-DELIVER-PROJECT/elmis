@@ -72,7 +72,7 @@ public class ShipmentLineItemBuilder {
       lineItem.setOrderId(lookup.valueOf(orderId, 1L));
       lineItem.setOrderNumber(lookup.valueOf(orderNumber, "OYELL_FVR00000001R"));
       lineItem.setProductCode(lookup.valueOf(productCode, defaultProductCode));
-      lineItem.setReplacedProductCode(lookup.valueOf(replacedProductCode, defaultReplacedProductCode));
+      lineItem.setSubstitutedProductCode(lookup.valueOf(replacedProductCode, defaultReplacedProductCode));
       lineItem.setQuantityShipped(lookup.valueOf(quantityShipped, 0));
       lineItem.setCost(lookup.valueOf(cost, nullCost));
       lineItem.setShippedDate(lookup.valueOf(shippedDate, new Date()));

@@ -18,7 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openlmis.core.service.StaticReferenceDataService;
 import org.openlmis.db.categories.UnitTests;
-import org.openlmis.web.response.OpenLmisResponse;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.http.HttpStatus;
@@ -49,5 +49,17 @@ public class StaticReferenceDataControllerTest {
     OpenLmisResponse openLmisResponse = response.getBody();
     assertThat(response.getStatusCode(), is(HttpStatus.OK));
     assertThat((String) openLmisResponse.getData().get("pageSize"), is("2"));
+  }
+
+  @Test
+  public void shouldReturnToggleValueGivenKey() throws Exception {
+
+    when(service.getPropertyValue(StaticReferenceDataController.KEY_TOGGLE_PREFIX+"test")).thenReturn("false");
+
+    ResponseEntity<OpenLmisResponse> response = staticReferenceDataController.getToggle("test");
+
+    OpenLmisResponse openLmisResponse = response.getBody();
+    assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    assertThat((boolean) openLmisResponse.getData().get("key"), is(false));
   }
 }

@@ -1,3 +1,15 @@
+/*
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+ *
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.openlmis.report.mapper.lookup;
 
 import org.apache.ibatis.annotations.Insert;
@@ -164,5 +176,121 @@ public interface DashboardMapper {
 
     @Select("select name from processing_periods where id = #{id}")
     public String getPeriodName(@Param("id")Long id);
+
+
+    /*@Select("SELECT p.id, (p.primaryname || ' ' || form.code || ' ' || p.strength || ' ' || du.code) as name, p.code\n" +
+            "      FROM \n" +
+            "          products as p \n" +
+            "                join product_forms as form on form.id = p.formid \n" +
+            "                join dosage_units as du on du.id = p.dosageunitid\n" +
+            "            join program_products pp on p.id = pp.productId \n" +
+            "        where pp.programId = #{programId} and pp.active = true  and p.tracer = true \n" +
+            "    order by name \n" +
+            "    limit #{limit}\n"
+    )
+    List<Product> getTracerProductsForProgram(@Param("programId")Long programId, @Param("limit")Long limit);*/
+
+    @Select("select r as order, product_code, short_name as name,\n" +
+            "beginning_balance,\n" +
+            "quantity_received,\n" +
+            "quantity_dispensed,\n" +
+            "total_losses_and_adjustments,\n" +
+            "stock_in_hand_facility,\n" +
+            "stock_in_hand_upper,\n" +
+            "COALESCE(stock_in_hand_facility, 0)+ COALESCE(stock_in_hand_upper, 0) as stock_in_hand_total,\n" +
+            "amc,\n" +
+            "quantity_requested,\n" +
+            "calculated_order_quantity,\n" +
+            "quantity_approved,\n" +
+            "quantity_expired_facility,\n" +
+            "quantity_expired_upper,\n" +
+            "startdate,\n" +
+            "period_short_name as period_name,\n" +
+            "number_of_facilities_understocked,\n" +
+            "number_of_facilities_adquatelystocked,\n" +
+            "number_of_facilities_overstocked,\n" +
+            "COALESCE(quantity_expired_facility,0)+COALESCE(quantity_expired_upper,0) as quantity_expired_total,\n" +
+            "number_of_facilities_stocked_out_facility,\n" +
+            "number_of_facilities_stocked_out_upper,\n" +
+            "COALESCE(number_of_facilities_stocked_out_facility, 0) + COALESCE(number_of_facilities_stocked_out_upper, 0) as total_facilities_stocked_out,\n" +
+            "COALESCE(quantity_lost_facility, 0) + COALESCE(quantity_lost_upper, 0) as total_quantity_lost,\n" +
+            "COALESCE(quantity_damaged_facility, 0) + COALESCE(quantity_damaged_upper, 0) as total_quantity_damaged,\n" +
+            "COALESCE(quantity_expired_facility, 0) + COALESCE(quantity_expired_upper, 0) as total_quantity_expired," +
+            "price \n" +
+            "from fn_get_dashboard_summary_data(#{programId}::integer, #{periodId}::integer, #{userId}::integer)")
+    List<HashMap<String, Object>> getProgramPeriodTracerProductTrend(@Param("programId") Long programId, @Param("periodId") Long periodId, @Param("userId") Long userId);
+
+    @Select("Select * from fn_get_dashboard_reporting_summary_data(#{programId}::integer, #{periodId}::integer, #{userId}::integer)")
+    HashMap<String, Object> getDashboardReportingPerformance(@Param("programId") Long programId, @Param("periodId") Long periodId, @Param("userId") Long userId);
+
+    @Select("SELECT\n" +
+            "facilities.id facility_id,\n" +
+            "facilities.name facility_name,\n" +
+            "facility_types.id facility_type_id,\n" +
+            "facility_types.name facility_type_name,\n" +
+            "geographic_zones.name geographiczone_name,\n" +
+            "geographic_zones.levelid, \n" +
+            "productcode product_code, \n" +
+            "processing_periods.startdate::date start_date,\n" +
+            "requisition_line_items.stockinhand stock_in_hand,\n" +
+            "COALESCE (requisition_line_items.previousstockinhand,0) previous_stock_in_hand,\n" +
+            "requisition_line_items.stockoutdays stock_out_days,\n" +
+            "requisition_line_items.quantitydispensed quantity_dispensed,\n" +
+            "requisition_line_items.amc,\n" +
+            "requisitions.id rnrid\n" +
+            "from requisition_line_items\n" +
+            "INNER JOIN requisitions ON requisition_line_items.rnrid = requisitions.id\n" +
+            "INNER JOIN processing_periods ON processing_periods.id = requisitions.periodid\n" +
+            "INNER JOIN facilities ON facilities.id = requisitions.facilityid\n" +
+            "INNER JOIN facility_types ON facilities.typeid = facility_types.id\n" +
+            "INNER JOIN geographic_zones ON facilities.geographiczoneid = geographic_zones.id\n" +
+            "INNER JOIN products ON requisition_line_items.productcode= products.code \n" +
+            "where requisitions.programid = #{programId} \n" +
+            "and processing_periods.id = #{periodId}\n" +
+            "and products.code = #{code} and requisition_line_items.stockinhand = 0 \n" +
+            "order by geographic_zones.levelid")
+    List<HashMap<String, Object>> getFacilityStockedOut(@Param("programId") Long programId, @Param("periodId") Long periodId, @Param("code") String code);
+
+
+
+    @Select("select 'DISPENSED' indicator, a.r, a.productcode, a.shortname, a.geographiczonename, a.quantitydispensed indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'DISPENSED', #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'AMC' indicator, a.r, a.productcode, a.shortname, a.geographiczonename, a.amc indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'AMC', #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'EXPIRED' indicator, a.r, a.productcode, a.shortname, a.geographiczonename,  a.quantityexpired  indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'EXPIRED', #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'DAMAGED' indicator, a.r, a.productcode, a.shortname, a.geographiczonename,  a.quantitydamaged indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'DAMAGED', #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'LOST' indicator, a.r, a.productcode, a.shortname, a.geographiczonename,     a.quantitylost  indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'LOST', #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'STOCKEDOUT' indicator, a.r, a.productcode, a.shortname, a.geographiczonename, a.stockedout indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'STOCKEDOUT', #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'OVERSTOCKED' indicator, a.r, a.productcode, a.shortname, a.geographiczonename, a.overstocked indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'OVERSTOCKED', #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'UNDERSTOCKED' indicator, a.r, a.productcode, a.shortname, a.geographiczonename, a.understocked indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'UNDERSTOCKED', #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'ADEQUATELYSTOCKED' indicator, a.r, a.productcode, a.shortname, a.geographiczonename, a.adequatelystocked indicator_value, a.price from fn_get_stock_summary_data_by_geozone(#{programId}::integer, #{periodId}::integer, 'ADEQUATELYSTOCKED', #{userId}::integer) a\n" +
+            "order by 1,3,2" )
+    List<HashMap<String, Object>> getDistrictStockSummary(@Param("programId") Long programId, @Param("periodId") Long periodId, @Param("userId") Long userId);
+
+    @Select("select * from (\n" +
+            "select 'ONHAND' indicator, a.r, a.productcode, a.shortname, a.facilityname, a.stockinhand indicator_value, a.price from fn_get_stock_summary_data_by_facility(#{programId}::integer, #{periodId}::integer, 'ONHAND',  #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'DISPENSED' indicator, a.r, a.productcode, a.shortname, a.facilityname, a.quantitydispensed indicator_value, a.price from fn_get_stock_summary_data_by_facility(#{programId}::integer, #{periodId}::integer, 'DISPENSED',  #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'AMC' indicator, a.r, a.productcode, a.shortname, a.facilityname, a.amc indicator_value, a.price from fn_get_stock_summary_data_by_facility(#{programId}::integer, #{periodId}::integer, 'AMC',  #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'EXPIRED' indicator, a.r, a.productcode, a.shortname, a.facilityname,   a.quantityexpired  indicator_value, a.price from fn_get_stock_summary_data_by_facility(#{programId}::integer, #{periodId}::integer, 'EXPIRED',  #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'DAMAGED' indicator, a.r, a.productcode, a.shortname, a.facilityname,     quantitydamaged indicator_value, a.price from fn_get_stock_summary_data_by_facility(#{programId}::integer, #{periodId}::integer, 'DAMAGED',  #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'LOST' indicator, a.r, a.productcode, a.shortname, a.facilityname,        quantitylost indicator_value, a.price from fn_get_stock_summary_data_by_facility(#{programId}::integer, #{periodId}::integer, 'LOST',  #{userId}::integer) a\n" +
+            "union\n" +
+            "select 'FILLRATE' indicator, a.r, a.productcode, a.shortname, a.facilityname, case when a.fillrate < 0 then 100 else round(a.fillrate::integer,2) end indicator_value, a.price from fn_get_stock_summary_data_by_facility(#{programId}::integer, #{periodId}::integer, 'FILLRATE',  #{userId}::integer) a\n" +
+            ") a\n" +
+            "order by 1,3,2")
+    List<HashMap<String, Object>> getFacilityStockSummary(@Param("programId") Long programId, @Param("periodId") Long periodId, @Param("userId") Long userId);
+
+
 }
 

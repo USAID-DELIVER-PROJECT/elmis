@@ -1,19 +1,22 @@
 /*
- * This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.openlmis.report.controller;
 
 import lombok.NoArgsConstructor;
+import org.openlmis.core.web.OpenLmisResponse;
+import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.report.mapper.lookup.GeographicZoneReportMapper;
 import org.openlmis.report.model.geo.GeoFacilityIndicator;
-import org.openlmis.report.response.OpenLmisResponse;
 import org.openlmis.report.service.GeographicReportProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -36,16 +35,23 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class GeoDataController extends BaseController {
 
     public static final String USER_ID = "USER_ID";
-
-    public static String getCommaSeparatedIds(List<Long> idList) {
-
-        return idList == null ? "{}" : idList.toString().replace("[", "").replace("]", "");
-    }
+    public static final String MAP = "map";
+    public static final String FACILITIES = "facilities";
+    public static final String PRODUCTS = "products";
+    public static final String EQUIPMENTS_STATUS = "equipmentsStatus";
+    public static final String GEO_ZONE = "geoZone";
+    public static final String CONSUMPTION = "consumption";
+    public static final String EQUIPMENTS_STATUS_SUMMARY = "equipmentsStatusSummary";
 
     @Autowired
     private GeographicReportProvider geographicReportProvider;
     @Autowired
     private GeographicZoneReportMapper geographicZoneReportMapper;
+
+    public static String getCommaSeparatedIds(List<Long> idList) {
+        return idList == null ? "{}" : idList.toString().replace("[", "").replace("]", "");
+    }
+
 
     @RequestMapping(value = "/reporting-rate", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getReportingRateReport(@RequestParam(value = "program", required = true, defaultValue = "0") Long program,
@@ -54,7 +60,7 @@ public class GeoDataController extends BaseController {
                                                                    HttpServletRequest request) {
         Long userId = loggedInUserId(request);
 
-        return OpenLmisResponse.response("map", this.geographicZoneReportMapper.getGeoReportingRate(userId, program,schedule, period));
+        return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoReportingRate(userId, program,schedule, period));
     }
 
 
@@ -62,12 +68,11 @@ public class GeoDataController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getReportingFacilities(@RequestParam(value = "program", required = true, defaultValue = "0") Long program,
                                                                    @RequestParam(value = "period", required = true, defaultValue = "0") Long period,
                                                                    @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId,
-                                                                   @RequestParam(value = "schedule", required = true, defaultValue = "0") Long schedule,
              HttpServletRequest request
     ) {
         Long userId = loggedInUserId(request);
         List<GeoFacilityIndicator> facilities= this.geographicZoneReportMapper.getReportingFacilities(program, geoZoneId, period, userId);
-        return OpenLmisResponse.response("facilities", facilities);
+        return OpenLmisResponse.response(FACILITIES, facilities);
     }
 
 
@@ -80,7 +85,7 @@ public class GeoDataController extends BaseController {
     ) {
         Long userId = loggedInUserId(request);
 
-        return OpenLmisResponse.response("facilities", this.geographicZoneReportMapper.getNonReportingFacilities(program, geoZoneId, period,schedule, userId));
+        return OpenLmisResponse.response(FACILITIES, this.geographicZoneReportMapper.getNonReportingFacilities(program, geoZoneId, period,schedule, userId));
     }
 
 
@@ -88,7 +93,7 @@ public class GeoDataController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getStockStatusSummaryFacilityReport(@RequestParam(value = "program", required = true, defaultValue = "0") Long program,
                                                                                 @RequestParam(value = "period", required = true, defaultValue = "0") Long period,
                                                                                 @RequestParam(value = "product", required = true, defaultValue = "0") Long product) {
-        return OpenLmisResponse.response("map", this.geographicZoneReportMapper.getGeoStockStatusFacilitySummary(program, period, product));
+        return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoStockStatusFacilitySummary(program, period, product));
     }
 
 
@@ -98,7 +103,7 @@ public class GeoDataController extends BaseController {
                                                                     @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
                                                                     @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("facilities", this.geographicZoneReportMapper.getStockedOutFacilities(program, geoZoneId, period, product));
+        return OpenLmisResponse.response(FACILITIES, this.geographicZoneReportMapper.getStockedOutFacilities(program, geoZoneId, period, product));
     }
 
     @RequestMapping(value = "/under-stocked-facilities", method = GET, headers = BaseController.ACCEPT_JSON)
@@ -107,7 +112,7 @@ public class GeoDataController extends BaseController {
                                                                       @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
                                                                       @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("facilities", this.geographicZoneReportMapper.getUnderStockedFacilities(program, geoZoneId, period, product));
+        return OpenLmisResponse.response(FACILITIES, this.geographicZoneReportMapper.getUnderStockedFacilities(program, geoZoneId, period, product));
     }
 
     @RequestMapping(value = "/over-stocked-facilities", method = GET, headers = BaseController.ACCEPT_JSON)
@@ -116,7 +121,7 @@ public class GeoDataController extends BaseController {
                                                                      @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
                                                                      @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("facilities", this.geographicZoneReportMapper.getOverStockedFacilities(program, geoZoneId, period, product));
+        return OpenLmisResponse.response(FACILITIES, this.geographicZoneReportMapper.getOverStockedFacilities(program, geoZoneId, period, product));
     }
 
     @RequestMapping(value = "/adequately-stocked-facilities", method = GET, headers = BaseController.ACCEPT_JSON)
@@ -125,14 +130,14 @@ public class GeoDataController extends BaseController {
                                                                            @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
                                                                            @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("facilities", this.geographicZoneReportMapper.getAdequatelyStockedFacilities(program, geoZoneId, period, product));
+        return OpenLmisResponse.response(FACILITIES, this.geographicZoneReportMapper.getAdequatelyStockedFacilities(program, geoZoneId, period, product));
     }
 
     @RequestMapping(value = "/stock-status-products", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getStockStatusProductReport(@RequestParam(value = "program", required = true, defaultValue = "0") Long program,
                                                                         @RequestParam(value = "period", required = true, defaultValue = "0") Long period,
                                                                         @RequestParam(value = "zone", required = true, defaultValue = "0") Long geoZoneId) {
-        return OpenLmisResponse.response("products", this.geographicZoneReportMapper.getStockStatusProductSummary(program, geoZoneId, period));
+        return OpenLmisResponse.response(PRODUCTS, this.geographicZoneReportMapper.getStockStatusProductSummary(program, geoZoneId, period));
     }
 
 
@@ -142,7 +147,7 @@ public class GeoDataController extends BaseController {
                                                                   @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
                                                                   @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("products", this.geographicZoneReportMapper.getStockedOutProducts(program, geoZoneId, period, product));
+        return OpenLmisResponse.response(PRODUCTS, this.geographicZoneReportMapper.getStockedOutProducts(program, geoZoneId, period, product));
     }
 
     @RequestMapping(value = "/under-stocked-products", method = GET, headers = BaseController.ACCEPT_JSON)
@@ -151,7 +156,7 @@ public class GeoDataController extends BaseController {
                                                                     @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
                                                                     @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("products", this.geographicZoneReportMapper.getUnderStockedProducts(program, geoZoneId, period, product));
+        return OpenLmisResponse.response(PRODUCTS, this.geographicZoneReportMapper.getUnderStockedProducts(program, geoZoneId, period, product));
     }
 
 
@@ -161,7 +166,7 @@ public class GeoDataController extends BaseController {
                                                                    @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
                                                                    @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("products", this.geographicZoneReportMapper.getOverStockedProducts(program, geoZoneId, period, product));
+        return OpenLmisResponse.response(PRODUCTS, this.geographicZoneReportMapper.getOverStockedProducts(program, geoZoneId, period, product));
     }
 
     @RequestMapping(value = "/adequately-stocked-products", method = GET, headers = BaseController.ACCEPT_JSON)
@@ -170,7 +175,7 @@ public class GeoDataController extends BaseController {
                                                                          @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
                                                                          @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("products", this.geographicZoneReportMapper.getAdequatelyStockedProducts(program, geoZoneId, period, product));
+        return OpenLmisResponse.response(PRODUCTS, this.geographicZoneReportMapper.getAdequatelyStockedProducts(program, geoZoneId, period, product));
     }
 
 
@@ -185,7 +190,7 @@ public class GeoDataController extends BaseController {
                                                                             HttpServletRequest request
     ) {
         Long userId = loggedInUserId(request);
-        return OpenLmisResponse.response("equipmentsStatus",
+        return OpenLmisResponse.response(EQUIPMENTS_STATUS,
                 this.geographicZoneReportMapper.getFacilitiesEquipments(program, zone, facilityType, facility, equipmentType, userId, equipment));
     }
 
@@ -200,7 +205,7 @@ public class GeoDataController extends BaseController {
 
     ) {
         Long userId = loggedInUserId(request);
-        return OpenLmisResponse.response("equipmentsStatus", this.geographicZoneReportMapper
+        return OpenLmisResponse.response(EQUIPMENTS_STATUS, this.geographicZoneReportMapper
                 .getFacilityEquipmentStatusGeo(program, zone, facilityType, facility, equipmentType, userId, equipment));
     }
 
@@ -215,7 +220,7 @@ public class GeoDataController extends BaseController {
                                                                                       HttpServletRequest request
     ) {
         Long userId = loggedInUserId(request);
-        return OpenLmisResponse.response("equipmentsStatus", this.geographicZoneReportMapper
+        return OpenLmisResponse.response(EQUIPMENTS_STATUS, this.geographicZoneReportMapper
                 .getFacilitiesByEquipmentOperationalStatus(program, zone, facilityType, facility, equipmentType, userId, status, equipment));
     }
 
@@ -229,7 +234,7 @@ public class GeoDataController extends BaseController {
                                                                                 HttpServletRequest request
     ) {
         Long userId = loggedInUserId(request);
-        return OpenLmisResponse.response("equipmentsStatusSummary", this.geographicZoneReportMapper
+        return OpenLmisResponse.response(EQUIPMENTS_STATUS_SUMMARY, this.geographicZoneReportMapper
                 .getFacilitiesEquipmentStatusSummary(program, zone, facilityType, facility, equipmentType, userId, equipment));
     }
 
@@ -239,12 +244,12 @@ public class GeoDataController extends BaseController {
                                                                              @RequestParam(value = "period", required = true, defaultValue = "0") Long periodId,
                                                                              @RequestParam(value = "geo_zone", required = true, defaultValue = "0") Long geoZoneId
     ) {
-        return OpenLmisResponse.response("consumption", this.geographicZoneReportMapper.getStockStatusProductConsumption(program, periodId, geoZoneId, getCommaSeparatedIds(productListId)));
+        return OpenLmisResponse.response(CONSUMPTION, this.geographicZoneReportMapper.getStockStatusProductConsumption(program, periodId, geoZoneId, getCommaSeparatedIds(productListId)));
     }
 
     @RequestMapping(value = "/geo-zone-geometry", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getGeoZoneGeometryJson() {
 
-        return OpenLmisResponse.response("geoZone", this.geographicZoneReportMapper.getGeoZoneGeometryJson());
+        return OpenLmisResponse.response(GEO_ZONE, this.geographicZoneReportMapper.getGeoZoneGeometryJson());
     }
 }

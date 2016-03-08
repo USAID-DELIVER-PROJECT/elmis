@@ -29,7 +29,7 @@ import org.openlmis.order.dto.OrderDTO;
 import org.openlmis.order.dto.OrderFileTemplateDTO;
 import org.openlmis.order.service.OrderService;
 import org.openlmis.web.form.RequisitionList;
-import org.openlmis.web.response.OpenLmisResponse;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -188,7 +188,6 @@ public class OrderControllerTest {
   public void shouldGetAllOrdersForPOD() {
     List<Order> ordersForPOD = null;
     when(orderService.searchByStatusAndRight(USER_ID,
-      MANAGE_POD,
       asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L)).thenReturn(ordersForPOD);
     mockStatic(OrderDTO.class);
     List<OrderDTO> orderDTOs = new ArrayList<>();
@@ -198,7 +197,6 @@ public class OrderControllerTest {
 
     assertThat((List<OrderDTO>) response.getBody().getData().get(ORDERS_FOR_POD), is(orderDTOs));
     verify(orderService).searchByStatusAndRight(USER_ID,
-      MANAGE_POD,
       asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L);
   }
 }

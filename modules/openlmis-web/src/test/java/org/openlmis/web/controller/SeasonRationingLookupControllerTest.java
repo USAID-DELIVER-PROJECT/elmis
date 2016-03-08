@@ -1,11 +1,13 @@
 /*
- * This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.openlmis.web.controller;
 
@@ -19,18 +21,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.authentication.web.UserAuthenticationSuccessHandler;
 import org.openlmis.core.domain.OrderQuantityAdjustmentFactor;
 import org.openlmis.core.domain.OrderQuantityAdjustmentType;
-import org.openlmis.core.repository.OrderQuantityAdjustmentFactorRepository;
-import org.openlmis.core.repository.OrderQuantityAdjustmentTypeRepository;
 import org.openlmis.core.service.OrderQuantityAdjustmentFactorService;
 import org.openlmis.core.service.OrderQuantityAdjustmentTypeService;
 import org.openlmis.db.categories.UnitTests;
-import org.openlmis.web.controller.seasonalRationing.SeasonRationingLookupController;
+import org.openlmis.web.controller.seasonaling.SeasonRationingLookupController;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
-
-import javax.servlet.http.HttpServletRequest;
-
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
+import org.mockito.Matchers;
 
 @Category(UnitTests.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -80,7 +79,7 @@ public class SeasonRationingLookupControllerTest {
     @Test
     public void testRemoveSeasonRationingType() {
         OrderQuantityAdjustmentType adjustmentType = new OrderQuantityAdjustmentType();
-        lookupController.removeSeasonRationingType(1l, servletRequest);
+        lookupController.removeSeasonRationingType(1l);
         verify(typeService).deleteOrderQuantityAdjustmentType(adjustmentType);
 
     }
@@ -95,7 +94,7 @@ public class SeasonRationingLookupControllerTest {
     @Test
     public void testDeleteSeasonalRationingType() {
         OrderQuantityAdjustmentType adjustmentType = new OrderQuantityAdjustmentType();
-        lookupController.deleteSeasonalRationingType(adjustmentType, servletRequest);
+        lookupController.deleteSeasonalRationingType(adjustmentType);
         verify(typeService).deleteOrderQuantityAdjustmentType(adjustmentType);
     }
 
@@ -132,9 +131,8 @@ public class SeasonRationingLookupControllerTest {
 
     @Test
     public void testRemoveAdjustmentFactor() {
-        OrderQuantityAdjustmentFactor adjustmentFactor = new OrderQuantityAdjustmentFactor();
-        this.lookupController.removeAdjustmentFactor(1l, servletRequest);
-        verify(this.factorService).deleteOrderQuantityAdjustmentFactor(adjustmentFactor);
+        this.lookupController.removeAdjustmentFactor(1l);
+        verify(this.factorService, atLeastOnce()).deleteOrderQuantityAdjustmentFactor(Matchers.any(OrderQuantityAdjustmentFactor.class));
     }
 
     @Test
@@ -146,7 +144,7 @@ public class SeasonRationingLookupControllerTest {
     @Test
     public void testDeleteAdjustmentFactor() {
         OrderQuantityAdjustmentFactor adjustmentFactor = new OrderQuantityAdjustmentFactor();
-        this.lookupController.deleteAdjustmentFactor(adjustmentFactor, servletRequest);
+        this.lookupController.deleteAdjustmentFactor(adjustmentFactor);
         verify(this.factorService).deleteOrderQuantityAdjustmentFactor(adjustmentFactor);
     }
 

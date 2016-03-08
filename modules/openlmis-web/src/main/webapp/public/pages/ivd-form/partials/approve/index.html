@@ -1,0 +1,39 @@
+<div>
+  <h2>
+    <span openlmis-message="label.ivd.form.monthly.reporting.approve"></span>
+  </h2>
+  <ng-include src="'/public/pages/ivd-form/partials/shared/program-filter.html'"></ng-include>
+  <div ng-show="filter.program && pending.length == 0">
+    <div class="alert alert-info" openlmis-message="label.ivd.form.no.pending.monthly.submission"></div>
+  </div>
+  <div class="parent" ng-show="pending.length > 0">
+    <table fixed-table-header class="table table-bordered">
+      <thead>
+        <tr class="gradient-header">
+          <th style="width: 20px;">#</th>
+          <th style="width: 30px;" openlmis-message="label.ivd.form.facility.code"></th>
+          <th openlmis-message="label.ivd.form.facility.name"></th>
+          <th openlmis-message="label.ivd.form.district.name"></th>
+          <th openlmis-message="label.ivd.form.period"></th>
+          <th openlmis-message="label.ivd.form.submission.date"></th>
+          <th openlmis-message="label.ivd.form.status"></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="r in pending">
+          <td>{{$index + 1}}</td>
+          <td>{{r.facilityCode}}</td>
+          <td>{{r.facilityName}}</td>
+          <td>{{r.districtName}}</td>
+          <td>{{r.periodName}}</td>
+          <td>{{r.submissionDate}}</td>
+          <td>{{r.status}}</td>
+          <td><a href="#approve/{{r.id}}" openlmis-message="link.ivd.form.review.approve"></a></td>
+          <td><a href="#preview/{{r.id}}" openlmis-message="link.ivd.form.print.preview"></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

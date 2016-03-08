@@ -1,0 +1,21 @@
+<div ng-show="programs.length > 1">
+  <div class="row-fluid">
+    <div class="span12">
+      <label openlmis-message="label.program"></label>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <select ui-select2
+            id="programList" class="span3"
+            ng-model="filter.program"   ng-change="onProgramChanged()">
+      <option value="{{program.id}}" ng-repeat="program in programs">{{program.name}}</option>
+    </select>
+  </div>
+</div>
+<div ng-show="programs.length == 1">
+  <div class="info-box">
+    <strong><span openlmis-message="label.program"></span>:</strong>
+    <span ng-bind="programs[0].name"></span>
+    <div class="padding2px"></div>
+  </div>
+</div>

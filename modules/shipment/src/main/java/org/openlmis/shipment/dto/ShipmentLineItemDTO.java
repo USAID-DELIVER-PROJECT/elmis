@@ -35,13 +35,12 @@ public class ShipmentLineItemDTO {
   private static Logger logger = Logger.getLogger(ShipmentLineItemDTO.class);
   private String orderNumber;
   private Long orderId;
-  private String concatenatedOrderId;
   private String facilityCode;
   private String programCode;
   private String productCode;
   private String quantityOrdered;
-  private String replacedProductCode;
   private String quantityShipped;
+  private String batch;
   private String cost;
   private String substitutedProductCode;
   private String substitutedProductName;
@@ -50,11 +49,11 @@ public class ShipmentLineItemDTO {
   private String packedDate;
   private String shippedDate;
 
-  public ShipmentLineItemDTO(String orderNumber, String productCode, String replacedProductCode, String quantityShipped,
+  public ShipmentLineItemDTO(String orderNumber, String productCode, String substitutedProductCode, String quantityShipped,
                              String cost, String packedDate, String shippedDate) {
     this.orderNumber = orderNumber;
     this.productCode = productCode;
-    this.replacedProductCode = replacedProductCode;
+    this.substitutedProductCode = substitutedProductCode;
     this.quantityShipped = quantityShipped;
     this.cost = cost;
     this.packedDate = packedDate;

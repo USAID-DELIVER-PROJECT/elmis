@@ -10,11 +10,8 @@
 
 package org.openlmis.web.form;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import org.openlmis.core.domain.PriceSchedule;
+import lombok.*;
+import org.openlmis.core.domain.ProductPriceSchedule;
 import org.openlmis.core.domain.Product;
 import org.openlmis.core.domain.ProgramProduct;
 
@@ -25,9 +22,9 @@ import java.util.List;
  * This entity represents DTO for product form containing product details and list of programs associated with it.
  */
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 public class ProductDTO {
 
@@ -37,5 +34,5 @@ public class ProductDTO {
 
   private List<ProgramProduct> programProducts;
 
-  private List<PriceSchedule> priceSchedules;
+  private List<ProductPriceSchedule> productPriceSchedules;
 }

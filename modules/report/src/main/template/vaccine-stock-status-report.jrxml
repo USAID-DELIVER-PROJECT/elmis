@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock-status-report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="1.2100000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String"/>
+	<parameter name="COUNTRY_NAME" class="java.lang.String"/>
+	<parameter name="GENERATED_BY" class="java.lang.String"/>
+	<parameter name="REPORT_VERSION" class="java.lang.String"/>
+	<parameter name="REPORT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_OUTPUT_OPTION" class="java.lang.String"/>
+	<parameter name="OPERATOR_LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_SUB_TITLE" class="java.lang.String"/>
+	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
+	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="facilityName" class="java.lang.String"/>
+	<field name="facilityType" class="java.lang.String"/>
+	<field name="product" class="java.lang.String"/>
+	<field name="soh" class="java.lang.Double"/>
+	<field name="isaValue" class="java.lang.Double"/>
+	<field name="facilityId" class="java.lang.String"/>
+	<field name="district" class="java.lang.String"/>
+	<field name="lastUpdate" class="java.lang.String"/>
+	<field name="mos" class="java.lang.Integer"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="802" height="79" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="PAGE_NO">
+					<subreportParameterExpression><![CDATA[$V{PAGE_NUMBER}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_TITLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOGO">
+					<subreportParameterExpression><![CDATA[$P{LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_NAME">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_SUB_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_SUB_TITLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_NAME">
+					<subreportParameterExpression><![CDATA[$P{REPORT_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES">
+					<subreportParameterExpression><![CDATA[$P{REPORT_FILTER_PARAM_VALUES}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_LOGO">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA["openlmis-report-header-landscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<summary>
+		<band height="93">
+			<crosstab>
+				<reportElement x="0" y="0" width="802" height="93" uuid="e3c68ce4-c0dd-437f-81e3-2a774b050b60"/>
+				<rowGroup name="facilityName" width="70">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{facilityName}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="cab44cbd-9aea-49e5-887b-ee1fee801972"/>
+								<textElement verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{facilityName}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="product" height="53">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{product}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="237" height="28" uuid="ad83d886-3394-419b-8f30-391e13c290d0"/>
+								<box bottomPadding="1" rightPadding="0">
+									<pen lineWidth="0.25"/>
+									<topPen lineWidth="0.25"/>
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+									<rightPen lineWidth="0.25"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="10" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{product}]]></textFieldExpression>
+							</textField>
+							<staticText>
+								<reportElement style="Crosstab Data Text" x="0" y="28" width="56" height="25" uuid="efd171a2-abc9-4034-bc7a-a56510363e4d"/>
+								<textElement textAlignment="Right" verticalAlignment="Bottom">
+									<font size="10" isBold="true"/>
+								</textElement>
+								<text><![CDATA[SOH]]></text>
+							</staticText>
+							<staticText>
+								<reportElement style="Crosstab Data Text" x="56" y="28" width="73" height="25" uuid="5aaa2e92-f976-4658-84fd-67b97a3640d4"/>
+								<textElement textAlignment="Right" verticalAlignment="Bottom">
+									<font size="10" isBold="true"/>
+								</textElement>
+								<text><![CDATA[MOS]]></text>
+							</staticText>
+							<staticText>
+								<reportElement style="Crosstab Data Text" x="129" y="28" width="108" height="25" uuid="cadd4db7-eeec-4eb5-bc07-d350fbac1141"/>
+								<textElement textAlignment="Right" verticalAlignment="Bottom">
+									<font size="10" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Last Update]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="sohMeasure" class="java.lang.Double">
+					<measureExpression><![CDATA[$F{soh}]]></measureExpression>
+				</measure>
+				<measure name="mosMeasure" class="java.lang.Integer">
+					<measureExpression><![CDATA[$F{mos}]]></measureExpression>
+				</measure>
+				<measure name="lastUpdateMeasure" class="java.lang.String">
+					<measureExpression><![CDATA[$F{lastUpdate}]]></measureExpression>
+				</measure>
+				<crosstabCell width="237" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="56" height="25" uuid="1712740a-dcd6-4314-8b16-280b2b83359b"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="56" y="0" width="73" height="25" uuid="ccad843d-a479-44d9-80ef-7a77aff204ee"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{mosMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="129" y="0" width="106" height="25" uuid="794c8b24-cc89-4d76-b288-3a202ae0de37"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{lastUpdateMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="facilityName">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="ab8af171-a1fd-43ac-8f83-167b96c3755a"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="10" y="26" width="190" height="8" uuid="d1ccdf77-f790-4a9d-b755-906c8c1c6b4c"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{lastUpdateMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="10" y="10" width="190" height="8" uuid="9fd8e8ed-6217-4fee-b9b6-3ac3fbc8496a"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{mosMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="-1073741824" width="50" height="-1073741824" uuid="f6fce650-66f4-4db9-85a1-96e7c5a8f053"/>
+							<textElement>
+								<font size="2"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="10" y="26" width="190" height="8" uuid="f9aa8aff-ff66-43c4-ac1a-9690c63d0460"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{lastUpdateMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="10" y="10" width="190" height="8" uuid="cf1fc1de-8782-4fe1-b0ce-973ccbb22dc5"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{mosMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityName" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="279e5406-faf2-49c7-ac8f-5747a646ced6"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="10" y="26" width="190" height="8" uuid="fabc3fc5-0cf3-48b5-8e86-7c4a0dc0b16d"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{lastUpdateMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="10" y="10" width="190" height="8" uuid="d44673f7-d12c-4d53-b07e-4637914742d4"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{mosMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

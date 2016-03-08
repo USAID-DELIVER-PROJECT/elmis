@@ -1,11 +1,13 @@
 /*
- * This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.openlmis.report.service;
@@ -16,12 +18,9 @@ import org.apache.ibatis.session.RowBounds;
 
 import org.openlmis.core.domain.Role;
 import org.openlmis.core.domain.SupervisoryNode;
-import org.openlmis.core.service.ProgramService;
 
-import org.openlmis.core.service.RoleRightsService;
-import org.openlmis.core.service.SupervisoryNodeService;
 import org.openlmis.report.mapper.UserSummaryReportMapper;
-import org.openlmis.report.model.ReportData;
+import org.openlmis.report.model.ResultRow;
 
 import org.openlmis.report.model.dto.Program;
 import org.openlmis.report.model.params.UserSummaryParams;
@@ -39,14 +38,6 @@ public class UserSummaryReportProvider extends ReportDataProvider {
 
     private UserSummaryParams userSummaryParam = null;
 
-    @Autowired
-    private ProgramService programService;
-
-    @Autowired
-    private SupervisoryNodeService supervisoryNodeService;
-    @Autowired
-    private RoleRightsService roleRightsService;
-
 
     @Autowired
     public UserSummaryReportProvider(UserSummaryReportMapper mapper) {
@@ -54,16 +45,9 @@ public class UserSummaryReportProvider extends ReportDataProvider {
     }
 
     @Override
-    protected List<? extends ReportData> getResultSetReportData(Map<String, String[]> filterCriteria) {
-        RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-
-        return reportMapper.getReport(getReportFilterData(filterCriteria), null, rowBounds);
-    }
-
-    @Override
-    public List<? extends ReportData> getMainReportData(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-        return reportMapper.getReport(getReportFilterData(filterCriteria), SortCriteria, rowBounds);
+        return reportMapper.getReport(getReportFilterData(filterCriteria), sortCriteria, rowBounds);
     }
 
     public UserSummaryParams getReportFilterData(Map<String, String[]> filterCriteria) {

@@ -1,11 +1,13 @@
 /*
- * This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.openlmis.web.controller.equipment;
@@ -17,8 +19,8 @@ import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.domain.EquipmentType;
 import org.openlmis.equipment.service.EquipmentService;
 import org.openlmis.equipment.service.EquipmentTypeService;
-import org.openlmis.web.controller.BaseController;
-import org.openlmis.web.response.OpenLmisResponse;
+import org.openlmis.core.web.controller.BaseController;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -38,6 +40,8 @@ import static java.lang.Integer.parseInt;
 @RequestMapping(value="/equipment/manage/")
 public class EquipmentController extends BaseController {
 
+  public static final String EQUIPMENT = "equipment";
+  public static final String EQUIPMENTS = "equipments";
   @Autowired
   private EquipmentService service;
 
@@ -46,16 +50,16 @@ public class EquipmentController extends BaseController {
 
   @RequestMapping(method = RequestMethod.GET, value = "id")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
-  public ResponseEntity<OpenLmisResponse> getEquipmentById(@RequestParam("id") Long Id){
+  public ResponseEntity<OpenLmisResponse> getEquipmentById(@RequestParam("id") Long id){
 
-    return OpenLmisResponse.response("equipment", service.getById(Id));
+    return OpenLmisResponse.response(EQUIPMENT, service.getById(id));
   }
 
     @RequestMapping(method = RequestMethod.GET, value = "type-and-id")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
-    public ResponseEntity<OpenLmisResponse> getEquipmentByTypeAndId(@RequestParam("id") Long Id, @RequestParam("equipmentTypeId") Long equipmentTypeId){
+    public ResponseEntity<OpenLmisResponse> getEquipmentByTypeAndId(@RequestParam("id") Long id, @RequestParam("equipmentTypeId") Long equipmentTypeId){
 
-        return OpenLmisResponse.response("equipment", service.getByTypeAndId(Id,equipmentTypeId));
+        return OpenLmisResponse.response(EQUIPMENT, service.getByTypeAndId(id,equipmentTypeId));
 
     }
 
@@ -72,14 +76,14 @@ public class EquipmentController extends BaseController {
       {
           List<ColdChainEquipment> equipments=service.getAllCCE(equipmentTypeId,pagination);
           pagination.setTotalRecords(service.getCCECountByType(equipmentTypeId));
-          ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("equipments",equipments);
+          ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(EQUIPMENTS,equipments);
           response.getBody().addData("pagination", pagination);
           return response;
       }
         else{
           List<Equipment> equipments=service.getByType(equipmentTypeId, pagination);
           pagination.setTotalRecords(service.getEquipmentsCountByType(equipmentTypeId));
-          ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("equipments",equipments);
+          ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(EQUIPMENTS,equipments);
           response.getBody().addData("pagination", pagination);
           return response;
       }
@@ -90,7 +94,7 @@ public class EquipmentController extends BaseController {
       " or @permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')" +
       " or @permissionEvaluator.hasPermission(principal,'SERVICE_VENDOR_RIGHT')")
   public ResponseEntity<OpenLmisResponse> getListByType(@RequestParam("equipmentTypeId") Long equipmentTypeId){
-    return OpenLmisResponse.response("equipments", service.getAllByType(equipmentTypeId));
+    return OpenLmisResponse.response(EQUIPMENTS, service.getAllByType(equipmentTypeId));
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "typesByProgram/{programId}", headers = ACCEPT_JSON)
@@ -137,7 +141,7 @@ public class EquipmentController extends BaseController {
           return OpenLmisResponse.error("Duplicate Code Exists in DB.", HttpStatus.BAD_REQUEST);
         }
       response = OpenLmisResponse.success(messageService.message("message.equipment.list.saved"));
-      response.getBody().addData("equipment", equipment);
+      response.getBody().addData(EQUIPMENT, equipment);
       return response;
       }
 

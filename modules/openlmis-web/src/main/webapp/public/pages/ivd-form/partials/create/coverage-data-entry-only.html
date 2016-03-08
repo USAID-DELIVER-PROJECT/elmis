@@ -1,0 +1,86 @@
+<div class="parent">
+  <table fixed-table-header class="table table-bordered">
+    <thead>
+    <tr>
+      <th colspan="5" openlmis-message="label.vaccine.coverage.monthly.coverage"></th>
+    </tr>
+    <tr>
+      <th></th>
+      <th colspan="2" openlmis-message="label.vaccine.coverage.within.catchment"></th>
+      <th colspan="2" openlmis-message="label.vaccine.coverage.outside.catchment"></th>
+    </tr>
+    <tr>
+      <th openlmis-message="label.vaccine.coverage.male"></th>
+      <th openlmis-message="label.vaccine.coverage.female"></th>
+      <th openlmis-message="label.vaccine.coverage.male"></th>
+      <th openlmis-message="label.vaccine.coverage.female"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat-start="(productId, productGroup) in report.coverageLineItemViews"></tr>
+    <tr ng-repeat-start="dose in productGroup">
+      <td class="cell-input">
+        <span
+          class="input-error-parent-cell">
+            <input
+              ng-required="true"
+              ng-class="highlightRequired(report.validate, dose.regularMale, dose.skipped)"
+              class="right-justified"
+              ng-disabled="!report.editable || dose.skipped"
+              numeric-validator="positiveInteger"
+              maxlength="8"
+              ng-disabled="!dose.trackMale"
+              ng-model="dose.regularMale"
+              type="text"/>
+          </span>
+      </td>
+      <td class="cell-input">
+        <span
+          class="input-error-parent-cell">
+            <input
+              ng-required="true"
+              ng-class="highlightRequired(report.validate, dose.regularFemale, dose.skipped)"
+              class="right-justified"
+              ng-disabled="!report.editable || dose.skipped"
+              numeric-validator="positiveInteger"
+              maxlength="8"
+              ng-disabled="!dose.trackFemale"
+              ng-model="dose.regularFemale"
+              type="text"/>
+          </span>
+      </td>
+      <td class="cell-input">
+        <span
+          class="input-error-parent-cell">
+            <input
+              ng-required="true"
+              ng-class="highlightRequired(report.validate, dose.outreachMale, dose.skipped)"
+              class="right-justified"
+              ng-disabled="!report.editable || dose.skipped"
+              numeric-validator="positiveInteger"
+              maxlength="8"
+              ng-disabled="!dose.trackMale"
+              ng-model="dose.outreachMale"
+              type="text"/>
+          </span>
+      </td>
+      <td class="cell-input">
+        <span
+          class="input-error-parent-cell">
+            <input
+              ng-required="true"
+              ng-class="highlightRequired(report.validate, dose.outreachFemale, dose.skipped)"
+              class="right-justified"
+              ng-disabled="!report.editable || dose.skipped"
+              numeric-validator="positiveInteger"
+              maxlength="8"
+              ng-disabled="!dose.trackFemale"
+              ng-model="dose.outreachFemale"
+              type="text"/>
+          </span>
+      </td>
+    </tr>
+    <tr ng-repeat-end></tr>
+    <tr ng-repeat-end></tr>
+  </table>
+</div>

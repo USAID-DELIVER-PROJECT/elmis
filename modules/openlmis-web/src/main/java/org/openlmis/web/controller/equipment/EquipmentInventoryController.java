@@ -1,11 +1,13 @@
 /*
- * This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.openlmis.web.controller.equipment;
@@ -16,8 +18,8 @@ import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.equipment.domain.EquipmentInventory;
 import org.openlmis.equipment.service.EquipmentInventoryService;
-import org.openlmis.web.controller.BaseController;
-import org.openlmis.web.response.OpenLmisResponse;
+import org.openlmis.core.web.controller.BaseController;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,11 @@ import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
 @RequestMapping(value="/equipment/inventory/")
 public class EquipmentInventoryController extends BaseController {
 
+  public static final String PROGRAMS = "programs";
+  public static final String INVENTORY = "inventory";
+  public static final String FACILITIES = "facilities";
+  public static final String PAGINATION = "pagination";
+
   @Autowired
   private EquipmentInventoryService service;
 
@@ -60,21 +67,21 @@ public class EquipmentInventoryController extends BaseController {
     Pagination pagination = new Pagination(page, parseInt(limit));
     pagination.setTotalRecords(service.getInventoryCount(userId, typeId, programId, equipmentTypeId));
     List<EquipmentInventory> inventory = service.getInventory(userId, typeId, programId, equipmentTypeId, pagination);
-    ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("inventory", inventory);
-    response.getBody().addData("pagination", pagination);
+    ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(INVENTORY, inventory);
+    response.getBody().addData(PAGINATION, pagination);
     return response;
   }
 
-  @RequestMapping(value="programs", method = RequestMethod.GET)
+  @RequestMapping(value= PROGRAMS, method = RequestMethod.GET)
   public ResponseEntity<OpenLmisResponse> getPrograms(HttpServletRequest request){
     Long userId = loggedInUserId(request);
-    return OpenLmisResponse.response("programs",programService.getProgramForSupervisedFacilities(userId, MANAGE_EQUIPMENT_INVENTORY));
+    return OpenLmisResponse.response(PROGRAMS,programService.getProgramForSupervisedFacilities(userId, MANAGE_EQUIPMENT_INVENTORY));
   }
 
   @RequestMapping(value="facility/programs", method = RequestMethod.GET)
   public ResponseEntity<OpenLmisResponse> getProgramsForFacility(@RequestParam("facilityId") Long facilityId, HttpServletRequest request){
     Long userId = loggedInUserId(request);
-    return OpenLmisResponse.response("programs",programService.getProgramsForUserByFacilityAndRights(facilityId, userId, MANAGE_EQUIPMENT_INVENTORY));
+    return OpenLmisResponse.response(PROGRAMS,programService.getProgramsForUserByFacilityAndRights(facilityId, userId, MANAGE_EQUIPMENT_INVENTORY));
   }
 
   @RequestMapping(value="supervised/facilities", method = RequestMethod.GET)
@@ -83,14 +90,14 @@ public class EquipmentInventoryController extends BaseController {
     ModelMap modelMap = new ModelMap();
     Long userId = loggedInUserId(request);
     List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, MANAGE_EQUIPMENT_INVENTORY);
-    modelMap.put("facilities", facilities);
+    modelMap.put(FACILITIES, facilities);
     return new ResponseEntity<>(modelMap, HttpStatus.OK);
   }
 
   @RequestMapping(value="by-id", method = RequestMethod.GET)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')")
   public ResponseEntity<OpenLmisResponse> getInventory(@RequestParam("id") Long id){
-    return OpenLmisResponse.response("inventory", service.getInventoryById(id));
+    return OpenLmisResponse.response(INVENTORY, service.getInventoryById(id));
   }
 
   @RequestMapping(value="save", method = RequestMethod.POST)
@@ -101,8 +108,9 @@ public class EquipmentInventoryController extends BaseController {
     inventory.setCreatedBy(userId);
     inventory.setModifiedBy(userId);
     service.save(inventory);
+    service.updateNonFunctionalEquipments();
     response = OpenLmisResponse.success(messageService.message("message.equipment.inventory.saved"));
-    response.getBody().addData("inventory", inventory);
+    response.getBody().addData(INVENTORY, inventory);
     return response;
   }
 
@@ -113,8 +121,9 @@ public class EquipmentInventoryController extends BaseController {
     Long userId = loggedInUserId(request);
     inventory.setModifiedBy(userId);
     service.updateStatus(inventory);
+    service.updateNonFunctionalEquipments();
     response = OpenLmisResponse.success(messageService.message("message.equipment.inventory.saved"));
-    response.getBody().addData("inventory", inventory);
+    response.getBody().addData(INVENTORY, inventory);
     return response;
   }
 

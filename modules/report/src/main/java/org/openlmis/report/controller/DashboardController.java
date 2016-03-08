@@ -1,12 +1,24 @@
+/*
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+ *
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.openlmis.report.controller;
 
 import lombok.NoArgsConstructor;
-import org.apache.ibatis.annotations.Update;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.service.MessageService;
+import org.openlmis.core.web.OpenLmisResponse;
+import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.report.model.DashboardLookUpReportHeader;
 import org.openlmis.report.model.dto.Notification;
-import org.openlmis.report.response.OpenLmisResponse;
 import org.openlmis.report.service.DashboardBatchDataUpdateExecutorService;
 import org.openlmis.report.service.lookup.DashboardLookupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +34,8 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-/**
- * User: Issa
- * Date: 2/18/14
- * Time: 5:18 PM
- */
 @Controller
 @NoArgsConstructor
 @RequestMapping(value = "/dashboard")
@@ -236,7 +241,7 @@ public class DashboardController extends BaseController {
                                                                          @PathVariable("programId") Long programId,
                                                                          HttpServletRequest request) {
 
-        return OpenLmisResponse.response(EXTRA_ANALYTICS_DATA_FOR_RNR_SUMMARY, this.lookupService.getExtraAnalyticsDataForRnRSummary(loggedInUserId(request), zoneId,periodId, programId));
+        return OpenLmisResponse.response(EXTRA_ANALYTICS_DATA_FOR_RNR_SUMMARY, this.lookupService.getExtraAnalyticsDataForRnRSummary(loggedInUserId(request), zoneId, periodId, programId));
     }
 
     @RequestMapping(value = "/rnrStatus-detail", method = GET, headers = ACCEPT_JSON)
@@ -256,6 +261,44 @@ public class DashboardController extends BaseController {
             return OpenLmisResponse.error(e, BAD_REQUEST);
         }
         return new OpenLmisResponse().response(OK);
+    }
+
+
+    @RequestMapping(value = "/program/{programId}/period/{periodId}/tracer-products-trend.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getProgramPeriodTracerProductsTrend(@PathVariable("programId") Long programId, @PathVariable("periodId") Long periodId,
+                                                                                @RequestParam(value = "limit", required = false, defaultValue = "4") Long limit,
+                                                                                HttpServletRequest request) {
+
+        return OpenLmisResponse.response("tracerProducts", this.lookupService.getProgramPeriodTracerProductsTrend(programId, periodId, loggedInUserId(request), limit));
+    }
+
+    @RequestMapping(value = "/program/{programId}/period/{periodId}/reporting-performance.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getDashboardReportingPerformance(@PathVariable("programId") Long programId, @PathVariable("periodId") Long periodId,
+                                                                                HttpServletRequest request) {
+
+        return OpenLmisResponse.response("reportingPerformance", this.lookupService.getDashboardReportingPerformance(programId, periodId, loggedInUserId(request)));
+    }
+
+    @RequestMapping(value = "/program/{programId}/period/{periodId}/district-stock-summary.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getDistrictStockSummary(@PathVariable("programId") Long programId, @PathVariable("periodId") Long periodId,
+                                                                             HttpServletRequest request) {
+
+        return OpenLmisResponse.response("stockSummary", this.lookupService.getDistrictStockSummary(programId, periodId, loggedInUserId(request)));
+    }
+
+    @RequestMapping(value = "/program/{programId}/period/{periodId}/facility-stock-summary.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getFacilityStockSummary(@PathVariable("programId") Long programId, @PathVariable("periodId") Long periodId,
+                                                                    HttpServletRequest request) {
+
+        return OpenLmisResponse.response("facilityStockSummary", this.lookupService.getFacilityStockSummary(programId, periodId, loggedInUserId(request)));
+    }
+
+
+    @RequestMapping(value = "/program/{programId}/period/{periodId}/product/{productCode}/stocked-out-facilities.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getFacilitiesStockedOutForProgramPeriodAndProductCode(@PathVariable("programId") Long programId,
+                                                                                                  @PathVariable("periodId") Long periodId,
+                                                                                                  @PathVariable("productCode") String productCode) {
+        return OpenLmisResponse.response("facilities", this.lookupService.getFacilitiesStockedOut(programId, periodId, productCode));
     }
 
 }

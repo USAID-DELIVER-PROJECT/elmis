@@ -1,0 +1,384 @@
+<!--
+~ This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+~
+~ This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+~
+~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+~
+~ You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+-->
+<style>
+
+    #parent {
+        height: 500px;
+    }
+    #foot{
+        backbround-color: #000;
+    }
+
+    .rnr-table {
+
+        padding-top: 0px !important;
+    }
+    
+    .sticky-table-separator{
+       border-left: 15px solid #9C9B9B !important;
+    }
+    .center{
+        text-align:center !important;
+    }
+    .caution-header{
+        color:red !important;
+    }
+    .red-bg-cells{
+        background: #FFB3DA !important;
+    }
+
+    .dull-background{
+        background: #BFBFBF !important;
+        border-left: 15px solid #9C9B9B !important;
+    }
+    .white-background {
+        background: #fff  !important;
+    }
+
+    .no-border-header{
+        border-left: 0px solid #ddd !important;
+    }
+
+</style>
+
+<div class="row-fluid">
+    <div class="box span12">
+        <div class="box-header">
+            <h2 openlmis-message="report.title.cold.chain.temperature"><i class="icon-edit"></i><span class="break"></span></h2>
+
+            <div class="box-icon">
+              <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+              <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+        </div>
+
+
+        <div class="app-form">
+            <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                <div  class="clearfix">
+                    <div filter-container class="clearfix">
+                        <zone-filter class="form-cell horizontalFilters"></zone-filter>
+                        <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+
+
+        <div class="content-body">
+            <table class="table table-bordered" ng-show="coldchainreportDataRows.length < 1">
+                <tr>
+                    <td>No data to show under selected filters</td>
+                </tr>
+            </table>
+
+            <div client-side-sort-pagination class="pull-right legend" ng-show="coldchainreportDataRows.length > 0">
+                Page: {{tableParams.page}},
+                Showing records {{ ((tableParams.page - 1) * tableParams.count) + 1 }}
+                to
+                {{ getLargestRecordShown(); }}
+                of
+                {{pages.total}}
+            </div>
+
+            <div id="parent" ng-show="coldchainreportDataRows.length > 0">
+                <table id="fixTable"  class="rnr-table table-bordered table">
+
+                   <thead>
+                   <tr >
+                       <th class="no-border-header"></th>
+                       <th class="no-border-header"></th>
+                       <th class="no-border-header"></th>
+                       <th class="no-border-header"></th>
+                       <th colspan="12" class="sticky-table-separator center" openlmis-message="cct.min.temp.refregrators"></th>
+                       <th colspan="12" class="sticky-table-separator center" openlmis-message="cct.max.temp.refregrators"></th>
+                       <th colspan="12" class="sticky-table-separator center" openlmis-message="cct.low.alarm.episod"></th>
+                       <th colspan="12" class="sticky-table-separator center" openlmis-message="cct.high.alarm.episod"></th>
+
+                   </tr>
+                   <tr >
+                       <th class="no-border-header"></th>
+                       <th class="no-border-header"></th>
+                       <th class="no-border-header"></th>
+                       <th class="no-border-header"></th>
+                       <th colspan="12" class="sticky-table-separator caution-header center"   openlmis-message="cct.caution.message"></th>
+                       <th colspan="12" class="sticky-table-separator caution-header center"   openlmis-message="cct.caution.message"></th>
+                       <th colspan="12" class="sticky-table-separator caution-header center"   openlmis-message="cct.caution.message"></th>
+                       <th colspan="12" class="sticky-table-separator caution-header center"   openlmis-message="cct.caution.message"></th>
+                   </tr>
+                   <tr>
+                        <th>{{getLocalMessage('label.zone')}}</th>
+                        <th>{{getLocalMessage('label.region')}}</th>
+                        <th>{{getLocalMessage('label.district')}}</th>
+                        <th>{{getLocalMessage('label.target.population')}}</th>
+                       <th class="sticky-table-separator">{{getLocalMessage('label.jan')}}</th>
+                       <th>{{getLocalMessage('label.feb')}}</th>
+                       <th>{{getLocalMessage('label.mar')}}</th>
+                       <th>{{getLocalMessage('label.apr')}}</th>
+                       <th>{{getLocalMessage('label.may')}}</th>
+                       <th>{{getLocalMessage('label.jun')}}</th>
+                       <th>{{getLocalMessage('label.jul')}}</th>
+                       <th>{{getLocalMessage('label.aug')}}</th>
+                       <th>{{getLocalMessage('label.sep')}}</th>
+                       <th>{{getLocalMessage('label.oct')}}</th>
+                       <th>{{getLocalMessage('label.nov')}}</th>
+                       <th>{{getLocalMessage('label.dec')}}</th>
+
+                       <th class="sticky-table-separator">{{getLocalMessage('label.jan')}}</th>
+                       <th>{{getLocalMessage('label.feb')}}</th>
+                       <th>{{getLocalMessage('label.mar')}}</th>
+                       <th>{{getLocalMessage('label.apr')}}</th>
+                       <th>{{getLocalMessage('label.may')}}</th>
+                       <th>{{getLocalMessage('label.jun')}}</th>
+                       <th>{{getLocalMessage('label.jul')}}</th>
+                       <th>{{getLocalMessage('label.aug')}}</th>
+                       <th>{{getLocalMessage('label.sep')}}</th>
+                       <th>{{getLocalMessage('label.oct')}}</th>
+                       <th>{{getLocalMessage('label.nov')}}</th>
+                       <th>{{getLocalMessage('label.dec')}}</th>
+
+                       <th class="sticky-table-separator">{{getLocalMessage('label.jan')}}</th>
+                       <th>{{getLocalMessage('label.feb')}}</th>
+                       <th>{{getLocalMessage('label.mar')}}</th>
+                       <th>{{getLocalMessage('label.apr')}}</th>
+                       <th>{{getLocalMessage('label.may')}}</th>
+                       <th>{{getLocalMessage('label.jun')}}</th>
+                       <th>{{getLocalMessage('label.jul')}}</th>
+                       <th>{{getLocalMessage('label.aug')}}</th>
+                       <th>{{getLocalMessage('label.sep')}}</th>
+                       <th>{{getLocalMessage('label.oct')}}</th>
+                       <th>{{getLocalMessage('label.nov')}}</th>
+                       <th>{{getLocalMessage('label.dec')}}</th>
+
+                       <th class="sticky-table-separator">{{getLocalMessage('label.jan')}}</th>
+                       <th>{{getLocalMessage('label.feb')}}</th>
+                       <th>{{getLocalMessage('label.mar')}}</th>
+                       <th>{{getLocalMessage('label.apr')}}</th>
+                       <th>{{getLocalMessage('label.may')}}</th>
+                       <th>{{getLocalMessage('label.jun')}}</th>
+                       <th>{{getLocalMessage('label.jul')}}</th>
+                       <th>{{getLocalMessage('label.aug')}}</th>
+                       <th>{{getLocalMessage('label.sep')}}</th>
+                       <th>{{getLocalMessage('label.oct')}}</th>
+                       <th>{{getLocalMessage('label.nov')}}</th>
+                       <th>{{getLocalMessage('label.dec')}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat="row in coldchainreportDataRows">
+                        <td>{{row.zone_name}}</td>
+                        <td>{{row.region_name}}</td>
+                        <td>{{row.district_name}}</td>
+                        <td >{{row.target}}</td>
+                        <td class="sticky-table-separator">{{row.minjan == NULL ? '- ': row.minjan}}</td>
+                        <td>{{row.minfeb == NULL ? '- ': row.minfeb}}</td>
+                        <td >{{row.minmar == NULL ? '-' : row.minmar}}</td>
+                        <td >{{row.minapr == NULL ? '-' : row.minapr}}</td>
+                        <td >{{row.minmay == NULL ? '-' : row.minmay}}</td>
+                        <td >{{row.minjun == NULL ? '-' : row.minjun}}</td>
+                        <td >{{row.minjul == NULL ? '-' : row.minjul}}</td>
+                        <td>{{row.minaug == NULL ? '-' : row.minaug}}</td>
+                        <td >{{row.minsep == NULL ? '-' : row.minsep}}</td>
+                        <td>{{row.minoct == NULL ? '-' : row.minoct}}</td>
+                        <td >{{row.minnov == NULL ? '-' : row.minnov}}</td>
+                        <td >{{row.mindec == NULL ? '-' : row.mindec}}</td>
+                        <td  class="sticky-table-separator">{{row.maxjan == NULL ? '-' : row.maxjan}}</td>
+                        <td >{{row.maxfeb == NULL ? '-' : row.maxfeb}}</td>
+                        <td >{{row.maxmar == NULL ? '-' : row.maxmar}}</td>
+                        <td >{{row.maxapr == NULL ? '-' : row.maxapr}}</td>
+                        <td >{{row.maxmay == NULL ? '-' : row.maxmay}}</td>
+                        <td >{{row.maxjun == NULL ? '-' : row.maxjun}}</td>
+                        <td >{{row.maxjul == NULL ? '-' : row.maxjul}}</td>
+                        <td >{{row.maxaug == NULL ? '-' : row.maxaug}}</td>
+                        <td >{{row.maxsep == NULL ? '-' : row.maxsep}}</td>
+                        <td >{{row.maxoct == NULL ? '-' : row.maxoct}}</td>
+                        <td >{{row.maxnov == NULL ? '-' : row.maxnov}}</td>
+                        <td >{{row.maxdec == NULL ? '-' : row.maxdec}}</td>
+                        <td  class="sticky-table-separator">{{row.minep_jan == NULL ? '-' : row.minep_jan}}</td>
+                        <td >{{row.minep_feb == NULL ? '-' : row.minep_feb}}</td>
+                        <td>{{row.minep_mar == NULL ? '-' : row.minep_mar}}</td>
+                        <td >{{row.minep_apr == NULL ? '-' : row.minep_apr}}</td>
+                        <td >{{row.minep_may == NULL ? '-' : row.minep_may}}</td>
+                        <td>{{row.minep_jun == NULL ? '-' : row.minep_jun}}</td>
+                        <td >{{row.minep_jul == NULL ? '-' : row.minep_jul}}</td>
+                        <td >{{row.minep_aug == NULL ? '-' : row.minep_aug}}</td>
+                        <td>{{row.minep_sep == NULL ? '-' : row.minep_sep}}</td>
+                        <td >{{row.minep_oct == NULL ? '-' : row.minep_oct}}</td>
+                        <td >{{row.minep_nov == NULL ? '-' : row.minep_nov}}</td>
+                        <td >{{row.minep_dec == NULL ? '-' : row.minep_dec}}</td>
+                        <td class="sticky-table-separator">{{row.maxep_jan == NULL ? '-' : row.maxep_jan}}</td>
+                        <td >{{row.maxep_feb == NULL ? '-' : row.maxep_feb}}</td>
+                        <td>{{row.maxep_mar == NULL ? '-' : row.maxep_mar}}</td>
+                        <td>{{row.maxep_apr == NULL ? '-' : row.maxep_apr}}</td>
+                        <td >{{row.maxep_may == NULL ? '-' : row.maxep_may}}</td>
+                        <td>{{row.maxep_jun == NULL ? '-' : row.maxep_jun}}</td>
+                        <td >{{row.maxep_jul == NULL ? '-' : row.maxep_jul}}</td>
+                        <td>{{row.maxep_aug == NULL ? '-' : row.maxep_aug}}</td>
+                        <td >{{row.maxep_sep == NULL ? '-' : row.maxep_sep}}</td>
+                        <td >{{row.maxep_oct == NULL ? '-' : row.maxep_oct}}</td>
+                        <td >{{row.maxep_nov == NULL ? '-' : row.maxep_nov}}</td>
+                        <td >{{row.maxep_dec == NULL ? '-' : row.maxep_dec}}</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr id="foot">
+                        <th></th>
+                        <th></th>
+                        <th openlmis-message="cct.total"></th>
+                        <th>{{total}}</th>
+                        <th class="red-bg-cells sticky-table-separator">{{ccrtotaltemprecorded.minjan == NULL ? '- ': ccrtotaltemprecorded.minjan}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minfeb == NULL ? '- ': ccrtotaltemprecorded.minfeb}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minmar == NULL ? '-' : ccrtotaltemprecorded.minmar}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minapr == NULL ? '-' : ccrtotaltemprecorded.minapr}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minmay == NULL ? '-' : ccrtotaltemprecorded.minmay}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minjun == NULL ? '-' : ccrtotaltemprecorded.minjun}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minjul == NULL ? '-' : ccrtotaltemprecorded.minjul}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minaug == NULL ? '-' : ccrtotaltemprecorded.minaug}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minsep == NULL ? '-' : ccrtotaltemprecorded.minsep}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minoct == NULL ? '-' : ccrtotaltemprecorded.minoct}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minnov == NULL ? '-' : ccrtotaltemprecorded.minnov}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.mindec == NULL ? '-' : ccrtotaltemprecorded.mindec}}</th>
+
+                        <th class="red-bg-cells sticky-table-separator"{{ccrtotaltemprecorded.maxjan == NULL ?  '- ': ccrtotaltemprecorded.maxjan}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxfeb == NULL ?  '- ': ccrtotaltemprecorded.maxfeb}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxmar == NULL ?  '- ': ccrtotaltemprecorded.maxmar}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxapr == NULL ?  '- ': ccrtotaltemprecorded.maxapr}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxmay == NULL ?  '- ': ccrtotaltemprecorded.maxmay}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxjun == NULL ?  '- ': ccrtotaltemprecorded.maxjun}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxjul == NULL ?  '- ': ccrtotaltemprecorded.maxjul}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxaug == NULL ?  '- ': ccrtotaltemprecorded.maxaug}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxsep == NULL ?  '- ': ccrtotaltemprecorded.maxsep}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxoct == NULL ?  '- ': ccrtotaltemprecorded.maxoct}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxnov == NULL ?  '- ': ccrtotaltemprecorded.maxnov}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxdec == NULL ?  '- ': ccrtotaltemprecorded.maxdec}}</th>
+
+                        <th class="red-bg-cells sticky-table-separator">{{ccrtotaltemprecorded.minep_jan == NULL ?  '- ': ccrtotaltemprecorded.minep_jan}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_feb == NULL ?  '- ': ccrtotaltemprecorded.minep_feb}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_mar == NULL ?  '- ': ccrtotaltemprecorded.minep_mar}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_apr == NULL ?  '- ': ccrtotaltemprecorded.minep_apr}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_may == NULL ?  '- ': ccrtotaltemprecorded.minep_may}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_jun == NULL ?  '- ': ccrtotaltemprecorded.minep_jun}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_jul == NULL ?  '- ': ccrtotaltemprecorded.minep_jul}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_aug == NULL ?  '- ': ccrtotaltemprecorded.minep_aug}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_sep == NULL ?  '- ': ccrtotaltemprecorded.minep_sep}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_oct == NULL ?  '- ': ccrtotaltemprecorded.minep_oct}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_nov == NULL ?  '- ': ccrtotaltemprecorded.minep_nov}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.minep_dec == NULL ?  '- ': ccrtotaltemprecorded.minep_dec}}</th>
+
+                        <th class="red-bg-cells sticky-table-separator">{{ccrtotaltemprecorded.maxep_jan == NULL ?  '- ': ccrtotaltemprecorded.maxep_jan}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_feb == NULL ?  '- ': ccrtotaltemprecorded.maxep_feb}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_mar == NULL ?  '- ': ccrtotaltemprecorded.maxep_mar}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_apr == NULL ?  '- ': ccrtotaltemprecorded.maxep_apr}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_may == NULL ?  '- ': ccrtotaltemprecorded.maxep_may}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_jun == NULL ?  '- ': ccrtotaltemprecorded.maxep_jun}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_jul == NULL ?  '- ': ccrtotaltemprecorded.maxep_jul}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_aug == NULL ?  '- ': ccrtotaltemprecorded.maxep_aug}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_sep == NULL ?  '- ': ccrtotaltemprecorded.maxep_sep}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_oct == NULL ?  '- ': ccrtotaltemprecorded.maxep_oct}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_nov == NULL ?  '- ': ccrtotaltemprecorded.maxep_nov}}</th>
+                        <th class="red-bg-cells">{{ccrtotaltemprecorded.maxep_dec == NULL ?  '- ': ccrtotaltemprecorded.maxep_dec}}</th>
+
+                    </tr>
+                    <tr>
+                        <th> </th>
+                        <th></th>
+                        <th openlmis-message="cct.district.with.min.temp"></th>
+                        <th style="background: #6FC8DC !important;">2</th>
+                        <th class="sticky-table-separator">{{ccrminmaxaggregateDataRows.minjan == NULL ? '- ': ccrminmaxaggregateDataRows.minjan}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minfeb == NULL ? '- ': ccrminmaxaggregateDataRows.minfeb}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minmar == NULL ? '-' : ccrminmaxaggregateDataRows.minmar}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minapr == NULL ? '-' : ccrminmaxaggregateDataRows.minapr}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minmay == NULL ? '-' : ccrminmaxaggregateDataRows.minmay}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minjun == NULL ? '-' : ccrminmaxaggregateDataRows.minjun}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minjul == NULL ? '-' : ccrminmaxaggregateDataRows.minjul}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minaug == NULL ? '-' : ccrminmaxaggregateDataRows.minaug}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minsep == NULL ? '-' : ccrminmaxaggregateDataRows.minsep}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minoct == NULL ? '-' : ccrminmaxaggregateDataRows.minoct}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.minnov == NULL ? '-' : ccrminmaxaggregateDataRows.minnov}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.mindec == NULL ? '-' : ccrminmaxaggregateDataRows.mindec}}</th>
+
+                        <th colspan="12" class="dull-background"></th>
+                        <th colspan="24" class="white-background"></th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th  openlmis-message="cct.district.woth.temp.max"></th>
+                        <th style="background: #E6E130;">8</th>
+                        <th colspan="12" class="dull-background"></th>
+                        <th class="sticky-table-separator">{{ccrminmaxaggregateDataRows.maxjan == NULL ?  '- ': ccrminmaxaggregateDataRows.maxjan}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxfeb == NULL ?  '- ': ccrminmaxaggregateDataRows.maxfeb}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxmar == NULL ?  '- ': ccrminmaxaggregateDataRows.maxmar}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxapr == NULL ?  '- ': ccrminmaxaggregateDataRows.maxapr}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxmay == NULL ?  '- ': ccrminmaxaggregateDataRows.maxmay}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxjun == NULL ?  '- ': ccrminmaxaggregateDataRows.maxjun}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxjul == NULL ?  '- ': ccrminmaxaggregateDataRows.maxjul}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxaug == NULL ?  '- ': ccrminmaxaggregateDataRows.maxaug}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxsep == NULL ?  '- ': ccrminmaxaggregateDataRows.maxsep}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxoct == NULL ?  '- ': ccrminmaxaggregateDataRows.maxoct}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxnov == NULL ?  '- ': ccrminmaxaggregateDataRows.maxnov}}</th>
+                        <th >{{ccrminmaxaggregateDataRows.maxdec == NULL ?  '- ': ccrminmaxaggregateDataRows.maxdec}}</th>
+                        <th colspan="24" class="white-background"></th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th openlmis-message="cct.min.temp.recorded"></th>
+
+                        <th class="sticky-table-separator">{{ccrminmaxtemprecordeddataRows.minjan == NULL ? '- ': ccrminmaxtemprecordeddataRows.minjan}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minfeb == NULL ? '- ': ccrminmaxtemprecordeddataRows.minfeb}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minmar == NULL ? '-' : ccrminmaxtemprecordeddataRows.minmar}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minapr == NULL ? '-' : ccrminmaxtemprecordeddataRows.minapr}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minmay == NULL ? '-' : ccrminmaxtemprecordeddataRows.minmay}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minjun == NULL ? '-' : ccrminmaxtemprecordeddataRows.minjun}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minjul == NULL ? '-' : ccrminmaxtemprecordeddataRows.minjul}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minaug == NULL ? '-' : ccrminmaxtemprecordeddataRows.minaug}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minsep == NULL ? '-' : ccrminmaxtemprecordeddataRows.minsep}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minoct == NULL ? '-' : ccrminmaxtemprecordeddataRows.minoct}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.minnov == NULL ? '-' : ccrminmaxtemprecordeddataRows.minnov}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.mindec == NULL ? '-' : ccrminmaxtemprecordeddataRows.mindec}}</th>
+                        <th colspan="12" class="dull-background"></th>
+                        <th colspan="24" class="white-background"></th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th openlmis-message="cct.maxi.temp.recorded"></th>
+                        <th colspan="12" class="dull-background"></th>
+                        <th class="sticky-table-separator">{{ccrminmaxtemprecordeddataRows.maxjan == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxjan}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxfeb == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxfeb}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxmar == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxmar}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxapr == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxapr}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxmay == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxmay}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxjun == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxjun}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxjul == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxjul}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxaug == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxaug}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxsep == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxsep}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxoct == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxoct}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxnov == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxnov}}</th>
+                        <th >{{ccrminmaxtemprecordeddataRows.maxdec == NULL ?  '- ': ccrminmaxtemprecordeddataRows.maxdec}}</th>
+                        <th colspan="24" class="white-background"></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+</div>

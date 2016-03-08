@@ -64,8 +64,8 @@ public class ShipmentLineItemTransformer extends LineItemTransformer {
       lineItem.setCost(cost);
     }
 
-    if(!isBlank(dto.getReplacedProductCode())) {
-      lineItem.setReplacedProductCode(dto.getReplacedProductCode().trim());
+    if(!isBlank(dto.getSubstitutedProductCode())) {
+      lineItem.setSubstitutedProductCode(dto.getSubstitutedProductCode().trim());
     }
 
     Date packedDate = (!isBlank(dto.getPackedDate())) ? parseDate(packedDateFormat,
@@ -89,9 +89,7 @@ public class ShipmentLineItemTransformer extends LineItemTransformer {
     }
 
     lineItem.setFacilityCode( dto.getFacilityCode());
-    lineItem.setConcatenatedOrderId(dto.getConcatenatedOrderId());
     lineItem.setProgramCode( dto.getProgramCode() );
-    lineItem.setSubstitutedProductCode(dto.getSubstitutedProductCode());
     lineItem.setSubstitutedProductName(dto.getSubstitutedProductName());
   }
 

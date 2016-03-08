@@ -15,9 +15,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.FacilityOperator;
 import org.openlmis.core.domain.FacilityType;
-import org.openlmis.core.domain.PriceScheduleCategory;
+import org.openlmis.core.domain.PriceSchedule;
 import org.openlmis.core.dto.FacilityContact;
-import org.openlmis.core.dto.FacilityImages;
+import org.openlmis.core.dto.FacilityGeoTreeDto;
 import org.openlmis.core.dto.FacilitySupervisor;
 import org.springframework.stereotype.Repository;
 
@@ -38,7 +38,7 @@ public interface FacilityMapper {
     "geographicZoneId, typeId, catchmentPopulation, latitude, longitude, altitude, operatedById," +
     "coldStorageGrossCapacity, coldStorageNetCapacity, suppliesOthers, sdp, online," +
     "satellite, parentFacilityId, hasElectricity, hasElectronicSCC, hasElectronicDAR, active," +
-    "goLiveDate, goDownDate, comment, virtualFacility, enabled, pricecatid, createdDate,createdBy, modifiedBy, modifiedDate) " +
+    "goLiveDate, goDownDate, comment, virtualFacility, enabled, priceScheduleId, createdDate,createdBy, modifiedBy, modifiedDate) " +
     "VALUES(#{code}, #{name}, #{description}, #{gln}, #{mainPhone}, #{fax}, #{address1}, #{address2}," +
     "#{geographicZone.id}," +
     "#{facilityType.id}," +
@@ -46,13 +46,21 @@ public interface FacilityMapper {
     "#{operatedBy.id}," +
     "#{coldStorageGrossCapacity}, #{coldStorageNetCapacity}, #{suppliesOthers}, #{sdp},#{online}," +
     "#{satellite}, #{parentFacilityId}, #{hasElectricity}, #{hasElectronicSCC}, #{hasElectronicDAR}, #{active}," +
-    "#{goLiveDate}, #{goDownDate}, #{comment}, #{virtualFacility}, #{enabled}, #{priceScheduleCategory.id} , COALESCE(#{createdDate}, NOW()), #{createdBy}, #{modifiedBy}, " +
+    "#{goLiveDate}, #{goDownDate}, #{comment}, #{virtualFacility}, #{enabled}, #{priceSchedule.id} , COALESCE(#{createdDate}, NOW()), #{createdBy}, #{modifiedBy}, " +
     "COALESCE(#{modifiedDate}, CURRENT_TIMESTAMP))")
   @Options(useGeneratedKeys = true)
   Integer insert(Facility facility);
 
   @Select("SELECT id, code, name FROM facilities")
   List<Facility> getAll();
+
+  @Select("SELECT * FROM facilities")
+  @Results(value = {
+          @Result(property = "geographicZone", column = "geographicZoneId", javaType = Integer.class,
+          one = @One(select = "org.openlmis.core.repository.mapper.GeographicZoneMapper.getWithParentById")),
+          @Result(property = "facilityType", column = "typeId", javaType = Long.class,
+          one = @One(select = "getFacilityTypeById"))})
+  List<Facility> getAllReportFacilities();
 
   @Select("SELECT * FROM users U, facilities F " +
     "WHERE U.facilityId = F.id AND U.id = #{userId} AND f.active = TRUE AND f.virtualFacility = FALSE")
@@ -86,8 +94,8 @@ public interface FacilityMapper {
       one = @One(select = "getFacilityTypeById")),
     @Result(property = "operatedBy", column = "operatedById", javaType = Long.class,
       one = @One(select = "getFacilityOperatorById")),
-    @Result(property = "priceScheduleCategory", column = "pricecatid", javaType = PriceScheduleCategory.class,
-      one = @One(select = "org.openlmis.core.repository.mapper.PriceScheduleMapper.getPriceScheduleCategoryById")),
+    @Result(property = "priceSchedule", column = "priceScheduleId", javaType = PriceSchedule.class,
+      one = @One(select = "org.openlmis.core.repository.mapper.PriceScheduleMapper.getById")),
   })
   Facility getById(Long id);
 
@@ -118,7 +126,7 @@ public interface FacilityMapper {
     "suppliesOthers = #{suppliesOthers}, sdp = #{sdp}, online = #{online}, satellite = #{satellite}, parentFacilityId = #{parentFacilityId}," +
     "hasElectricity = #{hasElectricity}, hasElectronicSCC = #{hasElectronicSCC}, " +
     "hasElectronicDAR = #{hasElectronicDAR}, active = #{active}, virtualFacility = #{virtualFacility}, " +
-    "goLiveDate = #{goLiveDate}, goDownDate = #{goDownDate}, pricecatid = #{priceScheduleCategory.id}, " +
+    "goLiveDate = #{goLiveDate}, goDownDate = #{goDownDate}, priceScheduleId = #{priceSchedule.id}, " +
     "comment = #{comment}, enabled = #{enabled}, modifiedBy = #{modifiedBy}, modifiedDate = (COALESCE(#{modifiedDate}, NOW())) WHERE id=#{id}")
   void update(Facility facility);
 
@@ -141,7 +149,8 @@ public interface FacilityMapper {
     "AND rgps.requisitionGroupId = ANY(#{requisitionGroupIds}::INTEGER[]) " +
     "AND f.active = TRUE " +
     "AND ps.active = TRUE " +
-    "AND f.virtualFacility = FALSE ")
+    "AND f.virtualFacility = FALSE " +
+      " ORDER BY f.name ")
   List<Facility> getFacilitiesBy(@Param(value = "programId") Long programId,
                                  @Param(value = "requisitionGroupIds") String requisitionGroupIds);
 
@@ -156,6 +165,18 @@ public interface FacilityMapper {
   Facility getHomeFacilityWithRights(@Param("userId") Long userId,
                                      @Param("commaSeparatedRights") String commaSeparatedRights);
 
+  @Select({"SELECT DISTINCT F.* FROM facilities F INNER JOIN users U ON U.facilityId = F.id",
+    "INNER JOIN role_assignments RA ON RA.userId = U.id INNER JOIN role_rights RR ON RR.roleId = RA.roleId",
+    "WHERE U.id = #{userId} AND RA.programId = #{programId} and RR.rightName = ANY(#{commaSeparatedRights}::VARCHAR[]) AND RA.supervisoryNodeId IS NULL"})
+  @Results(value = {
+    @Result(property = "geographicZone.id", column = "geographicZoneId"),
+    @Result(property = "facilityType", column = "typeId", javaType = Long.class, one = @One(select = "getFacilityTypeById")),
+    @Result(property = "operatedBy", column = "operatedById", javaType = Long.class, one = @One(select = "getFacilityOperatorById"))
+  })
+  Facility getHomeFacilityWithRightsByProgram(@Param("userId") Long userId,
+                                              @Param("programId") Long programId,
+                                     @Param("commaSeparatedRights") String commaSeparatedRights);
+
   @Select({"SELECT DISTINCT f.* FROM facilities f",
     "INNER JOIN requisition_group_members rgm ON f.id= rgm.facilityId",
     "WHERE rgm.requisitionGroupId = ANY(#{requisitionGroupIds}::INTEGER[])"})
@@ -167,6 +188,18 @@ public interface FacilityMapper {
       one = @One(select = "getFacilityOperatorById"))
   })
   List<Facility> getAllInRequisitionGroups(@Param("requisitionGroupIds") String requisitionGroupIds);
+
+  @Select("SELECT f.* FROM facilities f JOIN facility_types ft " +
+          "ON f.typeid = ft.id " +
+          "WHERE LOWER(ft.code) = LOWER(#{typeCode}) ")
+  @Results(value = {
+          @Result(property = "facilityType", column = "typeId", javaType = Long.class,
+                  one = @One(select = "getFacilityTypeById")),
+          @Result(property = "operatedBy", column = "operatedById", javaType = Long.class,
+                  one = @One(select = "getFacilityOperatorById"))
+  })
+  List<Facility> getAllByFacilityTypeCode(String typeCode);
+
 
   @Select(
     {"SELECT DISTINCT F.geographicZoneId, F.name, F.code, F.id, F.catchmentPopulation FROM facilities F INNER JOIN delivery_zone_members DZM ON F.id = DZM.facilityId",
@@ -198,7 +231,7 @@ public interface FacilityMapper {
             "ORDER BY facilities.code, facilities.name")
     @Results(value = {
             @Result(property = "geographicZone", column = "geographicZoneId", javaType = Integer.class,
-                    one = @One(select = "org.openlmis.core.repository.mapper.GeographicZoneMapperExtension.getGeographicZoneById_Ext")),
+                    one = @One(select = "org.openlmis.core.repository.mapper.GeographicZoneMapper.getWithParentById")),
             @Result(property = "facilityType", column = "typeId", javaType = Integer.class, one = @One(select = "getFacilityTypeById")),
             @Result(property = "operatedBy", column = "operatedById", javaType = Integer.class, one = @One(select = "getFacilityOperatorById"))
     })
@@ -279,7 +312,9 @@ public interface FacilityMapper {
                                     @Param(value = "virtualFacility") Boolean virtualFacility,
                                     @Param(value = "enabled") Boolean enabled);
 
-  public class SelectFacilities {
+
+
+    public class SelectFacilities {
     @SuppressWarnings(value = "unused")
     public static String getFacilitiesCountBy(Map<String, Object> params) {
       StringBuilder sql = new StringBuilder();
@@ -354,9 +389,6 @@ public interface FacilityMapper {
       " active = true and facilityId = #{facilityId}"})
   List<FacilityContact> getEmailContacts(Long facilityId);
 
-  @Select("SELECT * from odk_submission_data where facilityId = #{facilityId}")
-  List<FacilityImages> getFacilityImages(Long facilityId);
-
     @Select("SELECT DISTINCT userid as userId, username as name, email as contact   \n" +
             "            FROM role_assignments  \n" +
             "            JOIN supervisory_nodes on supervisory_nodes.id = role_assignments.supervisorynodeid  \n" +
@@ -412,5 +444,46 @@ public interface FacilityMapper {
   })
   List<Facility> getFacilitiesByTypeAndRequisitionGroupId(@Param(value = "facilityTypeId") Long facilityTypeId,
                                  @Param(value = "requisitionGroupId") Long requisitionGroupId);
-  
+
+
+    //-===============================
+
+    @Select("select distinct region.id, region.name, 0 as facility, vw_user_districts.user_id as userId \n" +
+            "from geographic_zones region \n" +
+            "inner join geographic_levels ON region.levelid = geographic_levels.id AND geographic_levels.code = 'reg'\n" +
+            "inner join geographic_zones district ON district.parentid = region.id\n" +
+            "inner join vw_user_districts ON vw_user_districts.district_id = district.id where vw_user_districts.user_id = #{userId} order by region.name")
+    @Results(value = {
+            @Result(property = "children", column = "{id=id, userId=userId}", javaType = List.class,  many = @Many(select = "getGeoTreeDistrictsByRegion"))
+        })
+    List<FacilityGeoTreeDto> getGeoRegionFacilityTree(@Param(value = "userId") Long userId);
+
+    @Select("select distinct district.id, district.name, 0 as facility, vw_user_districts.user_id as userId \n" +
+            "from geographic_zones district \n" +
+            "inner join vw_user_districts ON vw_user_districts.district_id = district.id AND district.parentid = #{id}\n" +
+            "where vw_user_districts.user_id = #{userId} order by district.name")
+    @Results(value = {
+            @Result(property = "children",  column = "{id=id, userId=userId}", javaType = List.class,  many = @Many(select = "getGeoTreeFacilities"))
+    })
+    List<FacilityGeoTreeDto> getGeoTreeDistrictsByRegion(Map params);
+
+    @Select("select facilities.id, facilities.name, 1 as facility from facilities inner join \n" +
+            "vw_user_facilities ON facilities.id = vw_user_facilities.facility_id AND vw_user_facilities.user_id = #{userId} " +
+            "AND vw_user_facilities.district_id = #{id}")
+    List<FacilityGeoTreeDto> getGeoTreeFacilities(Map params);
+
+
+    @Select("select distinct district.id, district.name, 0 as facility, vw_user_districts.user_id as userId \n" +
+            "from geographic_zones district \n" +
+            "inner join vw_user_districts ON vw_user_districts.district_id = district.id\n" +
+            "where vw_user_districts.user_id = #{userId} order by district.name")
+    @Results(value = {
+            @Result(property = "children",  column = "{id=id, userId=userId}", javaType = List.class,  many = @Many(select = "getGeoTreeFacilities"))
+    })
+    List<FacilityGeoTreeDto> getGeoTreeDistricts(@Param(value = "userId") Long userId);
+
+
+    @Select("select facilities.id, facilities.name, 1 as facility from facilities inner join \n" +
+            "vw_user_facilities ON facilities.id = vw_user_facilities.facility_id AND vw_user_facilities.user_id = #{userId}")
+    List<FacilityGeoTreeDto> getGeoTreeFlatFacilities(@Param(value = "userId") Long userId);
 }

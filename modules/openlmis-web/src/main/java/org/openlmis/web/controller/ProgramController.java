@@ -12,8 +12,11 @@ package org.openlmis.web.controller;
 
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Program;
+import org.openlmis.core.domain.User;
 import org.openlmis.core.service.ProgramService;
-import org.openlmis.web.response.OpenLmisResponse;
+import org.openlmis.core.service.UserService;
+import org.openlmis.core.web.OpenLmisResponse;
+import org.openlmis.core.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,11 +28,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.openlmis.core.domain.RightName.*;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 /**
@@ -46,6 +50,9 @@ public class ProgramController extends BaseController {
 
   @Autowired
   private ProgramService programService;
+
+  @Autowired
+  private UserService userService;
 
   @RequestMapping(value = "/facilities/{facilityId}/programs", method = GET, headers = ACCEPT_JSON)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_REQUISITION, AUTHORIZE_REQUISITION, MANAGE_USER')")
@@ -73,6 +80,20 @@ public class ProgramController extends BaseController {
       return programService.getProgramForSupervisedFacilities(loggedInUserId(request), rights);
     } else {
       return programService.getProgramsSupportedByUserHomeFacilityWithRights(facilityId, loggedInUserId(request), rights);
+    }
+  }
+
+  @RequestMapping(value = "/manage-pod/programs", method = GET, headers = ACCEPT_JSON)
+  public List<Program> getProgramsForManagingPOD(HttpServletRequest request ) {
+    String[] rights = {MANAGE_POD, COMPLETE_POD};
+    User user = userService.getById(loggedInUserId(request));
+    if (user.getFacilityId() == null) {
+      return programService.getProgramForSupervisedFacilities(loggedInUserId(request), rights);
+    } else {
+      List<Program> programs = programService.getProgramForSupervisedFacilities(loggedInUserId(request), rights);
+      programs.addAll( programService.getProgramsSupportedByUserHomeFacilityWithRights(user.getFacilityId(), loggedInUserId(request), rights) );
+      Set<Program> programSet = new HashSet<>(programs);
+      return new ArrayList<>(programSet);
     }
   }
 
@@ -112,5 +133,16 @@ public class ProgramController extends BaseController {
       return OpenLmisResponse.response(PROGRAMS,programService.getByFacility(facilityId));
   }
 
+  @RequestMapping(value = "/facility/{facilityId}/view/vaccine-order-requisition/programs", method = GET, headers = ACCEPT_JSON)
+  public List<Program> getProgramsToViewVaccineOrderRequisitions(@PathVariable(value = "facilityId") Long facilityId,
+                                                     HttpServletRequest request) {
+    List<Program> programs = programService.getProgramsForUserByFacilityAndRights(facilityId, loggedInUserId(request), VIEW_VACCINE_ORDER_REQUISITION);
+    List<Program> pullPrograms = new ArrayList<>();
+    for (Program program : programs) {
+      if (!program.getPush())
+        pullPrograms.add(program);
+    }
+    return pullPrograms;
+  }
 
 }

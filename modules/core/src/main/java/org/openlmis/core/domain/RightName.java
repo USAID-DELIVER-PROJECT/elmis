@@ -37,6 +37,7 @@ public class RightName {
   public static final String MANAGE_REGIMEN_TEMPLATE = "MANAGE_REGIMEN_TEMPLATE";
   public static final String FACILITY_FILL_SHIPMENT = "FACILITY_FILL_SHIPMENT";
   public static final String MANAGE_POD = "MANAGE_POD";
+  public static final String COMPLETE_POD = "COMPLETE_POD";
   public static final String MANAGE_GEOGRAPHIC_ZONE = "MANAGE_GEOGRAPHIC_ZONE";
   public static final String MANAGE_REQUISITION_GROUP = "MANAGE_REQUISITION_GROUP";
   public static final String MANAGE_SUPPLY_LINE = "MANAGE_SUPPLY_LINE";
@@ -44,8 +45,17 @@ public class RightName {
   public static final String MANAGE_PRODUCT = "MANAGE_PRODUCT";
   public static final String MANAGE_EQUIPMENT_INVENTORY = "MANAGE_EQUIPMENT_INVENTORY";
   public static final String MANAGE_EQUIPMENT_SETTINGS = "MANAGE_EQUIPMENT_SETTINGS";
+  public static final String CREATE_IVD = "CREATE_IVD";
+  public static final String VIEW_IVD = "VIEW_IVD";
+  public static final String APPROVE_IVD = "APPROVE_IVD";
+
   public static final String MANAGE_DEMOGRAPHIC_ESTIMATES = "MANAGE_DEMOGRAPHIC_ESTIMATES";
   public static final String MANAGE_DEMOGRAPHIC_PARAMETERS = "MANAGE_DEMOGRAPHIC_PARAMETERS";
+  public static final String VIEW_VACCINE_ORDER_REQUISITION = "VIEW_ORDER_REQUISITION";
+  public static final String VIEW_STOCK_LEDGER_REPORT = "VIEW_STOCK_LEDGER_REPORT";
+  public static final String VIEW_STOCK_ON_HAND = "VIEW_STOCK_ON_HAND";
+  public static final String MANAGE_STOCK = "MANAGE_STOCK";
+
 
   public static String commaSeparateRightNames(String... rightNames) {
     return Arrays.toString(rightNames).replace("[", "{").replace("]", "}");

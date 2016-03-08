@@ -11,12 +11,12 @@
 package org.openlmis.rnr.dto;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.rnr.domain.Rnr;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -106,6 +106,7 @@ public class RnrDTO {
     rnrDTO.programId = requisition.getProgram().getId();
     rnrDTO.facilityId = requisition.getFacility().getId();
     rnrDTO.programName = requisition.getProgram().getName();
+    rnrDTO.programCode = requisition.getProgram().getCode();
     rnrDTO.facilityCode = requisition.getFacility().getCode();
     rnrDTO.facilityName = requisition.getFacility().getName();
 
@@ -134,7 +135,6 @@ public class RnrDTO {
   }
 
   private static String formatDate(Date date) {
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-    return date == null ? null : simpleDateFormat.format(date);
+    return DateUtil.getFormattedDate(date, "dd/MM/yyyy");
   }
 }

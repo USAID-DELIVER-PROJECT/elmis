@@ -1,11 +1,13 @@
 /*
- * This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.openlmis.report.mapper.lookup;
@@ -38,6 +40,32 @@ public interface ProcessingPeriodReportMapper {
             " join processing_schedules ps on pp.scheduleid = ps.id " +
             " order by year,groupname,pp.startdate  asc")
     List<YearSchedulePeriodTree> getYearSchedulePeriodTree();
+
+
+    @Select(" select  EXTRACT(YEAR FROM pp.startdate) as year, ps.name as groupname, pp.name as periodname, pp.id AS periodid, ps.id as groupid   \n" +
+            " from processing_periods pp    \n" +
+            " join processing_schedules ps on pp.scheduleid = ps.id and lower(ps.code) = lower('Monthly') \n" +
+            " join (select distinct programid, scheduleid from requisition_group_program_schedules) rps on rps.scheduleid = ps.id and rps.scheduleid = pp.scheduleid  \n" +
+            " where rps.programid in (select distinct programid from vaccine_reports)    \n" +
+            " order by year,groupname,pp.startdate  asc")
+    List<YearSchedulePeriodTree> getVaccineYearSchedulePeriodTree();
+
+    @Select("select max(periodid) periodid from vaccine_reports where status = 'SUBMITTED'")
+    Long getCurrentPeriodIdForVaccine();
+
+
+
+    @Select("select distinct on (pp.startdate) pp.id, pp.scheduleId, \n" +
+            "pp.startdate::date startdate, \n" +
+            "psn.name as name\n" +
+            "from requisitions r\n" +
+            "inner join processing_periods pp on r.periodid = pp.id\n" +
+            "left outer join period_short_names psn on psn.periodid = pp.id\n" +
+            "where pp.startdate < NOW()\n" +
+            "and r.programid =  #{programId}\n" +
+            "order by pp.startdate desc\n" +
+            "limit (select COALESCE(value::integer, 4) from configuration_settings where key ='PROGRAM_VIEWABLE_MAX_LAST_PERIODS')\n")
+    List<ProcessingPeriod> getLastPeriods(@Param("programId")Long programId);
 
 }
 

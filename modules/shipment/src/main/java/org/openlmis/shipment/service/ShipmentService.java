@@ -68,8 +68,8 @@ public class ShipmentService {
       }
     }
 
-    if (shipmentLineItem.getReplacedProductCode() != null) {
-      if (productService.getByCode(shipmentLineItem.getReplacedProductCode()) == null) {
+    if (shipmentLineItem.getSubstitutedProductCode() != null) {
+      if (productService.getByCode(shipmentLineItem.getSubstitutedProductCode()) == null) {
         throw new DataException("error.unknown.product");
       }
     }

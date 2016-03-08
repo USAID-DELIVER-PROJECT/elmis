@@ -1,19 +1,21 @@
 /*
- * This program is part of the OpenLMIS logistics management information system platform software.
- * Copyright © 2013 VillageReach
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+ *
+ * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.openlmis.help.service;
 
 import org.openlmis.core.domain.Role;
 import org.openlmis.core.service.RoleRightsService;
-import org.openlmis.help.Repository.HelpContentRepository;
-import org.openlmis.help.Repository.HelpTopicRepository;
-import org.openlmis.help.Repository.HelpTopicRoleRepository;
+import org.openlmis.help.repositoriy.HelpContentRepository;
+import org.openlmis.help.repositoriy.HelpTopicRepository;
+import org.openlmis.help.repositoriy.HelpTopicRoleRepository;
 import org.openlmis.help.domain.HelpContent;
 import org.openlmis.help.domain.HelpDocument;
 import org.openlmis.help.domain.HelpTopic;
@@ -36,16 +38,15 @@ public class HelpTopicService {
     @Autowired
     private HelpContentRepository contentRepository;
     private List<HelpTopic> roleHelpTopicList;
+    private List<HelpTopic> helpTopicList;
 
     public void addHelpTopic(HelpTopic helpTopic) {
-        Long topicId = this.repository.insert(helpTopic);
-        if(helpTopic.isCategory()) {
+        this.repository.insert(helpTopic);
+        if (helpTopic.isCategory()) {
             List<HelpTopicRole> helpTopicRoleList = helpTopic.getRoleList();
             for (HelpTopicRole helpTopicRole : helpTopicRoleList) {
 
                 if (helpTopicRole.isCurrentlyAssigned()) {
-//                helpTopic.setId(topicId);
-                    //System.out.println(" topic id is " + helpTopic.getId());
                     helpTopicRole.setHelpTopic(helpTopic);
                     this.roleRepository.addHelpTopicRole(helpTopicRole);
                 }
@@ -72,7 +73,6 @@ public class HelpTopicService {
         List<Role> roleList = this.rightsService.getAllRoles();
         for (Role role : roleList) {
             HelpTopicRole helpTopicRole = new HelpTopicRole();
-//    helpTopicRole.setHelpTopic(helpTopic);
             helpTopicRole.setUserRole(role);
             helpTopicRoleList.add(helpTopicRole);
         }
@@ -82,7 +82,6 @@ public class HelpTopicService {
 
     public List<HelpTopic> getUserRoleHelpTopicList(Long loggedUserId) {
         List<HelpTopic> userHelpTopicList = this.repository.getUserRoleHelpTopicList(loggedUserId);
-        //System.out.println(" uz " + loggedUserId + " list");
         for (HelpTopic helpTopic : userHelpTopicList) {
             List<HelpContent> helpContentList = contentRepository.getHelpContentList(helpTopic);
             helpTopic.setHelpContentList(helpContentList);
@@ -91,20 +90,21 @@ public class HelpTopicService {
         return userHelpTopicList;
     }
 
-    public List<HelpTopic> buildRoleHelpTopicTree(Long loggedUserId,HelpTopic parentHTopic, boolean isRootTopicLoad) {
-        List<HelpTopic> childHelpTopicList = null;
+    public List<HelpTopic> buildRoleHelpTopicTree(Long loggedUserId, HelpTopic parentHTopic, boolean isRootTopicLoad) {
+        List<HelpTopic> childHelpTopicList;
         if (isRootTopicLoad) {
             this.roleHelpTopicList = new ArrayList<>();
             childHelpTopicList = this.repository.loadRootRoleHelpTopicList(loggedUserId);
         } else {
-            childHelpTopicList = this.repository.loadChildrenOfHelpTopic(loggedUserId,parentHTopic);
+            childHelpTopicList = this.repository.loadChildrenOfHelpTopic(loggedUserId, parentHTopic);
         }
         this.roleHelpTopicList.addAll(childHelpTopicList);
         for (HelpTopic helpTopic : childHelpTopicList) {
-            childHelpTopicList = this.buildRoleHelpTopicTree(loggedUserId,helpTopic, false);
+            this.buildRoleHelpTopicTree(loggedUserId, helpTopic, false);
         }
         return this.roleHelpTopicList;
     }
+
     public List<HelpTopicRole> loadHelptopicRolesAssigmentInfo(HelpTopic helpTopic) {
 
         List<HelpTopicRole> rolesAssignedList = this.roleRepository.loadHelpTopicRoleList(helpTopic);
@@ -151,7 +151,7 @@ public class HelpTopicService {
     }
 
     public List<HelpTopic> buildHelpTopicTree(HelpTopic parentHTopic, boolean isRootTopicLoad) {
-        List<HelpTopic> childHelpTopicList = null;
+        List<HelpTopic> childHelpTopicList;
         if (isRootTopicLoad) {
             this.helpTopicList = new ArrayList<>();
             childHelpTopicList = this.repository.loadRootHelpTopicList();
@@ -160,7 +160,7 @@ public class HelpTopicService {
         }
         this.helpTopicList.addAll(childHelpTopicList);
         for (HelpTopic helpTopic : childHelpTopicList) {
-            childHelpTopicList = this.buildHelpTopicTree(helpTopic, false);
+            this.buildHelpTopicTree(helpTopic, false);
         }
         return this.helpTopicList;
     }
@@ -170,7 +170,6 @@ public class HelpTopicService {
 
     }
 
-    private List<HelpTopic> helpTopicList;
 
     public Object uploadHelpDocument(HelpDocument helpDocument) {
         this.repository.uploadHelpDocument(helpDocument);
@@ -178,8 +177,22 @@ public class HelpTopicService {
     }
 
     public List<HelpDocument> loadHelpDocumentList() {
-        List<HelpDocument> helpDocumentList=null;
-        helpDocumentList=this.repository.loadHelpDocumentList();
-        return helpDocumentList;
+
+        return this.repository.loadHelpDocumentList();
+
+    }
+
+    public HelpTopic getSiteContent(String contentName) {
+        return this.repository.getSiteContent(contentName);
+
+    }
+
+    public HelpTopic getContentByKey(String contentName) {
+        return this.repository.getContentByKey(contentName);
+
+    }
+
+    public List<HelpTopic> getVaccineReportLegendContent() {
+        return this.repository.getVaccineReportLegend();
     }
 }

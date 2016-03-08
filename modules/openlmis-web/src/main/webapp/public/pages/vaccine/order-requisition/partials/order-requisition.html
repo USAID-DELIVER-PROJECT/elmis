@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--
+  ~ This program is part of the OpenLMIS logistics management information system platform software.
+  ~ Copyright © 2013 VillageReach
+  ~
+  ~  This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+  ~  You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
+  -->
+
+<style>
+    .red {
+        color: red;
+    }
+
+    .black {
+        color: black;
+    }
+
+    .yellow {
+        color: yellow;
+    }
+
+    .green {
+        color: green;
+    }
+
+</style>
+
+
+
+    <h2 id="podPageTitle"><span openlmis-message="label.title.order.requisition"></span> <span
+            ng-bind="order.programName"></span></h2>
+
+    <ng-include src="'/public/pages/vaccine/order-requisition/partials/header.html'"></ng-include>
+    <div class="clearfix"></div>
+    <div>
+        <form name="orderRequisitionForm">
+
+            <div ng-show="report.LineItemViews.length" class="alert alert-info"
+                 openlmis-message="label.no.products"></div>
+
+
+            <div id="pod" class="rnr-table" ng-hide="report.LineItemViews.length > 0">
+                <table id="podTable" class="table table-bordered" fixed-table-header>
+                    <thead>
+                    <tr>
+                        <th class="col-product "><span openlmis-message="label.products"></span></th>
+                        <th class="col-maximumStock "><span openlmis-message="label.maximum.stock"></span></th>
+                        <th class="col-reOrderLevel"><span openlmis-message="label.reorder.level"></span></th>
+                        <th class="col-available"><span openlmis-message="label.stock.onhand"></span></th>
+                        <th class="col-quantityRequested"><span
+                                openlmis-message="header.order.requisition.amount.required"></span></th>
+                    </tr>
+                    </thead>
+
+                    <tbody ng-repeat="(key,items) in report.LineItemViews | orderObjectBy:'displayOrder'">
+
+                    <tr>
+                        <td class="productCategory" id="key{{$index}}" colspan="5"
+                            ng-bind="items[0].productCategory.name">
+
+                        </td>
+                    </tr>
+
+                    <tr ng-repeat="item in items">
+
+                        <td class="cell-input col-product">
+                            <span ng-bind="item.product.primaryName" id="product{{$index}}" class="cell-text"></span>
+
+
+                        </td>
+                        <td class="cell-input col-maximumStock">
+                        <span ng-bind="(selectedType==1)?( item.maximumStock / item.product.dosesPerDispensingUnit ).toFixed(0) :item.maximumStock | number" id="item.maximumStock{{$index}}"
+                              class="cell-text"></span>
+                            <!--
+                                                        <span ng-bind="item.calculate()"></span>
+                            -->
+                        </td>
+                        <td class="cell-input">
+                        <span ng-bind="(selectedType==1)?(item.reOrderLevel / item.product.dosesPerDispensingUnit).toFixed(0): item.reOrderLevel | number" id="item.reOrderLevel{{$index}}"
+                              class="cell-text"></span>
+                        </td>
+                        <td class="cell-input col-stockAvailable" ng-hide="selectedType==1">
+                        <span class="{{(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
+
+                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}}  cell-text"
+                              ng-bind="(selectedType==1)? (item.stockOnHand / item.product.dosesPerDispensingUnit).toFixed(0):item.stockOnHand | number">
+                        </span>
+
+
+                        </td>
+
+                        <td class="cell-input col-stockAvailable" ng-hide="selectedType==0">
+                        <span class="{{(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
+                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}}  cell-text "
+                              ng-bind="(selectedType==1)? (item.stockOnHand / item.product.dosesPerDispensingUnit).toFixed(0):item.stockOnHand | number">
+                        </span>
+
+
+                        </td>
+
+                        <td class="cell-input col-amountRequired">
+                        <span ng-bind="((item.stockOnHand > item.maximumStock )?0:item.getQuantityToRequest() ) | number" id="amountRequired{{$index}}"
+                              class="cell-text"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <openlmis-pagination ng-show="report.length" num-pages="numberOfPages" current-page="currentPage"
+                                 max-size="10"
+                                 error-pages="errorPages"></openlmis-pagination>
+
+
+            <div form-toolbar id="action_buttons" class="action-buttons">
+                <div class="form-cell button-row">
+
+                    <span ng-hide="viewOrder">
+                          <input id="submitButton" type="button" class="btn btn-primary submit-button" ng-click="submit()"
+                                 openlmis-message="button.save.and.print" ng-disabled="selectedType==1"/>
+                    </span>
+
+                     <span ng-show="viewOrder">
+                          <input id="submitButton" type="button" class="btn btn-primary submit-button" ng-click="viewOrderPrint()"
+                                 openlmis-message="button.print" ng-disabled="selectedType==1"/>
+                    </span>
+
+                        &nbsp;&nbsp;&nbsp;
+
+                        <span ng-hide="cancelOrderRequest">  <input id="cancel" type="submit" id="cancel-button" ng-click="cancel()"
+                                       class="btn btn-primary save-button"
+                                       openlmis-message="button.cancel"/>
+                        </span>
+
+
+                        <span ng-show="cancelOrderRequest">
+                                       <input id="cancel" type="submit" id="cancel-button" ng-click="cancelViewOrder()"
+                                                  class="btn btn-primary save-button"
+                                                  openlmis-message="button.cancel"/>
+                        </span>
+
+
+                </div>
+            </div>
+
+                &nbsp;&nbsp;&nbsp;
+                <div class="toolbar-error" id="saveFailMessage" fade-out="3000" openlmis-message="error"
+                     ng-show="error"></div>
+                &nbsp;&nbsp;&nbsp;
+                <div class="toolbar-success" id="saveSuccessMsgDiv" fade-out="3000" openlmis-message="message"
+                     ng-show="message"></div>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div id="popup-box" ng-form="reasonForm" modal="orderModal" style="width:44% !important;margin-left:-22% !important">
+    <div class="modal-header">
+        <h3><span openlmis-message="label.confirm.order.submit.action">&nbsp;&nbsp;</span>
+            <span id="unscheduledLabel" class="pull-right"> Period :{{report.period.startDate | date:'dd-MM-yyyy'}} To  {{report.period.endDate | date:'dd-MM-yyyy'}}</span>
+        </h3>
+    </div>
+    <div class="modal-body">
+        <div class="row-fluid ">
+            <div class="span12">
+
+                <div class="span12">
+                    <P>Please Provide the Reason(s) for Ordering Unscheduled Period </P>
+
+                    <strong id='issue-voucher-label'>Reason(s): </strong>&nbsp;
+
+                    <textarea class="form-control" style="width:400px;" rows="2" ng-model="report.reason"></textarea>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <input type="button" id="issueSubmit" class="btn btn-primary save-button"
+               ng-click="submitEmergency()"
+               ng-disabled="!report.reason"
+               openlmis-message="button.submit"/>
+        <input type="button" ng-click="closeOrderModal();" class="btn btn-cancel"
+               openlmis-message="button.cancel"/>
+    </div>
+
+</div>

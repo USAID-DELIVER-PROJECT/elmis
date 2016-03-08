@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.FacilityType;
 import org.openlmis.core.domain.Pagination;
-import org.openlmis.core.domain.RequisitionGroup;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.RequisitionGroupService;
+import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.web.model.FacilityReferenceData;
-import org.openlmis.web.response.OpenLmisResponse;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -34,17 +34,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static org.openlmis.core.domain.Facility.createFacilityToBeDeleted;
 import static org.openlmis.core.domain.Facility.createFacilityToBeRestored;
 import static org.openlmis.core.domain.RightName.*;
-import static org.openlmis.web.response.OpenLmisResponse.response;
-import static org.openlmis.web.response.OpenLmisResponse.success;
+import static org.openlmis.core.web.OpenLmisResponse.response;
+import static org.openlmis.core.web.OpenLmisResponse.success;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -113,6 +110,13 @@ public class FacilityController extends BaseController {
       addPrograms(programService.getAll()).get();
   }
 
+  private ModelMap getFacilityResponse(@PathVariable(value = "programId") Long programId, Long userId, String... rights) {
+    ModelMap modelMap = new ModelMap();
+    List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, rights);
+    modelMap.put("facilities", facilities);
+    return modelMap;
+  }
+
   @RequestMapping(value = "/facilities/{id}", method = GET, headers = ACCEPT_JSON)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_FACILITY, MANAGE_USER')")
   public ResponseEntity<OpenLmisResponse> getFacility(@PathVariable(value = "id") Long id) {
@@ -122,21 +126,32 @@ public class FacilityController extends BaseController {
   @RequestMapping(value = "/create/requisition/supervised/{programId}/facilities.json", method = GET)
   public ResponseEntity<ModelMap> getUserSupervisedFacilitiesSupportingProgram(@PathVariable(value = "programId") Long programId,
                                                                                HttpServletRequest request) {
-    ModelMap modelMap = new ModelMap();
     Long userId = loggedInUserId(request);
-    List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, CREATE_REQUISITION,
-      AUTHORIZE_REQUISITION);
+    return new ResponseEntity<>(getFacilityResponse(programId, userId,  CREATE_REQUISITION,  AUTHORIZE_REQUISITION), HttpStatus.OK);
+  }
+
+
+
+  @RequestMapping(value = "/manage-pod/supervised/{programId}/facilities.json", method = GET)
+  public ResponseEntity<ModelMap> getUserSupervisedFacilitiesForPOD(@PathVariable(value = "programId") Long programId,
+                                                                               HttpServletRequest request) {
+    Long userId = loggedInUserId(request);
+    ModelMap modelMap = new ModelMap();
+    List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, MANAGE_POD,  COMPLETE_POD);
+    Facility homeFacility = facilityService.getHomeFacilityForRights(userId, programId, COMPLETE_POD);
+    if(homeFacility != null){
+      facilities.add(homeFacility);
+      facilities = new ArrayList<>(new HashSet<>(facilities));
+    }
     modelMap.put("facilities", facilities);
     return new ResponseEntity<>(modelMap, HttpStatus.OK);
   }
+
+
   @RequestMapping(value = "/users/{userId}/supervised/{programId}/facilities.json", method = GET)
   public ResponseEntity<ModelMap> getUserSupervisedFacilitiesSupportingProgram(@PathVariable(
         value = "programId") Long programId, @PathVariable("userId") Long userId) {
-    ModelMap modelMap = new ModelMap();
-    List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, CREATE_REQUISITION,
-            AUTHORIZE_REQUISITION);
-    modelMap.put("facilities", facilities);
-    return new ResponseEntity<>(modelMap, HttpStatus.OK);
+    return new ResponseEntity<>(getFacilityResponse(programId, userId, CREATE_REQUISITION, AUTHORIZE_REQUISITION), HttpStatus.OK);
   }
 
   @RequestMapping(value = "/facilities", method = POST, headers = ACCEPT_JSON)
@@ -245,15 +260,33 @@ public class FacilityController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getFacilitySupervisors(@RequestParam("facilityId") Long facilityId) {
         return OpenLmisResponse.response("supervisors",facilityService.getFacilitySupervisors(facilityId));
     }
-
-  @RequestMapping(value = "/facility-images", method = GET, headers = ACCEPT_JSON)
-  public ResponseEntity<OpenLmisResponse> getImagesForFacility(@RequestParam("facilityId") Long facilityId) {
-    return OpenLmisResponse.response("images",facilityService.getFacilityImages(facilityId));
-  }
-
+  
   @RequestMapping(value = "/facilityType/{facilityTypeId}/requisitionGroup/{requisitionGroupId}/facilities", method = GET, headers = ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getFacilityByTypeAndRequisitionGroupId(@PathVariable("facilityTypeId") Long facilityTypeId, @PathVariable("requisitionGroupId") Long requisitionGroupId) {
     return OpenLmisResponse.response("facilities",facilityService.getFacilityByTypeAndRequisitionGroupId(facilityTypeId, requisitionGroupId));
+  }
+
+    @RequestMapping(value = "/geoFacilityTree", method = GET)
+    public ResponseEntity<OpenLmisResponse> getGeoTreeFacility(HttpServletRequest httpServletRequest) {
+
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.success("");
+        response.getBody().addData("regionFacilityTree", facilityService.getGeoRegionFacilityTree(loggedInUserId(httpServletRequest)));
+        response.getBody().addData("districtFacility", facilityService.getGeoDistrictFacility(loggedInUserId(httpServletRequest)));
+        response.getBody().addData("flatFacility", facilityService.getGeoFlatFacilityTree(loggedInUserId(httpServletRequest)));
+        return response;
+    }
+
+  @RequestMapping(value = "/user/facilities/view-order-requisition", method = GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> listForViewingOrderRequisition(HttpServletRequest request) {
+    return response("facilities",
+            facilityService.getForUserAndRights(loggedInUserId(request), VIEW_VACCINE_ORDER_REQUISITION));
+  }
+
+  @RequestMapping(value = "/user/facilities/view-ledger-report-facilities", method = GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> listForViewingStockLedgerReport(HttpServletRequest request) {
+    return response("facilities",
+            facilityService.getForUserAndRights(loggedInUserId(request), VIEW_STOCK_LEDGER_REPORT));
   }
 
 }

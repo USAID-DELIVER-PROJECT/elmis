@@ -1,0 +1,147 @@
+<!--
+* Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+*
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+*
+* This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+* You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<style>
+    #lastRow td {
+        text-align: right;
+    }
+    #smallHeader{
+
+        text-align: left;
+
+
+    }
+
+</style>
+
+
+<div class="row-fluid sortable ui-sortable">
+    <div class="box span12">
+        <div class="box-header">
+            <h2><i class="icon-edit"></i><span class="break"
+                                               openlmis-message="report.vaccine.title.stock.status"></span>
+            </h2>
+
+            <div class="box-icon">
+                <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                <a ng-click="section(1)" ng-show="show(0)" class="btn-minimize"><i class="icon-chevron-down"></i></a>
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+        </div>
+        <div>
+            <div class="app-form">
+
+                <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                    <div filter-container class="clearfix">
+                        <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+                        <facility-level-filter class="form-cell horizontalFilters"
+                                               required="true"></facility-level-filter>
+                        <product-category-filter class="form-cell horizontalFilters"
+                                                 required="true"></product-category-filter>
+
+                        <div class="form-cell horizontalFilters">
+                            <label for="startTime" class="labels">
+                                <span>Date</span>
+                                <span class="label-required"> *&nbsp;</span>
+
+                            </label>
+
+                            <div class="form-field">
+                                <input name="startTime" id="startTime" type="text"
+                                       ui-date ="{dateFormat: 'dd/mm/yy',changeYear: true,maxDate:'today'}"
+                                       ng-model="filter.dateStatus"
+                                       ng-change="OnFilterChanged()" />
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <table client-side-sort-pagination class="table table-bordered" ng-show="data == undefined || data.length == 0">
+            <tr>
+                <td openlmis-message="label.report.no.data.to.show"></td>
+            </tr>
+        </table>
+
+        <div ng-show="datarows.length > 0  ">
+
+            <div class="pull-right legend">Page: {{tableParams.page}}, Showing records {{ ((tableParams.page - 1) *
+                tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of {{tableParams.total}}
+            </div>
+            <div class="clearfix"></div>
+            <br>
+
+
+            <div class="row-fluid">
+                <div class="rnr-table" style="background-color: #f9f9f9; padding: 0px">
+
+                    <div class="float-left left-table parent">
+                        <table class="table table-bordered" fixed-table-header id="fullSupplyFrozenTable">
+                            <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                            </tr>
+                            <tr>
+                                <th openlmis-message="label.facility.name"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="facility in datarows">
+                                <td>{{facility[0].facilityName}}</td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+                    </div>
+
+
+
+                    <div  class="float-left right-table parent" custom-horizontal-scroll>
+                            <table ng-show="datarows.length > 0" class="table table-bordered" fixed-table-header
+                                   ng-table="tableParams">
+                                <thead>
+                                <tr>
+                                    <th ng-repeat="product in data[0]" colspan="3" style="text-align: center;">{{product.product}}</th>
+                                </tr>
+                                <tr id="smallHeader">
+                                    <th ng-repeat-start="product in data[0]" openlmis-message="header.status.soh"></th>
+                                    <th openlmis-message="header.vaccine.mos"></th>
+                                    <th ng-repeat-end openlmis-message="header.status.last.update"></th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="facility in datarows" id="lastRow">
+                                    <td ng-repeat-start="product in facility" >{{product.soh | number}}</td>
+                                    <td>{{product.mos | number}}</td>
+                                    <td ng-repeat-end>{{product.lastUpdate}}</td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+

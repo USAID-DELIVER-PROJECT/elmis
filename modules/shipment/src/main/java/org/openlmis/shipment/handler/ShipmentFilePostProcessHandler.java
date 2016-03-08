@@ -40,10 +40,10 @@ public class ShipmentFilePostProcessHandler {
   private ShipmentService shipmentService;
 
   @Autowired
-  private MessageChannel ftpErrorChannel;
+  private MessageChannel shipmentErrorChannel;
 
   @Autowired
-  private MessageChannel ftpArchiveOutputChannel;
+  private MessageChannel shipmentArchiveOutputChannel;
 
   @Autowired
   private OrderService orderService;
@@ -62,10 +62,10 @@ public class ShipmentFilePostProcessHandler {
     Message<File> message = withPayload(shipmentFile).build();
 
     if (success) {
-      ftpArchiveOutputChannel.send(message);
+      shipmentArchiveOutputChannel.send(message);
       logger.debug("Shipment file " + shipmentFile.getName() + " archived");
     } else {
-      ftpErrorChannel.send(message);
+      shipmentErrorChannel.send(message);
       logger.warn("Shipment file " + shipmentFile.getName() + " copied to error folder");
     }
 

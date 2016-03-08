@@ -81,20 +81,18 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest(RequisitionService.class)
 public class RequisitionServiceTest {
 
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
   private Facility FACILITY = new Facility(1L);
   private Program PROGRAM = new Program(3L);
   private ProcessingPeriod PERIOD = make(
     a(defaultProcessingPeriod, with(ProcessingPeriodBuilder.id, 10L), with(numberOfMonths, 1)));
   private Long USER_ID = 1L;
-
   private Rnr submittedRnr;
   private Rnr initiatedRnr;
   private Rnr authorizedRnr;
   private Rnr inApprovalRnr;
   private ArrayList<RnrColumn> rnrColumns;
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
   @Mock
   private FacilityApprovedProductService facilityApprovedProductService;
   @Mock
@@ -1438,6 +1436,21 @@ public class RequisitionServiceTest {
   }
 
   @Test
+  public void shouldThrowErrorIfLastRegularRequisitionExistsAndIsPreAuthorized() {
+    Date programStartDate = new Date();
+    Rnr requisition = new Rnr();
+    requisition.setStatus(INITIATED);
+    when(requisitionRepository.getLastRegularRequisition(FACILITY, PROGRAM)).thenReturn(requisition);
+    when(programService.getProgramStartDate(FACILITY.getId(), PROGRAM.getId())).thenReturn(programStartDate);
+
+    expectedException.expect(DataException.class);
+    expectedException.expectMessage("error.rnr.previous.not.filled");
+
+    requisitionService.getPeriodForInitiating(FACILITY, PROGRAM);
+
+  }
+
+  @Test
   public void shouldGetFacilityIdFromRnrId() throws Exception {
     Mockito.when(requisitionRepository.getFacilityId(1L)).thenReturn(1L);
     assertThat(requisitionService.getFacilityId(1L), is(1L));
@@ -1540,6 +1553,34 @@ public class RequisitionServiceTest {
     RnrLineItem lineItem = requisitionService.getNonSkippedLineItem(3L, "P100");
 
     assertThat(lineItem, is(expectedLineItem));
+  }
+
+  @Test
+  public void shouldUpdateClientSubmittedFields() throws Exception {
+    Rnr rnr = new Rnr();
+    requisitionService.updateClientFields(rnr);
+    verify(requisitionRepository).updateClientFields(rnr);
+  }
+
+  @Test
+  public void shouldInsertPatientQuantificationLineItems() throws Exception {
+    Rnr rnr = new Rnr();
+    requisitionService.insertPatientQuantificationLineItems(rnr);
+    verify(requisitionRepository).insertPatientQuantificationLineItems(rnr);
+  }
+
+  @Test
+  public void shouldInsertRnRSignature(){
+    Rnr rnr = new Rnr();
+    requisitionService.insertRnrSignatures(rnr);
+    verify(requisitionRepository).insertRnrSignatures(rnr);
+  }
+
+  @Test
+  public void shouldGetRequisitionsByFacility() {
+    Facility facility = new Facility();
+    requisitionService.getRequisitionsByFacility(facility);
+    verify(requisitionRepository).getRequisitionDetailsByFacility(facility);
   }
 
   private void setupForInitRnr() {
