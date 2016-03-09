@@ -64,7 +64,7 @@ function ViewIvdFormDetailController($scope, $location, report, discardingReason
 
   $scope.rowRequiresExplanation = function (product) {
     if (!isUndefined(product.discardingReasonId)) {
-      var reason = _.findWhere($scope.discardingReasons, {id: parseInt(product.discardingReasonId, 10)});
+      var reason = _.findWhere($scope.discardingReasons, {id: utils.parseIntWithBaseTen(product.discardingReasonId)});
       return reason.requiresExplanation;
     }
     return false;

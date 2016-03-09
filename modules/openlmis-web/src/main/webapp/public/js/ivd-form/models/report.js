@@ -20,6 +20,9 @@ var VaccineReport = function (report) {
       return lineItems;
     }
 
+    this.products  = _.pluck(this.logisticsLineItems, 'product');
+
+    this.mainProducts = _.where(this.products, {fullSupply: true});
     this.coverageLineItems = getCoverageLineItems(this.coverageLineItems, this);
     this.logisticsLineItems = getLogisticsLineItems(this.logisticsLineItems, this);
     this.coverageLineItemViews = _.groupBy(this.coverageLineItems, 'productId');

@@ -75,13 +75,16 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
     $scope.adverseEffectModal = true;
   };
 
-  $scope.applyAdverseEffect = function () {
-    var product = _.findWhere($scope.report.logisticsLineItems, {'productId': parseInt($scope.currentEffect.productId, 10)});
-    $scope.currentEffect.productName = product.productName;
-    if (!$scope.currentEffectMode) {
-      $scope.report.adverseEffectLineItems.push($scope.currentEffect);
+  $scope.applyAdverseEffect = function (adverseEffectForm) {
+    if(adverseEffectForm.$valid){
+      var product = _.findWhere($scope.report.products, {'id': utils.parseIntWithBaseTen($scope.currentEffect.productId)});
+      $scope.currentEffect.productName = product.primaryName;
+      if (!$scope.currentEffectMode) {
+        $scope.report.adverseEffectLineItems.push($scope.currentEffect);
+      }
+      $scope.adverseEffectModal = false;
     }
-    $scope.adverseEffectModal = false;
+
   };
 
   $scope.closeAdverseEffectsModal = function () {
@@ -131,8 +134,7 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
 
   $scope.rowRequiresExplanation = function (product) {
     if (!isUndefined(product.discardingReasonId)) {
-      //TODO: remove the hardcoded 10
-      var reason = _.findWhere($scope.discardingReasons, {id: parseInt(product.discardingReasonId, 10)});
+      var reason = _.findWhere($scope.discardingReasons, {id: utils.parseIntWithBaseTen(product.discardingReasonId)});
       return reason.requiresExplanation;
     }
     return false;
