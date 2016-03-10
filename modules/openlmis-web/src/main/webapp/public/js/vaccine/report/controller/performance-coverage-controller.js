@@ -334,6 +334,7 @@ var last = $scope.datarows.length-1;
 
     function extractPopulationInfo(reportList, popuplationList, type) {
         var population = 0;
+        var denominator=0;
         var i = 0;
 
         var repLen = reportList.length;
