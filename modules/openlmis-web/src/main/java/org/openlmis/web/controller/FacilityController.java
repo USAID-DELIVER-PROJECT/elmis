@@ -34,9 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static org.openlmis.core.domain.Facility.createFacilityToBeDeleted;
@@ -138,7 +136,15 @@ public class FacilityController extends BaseController {
   public ResponseEntity<ModelMap> getUserSupervisedFacilitiesForPOD(@PathVariable(value = "programId") Long programId,
                                                                                HttpServletRequest request) {
     Long userId = loggedInUserId(request);
-    return new ResponseEntity<>(getFacilityResponse(programId, userId,  MANAGE_POD,  COMPLETE_POD), HttpStatus.OK);
+    ModelMap modelMap = new ModelMap();
+    List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, MANAGE_POD,  COMPLETE_POD);
+    Facility homeFacility = facilityService.getHomeFacilityForRights(userId, programId, COMPLETE_POD);
+    if(homeFacility != null){
+      facilities.add(homeFacility);
+      facilities = new ArrayList<>(new HashSet<>(facilities));
+    }
+    modelMap.put("facilities", facilities);
+    return new ResponseEntity<>(modelMap, HttpStatus.OK);
   }
 
 

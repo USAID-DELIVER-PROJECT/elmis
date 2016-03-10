@@ -128,6 +128,10 @@ services.factory('ReportRegimensByCategory',function ($resource){
     return $resource('/reports/regimenCategories/:regimenCategoryId/regimens.json', {}, {});
 });
 
+services.factory('GeographicLevels', function($resource) {
+    return $resource('/geographicLevels.json',{},{});
+});
+
 services.factory('ReportGeographicZonesByLevel',function ($resource){
     return $resource('/reports/geographicLevels/:geographicLevelId/zones.json', {}, {});
 });

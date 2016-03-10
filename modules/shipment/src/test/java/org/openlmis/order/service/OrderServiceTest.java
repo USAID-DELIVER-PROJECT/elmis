@@ -548,6 +548,7 @@ public class OrderServiceTest {
     List<Order> expectedOrders = asList(order1, order2, order3);
     List<Facility> facilities = new ArrayList<>();
     when(facilityService.getUserSupervisedFacilities(3L, 1L, COMPLETE_POD)).thenReturn(facilities);
+    when(facilityService.getHomeFacilityForRights(3L, 1L, COMPLETE_POD)).thenReturn(null);
     when(commaSeparator.commaSeparateIds(facilities)).thenReturn("{}");
     when(roleAssignmentService.getFulfilmentRolesWithRight(3L, MANAGE_POD)).thenReturn(asList(new FulfillmentRoleAssignment(3L, 4l, new ArrayList<Long>())));
     when(requisitionService.getFullRequisitionById(2L)).thenReturn(rnrForHIV);

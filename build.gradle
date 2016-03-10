@@ -51,7 +51,7 @@ subprojects {
       ext.jdkName = '1.7'
     }
   }
-  
+
   sonarRunner {
     sonarProperties {
 	  property "sonar.junit.reportsPath", "$buildDir/test-results/"
@@ -97,7 +97,7 @@ subprojects {
 
 
         'xml-apis:xml-apis:2.0.2',
-        'commons-collections:commons-collections:3.2.1',
+        'commons-collections:commons-collections:3.2.2',
         'org.apache.commons:commons-collections4:4.0',
         'javax.servlet:javax.servlet-api:3.1.0',
 

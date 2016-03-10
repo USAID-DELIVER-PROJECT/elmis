@@ -88,7 +88,7 @@ public class OrderRepository {
 
   public List<Order> searchByWarehousesAndStatuses(List<Long> facilityIds, List<OrderStatus> orderStatuses, Long programId, Long facilityId, String managedFacilities) {
     if (facilityId != 0 && facilityId != null) {
-      return orderMapper.getByWarehouseIdsAndStatusesByFacility(format(facilityIds.toString()), format(orderStatuses.toString()), programId, facilityId);
+      return orderMapper.getByWarehouseIdsAndStatusesByFacility(format(facilityIds.toString()), format(orderStatuses.toString()), programId, facilityId, managedFacilities);
     }
     return orderMapper.getByWarehouseIdsAndStatuses(format(facilityIds.toString()), format(orderStatuses.toString()), programId, managedFacilities);
   }
