@@ -14,16 +14,12 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
-import org.openlmis.core.domain.ConfigurationSettingKey;
-import org.openlmis.core.domain.Facility;
-import org.openlmis.core.domain.ProcessingPeriod;
-import org.openlmis.core.domain.Program;
-import org.openlmis.core.service.ConfigurationSettingService;
-import org.openlmis.core.service.ProcessingPeriodService;
-import org.openlmis.core.service.ProgramService;
+import org.openlmis.core.domain.*;
+import org.openlmis.core.service.*;
 import org.openlmis.order.service.OrderService;
 import org.openlmis.report.mapper.OrderSummaryReportMapper;
 import org.openlmis.report.model.ResultRow;
+import org.openlmis.report.model.dto.Schedule;
 import org.openlmis.report.model.params.OrderReportParam;
 import org.openlmis.report.service.lookup.ReportLookupService;
 import org.openlmis.report.util.ParameterAdaptor;
@@ -34,6 +30,7 @@ import org.openlmis.rnr.service.RequisitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.lang.model.element.NestingKind;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +54,14 @@ public class OrderSummaryReportDataProvider extends ReportDataProvider {
   public static final String ORDER_NO = "ORDER_NO";
   public static final String ADDRESS = "ADDRESS";
   public static final String CUSTOM_REPORT_TITLE = "CUSTOM_REPORT_TITLE";
+
+  public static final String PROGRAM = "PROGRAM";
+  public static final String SCHEDULE = "SCHEDULE";
+  public static final String YEAR = "YEAR";
+  public static final String PERIOD = "PERIOD";
+  public static final String DEPOT = "DEPOT";
+  public static final String TYPE = "TYPE";
+
   @Autowired
   private OrderSummaryReportMapper reportMapper;
 
@@ -74,6 +79,13 @@ public class OrderSummaryReportDataProvider extends ReportDataProvider {
 
   @Autowired
   private ProcessingPeriodService periodService;
+
+  @Autowired
+  private ProcessingScheduleService  scheduleSerive;
+
+  @Autowired
+  private FacilityService facilityService;
+
 
   @Autowired
   private ProgramService programService;
@@ -125,9 +137,27 @@ public class OrderSummaryReportDataProvider extends ReportDataProvider {
     result.put(ConfigurationSettingKey.ORDER_SUMMARY_SHOW_SIGNATURE_SPACE_FOR_CUSTOMER, configurationService.getConfigurationStringValue(ConfigurationSettingKey.ORDER_SUMMARY_SHOW_SIGNATURE_SPACE_FOR_CUSTOMER));
     result.put(ConfigurationSettingKey.ORDER_SUMMARY_SHOW_DISCREPANCY_SECTION, configurationService.getConfigurationStringValue(ConfigurationSettingKey.ORDER_SUMMARY_SHOW_DISCREPANCY_SECTION));
 
+
+
     Rnr rnr = requistionService.getLWById(orderReportParam.getOrderId());
-    String orderNo = orderService.getOrderNumberConfiguration().getOrderNumberFor(rnr.getId(), programService.getById(rnr.getProgram().getId()), rnr.isEmergency());
+    Program program=programService.getById(rnr.getProgram().getId());
+    ProcessingPeriod period = this.periodService.getById(rnr.getPeriod().getId());
+    ProcessingSchedule schedule= this.scheduleSerive.get(period.getScheduleId());
+    Facility depotFacility = this.facilityService.getFacilityById(Long.parseLong(String.valueOf(filterCriteria.get("supplyDepot"))));
+    String type= rnr.isEmergency()?"Emergency":"Regular";
+
+    String orderNo = orderService.getOrderNumberConfiguration().getOrderNumberFor(rnr.getId(), program, rnr.isEmergency());
     result.put(ORDER_NO, orderNo);
+   // rnr.getSupplyingDepotId().
+
+
+    result.put(PROGRAM, program.getName());
+    result.put(YEAR,String.valueOf(filterCriteria.get("year")));
+    result.put(SCHEDULE,schedule.getName());
+    result.put(PERIOD, period.getName());
+    result.put(DEPOT, depotFacility.getName());
+    result.put(TYPE, type);
+
 
     final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mm a");
 
