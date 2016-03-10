@@ -257,14 +257,18 @@ public class VaccineReportService {
         if (districtId == 0) {
             result.put("mainreportRegionAggregate", repository.getPerformanceCoverageMainReportDataByRegionAggregate(startDate, endDate, districtId, productId));
             result.put("summaryRegionAggregate", repository.getPerformanceCoverageSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId));
+            result.put("regionPopulation", repository.getClassficationVaccinePopulationForRegion(startDate,endDate,districtId,productId));
+
         }
 
         if (zone != null && zone.getLevel().getCode().equals("dist")) {
             result.put("mainreport", repository.getPerformanceCoverageMainReportDataByDistrict(startDate, endDate, districtId, productId));
             result.put("summary", repository.getPerformanceCoverageSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
+            result.put("population", repository.getClassficationVaccinePopulationForDistrict(startDate, endDate, districtId, productId));
         } else {
             result.put("mainreport", repository.getPerformanceCoverageMainReportDataByRegion(startDate, endDate, districtId, productId));
             result.put("summary", repository.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId));
+            result.put("population", repository.getClassficationVaccinePopulationForDistrict(startDate,endDate,districtId,productId));
         }
 
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));

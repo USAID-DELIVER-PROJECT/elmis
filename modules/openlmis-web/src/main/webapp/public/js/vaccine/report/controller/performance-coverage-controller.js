@@ -49,25 +49,33 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                     $scope.summaryRegionAggregate = data.performanceCoverage.summaryRegionAggregate;
                     $scope.dataRowsRegionAggregate = data.performanceCoverage.mainreportRegionAggregate;
                     $scope.summaryPeriodLists = data.performanceCoverage.summaryPeriodLists;
-                    populateCumulativeColumns();
-
-                    populateCalculatedAggregateValues();
+                    $scope.districtPopulation = data.performanceCoverage.population;
+                    $scope.regionPopulation = data.performanceCoverage.regionPopulation;
 
                     if ($scope.datarows.length > 0) {
                         if (angular.isUndefined($scope.datarows[0].facility_name)) {
                             $scope.regionSelected = true;
-                            $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
+                            extractPopulationInfo($scope.datarows, $scope.districtPopulation ,2);
+                            extractPopulationInfo($scope.dataRowsRegionAggregate, $scope.regionPopulation ,3);
                         }
                         else {
                             $scope.regionSelected = false;
+
+                        }
+                        populateCumulativeColumns();
+
+                        populateCalculatedAggregateValues();
+                        if ($scope.regionSelected) {
+                            $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
+                        } else {
                             $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 1);
                         }
 
                     }
 
-if($scope.dataRowsRegionAggregate!==null){
-    $scope.regionSubAggregate = aggregateSubTotal($scope.dataRowsRegionAggregate, 3);
-}
+                    if (!utils.isEmpty($scope.dataRowsRegionAggregate)) {
+                        $scope.regionSubAggregate = aggregateSubTotal($scope.dataRowsRegionAggregate, 3);
+                    }
 
                     // Get a unique periods for the header
                     var uniquePeriods = _.chain($scope.summary).indexBy("period").values().value();
@@ -94,23 +102,23 @@ if($scope.dataRowsRegionAggregate!==null){
 
             });
     };
-    $scope.calculateVaccinated= function(targetPopulation, vaccinated){
-        return targetPopulation!==null &&targetPopulation>0?parseFloat(vaccinated/targetPopulation*100).toFixed(2):0;
+    $scope.calculateVaccinated = function (targetPopulation, vaccinated) {
+        return targetPopulation !== null && targetPopulation > 0 ? parseFloat(vaccinated / targetPopulation * 100).toFixed(2) : 0;
     };
 
-    $scope.getSubTotalRow= function (dtReport){
+    $scope.getSubTotalRow = function (dtReport) {
         var obj;
-        var type=1;
-        if($scope.regionSelected===true){
-            type=2;
+        var type = 1;
+        if ($scope.regionSelected === true) {
+            type = 2;
         }
-        obj=  $scope.districtSubAggregate[getKeyForReport(dtReport,type)];
+        obj = $scope.districtSubAggregate[getKeyForReport(dtReport, type)];
 
         return obj;
     };
-    $scope.getRegionSubTotalRow= function (dtReport){
+    $scope.getRegionSubTotalRow = function (dtReport) {
 
-       return  $scope.regionSubAggregate[getKeyForReport(dtReport,3)];
+        return $scope.regionSubAggregate[getKeyForReport(dtReport, 3)];
 
 
     };
@@ -150,7 +158,7 @@ if($scope.dataRowsRegionAggregate!==null){
 
     function populateCalculatedAggregateValues() {
         var targetTotal = 0, vaccinationTotal = 0, coverage = 0, ctoatlCoverage = 0, ctotalVaccination = 0;
-
+var last = $scope.datarows.length-1;
         _.each($scope.datarows, function (item) {
             targetTotal += item.target;
             vaccinationTotal += item.vaccinated;
@@ -161,8 +169,8 @@ if($scope.dataRowsRegionAggregate!==null){
         $scope.targetTotal = targetTotal;
         $scope.vaccinationTotal = vaccinationTotal;
         $scope.coverage = Math.round((targetTotal === 0 ? 0 : (vaccinationTotal / targetTotal) * 100) * 100) / 100;
-        $scope.ctotalVaccination = ctotalVaccination;
-        $scope.ctoatlCoverage = Math.round((targetTotal === 0 ? 0 : (ctotalVaccination / targetTotal) * 100) * 100) / 100;
+        $scope.ctotalVaccination = vaccinationTotal;
+        $scope.ctoatlCoverage = Math.round((targetTotal === 0 ? 0 : (vaccinationTotal / targetTotal) * 100) * 100) / 100;
     }
 
     function populateCumulativeColumns() {
@@ -279,9 +287,7 @@ if($scope.dataRowsRegionAggregate!==null){
                 subAggregateTotal[keyName] = {
                     target: subAggregateTotal[keyName].target + reportList[i].target,
                     vaccinated: subAggregateTotal[keyName].vaccinated + reportList[i].vaccinated,
-                    coverage: subAggregateTotal[keyName].coverage + reportList[i].coverage,
-                    cumulativeVacinated: subAggregateTotal[keyName].cumulativeVacinated + reportList[i].cumulativeVacinated,
-                    cumulativeCoverage: subAggregateTotal[keyName].cumulativeCoverage + reportList[i].cumulativeCoverage
+                    cumulativeVacinated: subAggregateTotal[keyName].cumulativeVacinated + reportList[i].cumulativeVacinated
                 };
 
             } else {
@@ -289,9 +295,7 @@ if($scope.dataRowsRegionAggregate!==null){
                 var obj = {
                     target: reportList[i].target,
                     vaccinated: reportList[i].vaccinated,
-                    coverage: reportList[i].coverage,
-                    cumulativeVacinated: reportList[i].cumulativeVacinated,
-                    cumulativeCoverage: reportList[i].cumulativeCoverage
+                    cumulativeVacinated: reportList[i].cumulativeVacinated
                 };
                 subAggregateTotal[keyName] = obj;
             }
@@ -312,6 +316,50 @@ if($scope.dataRowsRegionAggregate!==null){
             keyValue = dreport.region_name;
         }
         return keyValue;
+    }
+
+    function getPopulationKey(dreport, type) {
+        var keyValue = '';
+        if (type === 1) {
+            keyValue = dreport.facility_name + "_" +parseInt( dreport.year,10);
+        } else if (type === 2) {
+            keyValue = dreport.district_name + "_" +parseInt( dreport.year,10);
+        }
+        else {
+            keyValue = dreport.region_name + "_" +parseInt( dreport.year,10);
+        }
+
+        return keyValue;
+    }
+
+    function extractPopulationInfo(reportList, popuplationList, type) {
+        var population = 0;
+        var i = 0;
+
+        var repLen = reportList.length;
+        var popuLen = popuplationList.length;
+
+        for (i; i < repLen; i++) {
+            var j = 0;
+            var repKey = getPopulationKey(reportList[i], type);
+            for (j; j < popuLen; j++) {
+                population=0;
+                var denominator=0;
+                var currentKey=getPopulationKey(popuplationList[j], type);
+
+                if (angular.equals(repKey, currentKey)) {
+                    population = popuplationList[j].population;
+                    denominator=popuplationList[j].denominator;
+
+                    break;
+                }
+
+            }
+            reportList[i].population=population;
+            reportList[i].target=denominator;
+            reportList[i].denominator=denominator;
+        }
+        return population;
     }
 
 }

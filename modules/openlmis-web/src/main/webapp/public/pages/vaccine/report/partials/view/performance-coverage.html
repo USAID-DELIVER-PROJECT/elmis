@@ -101,7 +101,7 @@
                     </tr>
                     </thead>
                     <tbody  ng-repeat="row in datarows">
-                    <tr ng-if="(regionSelected==true && datarows[$index-1].district_name != row.district_name)||(regionSelected==false && datarows[$index-1].facility_name != row.facility_name) && $index>0">
+                    <tr ng-if="((regionSelected==true && datarows[$index-1].district_name != row.district_name)||(regionSelected==false && datarows[$index-1].facility_name != row.facility_name)) && $index>0">
 
                         <td class="aggregate-row" colspan="2" ng-show="regionSelected" >{{regionSelected?'SubTotal':''}}</td>
                         <td class="aggregate-row" colspan="3" ng-show="!regionSelected" >SubTotal</td>
@@ -109,8 +109,8 @@
                         <td class="aggregate-row"  >{{getSubTotalRow(datarows[$index-1]).target | number}}</td>
                         <td class="aggregate-row" >{{getSubTotalRow(datarows[$index-1]).vaccinated | number}}</td>
                         <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index-1]).target,getSubTotalRow(datarows[$index-1]).vaccinated)}}%</td>
-                        <td class="aggregate-row" >{{getSubTotalRow(datarows[$index-1]).cumulativeVacinated | number}}</td>
-                        <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index-1]).target,getSubTotalRow(datarows[$index-1]).cumulativeVacinated)}}%</td>
+                        <td class="aggregate-row" >{{datarows[$index-1].cumulativeVacinated | number}}</td>
+                        <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index-1]).target,datarows[$index-1].cumulativeVacinated)}}%</td>
 
                     </tr>
                     <tr>
@@ -124,16 +124,16 @@
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
-                    <tr ng-if="(regionSelected==true &&   datarows.length == $index+1) && $index>0">
+                    <tr ng-if="( datarows.length == $index+1) && $index>0">
 
                         <td class="aggregate-row" colspan="2" ng-show="regionSelected" >{{regionSelected?'SubTotal':''}}</td>
                         <td class="aggregate-row" colspan="3" ng-show="!regionSelected" >SubTotal</td>
                         <td class="aggregate-row" ></td>
-                        <td class="aggregate-row"  >{{getSubTotalRow(datarows[$index-1]).target | number}}</td>
-                        <td class="aggregate-row" >{{getSubTotalRow(datarows[$index-1]).vaccinated | number}}</td>
-                        <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index-1]).target,getSubTotalRow(datarows[$index-1]).vaccinated)}}%</td>
-                        <td class="aggregate-row" >{{getSubTotalRow(datarows[$index-1]).cumulativeVacinated | number}}</td>
-                        <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index-1]).target,getSubTotalRow(datarows[$index-1]).cumulativeVacinated)}}%</td>
+                        <td class="aggregate-row"  >{{getSubTotalRow(datarows[$index]).target | number}}</td>
+                        <td class="aggregate-row" >{{getSubTotalRow(datarows[$index]).vaccinated | number}}</td>
+                        <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index]).target,getSubTotalRow(datarows[$index]).vaccinated)}}%</td>
+                        <td class="aggregate-row" >{{row.cumulativeVacinated | number}}</td>
+                        <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index]).target,row.cumulativeVacinated )|number}}%</td>
 
                     </tr>
                     </tbody>
@@ -142,11 +142,11 @@
                         <td class="aggregate-row" ng-show="!regionSelected" colspan="3"></td>
                         <td class="aggregate-row" ng-show="regionSelected" colspan="2"></td>
                         <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal|number}}</td>
                         <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal | number}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage}}%</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage}}%</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage|number}}%</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination|number}}</td>
+                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage|number}}%</td>
 
 
                     </tr>
@@ -218,8 +218,8 @@
                         <td class="aggregate-row"  >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target | number}}</td>
                         <td class="aggregate-row" >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).vaccinated | number}}</td>
                         <td class="aggregate-row" >{{calculateVaccinated(getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target,getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).vaccinated)}}%</td>
-                        <td class="aggregate-row" >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).cumulativeVacinated | number}}</td>
-                        <td class="aggregate-row" >{{calculateVaccinated(getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target,getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).cumulativeVacinated)}}%</td>
+                        <td class="aggregate-row" >{{dataRowsRegionAggregate[$index-1].cumulativeVacinated | number}}</td>
+                        <td class="aggregate-row" >{{calculateVaccinated(getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target,dataRowsRegionAggregate[$index-1].cumulativeVacinated)}}%</td>
 
                     </tr>
                     <tr >
@@ -236,11 +236,11 @@
 
                         <td class="aggregate-row"  >SubTotal</td>
                         <td class="aggregate-row" ></td>
-                        <td class="aggregate-row"  >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target | number}}</td>
-                        <td class="aggregate-row" >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).vaccinated | number}}</td>
-                        <td class="aggregate-row" >{{calculateVaccinated(getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target,getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).vaccinated)}}%</td>
-                        <td class="aggregate-row" >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).cumulativeVacinated | number}}</td>
-                        <td class="aggregate-row" >{{calculateVaccinated(getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target,getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).cumulativeVacinated)}}%</td>
+                        <td class="aggregate-row"  >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index]).target | number}}</td>
+                        <td class="aggregate-row" >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index]).vaccinated | number}}</td>
+                        <td class="aggregate-row" >{{calculateVaccinated(getRegionSubTotalRow(dataRowsRegionAggregate[$index]).target,getRegionSubTotalRow(dataRowsRegionAggregate[$index]).vaccinated)}}%</td>
+                        <td class="aggregate-row" >{{row.cumulativeVacinated | number}}</td>
+                        <td class="aggregate-row" >{{calculateVaccinated(getRegionSubTotalRow(dataRowsRegionAggregate[$index]).target,row.cumulativeVacinated)}}%</td>
 
                     </tr>
                     </tbody>

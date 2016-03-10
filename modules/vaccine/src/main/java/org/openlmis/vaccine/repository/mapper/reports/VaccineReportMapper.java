@@ -506,6 +506,7 @@ public interface VaccineReportMapper {
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
             @Param("productId") Long productId);
+
     @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getRegionPopulationInformation")
     public  List<Map<String,Object>> getClassficationVaccinePopulationForRegion(
             @Param("startDate") Date startDate,
