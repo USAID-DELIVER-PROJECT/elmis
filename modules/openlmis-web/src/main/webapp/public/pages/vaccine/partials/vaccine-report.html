@@ -642,17 +642,19 @@
                                 <table ng-show="coldChain.length > 0" class="table-bordered table table-striped">
                                     <thead class="gradient-header">
                                     <tr>
-                                        <th colspan="7" style="text-align: center; vertical-align: middle" openlmis-message="label.refrigerators.temperature.monitoring"></th>
+                                        <th colspan="9" style="text-align: center; vertical-align: middle" openlmis-message="label.refrigerators.temperature.monitoring"></th>
 
                                     </tr>
                                     <tr>
-                                        <th colspan="3" style="text-align: center; vertical-align: middle" openlmis-message="label.refrigerator.information"></th>
+                                        <th colspan="5" style="text-align: center; vertical-align: middle" openlmis-message="label.refrigerator.information"></th>
                                         <th colspan="2" style="text-align: center; vertical-align: middle" openlmis-message="label.temperature">x</th>
                                         <th colspan="2" style="text-align: center; vertical-align: middle" openlmis-message="label.no.of.alarm.episode"></th>
                                     </tr>
                                     <tr>
                                         <th openlmis-message="label.type"></th>
                                         <th openlmis-message="label.model"></th>
+                                        <th openlmis-message="label.serialnumber"></th>
+                                        <th openlmis-message="label.location"></th>
                                         <th openlmis-message="label.energy.source"></th>
                                         <th openlmis-message="label.min"></th>
                                         <th openlmis-message="label.max"></th>
@@ -669,6 +671,8 @@
                                         </td>
                                         <td>{{cc.model}}</td>
                                         <td>{{cc.energySource}}</td>
+                                        <td>{{cc.serialnumber}}</td>
+                                        <td>{{cc.location_value}}</td>
                                         <td class="number">{{cc.minTemp}}</td>
                                         <td class="number">{{cc.maxTemp}}</td>
                                         <td class="number">{{cc.minEpisodeTemp}}</td>

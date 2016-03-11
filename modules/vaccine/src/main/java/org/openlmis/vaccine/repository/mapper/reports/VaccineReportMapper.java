@@ -78,7 +78,9 @@ public interface VaccineReportMapper {
             "group by disease_name, display_order order by display_order \n")
     List<DiseaseLineItem> getDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
-    @Select("select equipment_name as equipmentName, model, minTemp, maxTemp, minEpisodeTemp, maxEpisodeTemp, energy_source as energySource from vw_vaccine_cold_chain \n" +
+    @Select("select equipment_name as equipmentName, model, minTemp, maxTemp, \n" +
+            " minEpisodeTemp, maxEpisodeTemp, energy_source as energySource, serialnumber , geographic_zone_name location_value\n" +
+            "from vw_vaccine_cold_chain \n" +
             "where report_id = #{reportId} order by 1 ")
     List<ColdChainLineItem> getColdChain(@Param("reportId") Long reportId);
 
