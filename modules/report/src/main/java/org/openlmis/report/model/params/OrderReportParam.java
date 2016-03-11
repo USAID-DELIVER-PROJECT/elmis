@@ -30,7 +30,8 @@ public class OrderReportParam
   private Long zone;
   private Long period;
   private Long schedule;
-
+private String year;
+  private Long supplyDepot;
   private String title;
 
   @Override

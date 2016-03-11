@@ -345,7 +345,7 @@ var last = $scope.datarows.length-1;
             var repKey = getPopulationKey(reportList[i], type);
             for (j; j < popuLen; j++) {
                 population=0;
-                var denominator=0;
+                denominator=0;
                 var currentKey=getPopulationKey(popuplationList[j], type);
 
                 if (angular.equals(repKey, currentKey)) {
