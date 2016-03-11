@@ -44,7 +44,8 @@
                                             cm-model="filter.product"
                     "></vaccine-product-filter>
 
-                    <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
+                    <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
+                    <static-year-filter year="year" startdate="periodStartDate" enddate="periodEnddate" ></static-year-filter>
                     <!--======================== filter end =========================-->
                 </div>
             </form>
@@ -120,7 +121,7 @@
                         <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.coverage}}%</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
@@ -227,7 +228,7 @@
                         <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.coverage}}%</td>
+                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>

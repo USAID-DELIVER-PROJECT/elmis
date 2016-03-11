@@ -228,4 +228,9 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
         return predicate;
     }
 
+        public String getYearQuery(){
+                return  "select distinct extract (year from pr.startdate) year_value from vaccine_reports r\n" +
+                        "join processing_periods pr on r.periodid = pr.id order by year_value";
+        }
+
 }

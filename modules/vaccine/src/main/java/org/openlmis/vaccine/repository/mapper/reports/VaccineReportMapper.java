@@ -513,4 +513,6 @@ public interface VaccineReportMapper {
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
             @Param("productId") Long productId);
+    @SelectProvider(type=ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getYearQuery")
+    public List<Map<String,Object>> getDistincitYearList();
 }

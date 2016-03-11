@@ -78,7 +78,7 @@ var utils = {
             }
 
             endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
-            startDate = new Date(endDate.getFullYear(), endDate.getMonth()+1 ,1);
+            startDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1);
 
             switch (periodRange) {
                 case '1':
@@ -109,15 +109,24 @@ var utils = {
 
     },
 
-
-    getVaccineMonthlyDefaultPeriod: function (periods,cuttoffDate) {
+    getYearStartAndEnd: function (year) {
+        var endDate;
+        var startDate;
+        endDate = new Date(year, 12, 0);
+        startDate = new Date(year, 0, 1);
+        return {
+            startdate: utils.formatDate(startDate),
+            enddate: utils.formatDate(endDate)
+        };
+    },
+    getVaccineMonthlyDefaultPeriod: function (periods, cuttoffDate) {
         var monthBack = 0;
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var currentDate = new Date();
         var currentDays = currentDate.getDate();
         var endDate;
         if (cuttoffDate === undefined || cuttoffDate === null) {
-            cuttoffDate=10;
+            cuttoffDate = 10;
         }
         if (currentDays <= cuttoffDate) {
             monthBack = 1;
@@ -129,25 +138,24 @@ var utils = {
         for (yearIndex = 0; yearIndex < periods.length; yearIndex++) {
 
 
-
-                    if (periods[yearIndex].periodname == formattedDate) {
-                        return periods[yearIndex].periodid;
-                    }
+            if (periods[yearIndex].periodname == formattedDate) {
+                return periods[yearIndex].periodid;
+            }
 
 
         }
-            return 0;
-        },
-    formatDate: function(dateValue){
+        return 0;
+    },
+    formatDate: function (dateValue) {
         var day = dateValue.getDate();
-        var monthIndex = dateValue.getMonth()+1;
+        var monthIndex = dateValue.getMonth() + 1;
         var year = dateValue.getFullYear();
-        var formatedDate=("0000"+year).slice(-4)+"-"+("00"+monthIndex).slice(-2)+"-"+("00"+day).slice(-2);
+        var formatedDate = ("0000" + year).slice(-4) + "-" + ("00" + monthIndex).slice(-2) + "-" + ("00" + day).slice(-2);
         return formatedDate;
     }
 
 
-    };
+};
 
 String.prototype.format = function () {
     var formatted = this;

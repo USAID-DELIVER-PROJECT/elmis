@@ -580,3 +580,20 @@
     </div>
     </div>
 </script>
+
+
+<script type="text/ng-template" id="filter-static-year">
+    <div>
+        <div  class="horizontalFilters form-cell">
+            <label for="static-year"  class="labels" openlmis-message="label.period"><span class="label-required">*</span></label>
+            <div>
+                <select style="width: 140px" id="static-year" ui-select2 class="input-large" ng-model="year">
+
+                    <option ng-repeat="option in years" value="{{option.year_value}}" >{{option.year_value}}</option>
+                </select>
+            </div>
+        </div>
+
+
+    </div>
+</script>

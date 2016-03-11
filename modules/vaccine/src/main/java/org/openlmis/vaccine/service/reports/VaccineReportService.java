@@ -454,4 +454,7 @@ public class VaccineReportService {
         paddingDateList.addAll(summaryateList);
         return paddingDateList;
     }
+    public List<Map<String,Object>> loadYearList(){
+        return repository.loadYearList();
+    }
 }

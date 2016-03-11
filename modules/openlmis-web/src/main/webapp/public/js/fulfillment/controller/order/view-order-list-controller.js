@@ -36,7 +36,7 @@ function ViewOrderListController($scope, Orders, messageService, $location, $rou
     if($scope.supplyDepot === undefined || $scope.program === undefined || $scope.period === undefined){
       return;
     }
-    alert("here i am  "+$scope.supplyDepot);
+
     $scope.currentPage = $routeParams.page ? utils.parseIntWithBaseTen($routeParams.page) : 1;
 
     Orders.get({page: $scope.currentPage, supplyDepot: $scope.supplyDepot, program: $scope.program, period: $scope.period }, function (data) {
