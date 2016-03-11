@@ -339,6 +339,9 @@ services.factory('VaccineDashboardMonthlyStock', function($resource){
 services.factory('VaccineDashboardDistrictStock', function($resource){
     return $resource('/vaccine/dashboard/district-stock.json',{},{});
 });
+services.factory('VaccineDashboardFacilityStock', function($resource){
+    return $resource('/vaccine/dashboard/facility-stock.json',{},{});
+});
 
 services.factory('VaccineDashboardBundle', function($resource){
     return $resource('/vaccine/dashboard/bundle.json',{},{});
@@ -383,13 +386,14 @@ services.factory('VaccineDashboardFacilityTrend', function($resource){
     return $resource('/vaccine/dashboard/facility-coverage.json',{},
         {
             coverage: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage.json'},
-            coverageDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage-details.json'},
+            stockDetail: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage-details.json'},
             sessions: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-sessions.json'},
             sessionsDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-sessions-details.json'},
             wastage: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-wastage.json'},
             wastageDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-wastage-details.json'},
             dropout: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-dropout.json'},
             dropoutDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-dropout-details.json'},
+            stockDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-stock-detail.json'}
         }
     );
 });

@@ -584,7 +584,7 @@ public interface VaccineDashboardMapper {
                 "SELECT\n" +
                 "vss.period_name,\n" +
                 "vss.geographic_zone_name geographic_zone_name,\n" +
-                "COALESCE(vss.closing_balance,0) cb,\n" +
+                "COALESCE(vss.closing_balance,0)*220 cb,\n" +
                 "COALESCE(vss.quantity_issued,0) issued\n" +
                 "FROM\n" +
                 "vw_vaccine_stock_status vss\n" +
@@ -598,6 +598,63 @@ public interface VaccineDashboardMapper {
                 "order by 2\n" +
                 "limit 5")
         List<HashMap<String, Object>> getDistrictStock(@Param("period") Long period, @Param("product") Long productId);
+
+
+        @Select("WITH TEMP AS (\n" +
+                "SELECT \n" +
+                "vss.facility_id,\n" +
+                "vss.facility_name,\n" +
+                "COALESCE(vss.closing_balance,0)*220 cb, \n" +
+                "COALESCE(vss.quantity_issued,0) issued \n" +
+                "FROM \n" +
+                " vw_vaccine_stock_status vss \n" +
+                " JOIN vw_districts d ON vss.geographic_zone_id = d.district_id   \n" +
+                "where period_id =#{period} and product_id =#{product}\n" +
+                "and vss.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and (d.district_id  = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int  \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)   \n" +
+                "ORDER BY period_start_date \n" +
+                ") " +
+                "SELECT \n" +
+                "T .facility_id, \n" +
+                "T .facility_name, \n" +
+                "case when sum(t.issued) > 0 then round((sum(t.cb) / sum(t.issued)::numeric),1) else 0 end mos \n" +
+                "FROM \n" +
+                "TEMP T \n" +
+                "group by 1,2 \n" +
+                "order by 2\n")
+        List<HashMap<String, Object>> getFacilityStock(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("WITH TEMP AS (\n" +
+                "SELECT \n" +
+                "d.district_name,\n" +
+                "vss.facility_name,\n" +
+                "vss.period_name,\n" +
+                "vss.period_start_date,\n" +
+                "COALESCE(vss.closing_balance,0) cb, \n" +
+                "COALESCE(vss.quantity_issued,0) issued , product_id\n" +
+                "FROM \n" +
+                " vw_vaccine_stock_status vss \n" +
+                " JOIN vw_districts d ON vss.geographic_zone_id = d.district_id   \n" +
+                "where period_start_date >= #{startDate} and period_end_date <= #{endDate} and product_id = #{product}\n" +
+                "and vss.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and (d.district_id  = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int  \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)   \n" +
+                "\t\n" +
+                ") SELECT \n" +
+                "T.district_name, \n" +
+                "T.facility_name,\n" +
+                "T.period_name,\n" +
+                "T.period_start_date,\n" +
+                "SUM(T.cb) cb,\n" +
+                "SUM(T.issued) issued\n" +
+                "FROM \n" +
+                "TEMP T \n" +
+                "group by 1,2,3,4\n" +
+                "order by 1,2,4")
+        List<HashMap<String, Object>> getFacilityStockDetail(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product,
+                                                             @Param("user") Long user);
+
 
         @Select("\n" +
                 "select count(*) from geographic_zones  gz  \n" +

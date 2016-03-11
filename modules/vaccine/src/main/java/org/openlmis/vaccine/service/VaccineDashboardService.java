@@ -362,4 +362,27 @@ public class VaccineDashboardService {
         return districtUser;
     }
 
+    public List<HashMap<String, Object>> getFacilityStock(Long period, Long product, Long userId) {
+        List<HashMap<String, Object>> facilityStockList = null;
+
+        try {
+            facilityStockList = repository.getFacilityStock(period, product, userId);
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return facilityStockList;
+    }
+
+    public List<HashMap<String, Object>> getFacilityStockDetail(String startDate, String endDate, Long product, Long userId) {
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+        List<HashMap<String, Object>> facilityStockDetailList = null;
+
+        try {
+            facilityStockDetailList =repository.getFacilityStockDetail(fromDate, toDate, product, userId);
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return facilityStockDetailList;
+    }
 }

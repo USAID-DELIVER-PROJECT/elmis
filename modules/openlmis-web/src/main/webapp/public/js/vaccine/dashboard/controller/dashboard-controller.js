@@ -35,13 +35,15 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     reportingDetailList,
                                     InvestigatingDetails,
                                     investigatingDetailList,
-                                    ContactList,isDistrictUser) {
+                                    ContactList,isDistrictUser,
+                                    VaccineDashboardFacilityStock) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
     $scope.sessions = {
         openPanel: true
     };
+
 
     var bcgVaccinated = " BCG Vaccinated";
     var mrVaccinated = " MR Vaccinated";
@@ -219,6 +221,19 @@ $scope.district_user_level=isDistrictUser.district_user;
         }
         ],
         dataX: {"id": "geographic_zone_name"}
+    };
+
+    $scope.facilityStock = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "mos", "name": messageService.get('label.mos'), "type": "bar"
+        }
+        ],
+        dataX: {"id": "facility_name"},
+        grid: {
+            min: 3,
+            max: 6
+        }
     };
 
 
@@ -618,6 +633,70 @@ $scope.district_user_level=isDistrictUser.district_user;
         }
     };
 
+    $scope.facilityStockCallback = function(){
+
+        if (!isUndefined($scope.filter.facilityStock.period) && !isUndefined($scope.filter.facilityStock.product) && $scope.filter.facilityStock.product !== 0) {
+            VaccineDashboardFacilityStock.get({
+                period: $scope.filter.facilityStock.period,
+                product: $scope.filter.facilityStock.product
+            }, function (data) {
+                $scope.facilityStock.data = data.facilityStock;
+                if (!isUndefined($scope.facilityStock.data)) {
+
+                    $scope.filter.totalfacilityStock = $scope.facilityStock.data.length;
+                    // $scope.facilityWastagePagination();
+                } else {
+                    $scope.filter.totalfacilityStock = 0;
+                }
+            });
+        }
+    };
+
+
+    $scope.facilityStockDetailCallback = function () {
+        if (!isUndefined($scope.filter.detailStock.startDate) && !isUndefined($scope.filter.detailStock.endDate) && !isUndefined($scope.filter.detailStock.product) && $scope.filter.detailStock.product !== 0) {
+
+            VaccineDashboardFacilityTrend.stockDetails({
+                startDate: $scope.filter.detailStock.startDate,
+                endDate: $scope.filter.detailStock.endDate,
+                product: $scope.filter.detailStock.product
+            }, function (data) {
+
+                $scope.stockDetail = data.facilityStockDetail;
+                $scope.periodsList = _.uniq(_.pluck(data.facilityStockDetail, 'period_name'));
+                var facilities = _.uniq(_.pluck(data.facilityStockDetail, 'facility_name'));
+
+                $scope.facilityStockDetails = [];
+                angular.forEach(facilities, function (facility) {
+                    var district = _.findWhere($scope.stockDetail, {facility_name: facility}).district_name;
+
+                    $scope.facilityStockDetails.push({
+                        district: district,
+                        facilityName: facility,
+                        indicator: 'Issued',
+                        indicatorValues: $scope.getIndicatorValues(facility, 'issued', $scope.stockDetail)
+                    });
+
+                    $scope.facilityStockDetails.push({
+                        district: district,
+                        facilityName: facility,
+                        indicator: 'Closing Balance',
+                        indicatorValues: $scope.getIndicatorValues(facility, 'cb', $scope.stockDetail)
+                    });
+
+                });
+
+            });
+
+        }
+    };
+
+    $scope.facilityStockPagination = function () {
+        var s = parseInt($scope.filter.facilityStockOffset, 10) + parseInt($scope.filter.facilityStockRange, 10);
+        if (!isUndefined($scope.filter.facilityStockOffset)) {
+            $scope.facilityStock.dataPoints = $scope.facilityStock.data.slice(parseInt($scope.filter.facilityStockOffset, 10), s);
+        }
+    };
 
     $scope.formatValue = function (value, ratio, id) {
         return $filter('number')(value);
@@ -634,7 +713,7 @@ $scope.district_user_level=isDistrictUser.district_user;
     };
 
     $scope.getDetail = function (facility, period) {
-        return _.findWhere($scope.coverageDetails, {facility_name: facility, period_name: period});
+        return _.findWhere($scope.stockDetail, {facility_name: facility, period_name: period});
     };
 
 
@@ -989,6 +1068,18 @@ VaccineDashboardController.resolve = {
                 }else{
 
                     helps.dropoutHelp= {htmlContent: messageService.get('content.help.default')};
+
+                }
+            });
+            HelpContentByKey.get({content_key: 'Stockhelp'}, function (data) {
+
+                if(!isUndefined(data.siteContent)){
+
+                    helps.stockHelp = data.siteContent;
+
+                }else{
+
+                    helps.stockHelp= {htmlContent: messageService.get('content.help.default')};
 
                 }
             });
