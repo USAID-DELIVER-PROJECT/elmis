@@ -45,6 +45,7 @@ public class ColdChainLineItem extends BaseModel {
   private String model;
   private String energySource;
   private String serial;
+  private  String location_value;
 
 
 }
