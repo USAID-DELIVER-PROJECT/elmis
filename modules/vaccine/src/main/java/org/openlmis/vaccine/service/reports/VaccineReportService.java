@@ -289,8 +289,6 @@ public class VaccineReportService {
 
         result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId));
         result.put("summary", repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
-        if (districtId == 0)
-            result.put("aggregateSummary", repository.getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
 
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
 
@@ -308,22 +306,6 @@ public class VaccineReportService {
 
         Map<String, List<Map<String, Object>>> result = new HashMap<>();
 
-        /*List<Map<String, Object>> adequacyResultList =  repository.getAdequacyLevelOfSupplyByDistrict(startDate, endDate, districtId, productId);
-        List<Map<String, Object>> generatedPeriodList = getSummaryPeriodList(startDate, endDate);
-
-
-            for(Map<String, Object> adequacyResult : adequacyResultList){
-
-                for(Map<String, Object> generatedPeriod : generatedPeriodList){
-                    adequacyResult.containsKey("ovnd_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("mos_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("cr_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("wo_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("wu_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("wg_"generatedPeriod.get("monthString").toString().toLowerCase());
-            }
-        }
-        */
 
         result.put("bydistrict", repository.getAdequacyLevelOfSupplyByDistrict(startDate, endDate, districtId, productId));
         result.put("byregion", repository.getAdequacyLevelOfSupplyByRegion(startDate, endDate, districtId, productId));
