@@ -24,6 +24,7 @@ import org.openlmis.core.builder.ProgramBuilder;
 import org.openlmis.core.builder.SupplyLineBuilder;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.OrderConfigurationRepository;
+import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.service.*;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.fulfillment.shared.FulfillmentPermissionService;
@@ -41,12 +42,10 @@ import org.openlmis.shipment.domain.ShipmentFileInfo;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static java.util.Arrays.asList;
@@ -56,6 +55,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.openlmis.core.builder.FacilityBuilder.*;
 import static org.openlmis.core.builder.ProgramBuilder.defaultProgram;
+import static org.openlmis.core.builder.ProgramBuilder.programId;
 import static org.openlmis.core.builder.SupplyLineBuilder.defaultSupplyLine;
 import static org.openlmis.core.domain.RightName.*;
 import static org.openlmis.order.domain.DateFormat.*;
@@ -99,6 +99,12 @@ public class OrderServiceTest {
 
   @Mock
   private ProgramService programService;
+
+  @Mock
+  private FacilityService facilityService;
+
+  @Mock
+  CommaSeparator commaSeparator;
 
   @Mock
   private StatusChangeEventService statusChangeEventService;
@@ -512,11 +518,14 @@ public class OrderServiceTest {
     Order order = new Order();
     order.setRnr(new Rnr(13l));
     List<Order> expectedOrders = asList(order);
+    List<Facility> facilities = new ArrayList<>();
+    when(facilityService.getUserSupervisedFacilities(3L, 1L, COMPLETE_POD)).thenReturn(facilities);
+    when(commaSeparator.commaSeparateIds(facilities)).thenReturn("{}");
     when(roleAssignmentService.getFulfilmentRolesWithRight(3L, MANAGE_POD)).thenReturn(asList(new FulfillmentRoleAssignment(3L, 4l, new ArrayList<Long>())));
     when(requisitionService.getFullRequisitionById(13L)).thenReturn(new Rnr());
-    when(orderRepository.searchByWarehousesAndStatuses(asList(4l), asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L)).thenReturn(expectedOrders);
+    when(orderRepository.searchByWarehousesAndStatuses(asList(4l), asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L, commaSeparator.commaSeparateIds(facilities))).thenReturn(expectedOrders);
 
-    List<Order> returnedOrders = orderService.searchByStatusAndRight(3l, MANAGE_POD, asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L);
+    List<Order> returnedOrders = orderService.searchByStatusAndRight(3l, asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L);
 
     assertThat(returnedOrders, is(expectedOrders));
   }
@@ -537,13 +546,17 @@ public class OrderServiceTest {
     order3.setSupplyLine(make(a(defaultSupplyLine, with(SupplyLineBuilder.facility, make(a(FacilityBuilder.defaultFacility, with(name, "F10")))))));
 
     List<Order> expectedOrders = asList(order1, order2, order3);
+    List<Facility> facilities = new ArrayList<>();
+    when(facilityService.getUserSupervisedFacilities(3L, 1L, COMPLETE_POD)).thenReturn(facilities);
+    when(facilityService.getHomeFacilityForRights(3L, 1L, COMPLETE_POD)).thenReturn(null);
+    when(commaSeparator.commaSeparateIds(facilities)).thenReturn("{}");
     when(roleAssignmentService.getFulfilmentRolesWithRight(3L, MANAGE_POD)).thenReturn(asList(new FulfillmentRoleAssignment(3L, 4l, new ArrayList<Long>())));
     when(requisitionService.getFullRequisitionById(2L)).thenReturn(rnrForHIV);
     when(requisitionService.getFullRequisitionById(4L)).thenReturn(rnrForTB);
     when(requisitionService.getFullRequisitionById(6L)).thenReturn(rnrForMalaria);
-    when(orderRepository.searchByWarehousesAndStatuses(asList(4l), asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L)).thenReturn(expectedOrders);
+    when(orderRepository.searchByWarehousesAndStatuses(asList(4l), asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L, "{}")).thenReturn(expectedOrders);
 
-    List<Order> returnedOrders = orderService.searchByStatusAndRight(3l, MANAGE_POD, asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L);
+    List<Order> returnedOrders = orderService.searchByStatusAndRight(3l,  asList(RELEASED, PACKED, TRANSFER_FAILED, READY_TO_PACK),1L,0L);
 
     assertThat(returnedOrders.get(0).getId(), is(2L));
     assertThat(returnedOrders.get(1).getId(), is(6L));

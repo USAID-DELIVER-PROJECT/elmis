@@ -73,36 +73,40 @@ public class TrendOfMinMasColdRangeService {
             coldChainTempratureReport = this.aggregateReport(coldChainTempratureDetailListAggeregateForDistrict);
         }
 
-
-        coldChainTempratureReport.setColumnNames(columnNameList);
-        coldChainTempratureReport.setChainTempratureDetailReportTree(coldChainTempratureDetailListAggeregateForRegion);
-        coldChainTempratureReport.setChainTempratureDetailRegionReportTree(coldChainTempratureDetailListRegion);
-        coldChainTempratureReport.setDistrictFacilitySummaryColumnList(districtFacilitySummaryColumnList);
-        coldChainTempratureReport.setRegionSummaryColumnList(regionSummaryColumnList);
-        coldChainTempratureReport.setRegionReport(isRegionReport);
-        coldChainTempratureReport.setFacilityReport(isFacilityReport);
+        if (coldChainTempratureReport != null) {
+            coldChainTempratureReport.setColumnNames(columnNameList);
+            coldChainTempratureReport.setChainTempratureDetailReportTree(coldChainTempratureDetailListAggeregateForRegion);
+            coldChainTempratureReport.setChainTempratureDetailRegionReportTree(coldChainTempratureDetailListRegion);
+            coldChainTempratureReport.setDistrictFacilitySummaryColumnList(districtFacilitySummaryColumnList);
+            coldChainTempratureReport.setRegionSummaryColumnList(regionSummaryColumnList);
+            coldChainTempratureReport.setRegionReport(isRegionReport);
+            coldChainTempratureReport.setFacilityReport(isFacilityReport);
+        }
         return coldChainTempratureReport;
     }
 
     public TrendOfMinMaxColdChainTempratureReport aggregateReport(List<TrendOfMinMaxColdChainTempratureDetail> coldChainTempratureDetailList) {
-        float mintemp = coldChainTempratureDetailList.get(0).getMintemp();
-        float maxtemp = coldChainTempratureDetailList.get(0).getMaxtemp();
-        float minepisodetemp = coldChainTempratureDetailList.get(0).getMinepisodetemp();
-        float maxepisodetemp = coldChainTempratureDetailList.get(0).getMaxepisodetemp();
-        Long targetpopulation = 0L;
-        TrendOfMinMaxColdChainTempratureReport coldChainTempratureReport = new TrendOfMinMaxColdChainTempratureReport();
-        for (TrendOfMinMaxColdChainTempratureDetail coldChainTempratureDetail : coldChainTempratureDetailList) {
-            mintemp = mintemp > coldChainTempratureDetail.getMintemp() ? coldChainTempratureDetail.getMintemp() : mintemp;
-            maxtemp = maxtemp < coldChainTempratureDetail.getMaxtemp() ? coldChainTempratureDetail.getMaxtemp() : maxtemp;
-            minepisodetemp = minepisodetemp > coldChainTempratureDetail.getMinepisodetemp() ? coldChainTempratureDetail.getMinepisodetemp() : minepisodetemp;
-            maxepisodetemp = maxepisodetemp < coldChainTempratureDetail.getMaxepisodetemp() ? coldChainTempratureDetail.getMaxepisodetemp() : maxepisodetemp;
-            targetpopulation += coldChainTempratureDetail.getTargetpopulation() == null ? 0 : coldChainTempratureDetail.getTargetpopulation();
+        TrendOfMinMaxColdChainTempratureReport coldChainTempratureReport = null;
+        if (coldChainTempratureDetailList != null && !coldChainTempratureDetailList.isEmpty()) {
+            float mintemp = coldChainTempratureDetailList.get(0).getMintemp();
+            float maxtemp = coldChainTempratureDetailList.get(0).getMaxtemp();
+            float minepisodetemp = coldChainTempratureDetailList.get(0).getMinepisodetemp();
+            float maxepisodetemp = coldChainTempratureDetailList.get(0).getMaxepisodetemp();
+            Long targetpopulation = 0L;
+            coldChainTempratureReport = new TrendOfMinMaxColdChainTempratureReport();
+            for (TrendOfMinMaxColdChainTempratureDetail coldChainTempratureDetail : coldChainTempratureDetailList) {
+                mintemp = mintemp > coldChainTempratureDetail.getMintemp() ? coldChainTempratureDetail.getMintemp() : mintemp;
+                maxtemp = maxtemp < coldChainTempratureDetail.getMaxtemp() ? coldChainTempratureDetail.getMaxtemp() : maxtemp;
+                minepisodetemp = minepisodetemp > coldChainTempratureDetail.getMinepisodetemp() ? coldChainTempratureDetail.getMinepisodetemp() : minepisodetemp;
+                maxepisodetemp = maxepisodetemp < coldChainTempratureDetail.getMaxepisodetemp() ? coldChainTempratureDetail.getMaxepisodetemp() : maxepisodetemp;
+                targetpopulation += coldChainTempratureDetail.getTargetpopulation() == null ? 0 : coldChainTempratureDetail.getTargetpopulation();
+            }
+            coldChainTempratureReport.setMaxepisodetemp(maxepisodetemp);
+            coldChainTempratureReport.setMinepisodetemp(minepisodetemp);
+            coldChainTempratureReport.setMaxtemp(maxtemp);
+            coldChainTempratureReport.setMintemp(mintemp);
+            coldChainTempratureReport.setTargetpopulation(targetpopulation);
         }
-        coldChainTempratureReport.setMaxepisodetemp(maxepisodetemp);
-        coldChainTempratureReport.setMinepisodetemp(minepisodetemp);
-        coldChainTempratureReport.setMaxtemp(maxtemp);
-        coldChainTempratureReport.setMintemp(mintemp);
-        coldChainTempratureReport.setTargetpopulation(targetpopulation);
         return coldChainTempratureReport;
     }
 

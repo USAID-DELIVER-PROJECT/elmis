@@ -469,12 +469,12 @@
                 <!--<option ng-selected="period == 0" ng-value="0">{{period_placeholder}}</option>
 -->
                 <option ng-value="0" ng-selected="period ==undefined ||period == 0">{{period_placeholder}}</option>
-                <optgroup ng-repeat="year in periods"  label="{{year.year}}">
+                <!--<optgroup ng-repeat="year in periods"  label="{{year.year}}">-->
 
-                    <option ng-repeat-start="v in year.children" value="-1">{{v.groupname}}</option>
-                    <option ng-repeat-end ng-repeat="d in v.children" value="{{d.periodid}}" ng-selected="period == d.periodid"> &nbsp; &nbsp; {{d.periodname}}</option>
+                    <!--<option ng-repeat-start="v in year.children" value="-1">{{v.groupname}}</option>-->
+                    <option ng-repeat="v in periods" value="{{v.periodid}}" ng-selected="period == v.periodid"> &nbsp; &nbsp; {{v.periodname}}</option>
 
-                </optgroup>
+                <!--</optgroup>-->
             </select>
         </div>
     </div>
@@ -578,5 +578,22 @@
             <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
         </select>
     </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="filter-static-year">
+    <div>
+        <div  class="horizontalFilters form-cell">
+            <label for="static-year"  class="labels" openlmis-message="label.period"><span class="label-required">*</span></label>
+            <div>
+                <select style="width: 140px" id="static-year" ui-select2 class="input-large" ng-model="year">
+
+                    <option ng-repeat="option in years" value="{{option.year_value}}" >{{option.year_value}}</option>
+                </select>
+            </div>
+        </div>
+
+
     </div>
 </script>

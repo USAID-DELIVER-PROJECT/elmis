@@ -281,11 +281,11 @@ public class OrderMapperIT {
     insertOrderWithStatus(RELEASED, 5L);
     Long facilityId = supplyLine.getSupplyingFacility().getId();
 
-    List<Order> orders = mapper.getByWarehouseIdsAndStatuses("{" + facilityId + "}", "{PACKED}",1L);
+    List<Order> orders = mapper.getByWarehouseIdsAndStatuses("{" + facilityId + "}", "{PACKED}",1L, "{}");
 
     assertThat(orders.size(), is(0));
 
-    List<Order> noOrders = mapper.getByWarehouseIdsAndStatuses("{" + facilityId + "}", "{RECEIVED}", 1L);
+    List<Order> noOrders = mapper.getByWarehouseIdsAndStatuses("{" + facilityId + "}", "{RECEIVED}", 1L, "{}");
 
     assertThat(noOrders.size(), is(0));
   }

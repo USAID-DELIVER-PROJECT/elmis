@@ -13,10 +13,10 @@
   <h2>
     <span openlmis-message="label.vaccine.disease"></span>
   </h2>
-
-  <div class="span9" style="margin-left: 0px;">
-    <table class="table table-bordered">
-      <thead>
+  <div class="row">
+    <div class="span9">
+      <table class="table table-bordered">
+        <thead>
         <tr class="text-row">
           <th class="span5">
             <span openlmis-message="label.vaccine.disease.name"></span>
@@ -34,25 +34,47 @@
             <span openlmis-message="label.vaccine.disease.cumulative.deaths"></span>
           </th>
         </tr>
-      </thead>
-      <tbody>
+        </thead>
+        <tbody>
         <tr ng-repeat="disease in report.diseaseLineItems">
           <td class="cell-input">
             <span class="cell-text">{{disease.diseaseName}}</span>
           </td>
           <td class="cell-input col-general">
-            <input ng-disabled="!report.editable" maxlength="8" ng-model="disease.cases" numeric-validator="positiveInteger" type="text"/></td>
+            <span
+              class="input-error-parent-cell">
+                <input
+                  ng-required="true"
+                  ng-class="highlightRequired(report.validate, disease.cases, disease.skipped)"
+                  ng-disabled="!report.editable || disease.skipped"
+                  maxlength="8"
+                  ng-model="disease.cases"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
+              </span>
+          </td>
           <td class="cell-input col-general number" style="text-align: right">
             <span class="cell-text" ng-bind="(disease.calculatedCumulativeCases + toNumber(disease.cases))"></span>
           </td>
           <td class="cell-input col-general">
-            <input ng-disabled="!report.editable" maxlength="8" ng-model="disease.death" numeric-validator="positiveInteger" type="text"/></td>
+            <span
+              class="input-error-parent-cell">
+                <input
+                  ng-required="true"
+                  ng-class="highlightRequired(report.validate, disease.death, disease.skipped)"
+                  ng-disabled="!report.editable || disease.skipped"
+                  maxlength="8"
+                  ng-model="disease.death"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
+          </td>
           <td class="cell-input col-general number" style="text-align: right">
             <span class="cell-text" ng-bind="(disease.calculatedCumulativeDeaths + toNumber(disease.death))"></span>
           </td>
 
         </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

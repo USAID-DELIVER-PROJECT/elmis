@@ -90,42 +90,8 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
             $scope.aggregateTableData.push(col);
 
         });
-        generateSummaryTableLegendData();
-    }
-
-    function generateSummaryTableLegendData(){
-      var completed = [];
-      var onTime = [];
-
-        _.each($scope.aggregateTableData, function(item, index) {
-
-            for(i=0; i < item.length; i++)
-            {
-                if (i === 0) continue;
-
-                if(index === 0) {
-                    completed[i-1] = item[i].val === '-' ? 0 : 1 ;
-                    onTime[i-1] = item[i].val === 'T' ? 1 : 0 ;
-                }
-                else {
-                    completed[i-1] = item[i].val === '-' ? completed[i-1] : completed[i-1]+1 ;
-                    onTime[i-1] = item[i].val === 'T' ? onTime[i-1]+1 : onTime[i-1];
-                }
-            }
-        });
-
-        var completeness = [];
-        var timeliness = [];
-
-        for(i=0; i < completed.length; i++){
-            completeness[i] =   Math.round(((completed[i]/$scope.aggregateExpectedStoresCount)*100)*100)/100;
-            timeliness[i] =  completed[i] === 0 ? 0 : Math.round(((onTime[i]/completed[i])*100)*100)/100;
-        }
-
-        $scope.aggregateSummaryLegendData = {completed: completed, ontime: onTime, completeness: completeness, timeliness:timeliness };
 
     }
-
 
     function pivotResultSet(summary){
 

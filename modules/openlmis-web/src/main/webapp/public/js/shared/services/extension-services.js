@@ -128,6 +128,10 @@ services.factory('ReportRegimensByCategory',function ($resource){
     return $resource('/reports/regimenCategories/:regimenCategoryId/regimens.json', {}, {});
 });
 
+services.factory('GeographicLevels', function($resource) {
+    return $resource('/geographicLevels.json',{},{});
+});
+
 services.factory('ReportGeographicZonesByLevel',function ($resource){
     return $resource('/reports/geographicLevels/:geographicLevelId/zones.json', {}, {});
 });
@@ -369,6 +373,9 @@ services.factory('StockedOutFacilities', function($resource){
 services.factory('ReportProgramsBySupervisoryNode', function ($resource) {
     return $resource('/reports/supervisory-node/:supervisoryNodeId/programs.json', {}, {});
 });
+services.factory('ReportAllProgramsBySupervisoryNode', function ($resource) {
+    return $resource('/reports/supervisory-node/:supervisoryNodeId/allPrograms.json', {}, {});
+});
 
 services.factory('StockedOutFacilitiesByDistrict', function($resource){
     return $resource('/dashboard/geographic-zone/:zoneId/program/:programId/period/:periodId/product/:productId/stockedOutFacilities.json',{},{});
@@ -434,7 +441,9 @@ services.factory('UserSummaryReport', function($resource){
 services.factory('GetAllRoles', function ($resource) {
     return $resource('/roles/getList.json', {},{});
 });
-
+services.factory('GetAllRolesForReport', function ($resource) {
+    return $resource('/reports/roles/getList.json', {},{});
+});
 services.factory('UserRoleAssignmentsSummary', function($resource){
     return $resource('/reports/UserRoleAssignments/getUserRoleAssignments',{},{});
 });
@@ -1273,7 +1282,9 @@ services.factory('ReportProductsByProgramWithoutDescriptions',function($resource
     return $resource('/reports/program-products-with-no-descriptions/:programId.json',{},{});
 });
 
-
+services.factory('StaticYears',function($resource){
+    return $resource('/vaccine/report/staticYearList.json',{},{});
+});
 
 /*
 services.factory('VaccineStockStatusReport', function ($resource) {

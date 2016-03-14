@@ -1,0 +1,464 @@
+<style>
+    @media print{
+        .toggleFullScreen, .hide-on-print{
+            display: none;
+        }
+
+        body {
+            background: #fff !important;
+        }
+
+    }
+</style>
+
+<div id="ivd-print-view" class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <table id="ivd-tbl-identification" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="11" class="center"><h3>TANZANIA MONTHLY HEALTH FACILITY REPORT ON IVD ACTIVITIES</h3></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><strong>1. Identification</strong></td>
+                    <td>{{report.period.name}}</td>
+                    <td>{{report.period.stringYear}}</td>
+                    <td>{{report.facility.name}}</td>
+                    <td>{{report.facility.geographicZone.name}}</td>
+                    <td colspan="6" width="64%" class="center">Target Population</td>
+                </tr>
+                <tr style="border-bottom: 0px;">
+                    <td class="flat-td" rowspan="3"></td>
+                    <td class="flat-td" rowspan="3"><strong>Month</strong></td>
+                    <td class="flat-td" rowspan="3"><strong>Year</strong></td>
+                    <td class="flat-td" rowspan="3"><strong>H/Facility</strong></td>
+                    <td class="flat-td" rowspan="3"><strong>District</strong></td>
+
+                    <th>Population</th>
+
+                    <th>live birth</th>
+                    <th>0-11 months</th>
+                    <th>12-23 months</th>
+                    <th>Girls of 9 years</th>
+                    <th>Preg Women</th>
+                </tr>
+                <tr >
+                    <td >Annual Target</td>
+                    <td ng-repeat="fdeCols in facilityDemographicEstimateColumns ">
+                        <span ng-repeat="fde in report.facilityDemographicEstimates" ng-if="fdeCols === fde.category.name"> {{fde.value}}</span>
+                    </td >
+                </tr>
+                <tr >
+                    <td >Monthly Target</td>
+                    <td ng-repeat="fdeCols in facilityDemographicEstimateColumns ">
+                        <span ng-repeat="fde in report.facilityDemographicEstimates" ng-if="fdeCols === fde.category.name"> {{fde.value/12 | number : 0}}</span>
+                    </td >
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <!-- === Disease survailance == -->
+        <div class="span5">
+            <h5>2. Disease Surveillance</h5>
+            <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Cases this month</th>
+                <th>Cases cumulative</th>
+                <th>Death this month</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="ds in report.diseaseLineItems">
+                <td>{{ds.diseaseName}}</td>
+                <td>{{ds.cases}}</td>
+                <td>{{ds.cumulative}}</td>
+                <td>{{ds.death}}</td>
+            </tr>
+            </tbody>
+        </table>
+       </div>
+
+        <!-- === Immunization session == -->
+        <div id="ivd-tbl-imunization-session" class="span5 offset2 " >
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="3">Immunization Session</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Fixed (conducted)</td>
+                    <td>Outreach conducted</td>
+                    <td>Outreach cancelled</td>
+                </tr>
+                <tr>
+                    <td>{{report.fixedImmunizationSessions}}</td>
+                    <td>{{report.outreachImmunizationSessions}}</td>
+                    <td>{{report.outreachImmunizationSessionsCanceled}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <!-- === Vaccination == -->
+        <div class="span12">
+            <h5>3a. Vaccination</h5>
+            <table id="ivd-tbl-vaccination" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th rowspan="3">Antigens</th>
+                    <th rowspan="3">Doses</th>
+                    <th colspan="9">Monthly Vaccination</th>
+                    <th colspan="4" class="shady-header">Cummulative Vaccination</th>
+                </tr>
+                <tr>
+                    <th colspan="4">With in catchment</th>
+                    <th colspan="3">Outside Catchment</th>
+                    <th colspan="2">Total Vaccinations <br/>(with and outside catchment area)</th>
+                    <th colspan="2" class="shady-header">With in catchment</th>
+                    <th class="shady-header">Outside Catchment</th>
+                    <th class="shady-header">Cummulative total Vaccinations <br/>( Within & Outside Catchment Area)</th>
+                </tr>
+                <tr>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total Vaccinated</th>
+                    <th>Coverage (%)</th>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
+                    <th>Total</th>
+                    <th>Coverage (%)</th>
+                    <th class="shady-header">Total</th>
+                    <th class="shady-header">Coverage (%)</th>
+                    <th class="shady-header">Total</th>
+                    <th class="shady-header">Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat-start="(productId, productGroup) in report.coverageLineItemViews"></tr>
+                <tr ng-repeat-start="dose in productGroup">
+                    <td ng-if="$index == 0" rowspan="{{productGroup.length * 2}}"><span class="cell-text">{{dose.product.primaryName}}</span></td>
+                    <td ><span class="cell-text number">{{dose.displayName}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.regularMale}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.regularFemale}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.getTotalRegular() | number : 0}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getRegularCoveragePercentage() | number : 2}}%</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.outreachMale}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.outreachFemale}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.getTotalOutreach() | number : 0}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getMonthlyTotal() | number : 0}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number"> {{ dose.getMonthlyCoverage() | number : 2 }} %</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.getTotalAnnualRegular() | number : 0}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getTotalAnnualRegularCoveragePercentage() | number : 2}}%</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getTotalAnnualOutreach() | number : 0}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.getAnnualTotal() | number : 0}}</span></td>
+                </tr>
+                </tr>
+                <tr ng-repeat-end></tr>
+                <tr ng-repeat-end></tr>
+                </tbody>
+            </table>
+    </div>
+
+        <div class="span3">
+            <!-- ========= Drop-out rate DTP-HepB-Hib1/DTP-HepB-Hib3 (%) ==== -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Drop-out rate DTP-HepB-Hib1/DTP-HepB-Hib3 (%)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>44%</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="span3">
+            <!-- ========= Drop-out rate BCG - MR (%) ==== -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Drop-out rate BCG - MR (%)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>44%</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+    <div class="row-fluid">
+        <div class="span5">
+            <h5>3.b Vitamin A supplimentation</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="2" rowspan="2">Age group</th>
+                    <th colspan="3">Vitamin Supplimentation</th>
+                </tr>
+                <tr>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total <br>Supplemented</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="vt in report.vitaminSupplementationLineItems" >
+                    <td rowspan="{{report.vitaminSupplementationLineItems.length}}"
+                        ng-show="vt.vitaminName !== report.vitaminSupplementationLineItems[$index-1].vitaminName">{{vt.vitaminName}}</td>
+                    <td>{{vt.ageGroup}}</td>
+                    <td>{{vt.maleValue}}</td>
+                    <td>{{vt.femaleValue}}</td>
+                    <td>{{vt.femaleValue + vt.maleValue}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- ==== Other Major Immunization Activities ===== ----->
+    <div class="row-fluid">
+        <h5>4. Other Major Immunization Activities</h5>
+            <div class="span9 offset1 summary-text">
+                {{report.majorImmunizationActivities}}
+            </div>
+    </div>
+    <!-- ====== Vaccines Vaccination, VitA ====--->
+    <div class="row-fluid">
+        <h5>5. Vaccines Vaccination, VitA</h5>
+        <div class="span12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="11">Vaccine Stock (doses)</th>
+                </tr>
+                <tr>
+                    <th>Type of Antigen</th>
+                    <th>Openning Balance (Doses)</th>
+                    <th>Doses of Vaccine Received</th>
+                    <th>Doses of Vaccine Used During vaccination </th>
+                    <th>Doses discarded unopened</th>
+                    <th>Reasons for Discarding unopened vial***</th>
+                    <th>Doses of Vaccine Stock On Hand</th>
+                    <th>No. of Days stocked Out</th>
+                    <th>Children immunized</th>
+                    <th>USAGE RATE (F/(C+D))*100</th>
+                    <th>WASTAGE RATE(100-G)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>A</td>
+                    <td>B</td>
+                    <td>C</td>
+                    <td>D</td>
+                    <td></td>
+                    <td>E</td>
+                    <td></td>
+                    <td>F</td>
+                    <td>G</td>
+                    <td>H</td>
+                </tr>
+                <tr style="height: 31px" ng-repeat="product in report.logisticsLineItems"">
+                        <td class="right-justified"><span class="cell-text">{{product.productName}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.openingBalance}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.quantityReceived}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.quantityIssued}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.quantityDiscardedUnopened}}</span></td>
+                        <td class="right-justified"><span class="cell-text">{{getDiscardingReasonName(product.discardingReasonId)}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.closingBalance}}</span></td>
+                        <td class="right-justified"><span class="cell-text number">{{product.daysStockedOut}}</span></td>
+                        <td>{{product.childrenImmunized}}*</td>
+                        <td>{{product.usageRate}}</td>
+                        <td>{{product.wastageRate}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div><h6>***Reasons for discarding unopened vials: 1= expired vaccines   2= broken vial   3= cold chain failure 4= other  (specify)</h6></div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <!-- ==== Syringes and safety boxes ====-->
+        <div class="span5">
+            <h5>6a. Syringes and safety boxes</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="7">Safe Injection Equipment</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>Opening Balance</th>
+                        <th>Received</th>
+                        <th>Used</th>
+                        <th>Wastage</th>
+                        <th>Stock On Hand</th>
+                        <th>No. of Days stocked Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="vit in getSafeInjectionEquipment()">
+                    <td>{{vit.productName}}</td>
+                    <td>{{vit.openingBalance}}</td>
+                    <td>{{vit.quantityReceived}}</td>
+                    <td>{{vit.quantityIssued}}</td>
+                    <td>*</td>
+                    <td>{{vit.closingBalance}}</td>
+                    <td>{{vit.daysStockedOut}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ====  Health Facility Vitamin A stock ====-->
+        <div class="span6 offset1">
+            <h5>6b. Health Facility Vitamin A stock</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="6">Vitamin A Stock</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Opening Balance</th>
+                    <th>Vit. A Received</th>
+                    <th>Total Vit. A Administered</th>
+                    <th>Wastage</th>
+                    <th>Stock On Hand</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="vit in getVitaminAStock()">
+                    <td>{{vit.productName}}</td>
+                    <td>{{vit.openingBalance}}</td>
+                    <td>{{vit.quantityReceived}}</td>
+                    <td>{{vit.quantityIssued}}</td>
+                    <td>*</td>
+                    <td>{{vit.closingBalance}}</td>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <!--==== Refrigerator temperature monitoring ===-->
+        <div class="span5">
+            <h5>7. Refrigerator temperature monitoring</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="7">Refrigerators Temperature Monitoring</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Refrigerator information</th>
+                    <th colspan="2">Temperature</th>
+                    <th colspan="2">No. of Alarm Episode</th>
+
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <th>Model</th>
+                    <th>Energy source</th>
+                    <th>Min</th>
+                    <th>Max</th>
+                    <th>Low Temp</th>
+                    <th>High Temp</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="cc in report.coldChainLineItems">
+                    <td>{{cc.type}}</td>
+                    <td>{{cc.model}}</td>
+                    <td>{{cc.energySource}}</td>
+                    <td>{{cc.minTemp}}</td>
+                    <td>{{cc.maxTemp}}</td>
+                    <td>{{cc.minEpisodeTemp}}</td>
+                    <td>{{cc.maxEpisodeTemp}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ==== AEFI reporting ===-->
+        <div class="span6 offset1">
+            <h5>8. AEFI reporting</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="6">Reported Adverse Events Following Immunization</th>
+                </tr>
+                <tr>
+                    <th>Vaccine</th>
+                    <th>No. of cases</th>
+                    <th>Batch No.</th>
+                    <th>Manufacturer</th>
+                    <th>Exp Date</th>
+                    <th>Investigated (Y/N)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="aefi in report.adverseEffectLineItems">
+                    <td>{{aefi.productName}}</td>
+                    <td>{{aefi.cases}}</td>
+                    <td>{{aefi.batch}}</td>
+                    <td>{{aefi.manufacturer}}</td>
+                    <td>{{aefi.expiry | date}}</td>
+                    <td>{{aefi.isInvestigated ? 'Y' : 'N'}}</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==== Submission ===-->
+    <div class="row-fluid">
+        <h5>9. Submission</h5>
+        <div class="span2">
+            <strong>Date Prepared<br><br> _____________</strong>
+        </div>
+        <div class="span2">
+            <strong>Date Submitted<br><br> ____________</strong>
+        </div>
+        <div class="span3">
+            <strong>Name and signature<br><br> _____________</strong>
+        </div>
+        <div class="span3">
+            <strong>Date received at district level<br><br/> {{report.submissionDate | date}}</strong>
+        </div>
+    </div>
+</div>
+
+<div form-toolbar id="action_buttons" class="action-buttons hide-on-print">
+    <div class="form-cell button-row">
+        <input id="print-IVD-form" type="button" class="btn btn-primary cancel-button "
+               openlmis-message="button.print"
+               onclick="window.print();"/>
+        <input id="cancelButton" type="button" class="btn btn-cancel cancel-button"
+               openlmis-message="button.cancel"
+               ng-click="cancelToApprovePage()"/>
+    </div>
+
+</div>

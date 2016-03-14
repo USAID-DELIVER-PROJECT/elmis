@@ -19,5 +19,10 @@
             <!--<chart-axis-x-tick tick-rotate="50"/>-->
         </chart-axis-x>
     </chart-axis>
+    <chart-grid show-x="false" show-y="false">
+        <chart-grid-optional axis-id="y" grid-value="{{monthlyStock.grid.min}}" grid-text=""/>
+        <chart-grid-optional axis-id="y" grid-value="{{monthlyStock.grid.max}}" grid-text=""/>
+    </chart-grid>
 </c3chart>
+
 <div style="font-weight: bold" ng-hide="monthlyStock.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

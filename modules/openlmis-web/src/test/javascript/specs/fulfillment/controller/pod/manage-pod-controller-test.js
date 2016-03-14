@@ -30,7 +30,7 @@ describe('ManagePODController', function () {
 
     var programs = {programList: [{id: 1, name: 'ARV'}]};
 
-    $httpBackend.when('GET', '/create/requisition/programs.json').respond(200, programs);
+    $httpBackend.when('GET', '/manage-pod/programs.json').respond(200, programs);
     $httpBackend.when('GET', '/manage-pod-orders').respond(200, data);
     controller(ManagePODController, {$scope: scope});
     $httpBackend.flush();
@@ -41,7 +41,7 @@ describe('ManagePODController', function () {
     //
     scope.option.all = true;
     var facilities = {facilities :[]};
-    $httpBackend.when('GET', '/create/requisition/supervised/1/facilities.json').respond(200, facilities);
+    $httpBackend.when('GET', '/manage-pod/supervised/1/facilities.json').respond(200, facilities);
     $httpBackend.when('GET', '/manage-pod-orders?program=1').respond(200, data);
     scope.onParamChanged();
     $httpBackend.flush();

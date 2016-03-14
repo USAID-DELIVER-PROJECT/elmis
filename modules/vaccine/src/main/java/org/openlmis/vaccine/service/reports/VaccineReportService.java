@@ -257,14 +257,18 @@ public class VaccineReportService {
         if (districtId == 0) {
             result.put("mainreportRegionAggregate", repository.getPerformanceCoverageMainReportDataByRegionAggregate(startDate, endDate, districtId, productId));
             result.put("summaryRegionAggregate", repository.getPerformanceCoverageSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId));
+            result.put("regionPopulation", repository.getClassficationVaccinePopulationForRegion(startDate,endDate,districtId,productId));
+
         }
 
         if (zone != null && zone.getLevel().getCode().equals("dist")) {
             result.put("mainreport", repository.getPerformanceCoverageMainReportDataByDistrict(startDate, endDate, districtId, productId));
             result.put("summary", repository.getPerformanceCoverageSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
+            result.put("population", repository.getClassficationVaccinePopulationForDistrict(startDate, endDate, districtId, productId));
         } else {
             result.put("mainreport", repository.getPerformanceCoverageMainReportDataByRegion(startDate, endDate, districtId, productId));
             result.put("summary", repository.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId));
+            result.put("population", repository.getClassficationVaccinePopulationForDistrict(startDate,endDate,districtId,productId));
         }
 
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
@@ -285,8 +289,6 @@ public class VaccineReportService {
 
         result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId));
         result.put("summary", repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
-        if (districtId == 0)
-            result.put("aggregateSummary", repository.getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
 
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
 
@@ -304,22 +306,6 @@ public class VaccineReportService {
 
         Map<String, List<Map<String, Object>>> result = new HashMap<>();
 
-        /*List<Map<String, Object>> adequacyResultList =  repository.getAdequacyLevelOfSupplyByDistrict(startDate, endDate, districtId, productId);
-        List<Map<String, Object>> generatedPeriodList = getSummaryPeriodList(startDate, endDate);
-
-
-            for(Map<String, Object> adequacyResult : adequacyResultList){
-
-                for(Map<String, Object> generatedPeriod : generatedPeriodList){
-                    adequacyResult.containsKey("ovnd_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("mos_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("cr_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("wo_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("wu_"generatedPeriod.get("monthString").toString().toLowerCase());
-                    adequacyResult.containsKey("wg_"generatedPeriod.get("monthString").toString().toLowerCase());
-            }
-        }
-        */
 
         result.put("bydistrict", repository.getAdequacyLevelOfSupplyByDistrict(startDate, endDate, districtId, productId));
         result.put("byregion", repository.getAdequacyLevelOfSupplyByRegion(startDate, endDate, districtId, productId));
@@ -367,7 +353,7 @@ public class VaccineReportService {
         boolean regionReport;
         boolean facilityReport;
         regionReport = zoneId == 0 ? true : false;
-        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) >0?true:false;
+        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) > 0 ? true : false;
         try {
 
 
@@ -376,15 +362,17 @@ public class VaccineReportService {
             Date yearStartDate;
             startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
             endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
-            yearStartDate=getStartOfTheYearDate(startDate);
+            yearStartDate = getStartOfTheYearDate(startDate);
             if (regionReport) {
                 result.put("regionReport", repository.getClassificationVaccineUtilizationPerformanceRegion(yearStartDate, endDate, zoneId, productId));
-
+                result.put("regionPopulation", repository.getClassficationVaccinePopulationForRegion(yearStartDate, endDate, zoneId, productId));
             }
             if (facilityReport) {
                 result.put("facilityReport", repository.getClassificationVaccineUtilizationPerformanceFacility(yearStartDate, endDate, zoneId, productId));
+                result.put("facilityPopulation", repository.getClassficationVaccinePopulationForFacility(yearStartDate, endDate, zoneId, productId));
             } else {
                 result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(yearStartDate, endDate, zoneId, productId));
+                result.put("districtPopulation", repository.getClassficationVaccinePopulationForDistrict(yearStartDate, endDate, zoneId, productId));
             }
 
 
@@ -401,7 +389,7 @@ public class VaccineReportService {
         boolean regionReport;
         boolean facilityReport;
         regionReport = zoneId == 0 ? true : false;
-        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) >0?true:false;
+        facilityReport = dropoutRateByDistrictMapper.isDistrictLevel(zoneId) > 0 ? true : false;
         try {
 
 
@@ -410,7 +398,7 @@ public class VaccineReportService {
             Date yearStartDate;
             startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
             endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
-            yearStartDate=getStartOfTheYearDate(startDate);
+            yearStartDate = getStartOfTheYearDate(startDate);
             if (regionReport) {
                 result.put("regionReport", repository.getCategorizationVaccineUtilizationPerformanceRegion(yearStartDate, endDate, zoneId, productId));
 
@@ -429,22 +417,26 @@ public class VaccineReportService {
         }
         return result;
     }
-    private static  Date getStartOfTheYearDate(Date date){
-        Calendar calendar =Calendar.getInstance();
+
+    private static Date getStartOfTheYearDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.MONTH, Calendar.JANUARY);
-        calendar.set(Calendar.DATE,1);
+        calendar.set(Calendar.DATE, 1);
         return calendar.getTime();
     }
 
     private static List<Map<String, Object>> getPaddingSummaryPeriodList(Date startDate, Date endDate) {
-        Date yearStartDate=getStartOfTheYearDate(startDate);
-        List<Map<String, Object>> paddingDateList=getSummaryPeriodList(yearStartDate,new DateTime(startDate).minusMonths(1).toDate());
-        for(Map paddingMapDate: paddingDateList){
-            paddingMapDate.put("hide","true");
+        Date yearStartDate = getStartOfTheYearDate(startDate);
+        List<Map<String, Object>> paddingDateList = getSummaryPeriodList(yearStartDate, new DateTime(startDate).minusMonths(1).toDate());
+        for (Map paddingMapDate : paddingDateList) {
+            paddingMapDate.put("hide", "true");
         }
-        List<Map<String, Object>> summaryateList=getSummaryPeriodList(startDate,endDate);
+        List<Map<String, Object>> summaryateList = getSummaryPeriodList(startDate, endDate);
         paddingDateList.addAll(summaryateList);
-        return  paddingDateList;
+        return paddingDateList;
+    }
+    public List<Map<String,Object>> loadYearList(){
+        return repository.loadYearList();
     }
 }

@@ -323,6 +323,9 @@ public class ReportLookupService {
   public List<Program> getUserSupervisedActiveProgramsBySupervisoryNode(Long userId, Long supervisoryNodeId) {
     return programMapper.getUserSupervisedActiveProgramsBySupervisoryNode(userId, supervisoryNodeId);
   }
+  public List<Program> getUserSupervisedActiveProgramsBySupervisoryNode( Long supervisoryNodeId) {
+    return programMapper.getUserSupervisedActiveAllProgramsBySupervisoryNode( supervisoryNodeId);
+  }
 
   public List<SupervisoryNode> getAllSupervisoryNodesByUserHavingActiveProgram(Long userId) {
     return supervisoryNodeReportMapper.getAllSupervisoryNodesByUserHavingActiveProgram(userId);
@@ -340,9 +343,9 @@ public class ReportLookupService {
   public UserSummaryParams getReportFilterData(Map<String, String[]> filterCriteria) {
     if (filterCriteria != null) {
       userSummaryParam = new UserSummaryParams();
-      userSummaryParam.setRoleId(StringUtils.isBlank(filterCriteria.get("roleId")[0]) ? 0 : Long.parseLong(filterCriteria.get("roleId")[0])); //defaults to 0
-      userSummaryParam.setProgramId(StringUtils.isBlank(filterCriteria.get("programId")[0]) ? 0 : Long.parseLong(filterCriteria.get("programId")[0]));
-      userSummaryParam.setSupervisoryNodeId(StringUtils.isBlank(filterCriteria.get("supervisoryNodeId")[0]) ? 0 : Long.parseLong(filterCriteria.get("supervisoryNodeId")[0]));
+      userSummaryParam.setRoleId(filterCriteria.get("roleId")==null || StringUtils.isBlank(filterCriteria.get("roleId")[0]) ? 0 : Long.parseLong(filterCriteria.get("roleId")[0])); //defaults to 0
+      userSummaryParam.setProgramId(filterCriteria.get("programId")==null ||StringUtils.isBlank(filterCriteria.get("programId")[0]) ? 0 : Long.parseLong(filterCriteria.get("programId")[0]));
+      userSummaryParam.setSupervisoryNodeId(filterCriteria.get("supervisoryNodeId")==null||StringUtils.isBlank(filterCriteria.get("supervisoryNodeId")[0]) ? 0 : Long.parseLong(filterCriteria.get("supervisoryNodeId")[0]));
     }
 
     return userSummaryParam;

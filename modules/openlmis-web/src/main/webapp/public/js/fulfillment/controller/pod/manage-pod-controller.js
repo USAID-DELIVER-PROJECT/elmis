@@ -8,22 +8,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-function ManagePODController($scope, OrdersForManagePOD, messageService, OrderPOD, CreateRequisitionProgramList, UserSupervisedFacilitiesForProgram, $location) {
+function ManagePODController($scope, OrdersForManagePOD, messageService, OrderPOD, PodProgramList, ManagePodFacilitiesForProgram, $location) {
 
   $scope.option = {all: false};
 
-  CreateRequisitionProgramList.get(function(data){
+  PodProgramList.get(function(data){
     $scope.programs = data.programList;
   });
 
   $scope.onParamChanged = function(){
     $scope.orders = [];
-    if(!angular.isUndefined($scope.filter.program) && $scope.filter.program !== null){
-      UserSupervisedFacilitiesForProgram.get({programId: $scope.filter.program}, function (data) {
+    if(utils.isNumber($scope.filter.program)){
+      ManagePodFacilitiesForProgram.get({programId: $scope.filter.program}, function (data) {
         $scope.facilities = data.facilities;
       });
 
-      if($scope.option.all){
+      if($scope.option.all === true){
         OrdersForManagePOD.get({program: $scope.filter.program}, function (data) {
           $scope.orders = data.ordersForPOD;
         });
@@ -32,9 +32,12 @@ function ManagePODController($scope, OrdersForManagePOD, messageService, OrderPO
   };
 
   $scope.onFacilityChanged = function(){
-    OrdersForManagePOD.get({program: $scope.filter.program, facility: $scope.filter.facility}, function (data) {
-      $scope.orders = data.ordersForPOD;
-    });
+    if(utils.isNumber($scope.filter.facility)){
+      OrdersForManagePOD.get({program: $scope.filter.program, facility: $scope.filter.facility}, function (data) {
+        $scope.orders = data.ordersForPOD;
+      });
+    }
+
   };
 
   $scope.gridOptions = { data: 'orders',

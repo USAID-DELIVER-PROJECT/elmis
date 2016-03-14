@@ -18,6 +18,7 @@
           <th openlmis-message="label.ivd.form.submission.date"></th>
           <th openlmis-message="label.ivd.form.status"></th>
           <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -30,6 +31,7 @@
           <td>{{r.submissionDate}}</td>
           <td>{{r.status}}</td>
           <td><a href="#approve/{{r.id}}" openlmis-message="link.ivd.form.review.approve"></a></td>
+          <td><a href="#preview/{{r.id}}" openlmis-message="link.ivd.form.print.preview"></a></td>
         </tr>
       </tbody>
     </table>

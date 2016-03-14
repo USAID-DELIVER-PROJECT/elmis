@@ -10,18 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function UserSummaryReportController($scope, $window, ReportProgramsBySupervisoryNode, UserRoleAssignmentsSummary, UserSupervisoryNodes, GetAllRoles) {
-    $scope.filterObject = {};
+function UserSummaryReportController($scope, $window, ReportAllProgramsBySupervisoryNode, UserRoleAssignmentsSummary, UserSupervisoryNodes, GetAllRolesForReport) {
 
+    $scope.filterObject = {};
+    $scope.filterObject.supervisoryNodeId=0;
     $scope.$on('$viewContentLoaded', function () {
         $scope.loadUserSummary();
     });
+
     $scope.loadUserSummary = function () {
 
 
-        $scope.filter.max = 10000;
+        //$scope.filter.max = 10000;
         UserRoleAssignmentsSummary.get($scope.filterObject, function (data) {
             $scope.total = 0;
+
             $scope.UserRolePieChartData = [];
             if (!isUndefined(data.userRoleAssignmentSummary)) {
 
@@ -39,6 +42,7 @@ function UserSummaryReportController($scope, $window, ReportProgramsBySupervisor
 
             } else {
                 $scope.UserRolePieChartData = [];
+                $scope.datarows=[];
             }
 
         });
@@ -61,9 +65,9 @@ function UserSummaryReportController($scope, $window, ReportProgramsBySupervisor
         if (!$scope.filterObject.supervisoryNodeId || $scope.filterObject.supervisoryNodeId === 'undefined' || $scope.filterObject.supervisoryNodeId === '') {
             par = 0;
         }
-        ReportProgramsBySupervisoryNode.get({supervisoryNodeId: par}, function (data) {
+        ReportAllProgramsBySupervisoryNode.get({supervisoryNodeId: par}, function (data) {
             $scope.programs = data.programs;
-            $scope.programs.unshift({'name': '--All Programs--'});
+            $scope.programs.unshift({'name': '--All Programs--','id':'0'});
         });
 
         $scope.loadUserSummary();
@@ -93,7 +97,7 @@ function UserSummaryReportController($scope, $window, ReportProgramsBySupervisor
             container: $("#userSummaryReportLegend"),
             noColumns: 1,
             labelBoxBorderColor: "none",
-            sorted: "descending",
+            sorted: "ascending",
             position: "w",
             backgroundOpacity: 1
         },
@@ -125,16 +129,15 @@ function UserSummaryReportController($scope, $window, ReportProgramsBySupervisor
 
     UserSupervisoryNodes.get(function (data) {
         $scope.supervisoryNodes = data.supervisoryNodes;
-        $scope.supervisoryNodes.unshift({'name': '-- All Supervisory Nodes --'});
-
-        ReportProgramsBySupervisoryNode.get({supervisoryNodeId: $scope.filterObject.supervisoryNodeId}, function (data) {
+        $scope.supervisoryNodes.unshift({'name': '-- All Supervisory Nodes --','id':'0'});
+        ReportAllProgramsBySupervisoryNode.get({supervisoryNodeId: $scope.filterObject.supervisoryNodeId}, function (data) {
             $scope.programs = data.programs;
             $scope.programs.unshift({'name': '--All Programs--'});
         });
 
     });
 
-    GetAllRoles.get(function (data) {
+    GetAllRolesForReport.get(function (data) {
         $scope.roles = data.roles;
         $scope.roles.unshift({'name': '-- All Roles --'});
 

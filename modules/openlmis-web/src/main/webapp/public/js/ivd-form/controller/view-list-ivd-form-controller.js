@@ -28,6 +28,9 @@ function ViewIvdFormController($scope, programs, VaccineReportFacilities, ViewVa
       programId: $scope.filter.program
     }, function (data) {
       $scope.periodGridData = data.periods;
+      angular.forEach($scope.periodGridData, function(period){
+        period.statusMessage = getStatusText(period.status);
+      });
     });
   };
 
@@ -39,6 +42,10 @@ function ViewIvdFormController($scope, programs, VaccineReportFacilities, ViewVa
 
   function getActionButton() {
     return '<a href="" class="padding2px" ng-click="view(row.entity)" openlmis-message="link.view" />';
+  }
+
+  function getStatusText(status){
+    return  messageService.get('ivd.form.status.' + (status === null ? 'NOT_INITIATED' : status ));
   }
 
   $scope.periodGridOptions = {
@@ -53,8 +60,8 @@ function ViewIvdFormController($scope, programs, VaccineReportFacilities, ViewVa
     showFilter: false,
     columnDefs: [
       {field: 'periodName', displayName: messageService.get("label.periods")},
-      {field: 'status', displayName: messageService.get("label.ivd.status")},
-      {field: '', displayName: '', cellTemplate: getActionButton()}
+      {field: 'statusMessage', displayName: messageService.get("label.ivd.status")},
+      {field: '', displayName: messageService.get('label.action'), cellTemplate: getActionButton()}
     ]
   };
 

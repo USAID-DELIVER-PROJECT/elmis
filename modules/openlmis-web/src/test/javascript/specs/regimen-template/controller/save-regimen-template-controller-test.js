@@ -44,7 +44,7 @@ describe('Save Regimen Template Controller', function () {
   }));
 
   it('should filter regimen by categories', function () {
-    expect(scope.regimensByCategory).toEqual([undefined, regimenList1, regimenList2]);
+    expect(scope.regimensByCategory).toEqual([1, regimenList1, regimenList2]);
   });
 
   it('should get regimen values by category', function () {

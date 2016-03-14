@@ -73,6 +73,14 @@ public interface ProgramReportMapper {
             "            AND p.active = TRUE \n" +
             "            AND p.push = FALSE")
     List<Program> getUserSupervisedActiveProgramsBySupervisoryNode(@Param("userId") Long userId, @Param("nodeId") Long supervisoryNodeId);
+    @Select("   SELECT DISTINCT p.* \n" +
+            "            FROM programs p\n" +
+            "            INNER JOIN role_assignments ra ON p.id = ra.programId \n" +
+            "            INNER JOIN role_rights rr ON ra.roleId = rr.roleId \n" +
+            "            WHERE (ra.supervisoryNodeId = #{nodeId} or #{nodeId}=0 ) \n" +
+            "            AND p.active = TRUE \n" +
+            "            AND p.push = FALSE")
+    List<Program> getUserSupervisedActiveAllProgramsBySupervisoryNode( @Param("nodeId") Long supervisoryNodeId);
 
     @Select("select * from programs where budgetingapplies = true")
     List<Program>getAllProgramsWithBudgeting();

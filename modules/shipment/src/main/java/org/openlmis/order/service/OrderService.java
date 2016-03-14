@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.collections.Transformer;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.OrderConfigurationRepository;
+import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.service.*;
 import org.openlmis.fulfillment.shared.FulfillmentPermissionService;
 import org.openlmis.order.domain.DateFormat;
@@ -39,6 +40,7 @@ import java.util.TreeSet;
 import static java.util.Arrays.asList;
 import static java.util.Collections.sort;
 import static org.apache.commons.collections.CollectionUtils.collect;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang.ArrayUtils.contains;
 import static org.openlmis.core.domain.RightName.FACILITY_FILL_SHIPMENT;
 import static org.openlmis.core.domain.RightName.MANAGE_POD;
@@ -82,6 +84,12 @@ public class OrderService {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private FacilityService facilityService;
+
+  @Autowired
+  private CommaSeparator commaSeparator;
+
   public static String SUPPLY_LINE_MISSING_COMMENT = "order.ftpComment.supplyline.missing";
 
   private Integer pageSize;
@@ -101,7 +109,7 @@ public class OrderService {
       rnr.setModifiedBy(userId);
       order = new Order(rnr);
       SupplyLine supplyLine = supplyLineService.getSupplyLineBy(new SupervisoryNode(rnr.getSupervisoryNodeId()), rnr.getProgram());
-      if(depotId != null && supplyLine.getSupplyingFacility().getId() != depotId){
+      if (depotId != null && supplyLine.getSupplyingFacility().getId() != depotId) {
         supplyLine = supplyLineService.getByFacilityProgram(depotId, rnr.getProgram().getId());
       }
       order.setSupplyLine(supplyLine);
@@ -232,15 +240,23 @@ public class OrderService {
     return pageSize;
   }
 
-  public List<Order> searchByStatusAndRight(Long userId, String rightName, List<OrderStatus> statuses, Long programId, Long facilityId) {
-    List<FulfillmentRoleAssignment> fulfilmentRolesWithRight = roleAssignmentService.getFulfilmentRolesWithRight(userId, rightName);
+  public List<Order> searchByStatusAndRight(Long userId, List<OrderStatus> statuses, Long programId, Long facilityId) {
+    List<FulfillmentRoleAssignment> fulfilmentRolesWithRight = roleAssignmentService.getFulfilmentRolesWithRight(userId, RightName.MANAGE_POD);
+
+    List<Facility> managedFacilities = new ArrayList<>();
+    managedFacilities.addAll(emptyIfNull(facilityService.getUserSupervisedFacilities(userId, programId, RightName.COMPLETE_POD)));
+    Facility homeFacility = facilityService.getHomeFacilityForRights(userId, programId, RightName.COMPLETE_POD);
+    if (homeFacility != null) {
+      managedFacilities.add(homeFacility);
+    }
+    String managedFacilityIds = commaSeparator.commaSeparateIds(managedFacilities);
 
     List<Order> orders = orderRepository.searchByWarehousesAndStatuses((List<Long>) collect(fulfilmentRolesWithRight, new Transformer() {
       @Override
       public Object transform(Object o) {
         return ((FulfillmentRoleAssignment) o).getFacilityId();
       }
-    }), statuses, programId, facilityId);
+    }), statuses, programId, facilityId, managedFacilityIds);
 
     orders = fillOrders(orders);
     sort(orders);

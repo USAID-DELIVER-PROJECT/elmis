@@ -37,6 +37,7 @@ public class RightName {
   public static final String MANAGE_REGIMEN_TEMPLATE = "MANAGE_REGIMEN_TEMPLATE";
   public static final String FACILITY_FILL_SHIPMENT = "FACILITY_FILL_SHIPMENT";
   public static final String MANAGE_POD = "MANAGE_POD";
+  public static final String COMPLETE_POD = "COMPLETE_POD";
   public static final String MANAGE_GEOGRAPHIC_ZONE = "MANAGE_GEOGRAPHIC_ZONE";
   public static final String MANAGE_REQUISITION_GROUP = "MANAGE_REQUISITION_GROUP";
   public static final String MANAGE_SUPPLY_LINE = "MANAGE_SUPPLY_LINE";

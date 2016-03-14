@@ -1,7 +1,8 @@
 
 
 
-function CreateVaccineOrderRequisition($scope, $dialog, $window, report, VaccineOrderRequisitionSubmit, $location) {
+function CreateVaccineOrderRequisition($scope, $dialog,$routeParams, $window, report, VaccineOrderRequisitionSubmit, $location) {
+
 
     $scope.report = new VaccineOrderRequisition(report);
 
@@ -83,6 +84,13 @@ function CreateVaccineOrderRequisition($scope, $dialog, $window, report, Vaccine
     $scope.cancel = function () {
         $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
     };
+
+    $scope.viewOrderPrint = function () {
+
+        var url = '/vaccine/orderRequisition/' +  parseInt($routeParams.id,10) + '/print';
+        $window.open(url, '_blank');
+    };
+
 
 
 }

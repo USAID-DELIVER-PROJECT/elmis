@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-angular.module('ivd-form-module', ['openlmis', 'ngGrid', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.dialog']).
+angular.module('ivd-form-module', ['openlmis', 'ngGrid', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.dialog']).
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/create/:id', {
@@ -42,6 +42,11 @@ angular.module('ivd-form-module', ['openlmis', 'ngGrid', 'angularCombine', 'ui.b
                 controller : ApproveIvdFormDetailController,
                 templateUrl: 'partials/approve/approve.html',
                 resolve: ApproveIvdFormDetailController.resolve
+            }).
+            when('/preview/:id', {
+                controller : ViewIvdFormDetailController,
+                templateUrl: 'partials/print/view.html',
+                resolve: ViewIvdFormDetailController.resolve
             }).
             otherwise({redirectTo: '/list'});
     }]);

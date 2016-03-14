@@ -29,96 +29,137 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         PerformanceCoverage.get(
             {
                 periodStart: $scope.periodStartDate,
-                periodEnd:   $scope.periodEnddate,
-                range:       $scope.range,
-                district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
-                product:     $scope.filter.product
+                periodEnd: $scope.periodEnddate,
+                range: $scope.range,
+                district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
+                product: $scope.filter.product
             },
 
             function (data) {
 
-                 if(data.performanceCoverage.status){
-                     $scope.error = data.performanceCoverage.status[0].error;
-                     $scope.datarows = $scope.datarows = null ;
-                 }
+                if (data.performanceCoverage.status) {
+                    $scope.error = data.performanceCoverage.status[0].error;
+                    $scope.datarows = $scope.datarows = null;
+                }
                 else {
-                     $scope.error = "";
-                     $scope.datarows = data.performanceCoverage.mainreport;
-                     $scope.summary = data.performanceCoverage.summary;
-                     $scope.summaryRegionAggregate = data.performanceCoverage.summaryRegionAggregate;
-                     $scope.dataRowsRegionAggregate = data.performanceCoverage.mainreportRegionAggregate;
-                     $scope.summaryPeriodLists = data.performanceCoverage.summaryPeriodLists;
+                    $scope.error = "";
+                    $scope.datarows = data.performanceCoverage.mainreport;
+
+                    $scope.summary = data.performanceCoverage.summary;
+                    $scope.summaryRegionAggregate = data.performanceCoverage.summaryRegionAggregate;
+                    $scope.dataRowsRegionAggregate = data.performanceCoverage.mainreportRegionAggregate;
+                    $scope.summaryPeriodLists = data.performanceCoverage.summaryPeriodLists;
+                    $scope.districtPopulation = data.performanceCoverage.population;
+                    $scope.regionPopulation = data.performanceCoverage.regionPopulation;
+
+                    if ($scope.datarows.length > 0) {
+                        if (angular.isUndefined($scope.datarows[0].facility_name)) {
+                            $scope.regionSelected = true;
+                            extractPopulationInfo($scope.datarows, $scope.districtPopulation ,2);
+                            extractPopulationInfo($scope.dataRowsRegionAggregate, $scope.regionPopulation ,3);
+                        }
+                        else {
+                            $scope.regionSelected = false;
+
+                        }
+                        populateCumulativeColumns();
+
+                        populateCalculatedAggregateValues();
+                        if ($scope.regionSelected) {
+                            $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
+                        } else {
+                            $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 1);
+                        }
+
+                    }
+
+                    if (!utils.isEmpty($scope.dataRowsRegionAggregate)) {
+                        $scope.regionSubAggregate = aggregateSubTotal($scope.dataRowsRegionAggregate, 3);
+                    }
+
+                    // Get a unique periods for the header
+                    var uniquePeriods = _.chain($scope.summary).indexBy("period").values().value();
+                    $scope.sortedPeriods = _.sortBy(uniquePeriods, function (up) {
+                        return up.row;
+                    });
 
 
-                     if($scope.datarows.length > 0) {
-                         if(angular.isUndefined($scope.datarows[0].facility_name))
-                             $scope.regionSelected = true;
-                         else $scope.regionSelected = false;
+                    if ($scope.summary !== null) {
+                        $scope.g1 = pivotResultSet($scope.summary, "G1");
+                        $scope.g2 = pivotResultSet($scope.summary, "G2");
+                        $scope.g3 = pivotResultSet($scope.summary, "G3");
+                        $scope.g4 = pivotResultSet($scope.summary, "G4");
+                    }
 
-                     }
+                    if ($scope.summaryRegionAggregate !== null) {
+                        $scope.gAll1 = pivotResultSet($scope.summaryRegionAggregate, "G1");
+                        $scope.gAll2 = pivotResultSet($scope.summaryRegionAggregate, "G2");
+                        $scope.gAll3 = pivotResultSet($scope.summaryRegionAggregate, "G3");
+                        $scope.gAll4 = pivotResultSet($scope.summaryRegionAggregate, "G4");
 
-                    populateCumulativeColumns();
-
-                    populateCalculatedAggregateValues();
-
-                     // Get a unique periods for the header
-                     var uniquePeriods = _.chain($scope.summary).indexBy("period").values().value();
-                     $scope.sortedPeriods = _.sortBy(uniquePeriods, function (up) {
-                         return up.row;
-                     });
-
-
-                     if($scope.summary !== null) {
-                         $scope.g1 = pivotResultSet($scope.summary, "G1");
-                         $scope.g2 = pivotResultSet($scope.summary, "G2");
-                         $scope.g3 = pivotResultSet($scope.summary, "G3");
-                         $scope.g4 = pivotResultSet($scope.summary, "G4");
-                     }
-
-                     if($scope.summaryRegionAggregate !== null) {
-                         $scope.gAll1 = pivotResultSet($scope.summaryRegionAggregate, "G1");
-                         $scope.gAll2 = pivotResultSet($scope.summaryRegionAggregate, "G2");
-                         $scope.gAll3 = pivotResultSet($scope.summaryRegionAggregate, "G3");
-                         $scope.gAll4 = pivotResultSet($scope.summaryRegionAggregate, "G4");
-                     }
-                 }
+                    }
+                }
 
             });
     };
+    $scope.calculateVaccinated = function (targetPopulation, vaccinated) {
+        return targetPopulation !== null && targetPopulation > 0 ? parseFloat(vaccinated / targetPopulation * 100).toFixed(2) : 0;
+    };
 
-    $scope.colors = {color_ninty_percent: '', color_80_percent:'', color_50_percent_above:'', color_50_percent_below:''};
+    $scope.getSubTotalRow = function (dtReport) {
+        var obj;
+        var type = 1;
+        if ($scope.regionSelected === true) {
+            type = 2;
+        }
+        obj = $scope.districtSubAggregate[getKeyForReport(dtReport, type)];
 
-        Settings.get({}, function(data){
+        return obj;
+    };
+    $scope.getRegionSubTotalRow = function (dtReport) {
 
-          _.each(data.settings.list, function(item) {
+        return $scope.regionSubAggregate[getKeyForReport(dtReport, 3)];
 
-              if(item.key === "VCP_GREEN")
-                  $scope.colors.color_ninty_percent = item.value;
-              else if (item.key === "VCP_BLUE")
-                  $scope.colors.color_80_percent = item.value;
-              else if( item.key === "VCP_ORANGE")
-                  $scope.colors.color_50_percent_above = item.value;
-              else if (item.key ===  "VCP_RED")
-                  $scope.colors.color_50_percent_below = item.value;
-          });
+
+    };
+    $scope.colors = {
+        color_ninty_percent: '',
+        color_80_percent: '',
+        color_50_percent_above: '',
+        color_50_percent_below: ''
+    };
+
+    Settings.get({}, function (data) {
+
+        _.each(data.settings.list, function (item) {
+
+            if (item.key === "VCP_GREEN")
+                $scope.colors.color_ninty_percent = item.value;
+            else if (item.key === "VCP_BLUE")
+                $scope.colors.color_80_percent = item.value;
+            else if (item.key === "VCP_ORANGE")
+                $scope.colors.color_50_percent_above = item.value;
+            else if (item.key === "VCP_RED")
+                $scope.colors.color_50_percent_below = item.value;
         });
+    });
 
 
-    $scope.bgColorCode = function(percentageCoverage){
-        if(percentageCoverage > 90)
+    $scope.bgColorCode = function (percentageCoverage) {
+        if (percentageCoverage > 90)
             return $scope.colors.color_ninty_percent;
-        else if(percentageCoverage >= 80)
+        else if (percentageCoverage >= 80)
             return $scope.colors.color_80_percent;
-        else if(percentageCoverage >= 50)
+        else if (percentageCoverage >= 50)
             return $scope.colors.color_50_percent_above;
 
         return $scope.colors.color_50_percent_below;
     };
 
-    function populateCalculatedAggregateValues(){
+    function populateCalculatedAggregateValues() {
         var targetTotal = 0, vaccinationTotal = 0, coverage = 0, ctoatlCoverage = 0, ctotalVaccination = 0;
-
-        _.each($scope.datarows, function(item) {
+var last = $scope.datarows.length-1;
+        _.each($scope.datarows, function (item) {
             targetTotal += item.target;
             vaccinationTotal += item.vaccinated;
             ctotalVaccination += item.cumulativeVacinated;
@@ -127,18 +168,18 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
         $scope.targetTotal = targetTotal;
         $scope.vaccinationTotal = vaccinationTotal;
-        $scope.coverage = Math.round((targetTotal === 0 ? 0 : (vaccinationTotal/targetTotal)*100) * 100) / 100;
-        $scope.ctotalVaccination = ctotalVaccination;
-        $scope.ctoatlCoverage = Math.round((targetTotal === 0 ? 0 : (ctotalVaccination/targetTotal)*100) * 100) / 100;
+        $scope.coverage = Math.round((targetTotal === 0 ? 0 : (vaccinationTotal / targetTotal) * 100) * 100) / 100;
+        $scope.ctotalVaccination = vaccinationTotal;
+        $scope.ctoatlCoverage = Math.round((targetTotal === 0 ? 0 : (vaccinationTotal / targetTotal) * 100) * 100) / 100;
     }
 
-    function populateCumulativeColumns(){
+    function populateCumulativeColumns() {
 
-        var pdistric_id = 0,facilityName= '',regionName= '', runningTotal = 0;
+        var pdistric_id = 0, facilityName = '', regionName = '', runningTotal = 0;
 
-        if($scope.dataRowsRegionAggregate !== null){
+        if ($scope.dataRowsRegionAggregate !== null) {
 
-            _.each($scope.dataRowsRegionAggregate, function(item) {
+            _.each($scope.dataRowsRegionAggregate, function (item) {
                 if (angular.equals(regionName, item.region_name))
                     runningTotal += item.vaccinated;
                 else
@@ -146,13 +187,14 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
                 regionName = item.region_name;
                 item.cumulativeVacinated = runningTotal;
-                item.cumulativeCoverage =  Math.round((item.target === 0 ? 0 : (runningTotal/ (item.target*item.month) )*100) * 100) / 100;
+                item.cumulativeCoverage = Math.round((item.target === 0 ? 0 : (runningTotal / (item.target * item.month) ) * 100) * 100) / 100;
             });
+
         }
 
-        _.each($scope.datarows, function(item){
+        _.each($scope.datarows, function (item) {
 
-            if($scope.regionSelected) {
+            if ($scope.regionSelected) {
                 if (pdistric_id === item.district_id)
                     runningTotal += item.vaccinated;
                 else
@@ -160,7 +202,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
                 pdistric_id = item.district_id;
             }
-            else{
+            else {
 
                 if (angular.equals(facilityName, item.facility_name))
                     runningTotal += item.vaccinated;
@@ -169,49 +211,48 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
                 facilityName = item.facility_name;
             }
-            item.cumulativeCoverage =  Math.round((item.target === 0 ? 0 : (runningTotal/(item.target*item.month))*100) * 100) / 100;
+            item.cumulativeCoverage = Math.round((item.target === 0 ? 0 : (runningTotal / (item.target * item.month)) * 100) * 100) / 100;
             item.cumulativeVacinated = runningTotal;
         });
     }
 
-   /*function pivotResultSet(summary, sortedUniquePeriods, group){
+    /*function pivotResultSet(summary, sortedUniquePeriods, group){
 
-       var temp = [];
+     var temp = [];
 
-       _.each(sortedUniquePeriods, function(item) {
+     _.each(sortedUniquePeriods, function(item) {
 
-           for(i=0; i<summary.length; i++)
-           {
-               if(summary[i].group === group && item.period == summary[i].period) {
-                   temp.push({row:item.row, period:summary[i].period, group:group, total:summary[i].total});
-                   break;
-               }
-                  // if no match is found add a dummy object as a place holder
-               else if(i+1 == $scope.summary.length) {
-                   temp.push({row:item.row, period: item.period, group:group, total:'-'});
-               }
-           }
-       });
-            return temp;
-   }*/
+     for(i=0; i<summary.length; i++)
+     {
+     if(summary[i].group === group && item.period == summary[i].period) {
+     temp.push({row:item.row, period:summary[i].period, group:group, total:summary[i].total});
+     break;
+     }
+     // if no match is found add a dummy object as a place holder
+     else if(i+1 == $scope.summary.length) {
+     temp.push({row:item.row, period: item.period, group:group, total:'-'});
+     }
+     }
+     });
+     return temp;
+     }*/
 
 
-    function pivotResultSet(summary, group){
+    function pivotResultSet(summary, group) {
 
         var temp = [];
 
-        _.each($scope.summaryPeriodLists, function(item, index) {
+        _.each($scope.summaryPeriodLists, function (item, index) {
 
-            for(i=0; i<summary.length; i++)
-            {
+            for (i = 0; i < summary.length; i++) {
 
-                if(summary[i].group === group && item.year == summary[i].year && item.month == summary[i].month) {
-                    temp.push({row:item.row, period:summary[i].period, group:group, total:summary[i].total});
+                if (summary[i].group === group && item.year == summary[i].year && item.month == summary[i].month) {
+                    temp.push({row: item.row, period: summary[i].period, group: group, total: summary[i].total});
                     break;
                 }
                 // if no match is found add a dummy object as a place holder
-                else if(i+1 == summary.length) {
-                    temp.push({row:item.row, period: item.monthString+" "+item.year, group:group, total:'-'});
+                else if (i + 1 == summary.length) {
+                    temp.push({row: item.row, period: item.monthString + " " + item.year, group: group, total: '-'});
                 }
             }
         });
@@ -220,13 +261,13 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     }
 
     // ================need to find to reuse the report filter =====/
-    TreeGeographicZoneList.get(function(data) {
+    TreeGeographicZoneList.get(function (data) {
         $scope.zones = data.zone;
     });
 
     GetUserUnassignedSupervisoryNode.get({
         program: 82
-    }, function(data) {
+    }, function (data) {
         $scope.user_geo_level = "-- All Regions/Districts---";//messageService.get('report.filter.all.geographic.zones');
         if (!angular.isUndefined(data.supervisory_nodes)) {
             if (data.supervisory_nodes === 0)
@@ -235,5 +276,91 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     });
 
     //+====================================================
+
+    function aggregateSubTotal(reportList, type) {
+        var subAggregateTotal = [];
+        var len = reportList.length;
+        var i = 0;
+        for (i; i < len; i++) {
+            var keyName = getKeyForReport(reportList[i], type);
+            if (keyName in subAggregateTotal) {
+                subAggregateTotal[keyName] = {
+                    target: subAggregateTotal[keyName].target + reportList[i].target,
+                    vaccinated: subAggregateTotal[keyName].vaccinated + reportList[i].vaccinated,
+                    cumulativeVacinated: subAggregateTotal[keyName].cumulativeVacinated + reportList[i].cumulativeVacinated
+                };
+
+            } else {
+
+                var obj = {
+                    target: reportList[i].target,
+                    vaccinated: reportList[i].vaccinated,
+                    cumulativeVacinated: reportList[i].cumulativeVacinated
+                };
+                subAggregateTotal[keyName] = obj;
+            }
+        }
+
+        return subAggregateTotal;
+    }
+
+    function getKeyForReport(dreport, type) {
+
+        var keyValue = '';
+        if (type === 1) {
+            keyValue = dreport.region_name + "_" + dreport.district_name + "_" + dreport.facility_name;
+        } else if (type === 2) {
+            keyValue = dreport.region_name + "_" + dreport.district_name;
+        }
+        else {
+            keyValue = dreport.region_name;
+        }
+        return keyValue;
+    }
+
+    function getPopulationKey(dreport, type) {
+        var keyValue = '';
+        if (type === 1) {
+            keyValue = dreport.facility_name + "_" +parseInt( dreport.year,10);
+        } else if (type === 2) {
+            keyValue = dreport.district_name + "_" +parseInt( dreport.year,10);
+        }
+        else {
+            keyValue = dreport.region_name + "_" +parseInt( dreport.year,10);
+        }
+
+        return keyValue;
+    }
+
+    function extractPopulationInfo(reportList, popuplationList, type) {
+        var population = 0;
+        var denominator=0;
+        var i = 0;
+
+        var repLen = reportList.length;
+        var popuLen = popuplationList.length;
+
+        for (i; i < repLen; i++) {
+            var j = 0;
+            var repKey = getPopulationKey(reportList[i], type);
+            for (j; j < popuLen; j++) {
+                population=0;
+                denominator=0;
+                var currentKey=getPopulationKey(popuplationList[j], type);
+
+                if (angular.equals(repKey, currentKey)) {
+                    population = popuplationList[j].population;
+                    denominator=popuplationList[j].denominator;
+
+                    break;
+                }
+
+            }
+            reportList[i].population=population;
+            reportList[i].target=denominator;
+            reportList[i].denominator=denominator;
+        }
+        return population;
+    }
 
 }

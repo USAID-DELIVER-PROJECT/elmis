@@ -38,6 +38,7 @@ public class PerformanceByDropoutRateByDistrictService {
     public static final int REGION_REPORT = 1;
     public static final int DISTRICT_REPORT = 2;
     public static final int FACILLITY_REPORT = 3;
+    public static final Long DTP_PRODUCT_ID=2421L;
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceByDropoutRateByDistrictService.class);
 
 
@@ -60,9 +61,15 @@ public class PerformanceByDropoutRateByDistrictService {
         isFailityReport = repository.isDistrictLevel(filterParam.getGeographic_zone_id());
         if (!isFailityReport) {
             performanceByDropoutRateByDistrictList = repository.loadPerformanceByDropoutRateDistrictReports(filterParam);
+            if(filterParam.getProduct_id().equals(DTP_PRODUCT_ID)){
+                performanceByDropoutRateByDistrictList=this.transposeDptVAlueToBg(performanceByDropoutRateByDistrictList);
+            }
             stringPerformanceByDropoutRateByDistrictMap = this.prepareReportForGeographicLevel(performanceByDropoutRateByDistrictList, DISTRICT_REPORT);
             if (isRegionReport) {
                 performanceByDropoutRateByRegionList = repository.loadPerformanceByDropoutRateRegionReports(filterParam);
+                if(filterParam.getProduct_id().equals(DTP_PRODUCT_ID)){
+                    performanceByDropoutRateByRegionList=this.transposeDptVAlueToBg(performanceByDropoutRateByRegionList);
+                }
                 stringPerformanceByDropoutRateByRegionMap = this.prepareReportForGeographicLevel(performanceByDropoutRateByRegionList, REGION_REPORT);
 
 
@@ -71,6 +78,9 @@ public class PerformanceByDropoutRateByDistrictService {
         } else {
 
             performanceByDropoutRateByDistrictList = repository.loadPerformanceByDropoutRateFacillityReports(filterParam);
+            if(filterParam.getProduct_id().equals(DTP_PRODUCT_ID)){
+                performanceByDropoutRateByDistrictList=this.transposeDptVAlueToBg(performanceByDropoutRateByDistrictList);
+            }
             stringPerformanceByDropoutRateByDistrictMap = this.prepareReportForGeographicLevel(performanceByDropoutRateByDistrictList, FACILLITY_REPORT);
         }
 
@@ -131,6 +141,15 @@ public class PerformanceByDropoutRateByDistrictService {
         }
         return columnRangeValues;
 
+    }
+    private List<PerformanceByDropoutRateByDistrict> transposeDptVAlueToBg(List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList){
+        for(PerformanceByDropoutRateByDistrict rateByDistrict: performanceByDropoutRateByDistrictList){
+            rateByDistrict.setBcg_mr_dropout(rateByDistrict.getDtp1_dtp3_dropout());
+            rateByDistrict.setBcg_vaccinated(rateByDistrict.getDtp1_vaccinated());
+            rateByDistrict.setMr_vaccinated(rateByDistrict.getDtp3_vaccinated());
+            rateByDistrict.setBcg_mr_dropout(rateByDistrict.getDtp1_dtp3_dropout());
+        }
+        return  performanceByDropoutRateByDistrictList;
     }
 
     public Map<String, List<PerformanceByDropoutRateByDistrict>> prepareReportForGeographicLevel(List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList, int reportType) {

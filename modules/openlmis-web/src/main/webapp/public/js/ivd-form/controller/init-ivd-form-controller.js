@@ -28,15 +28,16 @@ function InitIvdFormController($scope, programs, VaccineReportFacilities, Vaccin
       if ($scope.periodGridData.length > 0) {
         $scope.periodGridData[0].showButton = true;
       }
+      angular.forEach($scope.periodGridData, function(period){
+        period.statusMessage = getStatusText(period.status);
+      });
     });
   };
 
   $scope.initiate = function (period) {
     if (!angular.isUndefined(period.id) && (period.id !== null)) {
-      // redirect already
       $location.path('/create/' + period.id);
     } else {
-      // initiate
       VaccineReportInitiate.get({
         periodId: period.periodId,
         facilityId: period.facilityId,
@@ -51,6 +52,10 @@ function InitIvdFormController($scope, programs, VaccineReportFacilities, Vaccin
     return '<input type="button" ng-click="initiate(row.entity)" openlmis-message="button.proceed" class="btn btn-primary btn-small grid-btn" ng-show="' + showButton + '"/>';
   }
 
+  function getStatusText(status){
+    return  messageService.get('ivd.form.status.' + (status === null ? 'NOT_INITIATED' : status ));
+  }
+
   $scope.periodGridOptions = {
     data: 'periodGridData',
     canSelectRows: false,
@@ -63,8 +68,8 @@ function InitIvdFormController($scope, programs, VaccineReportFacilities, Vaccin
     showFilter: false,
     columnDefs: [
       {field: 'periodName', displayName: messageService.get("label.periods")},
-      {field: 'status', displayName: messageService.get("label.ivd.status")},
-      {field: '', displayName: '', cellTemplate: getActionButton('row.entity.showButton')}
+      {field: 'statusMessage', displayName: messageService.get("label.ivd.status")},
+      {field: '', displayName: messageService.get('label.action'), cellTemplate: getActionButton('row.entity.showButton')}
     ]
   };
 

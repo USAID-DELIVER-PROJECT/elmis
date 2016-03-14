@@ -32,7 +32,7 @@ public class PerformanceCoverageQueryBuilder {
                 "sum(i.denominator) target,\n" +
                 "i.period_name,\n" +
                 "sum(i.within_outside_total) vaccinated,\n" +
-                "trunc((case when sum(denominator) > 0 then (sum(i.within_outside_total) / sum(denominator)::numeric) else 0 end) * 100,2) coverage,\n" +
+                "round((case when sum(denominator) > 0 then (sum(i.within_outside_total) / sum(denominator)::numeric) else 0 end) * 100,2) coverage,\n" +
                 "extract(month from i.period_start_date) \"month\",\n" +
                 "extract(year from i.period_start_date) \"year\"" +
                 "FROM\n" +
@@ -122,7 +122,7 @@ public class PerformanceCoverageQueryBuilder {
                 "sum(i.within_outside_total) vaccinated,\n" +
                 "extract(month from i.period_start_date) \"month\",\n" +
                 "extract(year from i.period_start_date) \"year\"," +
-                "trunc((case when sum(denominator) > 0 then (sum(i.within_outside_total) / sum(denominator)::numeric) else 0 end) * 100,2) coverage\n" +
+                "round((case when sum(denominator) > 0 then (sum(i.within_outside_total) / sum(denominator)::numeric) else 0 end) * 100,2) coverage\n" +
                 "FROM\n" +
                 "  vw_vaccine_coverage i\n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
@@ -132,7 +132,7 @@ public class PerformanceCoverageQueryBuilder {
                 "JOIN product_categories pg ON pp.productcategoryid = pg.ID\n" +
                 "WHERE\n" +
                 "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
-                "AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
+                "AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
                 "and i.product_id = " +productId +"\n"+
                 writeDistrictPredicate(zone) +
                 "group by d.region_name,d.district_name, d.district_id, i.period_name, i.period_start_date\n" +
@@ -213,7 +213,7 @@ public class PerformanceCoverageQueryBuilder {
                 "i.within_outside_total vaccinated,\n" +
                 "extract(month from i.period_start_date) \"month\",\n" +
                 "extract(year from i.period_start_date) \"year\"," +
-                "trunc((case when denominator > 0 then (i.within_outside_total / denominator::numeric) else 0 end) * 100,2) coverage\n" +
+                "round((case when denominator > 0 then (i.within_outside_total / denominator::numeric) else 0 end) * 100,2) coverage\n" +
                 "FROM\n" +
                 "  vw_vaccine_coverage i\n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
@@ -223,7 +223,7 @@ public class PerformanceCoverageQueryBuilder {
                 "JOIN product_categories pg ON pp.productcategoryid = pg.ID\n" +
                 "WHERE\n" +
                 "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
-                "AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
+                "AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
                 " and i.product_id = " +productId
                 +""+
                 writeDistrictPredicate(zone)
