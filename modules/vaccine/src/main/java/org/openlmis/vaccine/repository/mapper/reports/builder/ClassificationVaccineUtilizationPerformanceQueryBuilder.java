@@ -229,8 +229,8 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
     }
 
         public String getYearQuery(){
-                return  "select distinct extract (year from pr.startdate) year_value from vaccine_reports r\n" +
-                        "join processing_periods pr on r.periodid = pr.id order by year_value";
+                return  "select distinct extract (year from pr.startdate) id,  extract (year from pr.startdate) year_value from vaccine_reports r\n" +
+                        "join processing_periods pr on r.periodid = pr.id order by year_value DESC";
         }
 
 }
