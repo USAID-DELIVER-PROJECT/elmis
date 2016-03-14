@@ -31,8 +31,10 @@
                                   ng-bind="productToAdd.lots[0].vvmStatus"></span>
         </td>
         <td class="col-count cell-input col-general row-add">
-            <input ng-require="true" ng-if="productToAdd.lots.length >0" min="1" type="number"
-                   ng-model="productToAdd.lots[0].quantity"/>
+            <input ng-required="true" ng-if="productToAdd.lots.length >0"
+                   min="{{getPresentation(productToAdd.product)}}" type="number"
+                   ng-model="productToAdd.lots[0].quantity"
+                   divisible-by-presentation="{{getPresentation(productToAdd.product)}}"/>
         </td>
         <td class="row-add">
             <a ng-if="productToAdd.lots.length >0" href="" class="close"
@@ -41,7 +43,7 @@
 
         <td class="cell-input row-add" rowspan="{{productToAdd.lots.length +2 }}">
             <input type="submit"
-                   ng-disabled="(productToAdd.product===undefined || productToAdd.product===null) || (!productToAdd.batchTracked && productToAddForm.productToAddQuantity.$invalid) || (productToAdd.batchTracked && productToAdd.lots.length ===0 )"
+                   ng-disabled=" productToAddForm.$invalid || productToAdd.product===undefined || (productToAdd.batchTracked && productToAdd.lots.length ===0 )"
                    class="btn btn-primary" ng-click="addProduct(productToAdd)" value="Add Product"/>
         </td>
     </tr>
@@ -55,13 +57,15 @@
             <span ng-bind="lot.vvmStatus"></span>
         </td>
         <td class="col-count cell-input col-general row-add">
-            <input ng-require="true" min="1" type="number" ng-model="lot.quantity"/>
+            <input ng-required="true" min="{{getPresentation(productToAdd.product)}}" type="number"
+                   ng-model="lot.quantity"
+                   divisible-by-presentation="{{getPresentation(productToAdd.product)}}"/>
         </td>
         <td class="row-add">
             <a ng-if="lot" href="" class="close" ng-click="removeProductLot(lot)">&times;</a>
         </td>
-
     </tr>
+
     <!--Add new Row-->
     <tr ng-if="productToAdd.product !==undefined && productToAdd.product !==null"
         ng-form="lotToAddForm">
@@ -82,7 +86,7 @@
             </div>
         </td>
         <td class="col-count cell-input col-general last-row row-add-batch">
-            <select ng-if="productToAdd.batchTracked===true && productToAdd.vvmTracked" ng-show="productToAdd.vvmTracked" ng-required="productToAdd.vvmTracked" ui-select2
+            <select ng-if="productToAdd.vvmTracked" ng-required="productToAdd.vvmTracked" ui-select2
                     style="max-width:130px !important;min-width:130px !important"
                     ng-options="i.value as i.name for i in vvmStatuses" name="vvmToAdd"
                     ng-model="lotToAdd.vvmStatus">
@@ -90,12 +94,15 @@
             </select>
         </td>
         <td class="col-count cell-input col-general last-row row-add-batch">
-            <input ng-if="productToAdd.batchTracked===true" placeholder="Quantity" ng-show="productToAdd.batchTracked===true" min="1"
-                   ng-required="productToAdd.batchTracked" name="quantityToAdd"
-                   ng-model="lotToAdd.quantity" maxlength="5" type="number"/>
-            <input ng-required="(productToAdd.product !==undefined || productToAdd.product ===null ) && (productToAdd.batchTracked===false || productToAdd.batchTracked===null)" name="productToAddQuantity" type="number" min="1"
-                   ng-show="(productToAdd.product !==undefined || productToAdd.product ===null ) && (productToAdd.batchTracked===false || productToAdd.batchTracked===null)"
-                   ng-model="productToAdd.quantity">
+            <input ng-if="productToAdd.batchTracked===true" min="{{getPresentation(productToAdd.product)}}"
+                   ng-required="true" name="quantityToAdd"
+                   ng-model="lotToAdd.quantity" maxlength="9" type="number"
+                   divisible-by-presentation="{{getPresentation(productToAdd.product)}}"/>
+            <input ng-required="true" name="productToAddQuantity" type="number"
+                   min="{{getPresentation(productToAdd.product)}}"
+                   ng-if="(productToAdd.product !==undefined || productToAdd.product ===null ) && (productToAdd.batchTracked===false || productToAdd.batchTracked===null)"
+                   ng-model="productToAdd.quantity" maxlength="9"
+                   divisible-by-presentation="{{getPresentation(productToAdd.product)}}"/>
         </td>
 
         <td ng-if="productToAdd.batchTracked===true" class="last-row row-add-batch-last">
@@ -143,9 +150,11 @@
             <td  class="col-count cell-input col-general" ng-class="{'last-row':product.lots.length <=1}">
                 <input ng-if="product.batchTracked" ng-required="product.lots.length > 0" ng-if="product.lots.length > 0"
                        name="batchQuantity_{{$index}}_0" ng-model="product.lots[0].quantity" min="1"
+                       divisible-by-presentation="{{getPresentation(product)}}"
                        type="number"/>
                 <input ng-required="!product.batchTracked" name="quantity_{{$index}}"
-                       ng-if="!product.batchTracked" type="number" min="1" ng-model="product.quantity">
+                       ng-if="!product.batchTracked" type="number" min="1" ng-model="product.quantity"
+                       mdivisible-by-presentation="{{getPresentation(product)}}">
             </td>
             <td class="disabled"  ng-class="{'last-row':product.lots.length===1}">
                 <a ng-if="product.batchTracked" ng-if="product.lots[0]" href="" class="close"
@@ -168,7 +177,8 @@
             <td ng-if="product.batchTracked" ng-class="{'last-row':$last}"
                 class="col-count cell-input col-general ">
                 <input name="batchQuantity_{{$parent.$index}}_{{$index}}" ng-required="product.batchTracked"
-                       ng-model="lot.quantity" min="1" type="number"/>
+                       ng-model="lot.quantity" min="1" type="number"
+                       divisible-by-presentation="{{getPresentation(product)}}"/>
             </td>
             <td ng-if="product.batchTracked" ng-class="{'last-row':$last}" class="disabled">
                 <a ng-if="lot" class="close" ng-click="removeReceivedLot(product,lot)">&times;</a>
@@ -253,5 +263,3 @@
 </div>
 
 <!--Lot Modal Ends-->
-
-

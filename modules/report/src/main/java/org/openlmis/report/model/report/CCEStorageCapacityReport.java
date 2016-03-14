@@ -15,6 +15,8 @@ package org.openlmis.report.model.report;
 import lombok.*;
 import org.openlmis.report.model.ResultRow;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,4 +30,17 @@ public class CCEStorageCapacityReport implements ResultRow {
   private String freezerCapacityCurrent;
   private String freezerCapacityRequired;
   private String freezerCapacityGap;
+  private String facilityLevel;
+
+  public String getRefrigeratorCapacityGap() {
+    BigDecimal rcr = new BigDecimal(refrigeratorCapacityRequired);
+    BigDecimal rcc = new BigDecimal(refrigeratorCapacityCurrent);
+    return (rcr.subtract(rcc)).toString();
+  }
+
+  public String getFreezerCapacityGap() {
+    BigDecimal fcr = new BigDecimal(freezerCapacityRequired);
+    BigDecimal fcc = new BigDecimal(freezerCapacityCurrent);
+    return (fcr.subtract(fcc)).toString();
+  }
 }

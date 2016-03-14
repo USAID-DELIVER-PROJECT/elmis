@@ -37,7 +37,7 @@ public class VaccineInventoryProductConfiguration extends BaseModel {
 
     private Long dilutionSyringe;
 
-    private Long volumePerCif;
+    private Double diluentPackedVolumePerDose;
 
     private Long ordering;
 

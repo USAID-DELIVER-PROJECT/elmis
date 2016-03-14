@@ -36,6 +36,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                   });
                   product.displayOrder=programProduct[0].id;
                   product.productCategory=programProduct[0].productCategory;
+                  product.presentation=programProduct[0].product.dosesPerDispensingUnit;
 
                   //Set Quantity Required
                   reportProduct=_.findWhere(report.status.products,{productCode:stockCard.product.code});
