@@ -386,7 +386,7 @@ services.factory('VaccineDashboardFacilityTrend', function($resource){
     return $resource('/vaccine/dashboard/facility-coverage.json',{},
         {
             coverage: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage.json'},
-            stockDetail: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage-details.json'},
+            coverageDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage-details.json'},
             sessions: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-sessions.json'},
             sessionsDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-sessions-details.json'},
             wastage: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-wastage.json'},
