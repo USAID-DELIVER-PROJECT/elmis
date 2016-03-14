@@ -389,7 +389,7 @@ CreateRequisitionController.resolve = {
     var deferred = $q.defer();
     $timeout(function () {
       EquipmentOperationalStatus.get({}, function (data) {
-        deferred.resolve(data.status);
+        deferred.resolve(_.filter(data.status, {'category': 'LAB'}));
       }, {});
     }, 100);
     return deferred.promise;

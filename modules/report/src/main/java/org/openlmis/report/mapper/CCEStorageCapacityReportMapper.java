@@ -14,6 +14,7 @@ package org.openlmis.report.mapper;
 
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
@@ -34,4 +35,36 @@ public interface CCEStorageCapacityReportMapper {
         @Param("rowBounds") RowBounds rowBounds,
         @Param("userId") Long userId
     );
+
+    @Select("select value from facility_demographic_estimates fd " +
+            " join demographic_estimate_categories dc on fd.demographicestimateid=dc.id " +
+            " where dc.name = #{demographicCategory} and fd.facilityid=#{facilityId} and fd.year=#{year} limit 1")
+    Integer getFacilityCategoryPopulation(
+            @Param("demographicCategory") String demographicCategory,
+            @Param("facilityId") Long facilityId,
+            @Param("year") int year
+    );
+
+    @Select("select value from district_demographic_estimates dd " +
+            " join demographic_estimate_categories dc on dd.demographicestimateid=dc.id " +
+            " join facilities f on f.geographiczoneid=dd.districtid " +
+            " where dc.name =#{demographicCategory} and f.id=#{facilityId} and dd.year=#{year} limit 1")
+    Integer getDistrictCategoryPoulation(
+            @Param("demographicCategory") String demographicCategory,
+            @Param("facilityId") Long facilityId,
+            @Param("year") int year
+    );
+
+    @Select("select SUM(value) from district_demographic_estimates dd " +
+            " join demographic_estimate_categories dc on dd.demographicestimateid=dc.id " +
+            " where dc.name = #{demographicCategory} and dd.districtid " +
+            " IN (select id from geographic_zones where parentid= " +
+            " (select gz.parentid from facilities f join geographic_zones gz on gz.id=f.geographiczoneid where f.id=#{facilityId})) " +
+            " and dd.year=#{year}")
+    Integer getRegionalCategoryPoulation(
+            @Param("demographicCategory") String demographicCategory,
+            @Param("facilityId") Long facilityId,
+            @Param("year") int year
+    );
+
 }

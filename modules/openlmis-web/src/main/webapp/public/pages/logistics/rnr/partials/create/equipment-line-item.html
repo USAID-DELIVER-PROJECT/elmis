@@ -29,11 +29,6 @@
                 </th>
                 <th class="span1" >
                     <div class="regimen-heading">
-                        <span openlmis-message="rnr.equipment.model"></span>
-                    </div>
-                </th>
-                <th class="span1" >
-                    <div class="regimen-heading">
                         <span openlmis-message="rnr.equipment.serial"></span>
                     </div>
                 </th>
@@ -70,39 +65,40 @@
                     ng-bind="equipmentLineItem.equipmentCategory"></td>
             </tr>
             <tr>
-                <td class="cell-input">
-                    <span ng-bind="equipmentLineItem.equipmentName" class="cell-text"></span>
+                <td class="cell-input padding2px ">
+                    <span ng-bind="equipmentLineItem.code" class="cell-text" ></span>
                 </td>
-                <td class="cell-input">
-                    <span ng-bind="equipmentLineItem.equipmentName" class="cell-text"></span>
+                <td class="cell-input padding2px ">
+                  <span class="col-product cell-text">
+                     <span ng-bind="equipmentLineItem.equipmentName" class="padding2px"></span>
+                  </span>
                 </td>
-                <td class="cell-input">
-                    <span ng-bind="equipmentLineItem.equipmentModel" class="cell-text"></span>
+                <td class="cell-input padding2px">
+                  <span class="col-product cell-text">
+                    <span ng-bind="equipmentLineItem.equipmentSerial" class="padding2px"></span>
+                  </span>
                 </td>
-                <td class="cell-input">
-                    <span ng-bind="equipmentLineItem.equipmentSerial" class="cell-text"></span>
-                </td>
-                <td class="cell-input" style="padding-top:5px;">
+                <td class="cell-input padding2px">
                      <select ng-disabled="formDisabled" class="cell-text" ng-model="equipmentLineItem.operationalStatusId" ng-change="equipmentStatusChanged(equipmentLineItem);">
                          <option  ng-repeat="status in equipmentOperationalStatus" value="{{status.id}}" ng-selected="equipmentLineItem.operationalStatusId == status.id">{{status.name}}</option>
                      </select>
                 </td>
-                <td class="cell-input">
-                    <input ng-disabled="formDisabled" class="cell-text" ng-disable="disableForm || !equipmentLineItem.enableTestCount" type="text" ng-model="equipmentLineItem.testCount">
+                <td class="cell-input col-general padding2px">
+                    <input ng-disabled="formDisabled"  ng-disable="disableForm || !equipmentLineItem.enableTestCount" type="text" ng-model="equipmentLineItem.testCount">
                 </td>
-                <td class="cell-input">
-                    <input ng-disabled="formDisabled" class="cell-text" ng-disable="disableForm || !equipmentLineItem.enableTotalCount" type="text" ng-model="equipmentLineItem.totalCount">
+                <td class="cell-input col-general padding2px">
+                    <input ng-disabled="formDisabled"  ng-disable="disableForm || !equipmentLineItem.enableTotalCount" type="text" ng-model="equipmentLineItem.totalCount">
                 </td>
-                <td class="cell-input">
-                    <input ng-disabled="formDisabled" class="cell-text" type="text" ng-model="equipmentLineItem.daysOutOfUse">
+                <td class="cell-input col-general padding2px">
+                    <input ng-disabled="formDisabled" type="text" ng-model="equipmentLineItem.daysOutOfUse">
                 </td>
                 <td class="cell-input" >
-                  <span  ng-class="( ( equipmentLineItem.remarks == undefined || equipmentLineItem.remarks == '' ) && equipmentLineItem.operationalStatusId == 3)?'cell-error-highlight':''" class="input-error-parent-cell" >
-                    <input ng-disabled="formDisabled" class="cell-text" type="text" ng-model="equipmentLineItem.remarks">
+                  <span  ng-class="{'cell-error-highlight': (requiresRemarks(equipmentLineItem))}" class="input-error-parent-cell" >
+                    <input ng-disabled="formDisabled"  type="text" ng-model="equipmentLineItem.remarks">
                   </span>
                   <span
                         class="alert alert-warning warning-alert"
-                        ng-show="( ( equipmentLineItem.remarks == undefined || equipmentLineItem.remarks == '' ) && equipmentLineItem.operationalStatusId == 3)"
+                        ng-show="requiresRemarks(equipmentLineItem)"
                         openlmis-message="equipment.error.related.products.ordered">
                   </span>
                 </td>

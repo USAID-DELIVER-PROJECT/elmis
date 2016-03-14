@@ -22,7 +22,6 @@ services.factory('StockCardsByCategory', function($resource,StockCards,$q, $time
                     if(!isNaN(pId)){
                         VaccineProgramProducts.get({programId:pId},function(data){
                                  programProducts=data.programProductList;
-
                                  StockCards.get({facilityId:fId},function(data){
                                         var stockCards=data.stockCards;
                                         stockCards.forEach(function(s){
@@ -31,6 +30,7 @@ services.factory('StockCardsByCategory', function($resource,StockCards,$q, $time
                                               });
                                                 s.displayOrder=product[0].id;
                                                 s.productCategory=product[0].productCategory;
+                                                s.presentation=product[0].product.dosesPerDispensingUnit;
                                         });
                                         stockCards=_.sortBy(stockCards,'displayOrder');
 
@@ -75,9 +75,7 @@ services.factory('FacilityWithProducts', function($resource,$timeout,$q,StockCar
                          if(program !== null){
                                 StockCards.get({facilityId:homeFacilityId},function(s){
                                     FacilityDistributionForecastAndLastPeriod.get({facilityId:facility.id,programId:program.id},function(distributionForecastAndPeriod){
-                                     console.log(JSON.stringify(distributionForecastAndPeriod.forecast));
                                         QuantityRequired.get({facilityCode:facility.code,programCode:program.code,periodId:distributionForecastAndPeriod.lastPeriod[0].id},function(report){
-                                             console.log(JSON.stringify(report));
                                              var facilityWithProducts=new FacilitiesWithProducts(facility,s.stockCards,distributionForecastAndPeriod,report);
                                              deferred.resolve(facilityWithProducts);
                                         });
@@ -112,7 +110,6 @@ services.factory('VaccineOrderRequisitionByCategory', function ($resource, Vacci
                         var overallData = data.report;
 
                         var lineItems = data.report.lineItems;
-                         console.log(JSON.stringify(lineItems));
                         lineItems.forEach(function(s){
 
                            // s.displayOrder=s.productId;
@@ -355,7 +352,7 @@ services.factory('StockCardsForProgramByCategory', function ($resource,StockCard
 
                                         if (quantityToRequest.length > 0 && product[0].productCategory !==undefined) {
                                             s.productCategory = product[0].productCategory;
-
+                                            s.presentation = product[0].product.dosesPerDispensingUnit;
                                             s.quantityRequested = quantityToRequest[0].quantityRequested;
 
                                         }

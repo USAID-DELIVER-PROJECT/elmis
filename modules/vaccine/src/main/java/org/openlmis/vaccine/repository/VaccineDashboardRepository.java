@@ -128,4 +128,11 @@ public class VaccineDashboardRepository {
         return mapper.isDistrictUser(userId);
     }
 
+    public List<HashMap<String,Object>> getFacilityStock(Long period, Long product, Long userId) {
+        return mapper.getFacilityStock(period, product, userId);
+    }
+
+    public List<HashMap<String, Object>> getFacilityStockDetail(Date fromDate, Date toDate, Long product, Long userId) {
+        return mapper.getFacilityStockDetail(fromDate, toDate, product, userId);
+    }
 }

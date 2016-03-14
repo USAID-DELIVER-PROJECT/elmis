@@ -183,6 +183,22 @@ public class VaccineDashboardController  extends BaseController {
         return OpenLmisResponse.response("districtStock", service.getDistrictStock(period, product));
     }
 
+    @RequestMapping(value = "facility-stock.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityStock(@RequestParam("period") Long period,
+                                                             @RequestParam("product") Long product,
+                                                             HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("facilityStock", service.getFacilityStock(period, product, userId));
+    }
+
+    @RequestMapping(value = "facility-stock-detail.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityStockDetails(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate,
+                                                                    @RequestParam("product") Long product,
+                                                                    HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("facilityStockDetail", service.getFacilityStockDetail(startDate, endDate, product, userId));
+    }
+
     @RequestMapping(value = "isDistrictUser.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> isDistrictUser(HttpServletRequest request){
         Long userId = this.loggedInUserId(request);

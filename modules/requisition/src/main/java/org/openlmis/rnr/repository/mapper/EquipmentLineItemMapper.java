@@ -42,6 +42,7 @@ public interface EquipmentLineItemMapper {
   Integer update(EquipmentLineItem item);
 
   @Select("SELECT esli.id " +
+          " , (select statusid from equipment_inventory_statuses where id = esli.inventoryStatusId limit 1) as operationalStatusId " +
       "  , sq.id as programEquipmentId " +
       "  , esli.* " +
       "FROM equipment_status_line_items esli " +

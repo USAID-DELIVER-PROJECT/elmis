@@ -339,6 +339,9 @@ services.factory('VaccineDashboardMonthlyStock', function($resource){
 services.factory('VaccineDashboardDistrictStock', function($resource){
     return $resource('/vaccine/dashboard/district-stock.json',{},{});
 });
+services.factory('VaccineDashboardFacilityStock', function($resource){
+    return $resource('/vaccine/dashboard/facility-stock.json',{},{});
+});
 
 services.factory('VaccineDashboardBundle', function($resource){
     return $resource('/vaccine/dashboard/bundle.json',{},{});
@@ -390,6 +393,7 @@ services.factory('VaccineDashboardFacilityTrend', function($resource){
             wastageDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-wastage-details.json'},
             dropout: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-dropout.json'},
             dropoutDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-dropout-details.json'},
+            stockDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-stock-detail.json'}
         }
     );
 });

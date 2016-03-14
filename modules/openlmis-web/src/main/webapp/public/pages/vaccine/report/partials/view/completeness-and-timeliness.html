@@ -162,52 +162,6 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div ng-show="allRegionSelection">
-                        <h2 openlmis-message="completeness.and.timliness.header.district.aggregate">District stores aggregate summary</h2>
-                        <table id="summary-table" class="rnr-table table-bordered table" ng-show="aggregateSummary.length > 0">
-                            <thead >
-                            <tr>
-                                <th style="width: 19%;"></th>
-                                <th  openlmis-message="label.districts"></th>
-                                <th ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="parent in aggregateTableData">
-                                <td></td>
-                                <td ng-repeat="child in parent">{{child.val}}</td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="2" openlmis-message="completeness.and.timliness.num.dist.stores"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{aggregateExpectedStoresCount | number}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" openlmis-message="completeness.and.timliness.summary.completed"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.completed track by $index">{{a | number}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" openlmis-message="completeness.and.timliness.summary.ontime"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.ontime track by $index">{{a | number}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" openlmis-message="completeness.and.timliness.completeness"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.completeness track by $index">{{a | number}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" openlmis-message="completeness.and.timliness.timeliness"></td>
-                                <td ng-repeat="a in aggregateSummaryLegendData.timeliness track by $index">{{a | number}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="table table-bordered" ng-show="aggregateSummary.length < 1">
-                            <tr>
-                                <td  openlmis-message="completeness.and.timliness.no.district.stores.found"></td>
-                            </tr>
-                        </table>
-                    </div>
                 </div>
             </div>
         </div>

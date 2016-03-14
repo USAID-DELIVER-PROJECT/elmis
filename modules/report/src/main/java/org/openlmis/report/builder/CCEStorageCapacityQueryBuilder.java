@@ -24,9 +24,11 @@ public class CCEStorageCapacityQueryBuilder {
 
         CCEStorageCapacityReportParam filter = (CCEStorageCapacityReportParam)params.get("filterCriteria");
         BEGIN();
-        SELECT("facilities.name AS siteName" +
+        SELECT("facilities.id as facilityId" +
+                ", MAX(facility_types.code) as facilityLevel" +
+                ", facilities.name AS siteName" +
             ", COALESCE(SUM(equipment_cold_chain_equipments.refrigeratorcapacity),0) AS refrigeratorCapacityCurrent" +
-            ", 0 AS refrigeratorCapacityRequired" +
+                ", (select fn_cce_volume_capacity_required(facilities.id,MAX(facility_types.code))) AS refrigeratorCapacityRequired" +
             ", 0 AS refrigeratorCapacityGap" +
             ", COALESCE(SUM(equipment_cold_chain_equipments.freezercapacity),0) AS freezerCapacityCurrent" +
             ", 0 AS freezerCapacityRequired" +
