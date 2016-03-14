@@ -169,7 +169,7 @@
 					<textFieldExpression><![CDATA[($P{FAX}.isEmpty() || $P{FAX}.equalsIgnoreCase("null"))?" ":$P{FAX}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="414" y="0" width="131" height="14" uuid="d9d9f94f-3d67-4425-98a4-a735b74108b6">
+					<reportElement x="414" y="0" width="81" height="14" uuid="d9d9f94f-3d67-4425-98a4-a735b74108b6">
 						<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
@@ -283,6 +283,10 @@
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$R{label.facility.code}+':']]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="497" y="0" width="58" height="15" forecolor="#FF0000" uuid="12e78268-3032-468b-bfe5-5f0f70802691"/>
+					<textFieldExpression><![CDATA[$P{TYPE}.equals("Regular")? "":$P{TYPE}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -677,54 +681,46 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="22" splitType="Stretch">
+		<band height="34" splitType="Stretch">
 			<textField>
-				<reportElement x="42" y="0" width="35" height="22" uuid="045878dc-8c84-413b-88c7-19c986a1f475"/>
+				<reportElement x="52" y="0" width="35" height="22" uuid="045878dc-8c84-413b-88c7-19c986a1f475"/>
 				<textFieldExpression><![CDATA[$P{PROGRAM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="203" y="0" width="47" height="22" uuid="832d8532-df92-4dc2-80b5-2732059c0938"/>
+				<reportElement x="213" y="0" width="47" height="22" uuid="832d8532-df92-4dc2-80b5-2732059c0938"/>
 				<textFieldExpression><![CDATA[$P{SCHEDULE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="103" y="0" width="52" height="22" uuid="e49dc9bf-0063-45f3-8a1f-08be6cc8ad32"/>
+				<reportElement x="113" y="0" width="52" height="22" uuid="e49dc9bf-0063-45f3-8a1f-08be6cc8ad32"/>
 				<textFieldExpression><![CDATA[$P{YEAR}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="298" y="0" width="64" height="22" uuid="6d841637-171c-4a03-8f68-d696d07498c2"/>
+				<reportElement x="327" y="0" width="64" height="22" uuid="6d841637-171c-4a03-8f68-d696d07498c2"/>
 				<textFieldExpression><![CDATA[$P{PERIOD}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="398" y="0" width="56" height="22" uuid="8f02b9ca-e0dc-4d7d-b903-3b63939c32a7"/>
+				<reportElement x="470" y="0" width="56" height="22" uuid="8f02b9ca-e0dc-4d7d-b903-3b63939c32a7"/>
 				<textFieldExpression><![CDATA[$P{DEPOT}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="497" y="0" width="48" height="22" uuid="12e78268-3032-468b-bfe5-5f0f70802691"/>
-				<textFieldExpression><![CDATA[$P{TYPE}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="1" y="0" width="41" height="22" uuid="2d84fc3a-d0d1-4054-a2e4-cc85a3e69fbd"/>
+				<reportElement x="11" y="0" width="41" height="22" uuid="2d84fc3a-d0d1-4054-a2e4-cc85a3e69fbd"/>
 				<text><![CDATA[Program:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="77" y="0" width="26" height="22" uuid="0be9f6d3-a326-4c05-b8fc-0487f13eff4d"/>
+				<reportElement x="87" y="0" width="26" height="22" uuid="0be9f6d3-a326-4c05-b8fc-0487f13eff4d"/>
 				<text><![CDATA[Year:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="155" y="0" width="48" height="22" uuid="44f1ff16-9476-4157-b7ae-9dd6bf9e5a72"/>
+				<reportElement x="165" y="0" width="48" height="22" uuid="44f1ff16-9476-4157-b7ae-9dd6bf9e5a72"/>
 				<text><![CDATA[Schedule:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="260" y="0" width="34" height="22" uuid="5b6328f0-8932-44b2-98a2-4dac43b5d0ab"/>
+				<reportElement x="288" y="0" width="34" height="22" uuid="5b6328f0-8932-44b2-98a2-4dac43b5d0ab"/>
 				<text><![CDATA[Period:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="362" y="0" width="36" height="22" uuid="09c583d1-2779-42e2-9a6f-956ab291c5ad"/>
+				<reportElement x="430" y="0" width="36" height="22" uuid="09c583d1-2779-42e2-9a6f-956ab291c5ad"/>
 				<text><![CDATA[Depot:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="460" y="0" width="37" height="22" uuid="270a8d40-7404-48eb-9abb-50f0024bb7af"/>
-				<text><![CDATA[Type:]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
