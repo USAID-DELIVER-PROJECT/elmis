@@ -109,15 +109,20 @@ var utils = {
 
     },
 
-    getYearStartAndEnd: function (year) {
+    getYearStartAndEnd: function (year,_cuttofdate) {
+
+        var periodValues=[];
         var endDate;
         var startDate;
-        endDate = new Date(year, 12, 0);
-        startDate = new Date(year, 0, 1);
-        return {
-            startdate: utils.formatDate(startDate),
-            enddate: utils.formatDate(endDate)
-        };
+        if(year==='0'){
+            periodValues=utils.getVaccineCustomDateRange(1,null,null,_cuttofdate);
+
+        }else {
+            periodValues={  enddate :utils.formatDate(new Date(year, 12, 0)),
+                startdate :utils.formatDate(new Date(year, 0, 1))};
+        }
+
+        return periodValues;
     },
     getVaccineMonthlyDefaultPeriod: function (periods, cuttoffDate) {
         var monthBack = 0;

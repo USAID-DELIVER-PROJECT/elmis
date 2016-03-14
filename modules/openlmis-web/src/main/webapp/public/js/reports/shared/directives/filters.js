@@ -1580,12 +1580,12 @@ app.directive('productWithoutDescriptionFilter', ['ReportProductsByProgramWithou
 ]);
 
 
-app.directive('staticYearFilter', ['StaticYears', function (StaticYears) {
+app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (StaticYears, SettingsByKey) {
 
     return {
         restrict: 'E',
         scope: {
-            year: '=year',
+            staticYear: '=year',
             periodStartdate: '=startdate',
             periodEnddate: '=enddate',
             onChange: '&'
@@ -1594,16 +1594,28 @@ app.directive('staticYearFilter', ['StaticYears', function (StaticYears) {
         controller: function ($scope, $timeout) {
 
             $scope.periodStartdate = $scope.periodEnddate = "";
+            $scope.years = [];
+            SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data, er) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    $scope.cutoffdate = data.settings.value;
+                }else{
+                    $scope.cutoffdate=0;
+                }
+            });
             StaticYears.get({}, function (data) {
-                $scope.years = data.years;
-                $scope.year = data.years[0].year_value;
+                $scope.years.push({id: '0', year_value: 'Current Period'});
+                data.years.forEach(function (value) {
+                    $scope.years.push(value);
+                });
+
+                $scope.staticYear = $scope.years[0].id;
 
             });
 
 
-            $scope.$watch('year', function (newValues, oldValues) {
-                if (!utils.isNullOrUndefined($scope.year)) {
-                    periods = utils.getYearStartAndEnd($scope.year);
+            $scope.$watch('staticYear', function (newValues, oldValues) {
+                if (!utils.isNullOrUndefined($scope.staticYear)) {
+                    periods = utils.getYearStartAndEnd($scope.staticYear,$scope.cutoffdate);
 
 
                     $scope.periodStartdate = periods.startdate;
