@@ -4,8 +4,8 @@
     <form  novalidate>
         <div  class="clearfix">
             <vaccine-dropout-filter defaultselction="defaultProduct"  class="form-cell horizontalFilters" filterproduct="filter.detailDropout.product" on-change="dropoutDetailCallback()"></vaccine-dropout-filter>
-            <static-period-filter default="defaultPeriodTrend" range="filter.detailDropout.range" startdate="filter.detailDropout.startDate" enddate="filter.detailDropout.endDate" rangemax="10" error="perioderror" on-change="dropoutDetailCallback()" ></static-period-filter>
-
+            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailDropout.range" startdate="filter.detailDropout.startDate" enddate="filter.detailDropout.endDate" rangemax="10" error="perioderror" on-change="dropoutDetailCallback()" ></static-period-filter>-->
+            <static-year-filter  on-change="dropoutDetailCallback()" year="staticYear" startdate="filter.detailDropout.startDate" enddate="filter.detailDropout.endDate" ></static-year-filter>
         </div>
     </form>
 </div>

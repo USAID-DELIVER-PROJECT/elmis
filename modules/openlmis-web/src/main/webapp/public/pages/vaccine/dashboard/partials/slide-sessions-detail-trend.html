@@ -3,8 +3,8 @@
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
-            <static-period-filter default="defaultPeriodTrend" range="filter.detailSessions.range" startdate="filter.detailSessions.startDate" enddate="filter.detailSessions.endDate" rangemax="10" error="perioderror" on-change="sessionDetailCallback()" ></static-period-filter>
-
+            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailSessions.range" startdate="filter.detailSessions.startDate" enddate="filter.detailSessions.endDate" rangemax="10" error="perioderror" on-change="sessionDetailCallback()" ></static-period-filter>-->
+            <static-year-filter  on-change="sessionDetailCallback()" year="staticYear" startdate="filter.detailSessions.startDate" enddate="filter.detailSessions.endDate" ></static-year-filter>
         </div>
     </form>
 </div>
