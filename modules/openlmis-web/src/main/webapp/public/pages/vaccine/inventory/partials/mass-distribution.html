@@ -269,11 +269,14 @@
                         <td class="col-general cell-input" ng-class="{'last-row':product.lots.length==1}">
                             <input ng-show="product.lots.length > 0" min="{{0}}" max="{{product.lots[0].quantityOnHand}}" name="quantity" ng-model="product.lots[0].quantity"
                                    ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
+                                   divisible-by-presentation="{{product.presentation}}"
                             maxlength="8" type="number"/>
                             <input ng-show="product.lots === undefined" min="{{0}}"
                                    max="{{product.totalQuantityOnHand}}" name="quantity" ng-model="product.quantity"
                                    ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
-                               maxlength="8" type="number"/>
+                                   maxlength="8" type="number" divisible-by-presentation="{{product.presentation}}"
+                                   title="Quantity To Issue"
+                                    />
                     </td>
                         <td class="cell-input disabled last-row" rowspan="{{product.lots.length}}">
                             <span class="cell-text" ng-bind="product.quantity | number"></span>
@@ -302,7 +305,7 @@
                                    ng-show="product.lots.length > 0" min="{{0}}" max="{{lot.quantityOnHand}}"
                                    name="lotQuantity{{$index}}" ng-model="lot.quantity"
                                ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
-                               maxlength="8" type="number"/>
+                                   maxlength="8" type="number" divisible-by-presentation="{{product.presentation}}"/>
                     </td>
                 </tr>
                 </tbody>

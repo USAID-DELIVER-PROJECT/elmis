@@ -35,6 +35,26 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
                 });
                 $scope.productsToDisplay=$scope.allProducts;
         });
+
+        VaccineProgramProducts.get({programId:programId},function(data){
+            $scope.productsWithPresentation=data.programProductList;
+        });
+    };
+
+    $scope.getPresentation=function(product)
+    {
+        var productWithPresentation = _.filter($scope.productsWithPresentation, function (obj) {
+              return obj.product.primaryName === product.primaryName;
+        });
+        if(productWithPresentation.length === 1)
+        {
+            console.log( productWithPresentation[0].product.dosesPerDispensingUnit);
+            return productWithPresentation[0].product.dosesPerDispensingUnit;
+        }
+        else
+        {
+            return 1;
+        }
     };
     $scope.loadProductLots=function(product)
     {

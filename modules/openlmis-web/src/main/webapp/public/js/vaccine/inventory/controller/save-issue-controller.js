@@ -27,6 +27,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
         });
         if($scope.issueForm.$invalid)
         {
+            console.log(JSON.stringify($scope.issueForm));
             $scope.showFormError();
             return;
         }

@@ -205,7 +205,6 @@ function StockMovementViewController($scope, $window,$timeout,SaveDistribution,S
                        var url = '/vaccine/orderRequisition/issue/print/'+distribution.distributionId;
                        printWindow.location.href=url;
                        $timeout(function(){
-                           console.log()
                            $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
 
                        },900);

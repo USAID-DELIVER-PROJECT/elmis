@@ -104,6 +104,13 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,StockCa
 
      };
      $scope.updateStock=function(){
+            console.log(JSON.stringify($scope.adjustmentForm));
+            if($scope.adjustmentForm.$invalid)
+            {
+                console.log(JSON.stringify($scope.adjustmentForm));
+                $scope.showFormError=true;
+                return;
+            }
             var events=[];
             $scope.stockCardsToDisplay.forEach(function(st){
                 st.stockCards.forEach(function(s){
