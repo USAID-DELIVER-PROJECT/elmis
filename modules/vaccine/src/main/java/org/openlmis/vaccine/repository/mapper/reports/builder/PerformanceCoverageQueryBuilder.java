@@ -44,7 +44,7 @@ public class PerformanceCoverageQueryBuilder {
                 "JOIN product_categories pg ON pp.productcategoryid = pg.ID\n" +
                 "WHERE\n" +
                 "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
-                " AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
+                " AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
                 " and i.product_id = " +productId +"\n"+
                 writeDistrictPredicate(zone) +
                 " group by d.region_name, i.period_name, i.period_start_date\n" +
@@ -93,7 +93,7 @@ public class PerformanceCoverageQueryBuilder {
                 "                                                                                 FROM   programs p  \n" +
                 "                                                                                 WHERE  p.enableivdform = TRUE  \n" +
                 "                                                                               )  \n" +
-                "                                               AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
+                "                                               AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
                 "                                                    AND i.product_id = " +productId +" "+
                                                         writeDistrictPredicate(zone) +
                 "                                                GROUP BY  d.region_id, i.period_start_date, i.period_name\n" +
@@ -181,7 +181,7 @@ public class PerformanceCoverageQueryBuilder {
                 "                                                                 FROM   programs p \n" +
                 "                                                                 WHERE  p.enableivdform = TRUE \n" +
                 "                                                               ) \n" +
-                "                        AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
+                "                        AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
                 "                                AND i.product_id = " +productId +" "+
                                                         writeDistrictPredicate(zone)
                 +"                                GROUP BY  d.district_id, i.period_name, i.period_start_date " +
@@ -275,7 +275,7 @@ public class PerformanceCoverageQueryBuilder {
                 "                                                 FROM   programs p\n" +
                 "                                                 WHERE  p.enableivdform = TRUE\n" +
                 "                                               )\n" +
-                "                        AND i.period_start_date >= '"+startDate+"' and i.period_end_date <= '"+endDate+"'\n" +
+                "                        AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
                 "                                AND i.product_id = " +productId +" "+
                               writeDistrictPredicate(zone)
                 +"                      ORDER BY  i.period_start_date\n" +

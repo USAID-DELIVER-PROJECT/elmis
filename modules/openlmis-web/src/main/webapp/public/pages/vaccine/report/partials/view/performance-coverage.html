@@ -45,7 +45,7 @@
                     "></vaccine-product-filter>
 
                     <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
-                    <static-year-filter year="year" startdate="periodStartDate" enddate="periodEnddate" ></static-year-filter>
+                    <static-year-filter year="staticYear" startdate="periodStartDate" enddate="periodEnddate" ></static-year-filter>
                     <!--======================== filter end =========================-->
                 </div>
             </form>
@@ -102,7 +102,7 @@
                     </tr>
                     </thead>
                     <tbody  ng-repeat="row in datarows">
-                    <tr ng-if="((regionSelected==true && datarows[$index-1].district_name != row.district_name)||(regionSelected==false && datarows[$index-1].facility_name != row.facility_name)) && $index>0">
+                    <tr ng-if="((regionSelected==true && datarows[$index-1].district_name != row.district_name)||(regionSelected==false && datarows[$index-1].facility_name != row.facility_name)) && $index>0 && staticYear>0">
 
                         <td class="aggregate-row" colspan="2" ng-show="regionSelected" >{{regionSelected?'SubTotal':''}}</td>
                         <td class="aggregate-row" colspan="3" ng-show="!regionSelected" >SubTotal</td>
@@ -117,15 +117,15 @@
                     <tr>
                         <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                         <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
-                        <td ng-show="!regionSelected" style="background-color : {{bgColorCode(row.coverage)}}">{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
-                        <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
+                        <td ng-show="!regionSelected" style="background-color : {{bgColorCode(row)}}">{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
+                        <td  style="background-color : {{bgColorCode(row)}}">{{row.period_name}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.target | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.vaccinated | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeVacinated | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
-                    <tr ng-if="( datarows.length == $index+1) && $index>0">
+                    <tr ng-if="( datarows.length == $index+1) && $index>0 && staticYear>0">
 
                         <td class="aggregate-row" colspan="2" ng-show="regionSelected" >{{regionSelected?'SubTotal':''}}</td>
                         <td class="aggregate-row" colspan="3" ng-show="!regionSelected" >SubTotal</td>
@@ -211,7 +211,7 @@
                     </tr>
                     </thead>
                     <tbody ng-repeat="row in dataRowsRegionAggregate">
-                    <tr ng-if="(dataRowsRegionAggregate[$index-1].region_name != row.region_name)&&$index>0">
+                    <tr ng-if="(dataRowsRegionAggregate[$index-1].region_name != row.region_name)&&$index>0 && staticYear>0">
 
 
                         <td class="aggregate-row"  >SubTotal</td>
@@ -225,14 +225,14 @@
                     </tr>
                     <tr >
                         <td >{{ dataRowsRegionAggregate[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
-                        <td  style="background-color : {{bgColorCode(row.coverage)}}">{{row.period_name}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}" >{{row.target | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.vaccinated | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeVacinated | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row.coverage)}}">{{row.cumulativeCoverage}}%</td>
+                        <td  style="background-color : {{bgColorCode(row)}}">{{row.period_name}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.target | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.vaccinated | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeVacinated | number}}</td>
+                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
-                    <tr ng-if="(dataRowsRegionAggregate.length==$index+1)&&$index>0">
+                    <tr ng-if="(dataRowsRegionAggregate.length==$index+1)&&$index>0 && staticYear>0">
 
 
                         <td class="aggregate-row"  >SubTotal</td>

@@ -151,6 +151,15 @@ var utils = {
         }
         return 0;
     },
+    generatePeriodNamesForVaccineYear: function(year){
+        var periodList=[];
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        for(var i=0;i<12;i++){
+            periodList[i]=months[i]+ " "+ year;
+        }
+        return periodList;
+
+    },
     formatDate: function (dateValue) {
         var day = dateValue.getDate();
         var monthIndex = dateValue.getMonth() + 1;
