@@ -49,4 +49,5 @@ public class AdverseEffectLineItem extends BaseModel {
   private Boolean isInvestigated;
   private String notes;
 
+  private Long relatedToLineItemId;
 }
