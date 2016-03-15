@@ -196,7 +196,7 @@
             <span
               class="input-error-parent-cell">
               <select
-                ng-disabled="!report.editable || product.skipped"
+                ng-disabled="(!report.editable || product.skipped || product.quantityDiscardedUnopened == 0 || product.quantityDiscardedUnopened == '' || product.quantityDiscardedUnopened == undefined)"
                 ng-model="product.discardingReasonId"
                 ng-show="!rowRequiresExplanation(product);">
                   <option
@@ -208,7 +208,7 @@
               <span
                 class="input-error-parent-cell">
                 <input
-                  ng-disabled="!report.editable || product.skipped"
+                  ng-disabled="!report.editable || product.skipped || product.quantityDiscardedUnopened == 0 || product.quantityDiscardedUnopened == '' || product.quantityDiscardedUnopened == undefined"
                   ng-model="product.discardingReasonExplanation"
                   style="width: 80%; text-align: left;"
                   type="text" />

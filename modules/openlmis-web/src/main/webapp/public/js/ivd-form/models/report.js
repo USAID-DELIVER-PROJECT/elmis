@@ -4,6 +4,8 @@ var VaccineReport = function (report) {
 
   VaccineReport.prototype.init = function () {
 
+    this.month =  new Date(this.period.startDate).getMonth() + 1;
+    
     function getCoverageLineItems(collection, r) {
       var lineItems = [];
       angular.forEach(collection, function (coverage) {
