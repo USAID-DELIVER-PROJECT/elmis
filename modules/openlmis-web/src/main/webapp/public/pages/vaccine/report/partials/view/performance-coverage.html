@@ -179,6 +179,10 @@
                             <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
                             <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="a in g4">{{a.total}}</td>
                         </tr>
+                        <tr>
+                            <td style="background-color : {{colors.color_non_reporting}}" openlmis-message="Non Reporting">Non Reporting</td>
+                            <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="a in grayCount">{{a.count}}</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -283,6 +287,10 @@
                         <tr>
                             <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
                             <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="a in gAll4">{{a.total}}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color : {{colors.color_non_reporting}}" openlmis-message="Non Reporting">Non Reporting</td>
+                            <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="a in regionGrayCount">{{a.count}}</td>
                         </tr>
                         </tbody>
                     </table>

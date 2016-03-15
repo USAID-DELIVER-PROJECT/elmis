@@ -19,7 +19,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     });
 
     $scope.perioderror = "";
-
+    $scope.grayCount={};
+    $scope.regionGrayCount={};
     $scope.OnFilterChanged = function () {
 
         // prevent first time loading
@@ -36,7 +37,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
             },
 
             function (data) {
-
+var formattedDistrictJson=[];
+                var formattedRegionJson=[];
                 if (data.performanceCoverage.status) {
                     $scope.error = data.performanceCoverage.status[0].error;
                     $scope.datarows = $scope.datarows = null;
@@ -58,16 +60,22 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                             $scope.regionSelected = true;
 
                             extractPopulationInfo($scope.datarows, $scope.districtPopulation, 2);
-                            $scope.datarows=findMonthValue( $scope.datarows, 2);
+                            formattedDistrictJson=findMonthValue( $scope.datarows, 2);
+                            $scope.datarows=formattedDistrictJson.reportList;
+                            $scope.grayCount=formattedDistrictJson.grayCount;
                             if (!utils.isEmpty($scope.dataRowsRegionAggregate)) {
                                 extractPopulationInfo($scope.dataRowsRegionAggregate, $scope.regionPopulation, 3);
-                                $scope.dataRowsRegionAggregate = findMonthValue(  $scope.dataRowsRegionAggregate, 3);
+                                formattedRegionJson= findMonthValue(  $scope.dataRowsRegionAggregate, 3);
+                                $scope.dataRowsRegionAggregate = formattedRegionJson.reportList;
+                                $scope.regionGrayCount=formattedRegionJson.grayCount;
                             }
                         }
                         else {
                             $scope.regionSelected = false;
                             extractPopulationInfo($scope.datarows, $scope.districtPopulation, 1);
-                            $scope.datarows=findMonthValue( $scope.datarows, 1);
+                            formattedDistrictJson=findMonthValue( $scope.datarows, 1);
+                            $scope.datarows=formattedDistrictJson.reportList;
+                            $scope.grayCount=formattedDistrictJson.grayCount;
 
                         }
                         populateCumulativeColumns();
@@ -379,6 +387,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
     function findMonthValue(reportList, type) {
         var formattedData = [];
+        var grayCount={};
         if (utils.isEmpty(reportList)) {
             return reportList;
         }
@@ -388,6 +397,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
             var distrctList = {};
             var periodList = utils.generatePeriodNamesForVaccineYear($scope.staticYear);
+             grayCount=intializeGrayCount(periodList);
             reportList.forEach(function (value) {
                 var district = getPopulationKey(value, type);
                 if (!(district in distrctList)) {
@@ -418,6 +428,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                             generated:true
 
                         };
+                        grayCount[$scope.staticYear+"_"+i].count++;
                         formattedData.push(object);
                     }
                 }
@@ -425,7 +436,16 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         }else{
             formattedData=reportList;
         }
-        return formattedData;
 
+        return {reportList:formattedData, grayCount:grayCount};
+
+    }
+    function intializeGrayCount(periods){
+        var grayCount={};
+        for(var i=0;i < 12;i ++){
+            grayCount[$scope.staticYear+"_"+i]= {count:0};
+        }
+
+       return grayCount;
     }
 }
