@@ -12,8 +12,8 @@
 
 angular.module('equipment-inventory', ['openlmis','ui.bootstrap.modal', 'ui.bootstrap.dialog', 'ui.bootstrap.dropdownToggle', 'ngAnimate', 'ui.bootstrap.pagination']).config(['$routeProvider', function ($routeProvider) {
   $routeProvider.
-      when('/', {controller: EquipmentInventoryController, templateUrl: 'partials/list.html'}).
-      when('/:from/:program/:equipmentType/:page', {controller: EquipmentInventoryController, templateUrl: 'partials/list.html'}).
+      when('/', {controller: EquipmentInventoryController, templateUrl: 'partials/list.html',resolve:EquipmentInventoryController.resolve}).
+      when('/:from/:program/:equipmentType/:page', {controller: EquipmentInventoryController, templateUrl: 'partials/list.html',resolve:EquipmentInventoryController.resolve}).
       when('/create/:from/:program/:equipmentType/:page', {controller: CreateEquipmentInventoryController, templateUrl: 'partials/create.html'}).
       when('/edit/:from/:program/:equipmentType/:id/:page', {controller: CreateEquipmentInventoryController, templateUrl: 'partials/create.html'}).
       when('/log/:id', {controller: LogController, templateUrl: 'partials/log.html'}).
