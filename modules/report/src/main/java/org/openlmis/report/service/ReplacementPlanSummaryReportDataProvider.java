@@ -23,6 +23,7 @@ import org.openlmis.report.model.params.ReplacementPlanReportParam;
 import org.openlmis.report.util.SelectedFilterHelper;
 import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +31,9 @@ import java.util.*;
 
 import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
 
+
+@Component
 @NoArgsConstructor
-@Service
 public class ReplacementPlanSummaryReportDataProvider extends ReportDataProvider {
 
     @Autowired
@@ -47,11 +49,11 @@ public class ReplacementPlanSummaryReportDataProvider extends ReportDataProvider
     @Transactional
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sorter, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-        return mapper.getReport(geReportFilteredData(filterCriteria), rowBounds, this.getUserId());
+        return mapper.getReport(getReportFilteredData(filterCriteria), rowBounds, this.getUserId());
 
     }
 
-    public ReplacementPlanReportParam geReportFilteredData(Map<String, String[]> filterCriteria){
+    public ReplacementPlanReportParam getReportFilteredData(Map<String, String[]> filterCriteria){
 
         ReplacementPlanReportParam planReportParam = new ReplacementPlanReportParam();
         Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
@@ -90,12 +92,12 @@ public class ReplacementPlanSummaryReportDataProvider extends ReportDataProvider
 
     }
 
-    @Override
+   /* @Override
     public String getFilterSummary(Map<String, String[]> params) {
-        return filterHelper.getProgramGeoZoneFacility(params);
+       return getReportFilteredData(params).toString();
     }
 
-
+*/
 }
 
 

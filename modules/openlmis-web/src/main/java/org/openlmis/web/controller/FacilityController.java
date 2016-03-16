@@ -261,12 +261,6 @@ public class FacilityController extends BaseController {
         return response;
     }
 
-  @RequestMapping(value = "/user/facilities/view-order-requisition", method = GET, headers = ACCEPT_JSON)
-  public ResponseEntity<OpenLmisResponse> listForViewingOrderRequisition(HttpServletRequest request) {
-    return response("facilities",
-            facilityService.getForUserAndRights(loggedInUserId(request), VIEW_VACCINE_ORDER_REQUISITION));
-  }
-
   @RequestMapping(value = "/user/facilities/view-ledger-report-facilities", method = GET, headers = ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> listForViewingStockLedgerReport(HttpServletRequest request) {
     return response("facilities",
