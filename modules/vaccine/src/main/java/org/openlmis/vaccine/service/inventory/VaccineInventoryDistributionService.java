@@ -23,7 +23,6 @@ import org.openlmis.core.service.ProgramService;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.vaccine.domain.inventory.*;
 import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
-import org.openlmis.vaccine.dto.VaccineDistributionStatus;
 import org.openlmis.vaccine.repository.inventory.VaccineDistributionStatusChangeRepository;
 import org.openlmis.vaccine.repository.inventory.VaccineInventoryDistributionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
