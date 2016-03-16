@@ -10,8 +10,13 @@
     function ViewOrderRequisitionList($scope,programs,$window,$rootScope,facility,VaccineOrderRequisitionsForViewing,VaccineOrderRequisitionLastReport, facilities, RequisitionsForViewing, ProgramsToViewVaccineOrderRequisitions, $location, messageService, navigateBackService) {
 
         $scope.facilities = facilities;
-        $scope.programs = programs;
 
+        $scope.program =  programs;
+        if($scope.program.length === 1){
+            $scope.selectedProgramId = programs[0].id;
+            var selectedFacilityId = facilities.id;
+
+        }
 
         $scope.facilityLabel = (!$scope.facilities.length) ? messageService.get("label.none.assigned") : messageService.get("label.select.facility");
         $scope.programLabel = messageService.get("label.none.assigned");
@@ -24,7 +29,7 @@
                 return;
             }
             var requisitionQueryParameters = {
-                facilityId: $scope.selectedFacilityId,
+                facilityId: selectedFacilityId,
                 dateRangeStart: $scope.startDate,
                 dateRangeEnd: $scope.endDate
             };
@@ -42,12 +47,12 @@
         $scope.selectedFacilityId = navigateBackService.facilityId;
         $scope.startDate = navigateBackService.dateRangeStart;
         $scope.endDate = navigateBackService.dateRangeEnd;
-        $scope.programs = navigateBackService.programs;
+        programs = navigateBackService.programs;
 
         if (navigateBackService.programId) {
             $scope.selectedProgramId = navigateBackService.programId;
-            $scope.program = _.findWhere($scope.programs, {id: utils.parseIntWithBaseTen($scope.selectedProgramId)});
-            setOptions();
+            $scope.program = _.findWhere(programs, {id: utils.parseIntWithBaseTen($scope.selectedProgramId)});
+           // setOptions();
         }
         if ($scope.selectedFacilityId && $scope.startDate && $scope.endDate) {
             $scope.loadRequisitions();
@@ -56,9 +61,10 @@
         var selectionFunc = function () {
             $scope.$parent.Status = $scope.selectedItems[0].status;
             $rootScope.viewOrder = true;
-            console.log($scope.selectedItems[0].id);
             $scope.openRequisition();
         };
+
+        $scope.viewButton = '<button id="editBtn" type="button" class="btn btn-primary" ng-click="edit(row)" >View</button> ';
 
 
         $scope.rnrListGrid = { data: 'filteredRequisitions',
@@ -81,7 +87,12 @@
                 {field: 'status', displayName: messageService.get("label.status")},
                 {field: 'emergency', displayName: messageService.get("requisition.type.emergency"),
                     cellTemplate: '<div id="emergency{{$parent.$index}}" class="ngCellText checked"><i ng-class="{\'icon-ok\': row.entity.emergency}"></i></div>',
-                    width: 110 }
+                    width: 110
+                },
+                {field:' ',
+                    cellTemplate: '<div style="text-align:center;font-color: #006666" class="ui-grid-vcenter"><button style="color: white" class="btn btn-primary btn-xs">View</button></div>'
+
+}
             ]
         };
 
@@ -90,32 +101,32 @@
                 facilityId: $scope.selectedFacilityId,
                 dateRangeStart: $scope.startDate,
                 dateRangeEnd: $scope.endDate,
-                programs: $scope.programs
+                programs: programs
             };
             if ($scope.selectedProgramId) data.programId = $scope.selectedProgramId;
             navigateBackService.setData(data);
-            $window.location = '/public/pages/vaccine/order-requisition/index.html#/create/'+parseInt($scope.selectedItems[0].id,10)+'/'+parseInt($scope.selectedProgramId,10);
+            $window.location = '/public/pages/vaccine/order-requisition/index.html#/view-requisition/'+parseInt($scope.selectedItems[0].id,10)+'/'+parseInt($scope.selectedProgramId,10);
         };
 
         function setProgramsLabel() {
             $scope.selectedProgramId = undefined;
-            $scope.programLabel = (!$scope.programs.length) ? messageService.get("label.none.assigned") : messageService.get("label.all");
+            $scope.programLabel = (!programs.length) ? messageService.get("label.none.assigned") : messageService.get("label.all");
         }
 
-        function setOptions() {
-            $scope.options = ($scope.programs.length) ? [
+     /*   function setOptions() {
+            $scope.options = (programs.length) ? [
                 {field: "All", name: "All"}
             ] : [];
-        }
+        }*/
 
         $scope.loadProgramsForFacility = function () {
             ProgramsToViewVaccineOrderRequisitions.get({facilityId: $scope.selectedFacilityId},
                 function (data) {
-                    $scope.programs = data.programList;
-                    setOptions();
+                    programs = data.programList;
+                   // setOptions();
                     setProgramsLabel();
                 }, function () {
-                    $scope.programs = [];
+                    programs = [];
                     setProgramsLabel();
                 });
         };
@@ -144,7 +155,7 @@
             }
             $scope.endDateOffset = Math.ceil((new Date($scope.startDate.split('-')).getTime() + oneDay - Date.now()) / oneDay);
         };
-        
+
     }
 
     var oneDay = 1000 * 60 * 60 * 24;
