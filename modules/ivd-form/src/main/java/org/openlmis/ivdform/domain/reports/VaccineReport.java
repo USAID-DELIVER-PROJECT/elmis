@@ -50,6 +50,7 @@ public class VaccineReport extends BaseModel {
   private String majorImmunizationActivities;
 
   private Long fixedImmunizationSessions;
+  private Long plannedOutreachImmunizationSessions;
   private Long outreachImmunizationSessions;
   private Long outreachImmunizationSessionsCanceled;
 

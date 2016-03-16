@@ -87,7 +87,7 @@ public class StockRequirements extends BaseModel
       if(isaValue == 0) {
           if (isa == null || population == null)
               return null;
-          return isa.calculate(population);
+          return getMultipleOfPresentation(isa.calculate(population));
       }else{
           return isaValue;
       }
@@ -98,7 +98,7 @@ public class StockRequirements extends BaseModel
       if(getIsaValue() == null || minMonthsOfStock == null)
       return null;
     Integer value = getIsaValue() * minMonthsOfStock.intValue();
-    return minimumStock = value;
+      return minimumStock = getMultipleOfPresentation(value);
   }
 
   public Integer getMaximumStock()
@@ -107,7 +107,7 @@ public class StockRequirements extends BaseModel
         if (getIsaValue() == null || maxMonthsOfStock == null)
             return null;
         Double value = (getIsaValue() * maxMonthsOfStock +getBufferStock());
-        return maximumStock = value.intValue();
+        return maximumStock = getMultipleOfPresentation(value.intValue());
     }
       else{
         return maximumStock;
@@ -120,7 +120,7 @@ public class StockRequirements extends BaseModel
          if (getIsaValue() == null || eop == null)
              return null;
          Double value=getIsaValue() * eop;
-         return value.intValue();
+         return getMultipleOfPresentation(value.intValue());
      }
       else{
          return reorderLevel;
@@ -131,7 +131,7 @@ public class StockRequirements extends BaseModel
     if(annualNeed == null) {
         if (getIsaValue() == null)
             return null;
-        return getIsaValue() * 12;
+        return getMultipleOfPresentation(getIsaValue() * 12);
     }else
     {
         return annualNeed;
@@ -143,7 +143,7 @@ public class StockRequirements extends BaseModel
         if (getIsaValue() == null)
             return null;
         Double value=getIsaValue() * maxMonthsOfStock;
-        return  value.intValue();
+        return getMultipleOfPresentation(value.intValue());
     }
       else{
         return supplyPeriodNeed;
@@ -155,12 +155,21 @@ public class StockRequirements extends BaseModel
           if (getSupplyPeriodNeed() == null && isa == null)
               return null;
           Double value=((getSupplyPeriodNeed() * isa.getBufferPercentage()) / 100);
-          return value.intValue();
+          return getMultipleOfPresentation(value.intValue());
       }
       else{
           return bufferStock;
       }
   }
+
+    private Integer getMultipleOfPresentation(Integer value) {
+        if (value > 0 && presentation != null) {
+            return value + (presentation - (value % presentation));
+        }
+        {
+            return value;
+        }
+    }
 
   public String getJSON()
   {

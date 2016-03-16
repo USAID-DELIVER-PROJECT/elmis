@@ -16,14 +16,14 @@ import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.SupervisoryNodeService;
 import org.openlmis.core.service.UserService;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.ivdform.domain.reports.ReportStatus;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +39,16 @@ public class IVDNotificationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IVDNotificationService.class);
 
+
+    @Value("${app.url}")
+    String baseURL;
+
     private static final String FACILITY_NAME = "facility_name";
     private static final String NAME = "name";
     private static final String PERIOD_NAME = "period_name";
+    private static final String USER_NAME = "user_name";
+    private static final String APPROVAL_URL = "approval_url";
+    private static final String DATE_PROCESSED = "date_processed";
 
     @Autowired
     private UserService userService;
@@ -61,8 +68,7 @@ public class IVDNotificationService {
     private String emailMessageKey;
     private String emailSubjectKey;
 
-
-    public void sendIVDStatusChangeNofitication(VaccineReport report, Long userId){
+    public void sendIVDStatusChangeNotification(VaccineReport report, Long userId){
 
         List<User> userList = new ArrayList<>();
         Program program = programService.getById(report.getProgramId());
@@ -86,23 +92,28 @@ public class IVDNotificationService {
         else
           return;
 
-
+        User modifiedByUser  = userService.getById(report.getModifiedBy());
         ArrayList<User> activeUsersWithRight = userService.filterForActiveUsers(userList);
-        sendEmailForIVDSubmittersApprovers(report, activeUsersWithRight, emailMessageKey, emailSubjectKey);
+        sendEmailForIVDSubmittersApprovers(report, activeUsersWithRight, emailMessageKey, emailSubjectKey, modifiedByUser);
 
     }
 
-    public void sendEmailForIVDSubmittersApprovers(VaccineReport report, List<User> users, String messageKey, String emailSubjectKey){
+    public void sendEmailForIVDSubmittersApprovers(VaccineReport report, List<User> users, String messageKey, String emailSubjectKey, User modifiedByUser){
 
         for (User user : users) {
             if (user.isMobileUser()) {
                 continue;
             }
 
+            String approvalURL = String.format("%1$s/public/pages/ivd-form/index.html#/approve/%2$s", baseURL, report.getId());
+
             Map model = new HashMap();
             model.put(FACILITY_NAME, report.getFacility().getName());
             model.put(NAME, user.getFirstName() + " " + user.getLastName());
+            model.put(USER_NAME, modifiedByUser.getUserName());
             model.put(PERIOD_NAME, report.getPeriod().getName());
+            model.put(APPROVAL_URL, approvalURL);
+            model.put(DATE_PROCESSED, DateUtil.getFormattedDate(new Date(), DateUtil.FORMAT_DATE_TIME));
 
             String emailMessage = configService.getByKey(messageKey).getValue();
             String emailSubject  = configService.getByKey(emailSubjectKey).getValue();

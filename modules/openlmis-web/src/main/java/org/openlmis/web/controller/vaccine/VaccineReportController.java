@@ -131,4 +131,9 @@ public class VaccineReportController extends BaseController {
         return OpenLmisResponse.response("categorizationVaccineUtilizationPerformance",
                 service.getCategorizationVaccineUtilizationPerformance(periodStart, periodEnd, zone, product));
     }
+    @RequestMapping(value = "/staticYearList", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> loadYearList(){
+        return OpenLmisResponse.response("years",
+                service.loadYearList());
+    }
 }

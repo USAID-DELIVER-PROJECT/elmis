@@ -116,7 +116,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,SettingsByKey, 
     };
     $scope.calculateTotalPercentage=function(total_bcg_vaccinated,total_mr_vaccinated) {
 
-        return total_bcg_vaccinated===0 ? 0: (total_bcg_vaccinated/(total_bcg_vaccinated-total_mr_vaccinated)*100);
+        return total_bcg_vaccinated===0 ? 0: ((total_bcg_vaccinated-total_mr_vaccinated)/total_bcg_vaccinated*100);
     };
     $scope.concatPercentage=function(value) {
 
@@ -196,4 +196,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope,SettingsByKey, 
             }
         }
     }
+
+
+
 }

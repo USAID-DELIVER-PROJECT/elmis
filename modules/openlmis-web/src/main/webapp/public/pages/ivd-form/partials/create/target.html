@@ -20,6 +20,7 @@
             <td></td>
             <th openlmis-message="label.vaccine.target"></th>
             <th openlmis-message="label.vaccine.target.this.month"></th>
+            <th openlmis-message="label.vaccine.target.cumulative.month"></th>
             <th openlmis-message="label.vaccine.target.annual"></th>
           </tr>
         </thead>
@@ -33,6 +34,9 @@
             </td>
             <td class="cell-input number">
               <span class="cell-text" ng-snow="!r.category.isPrimaryEstimate">{{r.value / 12 | number : 0}}</span>
+            </td>
+            <td class="cell-input number">
+              <span class="cell-text" ng-snow="!r.category.isPrimaryEstimate">{{(r.value * report.month) / 12 | number : 0}}</span>
             </td>
             <td class="cell-input number">
               <span class="cell-text">{{r.value | number : 0}}</span>

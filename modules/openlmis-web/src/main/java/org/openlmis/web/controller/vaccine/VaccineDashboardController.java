@@ -67,7 +67,7 @@ public class VaccineDashboardController  extends BaseController {
     public ResponseEntity<OpenLmisResponse> getCoverageByMonthly(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, Long product, HttpServletRequest request){
         Long userId = this.loggedInUserId(request);
 
-        return OpenLmisResponse.response("monthlyCoverage", service.getMonthlyCoverage(startDate, endDate,userId, product));
+        return OpenLmisResponse.response("monthlyCoverage", service.getMonthlyCoverage(startDate, endDate, userId, product));
     }
 
     @RequestMapping(value = "facility-coverage.json", method = RequestMethod.GET)
@@ -164,7 +164,7 @@ public class VaccineDashboardController  extends BaseController {
 
     @RequestMapping(value = "district-dropout.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getDistrictDropout(@RequestParam("period") Long period, @RequestParam("product") Long product){
-        return OpenLmisResponse.response("districtDropout", service.getDistrictDropout(period,product));
+        return OpenLmisResponse.response("districtDropout", service.getDistrictDropout(period, product));
     }
 
 
@@ -180,6 +180,36 @@ public class VaccineDashboardController  extends BaseController {
 
     @RequestMapping(value = "district-stock.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getDistrictStock(@RequestParam("period") Long period, @RequestParam("product") Long product){
-        return OpenLmisResponse.response("districtStock", service.getDistrictStock(period,product));
+        return OpenLmisResponse.response("districtStock", service.getDistrictStock(period, product));
     }
+
+    @RequestMapping(value = "facility-stock.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityStock(@RequestParam("period") Long period,
+                                                             @RequestParam("product") Long product,
+                                                             HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("facilityStock", service.getFacilityStock(period, product, userId));
+    }
+
+    @RequestMapping(value = "facility-stock-detail.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityStockDetails(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate,
+                                                                    @RequestParam("product") Long product,
+                                                                    HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("facilityStockDetail", service.getFacilityStockDetail(startDate, endDate, product, userId));
+    }
+
+    @RequestMapping(value = "isDistrictUser.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> isDistrictUser(HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+     boolean isUserDistrict=false;
+        try{
+            isUserDistrict=this.service.isDistrictUser(userId);
+        }catch (Exception ex){
+
+            LOGGER.warn("for user" + userId + " " + ex.getMessage(),ex);
+        }
+        return OpenLmisResponse.response("district_user", isUserDistrict);
+    }
+
 }

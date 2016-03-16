@@ -1,16 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
-  ~
-  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="user-summary" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -82,41 +70,46 @@
 					<text><![CDATA[Line#]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="246" y="0" width="133" height="20" uuid="7bc79045-4835-4168-b56f-5f9a521d80cc"/>
+					<reportElement x="223" y="0" width="79" height="20" uuid="7bc79045-4835-4168-b56f-5f9a521d80cc"/>
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Role Name]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="46" y="0" width="100" height="20" uuid="54862419-10df-44d6-a1b9-7ab7f35c6a07"/>
+					<reportElement x="45" y="0" width="100" height="20" uuid="54862419-10df-44d6-a1b9-7ab7f35c6a07"/>
 					<textElement verticalAlignment="Middle"/>
 					<text><![CDATA[First Name]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="148" y="0" width="98" height="20" uuid="cc4ae209-5f80-4139-b1dc-c127b574203c"/>
+					<reportElement x="145" y="0" width="78" height="20" uuid="cc4ae209-5f80-4139-b1dc-c127b574203c"/>
 					<textElement verticalAlignment="Middle"/>
 					<text><![CDATA[Last Name]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="380" y="0" width="100" height="20" uuid="9f17e0f2-fe7f-4a40-9a78-cd5f34d78a76"/>
+					<reportElement x="302" y="0" width="79" height="20" uuid="9f17e0f2-fe7f-4a40-9a78-cd5f34d78a76"/>
 					<textElement verticalAlignment="Middle"/>
 					<text><![CDATA[CellPhone]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="479" y="0" width="100" height="20" uuid="ecc6b09f-7400-4e33-a3e4-a0feadbb6f16"/>
-					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[Office Phone]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="579" y="0" width="100" height="20" uuid="27908509-983a-4a7b-b004-76f71e1f9e6f"/>
+					<reportElement x="481" y="0" width="119" height="20" uuid="27908509-983a-4a7b-b004-76f71e1f9e6f"/>
 					<textElement verticalAlignment="Middle"/>
 					<text><![CDATA[Email]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="679" y="0" width="122" height="20" uuid="8b8ef7f1-0f73-454b-902f-a5831aef1d1b"/>
+					<reportElement x="706" y="0" width="96" height="20" uuid="8b8ef7f1-0f73-454b-902f-a5831aef1d1b"/>
 					<textElement verticalAlignment="Middle"/>
 					<text><![CDATA[Supervisory Node Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="381" y="0" width="100" height="20" uuid="ecc6b09f-7400-4e33-a3e4-a0feadbb6f16"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Office Phone]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="600" y="0" width="106" height="20" uuid="f7c13007-11ee-45d9-8698-251f62d4e3e4"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Program]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -185,35 +178,39 @@
 				</graphicElement>
 			</line>
 			<textField isBlankWhenNull="true">
-				<reportElement x="247" y="0" width="133" height="20" uuid="688b5077-b50e-47ad-bb86-0295aa5876a7"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{rolename}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
 				<reportElement x="45" y="0" width="100" height="20" uuid="749e2c8d-d155-4890-8c63-944b6c178f83"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{firstname}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="146" y="0" width="100" height="20" uuid="1657d52c-16c1-4a28-9dba-a3105f1bff7f"/>
+				<reportElement x="145" y="0" width="78" height="20" uuid="1657d52c-16c1-4a28-9dba-a3105f1bff7f"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{lastname}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="379" y="0" width="100" height="20" uuid="52772605-aacd-4635-8242-99647d516095"/>
+				<reportElement x="706" y="0" width="95" height="20" uuid="e11537e2-8801-47eb-b711-e1c7b0f01c73"/>
+				<textFieldExpression><![CDATA[$F{supervisorynodename}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="223" y="0" width="79" height="20" uuid="688b5077-b50e-47ad-bb86-0295aa5876a7"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{rolename}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="302" y="0" width="79" height="20" uuid="52772605-aacd-4635-8242-99647d516095"/>
 				<textFieldExpression><![CDATA[$F{cellPhone}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="479" y="0" width="100" height="20" uuid="81240072-dda7-4f78-941f-6953f26a16a8"/>
+				<reportElement x="381" y="0" width="100" height="20" uuid="81240072-dda7-4f78-941f-6953f26a16a8"/>
 				<textFieldExpression><![CDATA[$F{officephone}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="579" y="0" width="100" height="20" uuid="d5059e19-f35d-4e1d-b752-52d6361bde54"/>
+				<reportElement x="481" y="0" width="119" height="20" uuid="d5059e19-f35d-4e1d-b752-52d6361bde54"/>
 				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="679" y="0" width="122" height="20" uuid="e11537e2-8801-47eb-b711-e1c7b0f01c73"/>
-				<textFieldExpression><![CDATA[$F{supervisorynodename}]]></textFieldExpression>
+				<reportElement x="600" y="0" width="106" height="20" uuid="229fab34-dd8e-4135-9837-76942ea1cb64"/>
+				<textFieldExpression><![CDATA[$F{programname}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

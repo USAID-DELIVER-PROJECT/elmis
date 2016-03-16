@@ -11,6 +11,7 @@
 package org.openlmis.fulfillment.shared;
 
 import org.openlmis.core.domain.Right;
+import org.openlmis.core.domain.RightName;
 import org.openlmis.core.service.RoleRightsService;
 import org.openlmis.core.utils.RightUtil;
 import org.openlmis.order.domain.Order;
@@ -40,7 +41,11 @@ public class FulfillmentPermissionService {
   public Boolean hasPermission(Long userId, Long orderId, String rightName) {
     Order order = orderService.getOrder(orderId);
     List<Right> userRights = roleRightsService.getRightsForUserAndWarehouse(userId, order.getSupplyingFacility().getId());
-    return any(userRights, RightUtil.with(rightName));
+    if (!any(userRights, RightUtil.with(rightName))) {
+      userRights = roleRightsService.getRightsForUserAndFacilityProgram(userId, order.getRnr().getFacility(), order.getRnr().getProgram());
+      return any(userRights, RightUtil.with(RightName.COMPLETE_POD));
+    }
+    return true;
   }
 
   public Boolean hasPermissionOnWarehouse(Long userId, Long warehouseId, String rightName) {

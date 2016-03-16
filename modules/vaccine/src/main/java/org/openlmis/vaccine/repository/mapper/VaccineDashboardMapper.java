@@ -23,77 +23,77 @@ import java.util.Map;
 @Repository
 public interface VaccineDashboardMapper {
 
-/*
- * Action Bar
- * TODO: Add userid parameter to summary dashlets
-*/
-    @Select("with temp as ( \n" +
-            "            select vd.district_name district, f.name facility_name, f.code facility_code, \n" +
-            "                   to_char(vr.createdDate, 'DD Mon YYYY') reported_date,  \n" +
-            "                 CASE \n" +
-            "                        WHEN date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone) <= COALESCE((( SELECT configuration_settings.value \n" +
-            "                           FROM configuration_settings \n" +
-            "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'T'::text \n" +
-            "                        WHEN COALESCE(date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone), 0::double precision) > COALESCE((( SELECT configuration_settings.value \n" +
-            "                           FROM configuration_settings \n" +
-            "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'L'::text \n" +
-            "                        ELSE 'N'::text \n" +
-            "                 END AS reporting_status \n" +
-            "                from programs_supported ps \n" +
-            "                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid and vr.periodid = fn_get_vaccine_current_reporting_period() \n" +
-            "                left join processing_periods pp on pp.id = vr.periodid      \n" +
-            "                join facilities f on f.id = ps.facilityId  \n" +
-            "                join vw_districts vd on f.geographiczoneid = vd.district_id \n" +
-            "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
-            "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or \n" +
-            "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)))  \n" +
-            "            )  \n" +
-            "            select \n" +
-            "            sum(1) expected, \n" +
-            "            sum(case when reporting_status = 'T' then 1 else 0 end) ontime, \n" +
-            "            sum(case when reporting_status = 'L' then 1 else 0 end) late, \n" +
-            "            sum(case when reporting_status = 'N' then 1 else 0 end) not_reported  \n" +
-            "             from temp t")
-    Map<String, Object> getReportingSummary(@Param("userId") Long userId);
+        /*
+         * Action Bar
+         * TODO: Add userid parameter to summary dashlets
+        */
+        @Select("with temp as ( \n" +
+                "            select vd.district_name district, f.name facility_name, f.code facility_code, \n" +
+                "                   to_char(vr.createdDate, 'DD Mon YYYY') reported_date,  \n" +
+                "                 CASE \n" +
+                "                        WHEN date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone) <= COALESCE((( SELECT configuration_settings.value \n" +
+                "                           FROM configuration_settings \n" +
+                "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'T'::text \n" +
+                "                        WHEN COALESCE(date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone), 0::double precision) > COALESCE((( SELECT configuration_settings.value \n" +
+                "                           FROM configuration_settings \n" +
+                "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'L'::text \n" +
+                "                        ELSE 'N'::text \n" +
+                "                 END AS reporting_status \n" +
+                "                from programs_supported ps \n" +
+                "                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid and vr.periodid = fn_get_vaccine_current_reporting_period() \n" +
+                "                left join processing_periods pp on pp.id = vr.periodid      \n" +
+                "                join facilities f on f.id = ps.facilityId  \n" +
+                "                join vw_districts vd on f.geographiczoneid = vd.district_id \n" +
+                "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
+                "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or \n" +
+                "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)))  \n" +
+                "            )  \n" +
+                "            select \n" +
+                "            sum(1) expected, \n" +
+                "            sum(case when reporting_status = 'T' then 1 else 0 end) ontime, \n" +
+                "            sum(case when reporting_status = 'L' then 1 else 0 end) late, \n" +
+                "            sum(case when reporting_status = 'N' then 1 else 0 end) not_reported  \n" +
+                "             from temp t")
+        Map<String, Object> getReportingSummary(@Param("userId") Long userId);
 
-/* */
-    @Select("with temp as ( \n" +
-            "            select vd.district_name district, f.name facility_name, f.code facility_code, f.id facility_id," +
-            " (select count(*) > 0 from users where users.active = true and users.facilityId = f.id) as hasContacts, \n" +
-            "                   to_char(vr.createdDate, 'DD Mon YYYY') reported_date,  \n" +
-            "                 CASE \n" +
-            "                        WHEN date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone) <= COALESCE((( SELECT configuration_settings.value \n" +
-            "                           FROM configuration_settings \n" +
-            "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'T'::text \n" +
-            "                        WHEN COALESCE(date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone), 0::double precision) > COALESCE((( SELECT configuration_settings.value \n" +
-            "                           FROM configuration_settings \n" +
-            "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'L'::text \n" +
-            "                        ELSE 'N'::text \n" +
-            "                    END AS reporting_status \n" +
-            "                from programs_supported ps \n" +
-            "                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid and vr.periodid = fn_get_vaccine_current_reporting_period() \n" +
-            "                left join processing_periods pp on pp.id = vr.periodid      \n" +
-            "                join facilities f on f.id = ps.facilityId  \n" +
-            "                join vw_districts vd on f.geographiczoneid = vd.district_id \n" +
-            "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
-            "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or \n" +
-            "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)))              \n" +
-            "            ) select district, facility_name, facility_code, reported_date, reporting_status,facility_id, hasContacts from temp t")
-    List< HashMap<String, Object>> getReportingDetails(@Param("userId")Long userId);
+        /* */
+        @Select("with temp as ( \n" +
+                "            select vd.district_name district, f.name facility_name, f.code facility_code, f.id facility_id," +
+                " (select count(*) > 0 from users where users.active = true and users.facilityId = f.id) as hasContacts, \n" +
+                "                   to_char(vr.createdDate, 'DD Mon YYYY') reported_date,  \n" +
+                "                 CASE \n" +
+                "                        WHEN date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone) <= COALESCE((( SELECT configuration_settings.value \n" +
+                "                           FROM configuration_settings \n" +
+                "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'T'::text \n" +
+                "                        WHEN COALESCE(date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone), 0::double precision) > COALESCE((( SELECT configuration_settings.value \n" +
+                "                           FROM configuration_settings \n" +
+                "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'L'::text \n" +
+                "                        ELSE 'N'::text \n" +
+                "                    END AS reporting_status \n" +
+                "                from programs_supported ps \n" +
+                "                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid and vr.periodid = fn_get_vaccine_current_reporting_period() \n" +
+                "                left join processing_periods pp on pp.id = vr.periodid      \n" +
+                "                join facilities f on f.id = ps.facilityId  \n" +
+                "                join vw_districts vd on f.geographiczoneid = vd.district_id \n" +
+                "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
+                "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or \n" +
+                "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)))              \n" +
+                "            ) select district, facility_name, facility_code, reported_date, reporting_status,facility_id, hasContacts from temp t")
+        List<HashMap<String, Object>> getReportingDetails(@Param("userId") Long userId);
 
-/* */
-    @Select("select count(1) repairing from ( \n" +
-            "               select facility_id, facility_name, geographic_zone_name district, equipment_name, model, yearofinstallation year_installed, period_start_date::date date_reported \n" +
-            "                 from vw_vaccine_cold_chain cc\n" +
-            "                 join vw_districts vd on cc.geographic_zone_id = vd.district_id \n" +
-            "                 where upper(status) = 'NOT FUNCTIONAL' and programid = fn_get_vaccine_program_id()      \n" +
-            "                 and period_id = fn_get_vaccine_current_reporting_period()\n" +
-            "                 and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
-            "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))) \n" +
-            "            ) a" )
-    Map<String, Object> getRepairingSummary(@Param("userId")Long userId);
+        /* */
+        @Select("select count(1) repairing from ( \n" +
+                "               select facility_id, facility_name, geographic_zone_name district, equipment_name, model, yearofinstallation year_installed, period_start_date::date date_reported \n" +
+                "                 from vw_vaccine_cold_chain cc\n" +
+                "                 join vw_districts vd on cc.geographic_zone_id = vd.district_id \n" +
+                "                 where upper(status) = 'NOT FUNCTIONAL' and programid = fn_get_vaccine_program_id()      \n" +
+                "                 and period_id = fn_get_vaccine_current_reporting_period()\n" +
+                "                 and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
+                "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))) \n" +
+                "            ) a")
+        Map<String, Object> getRepairingSummary(@Param("userId") Long userId);
 
-/* */
+        /* */
         @Select("select facility_id, facility_name, geographic_zone_name district, equipment_name, model, \n" +
                 "         yearofinstallation year_installed, period_start_date::date date_reported \n" +
                 "                     from vw_vaccine_cold_chain cc\n" +
@@ -103,9 +103,9 @@ public interface VaccineDashboardMapper {
                 "                      and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
                 "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
                 "                      ) ")
-        List<HashMap<String, Object>> getRepairingDetails(@Param("userId")Long userId);
+        List<HashMap<String, Object>> getRepairingDetails(@Param("userId") Long userId);
 
-/* */
+        /* */
         @Select(" select count(1) from ( \n" +
                 "                 select facility_code, facility_name, geographic_zone_name district, aefi_case, aefi_batch, aefi_date, aefi_notes \n" +
                 "                   from vw_vaccine_iefi i\n" +
@@ -117,10 +117,10 @@ public interface VaccineDashboardMapper {
                 "                    vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
                 "                     )  \n" +
                 "                ) a ")
-        Map<String, Object> getInvestigatingSummary(@Param("userId")Long userId);
+        Map<String, Object> getInvestigatingSummary(@Param("userId") Long userId);
 
-/* */
-        @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case, aefi_batch, aefi_date, aefi_notes \n" +
+        /* */
+        @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case,product_name, aefi_batch, aefi_date, aefi_notes \n" +
                 "                   from vw_vaccine_iefi i\n" +
                 "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
                 "                    where is_investigated = 'f'  \n" +
@@ -129,7 +129,7 @@ public interface VaccineDashboardMapper {
                 "                    and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
                 "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
                 "                     )  ")
-        List<HashMap<String, Object>> getInvestigatingDetails(@Param("userId")Long userId);
+        List<HashMap<String, Object>> getInvestigatingDetails(@Param("userId") Long userId);
 
 /* End Action Bar */
 
@@ -159,9 +159,9 @@ public interface VaccineDashboardMapper {
                 "i.period_start_date")
         List<HashMap<String, Object>> getMonthlyCoverage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product);*/
 
-/*
- * ---------------- Coverage ------------------------------------
-*/
+        /*
+         * ---------------- Coverage ------------------------------------
+        */
         @Select("SELECT\n" +
                 "d.region_name,\n" +
                 "i.period_name,\n" +
@@ -255,9 +255,9 @@ public interface VaccineDashboardMapper {
                 "ORDER BY 2, 4;")
         List<HashMap<String, Object>> getFacilityCoverageDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
-/*
- * ---------------- Dropout ------------------------------------
-*/
+        /*
+         * ---------------- Dropout ------------------------------------
+        */
         @Select("SELECT\n" +
                 "i.period_name,\n" +
                 "i.period_start_date, \n" +
@@ -332,7 +332,8 @@ public interface VaccineDashboardMapper {
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
                 "ORDER BY 1,2;")
         List<HashMap<String, Object>> getFacilityDropout(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
-/* */
+
+        /* */
         @Select("SELECT \n" +
                 "d.district_name,  \n" +
                 "i.facility_name,\n" +
@@ -362,9 +363,9 @@ public interface VaccineDashboardMapper {
 
 /* End Drop Out */
 
-/*
- * ---------------- Wastage ------------------------------------
-*/
+        /*
+         * ---------------- Wastage ------------------------------------
+        */
         @Select("with temp as (\n" +
                 "select period_name, period_start_date::date,\n" +
                 "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +
@@ -381,7 +382,8 @@ public interface VaccineDashboardMapper {
                 "where wastage_rate > 0\n" +
                 "order by 2")
         List<HashMap<String, Object>> getMonthlyWastage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product);
-/* */
+
+        /* */
         @Select("with temp as (\n" +
                 "select geographic_zone_name,\n" +
                 "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +
@@ -397,7 +399,8 @@ public interface VaccineDashboardMapper {
                 "from temp t\n" +
                 "where wastage_rate > 0\n")
         List<HashMap<String, Object>> getWastageByDistrict(@Param("period") Long period, @Param("product") Long product);
-/* */
+
+        /* */
         @Select("SELECT \n" +
                 "d.district_name,  \n" +
                 "ss.facility_name,\n" +
@@ -417,7 +420,8 @@ public interface VaccineDashboardMapper {
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
                 "ORDER BY 2;")
         List<HashMap<String, Object>> getFacilityWastage(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
-/* */
+
+        /* */
         @Select("\n" +
                 "SELECT \n" +
                 "d.district_name,  \n" +
@@ -443,9 +447,9 @@ public interface VaccineDashboardMapper {
 
 /* End Wastage */
 
-/*
- * ---------------- Sessions ------------------------------------
-*/
+        /*
+         * ---------------- Sessions ------------------------------------
+        */
         @Select("with temp as (\n" +
                 "select\n" +
                 "period_name,\n" +
@@ -465,7 +469,7 @@ public interface VaccineDashboardMapper {
                 "limit 5")
         List<HashMap<String, Object>> getMonthlySessions(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
-/* */
+        /* */
         @Select("with temp as \n" +
                 "( select \n" +
                 "geographic_zone_name,\n" +
@@ -487,7 +491,7 @@ public interface VaccineDashboardMapper {
                 "limit 5\n")
         List<HashMap<String, Object>> getDistrictSessions(@Param("period") Long period);
 
-/* */
+        /* */
         @Select("SELECT \n" +
                 "d.district_name,  \n" +
                 "s.facility_name,\n" +
@@ -501,8 +505,9 @@ public interface VaccineDashboardMapper {
                 "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
                 "ORDER BY 2;")
-        List<HashMap<String, Object>> getFacilitySessions(@Param("period") Long period,  @Param("user") Long user);
-/* */
+        List<HashMap<String, Object>> getFacilitySessions(@Param("period") Long period, @Param("user") Long user);
+
+        /* */
         @Select("SELECT \n" +
                 "d.district_name,  \n" +
                 "s.facility_name,\n" +
@@ -522,9 +527,9 @@ public interface VaccineDashboardMapper {
 
 /* End Session */
 
-/*
- * ---------------- Bundling ------------------------------------
-*/
+        /*
+         * ---------------- Bundling ------------------------------------
+        */
         @Select("select \n" +
                 "vvb.programid, \n" +
                 "vvb.periodid, \n" +
@@ -557,11 +562,11 @@ public interface VaccineDashboardMapper {
                 "SELECT\n" +
                 "vss.period_name,\n" +
                 "vss.period_start_date::date period_start,\n" +
-                "COALESCE(vss.closing_balance,0) cb,\n" +
+                "COALESCE(vss.closing_balance,0)*220 cb,\n" +
                 "COALESCE(vss.quantity_issued,0) issued\n" +
                 "FROM\n" +
                 "vw_vaccine_stock_status vss\n" +
-                "where period_start_date >= #{startDate} and period_end_date <= #{endDate} and product_id = #{product}\n" +
+                "where period_start_date >= #{startDate} and period_end_date <= #{endDate} and product_id = #{product} \n" +
                 "ORDER BY\n" +
                 "period_start_date\n" +
                 ") SELECT\n" +
@@ -579,7 +584,7 @@ public interface VaccineDashboardMapper {
                 "SELECT\n" +
                 "vss.period_name,\n" +
                 "vss.geographic_zone_name geographic_zone_name,\n" +
-                "COALESCE(vss.closing_balance,0) cb,\n" +
+                "COALESCE(vss.closing_balance,0)*220 cb,\n" +
                 "COALESCE(vss.quantity_issued,0) issued\n" +
                 "FROM\n" +
                 "vw_vaccine_stock_status vss\n" +
@@ -593,6 +598,72 @@ public interface VaccineDashboardMapper {
                 "order by 2\n" +
                 "limit 5")
         List<HashMap<String, Object>> getDistrictStock(@Param("period") Long period, @Param("product") Long productId);
+
+
+        @Select("WITH TEMP AS (\n" +
+                "SELECT \n" +
+                "vss.facility_id,\n" +
+                "vss.facility_name,\n" +
+                "COALESCE(vss.closing_balance,0)*220 cb, \n" +
+                "COALESCE(vss.quantity_issued,0) issued \n" +
+                "FROM \n" +
+                " vw_vaccine_stock_status vss \n" +
+                " JOIN vw_districts d ON vss.geographic_zone_id = d.district_id   \n" +
+                "where period_id =#{period} and product_id =#{product}\n" +
+                "and vss.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and (d.district_id  = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int  \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)   \n" +
+                "ORDER BY period_start_date \n" +
+                ") " +
+                "SELECT \n" +
+                "T .facility_id, \n" +
+                "T .facility_name, \n" +
+                "case when sum(t.issued) > 0 then round((sum(t.cb) / sum(t.issued)::numeric),1) else 0 end mos \n" +
+                "FROM \n" +
+                "TEMP T \n" +
+                "group by 1,2 \n" +
+                "order by 2\n")
+        List<HashMap<String, Object>> getFacilityStock(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("WITH TEMP AS (\n" +
+                "SELECT \n" +
+                "d.district_name,\n" +
+                "vss.facility_name,\n" +
+                "vss.period_name,\n" +
+                "vss.period_start_date,\n" +
+                "COALESCE(vss.closing_balance,0) cb, \n" +
+                "COALESCE(vss.quantity_issued,0) issued , product_id\n" +
+                "FROM \n" +
+                " vw_vaccine_stock_status vss \n" +
+                " JOIN vw_districts d ON vss.geographic_zone_id = d.district_id   \n" +
+                "where period_start_date >= #{startDate} and period_end_date <= #{endDate} and product_id = #{product}\n" +
+                "and vss.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1)  \n" +
+                "and (d.district_id  = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int  \n" +
+                "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)   \n" +
+                "\t\n" +
+                ") SELECT \n" +
+                "T.district_name, \n" +
+                "T.facility_name,\n" +
+                "T.period_name,\n" +
+                "T.period_start_date,\n" +
+                "SUM(T.cb) cb,\n" +
+                "SUM(T.issued) issued\n" +
+                "FROM \n" +
+                "TEMP T \n" +
+                "group by 1,2,3,4\n" +
+                "order by 1,2,4")
+        List<HashMap<String, Object>> getFacilityStockDetail(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product,
+                                                             @Param("user") Long user);
+
+
+        @Select("\n" +
+                "select count(*) from geographic_zones  gz  \n" +
+                "            join geographic_levels gl on gz.levelid= gl.id  \n" +
+                "             where gl.code='dist' and  \n" +
+                "            gz.id= (select value::integer from user_preferences \n" +
+                "            where userid=2 and userpreferencekey='DEFAULT_GEOGRAPHIC_ZONE' limit 1)")
+
+        public Long isDistrictUser(@Param("userId") Long userId);
 }
 
 /* End Stock */

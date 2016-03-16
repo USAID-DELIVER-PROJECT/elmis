@@ -102,6 +102,14 @@ services.factory('CreateRequisitionProgramList', function ($resource) {
   return $resource('/create/requisition/programs.json', {}, {});
 });
 
+services.factory('PodProgramList', function ($resource) {
+  return $resource('/manage-pod/programs.json', {}, {});
+});
+
+services.factory('ManagePodFacilitiesForProgram', function ($resource) {
+  return $resource('/manage-pod/supervised/:programId/facilities.json', {}, {});
+});
+
 services.factory('UserSupervisedFacilitiesForProgram', function ($resource) {
   return $resource('/create/requisition/supervised/:programId/facilities.json', {}, {});
 });

@@ -32,6 +32,7 @@ public interface ColdChainMapper {
   @Update("UPDATE vaccine_report_cold_chain_line_items " +
       " SET" +
       " reportId = #{reportId}" +
+      " , skipped = #{skipped}" +
       " , equipmentInventoryId = #{equipmentInventoryId}" +
       " , minTemp = #{minTemp}" +
       " , maxTemp = #{maxTemp} " +

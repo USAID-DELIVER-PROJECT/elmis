@@ -77,7 +77,7 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
                                 value.packedVolumePerDose  = value1.packedVolumePerDose;
                                 value.administrationMode  = value1.administrationMode;
                                 value.dilutionSyringe  = value1.dilutionSyringe;
-                                value.volumePerCif  = value1.volumePerCif;
+                                value.diluentPackedVolumePerDose  = value1.diluentPackedVolumePerDose;
                                 value.batchTracked  = value1.batchTracked;
                                 value.vvmTracked  = value1.vvmTracked;
                                 value.survivingInfants  = value1.survivingInfants;
@@ -110,7 +110,7 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
                 'packedVolumePerDose':(value.packedVolumePerDose)?value.packedVolumePerDose:null,
                 'administrationMode':(value.administrationMode)?value.administrationMode:null,
                 'dilutionSyringe':(value.dilutionSyringe)?value.dilutionSyringe:null,
-                'volumePerCif':(value.volumePerCif)?value.volumePerCif:null,
+                'diluentPackedVolumePerDose':(value.diluentPackedVolumePerDose)?value.diluentPackedVolumePerDose:null,
                 'batchTracked':(value.batchTracked)?value.batchTracked:null,
                 'vvmTracked':(value.vvmTracked)?value.vvmTracked:null,
                 'survivingInfants':(value.survivingInfants)?value.survivingInfants:null,

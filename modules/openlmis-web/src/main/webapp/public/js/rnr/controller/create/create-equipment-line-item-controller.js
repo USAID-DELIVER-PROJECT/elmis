@@ -11,6 +11,7 @@
  */
 
 function CreateEquipmentLineItemController($scope) {
+
   $scope.showCategory = function (index) {
     var absIndex = ($scope.pageSize * ($scope.currentPage - 1)) +  index;
     return  !((index > 0 ) && ($scope.rnr.equipmentLineItems.length > absIndex) &&  ($scope.rnr.equipmentLineItems[absIndex].equipmentCategory == $scope.rnr.equipmentLineItems[absIndex - 1].equipmentCategory));
@@ -21,17 +22,31 @@ function CreateEquipmentLineItemController($scope) {
   };
 
   $scope.equipmentStatusChanged = function(equipmentLineItem){
+    var currentStatus = _.findWhere($scope.$parent.equipmentOperationalStatus, {'id': utils.parseIntWithBaseTen(equipmentLineItem.operationalStatusId)});
     angular.forEach(equipmentLineItem.relatedProducts, function(product){
       var lineItem = _.findWhere($scope.$parent.rnr.fullSupplyLineItems, {productCode: product.code});
-      if(lineItem !== undefined){
-         if(equipmentLineItem.operationalStatusId == 3 && lineItem.quantityRequested > 0){
-           lineItem.isEquipmentValid = false;
-         }else{
-           lineItem.isEquipmentValid = true;
-         }
-      }
-    });
+        if(utils.isDefined(lineItem)){
+          if(currentStatus.isBad && lineItem.quantityRequested > 0){
+            lineItem.isEquipmentValid = false;
+          }else{
+            lineItem.isEquipmentValid = true;
+          }
+        }
+      });
+  };
 
+  $scope.requiresRemarks = function(equipmentLineItem){
+    var currentStatus = _.findWhere($scope.$parent.equipmentOperationalStatus, {'id': utils.parseIntWithBaseTen(equipmentLineItem.operationalStatusId)});
+    if(isUndefined(currentStatus) || !currentStatus.isBad){
+      return false;
+    }
+    for(var product in equipmentLineItem.relatedProducts ){
+      var lineItem = _.findWhere($scope.$parent.rnr.fullSupplyLineItems, {productCode: product.code});
+      if(utils.isDefined(lineItem) && utils.parseIntWithBaseTen(lineItem.quantityRequested) > 0){
+        return true;
+      }
+    }
+    return false;
   };
 
 }

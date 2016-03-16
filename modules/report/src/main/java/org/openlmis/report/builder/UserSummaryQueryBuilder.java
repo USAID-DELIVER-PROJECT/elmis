@@ -36,7 +36,7 @@ public class UserSummaryQueryBuilder {
     public static void writepredicates(UserSummaryParams filter){
         if(filter != null){
            if(filter.getProgramId() !=0 && filter.getProgramId()!=-1){
-              WHERE("programid= #{filterCriteria.programId}");
+              WHERE("(programid= #{filterCriteria.programId} or programid is null)");
 
            }
             if(filter.getRoleId() !=0 && filter.getRoleId()!=-1){
@@ -44,7 +44,7 @@ public class UserSummaryQueryBuilder {
 
             }
             if(filter.getSupervisoryNodeId() !=0 && filter.getSupervisoryNodeId()!=-1){
-                WHERE("supervisorynodeid= #{filterCriteria.supervisoryNodeId}");
+                WHERE("(supervisorynodeid= #{filterCriteria.supervisoryNodeId} or supervisorynodeid is null)");
 
             }
         }

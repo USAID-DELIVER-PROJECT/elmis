@@ -104,6 +104,13 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,StockCa
 
      };
      $scope.updateStock=function(){
+            console.log(JSON.stringify($scope.adjustmentForm));
+            if($scope.adjustmentForm.$invalid)
+            {
+                console.log(JSON.stringify($scope.adjustmentForm));
+                $scope.showFormError=true;
+                return;
+            }
             var events=[];
             $scope.stockCardsToDisplay.forEach(function(st){
                 st.stockCards.forEach(function(s){
@@ -126,10 +133,9 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,StockCa
                                     });
                             }
                         });
-                        console.log(JSON.stringify(events));
                     }
                     else{
-                     if(s.quantity !==undefined && s.quantity >0)
+                     if(s.quantity !==undefined)
                      {
                         s.adjustmentReasons.forEach(function(reason){
                             var event={};
@@ -177,9 +183,17 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,StockCa
      function updateAdjustmentReasonForLot(adjustmentReasons)
      {
 
+         var additive;
+         if($scope.currentStockLot.lot !==undefined){
+            additive=($scope.currentStockLot.quantity - $scope.currentStockLot.quantityOnHand >=0)?true:false;
+         }
+         else  if($scope.currentStockLot.lot ===undefined)
+         {
+            additive=($scope.currentStockLot.quantity - $scope.currentStockLot.totalQuantityOnHand >=0)?true:false;
+         }
          var adjustmentReasonsForLot = _.pluck(_.pluck(adjustmentReasons, 'type'), 'name');
          $scope.adjustmentReasonsToDisplay = $.grep($scope.adjustmentTypes, function (adjustmentTypeObject) {
-              return $.inArray(adjustmentTypeObject.name, adjustmentReasonsForLot) == -1;
+              return $.inArray(adjustmentTypeObject.name, adjustmentReasonsForLot) == -1 && adjustmentTypeObject.additive === additive;
           });
      }
 

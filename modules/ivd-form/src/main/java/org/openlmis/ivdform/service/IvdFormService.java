@@ -137,7 +137,7 @@ public class IvdFormService {
     repository.update(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.SUBMITTED, userId);
     reportStatusChangeRepository.insert(change);
-    ivdNotificationService.sendIVDStatusChangeNofitication(report, userId);
+    ivdNotificationService.sendIVDStatusChangeNotification(report, userId);
   }
 
   private VaccineReport createNewVaccineReport(Long facilityId, Long programId, Long periodId) {
@@ -258,7 +258,7 @@ public class IvdFormService {
     repository.update(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.APPROVED, userId);
     reportStatusChangeRepository.insert(change);
-    ivdNotificationService.sendIVDStatusChangeNofitication(report, reportSubmitterUserId);
+    ivdNotificationService.sendIVDStatusChangeNotification(report, reportSubmitterUserId);
   }
 
   public void reject(VaccineReport report, Long userId) {
@@ -267,7 +267,7 @@ public class IvdFormService {
     repository.update(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.REJECTED, userId);
     reportStatusChangeRepository.insert(change);
-    ivdNotificationService.sendIVDStatusChangeNofitication(report, reportSubmitterUserId);
+    ivdNotificationService.sendIVDStatusChangeNotification(report, reportSubmitterUserId);
   }
 
   public FacilityIvdSummary getStockStatusForAllProductsInFacility(String facilityCode, String programCode, Long periodId) {

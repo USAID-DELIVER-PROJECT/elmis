@@ -4,8 +4,8 @@
     <form  novalidate>
         <div  class="clearfix">
              <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.detailWastage.product" on-change="wastageDetailCallback()"></vaccine-product-filter>
-            <static-period-filter default="defaultPeriodTrend" range="filter.detailWastage.range" startdate="filter.detailWastage.startDate" enddate="filter.detailWastage.endDate" rangemax="10" error="perioderror" on-change="wastageDetailCallback()" ></static-period-filter>
-
+            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailWastage.range" startdate="filter.detailWastage.startDate" enddate="filter.detailWastage.endDate" rangemax="10" error="perioderror" on-change="wastageDetailCallback()" ></static-period-filter>-->
+            <static-year-filter  on-change="wastageDetailCallback()" year="staticYear" startdate="filter.detailWastage.startDate" enddate="filter.detailWastage.endDate" ></static-year-filter>
         </div>
     </form>
 </div>

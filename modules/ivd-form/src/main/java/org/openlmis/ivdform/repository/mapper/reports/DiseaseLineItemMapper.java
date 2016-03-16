@@ -31,6 +31,7 @@ public interface DiseaseLineItemMapper {
   @Update("UPDATE vaccine_report_disease_line_items " +
       " SET " +
       " reportId = #{reportId} " +
+      " , skipped = #{skipped}" +
       " , diseaseId = #{diseaseId} " +
       " , diseaseName = #{diseaseName} " +
       " , displayOrder = #{displayOrder} " +

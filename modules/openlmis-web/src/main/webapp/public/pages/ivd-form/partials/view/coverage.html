@@ -25,36 +25,46 @@
     <div class="float-left left-table parent">
       <table class="table table-bordered" fixed-table-header id="fullSupplyFrozenTable">
         <thead>
-          <tr>
-            <th colspan="2">&nbsp;</th>
-          </tr>
-          <tr>
-            <th colspan="2">&nbsp;</th>
-          </tr>
-          <tr>
-            <th openlmis-message="label.vaccine.coverage.product"></th>
-            <th openlmis-message="label.vaccine.coverage.dose"></th>
-          </tr>
+        <tr>
+          <th colspan="3">&nbsp;</th>
+        </tr>
+        <tr>
+          <th colspan="2">&nbsp;</th>
+          <th rowspan="2" class="col-skipped">
+            <span openlmis-message="header.label.skip"></span>
+          </th>
+        </tr>
+        <tr>
+          <th openlmis-message="label.vaccine.coverage.product"></th>
+          <th openlmis-message="label.vaccine.coverage.dose"></th>
+        </tr>
         </thead>
         <tbody>
-          <tr ng-repeat-start="(productId, productGroup) in report.coverageLineItemViews"></tr>
-          <tr ng-repeat-start="dose in productGroup">
-            <td class="col-product cell-input" ng-if="$index == 0" rowspan="{{productGroup.length * 2}}">
-              <span class="cell-text">{{dose.product.primaryName}}</span>
-            </td>
-            <td class="cell-input">
-              <span class="cell-text number" style="min-height: 31px;">{{dose.displayName}}</span>
-            </td>
-          </tr>
-          <tr ng-repeat-end></tr>
-          <tr ng-repeat-end></tr>
+        <tr ng-repeat-start="(productId, productGroup) in report.coverageLineItemViews"></tr>
+        <tr ng-repeat-start="dose in productGroup">
+          <td class="col-product cell-input" ng-if="$index == 0" rowspan="{{productGroup.length * 2}}">
+            <span class="cell-text">{{dose.product.primaryName}}</span>
+          </td>
+          <td class="cell-input">
+            <span class="cell-text number" style="min-height: 31px;">{{dose.displayName}}</span>
+          </td>
+          <td class="cell-input center col-skipped" style="text-align:center;">
+            <span>
+              <input ng-disabled="true" type="checkbox" ng-model="dose.skipped"/>
+            </span>
+          </td>
+        </tr>
+        <tr ng-repeat-end></tr>
+        <tr ng-repeat-end></tr>
         </tbody>
       </table>
     </div>
 
     <div class="float-left right-table parent" custom-horizontal-scroll>
-      <ng-include ng-show="showReports" src="'/public/pages/ivd-form/partials/view/coverage-with-reporting.html'"></ng-include>
-      <ng-include ng-show="!showReports" src="'/public/pages/ivd-form/partials/view/coverage-data-entry-only.html'"></ng-include>
+      <ng-include ng-show="showReports"
+                  src="'/public/pages/ivd-form/partials/view/coverage-with-reporting.html'"></ng-include>
+      <ng-include ng-show="!showReports"
+                  src="'/public/pages/ivd-form/partials/view/coverage-data-entry-only.html'"></ng-include>
     </div>
   </div>
 </div>
@@ -65,11 +75,12 @@
       <table class="table table-bordered" style="margin-bottom: 0px; padding-bottom: 0px">
         <thead>
         <tr class="text-row">
-          <th colspan="4" openlmis-message="vaccine.immunization.sessions"></th>
+          <th colspan="5" openlmis-message="vaccine.immunization.sessions"></th>
         </tr>
         <tr class="text-row">
           <th class="span2" openlmis-message="vaccine.immunization.sessions.fixed"></th>
-          <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach"></th>
+          <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.planned"></th>
+          <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.conducted"></th>
           <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.outreach"></th>
           <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.percentage"></th>
         </tr>
@@ -77,17 +88,24 @@
         <tbody>
         <tr>
           <td class="cell-input col-general">
-            <input disabled maxlength="8" ng-model="report.fixedImmunizationSessions" numeric-validator="positiveInteger" type="text">
+            <input disabled maxlength="8" ng-model="report.fixedImmunizationSessions"
+                   numeric-validator="positiveInteger" type="text">
           </td>
           <td class="cell-input col-general">
-            <input disabled maxlength="8" ng-model="report.outreachImmunizationSessions" numeric-validator="positiveInteger" type="text">
+            <input disabled maxlength="8" ng-model="report.plannedOutreachImmunizationSessions"
+                   numeric-validator="positiveInteger" type="text">
           </td>
           <td class="cell-input col-general">
-            <input disabled maxlength="8" ng-model="report.outreachImmunizationSessionsCanceled" numeric-validator="positiveInteger" type="text">
+            <input disabled maxlength="8" ng-model="report.outreachImmunizationSessions"
+                   numeric-validator="positiveInteger" type="text">
+          </td>
+          <td class="cell-input col-general">
+            <input disabled maxlength="8" ng-model="report.outreachImmunizationSessionsCanceled"
+                   numeric-validator="positiveInteger" type="text">
           </td>
           <td class="col-general number">
-            <span ng-show="report.outreachImmunizationSessions > 0">
-              {{ ((report.outreachImmunizationSessions != 0)? (report.outreachImmunizationSessionsCanceled * 100 / report.outreachImmunizationSessions) : 0) | number : '2' }} %
+            <span ng-show="report.plannedOutreachImmunizationSessions > 0">
+              {{ ((report.plannedOutreachImmunizationSessions != 0)? (report.outreachImmunizationSessionsCanceled * 100 / report.plannedOutreachImmunizationSessions) : 0) | number : '2' }}
             </span>
           </td>
         </tr>
@@ -102,7 +120,7 @@
       <table class="table table-bordered">
         <thead>
         <tr class="text-row">
-          <th  openlmis-message="label.vaccine.major.immunization.activities"></th>
+          <th openlmis-message="label.vaccine.major.immunization.activities"></th>
         </tr>
         </thead>
         <tbody>

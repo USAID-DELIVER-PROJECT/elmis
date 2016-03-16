@@ -24,6 +24,8 @@ import org.openlmis.core.domain.BaseModel;
 @AllArgsConstructor
 public class VitaminSupplementationLineItem extends BaseModel {
 
+  private Boolean skipped = false;
+
   Long reportId;
   Long vaccineVitaminId;
   Long vitaminAgeGroupId;

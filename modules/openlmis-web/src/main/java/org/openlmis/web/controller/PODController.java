@@ -13,6 +13,7 @@ package org.openlmis.web.controller;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.order.domain.Order;
 import org.openlmis.order.service.OrderService;
@@ -22,13 +23,11 @@ import org.openlmis.pod.service.PODService;
 import org.openlmis.reporting.model.Template;
 import org.openlmis.reporting.service.JasperReportsViewFactory;
 import org.openlmis.reporting.service.TemplateService;
-import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,8 +72,9 @@ public class PODController extends BaseController {
   @Autowired
   private JasperReportsViewFactory jasperReportsViewFactory;
 
+
   @RequestMapping(value = "/pods", method = POST, headers = ACCEPT_JSON)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_POD')")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_POD, COMPLETE_POD')")
   public ResponseEntity<OpenLmisResponse> createPOD(@RequestParam Long orderId,
                                                     HttpServletRequest request) throws ParseException {
     Order order = orderService.getOrder(orderId);
@@ -93,7 +93,7 @@ public class PODController extends BaseController {
   }
 
   @RequestMapping(value = "/pods/{id}", method = GET, headers = ACCEPT_JSON)
-  @PostAuthorize("@fulfillmentPermissionService.hasPermission(principal, returnObject.body.data.get(\"order\").getId(), 'MANAGE_POD')")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_POD, COMPLETE_POD')")
   public ResponseEntity<OpenLmisResponse> getPOD(@PathVariable("id") Long podId) throws ParseException {
     OrderPOD orderPOD = service.getPodById(podId);
     OrderPODDTO orderPODDTO = OrderPODDTO.getOrderDetailsForPOD(orderService.getOrder(orderPOD.getOrderId()));
@@ -104,7 +104,7 @@ public class PODController extends BaseController {
   }
 
   @RequestMapping(value = "/pods/{id}", method = PUT, headers = ACCEPT_JSON)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_POD')")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_POD, COMPLETE_POD')")
   public ResponseEntity<OpenLmisResponse> save(@RequestBody OrderPOD orderPOD, @PathVariable Long id, HttpServletRequest request) throws ParseException {
     try {
       orderPOD.setModifiedBy(loggedInUserId(request));
@@ -117,7 +117,7 @@ public class PODController extends BaseController {
   }
 
   @RequestMapping(value = "/pods/submit/{id}", method = PUT, headers = ACCEPT_JSON)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_POD')")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'MANAGE_POD, COMPLETE_POD')")
   public ResponseEntity<OpenLmisResponse> submit(@PathVariable Long id, HttpServletRequest request) {
     try {
       service.submit(id, loggedInUserId(request));

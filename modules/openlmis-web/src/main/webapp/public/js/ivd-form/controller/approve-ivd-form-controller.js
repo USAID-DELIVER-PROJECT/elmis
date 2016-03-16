@@ -9,13 +9,20 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function ApproveIvdFormController($scope, programs, ApprovalPendingIvds) {
+function ApproveIvdFormController($scope, programs, ApprovalPendingIvds, messageService) {
 
   $scope.programs = programs;
+
+  function getStatusText(status){
+    return  messageService.get('ivd.form.status.' + (status === null ? 'NOT_INITIATED' : status ));
+  }
 
   $scope.onProgramChanged = function () {
     ApprovalPendingIvds.get({program: $scope.filter.program}, function (data) {
       $scope.pending = data.pending_submissions;
+      angular.forEach($scope.pending, function(ivd){
+        ivd.status = getStatusText(ivd.status);
+      });
     });
   };
 

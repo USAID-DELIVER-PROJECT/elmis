@@ -32,6 +32,7 @@ public interface LogisticsLineItemMapper {
   @Update("UPDATE vaccine_report_logistics_line_items " +
       " set " +
       " reportId = #{reportId} " +
+      ", skipped = #{skipped}" +
       ", productId = #{productId} " +
       ", productCode = #{productCode} " +
       ", productCategory = #{productCategory} " +

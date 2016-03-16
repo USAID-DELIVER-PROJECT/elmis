@@ -92,6 +92,10 @@ public class FacilityService {
     return facilityRepository.getHomeFacility(userId);
   }
 
+  public Facility getHomeFacilityForRights(Long userId, Long programId, String... rights){
+    return facilityRepository.getHomeFacilityForRights(userId, programId, rights);
+  }
+
   public Facility getById(Long id) {
     Facility facility = facilityRepository.getById(id);
     if(facility != null)

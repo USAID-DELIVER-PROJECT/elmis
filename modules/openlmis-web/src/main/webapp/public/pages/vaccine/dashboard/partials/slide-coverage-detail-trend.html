@@ -1,11 +1,12 @@
 
-<div>Monthly Coverage</div>
+<div>Coverage Detail</div>
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
              <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.detailCoverage.product" on-change="coverageDetailCallback()"></vaccine-product-filter>
-            <static-period-filter default="defaultPeriodTrend" range="filter.detailCoverage.range" startdate="filter.detailCoverage.startDate" enddate="filter.detailCoverage.endDate" rangemax="10" error="perioderror" on-change="coverageDetailCallback()" ></static-period-filter>
+            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailCoverage.range" startdate="filter.detailCoverage.startDate" enddate="filter.detailCoverage.endDate" rangemax="10" error="perioderror" on-change="coverageDetailCallback()" ></static-period-filter>-->
 
+            <static-year-filter  on-change="coverageDetailCallback()" year="staticYear" startdate="filter.detailCoverage.startDate" enddate="filter.detailCoverage.endDate" ></static-year-filter>
         </div>
     </form>
 </div>

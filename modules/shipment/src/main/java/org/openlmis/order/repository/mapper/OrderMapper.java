@@ -108,7 +108,7 @@ public interface OrderMapper {
 
 
   @Select({"SELECT O.* FROM orders O INNER JOIN requisitions r on r.id = O.id INNER JOIN supply_lines S ON O.supplyLineId = S.id",
-      "WHERE r.programId = #{program} and supplyingFacilityId = ANY(#{facilityIds}::INTEGER[]) AND O.status = ANY(#{statuses}::VARCHAR[]) ",
+      "WHERE r.programId = #{program} and (supplyingFacilityId = ANY(#{warehouseIds}::INTEGER[]) or r.facilityId = ANY(#{managedFacilities}::INTEGER[]) ) AND O.status = ANY(#{statuses}::VARCHAR[]) ",
       "ORDER BY O.createdDate"})
   @Results({
       @Result(property = "id", column = "id"),
@@ -118,10 +118,10 @@ public interface OrderMapper {
       @Result(property = "supplyLine", javaType = SupplyLine.class, column = "supplyLineId",
           one = @One(select = "org.openlmis.core.repository.mapper.SupplyLineMapper.getById"))
   })
-  List<Order> getByWarehouseIdsAndStatuses(@Param("facilityIds") String facilityIds, @Param("statuses") String statuses, @Param("program") Long program);
+  List<Order> getByWarehouseIdsAndStatuses(@Param("warehouseIds") String warehouseIds, @Param("statuses") String statuses, @Param("program") Long program, @Param("managedFacilities") String managedFacilities);
 
   @Select({"SELECT O.* FROM orders O INNER JOIN requisitions r on r.id = O.id INNER JOIN supply_lines S ON O.supplyLineId = S.id",
-      "WHERE r.facilityId = #{facility} and r.programId = #{program} and supplyingFacilityId = ANY(#{facilityIds}::INTEGER[]) AND O.status = ANY(#{statuses}::VARCHAR[]) ",
+      "WHERE r.facilityId = #{facility} and r.programId = #{program} and (supplyingFacilityId = ANY(#{facilityIds}::INTEGER[])  or r.facilityId = ANY(#{managedFacilities}::INTEGER[]) ) AND O.status = ANY(#{statuses}::VARCHAR[]) ",
       "ORDER BY O.createdDate"})
   @Results({
       @Result(property = "id", column = "id"),
@@ -131,7 +131,7 @@ public interface OrderMapper {
       @Result(property = "supplyLine", javaType = SupplyLine.class, column = "supplyLineId",
           one = @One(select = "org.openlmis.core.repository.mapper.SupplyLineMapper.getById"))
   })
-  List<Order> getByWarehouseIdsAndStatusesByFacility(@Param("facilityIds") String facilityIds, @Param("statuses") String statuses, @Param("program") Long program, @Param("facility") Long facilityId);
+  List<Order> getByWarehouseIdsAndStatusesByFacility(@Param("facilityIds") String facilityIds, @Param("statuses") String statuses, @Param("program") Long program, @Param("facility") Long facilityId, @Param("managedFacilities") String managedFacilities);
 
 
   @Select("SELECT * FROM orders WHERE orderNumber = #{orderNumber}")

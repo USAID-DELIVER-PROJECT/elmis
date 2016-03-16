@@ -45,7 +45,7 @@
                             <th>Packed Volume<br> per Dose(cm3)</th>
                             <th>Administration<br> Mode</th>
                             <th>Dilution Syringe</th>
-                            <th>Volume per CIF</th>
+                            <th>Diluent Packed Volume<br> per Dose(cm3)</th>
                             <th>Track Batch</th>
                             <th>Track VVM</th>
                             <th>Surviving Infants</th>
@@ -91,8 +91,9 @@
                                 </select>
                             </td>
                             <td>
-                                <span ng-if="!product.editing">{{ product.volumePerCif }}</span>
-                                <input ng-if="product.editing" type="text" ng-model="product.volumePerCif" style="width: 50px">
+                                <span ng-if="!product.editing">{{ product.diluentPackedVolumePerDose }}</span>
+                                <input ng-disabled="product.dilutionSyringe < 1" ng-if="product.editing" type="text"
+                                       ng-model="product.diluentPackedVolumePerDose" style="width: 50px">
                             </td>
                             <td class="col-lot">
                                 <input type="checkbox" ng-model="product.batchTracked" disabled ng-if="!product.editing"/>

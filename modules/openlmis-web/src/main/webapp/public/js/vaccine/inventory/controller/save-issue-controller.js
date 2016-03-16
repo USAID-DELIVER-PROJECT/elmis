@@ -15,6 +15,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
      $scope.distribute=function(){
         $scope.allProductsZero=true;
         $scope.clearErrorMessages();
+        var printWindow;
         $scope.facilityToIssue.productsToIssueByCategory.forEach(function(category){
             category.productsToIssue.forEach(function(product){
                 if(product.quantity > 0)
@@ -26,6 +27,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
         });
         if($scope.issueForm.$invalid)
         {
+            console.log(JSON.stringify($scope.issueForm));
             $scope.showFormError();
             return;
         }
@@ -97,16 +99,22 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
             }
             });
          });
+
+
          StockEvent.save({facilityId:$scope.homeFacility.id},events, function (data) {
              if(data.success)
              {
-                SaveDistribution.save(distribution,function(distribution){
-                    $scope.showMessages();
-                    $scope.closeIssueModal();
-                    $scope.print(distribution.distributionId);
-                });
-              }
+                 SaveDistribution.save(distribution,function(distribution){
+                      $scope.showMessages();
+                      $scope.closeIssueModal();
+                      $scope.distributionId=distribution.distributionId;
+                      var url = '/vaccine/orderRequisition/issue/print/'+$scope.distributionId;
+                      printWindow.location.href=url;
+                 });
+             }
          });
+         printWindow= $window.open('about:blank','_blank');
+
      };
 
 }

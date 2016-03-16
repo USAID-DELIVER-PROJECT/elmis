@@ -159,10 +159,6 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
          return mapper.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId);
     }
 
-    public List<Map<String, Object>> getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {
-        return mapper.getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(startDate, endDate, districtId, productId);
-    }
-
     public List<Map<String,Object>> getAdequacyLevelOfSupplyByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {
         return mapper.getAdequacyLevelOfSupplyReportDataByDistrict(startDate, endDate, districtId, productId);
     }
@@ -195,5 +191,17 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
   public List<Map<String,Object>> getCategorizationVaccineUtilizationPerformanceRegion(Date startDate, Date endDate, Long zoneId, Long productId) {
     return mapper.getCategorizationVaccineUtilizationPerformanceForRegion(startDate, endDate, zoneId, productId);
   }
+  public List<Map<String,Object>> getClassficationVaccinePopulationForFacility(Date startDate, Date endDate, Long zoneId, Long productId) {
+    return mapper.getClassficationVaccinePopulationForFacility(startDate, endDate, zoneId, productId);
+  }
+  public List<Map<String,Object>> getClassficationVaccinePopulationForDistrict(Date startDate, Date endDate, Long zoneId, Long productId) {
+    return mapper.getClassficationVaccinePopulationForDistrict(startDate, endDate, zoneId, productId);
+  }
 
+  public List<Map<String,Object>> getClassficationVaccinePopulationForRegion(Date startDate, Date endDate, Long zoneId, Long productId) {
+    return mapper.getClassficationVaccinePopulationForRegion(startDate, endDate, zoneId, productId);
+  }
+    public List<Map<String,Object>> loadYearList(){
+        return mapper.getDistincitYearList();
+    }
 }

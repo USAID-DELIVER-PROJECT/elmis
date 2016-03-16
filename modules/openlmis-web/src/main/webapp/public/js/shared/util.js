@@ -78,7 +78,7 @@ var utils = {
             }
 
             endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
-            startDate = new Date(endDate.getFullYear(), endDate.getMonth()+1 ,1);
+            startDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1);
 
             switch (periodRange) {
                 case '1':
@@ -109,15 +109,29 @@ var utils = {
 
     },
 
+    getYearStartAndEnd: function (year,_cuttofdate) {
 
-    getVaccineMonthlyDefaultPeriod: function (periods,cuttoffDate) {
+        var periodValues=[];
+        var endDate;
+        var startDate;
+        if(year==='0'){
+            periodValues=utils.getVaccineCustomDateRange(1,null,null,_cuttofdate);
+
+        }else {
+            periodValues={  enddate :utils.formatDate(new Date(year, 12, 0)),
+                startdate :utils.formatDate(new Date(year, 0, 1))};
+        }
+
+        return periodValues;
+    },
+    getVaccineMonthlyDefaultPeriod: function (periods, cuttoffDate) {
         var monthBack = 0;
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var currentDate = new Date();
         var currentDays = currentDate.getDate();
         var endDate;
         if (cuttoffDate === undefined || cuttoffDate === null) {
-            cuttoffDate=10;
+            cuttoffDate = 10;
         }
         if (currentDays <= cuttoffDate) {
             monthBack = 1;
@@ -129,25 +143,33 @@ var utils = {
         for (yearIndex = 0; yearIndex < periods.length; yearIndex++) {
 
 
-
-                    if (periods[yearIndex].periodname == formattedDate) {
-                        return periods[yearIndex].periodid;
-                    }
+            if (periods[yearIndex].periodname == formattedDate) {
+                return periods[yearIndex].periodid;
+            }
 
 
         }
-            return 0;
-        },
-    formatDate: function(dateValue){
+        return 0;
+    },
+    generatePeriodNamesForVaccineYear: function(year){
+        var periodList=[];
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        for(var i=0;i<12;i++){
+            periodList[i]=months[i]+ " "+ year;
+        }
+        return periodList;
+
+    },
+    formatDate: function (dateValue) {
         var day = dateValue.getDate();
-        var monthIndex = dateValue.getMonth()+1;
+        var monthIndex = dateValue.getMonth() + 1;
         var year = dateValue.getFullYear();
-        var formatedDate=("0000"+year).slice(-4)+"-"+("00"+monthIndex).slice(-2)+"-"+("00"+day).slice(-2);
+        var formatedDate = ("0000" + year).slice(-4) + "-" + ("00" + monthIndex).slice(-2) + "-" + ("00" + day).slice(-2);
         return formatedDate;
     }
 
 
-    };
+};
 
 String.prototype.format = function () {
     var formatted = this;

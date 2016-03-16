@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function CreateIvdFormController($scope, $location , operationalStatuses, $dialog, manufacturers, report, discardingReasons, VaccineReportSave, VaccineReportSubmit) {
+function CreateIvdFormController($scope, $location, operationalStatuses, $dialog, manufacturers, report, discardingReasons, VaccineReportSave, VaccineReportSubmit) {
 
   // initial state of the display
   $scope.report = new VaccineReport(report);
@@ -18,19 +18,35 @@ function CreateIvdFormController($scope, $location , operationalStatuses, $dialo
 
   //prepare tab visibility settings
   $scope.tabVisibility = {};
-  _.chain(report.tabVisibilitySettings).groupBy('tab').map(function(key, value){
-                                                                                  $scope.tabVisibility[value] =  key[0].visible;
-                                                                                  });
+  _.chain(report.tabVisibilitySettings).groupBy('tab').map(function (key, value) {
+    $scope.tabVisibility[value] = key[0].visible;
+  });
 
   $scope.operationalStatuses = operationalStatuses;
 
+  $scope.highlightRequired = function (showError, value, skipped) {
+    if (showError && isUndefined(value) && !skipped) {
+      return "required-error";
+    }
+    return null;
+  };
+
   $scope.save = function () {
     VaccineReportSave.update($scope.report, function () {
+      $scope.error = '';
       $scope.message = "msg.ivd.saved.successfully";
     });
   };
 
   $scope.submit = function () {
+    $scope.message = '';
+    $scope.error = '';
+
+    if (!$scope.report.isValid($scope)) {
+      $scope.error = 'You are attempting to save invalid values. Please make sure all information is valid. ';
+      return;
+    }
+
     var callBack = function (result) {
       if (result) {
         VaccineReportSubmit.update($scope.report, function () {
@@ -56,17 +72,25 @@ function CreateIvdFormController($scope, $location , operationalStatuses, $dialo
 
     $scope.currentEffect = effect;
     $scope.currentEffectMode = editMode;
-
     $scope.adverseEffectModal = true;
   };
 
-  $scope.applyAdverseEffect = function () {
-    var product = _.findWhere($scope.report.logisticsLineItems, {'productId': parseInt($scope.currentEffect.productId, 10)});
-    $scope.currentEffect.productName = product.productName;
-    if (!$scope.currentEffectMode) {
-      $scope.report.adverseEffectLineItems.push($scope.currentEffect);
+  $scope.applyAdverseEffect = function (adverseEffectForm) {
+    if(adverseEffectForm.$valid){
+      var product = _.findWhere($scope.report.products, {'id': utils.parseIntWithBaseTen($scope.currentEffect.productId)});
+      $scope.currentEffect.productName = product.primaryName;
+      if (!$scope.currentEffectMode) {
+        $scope.report.adverseEffectLineItems.push($scope.currentEffect);
+      }
+      VaccineReportSave.update($scope.report, function (data) {
+        $scope.error = '';
+        $scope.report.adverseEffectLineItems = data.report.adverseEffectLineItems;
+        console.log(data);
+        $scope.adverseEffectModal = false;
+      });
+
     }
-    $scope.adverseEffectModal = false;
+
   };
 
   $scope.closeAdverseEffectsModal = function () {
@@ -107,8 +131,8 @@ function CreateIvdFormController($scope, $location , operationalStatuses, $dialo
   };
 
   $scope.toNumber = function (val) {
-    if (angular.isDefined(val) && val !== null) {
-      return parseInt(val, 10);
+    if (utils.isNumber(val)) {
+      return utils.parseIntWithBaseTen(val);
     }
     return 0;
   };
@@ -116,7 +140,7 @@ function CreateIvdFormController($scope, $location , operationalStatuses, $dialo
 
   $scope.rowRequiresExplanation = function (product) {
     if (!isUndefined(product.discardingReasonId)) {
-      var reason = _.findWhere($scope.discardingReasons, {id: parseInt(product.discardingReasonId, 10)});
+      var reason = _.findWhere($scope.discardingReasons, {id: utils.parseIntWithBaseTen(product.discardingReasonId)});
       return reason.requiresExplanation;
     }
     return false;
@@ -145,7 +169,7 @@ CreateIvdFormController.resolve = {
     }, 100);
     return deferred.promise;
   },
-  manufacturers : function($q, $timeout, $route, ManufacturerList){
+  manufacturers: function ($q, $timeout, $route, ManufacturerList) {
     var deferred = $q.defer();
 
     $timeout(function () {
@@ -155,13 +179,13 @@ CreateIvdFormController.resolve = {
     }, 100);
     return deferred.promise;
   },
-  operationalStatuses : function ($q, $timeout, $route, ColdChainOperationalStatus) {
+  operationalStatuses: function ($q, $timeout, $route, ColdChainOperationalStatus) {
     var deferred = $q.defer();
 
     $timeout(function () {
       ColdChainOperationalStatus.get(function (data) {
-        deferred.resolve(_.filter(data.status, function(d){
-          return d.category.indexOf('CCE') >=0;
+        deferred.resolve(_.filter(data.status, function (d) {
+          return d.category.indexOf('CCE') >= 0;
         }));
       });
     }, 100);

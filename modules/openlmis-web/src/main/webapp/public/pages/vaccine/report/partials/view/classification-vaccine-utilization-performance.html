@@ -56,17 +56,16 @@
                                             cm-model="filter.product"
                     "></vaccine-product-filter>
 
-                    <static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate"
-                                          formateddate="my" rangemax="365" error="perioderror"></static-period-filter>
+                    <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate"-->
+                                          <!--formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
+                    <static-year-filter year="staticYear" startdate="periodStartDate" enddate="periodEnddate" ></static-year-filter>
                     <!--======================== filter end =========================-->
                 </div>
             </form>
             <div style="margin:2px !important;font-size:10px;" ng-show="periodStartDate" class="row">
                 <div class="span4">
-                    <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate | date:'MMM
-                    dd, yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;
-                    <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate | date:'MMM dd,
-                    yyyy'}}{{wr}}
+                    <strong><span openlmis-message="label.start.date"></span></strong>: {{periodStartDate | date:'MMM  dd, yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong><span openlmis-message="label.end.date"></span></strong> : {{periodEnddate | date:'MMM dd, yyyy'}}{{wr}}
                 </div>
             </div>
             <div style="margin:2px !important;font-size:10px;" ng-show="perioderror" class="row">
@@ -130,7 +129,7 @@
                                 <td ng-if="pc.hide!=true"
                                     ng-style="{'background-color':getCellColor(pc.classification)  }"
                                     ng-repeat="pc in row.period_class track by $index">
-                                    Class_{{pc.classification}}
+                                  <span ng-if="pc.classification!=''"> Class_{{pc.classification}}</span>
                                 </td>
 
                             </tr>
@@ -232,7 +231,7 @@
                                 <td ng-if="pc.hide!=true"
                                     ng-style="{'background-color':getCellColor(pc.classification)  }"
                                     ng-repeat="pc in row.period_class track by $index">
-                                    Class_{{pc.classification}}
+                                    <span ng-if="pc.classification!=''"> Class_{{pc.classification}}</span>
                                 </td>
 
                             </tr>

@@ -26,8 +26,8 @@ import java.util.List;
 @Repository
 public interface IvdFormMapper {
 
-  @Insert("INSERT into vaccine_reports (periodId, programId, facilityId, status, supervisoryNodeId, majorImmunizationActivities, fixedImmunizationSessions, outreachImmunizationSessions,outreachImmunizationSessionsCanceled, submissionDate, createdBy, createdDate, modifiedBy, modifiedDate) " +
-      " values (#{periodId}, #{programId}, #{facilityId}, #{status}, #{supervisoryNodeId}, #{majorImmunizationActivities}, #{fixedImmunizationSessions}, #{outreachImmunizationSessions}, #{outreachImmunizationSessionsCanceled}, #{submissionDate}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
+  @Insert("INSERT into vaccine_reports (periodId, programId, facilityId, status, supervisoryNodeId, majorImmunizationActivities, plannedOutreachImmunizationSessions, fixedImmunizationSessions, outreachImmunizationSessions,outreachImmunizationSessionsCanceled, submissionDate, createdBy, createdDate, modifiedBy, modifiedDate) " +
+      " values (#{periodId}, #{programId}, #{facilityId}, #{status}, #{supervisoryNodeId}, #{majorImmunizationActivities}, #{plannedOutreachImmunizationSessions} , #{fixedImmunizationSessions}, #{outreachImmunizationSessions}, #{outreachImmunizationSessionsCanceled}, #{submissionDate}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
   @Options(useGeneratedKeys = true)
   Integer insert(VaccineReport report);
 
@@ -77,6 +77,7 @@ public interface IvdFormMapper {
       " supervisoryNodeId = #{supervisoryNodeId}, " +
       " majorImmunizationActivities = #{majorImmunizationActivities}, " +
       " fixedImmunizationSessions = #{fixedImmunizationSessions}, " +
+      " plannedOutreachImmunizationSessions = #{plannedOutreachImmunizationSessions}, " +
       " outreachImmunizationSessions = #{outreachImmunizationSessions}, " +
       " outreachImmunizationSessionsCanceled = #{outreachImmunizationSessionsCanceled}, " +
       " submissionDate = #{submissionDate}, " +

@@ -78,13 +78,17 @@ public interface VaccineReportMapper {
             "group by disease_name, display_order order by display_order \n")
     List<DiseaseLineItem> getDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
-    @Select("select equipment_name as equipmentName, model, minTemp, maxTemp, minEpisodeTemp, maxEpisodeTemp, energy_source as energySource from vw_vaccine_cold_chain \n" +
+    @Select("select equipment_name as equipmentName, model, minTemp, maxTemp, \n" +
+            " minEpisodeTemp, maxEpisodeTemp, energy_source as energySource, serialnumber as serial, geographic_zone_name location_value\n" +
+            "from vw_vaccine_cold_chain \n" +
             "where report_id = #{reportId} order by 1 ")
     List<ColdChainLineItem> getColdChain(@Param("reportId") Long reportId);
 
     @Select("select equipment_name as equipmentName,\n" +
             "model,\n" +
-            "energy_source as energySource, \n" +
+            "energy_source as energySource" +
+            ", serialnumber as serial, " +
+            "geographic_zone_name as location_value, \n" +
             "MIN(COALESCE(minTemp,0)) minTemp,\n" +
             "MAX(COALESCE(maxTemp,0)) maxTemp,\n" +
             "MIN(COALESCE(minEpisodeTemp,0)) minEpisodeTemp,\n" +
@@ -92,7 +96,7 @@ public interface VaccineReportMapper {
              "from vw_vaccine_cold_chain \n" +
             "join vw_districts d ON d.district_id = geographic_zone_id\n" +
             "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId})\n" +
-            "group by equipment_name, model, energy_source order by 1\n")
+            "group by equipment_name, model, energy_source, serialnumber,location_value order by 1\n")
     List<ColdChainLineItem> getColdChainAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select product_name as productName, aefi_expiry_date as expiry, aefi_case as cases, aefi_batch as batch, manufacturer, is_investigated as isInvestigated from vw_vaccine_iefi \n" +
@@ -346,16 +350,16 @@ public interface VaccineReportMapper {
     @Select("select\n" +
             "product_code, \n" +
             "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
-            "'BCG - MR ' \n" +
+            "'BCG - MR1 ' \n" +
             "else \n" +
             "'DTP-HepB-Hib1/DTP-HepB-Hib3' \n" +
             "end indicator,\n" +
-            "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
-            " case when sum(bcg_1) > 0 then round((sum(bcg_1) - sum(mr_1))::double precision /sum(bcg_1)::double precision) * 100 else 0 end   \n" +
-            "else \n" +
-            " case when sum(dtp_1) > 0 then round((sum(dtp_1) - sum(dtp_3))::double precision /sum(dtp_3)::double precision) * 100 else 0 end  \n" +
-            "end dropout\n" +
-            "from vw_vaccine_coverage i\n" +
+            " case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then  \n" +
+            "             case when sum(bcg_1) > 0 then round((sum(bcg_1) - sum(mr_1))::numeric /sum(bcg_1)::numeric,4) * 100 else 0 end    \n" +
+            "            else  \n" +
+            "             case when sum(dtp_1) > 0 then round((sum(dtp_1) - sum(dtp_3))::numeric /sum(dtp_3)::numeric,4) * 100 else 0 end   \n" +
+            "            end dropout \n" +
+            "from vw_vaccine_dropout i\n" +
             "join vw_districts d on i.geographic_zone_id = d.district_id\n" +
             "join vaccine_reports vr on i.report_id = vr.id\n" +
             "JOIN program_products pp ON pp.programid = vr.programid AND pp.productid = i.product_id\n" +
@@ -371,16 +375,16 @@ public interface VaccineReportMapper {
 
     @Select("select product_code, \n" +
             "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
-            "'BCG - MR ' \n" +
+            "'BCG - MR1 ' \n" +
             "else \n" +
             "'DTP-HepB-Hib1/DTP-HepB-Hib3' \n" +
             "end indicator,\n" +
-            "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
-            " case when sum(bcg_1) > 0 then round((sum(bcg_1) - sum(mr_1))::double precision /sum(bcg_1)::double precision) * 100 else 0 end   \n" +
-            "else \n" +
-            " case when sum(dtp_1) > 0 then round((sum(dtp_1) - sum(dtp_3))::double precision /sum(dtp_3)::double precision) * 100 else 0 end  \n" +
-            "end dropout\n" +
-            "from vw_vaccine_coverage i\n" +
+            " case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then  \n" +
+            "             case when sum(bcg_1) > 0 then round((sum(bcg_1) - sum(mr_1))::numeric /sum(bcg_1)::numeric,4) * 100 else 0 end    \n" +
+            "            else  \n" +
+            "             case when sum(dtp_1) > 0 then round((sum(dtp_1) - sum(dtp_3))::numeric /sum(dtp_3)::numeric,4) * 100 else 0 end   \n" +
+            "            end dropout\n" +
+            "from vw_vaccine_dropout i\n" +
             "join vw_districts d on i.geographic_zone_id = d.district_id\n" +
             "join vaccine_reports vr on i.report_id = vr.id\n" +
             "JOIN program_products pp ON pp.programid = vr.programid AND pp.productid = i.product_id\n" +
@@ -437,10 +441,6 @@ public interface VaccineReportMapper {
                                                                                       @Param("districtId") Long districtId,
                                                                                       @Param("productId") Long productId);
 
-    @SelectProvider(type = CompletenessAndTimelinessQueryBuilder.class, method = "selectCompletenessAndTimelinessAggregateSummaryReportDataByDistrict")
-    List<Map<String, Object>> getCompletenessAndTimelinessAggregateSummaryReportDataByDistrict(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
-                                                                                               @Param("districtId") Long districtId,
-                                                                                               @Param("productId") Long productId);
 
     @SelectProvider(type = AdequacyLevelReportQueryBuilder.class, method = "selectAdequacyLevelOfSupplyReportDataByDistrict")
     List<Map<String, Object>> getAdequacyLevelOfSupplyReportDataByDistrict(@Param("startDate") Date startDate,
@@ -494,4 +494,25 @@ public interface VaccineReportMapper {
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
             @Param("productId") Long productId);
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getFacilityPopulationInformation")
+    public  List<Map<String,Object>> getClassficationVaccinePopulationForFacility(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getDistrictPopulationInformation")
+    public  List<Map<String,Object>> getClassficationVaccinePopulationForDistrict(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getRegionPopulationInformation")
+    public  List<Map<String,Object>> getClassficationVaccinePopulationForRegion(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId);
+    @SelectProvider(type=ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getYearQuery")
+    public List<Map<String,Object>> getDistincitYearList();
 }
