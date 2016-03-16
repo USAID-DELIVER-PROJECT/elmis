@@ -121,7 +121,7 @@
                     <tr>
                         <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                         <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
-                        <td ng-show="!regionSelected" style="background-color : {{bgColorCode(row)}}">{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
+                        <td ng-show="!regionSelected" >{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
                         <td  style="background-color : {{bgColorCode(row)}}">{{row.period_name}}</td>
                         <td style="background-color : {{bgColorCode(row)}}">{{reporting(row)}} </td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.target | number}}</td>
@@ -145,7 +145,7 @@
                     </tbody>
                     <tfoot>
                     <tr> <!-- grand total-->
-                        <td class="aggregate-row" ng-show="!regionSelected" colspan="3">{{regionSelected?'Grand Total':''}}</td>
+                        <td class="aggregate-row" ng-show="!regionSelected" colspan="3">{{!regionSelected?'Grand Total':''}}</td>
                         <td class="aggregate-row" ng-show="regionSelected" colspan="2">Grand Total</td>
                         <td class="aggregate-row" ></td>
                         <td class="aggregate-row" ></td>
