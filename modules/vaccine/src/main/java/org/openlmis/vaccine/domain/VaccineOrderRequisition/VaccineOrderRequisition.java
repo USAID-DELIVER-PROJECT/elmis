@@ -12,6 +12,7 @@ import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
 import org.openlmis.vaccine.dto.StockRequirementsDTO;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +41,14 @@ public class VaccineOrderRequisition extends BaseModel {
     private List<VaccineOrderRequisitionStatusChange> statusChanges;
     private List<VaccineOrderRequisitionColumns> columnsList;
     private List<OrderRequisitionStockCardDTO> stockCards;
+    private int presentation;
+    private long value;
 
+    public int multipleOfPresentation(int presentation, long value) {
+        this.presentation = presentation;
+        this.value = value;
+        return (int) ((presentation > 0) ? value + (presentation - (value % presentation)) :value);
+    }
 
     public void initiateOrder(List<StockRequirementsDTO> requirementsList, ProductService service, StockCardMapper stockCardMapper) {
         lineItems = new ArrayList<>();
@@ -61,15 +69,16 @@ public class VaccineOrderRequisition extends BaseModel {
                 Product p = service.getById(stockRequirements.getProductId());
                 StockCard s = stockCardMapper.getByFacilityAndProduct(stockRequirements.getFacilityId(), p.getCode());
                 if (s != null){
-                    lineItem.setStockOnHand(s.getTotalQuantityOnHand());
+                    int soh = multipleOfPresentation(p.getDosesPerDispensingUnit(),s.getTotalQuantityOnHand());
+                    lineItem.setStockOnHand(Long.valueOf(soh));
                 }
                 else {
                     lineItem.setStockOnHand(0L);
                 }
                 lineItem.setOrderedDate(form.format(new Date()));
                 lineItem.setBufferStock(stockRequirements.getBufferStock());
-
-                lineItem.setMaximumStock(stockRequirements.getMaximumStock());
+                int maxS= multipleOfPresentation(p.getDosesPerDispensingUnit(), Long.valueOf(stockRequirements.getMaximumStock()));
+                lineItem.setMaximumStock(maxS);
                 lineItem.setReOrderLevel(stockRequirements.getReorderLevel());
                 lineItem.setCategory(stockRequirements.getProductCategory());
 
