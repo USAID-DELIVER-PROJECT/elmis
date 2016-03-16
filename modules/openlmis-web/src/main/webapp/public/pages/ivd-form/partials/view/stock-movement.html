@@ -21,6 +21,9 @@
           <th>
             <span openlmis-message="label.vaccine.stock.status.product"></span>
           </th>
+          <th>
+            <span openlmis-message="label.unit.of.measure"></span>
+          </th>
           <th class="col-skipped">
             <span openlmis-message="header.label.skip"></span>
           </th>
@@ -34,6 +37,9 @@
         <tr style="height: 36px;" ng-repeat-end>
           <td class="cell-input">
             <span class="cell-text">{{product.productName}}</span>
+          </td>
+          <td class="cell-input">
+            <span class="cell-text">{{product.product.dosageUnit.code}}</span>
           </td>
           <td class="cell-input center col-skipped" style="text-align:center;">
              <span>

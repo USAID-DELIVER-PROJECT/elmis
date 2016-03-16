@@ -82,7 +82,13 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
       if (!$scope.currentEffectMode) {
         $scope.report.adverseEffectLineItems.push($scope.currentEffect);
       }
-      $scope.adverseEffectModal = false;
+      VaccineReportSave.update($scope.report, function (data) {
+        $scope.error = '';
+        $scope.report.adverseEffectLineItems = data.report.adverseEffectLineItems;
+        console.log(data);
+        $scope.adverseEffectModal = false;
+      });
+
     }
 
   };
