@@ -1,0 +1,71 @@
+
+<div xmlns="http://www.w3.org/1999/html">
+    <h2><span openlmis-message="label.operational.status.list"></span>
+        <a href="#/create-operational-status" class="pull-right btn btn-primary"><span id="operational-add-new"
+                                                                                       openlmis-message="button.add.new"></span></a>
+    </h2>
+
+    <div class="alert alert-success" id="saveSuccessMsgDiv" ng-show="statusId">
+        <span ng-bind="message"></span>
+    </div>
+
+    <div class="alert alert-error" id="equipmentSaveFailMessage" openlmis-message="equipmentErrorMessage"
+         ng-show="equipmentError">
+
+    </div>
+    <input id="txtFilterDonors" class="search-query input-xlarge" type="text" ng-model="query"
+           placeholder="Enter Operational Status Name"/>
+
+    <div class="clearfix"></div>
+    <br>
+
+    <div>
+        <h3 ng-show="query.length>0">
+            <ng-pluralize count="resultCount"
+                          when="{ 0: 'No matches found for \'{{query}}\'',
+                        1: '1 match found for \'{{query}}\'',
+                        other: '{} matches found for \'{{query}}\''}">
+            </ng-pluralize>
+        </h3>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr class="gradient-header">
+                <th class="col-row-number">#</th>
+                <th><span openlmis-message="label.name"></span></th>
+                <th><span openlmis-message="label.operational.status.displayOrder"></span></th>
+                <th><span openlmis-message="label.category"></span></th>
+                <th><span openlmis-message="label.operational.status.is.bad"></span></th>
+                <th><span openlmis-message="label.operational.need.spare.part"></span></th>
+                <th><span openlmis-message="label.action"></span></th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="status in equipmentOperationalStatuses | filter : query">
+                <td>{{$index + 1}}</td>
+                <td><a href="" ng-click="editOperationalStatus(status.id)">{{status.name}}</a></td>
+                <td>
+                    <div>{{status.displayOrder}}</div>
+                </td>
+                <td>{{status.category}}</td>
+                <td>
+                    <div>{{status.isBad}}</div>
+                </td>
+                <td>
+                    <div>{{status.needSparePart}}</div>
+                </td>
+                <td>
+                    <div>
+                        <input type="button" class="btn btn-danger delete-button" value="Delete"
+                               ng-click="showRemoveEquipmentOperationalStatusesConfirmDialog($index)"/>
+                    </div>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
