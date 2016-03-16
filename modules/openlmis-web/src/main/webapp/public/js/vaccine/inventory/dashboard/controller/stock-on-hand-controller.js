@@ -11,8 +11,12 @@
  */
 
 
-function StockOnHandController($scope,$window,UpdateDistributionsForNotification,GetDistributionNotification,EquipmentNonFunctional,VaccinePendingRequisitions,programs,$location,homeFacility,VaccineOrderRequisitionLastReport, localStorageService,StockCardsByCategory,Forecast) {
+function StockOnHandController($scope,$window,$filter,settings,pendingNotificationForMyStore,receiveConsignmentNotification,UpdateDistributionsForNotification,GetDistributionNotification,EquipmentNonFunctional,VaccinePendingRequisitions,programs,$location,homeFacility,VaccineOrderRequisitionLastReport, localStorageService,StockCardsByCategory,Forecast) {
 
+    $scope.receiveNotification = [];
+    $scope.pendingReceiveNotification = pendingNotificationForMyStore;
+    $scope.receiveNotification = receiveConsignmentNotification;
+    $scope.number_of_days =  settings;
     $scope.createOrder = false;
     $scope.receiveConsignment = false;
     $scope.selectedProgramId = null;
@@ -171,6 +175,9 @@ function StockOnHandController($scope,$window,UpdateDistributionsForNotification
         });
     }
     };
+
+
+
 }
 StockOnHandController.resolve = {
 
@@ -198,5 +205,42 @@ StockOnHandController.resolve = {
             });
         }, 100);
         return deferred.promise;
+    },
+    receiveConsignmentNotification: function ($q, $timeout, PendingConsignmentNotification) {
+        var deferred = $q.defer();
+        var programs = {};
+
+        $timeout(function () {
+            PendingConsignmentNotification.get({}, function (data) {
+                programs = data.pendingConsignments;
+                deferred.resolve(programs);
+            });
+        }, 100);
+        return deferred.promise;
+    },
+
+    settings: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            SettingsByKey.get({key:'NUMBER_OF_DAYS_PANDING_TO_RECEIVE_CONSIGNMENT'}, function (data) {
+                deferred.resolve(data.settings.value);
+            });
+        }, 100);
+
+        return deferred.promise;
+    },
+
+    pendingNotificationForMyStore: function ($q, $timeout, PendingNotificationForLowerLevel) {
+        var deferred = $q.defer();
+        var programs = {};
+
+        $timeout(function () {
+            PendingNotificationForLowerLevel.get({}, function (data) {
+                programs = data.pendingConsignmentNotification;
+                deferred.resolve(programs);
+            });
+        }, 100);
+        return deferred.promise;
     }
+
 };

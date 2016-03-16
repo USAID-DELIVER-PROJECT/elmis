@@ -446,7 +446,7 @@ services.factory('SupplyingDepots', function ($resource) {
 });
 
 services.factory('UserFacilityWithViewVaccineOrderRequisition', function ($resource) {
-  return $resource('/user/facilities/view-order-requisition.json', {}, {});
+  return $resource('/vaccine/orderRequisition/view-order-requisition.json', {}, {});
 });
 
 services.factory('ProgramsToViewVaccineOrderRequisitions', function ($resource) {
