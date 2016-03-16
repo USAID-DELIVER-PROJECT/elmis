@@ -79,6 +79,7 @@
                         <th rowspan="2">{{getLocalMessage('label.district')}}</th>
                         <th ng-show="!regionSelected" rowspan="2">{{getLocalMessage('label.facility')}}</th>
                         <th rowspan="2">{{getLocalMessage('label.period')}}</th>
+                        <th rowspan="2">Reported</th>
                         <th rowspan="2">{{getLocalMessage('label.target.population')}}</th>
                         <th colspan="2">{{getLocalMessage('label.monthly')}}</th>
                         <th colspan="2">{{getLocalMessage('label.cumulative')}}</th>
@@ -94,6 +95,7 @@
                         <th></th>
                         <th ng-show="!regionSelected"></th>
                         <th></th>
+                        <th></th>
                         <th>{{getLocalMessage('label.A')}}</th>
                         <th>{{getLocalMessage('label.B')}}</th>
                         <th>{{getLocalMessage('label.C')}}</th>
@@ -101,11 +103,13 @@
                         <th>{{getLocalMessage('label.E')}}</th>
                     </tr>
                     </thead>
+<!-- Facility -->
                     <tbody  ng-repeat="row in datarows">
                     <tr ng-if="((regionSelected==true && datarows[$index-1].district_name != row.district_name)||(regionSelected==false && datarows[$index-1].facility_name != row.facility_name)) && $index>0 && staticYear>0">
-
-                        <td class="aggregate-row" colspan="2" ng-show="regionSelected" >{{regionSelected?'SubTotal':''}}</td>
-                        <td class="aggregate-row" colspan="3" ng-show="!regionSelected" >SubTotal</td>
+                        <!-- sub total-->
+                        <td class="aggregate-row" colspan="2" ng-show="regionSelected" >{{regionSelected?'Sub Total':''}}</td>
+                        <td class="aggregate-row" colspan="3" ng-show="!regionSelected" >Sub Total</td>
+                        <td class="aggregate-row" ></td>
                         <td class="aggregate-row" ></td>
                         <td class="aggregate-row"  >{{getSubTotalRow(datarows[$index-1]).target | number}}</td>
                         <td class="aggregate-row" >{{getSubTotalRow(datarows[$index-1]).vaccinated | number}}</td>
@@ -119,6 +123,7 @@
                         <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                         <td ng-show="!regionSelected" style="background-color : {{bgColorCode(row)}}">{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
                         <td  style="background-color : {{bgColorCode(row)}}">{{row.period_name}}</td>
+                        <td style="background-color : {{bgColorCode(row)}}">{{reporting(row)}} </td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.target | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.vaccinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
@@ -126,30 +131,29 @@
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
                     <tr ng-if="( datarows.length == $index+1) && $index>0 && staticYear>0">
-
-                        <td class="aggregate-row" colspan="2" ng-show="regionSelected" >{{regionSelected?'SubTotal':''}}</td>
-                        <td class="aggregate-row" colspan="3" ng-show="!regionSelected" >SubTotal</td>
+                        <!-- last sub total-->
+                        <td class="aggregate-row" colspan="2" ng-show="regionSelected" >{{regionSelected?'Sub Total':''}}</td>
+                        <td class="aggregate-row" colspan="3" ng-show="!regionSelected" >Sub Total</td>
+                        <td class="aggregate-row" ></td>
                         <td class="aggregate-row" ></td>
                         <td class="aggregate-row"  >{{getSubTotalRow(datarows[$index]).target | number}}</td>
                         <td class="aggregate-row" >{{getSubTotalRow(datarows[$index]).vaccinated | number}}</td>
                         <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index]).target,getSubTotalRow(datarows[$index]).vaccinated)}}%</td>
                         <td class="aggregate-row" >{{row.cumulativeVacinated | number}}</td>
                         <td class="aggregate-row" >{{calculateVaccinated(getSubTotalRow(datarows[$index]).target,row.cumulativeVacinated )|number}}%</td>
-
                     </tr>
                     </tbody>
                     <tfoot>
-                    <tr>
-                        <td class="aggregate-row" ng-show="!regionSelected" colspan="3"></td>
-                        <td class="aggregate-row" ng-show="regionSelected" colspan="2"></td>
-                        <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal|number}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal | number}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage|number}}%</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination|number}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage|number}}%</td>
-
-
+                    <tr> <!-- grand total-->
+                        <td class="aggregate-row" ng-show="!regionSelected" colspan="3">{{regionSelected?'Grand Total':''}}</td>
+                        <td class="aggregate-row" ng-show="regionSelected" colspan="2">Grand Total</td>
+                        <td class="aggregate-row" ></td>
+                        <td class="aggregate-row" ></td>
+                        <td class="aggregate-row number" >{{targetTotal|number}}</td>
+                        <td class="aggregate-row number" >{{vaccinationTotal | number}}</td>
+                        <td class="aggregate-row number" >{{coverage|number}}%</td>
+                        <td class="aggregate-row number" >{{ctotalVaccination|number}}</td>
+                        <td class="aggregate-row number" >{{ctoatlCoverage|number}}%</td>
                     </tr>
                     </tfoot>
                 </table>
@@ -193,6 +197,7 @@
                     <tr>
                         <th rowspan="2">{{getLocalMessage('label.region')}}</th>
                         <th rowspan="2">{{getLocalMessage('label.period')}}</th>
+                        <th rowspan="2">{{getLocalMessage('label.reporting')}}</th>
                         <th rowspan="2">{{getLocalMessage('label.target.population')}}</th>
                         <th colspan="2">{{getLocalMessage('label.monthly')}}</th>
                         <th colspan="2">{{getLocalMessage('label.cumulative')}}</th>
@@ -216,9 +221,8 @@
                     </thead>
                     <tbody ng-repeat="row in dataRowsRegionAggregate">
                     <tr ng-if="(dataRowsRegionAggregate[$index-1].region_name != row.region_name)&&$index>0 && staticYear>0">
-
-
-                        <td class="aggregate-row"  >SubTotal</td>
+                        <td class="aggregate-row"  >Sub Total</td>
+                        <td class="aggregate-row" ></td>
                         <td class="aggregate-row" ></td>
                         <td class="aggregate-row"  >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target | number}}</td>
                         <td class="aggregate-row" >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).vaccinated | number}}</td>
@@ -230,6 +234,7 @@
                     <tr >
                         <td >{{ dataRowsRegionAggregate[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                         <td  style="background-color : {{bgColorCode(row)}}">{{row.period_name}}</td>
+                        <td  style="background-color : {{bgColorCode(row)}}">Yes</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.target | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.vaccinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
@@ -237,9 +242,8 @@
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
                     <tr ng-if="(dataRowsRegionAggregate.length==$index+1)&&$index>0 && staticYear>0">
-
-
-                        <td class="aggregate-row"  >SubTotal</td>
+                        <td class="aggregate-row"  >Sub Total</td>
+                        <td class="aggregate-row" ></td>
                         <td class="aggregate-row" ></td>
                         <td class="aggregate-row"  >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index]).target | number}}</td>
                         <td class="aggregate-row" >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index]).vaccinated | number}}</td>
@@ -251,14 +255,15 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td class="aggregate-row" ng-show="!regionSelected" colspan="2"></td>
-                        <td class="aggregate-row" ng-show="regionSelected" colspan="1"></td>
-                        <td class="aggregate-row" style="background-color : {{bgColorCode(coverage)}}"></td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{targetTotal | number}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{vaccinationTotal | number}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{coverage}}%</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctotalVaccination | number}}</td>
-                        <td class="aggregate-row number" style="background-color : {{bgColorCode(coverage)}}">{{ctoatlCoverage}}%</td>
+                        <td class="aggregate-row" ng-show="!regionSelected" colspan="2">{{regionSelected?'xxx Total':''}}</td>
+                        <td class="aggregate-row" ng-show="regionSelected" colspan="1">zzz Total</td>
+                        <td class="aggregate-row" ></td>
+                        <td class="aggregate-row" ></td>
+                        <td class="aggregate-row number" >{{targetTotal | number}}</td>
+                        <td class="aggregate-row number" >{{vaccinationTotal | number}}</td>
+                        <td class="aggregate-row number" >{{coverage}}%</td>
+                        <td class="aggregate-row number" >{{ctotalVaccination | number}}</td>
+                        <td class="aggregate-row number" >{{ctoatlCoverage}}%</td>
                     </tr>
                     </tfoot>
                 </table>

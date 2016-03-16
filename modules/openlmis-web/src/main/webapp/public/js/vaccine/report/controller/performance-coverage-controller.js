@@ -180,6 +180,15 @@ var formattedDistrictJson=[];
         return $scope.colors.color_50_percent_below;
     };
 
+    $scope.reporting = function (value) {
+        var percentageCoverage=value.coverage;
+
+        if(value.generated!=='undefined' && value.generated===true){
+            return  messageService.get('label.reported.no');
+        }
+        return messageService.get('label.reported.yes');
+    };
+
     function populateCalculatedAggregateValues() {
         var targetTotal = 0, vaccinationTotal = 0, coverage = 0, ctoatlCoverage = 0, ctotalVaccination = 0;
         var last = $scope.datarows.length - 1;
