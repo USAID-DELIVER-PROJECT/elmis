@@ -1,4 +1,5 @@
-<div class="alert alert-info" ng-show="!hasStock" openlmis-message="message.stock.initialize"></div>
+<div class="alert alert-info" ng-show="!hasStock || hasPermission('INITIALIZE_STOCK')"
+     openlmis-message="message.stock.initialize"></div>
 <table  class="table table-bordered receive">
     <thead>
     <tr class="gradient-header">

@@ -33,7 +33,17 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
                 $scope.allProducts=_.sortBy(allProducts,function(product){
                     return product.programProduct.product.id;
                 });
-                $scope.productsToDisplay=$scope.allProducts;
+                if($scope.hasPermission("INITIALIZE_STOCK"))
+                {
+                     StockCards.get({facilityId:facilityId},function(cards){
+                        $scope.existingStockCards=cards.stockCards;
+                        updateProductToDisplay($scope.existingStockCards);
+                        $scope.allProducts= $scope.productsToDisplay;
+                     });
+                }
+                else{
+                    $scope.productsToDisplay=$scope.allProducts;
+                }
         });
 
         VaccineProgramProducts.get({programId:programId},function(data){
@@ -48,7 +58,6 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
         });
         if(productWithPresentation.length === 1)
         {
-            console.log( productWithPresentation[0].product.dosesPerDispensingUnit);
             return productWithPresentation[0].product.dosesPerDispensingUnit;
         }
         else
