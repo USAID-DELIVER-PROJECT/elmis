@@ -12,8 +12,7 @@
 
 package org.openlmis.equipment.repository.mapper;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.openlmis.equipment.domain.EquipmentOperationalStatus;
 import org.springframework.stereotype.Repository;
 
@@ -30,4 +29,27 @@ public interface EquipmentOperationalStatusMapper {
       " WHERE id = #{id}" +
       " ORDER BY displayOrder, name")
   EquipmentOperationalStatus getById(@Param("id")Long id);
+
+  @Insert(" INSERT INTO equipment_operational_status(\n" +
+          "            name, displayOrder, createdby, createddate, modifiedBy, modifiedDate, \n" +
+          "            category, isBad, needSparePart)\n" +
+          "    VALUES ( #{name}, #{displayOrder}, #{createdBy}, NOW(), #{modifiedBy}, NOW(), \n" +
+          "            #{category}, #{isBad}, #{needSparePart}) ")
+    @Options(useGeneratedKeys = true)
+    Integer Insert(EquipmentOperationalStatus operationalStatus);
+
+    @Update(" UPDATE equipment_operational_status\n" +
+            "   SET name=#{name}, displayOrder=#{displayOrder},modifiedby= #{modifiedBy}, \n" +
+            "       modifiedDate=#{modifiedDate}, category= #{category}, isbad= #{isBad}, needsparepart= #{needSparePart}\n" +
+            " WHERE id = #{id} ")
+    void update(EquipmentOperationalStatus operationalStatus);
+
+    @Delete(" DELETE FROM equipment_operational_status WHERE id = #{id} ")
+    void remove(@Param("id") Long id);
+
+    @Select(" SELECT id, name, displayorder, modifiedby, modifieddate, \n" +
+            "       category, isbad, needsparepart\n" +
+            "  FROM equipment_operational_status\n" +
+            "  WHERE ID = #{Id} ")
+    EquipmentOperationalStatus getStatusById(Long Id);
 }
