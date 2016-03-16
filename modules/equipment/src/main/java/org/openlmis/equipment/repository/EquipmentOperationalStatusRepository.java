@@ -28,4 +28,21 @@ public class EquipmentOperationalStatusRepository {
   public List<EquipmentOperationalStatus> getAll(){
     return mapper.getAll();
   }
+  public void insert(EquipmentOperationalStatus status){
+    mapper.Insert(status);
+  }
+
+  public void update(EquipmentOperationalStatus status){
+    mapper.update(status);
+  }
+
+  public EquipmentOperationalStatus getStatusById(Long id){
+    return  mapper.getStatusById(id);
+  }
+
+  public void remove(Long id){
+    mapper.remove(id);
+  }
+
+
 }
