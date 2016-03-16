@@ -235,12 +235,12 @@ function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $root
         $rootScope.viewOrder = true;
         $rootScope.cancelOrderRequest = true;
         $rootScope.reportId = row.id;
-        $location.path('/create/' + row.id + '/' + row.programId);
+        $location.path('/view-requisition/' + row.id + '/' + row.programId);
 
     };
 
     $rootScope.cancelViewOrder = function () {
-        $location.path('/view');
+        $location.path('/search');
     };
 }
 
