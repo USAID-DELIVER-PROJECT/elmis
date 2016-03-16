@@ -84,9 +84,9 @@ public class EquipmentReplacementListDataProvider extends ReportDataProvider {
 
     }
 
-    @Override
+ /*   @Override
     public String getFilterSummary(Map<String, String[]> params) {
         return filterHelper.getProgramGeoZoneFacility(params);
     }
-
+*/
 }

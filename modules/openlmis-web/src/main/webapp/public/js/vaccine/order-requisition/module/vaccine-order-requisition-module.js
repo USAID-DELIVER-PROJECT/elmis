@@ -11,15 +11,55 @@
 
 angular.module('vaccine_order_requisition', ['openlmis', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion', 'ui.bootstrap.modal','ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle'])
     .config(['$routeProvider', function ($routeProvider) {
-
         $routeProvider.
-        when('/initiate', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/initiate.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
-        when('/create/:id/:programId',{controller:CreateVaccineOrderRequisition,templateUrl:'partials/order-requisition.html',resolve:CreateVaccineOrderRequisition.resolve,reloadOnSearch:false}).
-        when('/search', {controller:ViewOrderRequisitionList, templateUrl:'partials/view/view.html',resolve:ViewOrderRequisitionList.resolve,  reloadOnSearch: false}).
-        when('/details', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/details.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
-        when('/information', {controller:newVaccineOrderRequisitionController, templateUrl:'partials/information.html',resolve:newVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
-        when('/view', {controller:ViewVaccineOrderRequisitionController, templateUrl:'partials/view.html',resolve:ViewVaccineOrderRequisitionController.resolve,  reloadOnSearch: false}).
-        when('/consolidate/:program/:facilityId/:homeFacility', {controller:ConsolidateOrderController, templateUrl:'partials/consolidate-order.html',resolve:ConsolidateOrderController.resolve,  reloadOnSearch: false}).
+        when('/initiate', {
+                controller:newVaccineOrderRequisitionController,
+                templateUrl:'partials/initiate.html',
+                resolve:newVaccineOrderRequisitionController.resolve,
+                reloadOnSearch: false
+            }).
+        when('/create/:id/:programId', {
+                controller:CreateVaccineOrderRequisition,
+                templateUrl:'partials/order-requisition.html',
+                resolve:CreateVaccineOrderRequisition.resolve,
+                reloadOnSearch:false
+            }).
+        when('/search', {
+                controller:ViewOrderRequisitionList,
+                templateUrl:'partials/view/view.html',
+                resolve:ViewOrderRequisitionList.resolve,
+                reloadOnSearch: false
+            }).
+        when('/details', {
+                controller:newVaccineOrderRequisitionController,
+                templateUrl:'partials/details.html',
+                resolve:newVaccineOrderRequisitionController.resolve,
+                reloadOnSearch: false
+            }).
+        when('/information', {
+                controller:newVaccineOrderRequisitionController,
+                templateUrl:'partials/information.html',
+                resolve:newVaccineOrderRequisitionController.resolve,
+                reloadOnSearch: false
+            }).
+        when('/view', {
+                controller:ViewVaccineOrderRequisitionController,
+                templateUrl:'partials/view.html',
+                resolve:ViewVaccineOrderRequisitionController.resolve,
+                reloadOnSearch: false
+            }).
+            when('/view-requisition/:id/:programId', {
+                controller:ViewRequisitionController,
+                templateUrl:'partials/view-order.html',
+                resolve:ViewRequisitionController.resolve,
+                reloadOnSearch: false
+            }).
+        when('/consolidate/:program/:facilityId/:homeFacility', {
+                controller:ConsolidateOrderController,
+                templateUrl:'partials/consolidate-order.html',
+                resolve:ConsolidateOrderController.resolve,
+                reloadOnSearch: false
+            }).
             otherwise({redirectTo: '/view'});
 }]).directive('select2Blur', function () {
     return function (scope, elm, attrs) {

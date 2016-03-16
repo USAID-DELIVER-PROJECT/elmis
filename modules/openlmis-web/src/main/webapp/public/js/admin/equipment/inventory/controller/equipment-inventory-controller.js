@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function EquipmentInventoryController($scope, UserFacilityList, EquipmentInventories, ManageEquipmentInventoryProgramList, ManageEquipmentInventoryFacilityProgramList, EquipmentTypesByProgram, EquipmentOperationalStatus, $routeParams, messageService, UpdateEquipmentInventoryStatus, $timeout, SaveEquipmentInventory,localStorageService) {
+function EquipmentInventoryController($scope,NumberOfYears, UserFacilityList, EquipmentInventories, ManageEquipmentInventoryProgramList, ManageEquipmentInventoryFacilityProgramList, EquipmentTypesByProgram, EquipmentOperationalStatus, $routeParams, messageService, UpdateEquipmentInventoryStatus, $timeout, SaveEquipmentInventory,localStorageService) {
 
   $scope.loadPrograms = function (initialLoad) {
     // Get home facility for user
@@ -113,11 +113,11 @@ function EquipmentInventoryController($scope, UserFacilityList, EquipmentInvento
     // updateStatus is called on dropdown load, so only do something if previous value set and is different
     if (item.prevStatusId && item.prevStatusId !== item.operationalStatusId) {
       var operationalStatus = _.findWhere($scope.operationalStatusList, {id: parseInt(item.operationalStatusId, 10)});
-
       // If status is "bad", open modal, otherwise just save to the server
       if (operationalStatus.isBad) {
         $scope.notFunctionalModal = true;
         $scope.modalItem = item;
+
         $scope.checkForBadFunctionalStatus($scope.modalItem.notFunctionalStatusId);
         $scope.prevStatusId = item.prevStatusId; // Need to save previous since item.prevStatusId gets overwritten
                                                  // at the end of this function
@@ -139,11 +139,13 @@ function EquipmentInventoryController($scope, UserFacilityList, EquipmentInvento
 
   $scope.checkForBadFunctionalStatus = function (statusId) {
     if (statusId) {
+
       var notFunctionalStatus = _.findWhere($scope.notFunctionalStatusList, {id: parseInt(statusId, 10)});
+
       $scope.modalItem.badFunctionalStatusSelected = notFunctionalStatus.isBad;
+      $scope.modalItem.needSpareFunctionalStatusSelected = notFunctionalStatus.needSparePart;
     }
   };
-
   $scope.saveModal = function () {
     $scope.modalError = '';
     if (!$scope.notFunctionalForm.$invalid) {
@@ -151,6 +153,7 @@ function EquipmentInventoryController($scope, UserFacilityList, EquipmentInvento
         // Success
         $scope.notFunctionalModal = false;
         $scope.modalItem.badFunctionalStatusSelected = false;
+        $scope.modalItem.needSpareFunctionalStatusSelected = false;
         $scope.modalItem.showSuccess = true;
         $timeout(function () {
           $scope.modalItem.showSuccess = false;
@@ -177,6 +180,7 @@ function EquipmentInventoryController($scope, UserFacilityList, EquipmentInvento
     });
 
     // Reset other values
+    $scope.modalItem.needSpareFunctionalStatusSelected = false;
     $scope.modalItem.badFunctionalStatusSelected = false;
     $scope.modalError = '';
   };
@@ -190,8 +194,11 @@ function EquipmentInventoryController($scope, UserFacilityList, EquipmentInvento
   };
 
   $scope.getReplacementYear = function (yearOfInstallation) {
+
     if (yearOfInstallation) {
-      return yearOfInstallation + 10;
+
+      return yearOfInstallation + parseInt(NumberOfYears,10);
+
     } else {
       return null;
     }
@@ -231,3 +238,30 @@ function EquipmentInventoryController($scope, UserFacilityList, EquipmentInvento
   };
 
 }
+
+
+EquipmentInventoryController.resolve = {
+
+  NumberOfYears: function ($q, $timeout, SettingsByKey) {
+    var deferred = $q.defer();
+    $timeout(function () {
+
+      SettingsByKey.get({key: 'YEARS_TO_REPLACE_EQUIPMENT'}, function (data) {
+        if (isUndefined(data.settings) || isUndefined(data.settings.value)) {
+          deferred.resolve(10);
+        } else {
+
+          deferred.resolve(data.settings.value);
+        }
+
+      });
+
+    }, 100);
+
+    return deferred.promise;
+
+  }
+
+
+
+};

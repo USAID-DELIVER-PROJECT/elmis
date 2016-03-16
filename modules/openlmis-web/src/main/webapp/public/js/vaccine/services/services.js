@@ -505,6 +505,15 @@ services.factory('DistributionWithSupervisorId',function($resource){
      return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
 });
 
+
+services.factory('PendingConsignmentNotification', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/pendingConsignmentNotification.json', {}, {});
+});
+
+services.factory('PendingNotificationForLowerLevel', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/pendingConsignmentNotificationForLowerLevel.json', {}, {});
+});
+
 services.factory('DistributionWithSupervisorId',function($resource){
     return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
 });

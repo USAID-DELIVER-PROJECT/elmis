@@ -252,3 +252,20 @@ services.factory("currentProgramId", function() {
   get: get
  };
 });
+
+
+services.factory('SaveOperationalStatus',function($resource){
+    return $resource('/operational-status/insert.json',{},{});
+});
+
+services.factory('GetOperationalStatus',function($resource){
+    return $resource('/operational-status/getDetails/:id.json',{},{});
+});
+
+services.factory('RemoveOperationalStatus',function($resource){
+    return $resource('/operational-status/remove/:id.json',{},{});
+});
+
+services.factory('EquipmentOperationalStatuses', function ($resource) {
+    return $resource('/operational-status/list.json', {}, {});
+});

@@ -12,22 +12,35 @@
 package org.openlmis.web.controller.vaccine.inventory;
 
 
-import org.openlmis.core.domain.FacilityTypeApprovedProduct;
-import org.openlmis.core.domain.Program;
-import org.openlmis.core.domain.ProgramProduct;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import org.openlmis.core.domain.*;
+import org.openlmis.core.service.ConfigurationSettingService;
+import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramProductService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 
+import org.openlmis.report.util.Constants;
+import org.openlmis.reporting.model.Template;
+import org.openlmis.reporting.service.JasperReportsViewFactory;
+import org.openlmis.reporting.service.TemplateService;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.vaccine.service.inventory.VaccineInventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.*;
 
 import static org.openlmis.core.web.OpenLmisResponse.response;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -41,6 +54,8 @@ public class VaccineInventoryController extends BaseController {
 
     private static final String FACILITY_TYPE_PROGRAM_PRODUCT_LIST = "facilityProduct";
 
+    private static final  String PRINT_DEMAND_FORECASTING = "demand-forecasting";
+
     @Autowired
     ProgramService programService;
     @Autowired
@@ -48,6 +63,16 @@ public class VaccineInventoryController extends BaseController {
 
     @Autowired
     VaccineInventoryService service;
+
+    @Autowired
+    TemplateService templateService;
+    @Autowired
+    ConfigurationSettingService settingService;
+    @Autowired
+    private JasperReportsViewFactory jasperReportsViewFactory;
+
+    @Autowired
+    private FacilityService facilityService;
 
     @RequestMapping(value = "programProducts/programId/{programId}", method = GET, headers = ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK , VIEW_STOCK_ON_HAND')")
@@ -103,4 +128,33 @@ public class VaccineInventoryController extends BaseController {
         return OpenLmisResponse.response("deleteLots", service.deleteLots());
     }
     //TODO  End To delete this code on production
+
+    public static String  getCommaSeparatedIds(List<Long> idList){
+        return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
+    }
+
+    @RequestMapping(value = "demand-forecasting/print", method = GET, headers = ACCEPT_JSON)
+    public ModelAndView printDemandForecasting(HttpServletRequest request) throws JRException, IOException, ClassNotFoundException {
+        Long userId = loggedInUserId(request);
+        Template orPrintTemplate = templateService.getByName(PRINT_DEMAND_FORECASTING);
+        JasperReportsMultiFormatView jasperView = jasperReportsViewFactory.getJasperReportsView(orPrintTemplate);
+        Map<String, Object> map = new HashMap<>();
+        map.put("format", "pdf");
+        Locale currentLocale = messageService.getCurrentLocale();
+        map.put(JRParameter.REPORT_LOCALE, currentLocale);
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", currentLocale);
+        map.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+        Resource reportResource = new ClassPathResource("report");
+        Resource imgResource = new ClassPathResource("images");
+        ConfigurationSetting configuration = settingService.getByKey(Constants.OPERATOR_NAME);
+        map.put(Constants.OPERATOR_NAME, configuration.getValue());
+
+        String separator = System.getProperty("file.separator");
+        map.put("image_dir", imgResource.getFile().getAbsolutePath() + separator);
+        map.put("FACILITY_ID", facilityService.getHomeFacility(userId).getId());
+
+        return new ModelAndView(jasperView, map);
+    }
+
+
 }

@@ -24,6 +24,7 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
 
         // clear old data if there was any
         $scope.data = $scope.datarows = [];
+        var arr = [];
 
         $scope.filter.max = 10000;
 
@@ -31,13 +32,16 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
 
         VaccineStockStatusReport.get($scope.getSanitizedParameter(), function (data) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
-                //$scope.data = data.pages.rows;
-               var groupByFacility = _.groupBy(data.pages.rows,'facilityId');
 
-                $scope.data = $.map(groupByFacility,function(value,index){
-                    return [value];
-                });
-                $scope.paramsChanged($scope.tableParams);
+          var groupByFacility = _.groupBy(data.pages.rows,'facilityId');
+
+          arr =  $.map(groupByFacility,function(value,index){
+                 return [value];
+             }).sort(function(a, b) {
+                    return  b.length - a.length ;
+             });
+             $scope.data = arr;
+             $scope.paramsChanged($scope.tableParams);
             }
         });
 
