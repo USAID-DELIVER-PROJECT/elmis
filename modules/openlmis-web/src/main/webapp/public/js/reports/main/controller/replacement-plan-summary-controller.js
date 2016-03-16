@@ -23,23 +23,23 @@ function ReplacementPlanSummary($scope, ngTableParams, messageService, SettingsB
             [
                 {
                     id: 0, name: "Highest Priority Replacement", "children": [
-                    {id: 0, name: 'O', value: 'All Obsolete'},
-                    {id: 1, name: 'W', value: 'Capacity Gap'}
+                    {id: 1, name: 'O', value: 'All Obsolete'},
+                    {id: 2, name: 'W', value: 'Capacity Gap'},
+                    {id: 3, name: 'n', value: 'Non PQS Model'}
                 ]
 
                 },
                 {
                     id: 1, name: "Priority Replacement", "children": [
                     {id: 0, name: 'temp', value: '> 20 Temp  Excursion'},
-                    {id: 2, name: 'breakDown', value: ' >5 Breakdowns'},
+                    {id: 2, name: 'breakDown', value: 'Breakdown Beyond Repair'},
                     {id: 3, name: 'g', value: 'Source is Gas'}
                 ]
 
                 },
                 {
                     id: 0, name: "Eventual Replacement", "children": [
-                    {id: 0, name: 'a', value: 'All Under Ten Years'},
-                    {id: 1, name: 'n', value: 'Non PQS Model'}
+                    {id: 0, name: 'a', value: 'All Under Ten Years'}
                 ]
 
                 }
