@@ -12,7 +12,7 @@
  *
  */
 
-function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey, PerformanceByDropoutRateByDistrict, VaccineSupervisedIvdPrograms, $routeParams) {
+function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey, PerformanceByDropoutRateByDistrict,messageService, VaccineSupervisedIvdPrograms, $routeParams) {
 
     $scope.customPeriod;
     $scope.products;
@@ -27,6 +27,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     $scope.maxTemp;
     $scope.average;
     $scope.belowAverage;
+    $scope.nonReporting;
     SettingsByKey.get({key: 'VCP_GREEN'}, function (data) {
         $scope.minTemp = data.settings.value;
     });
@@ -38,6 +39,10 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     });
     SettingsByKey.get({key: 'VCP_BLUE'}, function (data) {
         $scope.belowAverage = data.settings.value;
+    });
+    SettingsByKey.get({key: 'VCP_NON_REPORTING'}, function (data) {
+
+        $scope.nonReporting=data.settings.value;
     });
     $scope.OnFilterChanged = function () {
         //console.log('period start '+ $scope.filter.periodStart);
@@ -53,7 +58,8 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
         $scope.error_message = '';
         PerformanceByDropoutRateByDistrict.get(param, function (data) {
-            if (data !== undefined) {
+            var reportVal;
+            if (data !== undefined &&  data.PerformanceByDropoutRateList!==null && !utils.isEmpty(data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList)) {
 
                 $scope.data = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
                 $scope.datarows = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
@@ -69,12 +75,16 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 if (!utils.isEmpty($scope.datarows)) {
 
                     if ($scope.reportType === true) {
-
+                        reportVal=findMonthValue($scope.datarows,1);
+                        $scope.datarows=reportVal.reportList;
+                        $scope.nonReportingDistrict=reportVal.grayCount;
                         extractPopulationInfo($scope.datarows, $scope.population, 1);
                         $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 1);
 
                     } else {
-
+                        reportVal=findMonthValue($scope.datarows,2);
+                        $scope.datarows=reportVal.reportList;
+                        $scope.nonReportingDistrict=reportVal.grayCount;
                         extractPopulationInfo($scope.datarows, $scope.population, 2);
                         $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
 
@@ -82,11 +92,22 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
                 }
                 if (!utils.isEmpty($scope.regionrows)) {
+                   var  regportVal=findMonthValue($scope.regionrows,3);
+                    $scope.regionrows=regportVal.reportList;
+                    $scope.nonReportingRegion=regportVal.grayCount;
                     extractPopulationInfo($scope.regionrows, $scope.regionPopulation, 3);
                     $scope.regionSubAggregate = aggregateSubTotal($scope.regionrows, 3);
                 }
             }
         });
+    };
+    $scope.reporting = function (value) {
+
+
+        if(value.generated!=='undefined' && value.generated===true){
+            return  messageService.get('label.reported.no');
+        }
+        return messageService.get('label.reported.yes');
     };
     function monthDiff(d1, d2) {
         var months;
@@ -98,11 +119,15 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
     $scope.getBackGroundColor = function (value) {
         var bgColor = '';
-        if (value > 20) {
+        if(value.generated!=='undefined' && value.generated===true){
+
+            return  $scope.nonReporting;
+        }
+        if (value.bcg_mr_dropout > 20) {
             bgColor = $scope.maxTemp;
-        } else if (value > 10) {
+        } else if (value.bcg_mr_dropout > 10) {
             bgColor = $scope.average;
-        } else if (value > 5) {
+        } else if (value.bcg_mr_dropout > 5) {
             bgColor = $scope.belowAverage;
         } else {
             bgColor = $scope.minTemp;
@@ -141,11 +166,9 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     };
     $scope.calculateSubTotalPercentage = function (value) {
         var dropOut;
-        if ($scope.filter.product.id === dtpProductId) {
-            dropOut=  value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
-        } else {
-            dropOut= value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
-        }
+
+            dropOut= utils.isEmpty(value)|| value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
+
 
         return dropOut;
     };
@@ -286,7 +309,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
             var len = reportList.length;
 
             var distrctList = {};
-            var periodList = utils.generatePeriodNamesForVaccineYear($scope.staticYear);
+            var periodList = utils.generatePeriodNamesWithDashForVaccineYear($scope.staticYear);
             grayCount = intializeGrayCount(periodList);
             reportList.forEach(function (value) {
                 var district = getPopulationKey(value, type);
@@ -298,7 +321,10 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 for (var i = 0; i < 12; i++) {
                     var hasValue = false;
                     for (var j = 0; j < len; j++) {
-                        if (angular.equals(getPopulationKey(reportList[j], type), key) && reportList[j].month === i + 1) {
+                        var date=new Date(reportList[j].period_name);
+
+                       var reportMonth=periodList[date.getMonth()];
+                        if (angular.equals(getPopulationKey(reportList[j], type), key) &&reportMonth ===periodList[i]) {
                             formattedData.push(reportList[j]);
                             hasValue = true;
                             break;
@@ -307,14 +333,16 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                     if (!hasValue) {
                         var object = {
                             target: distrctList[key].target,
-                            denominator: distrctList[key].denominator,
+                            //denominator: distrctList[key].denominator,
                             month: i + 1,
                             year: $scope.staticYear,
                             period_name: periodList[i],
                             region_name: distrctList[key].region_name,
                             district_name: distrctList[key].district_name,
                             facility_name: distrctList[key].facility_name,
-                            vaccinated: 0,
+                            bcg_vaccinated: 0,
+                            mr_vaccinated:0,
+                            bcg_mr_dropout:0,
                             generated: true
 
                         };
@@ -367,7 +395,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 subAggregateTotal[keyName] = obj;
             }
         }
-        subAggregateTotal["total_row"] = totalObj;
+        subAggregateTotal.total_row = totalObj;
 
         return subAggregateTotal;
     }

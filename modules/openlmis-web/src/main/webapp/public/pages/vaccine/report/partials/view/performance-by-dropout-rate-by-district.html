@@ -94,6 +94,7 @@
                                 <span openlmis-message="label.period"></span>
 
                             </th>
+                            <th rowspan="2">Reported</th>
                             <th rowspan="2" style="width: 10px">
                                 <span openlmis-message="label.vaccine.quantification.target.ppln"></span>
 
@@ -133,6 +134,10 @@
 
                             </th>
                             <th>
+                            <span></span>
+
+                        </th>
+                            <th>
                                 <span></span>
 
                             </th>
@@ -162,10 +167,10 @@
                         <tr ng-if="((reportType==false && datarows[$index-1].district_name != row.district_name)||(reportType==true && datarows[$index-1].facility_name != row.facility_name)) && $index>0 && staticYear>0"
                                 >
 
-                            <td class="aggregate-row" colspan="4" ng-if="reportType==true"
+                            <td class="aggregate-row" colspan="5" ng-if="reportType==true"
 
                                 >Sub Total</td>
-                            <td  class="aggregate-row" colspan="3" ng-if="reportType==false"
+                            <td  class="aggregate-row" colspan="4" ng-if="reportType==false"
 
                                     >Sub Total</td>
 
@@ -208,20 +213,21 @@
                                 >{{ datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
                             <td ng-bind="row.period_name| date:'MMM-yyyy'"
                                 ng-style="{'text-align':'right'}"/>
+                            <td style=" text-align:right; background-color : {{getBackGroundColor(row)}}">{{reporting(row)}} </td>
 
                             <td ng-bind="row.target| number"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
 
                             <td ng-bind="row.bcg_vaccinated| number"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
 
 
                             <td ng-bind="row.mr_vaccinated| number"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
 
 
                             <td ng-bind="concatPercentage(row.bcg_mr_dropout)"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
 
 
                         </tr>
@@ -229,10 +235,10 @@
                         <tr ng-if="( datarows.length == $index+1) && $index>0 && staticYear>0"
                                 >
 
-                            <td class="aggregate-row" colspan="4" ng-if="reportType==true"
+                            <td class="aggregate-row" colspan="5" ng-if="reportType==true"
 
                                     >Sub Total</td>
-                            <td  class="aggregate-row" colspan="3" ng-if="reportType==false"
+                            <td  class="aggregate-row" colspan="4" ng-if="reportType==false"
 
                                     >Sub Total</td>
 
@@ -265,9 +271,9 @@
                         <tfoot style="'border-top-style':'solid'; 'border-top-color': 'black'; 'border-top-width': '2px'"
                                >
                         <tr >
-                        <td ng-if="reportType==false" colspan="2"/>
-                        <td ng-if="reportType==true" colspan="3"/>
-                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " >
+                        <td ng-if="reportType==false" colspan="3"/>
+                        <td ng-if="reportType==true" colspan="4"/>
+                        <td  ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " >
                             <span openlmis-message="label.total"></span>
                         </td>
 
@@ -311,6 +317,10 @@
                             </td>
 
                         </tr>
+                        <tr>
+                            <td ng-style="{'min-width':'2800px','background-color': nonReporting}" >Non reporting</td>
+                            <td  ng-style="{'background-color': nonReporting}" ng-repeat="column in nonReportingDistrict track by $index" ng-bind="nonReportingDistrict[staticYear + '_' +$index].count"></td>
+                        </tr>
                         </tbody>
                     </table>
 
@@ -335,6 +345,7 @@
                                 <span openlmis-message="label.period"></span>
 
                             </th>
+                            <th rowspan="2">Reported</th>
                             <th rowspan="2" style="width: 10px">
                                 <span openlmis-message="label.population"></span>
 
@@ -369,6 +380,10 @@
                             <th>
 
 
+                        </th>
+                            <th>
+
+
                             </th>
                             <th>
                                 <span>D</span>
@@ -395,7 +410,7 @@
                                 >
 
 
-                            <td  class="aggregate-row" colspan="2"
+                            <td  class="aggregate-row" colspan="3"
 
                                     >Sub Total</td>
 
@@ -429,28 +444,26 @@
                                >
                             <td
 
-                                >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
-
-                            <td ng-if="reportType==true"
+                                >{{ regionrows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
 
 
-                                ng-bind="row.facility_name"></td>
 
 
                             <td ng-bind="row.period_name| date:'MMM-yyyy'"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'text-align':'right'}"/>
+                            <td style="text-align:right;background-color : {{getBackGroundColor(row)}}">{{reporting(row)}} </td>
                             <td ng-bind="row.target"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
                             <td ng-bind="row.bcg_vaccinated"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
 
 
                             <td ng-bind="row.mr_vaccinated"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
 
 
                             <td ng-bind="concatPercentage(row.bcg_mr_dropout)"
-                                ng-style="{'background-color':getBackGroundColor(row.bcg_mr_dropout) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
 
 
                         </tr>
@@ -458,7 +471,7 @@
                                 >
 
 
-                            <td  class="aggregate-row" colspan="2"
+                            <td  class="aggregate-row" colspan="3"
 
                                     >Sub Total</td>
 
@@ -492,7 +505,8 @@
                         <tfoot
                                >
                         <td></td>
-                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}">
+                        <td></td>
+                        <td  ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}">
                             <span openlmis-message="label.total"></span>
                         </td>
 
@@ -536,6 +550,10 @@
                                     </span>
                             </td>
 
+                        </tr>
+                        <tr>
+                            <td ng-style="{'min-width':'2800px','background-color': nonReporting}" >Non reporting</td>
+                            <td  ng-style="{'background-color': nonReporting}" ng-repeat="column in nonReportingDistrict track by $index" ng-bind="nonReportingRegion[staticYear + '_' +$index].count"></td>
                         </tr>
                         </tbody>
                     </table>
