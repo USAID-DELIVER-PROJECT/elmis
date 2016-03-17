@@ -183,7 +183,7 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
         return " select year, region_name, district_name, facility_name, " +
                 " denominator, population from vw_vaccine_population_denominator vd " +
                 " where programid = 82 and " +
-                " productid = " + productId +
+                " (productid = " + productId + " or "+ productId +"=0 )"+
                 "  and (vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) ";
 
 
@@ -196,7 +196,7 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                         "coalesce(sum(population),0) population \n" +
                         "from vw_vaccine_population_denominator vd " +
                         " where programid = 82 and " +
-                        " productid = " + productId +
+                        " (productid = " + productId + " or "+ productId +"=0 )"+
                         "  and (vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) " +
                         " group by 1,2,3";
 
@@ -210,7 +210,7 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
                         "coalesce(sum(population),0) population \n" +
                         "from vw_vaccine_population_denominator vd " +
                         " where programid = 82 and " +
-                        " productid = " + productId +
+                        " (productid = " + productId + " or "+ productId +"=0 )"+
                         "  and ( vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) " +
                         " group by 1,2";
 
