@@ -45,12 +45,23 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
             function (data) {
                 console.log(data);
                 $scope.error = "";
-                $scope.zonereport = cumulateMonthProgressive(data.classificationVaccineUtilizationPerformance.zoneReport, 2);
-                $scope.facilityReportList = cumulateMonthProgressive(data.classificationVaccineUtilizationPerformance.facilityReport, 1);
+                $scope.zonereport =data.classificationVaccineUtilizationPerformance.zoneReport;
+                $scope.facilityReportList = data.classificationVaccineUtilizationPerformance.facilityReport;
+                $scope.regionReportList = data.classificationVaccineUtilizationPerformance.regionReport;
+                $scope.population=data.classificationVaccineUtilizationPerformance.population;
+                $scope.regionPopulation=data.classificationVaccineUtilizationPerformance.regionPopulation;
+
+                extractPopulationInfo($scope.zonereport,  $scope.population,2);
+                extractPopulationInfo($scope.facilityReportList,  $scope.population,1);
+                extractPopulationInfo($scope.facilityReportList, $scope.regionPopulation,3);
+
+                $scope.zonereport = cumulateMonthProgressive($scope.zonereport, 2);
+                $scope.facilityReportList = cumulateMonthProgressive( $scope.facilityReportList, 1);
                 $scope.periodlist = data.classificationVaccineUtilizationPerformance.summaryPeriodLists;
-                $scope.regionReportList = cumulateMonthProgressive(data.classificationVaccineUtilizationPerformance.regionReport, 3);
+                $scope.regionReportList = cumulateMonthProgressive($scope.regionReportList, 3);
                 $scope.facilityReport = !utils.isEmpty($scope.facilityReportList);
                 $scope.regionReport = !utils.isEmpty($scope.regionReportList);
+
 
                 if ($scope.facilityReport === true) {
                     extractPeriod($scope.facilityReportList);
@@ -263,6 +274,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
     function cumulateMonthProgressive(unformattedReport, type) {
         if (!utils.isEmpty(unformattedReport)) {
+
             var len = unformattedReport.length;
             var prevRep = unformattedReport[0];
             var formattedReportList = [];
@@ -328,6 +340,46 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         return classfication;
     }
 
+    function extractPopulationInfo(reportList, popuplationList, type) {
+        var population = 0;
+        var denominator = 0;
+        var i = 0;
+        var repLen = reportList.length;
+        var popuLen = popuplationList.length;
 
+        for (i; i < repLen; i++) {
+            var j = 0;
+            var repKey = getPopulationKey(reportList[i], type);
+            for (j; j < popuLen; j++) {
+                population = 0;
+                denominator = 0;
+                var currentKey = getPopulationKey(popuplationList[j], type);
+
+                if (angular.equals(repKey, currentKey)) {
+                    population = popuplationList[j].population;
+                    denominator = popuplationList[j].denominator;
+
+                    break;
+                }
+
+            }
+            reportList[i].population = population;
+
+        }
+        return population;
+    }
+    function getPopulationKey(dreport, type) {
+        var keyValue = '';
+        if (type === 1) {
+            keyValue = dreport.facility_name + "_" + parseInt(dreport.year, 10);
+        } else if (type === 2) {
+            keyValue = dreport.district_name + "_" + parseInt(dreport.year, 10);
+        }
+        else {
+            keyValue = dreport.region_name + "_" + parseInt(dreport.year, 10);
+        }
+
+        return keyValue;
+    }
 }
 
