@@ -14,7 +14,6 @@
 package org.openlmis.report.builder;
 
 import org.openlmis.report.model.params.DistrictSummaryReportParam;
-
 import java.util.Map;
 
 
@@ -49,14 +48,15 @@ public class DistrictFinancialSummaryQueryBuilder {
             if (filter.getZone() != 0) {
                 predicate = predicate + " and ( zone_id = " + filter.getZone() + " or parent = " + filter.getZone() + " or region_id = " + filter.getZone() + " or district_id = " + filter.getZone() + ") ";
             }
+
             if (filter.getSchedule() != 0) {
                 predicate = predicate.isEmpty() ? " where " : predicate + " and ";
-                predicate = predicate + " scheduleId= #{filterCriteria.scheduleId}";
+                predicate = predicate + " scheduleId= " + filter.getSchedule();
             }
 
             if (filter.getProgram() != 0) {
                 predicate = predicate.isEmpty() ? " where " : predicate + " and ";
-                predicate = predicate + " programId = #{filterCriteria.programId}";
+                predicate = predicate + " programId = " + filter.getProgram();
             }
         }
         return predicate;
