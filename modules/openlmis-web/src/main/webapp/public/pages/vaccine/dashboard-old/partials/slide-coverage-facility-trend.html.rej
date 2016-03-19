@@ -1,0 +1,9 @@
+diff a/modules/openlmis-web/src/main/webapp/public/pages/vaccine/dashboard/partials/slide-coverage-facility-trend.html b/modules/openlmis-web/src/main/webapp/public/pages/vaccine/dashboard/partials/slide-coverage-facility-trend.html	(rejected hunks)
+@@ -11,6 +11,7 @@
+ </div>
+ 
+ <c3chart  bindto-id="facility_coverage_chart" chart-data="facilityCoverage.dataPoints" chart-columns="facilityCoverage.dataColumns" chart-x="facilityCoverage.dataX" ng-show="facilityCoverage.dataPoints">
++
+     <chart-axes   y2="coverage"/>
+     <chart-axis>
+ 

@@ -1,0 +1,33 @@
+<div>Stock by facility</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.facilityStock.product" on-change="facilityStockCallback()"></vaccine-product-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilityStock.period"  class="form-cell horizontalFilters" on-change="facilityStockCallback()"></vaccine-monthly-period-tree-filter>
+            <range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalfacilityStock" range="filter.facilityStockRange" offset="filter.facilityStockOffset" label-all="all facility" on-change="facilityStockPagination()"></range-pagination>
+
+            <!-- <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters" default="defaultProduct"  cm-model="filter.facilityCoverage.product" on-change="facilityCoverageCallback()"></vaccine-product-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilityCoverage.period"  class="form-cell horizontalFilters" on-change="facilityCoverageCallback()"></vaccine-monthly-period-tree-filter>
+            <range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalFacilityCoverage" range="filter.facilityCoverageRange" offset="filter.facilityCoverageOffset" label-all="all facility" on-change="facilityCoveragePagination()"></range-pagination>
+            -->
+        </div>
+    </form>
+</div>
+
+<c3chart  bindto-id="facility_stock_chart" chart-data="facilityStock.dataPoints" chart-columns="facilityStock.dataColumns" chart-x="facilityStock.dataX" ng-show="facilityStock.dataPoints">
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.period}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+    <chart-grid show-x="false" show-y="false">
+        <chart-grid-optional axis-id="y" grid-value="{{facilityStock.grid.min}}" grid-text=""/>
+        <chart-grid-optional axis-id="y" grid-value="{{facilityStock.grid.max}}" grid-text=""/>
+    </chart-grid>
+</c3chart>
+
+<div style="font-weight: bold" ng-hide="facilityStock.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

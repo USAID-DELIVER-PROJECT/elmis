@@ -1,0 +1,21 @@
+
+<div>Bundling</div>
+<div class="app-form vaccine-form-filter">
+    <form  name="bundlingForm" novalidate>
+
+        <div  class="clearfix">
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.bundling.product"></vaccine-product-filter>
+            <static-period-filter default="defaultPeriodTrend" class="form-cell horizontalFilters"  name="testInput" range="filter.bundling.range" startdate="filter.bundling.startDate" enddate="filter.bundling.endDate" rangemax="10" error="perioderror"></static-period-filter>
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="bundling_one_chart" chart-data="bundling.dataPoints" chart-columns="bundling.dataColumns" chart-x="bundling.dataX" ng-show="bundling.dataPoints">
+    <chart-axis>
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="Period"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="bundling.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

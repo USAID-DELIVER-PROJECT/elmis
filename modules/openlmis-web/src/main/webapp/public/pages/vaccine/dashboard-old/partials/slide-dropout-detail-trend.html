@@ -1,0 +1,35 @@
+
+<div>Dropout Detail</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-dropout-filter defaultselction="defaultProduct"  class="form-cell horizontalFilters" filterproduct="filter.detailDropout.product" on-change="dropoutDetailCallback()"></vaccine-dropout-filter>
+            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailDropout.range" startdate="filter.detailDropout.startDate" enddate="filter.detailDropout.endDate" rangemax="10" error="perioderror" on-change="dropoutDetailCallback()" ></static-period-filter>-->
+            <static-year-filter  on-change="dropoutDetailCallback()" year="staticYear" startdate="filter.detailDropout.startDate" enddate="filter.detailDropout.endDate" ></static-year-filter>
+        </div>
+    </form>
+</div>
+<div style="font-weight: bold" ng-hide="facilityDropoutDetails" openlmis-message="label.report.no.data.to.show"></div>
+
+<div style="overflow: scroll;" class="row-fluid">
+<table ng-show="facilityDropoutDetails" id="summary-table" class="table-bordered table">
+    <thead  >
+    <tr class="gradient-header">
+        <th>District</th>
+        <th>Facility</th>
+        <th></th>
+        <th style="text-align: center" ng-repeat="period in dropoutPeriodsList">{{period}}</th>
+        <th style="text-align: center">Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="detail in facilityDropoutDetails" >
+        <td ng-show="$first" rowspan="{{facilityDropoutDetails.length}}">{{detail.district}}</td>
+        <td ng-show="$index%2 == 0" rowspan="2">{{detail.facilityName}}</td>
+        <td>{{detail.indicator}}</td>
+        <td class="number" ng-repeat="value in detail.indicatorValues track by $index">{{value | number:0}}</td>
+
+    </tr>
+    </tbody>
+</table>
+</div>

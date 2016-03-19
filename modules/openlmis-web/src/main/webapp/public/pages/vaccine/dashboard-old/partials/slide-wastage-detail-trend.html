@@ -1,0 +1,35 @@
+
+<div>Wastage Detail</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+             <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.detailWastage.product" on-change="wastageDetailCallback()"></vaccine-product-filter>
+            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailWastage.range" startdate="filter.detailWastage.startDate" enddate="filter.detailWastage.endDate" rangemax="10" error="perioderror" on-change="wastageDetailCallback()" ></static-period-filter>-->
+            <static-year-filter  on-change="wastageDetailCallback()" year="staticYear" startdate="filter.detailWastage.startDate" enddate="filter.detailWastage.endDate" ></static-year-filter>
+        </div>
+    </form>
+</div>
+<div style="font-weight: bold" ng-hide="facilityWastageDetails" openlmis-message="label.report.no.data.to.show"></div>
+
+<div style="overflow: scroll" class="row-fluid">
+<table ng-show="facilityWastageDetails" id="summary-table" class="table-bordered table">
+    <thead  >
+    <tr class="gradient-header">
+        <th>District</th>
+        <th>Facility</th>
+        <th></th>
+        <th style="text-align: center" ng-repeat="period in wastagePeriodsList">{{period}}</th>
+        <th style="text-align: center">Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="detail in facilityWastageDetails" >
+        <td ng-show="$first" rowspan="{{facilityWastageDetails.length}}">{{detail.district}}</td>
+        <td ng-show="$index%2 == 0" rowspan="2">{{detail.facilityName}}</td>
+        <td>{{detail.indicator}}</td>
+        <td class="number" ng-repeat="value in detail.indicatorValues track by $index">{{value | number:0}}</td>
+
+    </tr>
+    </tbody>
+</table>
+</div>
