@@ -369,10 +369,10 @@ public class VaccineReportService {
             }
             if (facilityReport) {
                 result.put("facilityReport", repository.getClassificationVaccineUtilizationPerformanceFacility(yearStartDate, endDate, zoneId, productId));
-                result.put("facilityPopulation", repository.getClassficationVaccinePopulationForFacility(yearStartDate, endDate, zoneId, productId));
+                result.put("population", repository.getClassficationVaccinePopulationForFacility(yearStartDate, endDate, zoneId, productId));
             } else {
                 result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(yearStartDate, endDate, zoneId, productId));
-                result.put("districtPopulation", repository.getClassficationVaccinePopulationForDistrict(yearStartDate, endDate, zoneId, productId));
+                result.put("population", repository.getClassficationVaccinePopulationForDistrict(yearStartDate, endDate, zoneId, productId));
             }
 
 
