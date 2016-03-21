@@ -241,5 +241,8 @@ public class VaccineInventoryDistributionService {
         return repository.getSupervisorFacilityId(facilityId);
     }
 
+    public List<Facility> getFacilitiesSameType(Long facilityId, String query) {
+        return repository.getFacilitiesSameType(facilityId, query);
+    }
 
 }

@@ -178,4 +178,10 @@ public interface VaccineInventoryDistributionMapper {
             " where sn1.facilityId=#{facilityId}")
     Long getSupervisorFacilityId(@Param("facilityId") Long facilityId);
 
+    @Select("select f.code, f.name, f.description, f.id from facilities f " +
+            " join facility_types ft on f.typeid=ft.id " +
+            " where ft.code =(select faty.code from facilities fa join facility_types faty on fa.typeid=faty.id where fa.id=#{facilityId}) " +
+            " and f.id <> #{facilityId} and LOWER(f.name) LIKE '%' || LOWER(#{query}) || '%'")
+    List<Facility> getFacilitiesSameType(@Param("facilityId") Long facilityId, @Param("query") String query);
+
 }

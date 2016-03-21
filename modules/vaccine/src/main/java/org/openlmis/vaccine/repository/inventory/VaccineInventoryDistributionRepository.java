@@ -100,4 +100,8 @@ public class VaccineInventoryDistributionRepository {
         return mapper.getSupervisorFacilityId(facilityId);
     }
 
+    public List<Facility> getFacilitiesSameType(Long facilityId, String query) {
+        return mapper.getFacilitiesSameType(facilityId, query.toLowerCase());
+    }
+
 }

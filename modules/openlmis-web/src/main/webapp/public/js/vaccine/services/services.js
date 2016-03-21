@@ -512,3 +512,7 @@ services.factory('DistributionWithSupervisorId',function($resource){
 services.factory('IsDistrictUser',function($resource){
     return $resource('/vaccine/dashboard/isDistrictUser.json',{},{});
 });
+
+services.factory('FacilitiesSameType',function($resource){
+    return $resource('/vaccine/inventory/distribution/facilities/same-type/:facilityId/:query',{facilityId:'@facilityId',query:'@query'},{});
+});
