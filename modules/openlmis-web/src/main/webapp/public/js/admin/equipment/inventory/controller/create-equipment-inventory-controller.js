@@ -47,9 +47,9 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
 
       if(!isUndefined(data.equipment_designations)){
         var equipments = data.equipment_designations;
-        console.log(equipments);
-      }
       $scope.manufacturers = _.uniq(_.pluck(equipments, 'manufacturer'));
+
+      }
     });
   };
 
