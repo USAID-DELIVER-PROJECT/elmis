@@ -76,6 +76,15 @@ function EquipmentInventoryController($scope,NumberOfYears, UserFacilityList, Eq
         page: $scope.page
       }, function (data) {
         $scope.inventory = data.inventory;
+
+        var groupedInventoryData = _.groupBy($scope.inventory,function(item){
+              return item.equipment.designation.name;
+            });
+
+        $scope.inventoryList = $.map(groupedInventoryData, function(value, index) {
+          return {"designation":index,"inventory":value};
+        });
+
         $scope.pagination = data.pagination;
         $scope.totalItems = $scope.pagination.totalRecords;
         $scope.currentPage = $scope.pagination.page;
@@ -202,6 +211,19 @@ function EquipmentInventoryController($scope,NumberOfYears, UserFacilityList, Eq
     } else {
       return null;
     }
+  };
+
+
+  $scope.updateTemperatureStatusModal = function (equipment){
+    if(!isUndefined(equipment)){
+      $scope.temperatureStatusModal = true;
+       $scope.coldChain = equipment;
+    }
+
+  };
+
+  $scope.closeColdChainTemperatureModal= function () {
+    $scope.temperatureStatusModal = false;
   };
 
   $scope.$watch('currentPage', function () {
