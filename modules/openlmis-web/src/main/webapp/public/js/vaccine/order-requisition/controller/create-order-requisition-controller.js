@@ -5,7 +5,7 @@ function CreateVaccineOrderRequisition($scope, $dialog,$routeParams, $window, re
 
 
     $scope.report = new VaccineOrderRequisition(report);
-
+console.log($scope.report);
     $scope.orderModal = false;
 
     $scope.selectedType = 0;

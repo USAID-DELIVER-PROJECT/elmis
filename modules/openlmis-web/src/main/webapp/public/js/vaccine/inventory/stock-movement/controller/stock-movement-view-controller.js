@@ -9,12 +9,11 @@
  */
 
 
-function StockMovementViewController($scope, $window,$timeout,SaveDistribution,StockEvent,configurations, UpdateOrderRequisitionStatus,VaccineLastStockMovement, StockCardsByCategoryAndRequisition, StockCardsForProgramByCategory, $dialog, homeFacility, programs, $routeParams, $location) {
+function StockMovementViewController($scope,verifyDistribution, $window,$timeout,SaveDistribution,StockEvent,configurations, UpdateOrderRequisitionStatus,VaccineLastStockMovement, StockCardsByCategoryAndRequisition, StockCardsForProgramByCategory, $dialog, homeFacility, programs, $routeParams, $location) {
 
     var orderId = parseInt($routeParams.id, 10);
     var programId = parseInt($routeParams.programId, 10);
     var periodId = parseInt($routeParams.periodId, 10);
-
     var homeFacilityId = parseInt(homeFacility.id, 10);
     var toFacilityId = parseInt($routeParams.facilityId, 10);
     $scope.toFacilityName = $routeParams.facilityName;
@@ -204,6 +203,11 @@ function StockMovementViewController($scope, $window,$timeout,SaveDistribution,S
                        $scope.message = "label.form.Submitted.Successfully";
                        var url = '/vaccine/orderRequisition/issue/print/'+distribution.distributionId;
                        printWindow.location.href=url;
+                       console.log(orderId);
+
+                       verifyDistribution.update({orderId:orderId}, function(){
+
+                       });
                        $timeout(function(){
                            $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
 
