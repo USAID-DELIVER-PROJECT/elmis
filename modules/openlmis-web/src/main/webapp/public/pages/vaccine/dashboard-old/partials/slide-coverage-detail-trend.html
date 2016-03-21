@@ -1,0 +1,36 @@
+
+<div>Coverage Detail</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+             <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.detailCoverage.product" on-change="coverageDetailCallback()"></vaccine-product-filter>
+            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailCoverage.range" startdate="filter.detailCoverage.startDate" enddate="filter.detailCoverage.endDate" rangemax="10" error="perioderror" on-change="coverageDetailCallback()" ></static-period-filter>-->
+
+            <static-year-filter  on-change="coverageDetailCallback()" year="staticYear" startdate="filter.detailCoverage.startDate" enddate="filter.detailCoverage.endDate" ></static-year-filter>
+        </div>
+    </form>
+</div>
+<div style="font-weight: bold" ng-hide="facilityDetails" openlmis-message="label.report.no.data.to.show"></div>
+
+<div class="row-fluid dashlet-scroll-table">
+<table ng-show="facilityDetails" id="summary-table" class="table-bordered table">
+    <thead  >
+    <tr class="gradient-header">
+        <th>District</th>
+        <th>Facility</th>
+        <th></th>
+        <th style="text-align: center" ng-repeat="period in periodsList">{{period}}</th>
+        <th style="text-align: center">Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="detail in facilityDetails" >
+        <td ng-show="$first" rowspan="{{facilityDetails.length}}">{{detail.district}}</td>
+        <td ng-show="$index%3 == 0" rowspan="3">{{detail.facilityName}}</td>
+        <td>{{detail.indicator}}</td>
+        <td class="number" ng-repeat="value in detail.indicatorValues track by $index">{{value | number:0}}{{detail.indicator === 'coverage' ?'%' : ''}}</td>
+
+    </tr>
+    </tbody>
+</table>
+</div>

@@ -1,0 +1,21 @@
+
+<div>Monthly Sessions</div>
+<div class="app-form vaccine-form-filter">
+    <form  name="monthlySessionForm" novalidate>
+        <div  class="clearfix">
+            <!--<static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlySessions.range" startdate="filter.monthlySessions.startDate" enddate="filter.monthlySessions.endDate" rangemax="10" error="perioderror" on-change="monthlySessionsCallback()"></static-period-filter>-->
+            <static-year-filter  on-change="monthlySessionsCallback()" year="staticYear" startdate="filter.monthlySessions.startDate" enddate="filter.monthlySessions.endDate" ></static-year-filter>
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="monthly_sessions_chart" chart-data="monthlySessions.dataPoints" chart-columns="monthlySessions.dataColumns" chart-x="monthlySessions.dataX" ng-show="monthlySessions.dataPoints">
+    <chart-axis>
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="Period"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+    <chart-group group-values="outreach_sessions,fixed_sessions"/>
+</c3chart>
+<div style="font-weight: bold" ng-hide="monthlySessions.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

@@ -1,0 +1,28 @@
+<div>Monthly Stock</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.monthlyStock.product" on-change="monthlyStockCallback()"></vaccine-product-filter>
+            <!--<static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyStock.range" startdate="filter.monthlyStock.startDate" enddate="filter.monthlyStock.endDate" rangemax="10" error="perioderror" on-change="monthlyStockCallback()"></static-period-filter>-->
+            <static-year-filter  on-change="monthlyStockCallback()" year="staticYear" startdate="filter.monthlyStock.startDate" enddate="filter.monthlyStock.endDate" ></static-year-filter>
+        </div>
+    </form>
+</div>
+
+<c3chart  bindto-id="monthly_stock_chart" chart-data="monthlyStock.dataPoints" chart-columns="monthlyStock.dataColumns" chart-x="monthlyStock.dataX" ng-show="monthlyStock.dataPoints">
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.period}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+    <chart-grid show-x="false" show-y="false">
+        <chart-grid-optional axis-id="y" grid-value="{{monthlyStock.grid.min}}" grid-text=""/>
+        <chart-grid-optional axis-id="y" grid-value="{{monthlyStock.grid.max}}" grid-text=""/>
+    </chart-grid>
+</c3chart>
+
+<div style="font-weight: bold" ng-hide="monthlyStock.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

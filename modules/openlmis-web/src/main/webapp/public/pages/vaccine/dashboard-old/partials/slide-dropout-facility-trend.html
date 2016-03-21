@@ -1,0 +1,31 @@
+
+<div>Dropout By Facility</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-dropout-filter defaultselction="defaultProduct"  class="form-cell horizontalFilters" filterproduct="filter.facilityDropout.product" on-change="facilityDropoutCallback()"></vaccine-dropout-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilityDropout.period"  class="form-cell horizontalFilters" on-change="facilityDropoutCallback()"></vaccine-monthly-period-tree-filter>
+            <range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalfacilityDropout" range="filter.facilityDropoutRange" offset="filter.facilityDropoutOffset" label-all="all facility" on-change="facilityDropoutPagination()"></range-pagination>
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="facility_dropout_chart" chart-data="facilityDropout.dataPoints" chart-columns="facilityDropout.dataColumns" chart-x="facilityDropout.dataX" ng-show="facilityDropout.dataPoints">
+    <chart-axes   y2="bcg_mr_dropout"/>
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.facility}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+        <chart-axis-y axis-id="y2"
+                      axis-position="outer-right"
+                      padding-top="10"
+                      padding-bottom="0"
+                      range-max="100"
+                      range-min="0"
+                />
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="facilityDropout.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

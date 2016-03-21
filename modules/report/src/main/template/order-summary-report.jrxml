@@ -683,15 +683,15 @@
 	<columnHeader>
 		<band height="34" splitType="Stretch">
 			<textField>
-				<reportElement x="52" y="0" width="35" height="22" uuid="045878dc-8c84-413b-88c7-19c986a1f475"/>
+				<reportElement x="59" y="0" width="35" height="22" uuid="045878dc-8c84-413b-88c7-19c986a1f475"/>
 				<textFieldExpression><![CDATA[$P{PROGRAM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="213" y="0" width="47" height="22" uuid="832d8532-df92-4dc2-80b5-2732059c0938"/>
+				<reportElement x="220" y="0" width="47" height="22" uuid="832d8532-df92-4dc2-80b5-2732059c0938"/>
 				<textFieldExpression><![CDATA[$P{SCHEDULE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="113" y="0" width="52" height="22" uuid="e49dc9bf-0063-45f3-8a1f-08be6cc8ad32"/>
+				<reportElement x="120" y="0" width="52" height="22" uuid="e49dc9bf-0063-45f3-8a1f-08be6cc8ad32"/>
 				<textFieldExpression><![CDATA[$P{YEAR}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -703,15 +703,15 @@
 				<textFieldExpression><![CDATA[$P{DEPOT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="11" y="0" width="41" height="22" uuid="2d84fc3a-d0d1-4054-a2e4-cc85a3e69fbd"/>
+				<reportElement x="11" y="0" width="48" height="22" uuid="2d84fc3a-d0d1-4054-a2e4-cc85a3e69fbd"/>
 				<text><![CDATA[Program:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="87" y="0" width="26" height="22" uuid="0be9f6d3-a326-4c05-b8fc-0487f13eff4d"/>
+				<reportElement x="94" y="0" width="26" height="22" uuid="0be9f6d3-a326-4c05-b8fc-0487f13eff4d"/>
 				<text><![CDATA[Year:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="165" y="0" width="48" height="22" uuid="44f1ff16-9476-4157-b7ae-9dd6bf9e5a72"/>
+				<reportElement x="172" y="0" width="48" height="22" uuid="44f1ff16-9476-4157-b7ae-9dd6bf9e5a72"/>
 				<text><![CDATA[Schedule:]]></text>
 			</staticText>
 			<staticText>

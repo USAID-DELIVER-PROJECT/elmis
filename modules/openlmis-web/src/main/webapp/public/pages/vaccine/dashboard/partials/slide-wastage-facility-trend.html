@@ -3,7 +3,7 @@
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
-            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters" default="defaultProduct"  cm-model="filter.facilityWastage.product" on-change="facilityWastageCallback()"></vaccine-product-filter>
+            <!--<vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters" default="defaultProduct"  cm-model="filter.facilityWastage.product" on-change="facilityWastageCallback()"></vaccine-product-filter>-->
             <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilityWastage.period"  class="form-cell horizontalFilters" on-change="facilityWastageCallback()"></vaccine-monthly-period-tree-filter>
             <range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalfacilityWastage" range="filter.facilityWastageRange" offset="filter.facilityWastageOffset" label-all="all facility" on-change="facilityWastagePagination()"></range-pagination>
         </div>

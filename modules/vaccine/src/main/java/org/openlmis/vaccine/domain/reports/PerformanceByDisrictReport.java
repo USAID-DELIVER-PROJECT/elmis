@@ -19,6 +19,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -27,8 +28,8 @@ import java.util.List;
 public class PerformanceByDisrictReport {
 
     private List<Date> columnNames;
-    private List<PerformanceByDropOutDistricts> performanceByDropOutDistrictsList;
-    private List<PerformanceByDropOutDistricts> performanceByDropOutRegionsList;
+    private List<PerformanceByDropoutRateByDistrict> performanceByDropOutDistrictsList;
+    private List<PerformanceByDropoutRateByDistrict> performanceByDropOutRegionsList;
     private List<PerformanceByDropoutRateByDistrict> detailPerformanceByDropoutRateByDistrictList;
     private  List<PerformanceByDropoutRange> columnsValueList;
     private  List<PerformanceByDropoutRange> regionColumnsValueList;
@@ -40,4 +41,7 @@ public class PerformanceByDisrictReport {
     private Long total_bcg_mr_dropout;
     private boolean isFacillityReport;
     private boolean isRegionReport;
+    private  List<Map<String,Object>> population;
+    private  List<Map<String,Object>> regionPopulation;
+
 }

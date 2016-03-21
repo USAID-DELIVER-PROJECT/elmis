@@ -1,0 +1,22 @@
+
+<div>Stock By District</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.districtStock.product" on-change="districtStockCallback()"></vaccine-product-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtStock.period"  class="form-cell horizontalFilters" on-change="districtStockCallback()"></vaccine-monthly-period-tree-filter>
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="district_stock_chart" chart-data="districtStock.dataPoints" chart-columns="districtStock.dataColumns" chart-x="districtStock.dataX" ng-show="districtStock.dataPoints">
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.zone}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="districtStock.dataPoints" openlmis-message="label.report.no.data.to.show"></div>
