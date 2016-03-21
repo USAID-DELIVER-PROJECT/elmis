@@ -21,6 +21,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.BaseModel;
+import org.openlmis.core.domain.DosageUnit;
 import org.openlmis.core.domain.ISA;
 import org.openlmis.core.dto.IsaDTO;
 import org.openlmis.core.serializer.DateDeserializer;
@@ -61,6 +62,7 @@ public class StockRequirementsDTO extends BaseModel
   Integer isaValue;
 
   Integer bufferStock;
+  String dosageUnit;
 
   @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   @JsonDeserialize(using=DateDeserializer.class)

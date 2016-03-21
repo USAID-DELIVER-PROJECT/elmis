@@ -14,6 +14,7 @@ package org.openlmis.equipment.repository.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.session.RowBounds;
+import org.openlmis.equipment.domain.ColdChainEquipmentDesignation;
 import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.domain.EquipmentEnergyType;
 import org.openlmis.equipment.domain.EquipmentType;
@@ -62,11 +63,13 @@ public interface EquipmentMapper {
     List<Equipment> getByType(@Param("equipmentTypeId") Long equipmentTypeId, RowBounds rowBounds);
 
   @Select("SELECT equipments.*" +
-      "   , COUNT(equipment_inventories.id) AS inventorycount" +
+      "   , COUNT(equipment_inventories.id) AS inventorycount,  " +
+          " equipment_cold_chain_equipments.*  " +
       " FROM equipments" +
-      "   LEFT JOIN equipment_inventories ON equipment_inventories.equipmentid = equipments.id" +
+      "   LEFT JOIN equipment_inventories ON equipment_inventories.equipmentid = equipments.id " +
+      "   LEFT JOIN equipment_cold_chain_equipments  ON equipment_cold_chain_equipments.equipmentId = equipments.ID " +
       " WHERE equipmentTypeId = #{equipmentTypeId}" +
-      " GROUP BY equipments.id" +
+      " GROUP BY equipments.id,equipment_cold_chain_equipments.equipmentid" +
       " ORDER BY name")
   @Results({
       @Result(
@@ -76,7 +79,11 @@ public interface EquipmentMapper {
       @Result(
           property = "energyType", column = "energyTypeId", javaType = EquipmentEnergyType.class,
           one = @One(select = "org.openlmis.equipment.repository.mapper.EquipmentEnergyTypeMapper.getById")),
-      @Result(property = "energyTypeId", column = "energyTypeId")
+      @Result(property = "energyTypeId", column = "energyTypeId"),
+          @Result(property = "designation", column = "designationId", javaType = ColdChainEquipmentDesignation.class,
+                  one = @One(select = "org.openlmis.equipment.repository.mapper.ColdChainEquipmentDesignationMapper.getById")),
+                  @Result(property = "designationId", column = "designationId")
+
 
   })
   List<Equipment> getAllByType(@Param("equipmentTypeId") Long equipmentTypeId);

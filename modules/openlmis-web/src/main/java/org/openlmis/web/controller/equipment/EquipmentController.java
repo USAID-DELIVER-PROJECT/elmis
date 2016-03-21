@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
 @RequestMapping(value="/equipment/manage/")
@@ -42,7 +43,10 @@ public class EquipmentController extends BaseController {
 
   public static final String EQUIPMENT = "equipment";
   public static final String EQUIPMENTS = "equipments";
-  @Autowired
+  public static final String EQUIPMENT_BY_DESIGNATION = "equipment_designations";
+  public static final String EQUIPMENT_BY= "equipments";
+
+    @Autowired
   private EquipmentService service;
 
     @Autowired
@@ -169,4 +173,17 @@ public class EquipmentController extends BaseController {
         successResponse = OpenLmisResponse.success(messageService.message("message.equipment.list.removed"));
         return successResponse;
     }
+
+    @RequestMapping(value="getEquipmentByDesignation/{id}",method = GET,headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')")
+    public ResponseEntity<OpenLmisResponse> getEquipmentByDesignation(@PathVariable(value="id") Long designationId){
+        return OpenLmisResponse.response(EQUIPMENT_BY_DESIGNATION,service.getEquipmentByDesignation(designationId));
+    }
+
+    @RequestMapping(value="getEquipmentBy/{id}",method = GET,headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')")
+    public ResponseEntity<OpenLmisResponse> getEquipmentBy(@PathVariable(value="id") Long equipmentId){
+        return OpenLmisResponse.response(EQUIPMENT_BY,service.getEquipmenentBy(equipmentId));
+    }
+
 }

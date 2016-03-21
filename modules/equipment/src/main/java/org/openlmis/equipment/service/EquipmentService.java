@@ -101,4 +101,13 @@ public class EquipmentService {
   public void removeCCE(Long id) {
     coldChainEquipmentRepository.remove(id);
   }
+
+
+  public List<ColdChainEquipment>getEquipmentByDesignation(Long designationId){
+   return coldChainEquipmentRepository.getEquipmentByDesignation(designationId);
+  }
+
+  public List<ColdChainEquipment>getEquipmenentBy(Long equipmentTypeId){
+    return coldChainEquipmentRepository.getEquipmentBy(equipmentTypeId);
+  }
 }
