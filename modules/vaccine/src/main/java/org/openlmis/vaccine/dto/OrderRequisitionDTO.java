@@ -38,7 +38,7 @@ public class OrderRequisitionDTO extends SupervisoryNode{
     private String stringPeriodEndDate;
 
     private String requisitionStatus;
-
+    private Boolean isVerified;
 
     //Used to view pending requisition
 

@@ -326,5 +326,18 @@ public class VaccineOrderRequisitionController extends BaseController {
         return response("facilities", facilityService.getHomeFacility(loggedInUserId(request)));
     }
 
+    @RequestMapping(value = "updateVerify/{orderId}", method = RequestMethod.PUT, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> verifyOrderRequisition(@PathVariable(value = "orderId") Long orderId) {
+
+        try {
+            service.verifyVaccineOrderRequisition(orderId);
+            return success("Saved Successifully");
+
+        } catch (DataException e) {
+            return error(e, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 
 }

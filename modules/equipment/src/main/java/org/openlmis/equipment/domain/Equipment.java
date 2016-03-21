@@ -55,4 +55,8 @@ public class Equipment extends BaseModel {
     return inventoryCount != null && inventoryCount == 0;
   }
 
+  private ColdChainEquipmentDesignation designation;
+
+  private Long designationId;
+
 }

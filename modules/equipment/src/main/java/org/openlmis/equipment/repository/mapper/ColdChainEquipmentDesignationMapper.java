@@ -25,16 +25,16 @@ public interface ColdChainEquipmentDesignationMapper {
   @Select("SELECT * from equipment_cold_chain_equipment_designations where id = #{id}")
   ColdChainEquipmentDesignation getById(@Param("id") Long id);
 
-  @Insert("INSERT into equipment_cold_chain_equipment_designations (name,createdby, createddate, modifiedby, modifieddate) " +
-      "values " +
-      "(#{name},#{createdBy}, NOW(), #{modifiedBy}, NOW())")
+  @Insert("INSERT INTO equipment_cold_chain_equipment_designations(\n" +
+          "             name, createdby, createddate, modifiedby, modifieddate, hasEnergy,isRefrigerator, isFreezer)\n" +
+          "    VALUES ( #{name}, #{createdBy}, NOW(), #{modifiedBy},NOW(), #{hasEnergy}, #{isRefrigerator},#{isFreezer})")
   @Options(useGeneratedKeys = true)
-  void insert(ColdChainEquipmentDesignation coldChainEquipmentDesignation);
+  Integer insert(ColdChainEquipmentDesignation coldChainEquipmentDesignation);
 
-  @Update("UPDATE equipment_cold_chain_equipment_designations " +
-      "set " +
-      "name = #{name},modifiedBy = #{modifiedby}, modifieddate = NOW() " +
-      "WHERE id = #{id}")
+  @Update("UPDATE equipment_cold_chain_equipment_designations\n" +
+          "   SET  name=#{name}, modifiedby= #{modifiedBy}, modifieddate = NOW(), \n" +
+          "       hasEnergy=#{hasEnergy}, isRefrigerator= #{isRefrigerator}, isFreezer= #{isFreezer}\n" +
+          " WHERE id  = #{id}")
   void update(ColdChainEquipmentDesignation coldChainEquipmentDesignation);
 
 

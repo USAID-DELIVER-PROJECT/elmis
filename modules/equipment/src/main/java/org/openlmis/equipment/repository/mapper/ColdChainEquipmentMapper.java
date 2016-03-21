@@ -105,4 +105,21 @@ public interface ColdChainEquipmentMapper {
 
   @Delete("DELETE FROM equipment_cold_chain_equipments WHERE equipmentid = #{Id}")
   void remove(Long Id);
+
+    @Select(" SELECT * from equipment_cold_chain_equipments e  " +
+            "JOIN equipments eq ON e.equipmentId = eq.id   " +
+            "WHERE designationId = #{designationId} ")
+    List<ColdChainEquipment>getEquipmentByDesignation(@Param("designationId") Long designationId);
+
+
+    @Select(" select * from equipment_cold_chain_equipments ec\n" +
+            "JOIN equipments S On ec.equipmentId = S.ID\n" +
+            "where s.equipmentTypeId = #{equipmentTypeId} ")
+    @Results({
+            @Result(property = "designation", column = "designationId", javaType = ColdChainEquipmentDesignation.class,
+                    one = @One(select = "org.openlmis.equipment.repository.mapper.ColdChainEquipmentDesignationMapper.getById")),
+            @Result(property = "designationId", column = "designationId")
+    })
+    List<ColdChainEquipment>getEquipmentBy(@Param("equipmentTypeId") Long equipmentTypeId);
+
 }

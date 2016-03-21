@@ -1,6 +1,7 @@
 package org.openlmis.vaccine.repository.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.openlmis.core.domain.DosageUnit;
 import org.openlmis.vaccine.dto.StockRequirementsDTO;
 import org.openlmis.vaccine.dto.StockRequirements;
 import org.springframework.stereotype.Repository;
@@ -10,9 +11,12 @@ import java.util.List;
 @Repository
 public interface StockRequirementsMapper {
 
-    @Select("SELECT p.primaryName as productName, sr.* " +
-            " FROM stock_requirements sr join products p on p.id=sr.productid WHERE sr.programid=#{programId} AND sr.facilityid=#{facilityId} AND sr.year=#{year}" +
-            " order by sr.productId")
+    @Select("SELECT p.primaryName as productName,d.code dosageUnit, sr.* " +
+            " FROM stock_requirements sr join products p on p.id=sr.productid " +
+            " Join dosage_units d on p.dosageUnitId = d.id " +
+            "WHERE sr.programid=#{programId} AND sr.facilityid=#{facilityId} AND sr.year=#{year}" +
+            " order by sr.productId"
+    )
     List<StockRequirementsDTO> getAllByProgramAndFacility(@Param("programId") Long programId, @Param("facilityId") Long facilityId, @Param("year") int year);
 
     @Select("SELECT *" +

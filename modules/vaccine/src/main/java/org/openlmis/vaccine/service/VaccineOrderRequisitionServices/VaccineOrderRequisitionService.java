@@ -244,4 +244,8 @@ public class VaccineOrderRequisitionService {
     public List<OrderRequisitionDTO>getConsolidatedList(Long program,List<Long> facilityIds){
         return orderRequisitionRepository.getConsolidatedList(program,getCommaSeparatedIds(facilityIds));
     }
+
+    public Long verifyVaccineOrderRequisition(Long orderId){
+        return orderRequisitionRepository.verifyVaccineOrderRequisition(orderId);
+    }
 }
