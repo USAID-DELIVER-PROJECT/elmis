@@ -521,3 +521,8 @@ services.factory('DistributionWithSupervisorId',function($resource){
 services.factory('IsDistrictUser',function($resource){
     return $resource('/vaccine/dashboard/isDistrictUser.json',{},{});
 });
+
+services.factory('verifyDistribution',function($resource){
+    return $resource('/vaccine/orderRequisition/updateVerify/:orderId.json',{orderId:'@orderId'},{update:{method:'PUT'}});
+});
+

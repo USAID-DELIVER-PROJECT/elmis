@@ -269,3 +269,19 @@ services.factory('RemoveOperationalStatus',function($resource){
 services.factory('EquipmentOperationalStatuses', function ($resource) {
     return $resource('/operational-status/list.json', {}, {});
 });
+
+services.factory("SaveColdChainDesignations", function($resource){
+    return $resource('/equipment/cold-chain/insert.json',{},{});
+});
+
+services.factory("GetColdChainDesignationsById", function($resource){
+    return $resource('/equipment/cold-chain/designation/:id.json',{id:'@id'},{});
+});
+
+services.factory('GetEquipmentByDesignation', function($resource){
+    return $resource('/equipment/manage/getEquipmentByDesignation/:id.json',{id:'@id'},{});
+});
+
+services.factory('GetEquipmentByType', function($resource){
+    return $resource('/equipment/manage/getEquipmentBy/:id.json',{id:'@id'},{});
+});
