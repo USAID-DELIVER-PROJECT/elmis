@@ -302,9 +302,12 @@
                     </td>
                         <td class="col-general cell-input" ng-class="{'last-row':$last}">
                             <input ng-disabled="(product.quantityRequired < product.lots[$index -1].quantityOnHand) || (product.quantityRequested > product.lots[$index -1].quantityOnHand && (product.lots[$index -1].quantity ===undefined || (product.lots[$index -1].quantity < product.lots[$index -1].quantityOnHand)))"
-                                   ng-show="product.lots.length > 0" min="{{0}}" max="{{lot.quantityOnHand}}"
-                                   name="lotQuantity{{$index}}" ng-model="lot.quantity"
-                               ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
+                                   ng-show="product.lots.length > 0"
+                                   min="{{0}}" max="{{lot.quantityOnHand}}"
+                                   name="lotQuantity{{$index}}"
+                                   ng-model="lot.quantity"
+                                   ng-change="updateCurrentTotal(product)"
+                                   numeric-validator="positiveInteger"
                                    maxlength="8" type="number" divisible-by-presentation="{{product.presentation}}"/>
                     </td>
                 </tr>
@@ -405,7 +408,6 @@
             <input type="button" ng-click="closePODModal();" class="btn btn-cancel"
                    openlmis-message="button.cancel"/>
         </div>
-
     </div>
 
     <div form-toolbar id="action_buttons" class="action-buttons">
@@ -416,8 +418,7 @@
         </div>
 
         <div class="toolbar-error" id="saveErrorMsgDiv">
-            <span openlmis-message="error" ng-show="error"></span>&nbsp;
-            <span ng-show="errorProgram" ng-bind="errorProgram"></span>
+            <span openlmis-message="message" ng-show="error"></span>&nbsp;
         </div>
 
     </div>

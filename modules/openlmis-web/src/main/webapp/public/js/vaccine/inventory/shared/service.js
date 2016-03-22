@@ -31,6 +31,14 @@ services.factory('StockCardsByCategory', function($resource,StockCards,$q, $time
                                                 s.displayOrder=product[0].id;
                                                 s.productCategory=product[0].productCategory;
                                                 s.presentation=product[0].product.dosesPerDispensingUnit;
+
+                                                var lotsAscExpiration=s.lotsOnHand.sort(function(a,b){
+                                                    return (a.lot.expirationDate > b.lot.expirationDate) ? 1 : ((b.lot.expirationDate > a.lot.expirationDate) ? -1 : 0);
+                                                });
+                                                var lotsDescVvmStatus=lotsAscExpiration.sort(function(a,b){
+                                                    return (a.customProps.vvmstatus > b.customProps.vvmstatus) ? -1 : ((b.customProps.vvmstatus > a.customProps.vvmstatus) ? 1 : 0);
+                                                });
+                                                s.lotsOnHand=lotsDescVvmStatus;
                                         });
                                         stockCards=_.sortBy(stockCards,'displayOrder');
 
@@ -327,12 +335,14 @@ services.factory('StockCardsForProgramByCategory', function ($resource,StockCard
                                 var stockCards = data.stockCards;
                                 stockCards.forEach(function (s) {
 
-                                     var lotsAscExpiration=_.sortBy(s.lotsOnHand,'lot.expirationDate');
-                                     var lotsDescExpiration=lotsAscExpiration.reverse();
-                                     //s.lotsOnHand=lotsDescExpiration;
-                                     var lotAscVVM=_.sortBy(s.lotsOnHand,'customProps.vvmstatus');
+                                    var lotsAscExpiration=s.lotsOnHand.sort(function(a,b){
+                                        return (a.lot.expirationDate > b.lot.expirationDate) ? 1 : ((b.lot.expirationDate > a.lot.expirationDate) ? -1 : 0);
+                                    });
+                                    var lotsDescVvmStatus=lotsAscExpiration.sort(function(a,b){
+                                        return (a.customProps.vvmstatus > b.customProps.vvmstatus) ? -1 : ((b.customProps.vvmstatus > a.customProps.vvmstatus) ? 1 : 0);
+                                    });
 
-                                     s.lotsOnHand=lotAscVVM.reverse();
+                                    s.lotsOnHand=lotsDescVvmStatus;
 
                                     if (s.product.id !== undefined && quantityRequested !==undefined) {
 
