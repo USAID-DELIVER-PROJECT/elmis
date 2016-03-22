@@ -21,10 +21,9 @@ import org.openlmis.core.service.MessageService;
 import org.openlmis.core.service.ProcessingScheduleService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.stockmanagement.domain.Lot;
-import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
-import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItem;
-import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItemLot;
-import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
+import org.openlmis.vaccine.domain.inventory.*;
+import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
+import org.openlmis.vaccine.repository.inventory.VaccineDistributionStatusChangeRepository;
 import org.openlmis.vaccine.repository.inventory.VaccineInventoryDistributionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +52,9 @@ public class VaccineInventoryDistributionService {
     @Autowired
     ProcessingPeriodRepository processingPeriodRepository;
 
+    @Autowired
+    private VaccineDistributionStatusChangeRepository statusChangeRepository;
+
     public List<Facility> getFacilities(Long userId) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long facilityId = homeFacility.getId();
@@ -66,6 +68,7 @@ public class VaccineInventoryDistributionService {
 
     public Long save(VaccineDistribution distribution, Long userId) {
         //Get supervised facility period
+
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long homeFacilityId = homeFacility.getId();
         ProcessingPeriod period = null;
@@ -82,9 +85,17 @@ public class VaccineInventoryDistributionService {
         if (distribution.getId() != null) {
             distribution.setModifiedBy(userId);
             repository.updateDistribution(distribution);
+
+            //Update status changes to keep distribution log
+            VaccineDistributionStatusChange statusChange = new VaccineDistributionStatusChange(distribution,userId);
+            statusChangeRepository.insert(statusChange);
         } else {
             distribution.setCreatedBy(userId);
             repository.saveDistribution(distribution);
+
+            //Update status changes to keep distribution log
+            VaccineDistributionStatusChange statusChange = new VaccineDistributionStatusChange(distribution,userId);
+            statusChangeRepository.insert(statusChange);
         }
 
         for (VaccineDistributionLineItem lineItem : distribution.getLineItems()) {
@@ -241,6 +252,13 @@ public class VaccineInventoryDistributionService {
         return repository.getSupervisorFacilityId(facilityId);
     }
 
+   public List<VaccineDistributionAlertDTO>getPendingReceivedAlert(Long facilityId){
+       return repository.getPendingDistributionAlert(facilityId);
+   }
+
+   public List<VaccineDistributionAlertDTO>getPendingNotificationForLowerLevel(Long facilityId){
+       return repository.getPendingNotificationFoLowerLevel(facilityId);
+   }
     public List<Facility> getFacilitiesSameType(Long facilityId, String query) {
         return repository.getFacilitiesSameType(facilityId, query);
     }

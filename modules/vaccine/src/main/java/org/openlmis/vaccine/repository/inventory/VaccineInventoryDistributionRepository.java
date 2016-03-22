@@ -9,6 +9,7 @@ import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItem;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItemLot;
 import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
+import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
 import org.openlmis.vaccine.repository.mapper.inventory.VaccineInventoryDistributionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -100,6 +101,12 @@ public class VaccineInventoryDistributionRepository {
         return mapper.getSupervisorFacilityId(facilityId);
     }
 
+    public List<VaccineDistributionAlertDTO>getPendingDistributionAlert(Long facilityId){
+        return mapper.getPendingConsignmentAlert(facilityId);
+    }
+    public List<VaccineDistributionAlertDTO>getPendingNotificationFoLowerLevel(Long facilityId){
+        return mapper.getPendingConsignmentToLowerLevel(facilityId);
+    }
     public List<Facility> getFacilitiesSameType(Long facilityId, String query) {
         return mapper.getFacilitiesSameType(facilityId, query.toLowerCase());
     }

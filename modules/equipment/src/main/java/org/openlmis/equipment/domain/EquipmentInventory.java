@@ -51,6 +51,7 @@ public class EquipmentInventory extends BaseModel {
   private Date dateDecommissioned;
   private Date dateLastAssessed;
   private Boolean hasStabilizer;
+  private String nameOfSparePart;
 
   public String getDateLastAssessedString() {
     return DateUtil.getFormattedDate(this.dateLastAssessed, "yyyy-MM-dd");

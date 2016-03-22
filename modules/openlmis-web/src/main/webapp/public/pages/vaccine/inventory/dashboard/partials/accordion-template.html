@@ -41,9 +41,9 @@
                     <div class="caption">
                         <i class="icon-bullhorn orange"></i>&nbsp;&nbsp;
                         <span openlmis-message="title.notifications"></span>
-                            <span ng-show="pendingRequisition.length > 0 || equipmentNonFunctionalAlerts.length >0 || remarks.total >0 "
+                            <span ng-show="pendingReceiveNotification.length >0 || receiveNotification.length >0 || pendingRequisition.length > 0 || equipmentNonFunctionalAlerts.length >0 || remarks.total >0 "
                                   style="position:relative;color:#fff;font-size:0.8em;top:-6px;;background:#FF0000 !important; padding:4px 8px 4px 8px !important;border-radius:20px">
-                                {{pendingRequisition.length + equipmentNonFunctionalAlerts.length + remarks.total}}
+                                {{receiveNotification.length + pendingReceiveNotification.length + pendingRequisition.length + equipmentNonFunctionalAlerts.length + remarks.total}}
                             </span>
                     </div>
                     <div class="tools">
@@ -87,14 +87,17 @@
 
             <div ng-show="pendingRequisition.length > 0">
                 <div class="row-fluid">
-                    <div class="span12" ng-show="pendingRequisition.length > 0">
+                    <div class="span12" ng-show="pendingRequisition.length > 0 ">
                         <div class="alert alert-info" id="saveSuccessMsgDiv" ng-show="messageInfo">
                             <span data-toggle="tooltip"
                                   title="" class="icon-info-sign blue"></span>&nbsp;&nbsp;
-                            <span ng-bind="messageInfo"></span>.&nbsp;&nbsp;
+                            <span ng-bind="messageInfo">
+                            </span>.&nbsp;&nbsp;
                             <span> <a href="/public/pages/vaccine/order-requisition/index.html#/view"
                                       ng-click="popUp(this.href)" target="newWin"
-                                      openlmis-message="title.view.pending"></a> </span>
+                                      openlmis-message="title.view.pending"></a>
+
+                            </span>
                         </div>
 
                     </div>
@@ -137,6 +140,84 @@
                 </tr>
                 </tbody>
             </table>
+
+
+             <table style="width:100%" class="alert alert-warning alerts" ng-show="receiveNotification.length > 0">
+                 <thead>
+                     <tr class="alert alert-warning">
+                         <th style="text-align: left"  colspan="6">
+                            <span data-toggle="tooltip"
+                                  title="No functional" class="icon-warning-sign red"></span>&nbsp;&nbsp;
+                            <span style="text-align: center;">Not Received Consignment For More than  <span>{{number_of_days}}</span> days</span>
+                         </th>
+                     </tr>
+                 <tr style="text-align:left" class="">
+                     <th>#</th>
+                     <th>Store Name</th>
+                     <th>Date Issued</th>
+                     <th>Voucher  #</th>
+                     <th>Status</th>
+                     <th>Phone #</th>
+
+
+                 </tr>
+
+                 </thead>
+                 <tbody>
+                 <tr class="alert alert-warning" ng-repeat="alert in receiveNotification">
+
+                     <td ng-bind="$index+1"></td>
+                     <td ng-bind="alert.toFacilityName"></td>
+                     <td ng-bind="alert.distributionDate | date:'dd-MM-yyyy'"></td>
+                     <td ng-bind="alert.voucherNumber"></td>
+                     <td ng-bind="alert.status"></td>
+                     <td ng-bind="alert.cellPhone"></td>
+                 </tr>
+                 </tbody>
+
+             </table>
+
+
+
+            <table style="width:100%" class="alert alert-warning alerts" ng-show="pendingReceiveNotification.length > 0">
+                <thead>
+                <tr class="alert alert-warning">
+                    <th style="text-align: left"  colspan="7">
+                            <span data-toggle="tooltip"
+                                  title="No functional" class="icon-warning-sign red"></span>&nbsp;&nbsp;
+                        <span style="text-align: center;"> You have pending request that need to be received</span>
+                    </th>
+                </tr>
+                <tr style="text-align:left" class="">
+                    <th>#</th>
+                    <th>Ordered Date</th>
+                    <th>Date Issued</th>
+                    <th>Issued from</th>
+                    <th>Voucher  #</th>
+                    <th>Status</th>
+                    <th></th>
+
+
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr class="alert alert-warning" ng-repeat="alert in pendingReceiveNotification">
+
+                    <td ng-bind="$index+1"></td>
+                    <td ng-bind="alert.orderDate"></td>
+                    <td ng-bind="alert.distributionDate | date:'dd-MM-yyyy'"></td>
+                    <td ng-bind="alert.fromFacilityName"></td>
+                    <td ng-bind="alert.voucherNumber"></td>
+                    <td ng-bind="alert.status"></td>
+                    <td><strong><a href="/public/pages/vaccine/inventory/index.html#/receive" openlmis-message="label.vaccine.stock.receive"></a></strong>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+
 
         </accordion-group>
     </accordion>

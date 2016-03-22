@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function CreateEquipmentInventoryController($scope, $location, $routeParams, EquipmentInventory, Donors, EquipmentsByType, SaveEquipmentInventory, UserFacilityList, EquipmentOperationalStatus, messageService, EquipmentType, EquipmentInventoryFacilities, EquipmentEnergyTypes) {
+function CreateEquipmentInventoryController($scope, $location, $routeParams,GetEquipmentByDesignation, EquipmentInventory,ColdChainDesignations, Donors, EquipmentsByType, SaveEquipmentInventory, UserFacilityList, EquipmentOperationalStatus, messageService, EquipmentType, EquipmentInventoryFacilities, EquipmentEnergyTypes) {
 
   $scope.$parent.message = $scope.$parent.error = '';
 
@@ -23,10 +23,35 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams, Equ
   $scope.models = [];
   $scope.selected = {};
 
-  EquipmentsByType.get({equipmentTypeId: $routeParams.equipmentType}, function (data) {
-    $scope.equipments = data.equipments;
-    $scope.manufacturers = _.uniq(_.pluck($scope.equipments, 'manufacturer'));
+  GetEquipmentByDesignation.get({id:1}, function(data){
+
+    if(!isUndefined(data.equipment_designations)){
+      $scope.equipments = data.equipment_designations;
+    }
   });
+
+
+  EquipmentsByType.get({equipmentTypeId: $routeParams.equipmentType}, function (data) {
+
+   if(!isUndefined(data.equipments) && data.equipments.length > 0) {
+     $scope.equipments = data.equipments;
+
+     var designationList = _.pluck($scope.equipments, 'designation');
+     $scope.designationList = _.uniq(designationList, 'name');
+   }
+  });
+
+  $scope.updateManufacturer = function () {
+
+    GetEquipmentByDesignation.get({id:$scope.selected.designation}, function(data){
+
+      if(!isUndefined(data.equipment_designations)){
+        var equipments = data.equipment_designations;
+      $scope.manufacturers = _.uniq(_.pluck(equipments, 'manufacturer'));
+
+      }
+    });
+  };
 
   EquipmentType.get({id: $routeParams.equipmentType}, function (data) {
     $scope.equipmentType = data.equipment_type;
@@ -108,17 +133,21 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams, Equ
     $scope.energyTypes = data.energy_types;
   });
 
-  $scope.updateModels = function () {
-    $scope.models = _.pluck(_.where($scope.equipments, {manufacturer: $scope.selected.manufacturer}), 'model');
 
+  $scope.updateModels = function () {
+
+    $scope.models = _.pluck(_.where($scope.equipments, {manufacturer: $scope.selected.manufacturer,designationId:parseInt($scope.selected.designation,10)}), 'model');
+    $scope.mod = _.pluck(_.where($scope.equipments, {manufacturer: $scope.selected.designation}), 'manufacturer');
     // Also reset equipment fields
+
     $scope.selected.model = "";
     $scope.inventory.equipment = undefined;
     $scope.inventory.equipmentId = undefined;
   };
 
   $scope.updateEquipmentInfo = function () {
-    if ($scope.selected.manufacturer && $scope.selected.model) {
+    if ($scope.selected.manufacturer && $scope.selected.model && $scope.selected.designation
+    ) {
       $scope.inventory.equipment = _.where($scope.equipments, {manufacturer: $scope.selected.manufacturer, model: $scope.selected.model})[0];
       $scope.inventory.equipmentId = $scope.inventory.equipment.id;
     }
@@ -158,9 +187,10 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams, Equ
       }
 
       SaveEquipmentInventory.save($scope.inventory, function (data) {
+        console.log($scope.inventory);
         $scope.$parent.message = messageService.get(data.success);
         $scope.$parent.selectedProgram = {id: $scope.inventory.programId};
-        console.info($scope.$parent.selectedProgram);
+        //console.info($scope.$parent.selectedProgram);
         $location.path('/' + $routeParams.from + '/' + $scope.inventory.programId + '/' + $routeParams.equipmentType + '/' +
             $routeParams.page);
       }, function (data) {

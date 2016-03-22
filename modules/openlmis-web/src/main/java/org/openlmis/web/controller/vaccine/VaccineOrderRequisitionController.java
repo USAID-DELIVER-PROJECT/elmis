@@ -32,6 +32,8 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiForm
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
+
+import static org.openlmis.core.domain.RightName.VIEW_VACCINE_ORDER_REQUISITION;
 import static org.openlmis.core.web.OpenLmisResponse.error;
 import static org.openlmis.core.web.OpenLmisResponse.response;
 import static org.openlmis.core.web.OpenLmisResponse.success;
@@ -296,7 +298,6 @@ public class VaccineOrderRequisitionController extends BaseController {
         JasperReportsMultiFormatView jasperView = jasperReportsViewFactory.getJasperReportsView(orPrintTemplate);
         Map<String, Object> map = new HashMap<>();
         map.put("format", "pdf");
-
         Locale currentLocale = messageService.getCurrentLocale();
         map.put(JRParameter.REPORT_LOCALE, currentLocale);
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", currentLocale);
@@ -317,6 +318,25 @@ public class VaccineOrderRequisitionController extends BaseController {
     @RequestMapping(value = "facilities/{id}", method = GET, headers = ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getFacility(@PathVariable(value = "id") Long id) {
         return response("facility", facilityService.getById(id));
+    }
+
+
+    @RequestMapping(value = "view-order-requisition", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> listForViewingOrderRequisition(HttpServletRequest request) {
+        return response("facilities", facilityService.getHomeFacility(loggedInUserId(request)));
+    }
+
+    @RequestMapping(value = "updateVerify/{orderId}", method = RequestMethod.PUT, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> verifyOrderRequisition(@PathVariable(value = "orderId") Long orderId) {
+
+        try {
+            service.verifyVaccineOrderRequisition(orderId);
+            return success("Saved Successifully");
+
+        } catch (DataException e) {
+            return error(e, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 

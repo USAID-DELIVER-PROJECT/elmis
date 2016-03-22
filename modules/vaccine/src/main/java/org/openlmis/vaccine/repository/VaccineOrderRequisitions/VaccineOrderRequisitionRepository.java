@@ -86,4 +86,8 @@ public class VaccineOrderRequisitionRepository {
     public List<OrderRequisitionDTO>getConsolidatedList(Long program,String facilityIds){
         return orderRequisitionMapper.getConsolidatedList(program,facilityIds);
     }
+
+    public Long verifyVaccineOrderRequisition(Long orderId){
+        return orderRequisitionMapper.verifyVaccineOrderRequisition(orderId);
+    }
 }

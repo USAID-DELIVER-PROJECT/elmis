@@ -252,3 +252,36 @@ services.factory("currentProgramId", function() {
   get: get
  };
 });
+
+
+services.factory('SaveOperationalStatus',function($resource){
+    return $resource('/operational-status/insert.json',{},{});
+});
+
+services.factory('GetOperationalStatus',function($resource){
+    return $resource('/operational-status/getDetails/:id.json',{},{});
+});
+
+services.factory('RemoveOperationalStatus',function($resource){
+    return $resource('/operational-status/remove/:id.json',{},{});
+});
+
+services.factory('EquipmentOperationalStatuses', function ($resource) {
+    return $resource('/operational-status/list.json', {}, {});
+});
+
+services.factory("SaveColdChainDesignations", function($resource){
+    return $resource('/equipment/cold-chain/insert.json',{},{});
+});
+
+services.factory("GetColdChainDesignationsById", function($resource){
+    return $resource('/equipment/cold-chain/designation/:id.json',{id:'@id'},{});
+});
+
+services.factory('GetEquipmentByDesignation', function($resource){
+    return $resource('/equipment/manage/getEquipmentByDesignation/:id.json',{id:'@id'},{});
+});
+
+services.factory('GetEquipmentByType', function($resource){
+    return $resource('/equipment/manage/getEquipmentBy/:id.json',{id:'@id'},{});
+});

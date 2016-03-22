@@ -42,7 +42,7 @@
 </style>
 
 <div style="background-color: #f9f9f9; padding: 5px">
-    <div ng-show="pendingRequisition.length > 0 || equipmentNonFunctionalAlerts.length >0 || remarks.total > 0">
+    <div ng-show="pendingReceiveNotification.length >0 || pendingRequisition.length > 0 || equipmentNonFunctionalAlerts.length >0 || remarks.total > 0 || receiveNotification.length >0 ">
         <ng-include src="'/public/pages/vaccine/inventory/dashboard/partials/accordion-template.html'"></ng-include>
     </div>
 
@@ -127,7 +127,10 @@
                                     <tr ng-if="category.productCategory !=='no-category'">
                                         <td class="productCategory" id="vaccine" colspan="2">
                                             <!--<span ng-if="category.productCategory ==='no-category'" openlmis-message="label.products" ></span>-->
-                                            <span ng-if="category.productCategory !=='no-category'">{{category.productCategory}}</span>
+                                            <span ng-if="category.productCategory !=='no-category'">{{category.productCategory}}
+                                            <span ng-bind="(category.productCategory  == 'Vaccine')?'(Doses)':''"></span>
+                                            </span>
+
                                         </td>
                                     </tr>
                                     <tr ng-repeat="stock in category.stockCards">

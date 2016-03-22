@@ -54,6 +54,8 @@ public class VaccineInventoryDistributionController extends BaseController {
     private static final String DISTRIBUTION = "distribution";
     private static final String LAST_PERIOD = "lastPeriod";
     private static final String SUPERVISOR_ID = "supervisorId";
+    private static final String PENDING_CONSIGNMENT = "pendingConsignments";
+    private static final String PENDING_CONSIGNMENT_FOR_LOWER_LEVEL = "pendingConsignmentNotification";
 
     @Autowired
     VaccineInventoryDistributionService service;
@@ -153,6 +155,22 @@ public class VaccineInventoryDistributionController extends BaseController {
             return response;
         }
     }
+
+    @RequestMapping(value = "pendingConsignmentNotification", method = GET)
+    public ResponseEntity<OpenLmisResponse> getPendingToReceiveNotification(HttpServletRequest request) {
+       Facility facility = facilityService.getHomeFacility(loggedInUserId(request));
+        return OpenLmisResponse.response(PENDING_CONSIGNMENT, service.getPendingReceivedAlert(facility.getId()));
+
+    }
+
+    @RequestMapping(value = "pendingConsignmentNotificationForLowerLevel", method = GET)
+    public ResponseEntity<OpenLmisResponse> getPendingNotificationForLowerLevel(HttpServletRequest request) {
+        Facility facility = facilityService.getHomeFacility(loggedInUserId(request));
+        return OpenLmisResponse.response(PENDING_CONSIGNMENT_FOR_LOWER_LEVEL, service.getPendingNotificationForLowerLevel(facility.getId()));
+
+    }
+
+
 
     @RequestMapping(value = "facilities/same-type/{facilityId}/{query}", method = GET)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")

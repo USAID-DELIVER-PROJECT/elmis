@@ -11,7 +11,25 @@
   ~
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
+<style>
+    .left{float:left; width:33%; }
+    .dashlet-container{
+        min-height: 450px;
+    top:auto;}
+    .header-section{
 
+    }
+    .header-section-title{
+        background-color: lightblue;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-top: 15px;
+        float:left;
+        padding-right: 20px;
+        height: 50px;
+        align-content: center;
+    }
+</style>
 <script type="text/ng-template" id="myModalContent.html">
     <div class="modal-header">
         <h3 ng-show="!show_email">Reporting Detail</h3>
@@ -202,8 +220,10 @@
                 </tbody>
                 <tfoot>
                 <td colspan="5" style="text-align: right;"><a><span style="text-align: right;"></span></a></td>
-                <td style="text-align: center;"><a  ng-click="emailForNonReportingFacilities()"><span style="text-align: center;">Email</span></a>
-              <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button></td>
+                <td style="text-align: center;"><a ng-click="emailForNonReportingFacilities()"><span
+                        style="text-align: center;">Email</span></a>
+                    <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+                </td>
                 </tfoot>
             </table>
         </div>
@@ -306,7 +326,8 @@
             </accordion-heading>
 
             <div class="reporting-header" style="padding: 0; margin:0; border: none; background: none">
-                <span><span style="font-size: 1em; background: lightblue;">Reporting</span><span openlmis-message="label.expected"></span>: <a
+                <span><span style="font-size: 1em; background: lightblue;">Reporting</span><span
+                        openlmis-message="label.expected"></span>: <a
                         ng-click="openDetailDialog()"
                         href="">{{reportingPerformance.expected | number}} </a>
                 </span>
@@ -317,14 +338,16 @@
                         ng-click="openDetailDialog()"
                         href=""> {{reportingPerformance.late | number}} </a></span>
 
-                <span><span style="font-size: 1em; background: lightblue;">Supplying</span><span openlmis-message="label.orders"></span>: {{supplying.orders | number}}8</span>
+                <span><span style="font-size: 1em; background: lightblue;">Supplying</span><span
+                        openlmis-message="label.orders"></span>: {{supplying.orders | number}}8</span>
                 <span><span openlmis-message="label.fulfilled"></span>: {{supplying.fulfilled | number}}4</span>
 
                 <span><span style="font-size: 1em; background: lightblue;">Repairing</span><span
                         openlmis-message="label.refrigerator.repair.tickets"></span>: <a
                         ng-click="openRepairingDetailDialog()"
                         href=""> {{repairing.repairing}}</a> </span>
-                <span><span style="font-size: 1em; background: lightblue;">Investigating</span><span openlmis-message="label.aefi"></span>:  <a
+                <span><span style="font-size: 1em; background: lightblue;">Investigating</span><span
+                        openlmis-message="label.aefi"></span>:  <a
                         ng-click="openInvestigatingDetailDialog()"
                         href="">{{investigating.count}}</a></span>
 
@@ -345,181 +368,180 @@
                     </div>
                 </div>
             </accordion-heading>
+            <div class="clearfix" >
+            <span class="form-cell horizontalFilters header-section-title" openlmis-message="title.coverage"></span>
+                <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.coverage.product" on-change="coverageCallBack()"></vaccine-product-filter>
+            </div>
+                <div class="dashlet-container">
 
-            <tabset class="table">
-                <tab>
-                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.coverage"></span></tab-heading>
 
-                    <carousel interval="setInterval('coverage')">
-                        <slide ng-if="true==true">
+
+
+                        <div class="left">
                             <ng-include
                                     src="'/public/pages/vaccine/dashboard/partials/slide-coverage-monthly-trend.html'"></ng-include>
-                        </slide>
-                        <slide  ng-if="district_user_level==false"  >
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-district-trend.html'"></ng-include>
-                        </slide>
-                        <slide ng-if="true==true">
+                        </div>
+
+                        <div class="left">
+                            <ng-include ng-if="district_user_level==false"
+                                        src="'/public/pages/vaccine/dashboard/partials/slide-coverage-district-trend.html'"></ng-include>
+                        </div>
+                        <div class="left">
                             <ng-include
                                     src="'/public/pages/vaccine/dashboard/partials/slide-coverage-facility-trend.html'"></ng-include>
-                        </slide>
-                        <slide ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-detail-trend.html'"></ng-include>
-                        </slide>
-                        <slide ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-help-content.html'"></ng-include>
-                        </slide>
-                    </carousel>
-
-                </tab>
-                <tab>
-                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.dropout"></span></tab-heading>
-                    <carousel interval="setInterval('dropout')">
-                        <slide ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-monthly-trend.html'"></ng-include>
-                        </slide>
-                        <slide   ng-if="district_user_level==false" >
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-district-trend.html'"></ng-include>
-                        </slide>
-                        <slide  ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-facility-trend.html'"></ng-include>
-                        </slide>
-                        <slide   ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-detail-trend.html'"></ng-include>
-                        </slide>
-                        <slide   ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-help-content.html'"></ng-include>
-                        </slide>
-                    </carousel>
-
-                </tab>
-                <tab>
-                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.westage.rate"></span>
-                    </tab-heading>
-                    <carousel interval="setInterval('wastage')">
-                        <slide   ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-monthly-trend.html'"></ng-include>
-                        </slide>
-                        <slide   ng-if="district_user_level==false">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-district-trend.html'"></ng-include>
-                        </slide>
-                        <slide   ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-facility-trend.html'"></ng-include>
-                        </slide>
-                        <slide    ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-detail-trend.html'"></ng-include>
-                        </slide>
-                        <slide   ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-help-content.html'"></ng-include>
-                        </slide>
-                    </carousel>
-                </tab>
-                <tab>
-                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.sessions"></span></tab-heading>
-
-                    <carousel interval="setInterval('sessions')">
-                        <slide   ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-monthly-trend.html'"></ng-include>
-                        </slide>
-                        <slide ng-if="district_user_level==false">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-district-trend.html'"></ng-include>
-                        </slide>
-                        <slide  ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-facility-trend.html'"></ng-include>
-                        </slide>
-                        <slide  ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-detail-trend.html'"></ng-include>
-                        </slide>
-                        <slide ng-if="true==true">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-help-content.html'"></ng-include>
-                        </slide>
-                    </carousel>
-                </tab>
-            </tabset>
-
-        </accordion-group>
-    </accordion>
-
-
- <!-- <accordion>
-        <accordion-group class="gray-cascade" is-open="stockStatus.openPanel">
-            <accordion-heading>
-                <div class="accordion-title">
-                    <div class="caption">
-                        <span openlmis-message="label.stock.status"></span>
+                        </div>
                     </div>
-                    <div class="tools">
-                        <i ng-class="{'icon-minus-sign': stockStatus.openPanel, 'icon-plus-sign': !stockStatus.openPanel}"></i>
-                    </div>
+
+
+<div class="clearfix">
+    <span class="header-section-title" openlmis-message="title.dropout"></span>
+    <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.dropout.product" on-change="dropoutCallback()"></vaccine-product-filter>
+
+</div>
+
+            <div class="dashlet-container" >
+                <div class="left">
+                    <ng-include
+                            src="'/public/pages/vaccine/dashboard/partials/slide-dropout-monthly-trend.html'"></ng-include>
                 </div>
-            </accordion-heading>
 
-            <tabset class="table">
-                <tab>
-                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.stock"></span></tab-heading>
-                    <carousel interval="setInterval('stock')">
-                        <slide>
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-mystock-monthly-trend.html'"></ng-include>
-                        </slide>
-                        <slide>
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-mystock-district-trend.html'"></ng-include>
-                        </slide>
+                <div class="left">
+                    <ng-include ng-if="district_user_level==false"
+                            src="'/public/pages/vaccine/dashboard/partials/slide-dropout-district-trend.html'"></ng-include>
+                </div>
+                <div class="left">
+                    <ng-include
+                            src="'/public/pages/vaccine/dashboard/partials/slide-dropout-facility-trend.html'"></ng-include>
+                </div>
+            </div>
 
-                        <slide>
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-mystock-facility-trend.html'"></ng-include>
-                            </slide>
 
-                        <slide>
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-mystock-detail-trend.html'"></ng-include>
-                        </slide>
+            <div class="clearfix">
+                <span class="header-section-title" openlmis-message="title.westage.rate"></span>
+                <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.wastage.product" on-change="wastageCallback ()"></vaccine-product-filter>
 
-                        <slide>
-                            <ng-include src="'/public/pages/vaccine/dashboard/partials/slide-mystock-help-content.html'"></ng-include>
-                        </slide>
-                        </carousel>
-                </tab>
-                <tab>
-                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.bundling"></span></tab-heading>
-                    <carousel interval="setInterval('bundling')">
-                        <slide>
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-bundling-one-trend.html'"></ng-include>
-                        </slide>
-                        <slide>
-                        </slide>
-                        <slide>
-                        </slide>
-                        <slide>
-                        </slide>
-                        <slide>
-                        </slide>
-                    </carousel>
-                 </tab>
-                </tabset>
+            </div>
+
+
+
+
+            <div class="dashlet-container">
+
+
+
+
+               <div class="left">
+                    <ng-include
+                            src="'/public/pages/vaccine/dashboard/partials/slide-wastage-monthly-trend.html'"></ng-include>
+               </div>
+               <div class="left" ng-if="district_user_level==false">
+                    <ng-include
+                            src="'/public/pages/vaccine/dashboard/partials/slide-wastage-district-trend.html'"></ng-include>
+               </div>
+               <div class="left">
+                    <ng-include
+                            src="'/public/pages/vaccine/dashboard/partials/slide-wastage-facility-trend.html'"></ng-include>
+               </div>
+
+
+           </div>
+
+
+            <div class="clearfix">
+                <span class="header-section-title" openlmis-message="title.sessions"></span>
+                <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.sessions.product" on-change="sessionsCallback()"></vaccine-product-filter>
+
+            </div>
+            <div class="dashlet-container">
+
+
+
+
+                <div class="left">
+                    <ng-include
+                            src="'/public/pages/vaccine/dashboard/partials/slide-sessions-monthly-trend.html'"></ng-include>
+                </div>
+                <div class="left" ng-if="district_user_level==false">
+                    <ng-include
+                            src="'/public/pages/vaccine/dashboard/partials/slide-sessions-district-trend.html'"></ng-include>
+                </div>
+                <div class="left">
+                    <ng-include
+                            src="'/public/pages/vaccine/dashboard/partials/slide-sessions-facility-trend.html'"></ng-include>
+                </div>
+
+
+            </div>
+
+
+
 
         </accordion-group>
     </accordion>
--->
+
+
+    <!-- <accordion>
+           <accordion-group class="gray-cascade" is-open="stockStatus.openPanel">
+               <accordion-heading>
+                   <div class="accordion-title">
+                       <div class="caption">
+                           <span openlmis-message="label.stock.status"></span>
+                       </div>
+                       <div class="tools">
+                           <i ng-class="{'icon-minus-sign': stockStatus.openPanel, 'icon-plus-sign': !stockStatus.openPanel}"></i>
+                       </div>
+                   </div>
+               </accordion-heading>
+
+               <tabset class="table">
+                   <tab>
+                       <tab-heading style="cursor: pointer;"><span openlmis-message="title.stock"></span></tab-heading>
+                       <carousel interval="setInterval('stock')">
+                           <slide>
+                               <ng-include
+                                       src="'/public/pages/vaccine/dashboard/partials/slide-mystock-monthly-trend.html'"></ng-include>
+                           </slide>
+                           <slide>
+                               <ng-include
+                                       src="'/public/pages/vaccine/dashboard/partials/slide-mystock-district-trend.html'"></ng-include>
+                           </slide>
+
+                           <slide>
+                               <ng-include
+                                       src="'/public/pages/vaccine/dashboard/partials/slide-mystock-facility-trend.html'"></ng-include>
+                               </slide>
+
+                           <slide>
+                               <ng-include
+                                       src="'/public/pages/vaccine/dashboard/partials/slide-mystock-detail-trend.html'"></ng-include>
+                           </slide>
+
+                           <slide>
+                               <ng-include src="'/public/pages/vaccine/dashboard/partials/slide-mystock-help-content.html'"></ng-include>
+                           </slide>
+                           </carousel>
+                   </tab>
+                   <tab>
+                       <tab-heading style="cursor: pointer;"><span openlmis-message="title.bundling"></span></tab-heading>
+                       <carousel interval="setInterval('bundling')">
+                           <slide>
+                               <ng-include
+                                       src="'/public/pages/vaccine/dashboard/partials/slide-bundling-one-trend.html'"></ng-include>
+                           </slide>
+                           <slide>
+                           </slide>
+                           <slide>
+                           </slide>
+                           <slide>
+                           </slide>
+                           <slide>
+                           </slide>
+                       </carousel>
+                    </tab>
+                   </tabset>
+
+           </accordion-group>
+       </accordion>
+   -->
 
 </div>

@@ -25,7 +25,7 @@ function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $root
             $scope.currentPage = (utils.isValidPage($routeParams.page, $scope.numberOfPages)) ? parseInt($routeParams.page, 10) : 1;
             $scope.pageLineItems = $scope.pendingRequisition.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
             if (!$scope.pendingRequisition.length)   $scope.noRequisitions = true;
-
+            console.log($scope.pageLineItems);
 
         });
     };
@@ -101,14 +101,14 @@ function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $root
             {field: 'periodName', displayName: messageService.get("label.period")},
             {field: 'status', displayName: messageService.get("label.status")},
             {
-                field: 'orderDate',
+                field: 'createdDate',
                 displayName: messageService.get("label.date.submitted"),
                 cellFilter: 'date:\'dd-MM-yyyy\''
             },
+
             {
                 field: ' ',
                 cellTemplate: '<button style="width:100px; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); background-image: linear-gradient(to bottom, #42a7ad, #356b6f);background-repeat: repeat-x;border-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);  background-color: #356b6f;"  type="button" class="btn btn-primary btn-small grid-btn" ng-click="viewRequest(row.entity)">View</button> ',
-
                 width: 150
             }
         ], filterOptions: $scope.filterOptions
@@ -146,19 +146,18 @@ function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $root
             {field: 'periodName', displayName: messageService.get("label.period")},
             {field: 'status', displayName: messageService.get("label.status")},
             {
-                field: 'orderDate',
+                field: 'createdDate',
                 displayName: messageService.get("label.date.submitted"),
                 cellFilter: 'date:\'dd-MM-yyyy\''
+
             },
             {
                 field: ' ',
                 cellTemplate: '<button style="width:100px; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); background-image: linear-gradient(to bottom, #42a7ad, #356b6f);background-repeat: repeat-x;border-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);  background-color: #356b6f;"  type="button" class="btn btn-primary btn-small grid-btn" ng-click="distributeToFacility(row.entity)" >Issue</button> ',
-
                 width: 150
             }
         ], filterOptions: $scope.filterOptions
     };
-
 
     SupervisoryNodeByFacilityAndRequisition.get({facilityId: parseInt(facility.id, 10)}, function (data) {
         $scope.supervisoryNode = data.supervisoryNodes;
@@ -235,12 +234,12 @@ function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $root
         $rootScope.viewOrder = true;
         $rootScope.cancelOrderRequest = true;
         $rootScope.reportId = row.id;
-        $location.path('/create/' + row.id + '/' + row.programId);
+        $location.path('/view-requisition/' + row.id + '/' + row.programId);
 
     };
 
     $rootScope.cancelViewOrder = function () {
-        $location.path('/view');
+        $location.path('/search');
     };
 }
 

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<!--
+  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+  ~
+  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 ng-show="!show_email">Reporting Detail</h3>
+
+        <h3 ng-show="show_email">Email Notification</h3>
+    </div>
+    <div class="modal-body">
+        <div ng-show="show_email">
+            <div>
+                <p>
+                    Use this form to customize and send email notifications for
+                    <strong>{{selected_facility.name}}</strong>
+                </p>
+
+                <div style="padding: 10px;">
+                    <div>
+                        <textarea rows="4" style="width: 350px;" ng-model="email_template"></textarea>
+                    </div>
+                    <div>
+                        Who receives this notification?
+                        <div>
+                            <table class="table table-bordered">
+                                <tr ng-repeat="contact in contacts">
+                                    <td><strong>{{contact.name}}</strong></td>
+                                    <td>{{contact.contact}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div ng-show="!show_email">
+            <table id="fullSupplyTable" ng-show="items.length > 0"
+                   class="rnr-table table-bordered table"
+                   ng-table="tableParams">
+                <thead>
+                <tr>
+                    <th>
+                        <span openlmis-message="label.district">	 </span>
+                    </th>
+                    <th
+                            >
+                        <span openlmis-message="label.facility">	 </span>
+                    </th>
+
+                    <th>
+                        <span openlmis-message="label.vaccine.dashboard.reportingDate"></span>
+
+                    </th>
+                    <th>
+                        <span openlmis-message="label.vaccine.dashboard.reportingStatus"></span>
+
+                    </th>
+                    <th>
+                        <span openlmis-message="label.vaccine.dashboard.sendReminder"></span>
+
+                    </th>
+
+
+                </tr>
+
+
+                </thead>
+                <tbody
+                        >
+                <tr ng-style="{'background-color': getBackGroundColor($index)}"
+                    ng-repeat="subRow in items">
+
+                    <td>{{ items[$index-1].district == subRow.district ? '' : subRow.district }}</td>
+                    <td ng-bind="subRow.facility_name"></td>
+                    <td ng-bind="subRow.reported_date| date:'dd-MMM-yyyy'"
+                            />
+
+                    <td ng-bind="subRow.reporting_status"
+                            />
+
+                    <td
+                            ><input ng-if="subRow.hascontacts" ng-click="itemChecked($index)" type="checkbox"/></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <td colspan="4" style="text-align: right;"><a><span style="text-align: right;"></span></a></td>
+                <td style="text-align: center;"><a ng-click="emailForNonReportingFacilities()"><span
+                        style="text-align: center;">Email</span></a></td>
+                </tfoot>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button ng-show="show_email" class="btn btn-primary pull-right" type="button"
+                    ng-click="sendVaccineFacilityEmail()">Send
+            </button>
+            <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+        </div>
+    </div>
+
+</script>
+<script type="text/ng-template" id="repairing.html">
+    <div class="modal-header">
+        <h3 ng-show="!show_email">Repairing</h3>
+
+        <h3 ng-show="show_email">Email Notification</h3>
+    </div>
+    <div class="modal-body">
+        <div ng-show="show_email">
+            <div>
+                <p>
+                    Use this form to customize and send email notifications for
+                    <strong>{{selected_facility.name}}</strong>
+                </p>
+
+                <div style="padding: 10px;">
+                    <div>
+                        <textarea rows="4" style="width: 350px;" ng-model="email_template"></textarea>
+                    </div>
+                    <div>
+                        Who receives this notification?
+                        <div>
+                            <table class="table table-bordered">
+                                <tr ng-repeat="contact in contacts">
+                                    <td><strong>{{contact.name}}</strong></td>
+                                    <td>{{contact.contact}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div ng-show="!show_email">
+            <table id="repairingTable" ng-show="items.length > 0"
+                   class="rnr-table table-bordered table"
+                   ng-table="tableParams">
+                <thead>
+                <tr>
+
+                    <th
+                            style="  width: 40px">
+                        <span openlmis-message="label.facility">	 </span>
+                    </th>
+
+                    <th>
+                        <span openlmis-message="label.vaccine.dashboard.refrigator"></span>
+
+                    </th>
+                    <th style="width: 10px">
+                        <span openlmis-message="label.vaccine.dashboard.model"></span>
+
+                    </th>
+                    <th style=" text-align: center; vertical-align: middle">
+                        <span openlmis-message="label.vaccine.dashboard.year"></span>
+
+                    </th>
+                    <th style=" text-align: center; vertical-align: middle">
+                        <span openlmis-message="label.vaccine.dashboard.dateReported"></span>
+
+                    </th>
+                    <th style=" text-align: center; vertical-align: middle">
+                        <span openlmis-message="label.vaccine.dashboard.notify"></span>
+
+                    </th>
+
+
+                </tr>
+
+
+                </thead>
+                <tbody
+                        >
+                <tr ng-style="{'background-color': getBackGroundColor($index)}"
+                    ng-repeat="subRow in items">
+
+
+                    <td>{{ items[$index-1].facility_name == subRow.facility_name ? '' : subRow.facility_name }}</td>
+                    <td ng-bind="subRow.equipment_name"></td>
+                    <td ng-bind="subRow.model"></td>
+                    <td ng-bind="subRow.year_installed"></td>
+                    <td ng-bind="subRow.date_reported| date:'dd-MMM-yyyy'"
+                            />
+
+
+                    <td
+                            ><input ng-if="items[$index-1].facility_name != subRow.facility_name"
+                                    ng-bind="subRow.checked" type="checkbox"/></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <td colspan="5" style="text-align: right;"><a><span style="text-align: right;"></span></a></td>
+                <td style="text-align: center;"><a  ng-click="emailForNonReportingFacilities()"><span style="text-align: center;">Email</span></a>
+              <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button></td>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button ng-show="show_email" class="btn btn-primary pull-right" type="button"
+                ng-click="sendVaccineFacilityEmail()">Send
+        </button>
+        <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+    </div>
+</script>
+<script type="text/ng-template" id="investigating.html">
+    <div class="modal-body">
+        <table id="investigatingTable" ng-show="items.length > 0"
+               class="rnr-table table-bordered table"
+               ng-table="tableParams">
+            <thead>
+            <tr>
+
+                <th
+                        style="  width: 40px">
+                    <span openlmis-message="label.facility">	 </span>
+                </th>
+
+                <th>
+                    <span openlmis-message="label.vaccine.dashboard.incident"></span>
+
+                </th>
+                <th style="width: 10px">
+                    <span openlmis-message="label.vaccine.dashboard.incident.date"></span>
+
+                </th>
+                <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.dashboard.products"></span>
+
+                </th>
+                <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.dashboard.Batch"></span>
+
+                </th>
+                <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.dashboard.note"></span>
+
+                </th>
+
+
+            </tr>
+
+
+            </thead>
+            <tbody>
+            <tr ng-style="{'background-color': getBackGroundColor($index)}" ng-repeat="subRow in items">
+                <td>{{ items[$index-1].facility_name == subRow.facility_name ? '' : subRow.facility_name }}</td>
+                <td ng-bind="subRow.aefi_case"></td>
+                <td ng-bind="subRow.aefi_date| date:'dd-MMM-yyyy'"/>
+                <td ng-bind="subRow.product_name"></td>
+                <td ng-bind="subRow.aefi_batch"></td>
+                <td ng-bind="subRow.aefi_notes"></td>
+            </tr>
+            </tbody>
+
+        </table>
+        <div class="modal-footer">
+
+            <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+        </div>
+    </div>
+
+</script>
+<script id="template/accordion/accordion.html" type="text/ng-template">
+    <div class="accordion" ng-transclude></div>
+</script>
+
+<script id="template/accordion/accordion-group.html" type="text/ng-template">
+    <div class="accordion-group">
+        <div class="accordion-heading" style="margin-bottom:0; border-bottom:0">
+            <a style="bottom:0" class="accordion-toggle" ng-class="{'collapsed':!isOpen,'open':isOpen}"
+               ng-click="isOpen = !isOpen" accordion-transclude="heading">{{heading}}</a>
+        </div>
+        <div class="accordion-body" style="display:block; margin-bottom:0" collapse="!isOpen">
+
+            <div class="accordion-inner" ng-transclude></div>
+        </div>
+    </div>
+</script>
+
+<div xmlns="http://www.w3.org/1999/html">
+
+    <accordion>
+        <accordion-group class="gray-cascade" is-open="actionBar.openPanel">
+            <accordion-heading>
+                <div class="accordion-title">
+                    <div class="caption">
+                        <span openlmis-message="label.action.bar"></span>
+                    </div>
+                    <div class="tools">
+                        <i ng-class="{'icon-minus-sign': actionBar.openPanel, 'icon-plus-sign': !actionBar.openPanel}"></i>
+                    </div>
+                </div>
+            </accordion-heading>
+
+            <div class="reporting-header" style="padding: 0; margin:0; border: none; background: none">
+                <span><span style="font-size: 1em; background: lightblue;">Reporting</span><span openlmis-message="label.expected"></span>: <a
+                        ng-click="openDetailDialog()"
+                        href="">{{reportingPerformance.expected | number}} </a>
+                </span>
+                <span><span openlmis-message="label.on.time"></span>:  <a
+                        ng-click="openDetailDialog()"
+                        href="">{{reportingPerformance.ontime | number}}</a></span>
+                <span><span openlmis-message="label.late"></span>:<a
+                        ng-click="openDetailDialog()"
+                        href=""> {{reportingPerformance.late | number}} </a></span>
+
+                <span><span style="font-size: 1em; background: lightblue;">Supplying</span><span openlmis-message="label.orders"></span>: {{supplying.orders | number}}8</span>
+                <span><span openlmis-message="label.fulfilled"></span>: {{supplying.fulfilled | number}}4</span>
+
+                <span><span style="font-size: 1em; background: lightblue;">Repairing</span><span
+                        openlmis-message="label.refrigerator.repair.tickets"></span>: <a
+                        ng-click="openRepairingDetailDialog()"
+                        href=""> {{repairing.repairing}}</a> </span>
+                <span><span style="font-size: 1em; background: lightblue;">Investigating</span><span openlmis-message="label.aefi"></span>:  <a
+                        ng-click="openInvestigatingDetailDialog()"
+                        href="">{{investigating.count}}</a></span>
+
+            </div>
+
+        </accordion-group>
+    </accordion>
+
+    <accordion>
+        <accordion-group class="gray-cascade" is-open="performance.openPanel">
+            <accordion-heading>
+                <div class="accordion-title">
+                    <div class="caption">
+                        <span openlmis-message="label.performance"></span>
+                    </div>
+                    <div class="tools">
+                        <i ng-class="{'icon-minus-sign': performance.openPanel, 'icon-plus-sign': !performance.openPanel}"></i>
+                    </div>
+                </div>
+            </accordion-heading>
+
+            <tabset class="table">
+                <tab>
+                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.coverage"></span></tab-heading>
+
+                    <carousel interval="setInterval('coverage')">
+                        <slide ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-monthly-trend.html'"></ng-include>
+                        </slide>
+                        <slide  ng-if="district_user_level==false"  >
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-district-trend.html'"></ng-include>
+                        </slide>
+                        <slide ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-facility-trend.html'"></ng-include>
+                        </slide>
+                        <slide ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-detail-trend.html'"></ng-include>
+                        </slide>
+                        <slide ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-help-content.html'"></ng-include>
+                        </slide>
+                    </carousel>
+
+                </tab>
+                <tab>
+                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.dropout"></span></tab-heading>
+                    <carousel interval="setInterval('dropout')">
+                        <slide ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-monthly-trend.html'"></ng-include>
+                        </slide>
+                        <slide   ng-if="district_user_level==false" >
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-district-trend.html'"></ng-include>
+                        </slide>
+                        <slide  ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-facility-trend.html'"></ng-include>
+                        </slide>
+                        <slide   ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-detail-trend.html'"></ng-include>
+                        </slide>
+                        <slide   ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-help-content.html'"></ng-include>
+                        </slide>
+                    </carousel>
+
+                </tab>
+                <tab>
+                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.westage.rate"></span>
+                    </tab-heading>
+                    <carousel interval="setInterval('wastage')">
+                        <slide   ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-monthly-trend.html'"></ng-include>
+                        </slide>
+                        <slide   ng-if="district_user_level==false">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-district-trend.html'"></ng-include>
+                        </slide>
+                        <slide   ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-facility-trend.html'"></ng-include>
+                        </slide>
+                        <slide    ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-detail-trend.html'"></ng-include>
+                        </slide>
+                        <slide   ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-help-content.html'"></ng-include>
+                        </slide>
+                    </carousel>
+                </tab>
+                <tab>
+                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.sessions"></span></tab-heading>
+
+                    <carousel interval="setInterval('sessions')">
+                        <slide   ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-monthly-trend.html'"></ng-include>
+                        </slide>
+                        <slide ng-if="district_user_level==false">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-district-trend.html'"></ng-include>
+                        </slide>
+                        <slide  ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-facility-trend.html'"></ng-include>
+                        </slide>
+                        <slide  ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-detail-trend.html'"></ng-include>
+                        </slide>
+                        <slide ng-if="true==true">
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-help-content.html'"></ng-include>
+                        </slide>
+                    </carousel>
+                </tab>
+            </tabset>
+
+        </accordion-group>
+    </accordion>
+
+
+ <!-- <accordion>
+        <accordion-group class="gray-cascade" is-open="stockStatus.openPanel">
+            <accordion-heading>
+                <div class="accordion-title">
+                    <div class="caption">
+                        <span openlmis-message="label.stock.status"></span>
+                    </div>
+                    <div class="tools">
+                        <i ng-class="{'icon-minus-sign': stockStatus.openPanel, 'icon-plus-sign': !stockStatus.openPanel}"></i>
+                    </div>
+                </div>
+            </accordion-heading>
+
+            <tabset class="table">
+                <tab>
+                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.stock"></span></tab-heading>
+                    <carousel interval="setInterval('stock')">
+                        <slide>
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-mystock-monthly-trend.html'"></ng-include>
+                        </slide>
+                        <slide>
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-mystock-district-trend.html'"></ng-include>
+                        </slide>
+
+                        <slide>
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-mystock-facility-trend.html'"></ng-include>
+                            </slide>
+
+                        <slide>
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-mystock-detail-trend.html'"></ng-include>
+                        </slide>
+
+                        <slide>
+                            <ng-include src="'/public/pages/vaccine/dashboard/partials/slide-mystock-help-content.html'"></ng-include>
+                        </slide>
+                        </carousel>
+                </tab>
+                <tab>
+                    <tab-heading style="cursor: pointer;"><span openlmis-message="title.bundling"></span></tab-heading>
+                    <carousel interval="setInterval('bundling')">
+                        <slide>
+                            <ng-include
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-bundling-one-trend.html'"></ng-include>
+                        </slide>
+                        <slide>
+                        </slide>
+                        <slide>
+                        </slide>
+                        <slide>
+                        </slide>
+                        <slide>
+                        </slide>
+                    </carousel>
+                 </tab>
+                </tabset>
+
+        </accordion-group>
+    </accordion>
+-->
+
+</div>

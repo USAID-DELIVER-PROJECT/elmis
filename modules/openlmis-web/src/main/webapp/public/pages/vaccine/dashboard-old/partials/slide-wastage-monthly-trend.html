@@ -1,0 +1,23 @@
+
+<div>Monthly Wastage</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.monthlyWastage.product" on-change="monthlyWastageCallback()"></vaccine-product-filter>
+            <!--<static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyWastage.range" startdate="filter.monthlyWastage.startDate" enddate="filter.monthlyWastage.endDate" rangemax="10" error="perioderror" on-change="monthlyWastageCallback()"></static-period-filter>-->
+            <static-year-filter  on-change="monthlyWastageCallback()" year="staticYear" startdate="filter.monthlyWastage.startDate" enddate="filter.monthlyWastage.endDate" ></static-year-filter>
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="monthly_wastage" chart-data="monthlyWastage.dataPoints" chart-columns="monthlyWastage.dataColumns" chart-x="monthlyWastage.dataX" ng-show="monthlyWastage.dataPoints">
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.period}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="monthlyWastage.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

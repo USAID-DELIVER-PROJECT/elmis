@@ -1,0 +1,36 @@
+
+<div>Monthly Coverage</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <!--<range-pagination  class="form-cell horizontalFilters" total="totalZone" range="zoneRange" offset="zoneOffset" label-all="all zone"></range-pagination>-->
+            <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.monthlyCoverage.product" on-change="monthlyCoverageCallback()"></vaccine-product-filter>
+            <!--<static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyCoverage.range" startdate="filter.monthlyCoverage.startDate" enddate="filter.monthlyCoverage.endDate" rangemax="10" error="perioderror" on-change="monthlyCoverageCallback()" ></static-period-filter>-->
+            <static-year-filter  on-change="monthlyCoverageCallback()" year="staticYear" startdate="filter.monthlyCoverage.startDate" enddate="filter.monthlyCoverage.endDate" ></static-year-filter>
+            <!--<range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="totalFacility" range="filter.facilityRange" offset="filter.facilityOffset" label-all="all facility" on-change="monthlyCoverageFacilityPagination()"></range-pagination>-->
+
+
+        </div>
+    </form>
+</div>
+<c3chart  bindto-id="monthly_coverage_chart" chart-data="monthlyCoverage.dataPoints" chart-columns="monthlyCoverage.dataColumns" chart-x="monthlyCoverage.dataX" ng-show="monthlyCoverage.dataPoints">
+    <chart-axes y2="coverage"/>
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.period}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+        <chart-axis-y axis-id="y2"
+                      axis-position="outer-right"
+                      padding-top="10"
+                      padding-bottom="0"
+                      range-max="100"
+                      range-min="0"
+        />
+        </chart-axis>
+
+</c3chart>
+<div style="font-weight: bold" ng-hide="monthlyCoverage.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

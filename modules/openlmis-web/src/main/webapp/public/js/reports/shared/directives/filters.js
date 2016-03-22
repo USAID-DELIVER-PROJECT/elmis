@@ -897,6 +897,7 @@ app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCa
 
         // When a program filter changes
         var onProgramChanged = function ($scope) {
+
             if (isUndefined($scope.filter) || isUndefined($scope.filter.program) || $scope.filter.program === 0) {
                 $scope.products = {};
                 return;
@@ -925,6 +926,9 @@ app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCa
                     onProgramChanged(scope);
                 };
                 scope.subscribeOnChanged('programProductPeriod', 'program', onParentChanged, true);
+                scope.$watch('filter.program', function (value) {
+                    onProgramChanged(scope);
+                });
             },
             templateUrl: 'filter-program-product-period'
         };

@@ -1,0 +1,31 @@
+<div>Monthly Dropout</div>
+<div class="app-form vaccine-form-filter">
+    <form  novalidate>
+        <div  class="clearfix">
+            <vaccine-dropout-filter defaultselction="defaultProduct"  class="form-cell horizontalFilters" filterproduct="filter.monthlyDropout.product" on-change="monthlyDropoutCallback()"></vaccine-dropout-filter>
+            <!--<static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyDropout.range" startdate="filter.monthlyDropout.startDate" enddate="filter.monthlyDropout.endDate" rangemax="10" error="perioderror" on-change="monthlyDropoutCallback()"></static-period-filter>-->
+            <static-year-filter  on-change="monthlyDropoutCallback()" year="staticYear" startdate="filter.monthlyDropout.startDate" enddate="filter.monthlyDropout.endDate" ></static-year-filter>
+        </div>
+    </form>
+</div>
+
+<c3chart  bindto-id="monthly_dropout_chart" chart-data="monthlyDropout.dataPoints" chart-columns="monthlyDropout.dataColumns" chart-x="monthlyDropout.dataX" ng-show="monthlyDropout.dataPoints">
+    <chart-axes   y2="bcg_mr_dropout"/>
+    <chart-axis>
+
+        <chart-tooltip value-format-function="formatValue" />
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{label.period}}"
+                      axis-type="category">
+            <!--<chart-axis-x-tick tick-rotate="50"/>-->
+        </chart-axis-x>
+        <chart-axis-y axis-id="y2"
+                      axis-position="outer-right"
+                      padding-top="10"
+                      padding-bottom="0"
+                      range-max="100"
+                      range-min="0"
+        />
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="monthlyDropout.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

@@ -41,6 +41,17 @@ public class ColdChainStatusDataService {
     return designationRepository.getAll();
   }
 
+  public ColdChainEquipmentDesignation getById(Long id){
+    return designationRepository.getById(id);
+  }
+
+  public void save(ColdChainEquipmentDesignation designation){
+    if(designation.getId() == null)
+       designationRepository.insert(designation);
+    else
+      designationRepository.update(designation);
+  }
+
   public List<EquipmentEnergyType> getAllEnergyTypes(){
     return energyTypeRepository.getAll();
   }
@@ -52,3 +63,4 @@ public class ColdChainStatusDataService {
     return donorRepository.getAll();
   }
 }
+

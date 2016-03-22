@@ -80,7 +80,7 @@ public interface VaccineOrderRequisitionMapper {
             "   and m.facilityId = #{facilityId} ")
     Long getScheduleFor(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
 
-    @Select("SELECT DISTINCT f.id AS facilityId,r.periodId,f.name facilityName,R.orderDate orderDate,R.ID,R.STATUS,ra.programid AS programId,pp.name periodName  " +
+    @Select("SELECT DISTINCT f.id AS facilityId,r.periodId,f.name facilityName,R.orderDate orderDate,r.createdDate,R.ID,R.STATUS,ra.programid AS programId,pp.name periodName  " +
             "   FROM facilities f  " +
             "     JOIN requisition_group_members m ON m.facilityid = f.id  " +
             "     JOIN requisition_groups rg ON rg.id = m.requisitiongroupid  " +
@@ -88,7 +88,7 @@ public interface VaccineOrderRequisitionMapper {
             "     JOIN role_assignments ra ON ra.supervisorynodeid = sn.id OR ra.supervisorynodeid = sn.parentid " +
             "     JOIN vaccine_order_requisitions r on f.id = r.facilityId and sn.id = r.supervisorynodeid " +
             "     JOIN processing_periods pp on r.periodId = pp.id " +
-            "     WHERE ra.userId = #{userId} AND R.STATUS  IN('SUBMITTED') and r.programId = #{programId} and sn.FACILITYiD = #{facilityId}")
+            "     WHERE ra.userId = #{userId} AND R.STATUS  IN('SUBMITTED') AND  isVerified = false AND r.programId = #{programId} AND sn.facilityId = #{facilityId}")
       List<OrderRequisitionDTO> getPendingRequest(@Param("userId") Long userId, @Param("facilityId") Long facilityId, @Param("programId") Long programId);
 
 
@@ -158,5 +158,9 @@ public interface VaccineOrderRequisitionMapper {
            " ORDER BY p.id ")
     List<OrderRequisitionDTO> getConsolidatedList(@Param("program") Long program,@Param("facilityIds") String facilityIds);
 
+    @Update("Update vaccine_order_requisitions SET   "
+            +" isVerified = true " +
+            "WHERE id = #{orderId}  ")
+    Long verifyVaccineOrderRequisition(@Param("orderId") Long orderId);
 }
 

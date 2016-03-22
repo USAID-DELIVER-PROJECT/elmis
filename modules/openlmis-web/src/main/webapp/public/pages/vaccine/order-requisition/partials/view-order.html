@@ -26,74 +26,116 @@
         color: green;
     }
 
+    #rows td {
+        text-align: right;
+    }
+    td.cell-input.col-product, th.col-product {
+        width: 245px !important;
+    }
+    td.cell-input.col-maximumStock, th.col-maximumStock {
+        width: 245px !important;
+    }
+
+    td.cell-input.col-reOrderLevel,th.col-reOrderLevel{
+        width: 245px !important;
+    }
+
+    td.cell-input.col-quantityRequested,th.col-quantityRequested{
+        width: 245px !important;
+    }
+    td.cell-input.col-stockAvailable,th.col-stockAvailable{
+        width: 245px !important;
+    }
+    td.cell-input.col-stockAvailable,th.col-unit-measure{
+        width: 100px !important;
+    }
 </style>
 
 
+<h2 id="podPageTitle"><span openlmis-message="label.title.order.requisition"></span> <span
+        ng-bind="order.programName"></span></h2>
+
+<ng-include src="'/public/pages/vaccine/order-requisition/partials/header.html'"></ng-include>
+<div class="clearfix"></div>
 <div>
+    <form name="orderRequisitionForm">
+
+        <div ng-show="report.LineItemViews.length" class="alert alert-info"
+             openlmis-message="label.no.products"></div>
 
 
-    <h2 id="podPageTitle"><span openlmis-message="title.order.requisition"></span> <span
-            ng-bind="order.programName"></span></h2>
-
-    <ng-include src="'/public/pages/vaccine/order-requisition/partials/header.html'"></ng-include>
-    <div class="clearfix"></div>
-
-    <form name="podForm">
-
-        <div id="pod" class="rnr-table">
+        <div id="pod" class="rnr-table" ng-hide="report.LineItemViews.length > 0">
             <table id="podTable" class="table table-bordered" fixed-table-header>
                 <thead>
-                <tr>
-                    <th class="col-{{column.name}}" ng-repeat="column in columns">
-                        <span openlmis-message="column.label"></span>
-                    </th>
+                <tr style="height: 55px;">
+                    <th class="col-product "style="text-align: left !important;"><span openlmis-message="label.products"></span></th>
+                    <th id="unitOfMeasure" class="col-unit-measure" openlmis-message="header.unit.of.measure"></th>
+                    <th class="col-maximumStock " style="text-align: center !important;"><span openlmis-message="label.maximum.stock"></span></th>
+                    <th class="col-reOrderLevel" style="text-align: center !important;"><span openlmis-message="label.reorder.level"></span></th>
+                    <th class="col-stockAvailable" style="text-align: center !important;"><span openlmis-message="label.stock.onhand"></span></th>
+                    <th class="col-quantityRequested" style="text-align: center !important;"><span
+                            openlmis-message="header.order.requisition.amount.required"></span></th>
                 </tr>
                 </thead>
 
-                <tbody ng-repeat="orderRequisitionLineItem in pageLineItems.data">
+                <tbody ng-repeat="(key,items) in report.LineItemViews | orderObjectBy:'displayOrder'">
 
-                <tr ng-if="orderRequisitionLineItem.name">
-                    <td class="productCategory" id="category{{$index}}" colspan="{{columns.length}}"
-                        ng-bind="orderRequisitionLineItem.name">
+                <tr style="height: 31px;">
+                    <td class="productCategory" id="key{{$index}}" colspan="6"
+                        ng-bind="items[0].productCategory.name">
+
                     </td>
                 </tr>
-                <tr ng-if="!orderRequisitionLineItem.name">
-                    <td class="productCategory" id="category{{$index1}}" colspan="{{columns.length}}"
-                        ng-show="isCategoryDifferentFromPreviousLineItem($index)"
-                        openlmis-message="label.default.category">
-                    </td>
-                </tr>
-                <tr ng-repeat="item in orderRequisitionLineItem.data">
 
-                    <td class="cell-input col-product">
-                        <span ng-bind="item.name" id="product{{$index}}" class="cell-text"></span>
+                <tr ng-repeat="item in items" id="rows" style="height: 36px; border-bottom:2px solid #333">
+
+                    <td class="cell-input col-product" style="text-align: left; !important;">
+                        <span ng-bind="item.product.primaryName" id="product{{$index}}" class="cell-text"></span>
+
                     </td>
+
+                    <td class="cell-input col-unit-measure"  style="text-align: left; !important;">
+                        <span ng-bind="item.product.dosageUnit.code" id="item.product.dosageUnit.code{{$index}}" class="cell-text"></span>
+                    </td>
+
                     <td class="cell-input col-maximumStock">
-                        <span ng-bind="item.maximumStock | number" id="maximumStock{{$index}}" class="cell-text"></span>
-                    </td>
-                    <td class="cell-input">
-                        <span ng-bind="item.reorderLevel | number" id="reorderLevel{{$index}}"
-                              class="cell-text"></span>
-                    </td>
-                    <td class="cell-input col-stockAvailable">
-                        <span class="{{(item.stockAvailable <= item.bufferStock)?'red':((item.stockAvailable > item.bufferStock) && (item.stockAvailable <= item.reorderLevel)  )?'yellow':
-
-                        ((item.stockAvailable > item.reorderLevel) && (item.reorderLevel <= item.maximumStock))?green:'black'}}  cell-text"
-                              ng-bind="item.stockAvailable | number">
+                        <span ng-bind="(selectedType==1)?( item.maximumStock / item.product.dosesPerDispensingUnit ).toFixed(0) :item.maximumStock | number"
+                              id="item.maximumStock{{$index}}"
+                              class="cell-text">
                         </span>
+                    </td>
+                    <td class="cell-input col-reOrderLevel">
+                        <span ng-bind="(selectedType==1)?(item.reOrderLevel / item.product.dosesPerDispensingUnit).toFixed(0): item.reOrderLevel | number"
+                              id="item.reOrderLevel{{$index}}"
+                              class="cell-text">
+                        </span>
+                    </td>
+                    <td class="cell-input col-stockAvailable" ng-hide="selectedType==1">
+                        <span class="{{(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
 
+                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}}  cell-text"
+                              ng-bind="(selectedType==1)? (item.stockOnHand / item.product.dosesPerDispensingUnit).toFixed(0):item.stockOnHand | number">
+                        </span>
                     </td>
 
-                    <td class="cell-input col-amountRequired">
-                        <span ng-bind="(item.maximumStock - item.stockAvailable) | number" id="amountRequired{{$index}}"
-                              class="cell-text"></span>
+                    <td class="cell-input col-stockAvailable" ng-hide="selectedType==0">
+                        <span class="{{(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
+                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}}  cell-text "
+                              ng-bind="(selectedType==1)? (item.stockOnHand / item.product.dosesPerDispensingUnit).toFixed(0):item.stockOnHand | number">
+                        </span>
                     </td>
 
+                    <td class="cell-input col-quantityRequested">
+                        <span ng-bind="((item.stockOnHand > item.maximumStock )?0:item.getQuantityToRequest() ) | number"
+                              id="amountRequired{{$index}}"
+                              class="cell-text">
+                        </span>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <openlmis-pagination ng-show="pageLineItems.length" num-pages="numberOfPages" current-page="currentPage"
+        <openlmis-pagination ng-show="report.length" num-pages="numberOfPages" current-page="currentPage"
                              max-size="10"
                              error-pages="errorPages"></openlmis-pagination>
 
@@ -101,25 +143,36 @@
         <div form-toolbar id="action_buttons" class="action-buttons">
             <div class="form-cell button-row">
 
+                     <span>
+                          <input id="submitButton" type="button" class="btn btn-primary submit-button"
+                                 ng-click="viewOrderPrint()"
+                                 openlmis-message="button.print" ng-disabled="selectedType==1"/>
+                    </span>
 
-                <span>
-                <a id="submitButton" class="btn btn-primary submit-button"
-                   ng-href="/vaccine/report/orderRequisition/downloadPDF" openlmis-message="button.print"
-                   target="_blank"></a>
-                </span>&nbsp;&nbsp;&nbsp;
-                <span>
-                <input id="cancelButton" type="button" class="btn btn-cancel  cancel-button"
-                   ng-disabled="podAlreadySubmitted" openlmis-message="button.cancel" ng-click="cancel()"/>
-                </span>
+                &nbsp;&nbsp;&nbsp;
+
+                        <span>  <input id="cancel" type="submit" id="cancel-button"
+                                                                    ng-click="cancelOrder()"
+                                                                    class="btn btn-primary save-button"
+                                                                    openlmis-message="button.cancel"/>
+                        </span>
+
+
+
 
             </div>
-            &nbsp;&nbsp;&nbsp;
-            <div class="toolbar-error" id="saveFailMessage" fade-out="3000" openlmis-message="error"
-                 ng-show="error"></div>
-            &nbsp;&nbsp;&nbsp;
-            <div class="toolbar-success" id="saveSuccessMsgDiv" fade-out="3000" openlmis-message="message"
-                 ng-show="message"></div>
-
         </div>
-    </form>
+
+        &nbsp;&nbsp;&nbsp;
+        <div class="toolbar-error" id="saveFailMessage" fade-out="3000" openlmis-message="error"
+             ng-show="error"></div>
+        &nbsp;&nbsp;&nbsp;
+        <div class="toolbar-success" id="saveSuccessMsgDiv" fade-out="3000" openlmis-message="message"
+             ng-show="message"></div>
+
+
 </div>
+</form>
+</div>
+</div>
+

@@ -48,5 +48,18 @@
             <span id="donor-tab" openlmis-message="label.equipment.donors" ></span>
           </a>
         </li>
+
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="manageOperationalStatusSelected">
+            <a href="/public/pages/admin/equipment/operational-status/index.html">
+                <span id="operational-status" openlmis-message="link.manage.equipment.operational.status" ></span>
+            </a>
+        </li>
+
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="manageDesignationSelected">
+            <a href="/public/pages/admin/equipment/cold-chain-designations/index.html">
+                <span id="cold-chain-resignation" openlmis-message="link.manage.equipment.resignation" ></span>
+            </a>
+        </li>
+
     </ul>
 </div>

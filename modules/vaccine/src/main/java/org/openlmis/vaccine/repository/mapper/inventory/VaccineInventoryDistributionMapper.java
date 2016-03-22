@@ -10,6 +10,7 @@ import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItem;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItemLot;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
+import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -177,6 +178,39 @@ public interface VaccineInventoryDistributionMapper {
             " join supervisory_nodes sn2 on sn1.parentid=sn2.id " +
             " where sn1.facilityId=#{facilityId}")
     Long getSupervisorFacilityId(@Param("facilityId") Long facilityId);
+
+    @Select("     SELECT \n" +
+            "            (select name toFacilityName from facilities where id =toFacilityId ),  \n" +
+            "            (select name fromFacilityName from facilities where id =fromFacilityId ),\n" +
+            "            (select cellphone from users where id=s.modifiedby),\n" +
+            "            (select concat(firstname,' ',lastName) as modifiedBy from users where id=s.modifiedby),\n" +
+            "            s.modifieddate,distributionDate,s.modifiedBy,voucherNumber,d.status,orderdate  \n" +
+            "            FROM vaccine_distributions d  \n" +
+            "            JOIN vaccine_distribution_status_changes s ON d.id = s.distributionId \n" +
+            "            JOIN vaccine_order_requisitions o ON d.orderId = o.id \n" +
+            "            WHERE d.status = 'PENDING' AND \n" +
+            "            ((select current_date - s.modifiedDate::date) >=(select (((EXTRACT(EPOCH FROM CAST(  ( SELECT configuration_settings.value::integer FROM configuration_settings   \n" +
+            "            WHERE configuration_settings.key::text = 'NUMBER_OF_DAYS_PANDING_TO_RECEIVE_CONSIGNMENT'::text) || ' days' AS INTERVAL)  \n" +
+            "            ) / 60) / 60) / 24)::integer)) AND \n" +
+            "            fromFacilityId = #{facilityId} ")
+    List<VaccineDistributionAlertDTO>getPendingConsignmentAlert(@Param("facilityId") Long facilityId);
+
+
+    @Select("     SELECT \n" +
+            "            (select name toFacilityName from facilities where id =toFacilityId ),  \n" +
+            "            (select name fromFacilityName from facilities where id =fromFacilityId ),\n" +
+            "            (select cellphone from users where id=s.modifiedby),\n" +
+            "            (select concat(firstname,' ',lastName) as modifiedBy from users where id=s.modifiedby),\n" +
+            "            s.modifieddate,distributionDate,s.modifiedBy,voucherNumber,d.status,orderdate  \n" +
+            "            FROM vaccine_distributions d  \n" +
+            "            JOIN vaccine_distribution_status_changes s ON d.id = s.distributionId \n" +
+            "            JOIN vaccine_order_requisitions o ON d.orderId = o.id \n" +
+            "            WHERE d.status = 'PENDING' AND \n" +
+            "            ((select current_date - s.modifiedDate::date) >=(select (((EXTRACT(EPOCH FROM CAST(  ( SELECT configuration_settings.value::integer FROM configuration_settings   \n" +
+            "            WHERE configuration_settings.key::text = 'NUMBER_OF_DAYS_PANDING_TO_RECEIVE_CONSIGNMENT'::text) || ' days' AS INTERVAL)  \n" +
+            "            ) / 60) / 60) / 24)::integer)) AND \n" +
+            "            toFacilityId = #{facilityId}")
+    List<VaccineDistributionAlertDTO>getPendingConsignmentToLowerLevel(@Param("facilityId") Long facilityId);
 
     @Select("select f.code, f.name, f.description, f.id from facilities f " +
             " join facility_types ft on f.typeid=ft.id " +

@@ -505,12 +505,25 @@ services.factory('DistributionWithSupervisorId',function($resource){
      return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
 });
 
+
+services.factory('PendingConsignmentNotification', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/pendingConsignmentNotification.json', {}, {});
+});
+
+services.factory('PendingNotificationForLowerLevel', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/pendingConsignmentNotificationForLowerLevel.json', {}, {});
+});
+
 services.factory('DistributionWithSupervisorId',function($resource){
     return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
 });
 
 services.factory('IsDistrictUser',function($resource){
     return $resource('/vaccine/dashboard/isDistrictUser.json',{},{});
+});
+
+services.factory('verifyDistribution',function($resource){
+    return $resource('/vaccine/orderRequisition/updateVerify/:orderId.json',{orderId:'@orderId'},{update:{method:'PUT'}});
 });
 
 services.factory('FacilitiesSameType',function($resource){

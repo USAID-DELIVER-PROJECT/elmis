@@ -264,7 +264,7 @@ public class VaccineReportService {
         if (zone != null && zone.getLevel().getCode().equals("dist")) {
             result.put("mainreport", repository.getPerformanceCoverageMainReportDataByDistrict(startDate, endDate, districtId, productId));
             result.put("summary", repository.getPerformanceCoverageSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
-            result.put("population", repository.getClassficationVaccinePopulationForDistrict(startDate, endDate, districtId, productId));
+            result.put("population", repository.getClassficationVaccinePopulationForFacility(startDate, endDate, districtId, productId));
         } else {
             result.put("mainreport", repository.getPerformanceCoverageMainReportDataByRegion(startDate, endDate, districtId, productId));
             result.put("summary", repository.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId));
@@ -278,7 +278,7 @@ public class VaccineReportService {
     }
 
     public Map<String, List<Map<String, Object>>> getCompletenessAndTimelinessReportData(String periodStart, String periodEnd,
-                                                                                         Long districtId, Long productId) {
+                                                                                         Long districtId) {
 
         Date startDate, endDate;
 
@@ -287,8 +287,8 @@ public class VaccineReportService {
 
         Map<String, List<Map<String, Object>>> result = new HashMap<>();
 
-        result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId, productId));
-        result.put("summary", repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId, productId));
+        result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId));
+        result.put("summary", repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId));
 
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
 
@@ -369,10 +369,10 @@ public class VaccineReportService {
             }
             if (facilityReport) {
                 result.put("facilityReport", repository.getClassificationVaccineUtilizationPerformanceFacility(yearStartDate, endDate, zoneId, productId));
-                result.put("facilityPopulation", repository.getClassficationVaccinePopulationForFacility(yearStartDate, endDate, zoneId, productId));
+                result.put("population", repository.getClassficationVaccinePopulationForFacility(yearStartDate, endDate, zoneId, productId));
             } else {
                 result.put("zoneReport", repository.getClassificationVaccineUtilizationPerformanceByZone(yearStartDate, endDate, zoneId, productId));
-                result.put("districtPopulation", repository.getClassficationVaccinePopulationForDistrict(yearStartDate, endDate, zoneId, productId));
+                result.put("population", repository.getClassficationVaccinePopulationForDistrict(yearStartDate, endDate, zoneId, productId));
             }
 
 

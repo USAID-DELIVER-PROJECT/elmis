@@ -118,6 +118,7 @@ services.factory('VaccineOrderRequisitionByCategory', function ($resource, Vacci
                         var overallData = data.report;
 
                         var lineItems = data.report.lineItems;
+
                         lineItems.forEach(function(s){
 
                            // s.displayOrder=s.productId;

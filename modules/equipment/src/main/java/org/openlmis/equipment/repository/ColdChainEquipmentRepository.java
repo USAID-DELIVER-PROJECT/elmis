@@ -54,4 +54,11 @@ public class ColdChainEquipmentRepository {
     }
   }
 
+  public List<ColdChainEquipment>getEquipmentByDesignation(Long designationId){
+    return mapper.getEquipmentByDesignation(designationId);
+  }
+
+  public List<ColdChainEquipment>getEquipmentBy(Long equipmentTypeId){
+    return mapper.getEquipmentBy(equipmentTypeId);
+  }
 }
