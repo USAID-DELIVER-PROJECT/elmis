@@ -21,6 +21,7 @@ import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -50,4 +51,6 @@ public class AdverseEffectLineItem extends BaseModel {
   private String notes;
 
   private Long relatedToLineItemId;
+
+  private List<AdverseEffectLineItem> relatedLineItems;
 }
