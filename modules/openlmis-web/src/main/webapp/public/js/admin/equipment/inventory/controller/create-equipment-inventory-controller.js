@@ -136,16 +136,20 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
 
   $scope.updateModels = function () {
 
-    $scope.models = _.pluck(_.where($scope.equipments, {manufacturer: $scope.selected.manufacturer}), 'model');
+    $scope.models = _.pluck(_.where($scope.equipments, {manufacturer: $scope.selected.manufacturer,designationId:parseInt($scope.selected.designation,10)}), 'model');
     $scope.mod = _.pluck(_.where($scope.equipments, {manufacturer: $scope.selected.designation}), 'manufacturer');
     // Also reset equipment fields
+
     $scope.selected.model = "";
     $scope.inventory.equipment = undefined;
     $scope.inventory.equipmentId = undefined;
   };
 
   $scope.updateEquipmentInfo = function () {
-    if ($scope.selected.manufacturer && $scope.selected.model) {
+    if ($scope.selected.manufacturer
+        && $scope.selected.model
+        && $scope.selected.designation
+    ) {
       $scope.inventory.equipment = _.where($scope.equipments, {manufacturer: $scope.selected.manufacturer, model: $scope.selected.model})[0];
       $scope.inventory.equipmentId = $scope.inventory.equipment.id;
     }
