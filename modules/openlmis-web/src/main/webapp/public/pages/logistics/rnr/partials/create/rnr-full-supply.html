@@ -67,11 +67,15 @@
                    ng-change="rnr.calculateFullSupplyItemsSubmittedCost()"/>
           </span>
           <span ng-switch-when="product">
+            <a class="label label-warning"
+               href=""
+               style="margin-left:5px;padding-right:0px;"
+               ng-show="rnrLineItem.isEquipmentValid === false"
+               title="An Equipment related with this product is not operational. Please fill the remarks section on the equipment to continue.">
+              <i class="icon icon-info-sign"></i>
+            </a>
             <span ng-bind="rnrLineItem[column.name]" id="{{column.name}}_{{$parent.$parent.$index}}"
                   class="cell-text"></span>
-            <span class="label label-warning glyphicon glyphicon-search"
-                  ng-show="rnrLineItem.isEquipmentValid === false"
-                  title="An Equipment related with this product is not operational. Please fill the remarks section on the equipment to continue." openlmis-message="rnr.equipment.warning"></span>
           </span>
           <span ng-switch-default ng-bind="rnrLineItem[column.name]" id="{{column.name}}_{{$parent.$parent.$index}}"
                 class="cell-text">
