@@ -31,7 +31,7 @@ function TransferOutController($scope,$location, $document,$window,configuration
 
             if (compareQuery()) {
                FacilitiesSameType.get({facilityId:homeFacility.id,query:$scope.query}, function(data){
-                   $scope.facilities = data.facilities//[{"id":1,"name":"Karatu"},{"id":1,"name":"Longido"},{"id":1,"name":"Ngorongoro"}];
+                   $scope.facilities = data.facilities;
                    $scope.filteredFacilityList = $scope.facilities;
                    $scope.previousQuery = $scope.query;
                    $scope.facilityResultCount = $scope.filteredFacilityList.length;
@@ -127,7 +127,7 @@ function TransferOutController($scope,$location, $document,$window,configuration
              stockCard.quantity=totalCurrentLots;
          }
 
-     }
+     };
      $scope.distribute=function(){
         $scope.allProductsZero=true;
         $scope.clearErrorMessages();
@@ -179,7 +179,7 @@ function TransferOutController($scope,$location, $document,$window,configuration
                                    if(l.quantity > 0)
                                    {
                                        var event={};
-                                       var lot={}
+                                       var lot={};
 
                                        event.type= "ISSUE";
                                        event.facilityId=$scope.facilitySelected.id;
