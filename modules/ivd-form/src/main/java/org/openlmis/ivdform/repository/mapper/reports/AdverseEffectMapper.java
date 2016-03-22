@@ -23,9 +23,9 @@ public interface AdverseEffectMapper {
 
 
   @Insert("INSERT INTO vaccine_report_adverse_effect_line_items " +
-      "(reportId, productId, date, manufacturer, batch, expiry, cases, isInvestigated, investigationDate, notes, createdBy, createdDate, modifiedBy, modifiedDate) " +
+      "(reportId, productId, date, manufacturer, batch, expiry, cases, isInvestigated, investigationDate, notes,relatedToLineItemId, createdBy, createdDate, modifiedBy, modifiedDate) " +
       " values " +
-      "( #{reportId}, #{productId}, #{date}, #{manufacturer}, #{batch}, #{expiry}, #{cases}, #{isInvestigated}, #{investigationDate}, #{notes}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
+      "( #{reportId}, #{productId}, #{date}, #{manufacturer}, #{batch}, #{expiry}, #{cases}, #{isInvestigated}, #{investigationDate}, #{notes}, #{relatedToLineItemId}, #{createdBy}, NOW(), #{modifiedBy}, NOW() )")
   @Options(useGeneratedKeys = true)
   void insert(AdverseEffectLineItem lineItem);
 
@@ -38,6 +38,7 @@ public interface AdverseEffectMapper {
       " , batch = #{batch}" +
       " , expiry = #{expiry}" +
       " , cases = #{cases}" +
+      " , relatedToLineItemId = #{relatedToLineItemId}" +
       " , investigationDate = #{investigationDate}" +
       " , isInvestigated = #{isInvestigated}" +
       " , notes = #{notes}" +
@@ -46,6 +47,28 @@ public interface AdverseEffectMapper {
       " WHERE id = #{id}")
   void update(AdverseEffectLineItem lineItem);
 
-  @Select("SELECT e.*, p.primaryName as productName from vaccine_report_adverse_effect_line_items e join products p on p.id = e.productId where reportId = #{reportId} order by e.id")
+  @Select("SELECT e.*, p.primaryName as productName " +
+      " from vaccine_report_adverse_effect_line_items e " +
+      "     join products p on p.id = e.productId " +
+      " where reportId = #{reportId} and relatedToLineItemId is null " +
+      " order by e.id")
+  @Results({
+      @Result(property = "id", column = "id"),
+      @Result(property = "relatedLineItems", javaType = List.class, column = "id",
+          many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.AdverseEffectMapper.getRelatedLineItems")),
+  })
   List<AdverseEffectLineItem> getLineItems(@Param("reportId") Long reportId);
+
+  @Select("SELECT e.*, p.primaryName as productName " +
+      " from vaccine_report_adverse_effect_line_items e " +
+      "     join products p on p.id = e.productId " +
+      " where relatedToLineItemId = #{id} " +
+      " order by e.id")
+  List<AdverseEffectLineItem> getRelatedLineItems(@Param("id") Long id);
+
+  @Delete("DELETE from vaccine_report_adverse_effect_line_items where reportId = #{reportId} and relatedToLineItemId is not null")
+  void deleteRelatedLineItems(@Param("reportId")Long reportId);
+
+  @Delete("DELETE from vaccine_report_adverse_effect_line_items where reportId = #{reportId} and relatedToLineItemId is null")
+  void deleteLineItems(@Param("reportId")Long reportId);
 }

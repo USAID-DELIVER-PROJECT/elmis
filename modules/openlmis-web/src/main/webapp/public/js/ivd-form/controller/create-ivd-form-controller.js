@@ -67,9 +67,14 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
     $location.path('/');
   };
 
+  $scope.addAefiProduct = function(effect){
+    if(isUndefined(effect.relatedLineItems)){
+      effect.relatedLineItems = [];
+    }
+    effect.relatedLineItems.push({});
+  };
 
   $scope.showAdverseEffect = function (effect, editMode) {
-
     $scope.currentEffect = effect;
     $scope.currentEffectMode = editMode;
     $scope.adverseEffectModal = true;
@@ -82,13 +87,7 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
       if (!$scope.currentEffectMode) {
         $scope.report.adverseEffectLineItems.push($scope.currentEffect);
       }
-      VaccineReportSave.update($scope.report, function (data) {
-        $scope.error = '';
-        $scope.report.adverseEffectLineItems = data.report.adverseEffectLineItems;
-        console.log(data);
-        $scope.adverseEffectModal = false;
-      });
-
+      $scope.adverseEffectModal = false;
     }
 
   };
@@ -117,6 +116,10 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
       body: "msg.question.delete.adverse.effect.confirmation"
     };
     OpenLmisDialog.newDialog(options, callBack, $dialog);
+  };
+
+  $scope.deleteProductFromAdverseEffects = function(parentLineItem, lineItemToRemove){
+    parentLineItem.relatedLineItems = _.without(parentLineItem.relatedLineItems, lineItemToRemove);
   };
 
   $scope.applyCampaign = function () {

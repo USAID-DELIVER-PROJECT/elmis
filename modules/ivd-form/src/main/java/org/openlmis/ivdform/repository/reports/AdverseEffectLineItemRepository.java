@@ -31,4 +31,8 @@ public class AdverseEffectLineItemRepository {
     mapper.update(lineItem);
   }
 
+  public void deleteLineItems(Long reportId) {
+    mapper.deleteRelatedLineItems(reportId);
+    mapper.deleteLineItems(reportId);
+  }
 }
