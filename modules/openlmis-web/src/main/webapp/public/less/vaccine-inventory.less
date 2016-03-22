@@ -10,7 +10,7 @@
 
     .rnr-table .table-bordered td.last-row {
     border-bottom: 1px solid #cfcfcf !important;
-    padding-bottom:1px !important;
+    padding-bottom:0px !important;
     }
 
     .rnr-table .table-bordered tr td.col-product, .rnr-table .table-bordered tr th.col-product{
@@ -25,11 +25,10 @@
    /* .rnr-table .table-bordered tr td.skip{
     background: linear-gradient(to bottom, #f9f9f9 0%, #e0e0e0 100%) !important;
     }*/
-    input[type="number"].ng-invalid-max{border:1px solid #F00 !important}
-    input[type="number"]{position:relative;width:90% !important;height:22px !important;margin:1px 0px !important}
+
     span.adj-error{color:#FF0000 !important}
 
-    table tr td.max-error{border:2px solid #FF0000 !important; color:#FF000 !important}
+    table tr td.max-error span {color: #FF0000 !important; font-weight:bold !important;font-size:0.9em !important}
 
     table tr.even td {background:#d7d7d7 !important}
     table tr.odd td {background:#eee !important}
@@ -38,8 +37,15 @@
         border:solid #f00 1px !important;
         border-radius:4px 4px 4px 4px !important;
     }
-    input[type="number"].ng-invalid-divisible-by-presentation-validator
+    input[type="text"].ng-invalid-divisible-by-presentation-validator,  input[type="text"].ng-invalid-maximum-validator
     {
-        border-color: #e9322d;
+        border: 1px solid #FF0000 !important;
+        color: #FF0000 !important;
+        font-weight:bold !important;
+        font-size:0.9em !important
+    }
+
+    .info-box input[type="text"]{
+        height:20px !important;
     }
 

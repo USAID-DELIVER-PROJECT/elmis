@@ -526,3 +526,6 @@ services.factory('verifyDistribution',function($resource){
     return $resource('/vaccine/orderRequisition/updateVerify/:orderId.json',{orderId:'@orderId'},{update:{method:'PUT'}});
 });
 
+services.factory('FacilitiesSameType',function($resource){
+    return $resource('/vaccine/inventory/distribution/facilities/same-type/:facilityId/:query',{facilityId:'@facilityId',query:'@query'},{});
+});
