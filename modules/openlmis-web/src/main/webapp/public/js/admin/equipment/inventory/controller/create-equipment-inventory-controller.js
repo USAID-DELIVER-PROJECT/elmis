@@ -146,9 +146,7 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
   };
 
   $scope.updateEquipmentInfo = function () {
-    if ($scope.selected.manufacturer
-        && $scope.selected.model
-        && $scope.selected.designation
+    if ($scope.selected.manufacturer && $scope.selected.model && $scope.selected.designation
     ) {
       $scope.inventory.equipment = _.where($scope.equipments, {manufacturer: $scope.selected.manufacturer, model: $scope.selected.model})[0];
       $scope.inventory.equipmentId = $scope.inventory.equipment.id;
