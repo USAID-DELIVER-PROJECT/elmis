@@ -102,13 +102,13 @@ function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $root
             {field: 'status', displayName: messageService.get("label.status")},
             {
                 field: 'createdDate',
-                displayName: messageService.get("label.date.submitted")
-                , cellFilter: 'date:\'dd-MM-yyyy\''
+                displayName: messageService.get("label.date.submitted"),
+                cellFilter: 'date:\'dd-MM-yyyy\''
             },
+
             {
                 field: ' ',
                 cellTemplate: '<button style="width:100px; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); background-image: linear-gradient(to bottom, #42a7ad, #356b6f);background-repeat: repeat-x;border-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);  background-color: #356b6f;"  type="button" class="btn btn-primary btn-small grid-btn" ng-click="viewRequest(row.entity)">View</button> ',
-
                 width: 150
             }
         ], filterOptions: $scope.filterOptions
@@ -147,9 +147,8 @@ function ViewVaccineOrderRequisitionController($scope,StockCards, $window, $root
             {field: 'status', displayName: messageService.get("label.status")},
             {
                 field: 'createdDate',
-                displayName: messageService.get("label.date.submitted")
-                , cellFilter: 'date:\'dd-MM-yyyy\''
-
+                displayName: messageService.get("label.date.submitted"),
+                cellFilter: 'date:\'dd-MM-yyyy\''
 
             },
             {
