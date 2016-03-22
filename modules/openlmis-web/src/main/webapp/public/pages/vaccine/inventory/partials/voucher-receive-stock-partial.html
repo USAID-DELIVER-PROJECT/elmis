@@ -11,7 +11,7 @@
                         <th class="col-quantity" style="max-width:160px !important"
                             openlmis-message="label.stock.total.quantity"></th>
                         <th class="col-lot"><span openlmis-message="label.stock.batch"></span></th>
-                        <th class="col-quantity" style="max-width:160px !important"><span
+                        <th class="col-quantity" style="max-width:150px !important"><span
                                 openlmis-message="label.stock.quantity"></span></th>
                         <th class="col-vvm-status"><span openlmis-message="label.stock.vvm"></span></th>
 
@@ -42,11 +42,20 @@
                         </td>
                         <td  class="col-count cell-input col-general"
                             ng-class="{'last-row':product.lots.length===1}">
-                            <input ng-required="product.lots.length > 0" ng-if="product.lots.length > 0"
-                                   name="batchQuantity_{{$index}}_0" ng-model="product.lots[0].quantity" min="1"
-                                   type="number"/>
+                            <input ng-required="product.lots.length > 0"
+                                   ng-if="product.lots.length > 0"
+                                   name="{{product.product.primaryName}} Batch {{product.lots[0].quantity}}"
+                                   ng-model="product.lots[0].quantity"
+                                   numeric-validator="positiveInteger"
+                                   divisible-by-presentation="1"
+                                   type="text"/>
                             <input name="quantity_{{$index}}"
-                                   ng-if="!product.lots.length" type="number" min="1" ng-model="product.quantity">
+                                   ng-if="!product.lots.length"
+                                   type="text"
+                                   ng-model="product.quantity"
+                                   numeric-validator="positiveInteger"
+                                   divisible-by-presentation="{{c.presentation}}"
+                                    >
                         </td>
                         <td
                             class="col-vvmstatus cell-text"
@@ -69,8 +78,12 @@
                         </td>
                         <td ng-class="{'last-row':$last}"
                             class="col-count cell-input col-general ">
-                            <input name="batchQuantity_{{$parent.$index}}_{{$index}}" ng-required="product.batchTracked"
-                                   ng-model="lot.quantity" min="1" type="number"/>
+                            <input name="{{product.product.primaryName}} Batch {{lot.lot.lotCode}}"
+                                   ng-required="product.batchTracked"
+                                   ng-model="lot.quantity"
+                                   numeric-validator="positiveInteger"
+                                   divisible-by-presentation="1"
+                                   type="text"/>
                         </td>
                         <td ng-class="{'last-row':$last}"
                             class="col-count cell-text ">

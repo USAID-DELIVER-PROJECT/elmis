@@ -391,10 +391,10 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
         $scope.voucherNumberSearched=false;
      };
 
-     $scope.showNewLotModal=function(product){
+     $scope.showNewLotModal=function(productToAdd){
         $scope.newLotModal=true;
         $scope.newLot={};
-        $scope.newLot.product=product.product;
+        $scope.newLot.product=productToAdd.programProduct.product;
      };
 
      $scope.closeNewLotModal=function(){

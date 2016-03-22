@@ -133,12 +133,13 @@
                 </div>
             </div>
                 <div class="rnr-table" ng-show=" !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
-                <ng-include src="'/public/pages/vaccine/inventory/partials/voucher-receive-stock-partial.html'"></ng-include>
+                    <ng-include
+                            src="'/public/pages/vaccine/inventory/partials/voucher-receive-stock-partial.html?i=1'"></ng-include>
             </div>
             </div>
             <div ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || hasPermission('INITIALIZE_STOCK') || !hasStock">
                 <ng-include
-                        src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html?i=12'"></ng-include>
+                        src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html'"></ng-include>
             </div>
         </div>
     </div>
