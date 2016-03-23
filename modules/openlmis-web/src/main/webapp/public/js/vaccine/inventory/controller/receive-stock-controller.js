@@ -101,67 +101,73 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
             if(result)
             {
                 var events=[];
-                $scope.distribution.lineItems.forEach(function(p){
-                if(p.lots !==undefined && p.lots.length >0)
-                {
-                    p.lots.forEach(function(l){
-                        var event={};
-                        event.type="RECEIPT";
-                        event.facilityId=homeFacility.id;
-                        event.productCode=p.product.code;
-                        event.quantity=l.quantity;
-                        event.lot={};
-                        event.lot.lotCode=l.lot.lotCode;
-                        event.lot.manufacturerName=l.lot.manufacturerName;
-                        event.lot.expirationDate=l.lot.expirationDate;
-                        event.occurred=$scope.occurredDate;
-                        event.customProps={};
-                        if(l.vvmStatus !==undefined)
-                        {
-                            event.customProps.vvmStatus=l.vvmStatus;
-                        }
-                        event.customProps.receivedFrom=$scope.distribution.fromFacility.name;
-                        event.customProps.occurred=$scope.occurredDate;
-                        events.push(event);
-                    });
-                }
-                else{
-                        var event={};
-                        event.type="RECEIPT";
-                        event.facilityId=homeFacility.id;
-                        event.productCode=p.product.code;
-                        event.quantity=p.quantity;
-                        if(p.vvmStatus !==undefined)
-                        {
-                            event.customProps={"vvmStatus":p.vvmStatus};
-                        }
-                        event.customProps.receivedFrom=$scope.distribution.fromFacility.name;
-                        event.occurred=$scope.occurredDate;
-                        event.customProps.occurred=$scope.occurredDate;
-                        events.push(event);
-                }
+                $scope.distribution.lineItems=[];
+                $scope.distribution.categorisedLineItems.forEach(function(cat){
 
-             });
+                    $scope.distribution.lineItems=$scope.distribution.lineItems.concat(cat.lineItems);
 
-            StockEvent.update({facilityId:homeFacility.id},events, function (data) {
-                 if(data.success)
-                 {
-                     $scope.message=true;
-                     $scope.distribution.status='RECEIVED';
-                     $scope.distribution.programId=$scope.selectedProgramId;
-                     SaveDistribution.save($scope.distribution,function(distribution){
-                        if($scope.distribution.orderId !== null)
-                        {
-                             UpdateOrderRequisitionStatus.update({orderId: $scope.distribution.orderId}, function () {
-                             });
-                        }
-                        $timeout(function(){
-                            $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
-                        },900);
-                     });
+                    cat.lineItems.forEach(function(p){
+                    if(p.lots !==undefined && p.lots.length >0)
+                    {
+                         p.lots.forEach(function(l){
+                         var event={};
+                         event.type="RECEIPT";
+                         event.facilityId=homeFacility.id;
+                         event.productCode=p.product.code;
+                         event.quantity=l.quantity;
+                         event.lot={};
+                         event.lot.lotCode=l.lot.lotCode;
+                         event.lot.manufacturerName=l.lot.manufacturerName;
+                         event.lot.expirationDate=l.lot.expirationDate;
+                         event.occurred=$scope.occurredDate;
+                         event.customProps={};
+                         if(l.vvmStatus !==undefined)
+                         {
+                             event.customProps.vvmStatus=l.vvmStatus;
+                         }
+                         event.customProps.receivedFrom=$scope.distribution.fromFacility.name;
+                         event.customProps.occurred=$scope.occurredDate;
+                         events.push(event);
+                         });
+                    }
+                         else{
+                             var event={};
+                             event.type="RECEIPT";
+                             event.facilityId=homeFacility.id;
+                             event.productCode=p.product.code;
+                             event.quantity=p.quantity;
+                             if(p.vvmStatus !==undefined)
+                             {
+                                 event.customProps={"vvmStatus":p.vvmStatus};
+                             }
+                             event.customProps.receivedFrom=$scope.distribution.fromFacility.name;
+                             event.occurred=$scope.occurredDate;
+                             event.customProps.occurred=$scope.occurredDate;
+                             events.push(event);
+                            }
 
-                 }
-            });
+                         });
+                });
+
+                StockEvent.update({facilityId:homeFacility.id},events, function (data) {
+                     if(data.success)
+                     {
+                         $scope.message=true;
+                         $scope.distribution.status='RECEIVED';
+                         $scope.distribution.programId=$scope.selectedProgramId;
+                         SaveDistribution.save($scope.distribution,function(distribution){
+                            if($scope.distribution.orderId !== null)
+                            {
+                                 UpdateOrderRequisitionStatus.update({orderId: $scope.distribution.orderId}, function () {
+                                 });
+                            }
+                            $timeout(function(){
+                                $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                            },900);
+                         });
+
+                     }
+                });
 
             }
         };
@@ -302,7 +308,6 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
         $scope.receivedProductsByCategory = $.map(byCategory, function (value, index) {
             return [{"productCategory": index, "receivedProducts": value}];
         });
-        console.log(JSON.stringify($scope.receivedProductsByCategory));
      };
     $scope.addLot=function(lotToAdd){
             $scope.productToAdd.lots.push(lotToAdd);
@@ -377,6 +382,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
         Distribution.get({voucherNumber:$scope.receivedProducts.voucherNumber},function(data){
             if(data.distribution !==null){
                  $scope.distribution=data.distribution;
+                 categoriseDistributionLineItems($scope.distribution);
                 }
             else{
                 $scope.distribution=undefined;
@@ -384,6 +390,28 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
             }
         });
 
+     };
+
+     var categoriseDistributionLineItems=function(distribution){
+            distribution.lineItems.forEach(function(l){
+                var programProduct= _.filter($scope.allProducts, function(obj) {
+                    return obj.programProduct.product.primaryName === l.product.primaryName;
+                });
+                if(programProduct !==undefined)
+                {
+                   l.productCategory=programProduct[0].programProduct.productCategory;
+                }else{
+                   l.productCategory ={"name":"Uncategorised"};
+                 }
+            });
+
+            var byCategory = _.groupBy(distribution.lineItems, function (l) {
+                return l.productCategory.name;
+            });
+            $scope.distribution.categorisedLineItems= $.map(byCategory, function (value, index) {
+                 return [{"productCategory": index, "lineItems": value}];
+            });
+//            console.log(JSON.stringify($scope.distribution.categorisedLineItems));
      };
 
      $scope.clear=function(){
