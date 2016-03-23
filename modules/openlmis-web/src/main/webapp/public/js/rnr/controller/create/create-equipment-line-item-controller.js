@@ -13,40 +13,41 @@
 function CreateEquipmentLineItemController($scope) {
 
   $scope.showCategory = function (index) {
-    var absIndex = ($scope.pageSize * ($scope.currentPage - 1)) +  index;
-    return  !((index > 0 ) && ($scope.rnr.equipmentLineItems.length > absIndex) &&  ($scope.rnr.equipmentLineItems[absIndex].equipmentCategory == $scope.rnr.equipmentLineItems[absIndex - 1].equipmentCategory));
+    var absIndex = ($scope.pageSize * ($scope.currentPage - 1)) + index;
+    return !((index > 0 ) && ($scope.rnr.equipmentLineItems.length > absIndex) && ($scope.rnr.equipmentLineItems[absIndex].equipmentCategory == $scope.rnr.equipmentLineItems[absIndex - 1].equipmentCategory));
   };
 
   $scope.getId = function (prefix, parent) {
     return prefix + "_" + parent.$parent.$index;
   };
 
-  $scope.equipmentStatusChanged = function(equipmentLineItem){
+  $scope.equipmentStatusChanged = function (equipmentLineItem) {
     var currentStatus = _.findWhere($scope.$parent.equipmentOperationalStatus, {'id': utils.parseIntWithBaseTen(equipmentLineItem.operationalStatusId)});
-    angular.forEach(equipmentLineItem.relatedProducts, function(product){
+    angular.forEach(equipmentLineItem.relatedProducts, function (product) {
       var lineItem = _.findWhere($scope.$parent.rnr.fullSupplyLineItems, {productCode: product.code});
-        if(utils.isDefined(lineItem)){
-          if(currentStatus.isBad && lineItem.quantityRequested > 0){
-            lineItem.isEquipmentValid = false;
-          }else{
-            lineItem.isEquipmentValid = true;
-          }
+      if (!isUndefined(lineItem)) {
+        if (currentStatus.isBad && lineItem.quantityRequested > 0) {
+          lineItem.isEquipmentValid = false;
+        } else {
+          lineItem.isEquipmentValid = true;
         }
-      });
+      }
+    });
   };
 
-  $scope.requiresRemarks = function(equipmentLineItem){
-    var currentStatus = _.findWhere($scope.$parent.equipmentOperationalStatus, {'id': utils.parseIntWithBaseTen(equipmentLineItem.operationalStatusId)});
-    if(isUndefined(currentStatus) || !currentStatus.isBad){
+  $scope.requiresRemarks = function (equipmentLineItem) {
+    var currentStatus = _.findWhere($scope.$parent.$parent.equipmentOperationalStatus, {'id': utils.parseIntWithBaseTen(equipmentLineItem.operationalStatusId)});
+    if (isUndefined(currentStatus) || !currentStatus.isBad || !utils.isEmpty(equipmentLineItem.remarks) ) {
       return false;
     }
-    for(var product in equipmentLineItem.relatedProducts ){
+
+    return _.any(equipmentLineItem.relatedProducts, function (product) {
       var lineItem = _.findWhere($scope.$parent.rnr.fullSupplyLineItems, {productCode: product.code});
-      if(utils.isDefined(lineItem) && utils.parseIntWithBaseTen(lineItem.quantityRequested) > 0){
+      if (!isUndefined(lineItem) && utils.parseIntWithBaseTen(lineItem.quantityRequested) > 0) {
         return true;
       }
-    }
-    return false;
+      return false;
+    });
   };
 
 }

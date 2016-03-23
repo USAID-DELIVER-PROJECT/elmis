@@ -41,11 +41,12 @@ describe("In Equipment Inventory Controller,", function () {
     $httpBackend = _$httpBackend_;
     messageService = _messageService_;
 
-    ctrl = $controller(EquipmentInventoryController, {$scope: scope, $routeParams: routeParams,
+    ctrl = $controller(EquipmentInventoryController, {$scope: scope, $routeParams: routeParams, NumberOfYears: 10,
       messageService: messageService});
     $httpBackend.whenGET('/user/facilities.json').respond(200, {"facilityList": [facility]});
     $httpBackend.whenGET('/equipment/inventory/facility/programs.json?facilityId='+facility.id).respond(200, {"programs": [program, program2]});
     $httpBackend.whenGET('/equipment/type/operational-status.json').respond(200, {"status": [status]});
+    $httpBackend.whenGET('/settings/YEARS_TO_REPLACE_EQUIPMENT.json').respond(200, {"settings": {value: 10}});
     $httpBackend.flush();
   }));
 

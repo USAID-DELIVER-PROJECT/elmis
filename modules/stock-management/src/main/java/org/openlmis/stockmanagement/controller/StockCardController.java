@@ -382,6 +382,10 @@ public class StockCardController extends BaseController
                     break;
                 default: break;
             }
+            Long onHand = (null != lotObj) ? lotOnHand.getQuantityOnHand() : card.getTotalQuantityOnHand();
+            if (!event.isValidIssueQuantity(onHand)) {
+                return OpenLmisResponse.error(messageService.message("error.stock.quantity.invalid"), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
             Date occurred = event.getOccurred();
             String referenceNumber  = event.getReferenceNumber();

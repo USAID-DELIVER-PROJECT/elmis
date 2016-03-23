@@ -172,4 +172,16 @@ public class VaccineInventoryDistributionController extends BaseController {
 
 
 
+    @RequestMapping(value = "facilities/same-type/{facilityId}/{query}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")
+    public ResponseEntity<OpenLmisResponse> getFacilitiesSameType(@PathVariable Long facilityId, @PathVariable String query,
+                                                                  HttpServletRequest request) {
+        if (null == facilityId) {
+            return OpenLmisResponse.error(messageService.message("error.facility.unknown"), HttpStatus.BAD_REQUEST);
+        } else {
+            ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(FACILITIES, service.getFacilitiesSameType(facilityId, query));
+            return response;
+        }
+    }
+
 }

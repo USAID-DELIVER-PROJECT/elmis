@@ -103,4 +103,10 @@ public class StockEvent {
   private boolean hasFacility() {
     return null != facilityId;
   }
+
+  public boolean isValidIssueQuantity(Long onHand) {
+    if (type == StockEventType.ISSUE && quantity > onHand)
+      return false;
+    return true;
+  }
 }

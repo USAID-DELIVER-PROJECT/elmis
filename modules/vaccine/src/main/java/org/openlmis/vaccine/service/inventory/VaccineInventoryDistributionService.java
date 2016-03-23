@@ -259,5 +259,8 @@ public class VaccineInventoryDistributionService {
    public List<VaccineDistributionAlertDTO>getPendingNotificationForLowerLevel(Long facilityId){
        return repository.getPendingNotificationFoLowerLevel(facilityId);
    }
+    public List<Facility> getFacilitiesSameType(Long facilityId, String query) {
+        return repository.getFacilitiesSameType(facilityId, query);
+    }
 
 }

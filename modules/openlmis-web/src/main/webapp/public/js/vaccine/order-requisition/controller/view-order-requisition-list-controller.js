@@ -90,7 +90,7 @@
                     width: 110
                 },
                 {field:' ',
-                    cellTemplate: '<div style="text-align:center;font-color: #006666" class="ui-grid-vcenter"><button style="color: white" class="btn btn-primary btn-xs">View</button></div>'
+                    cellTemplate: '<button style="width:100px; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); background-image: linear-gradient(to bottom, #42a7ad, #356b6f);background-repeat: repeat-x;border-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);  background-color: #356b6f;"  type="button" class="btn btn-primary btn-small" >View</button> '
 
 }
             ]

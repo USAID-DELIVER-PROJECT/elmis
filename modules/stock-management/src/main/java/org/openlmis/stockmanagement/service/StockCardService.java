@@ -106,7 +106,8 @@ public class StockCardService {
 
   @Transactional
   public void addStockCardEntry(StockCardEntry entry) {
-    StockCard card = entry.getStockCard();
+
+    StockCard card = getOrCreateStockCard(entry.getStockCard().getFacility().getId(), entry.getStockCard().getProduct().getCode());//entry.getStockCard();
 
     card.addToTotalQuantityOnHand(entry.getQuantity());
     repository.persistStockCardEntry(entry);
@@ -121,6 +122,8 @@ public class StockCardService {
 
   @Transactional
   public void addStockCardEntries(List<StockCardEntry> entries) {
-    for(StockCardEntry entry : entries) addStockCardEntry(entry);
+    for (StockCardEntry entry : entries) {
+      addStockCardEntry(entry);
+    }
   }
 }

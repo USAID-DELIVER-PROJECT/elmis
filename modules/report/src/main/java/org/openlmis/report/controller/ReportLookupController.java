@@ -287,9 +287,9 @@ public class ReportLookupController extends BaseController {
   public ResponseEntity<OpenLmisResponse> getFacilities(
     @RequestParam("program") Long program,
     @RequestParam("schedule") Long schedule,
-    @RequestParam(value = "type", defaultValue = "0L", required = false) Long type,
-    @RequestParam(value = "requisitionGroup", defaultValue = "0L", required = false) Long requisitionGroup,
-    @RequestParam(value = ZONE, defaultValue = "0L", required = false) Long zone,
+    @RequestParam(value = "type", defaultValue = "0", required = false) Long type,
+    @RequestParam(value = "requisitionGroup", defaultValue = "0", required = false) Long requisitionGroup,
+    @RequestParam(value = ZONE, defaultValue = "0", required = false) Long zone,
     HttpServletRequest request
 
   ) {

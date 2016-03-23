@@ -73,16 +73,22 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                             product.lots.push(lotOnHand);
                        });
                        //Make sort of lots by vvm and expiration
-                       var lotsAscExpiration=_.sortBy(product.lots,'expirationDate');
-                       var lotsDescExpiration=lotsAscExpiration.reverse();
-                       var lotAscVVM=_.sortBy(lotsDescExpiration,'vvmStatus');
+//                       var lotsAscExpiration=_.sortBy(product.lots,'expirationDate');
+//                       var lotsDescExpiration=lotsAscExpiration.reverse();
+//                       var lotAscVVM=_.sortBy(lotsDescExpiration,'vvmStatus');
 
-                       product.lots=lotAscVVM.reverse();
+                       var lotsAscExpiration=product.lots.sort(function(a,b){
+                           return (a.expirationDate > b.expirationDate) ? 1 : ((b.expirationDate > a.expirationDate) ? -1 : 0);
+                       });
+                       var lotsDescVvmStatus=lotsAscExpiration.sort(function(a,b){
+                            return (a.vvmStatus > b.vvmStatus) ? -1 : ((b.vvmStatus > a.vvmStatus) ? 1 : 0);
+                       });
+
+                       product.lots=lotsDescVvmStatus;
                   }
                   productsToIssue.push(product);
            });
            productsToIssue=_.sortBy(productsToIssue,'displayOrder');
-//           productsToIssue=_.sortBy(productsToIssue,'productCategory');
            var byCategory=_.groupBy(productsToIssue,function(p){
                return p.productCategory.name;
            });

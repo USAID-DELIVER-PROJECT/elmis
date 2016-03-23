@@ -18,7 +18,7 @@ app.directive('divisibleByPresentation', ['messageService',function(messageServi
 
                   function divisibleByPresentationValidator(ngModelValue)
                   {
-                     var presentation=attr.divisibleByPresentation;
+                     var presentation=parseInt(attr.divisibleByPresentation,10);
                      if(presentation !==undefined)
                      {
                         if(ngModelValue ===undefined || (ngModelValue%presentation) ===0 )
@@ -38,6 +38,38 @@ app.directive('divisibleByPresentation', ['messageService',function(messageServi
 
                   }
                   ctrl.$parsers.push(divisibleByPresentationValidator);
+            }
+        };
+}]);
+
+app.directive('maximum', ['messageService',function(messageService) {
+    return{
+            restrict: 'EA',
+            require: 'ngModel',
+            link: function(scope, element, attr, ctrl){
+
+                  function maximumValidator(ngModelValue)
+                  {
+                     var maxValue=parseInt(attr.maximum,10);
+                     if(maxValue !==undefined)
+                     {
+                        if(ngModelValue <= maxValue )
+                        {
+                           ctrl.$setValidity('maximumValidator', true);
+                        }
+                        else if(ngModelValue > maxValue){
+                           ctrl.$setValidity('maximumValidator', false);
+                           ctrl.$name=attr.name;
+                        }
+                        return ngModelValue;
+                     }
+                     else{
+                        ctrl.$setValidity('maximumValidator', true);
+                        return ngModelValue;
+                     }
+
+                  }
+                  ctrl.$parsers.push(maximumValidator);
             }
         };
 }]);

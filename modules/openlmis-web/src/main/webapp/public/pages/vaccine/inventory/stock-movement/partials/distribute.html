@@ -18,7 +18,6 @@
 
     .rnr-table .table-bordered td.last-row {
         border-bottom: 1px solid #ccc !important;
-        padding-bottom: 4px !important;
     }
     .red {
         color:red;
@@ -29,13 +28,6 @@
     .orange{
         color:orange;
     }
-    input[type="number"]{width:150px !important;}
-    .rnr-table .table-bordered tr th.col-quantity{
-    min-width:100px !important;
-    max-width:100px !important;
-    width:100px !important;
-    }
-    input[type="number"].ng-invalid-max{border:1px solid #F00 !important}
 
 </style>
 <div>
@@ -43,11 +35,22 @@
         <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
         <strong><a href="/public/pages/vaccine/inventory/index.html#/receive" openlmis-message="stock.initialize.stock"></a></strong>
     </div>
+
 <form name="issueForm" ng-show="stockCardsByCategory.length > 0" novalidate>
     <div>
 
     <ng-include src="'/public/pages/vaccine/inventory/stock-movement/partials/header.html'"></ng-include>
         <div class="alert alert-danger" ng-show="showNoProductErrorMessage" openlmis-message="error.message.no.product.to.issue"></div>
+        <div class="alert alert-danger" ng-show="issueForm.$dirty && issueForm.$invalid">
+            <ul ng-show="issueForm.$error.divisibleByPresentationValidator.length >0 || issueForm.$error.maximumValidator.length >0">
+                <li ng-repeat="error in issueForm.$error.divisibleByPresentationValidator">
+                    {{error.$name}} <span openlmis-message="error.message.quantity.not.multiple.of.presentation"></span>
+                </li>
+                <li ng-repeat="error in issueForm.$error.maximumValidator">
+                    {{error.$name}} <span openlmis-message="error.message.quantity.greater.than.soh"></span>
+                </li>
+            </ul>
+        </div>
     <div class="rnr-table" ng-form="issueForm">
 
         <table id="podTable" class="table table-bordered" fixed-table-header>
@@ -82,7 +85,7 @@
                     </div>
                 </th>
 
-                <th class="col-quantity">
+                <th class="col-quantity" style="max-width:150px !important; width:150px !important">
                     <div class="regimen-heading">
                         <span openlmis-message="header.stock.quantity.to.issue"></span>
                     </div>
@@ -126,21 +129,33 @@
                     <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.expirationDate | date:'MMM-yyyy'"></span>
                 </td>
 
-                <td class="col-available cell-input number disabled" ng-class="{'last-row':c.lotsOnHand.length===1}">
+                <td class="col-available cell-input number disabled"
+                    ng-class="{'last-row':c.lotsOnHand.length===1, 'max-error':(c.lotsOnHand[0].quantityOnHand < c.lotsOnHand[0].quantity)}">
                     <span ng-if="c.lotsOnHand.length > 0" class="cell-text" ng-bind="c.lotsOnHand[0].quantityOnHand | number "></span>
                     <span ng-if="c.lotsOnHand.length === 0" class="cell-text" ng-bind="c.totalQuantityOnHand | number "></span>
                 </td>
 
-                <td ng-class="{'last-row':c.lotsOnHand.length===1} "
+                <td ng-class="{'last-row':c.lotsOnHand.length===1, 'max-error':(c.lotsOnHand[0].quantityOnHand < c.lotsOnHand[0].quantity)} "
                     class="col-count cell-input col-general number disabled">
-                  <span class="cell-text " >
-                      <input ng-show="c.lotsOnHand.length > 0"  name="quantityToIssue_{{$index}}_0" numeric-validator="positiveInteger" maxlength="8" max="{{c.lotsOnHand[0].quantityOnHand}}"
-                             ng-model="c.lotsOnHand[0].quantity" ng-change="sumLots(c)" type="number" style="width: 180px;!important;"
-                             max="{{c.lotsOnHand[0].quantityOnHand}}" divisible-by-presentation="{{c.presentation}}"/>
-                      <input ng-show="c.lotsOnHand.length ===0" name="quantityToIssue_{{$index}}" numeric-validator="positiveInteger" maxlength="8" max="{{c.totalQuantityOnHand}}"
-                             ng-model="c.quantity" ng-change="sumLots(c)" type="number" style="width: 180px;!important;"
-                             max="{{c.totalQuantityOnHand}}" divisible-by-presentation="{{c.presentation}}"/>
-                  </span>
+                    <input ng-show="c.lotsOnHand.length > 0"
+                           name="{{c.product.primaryName}} Batch {{c.lotsOnHand[0].lot.lotCode}}"
+                           numeric-validator="positiveInteger"
+                           maxlength="10"
+                           ng-model="c.lotsOnHand[0].quantity"
+                           ng-change="sumLots(c)"
+                           type="text"
+                           maximum="{{c.lotsOnHand[0].quantityOnHand}}"
+                           divisible-by-presentation="{{c.presentation}}"
+                           ng-disabled="c.lotsOnHand.length > 1 && c.lotsOnHand[1].quantity >0"/>
+                    <input ng-show="c.lotsOnHand.length ===0"
+                           name="{{c.product.primaryName}}"
+                           numeric-validator="positiveInteger"
+                           maxlength="10"
+                           maximum="{{c.totalQuantityOnHand}}"
+                           ng-model="c.quantity"
+                           ng-change="sumLots(c)"
+                           type="text"
+                           divisible-by-presentation="{{c.presentation}}"/>
                 </td>
 
                 <td rowspan="{{c.lotsOnHand.length}}" class="col-available cell-input number disabled"
@@ -169,21 +184,23 @@
                 </td>
 
 
-                <td class="col-available cell-input col-general number disabled" ng-class="{'last-row':$last}">
+                <td class="col-available cell-input col-general number disabled"
+                    ng-class="{'last-row':$last, 'max-error':lot.quantityOnHand < lot.quantity}">
                     <span   class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
                 </td>
 
-                <td ng-class="{'last-row':$last} " class="col-count cell-input col-general number disabled">
-                  <span class="cell-text " >
-                      <input ng-disabled="(c.quantityRequested < c.lotsOnHand[$index -1].quantityOnHand) || (c.quantityRequested > c.lotsOnHand[$index -1].quantityOnHand && (c.lotsOnHand[$index -1].quantity ===undefined || (c.lotsOnHand[$index -1].quantity < c.lotsOnHand[$index -1].quantityOnHand)))"
-                             name="quantityToIssue_{{$parent.$index}}_{{$index}}" numeric-validator="positiveInteger"
-                             maxlength="8" max="{{lot.quantityOnHand}}" divisible-by-presentation="{{c.presentation}}"
-                             ng-model="lot.quantity" ng-change="sumLots(c)" type="number" style="width: 180px;!important;"/>
-                  </span>
-                    <span class="field-error" ng-show="c.lotsOnHand[0].quantity.$error.required && showError"
-                                 openlmis-message="missing.value"></span>
-                    <span class="field-error" ng-show="orderRequisitionForm.requested_{{$index}}.$error.max"
-                                    ></span>
+                <td ng-class="{'last-row':$last, 'max-error':(c.lot.quantityOnHand < c.lot.quantity)} "
+                    class="col-count cell-input col-general number disabled">
+                    <input
+                            name="{{c.product.primaryName}} Batch {{lot.lot.lotCode}}"
+                            numeric-validator="positiveInteger"
+                            maxlength="8"
+                            maximum="{{lot.quantityOnHand}}"
+                            divisible-by-presentation="{{c.presentation}}"
+                            ng-model="lot.quantity" ng-change="sumLots(c)"
+                            ng-disabled="c.lotsOnHand[$index-1].quantity ===undefined || c.lotsOnHand[$index-1].quantity != c.lotsOnHand[$index-1].quantityOnHand ||
+                                        c.lotsOnHand[$index +1].quantity >0"
+                            type="text"/>
 
                 </td>
             </tr>
