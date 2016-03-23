@@ -101,6 +101,9 @@ public class OrderSummaryReportDataProvider extends ReportDataProvider {
     }
 
     private String getTitle(OrderReportParam orderReportParam) {
+        if(orderReportParam.getOrderId() == null || orderReportParam.getOrderId() == 0)
+            return "";
+
         Rnr rnr = requistionService.getLWById(orderReportParam.getOrderId());
         Program program = programService.getById(rnr.getProgram().getId());
         ProcessingPeriod period = periodService.getById(rnr.getPeriod().getId());
