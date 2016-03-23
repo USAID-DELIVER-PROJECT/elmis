@@ -4,7 +4,8 @@
     <form  novalidate>
         <div  class="clearfix">
             <!--<vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.districtWastage.product" on-change="districtWastageCallback()"></vaccine-product-filter>-->
-            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtWastage.period"  class="form-cell horizontalFilters" on-change="districtWastageCallback()"></vaccine-monthly-period-tree-filter>
+            <range-pagination field-label="label.district"  class="form-cell horizontalFilters" total="filter.totalDistrictWastage" range="filter.districtRange" offset="filter.districtWastageOffset" label-all="all districts" on-change="districtWastagePagination()"></range-pagination>
+            <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtWastage.period"  class="form-cell horizontalFilters" on-change="districtWastageCallback()"></vaccine-monthly-period-tree-filter>-->
         </div>
     </form>
 </div>

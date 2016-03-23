@@ -109,17 +109,19 @@ var utils = {
 
     },
 
-    getYearStartAndEnd: function (year,_cuttofdate) {
+    getYearStartAndEnd: function (year, _cuttofdate) {
 
-        var periodValues=[];
+        var periodValues = [];
         var endDate;
         var startDate;
-        if(year==='0'){
-            periodValues=utils.getVaccineCustomDateRange(1,null,null,_cuttofdate);
+        if (year === '0') {
+            periodValues = utils.getVaccineCustomDateRange(1, null, null, _cuttofdate);
 
-        }else {
-            periodValues={  enddate :utils.formatDate(new Date(year, 12, 0)),
-                startdate :utils.formatDate(new Date(year, 0, 1))};
+        } else {
+            periodValues = {
+                enddate: utils.formatDate(new Date(year, 12, 0)),
+                startdate: utils.formatDate(new Date(year, 0, 1))
+            };
         }
 
         return periodValues;
@@ -151,20 +153,20 @@ var utils = {
         }
         return 0;
     },
-    generatePeriodNamesForVaccineYear: function(year){
-        var periodList=[];
+    generatePeriodNamesForVaccineYear: function (year) {
+        var periodList = [];
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        for(var i=0;i<12;i++){
-            periodList[i]=months[i]+ " "+ year;
+        for (var i = 0; i < 12; i++) {
+            periodList[i] = months[i] + " " + year;
         }
         return periodList;
 
     },
-    generatePeriodNamesWithDashForVaccineYear: function(year){
-        var periodList=[];
+    generatePeriodNamesWithDashForVaccineYear: function (year) {
+        var periodList = [];
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        for(var i=0;i<12;i++){
-            periodList[i]=months[i]+ "-"+ year;
+        for (var i = 0; i < 12; i++) {
+            periodList[i] = months[i] + "-" + year;
         }
         return periodList;
 
@@ -175,6 +177,33 @@ var utils = {
         var year = dateValue.getFullYear();
         var formatedDate = ("0000" + year).slice(-4) + "-" + ("00" + monthIndex).slice(-2) + "-" + ("00" + day).slice(-2);
         return formatedDate;
+    },
+    getCustomizedStartAndEndDate: function (periodRange, _cutoffDate) {
+        var er = 0;
+        var endDate;
+        var startDate;
+
+        var currentDate = new Date();
+        var months = 0;
+        var monthBack = 0;
+        var currentDays = currentDate.getDate();
+        if (currentDays <= _cutoffDate) {
+            monthBack = 1;
+        }
+
+        endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
+        startDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1);
+
+        months = startDate.getMonth() - periodRange;
+
+        startDate.setMonth(months);
+
+        return {
+            startdate: utils.formatDate(startDate),
+            enddate: utils.formatDate(endDate)
+        };
+
+
     }
 
 

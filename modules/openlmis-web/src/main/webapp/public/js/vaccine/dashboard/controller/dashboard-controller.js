@@ -36,7 +36,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     InvestigatingDetails,
                                     investigatingDetailList,
                                     ContactList,isDistrictUser,
-                                    VaccineDashboardFacilityStock) {
+                                    VaccineDashboardFacilityStock,
+                                    settingValues) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -44,6 +45,11 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         openPanel: true
     };
 
+
+var monthlyDashletPeriods=utils.getCustomizedStartAndEndDate(settingValues.monthsRange, settingValues.cuttoff);
+
+    $scope.startDate=monthlyDashletPeriods.startdate;
+    $scope.endDate=monthlyDashletPeriods.enddate;
 
     var bcgVaccinated = " BCG Vaccinated";
     var mrVaccinated = " MR Vaccinated";
@@ -261,9 +267,11 @@ $scope.coverageCallBack= function(){
 
 };
     $scope.monthlyCoverageCallback = function () {
-        if (!isUndefined($scope.filter.monthlyCoverage.startDate) && !isUndefined($scope.filter.monthlyCoverage.endDate) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {
+
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {
+
             VaccineDashboardMonthlyCoverage.get({
-                startDate: $scope.filter.monthlyCoverage.startDate, endDate: $scope.filter.monthlyCoverage.endDate,
+                startDate: $scope.startDate, endDate: $scope.endDate,
                 product: $scope.filter.coverage.product
             }, function (data) {
                 $scope.monthlyCoverage.dataPoints = data.monthlyCoverage;
@@ -273,21 +281,26 @@ $scope.coverageCallBack= function(){
     };
 
     $scope.districtCoverageCallback = function () {
-        if (!isUndefined($scope.filter.districtCoverage.period) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {
+        if (!isUndefined($scope.filter.coverage.period) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {
             VaccineDashboardDistrictCoverage.get({
-                period: $scope.filter.districtCoverage.period,
+                period: $scope.filter.coverage.period,
                 product: $scope.filter.coverage.product
             }, function (data) {
-                $scope.districtCoverage.dataPoints = data.districtCoverage;
+                $scope.districtCoverage.data= data.districtCoverage;
+                if (!isUndefined($scope.districtCoverage.data)) {
+                    $scope.filter.totalDistrictCoverage = $scope.districtCoverage.data.length;
+                } else {
+                    $scope.filter.totalDistrictCoverage = 0;
+                }
             });
         }
     };
 
     $scope.facilityCoverageCallback = function () {
-        if (!isUndefined($scope.filter.facilityCoverage.period) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {
+        if (!isUndefined($scope.filter.coverage.period) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {
             //VaccineDashboardFacilityCoverage.get({period: $scope.filter.facilityCoverage.period,
             VaccineDashboardFacilityTrend.coverage({
-                period: $scope.filter.facilityCoverage.period,
+                period: $scope.filter.coverage.period,
                 product: $scope.filter.coverage.product
             }, function (data) {
                 $scope.facilityCoverage.data = data.facilityCoverage;
@@ -308,7 +321,12 @@ $scope.coverageCallBack= function(){
             $scope.facilityCoverage.dataPoints = $scope.facilityCoverage.data.slice(parseInt($scope.filter.facilityCoverageOffset, 10), s);
         }
     };
-
+    $scope.districtCoveragePagination = function () {
+        var s = parseInt($scope.filter.districtCoverageOffset, 10) + parseInt($scope.filter.districtRange, 10);
+        if (!isUndefined($scope.filter.districtCoverageOffset)) {
+            $scope.districtCoverage.dataPoints  = $scope.districtCoverage.data.slice(parseInt($scope.filter.districtCoverageOffset, 10), s);
+        }
+    };
     $scope.coverageDetailCallback = function () {
         if (!isUndefined($scope.filter.detailCoverage.startDate) && !isUndefined($scope.filter.detailCoverage.endDate) && !isUndefined($scope.filter.detailCoverage.product) && $scope.filter.detailCoverage.product !== 0) {
             // VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
@@ -360,36 +378,41 @@ $scope.coverageCallBack= function(){
         $scope.facilityDropoutCallback();
     };
     $scope.monthlyDropoutCallback = function () {
-        if (!isUndefined($scope.filter.monthlyDropout.startDate) && !isUndefined($scope.filter.monthlyDropout.endDate) && !isUndefined($scope.filter.dropout.product) && $scope.filter.dropout.product !== 0) {
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.dropout.product) && $scope.filter.dropout.product !== 0) {
             VaccineDashboardMonthlyDropout.get({
-                startDate: $scope.filter.monthlyDropout.startDate,
-                endDate: $scope.filter.monthlyDropout.endDate,
+                startDate: $scope.startDate,
+                endDate: $scope.endDate,
                 product: $scope.filter.dropout.product
             }, function (data) {
-                $scope.monthlyDropout.dataPoints = dropoutSelector(data.monthlyDropout, $scope.filter.monthlyDropout.product);
-                // alert("monthly:" + JSON.stringify($scope.monthlyDropout.dataPoints));
+                $scope.monthlyDropout.dataPoints = dropoutSelector(data.monthlyDropout, $scope.filter.dropout.product);
+
             });
         }
     };
 
     $scope.districtDropoutCallback = function () {
-        if (!isUndefined($scope.filter.districtDropout.period) && !isUndefined($scope.filter.dropout.product) && $scope.filter.dropout.product !== 0) {
+        if (!isUndefined($scope.filter.dropout.period) && !isUndefined($scope.filter.dropout.product) && $scope.filter.dropout.product !== 0) {
             VaccineDashboardDistrictDropout.get({
-                period: $scope.filter.districtDropout.period,
+                period: $scope.filter.dropout.period,
                 product: $scope.filter.dropout.product
             }, function (data) {
-                $scope.districtDropout.dataPoints = dropoutSelector(data.districtDropout, $scope.filter.districtDropout.product);
-                //alert("district:" + "period is " +$scope.filter.districtDropout.period + " * product is "+ $scope.filter.districtDropout.product + "*" + JSON.stringify($scope.districtDropout.dataPoints));
+                $scope.districtDropout.data = dropoutSelector(data.districtDropout, $scope.filter.dropout.product);
+                if (!isUndefined($scope.districtDropout.data)) {
+                    $scope.filter.totalDistrictDropout = $scope.districtDropout.data.length;
+                } else {
+                    $scope.filter.totalfacilityDropout = 0;
+                }
+
             });
         }
     };
 
     $scope.facilityDropoutCallback = function () {
 
-        if (!isUndefined($scope.filter.facilityDropout.period) && !isUndefined($scope.filter.dropout.product) && $scope.filter.dropout.product !== 0) {
+        if (!isUndefined($scope.filter.dropout.period) && !isUndefined($scope.filter.dropout.product) && $scope.filter.dropout.product !== 0) {
 
             VaccineDashboardFacilityTrend.dropout({
-                period: $scope.filter.facilityDropout.period,
+                period: $scope.filter.dropout.period,
                 product: $scope.filter.dropout.product
             }, function (data) {
                 $scope.facilityDropout.data = dropoutSelector(data.facilityDropout, $scope.filter.dropout.product);
@@ -412,7 +435,12 @@ $scope.coverageCallBack= function(){
             $scope.facilityDropout.dataPoints = $scope.facilityDropout.data.slice(parseInt($scope.filter.facilityDropoutOffset, 10), s);
         }
     };
-
+    $scope.districtDropoutPagination = function () {
+        var s = parseInt($scope.filter.districtDropoutOffset, 10) + parseInt($scope.filter.districtRange, 10);
+        if (!isUndefined($scope.filter.districtDropoutOffset)) {
+            $scope.districtDropout.dataPoints  = $scope.districtDropout.data.slice(parseInt($scope.filter.districtDropoutOffset, 10), s);
+        }
+    };
     $scope.dropoutDetailCallback = function () {
         if (!isUndefined($scope.filter.detailDropout.startDate) && !isUndefined($scope.filter.detailDropout.endDate) && !isUndefined($scope.filter.detailDropout.product) && $scope.filter.detailDropout.product !== 0) {
 
@@ -459,9 +487,9 @@ $scope.coverageCallBack= function(){
         $scope.facilityWastageCallback();
     };
     $scope.monthlyWastageCallback = function () {
-        if (!isUndefined($scope.filter.monthlyWastage.startDate) && !isUndefined($scope.filter.monthlyWastage.endDate) && !isUndefined($scope.filter.wastage.product) && $scope.filter.wastage.product !== 0) {
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.wastage.product) && $scope.filter.wastage.product !== 0) {
             VaccineDashboardMonthlyWastage.get({
-                startDate: $scope.filter.monthlyWastage.startDate, endDate: $scope.filter.monthlyWastage.endDate,
+                startDate: $scope.startDate, endDate: $scope.endDate,
                 product: $scope.filter.wastage.product
             }, function (data) {
                 $scope.monthlyWastage.dataPoints = data.wastageMonthly;
@@ -470,20 +498,27 @@ $scope.coverageCallBack= function(){
     };
 
     $scope.districtWastageCallback = function () {
-        if (!isUndefined($scope.filter.districtWastage.period) && !isUndefined($scope.filter.wastage.product) && $scope.filter.wastage.product !== 0) {
+        if (!isUndefined($scope.filter.wastage.period) && !isUndefined($scope.filter.wastage.product) && $scope.filter.wastage.product !== 0) {
             VaccineDashboardDistrictWastage.get({
-                period: $scope.filter.districtWastage.period,
+                period: $scope.filter.wastage.period,
                 product: $scope.filter.wastage.product
             }, function (data) {
-                $scope.districtWastage.dataPoints = data.districtWastage;
+                $scope.districtWastage.data = data.districtWastage;
+                if (!isUndefined($scope.facilityWastage.data)) {
+
+                    $scope.filter.totalDistrictWastage = $scope.districtWastage.data.length;
+                    // $scope.facilityWastagePagination();
+                } else {
+                    $scope.filter.totalDistrictWastage = 0;
+                }
             });
         }
     };
 
     $scope.facilityWastageCallback = function () {
-        if (!isUndefined($scope.filter.facilityWastage.period) && !isUndefined($scope.filter.wastage.product) && $scope.filter.wastage.product !== 0) {
+        if (!isUndefined($scope.filter.wastage.period) && !isUndefined($scope.filter.wastage.product) && $scope.filter.wastage.product !== 0) {
             VaccineDashboardFacilityTrend.wastage({
-                period: $scope.filter.facilityWastage.period,
+                period: $scope.filter.wastage.period,
                 product: $scope.filter.wastage.product
             }, function (data) {
                 $scope.facilityWastage.data = data.facilityWastage;
@@ -504,12 +539,17 @@ $scope.coverageCallBack= function(){
             $scope.facilityWastage.dataPoints = $scope.facilityWastage.data.slice(parseInt($scope.filter.facilityWastageOffset, 10), s);
         }
     };
-
+    $scope.districtWastagePagination = function () {
+        var s = parseInt($scope.filter.districtWastageOffset, 10) + parseInt($scope.filter.districtRange, 10);
+        if (!isUndefined($scope.filter.districtWastageOffset)) {
+            $scope.districtWastage.dataPoints  = $scope.districtWastage.data.slice(parseInt($scope.filter.districtWastageOffset, 10), s);
+        }
+    };
     $scope.wastageDetailCallback = function () {
-        if (!isUndefined($scope.filter.detailWastage.startDate) && !isUndefined($scope.filter.detailWastage.endDate) && !isUndefined($scope.filter.detailWastage.product) && $scope.filter.detailWastage.product !== 0) {
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.detailWastage.product) && $scope.filter.detailWastage.product !== 0) {
 
             VaccineDashboardFacilityTrend.wastageDetails({
-                startDate: $scope.filter.detailWastage.startDate, endDate: $scope.filter.detailWastage.endDate,
+                startDate: $scop.startDate, endDate: $scope.endDate,
                 product: $scope.filter.detailWastage.product
             }, function (data) {
 
@@ -549,10 +589,10 @@ $scope.coverageCallBack= function(){
         $scope.facilitySessionsCallback();
     };
     $scope.monthlySessionsCallback = function () {
-        if (!isUndefined($scope.filter.monthlySessions.startDate) && !isUndefined($scope.filter.monthlySessions.endDate)) {
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate)) {
             VaccineDashboardSessions.get({
-                startDate: $scope.filter.monthlySessions.startDate,
-                endDate: $scope.filter.monthlySessions.endDate
+                startDate: $scope.startDate,
+                endDate: $scope.endDate
             }, function (data) {
 
                 $scope.monthlySessions.dataPoints = data.monthlySessions;
@@ -560,17 +600,22 @@ $scope.coverageCallBack= function(){
         }
     };
     $scope.districtSessionsCallback = function () {
-        if (!isUndefined($scope.filter.districtSessions.period)) {
-            VaccineDashboardDistrictSessions.get({period: $scope.filter.districtSessions.period}, function (data) {
+        if (!isUndefined($scope.filter.sessions.period)) {
+            VaccineDashboardDistrictSessions.get({period: $scope.filter.sessions.period}, function (data) {
 
-                $scope.districtSessions.dataPoints = data.districtSessions;
+                $scope.districtSessions.data= data.districtSessions;
+                if (!isUndefined($scope.districtSessions.data)) {
+                    $scope.filter.districtSessions = $scope.districtSessions.data.length;
+                } else {
+                    $scope.filter.districtSessions = 0;
+                }
             });
         }
     };
 
     $scope.facilitySessionsCallback = function () {
-        if (!isUndefined($scope.filter.facilitySessions.period)) {
-            VaccineDashboardFacilityTrend.sessions({period: $scope.filter.facilitySessions.period}, function (data) {
+        if (!isUndefined($scope.filter.sessions.period)) {
+            VaccineDashboardFacilityTrend.sessions({period: $scope.filter.sessions.period}, function (data) {
                 $scope.facilitySessions.data = data.facilitySessions;
                 if (!isUndefined($scope.facilitySessions.data)) {
                     $scope.filter.totalFacilitySessions = $scope.facilitySessions.data.length;
@@ -589,7 +634,12 @@ $scope.coverageCallBack= function(){
             $scope.facilitySessions.dataPoints = $scope.facilitySessions.data.slice(parseInt($scope.filter.facilitySessionsOffset, 10), s);
         }
     };
-
+    $scope.districtSessionsPagination = function () {
+        var s = parseInt($scope.filter.districtSessionsOffset, 10) + parseInt($scope.filter.districtRange, 10);
+        if (!isUndefined($scope.filter.districtSessionsOffset)) {
+            $scope.districtSessions.dataPoints  = $scope.districtSessions.data.slice(parseInt($scope.filter.districtSessionsOffset, 10), s);
+        }
+    };
     $scope.sessionDetailCallback = function () {
         if (!isUndefined($scope.filter.detailSessions.startDate) && !isUndefined($scope.filter.detailSessions.endDate)) {
 
@@ -1009,7 +1059,7 @@ $scope.coverageCallBack= function(){
 
 
         if (dropoutList, selectedProduct === $scope.dtpDropoutId) {
-            // alert($scope.filter.monthlyDropout.product);
+
             bcgDropout = messageService.get('label.dtp.dropout');
             bcgVaccinated = messageService.get('label.dtp1.vaccinated');
             mrVaccinated = messageService.get('label.dtp3.vaccinated');
@@ -1026,7 +1076,7 @@ $scope.coverageCallBack= function(){
             mrVaccinated = messageService.get('label.mr.vaccinated');
         }
 
-        // alert(bcgDropout + "*" + bcgVaccinated + "*" + mrVaccinated);
+
 
         return dropoutList;
     }
@@ -1105,6 +1155,33 @@ VaccineDashboardController.resolve = {
             deferred.resolve(helps);
 
         }, 100);
+        return deferred.promise;
+    },
+    settingValues: function($q, $timeout,SettingsByKey){
+        var deferred = $q.defer();
+        var settings = {};
+
+        $timeout(function(){
+
+            SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    settings.cuttoff = data.settings.value;
+                }else{
+                    settings.cuttoff=10;
+                }
+
+            });
+            SettingsByKey.get({key: 'VCP_DASHBOARD_MONTHS_RANGE'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings) &&!utils.isNullOrUndefined(data.settings.value)) {
+                    settings.monthsRange = data.settings.value;
+                }else{
+                    settings.monthsRange=6;
+                }
+
+            });
+
+            deferred.resolve(settings);
+        },100);
         return deferred.promise;
     },
     defaultProduct: function ($q, $timeout, SettingsByKey) {
@@ -1216,6 +1293,7 @@ VaccineDashboardController.resolve = {
         return deferred.promise;
 
     },
+
     isDistrictUser: function ($q, $timeout, IsDistrictUser) {
         var deferred = $q.defer();
         $timeout(function () {

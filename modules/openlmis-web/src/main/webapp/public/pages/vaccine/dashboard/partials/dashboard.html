@@ -21,13 +21,16 @@
     }
     .header-section-title{
         background-color: lightblue;
-        font-size: 1.2em;
+        font-size: 1em;
         font-weight: bold;
-        margin-top: 15px;
+        margin-top: 35px;
         float:left;
         padding-right: 20px;
-        height: 50px;
-        align-content: center;
+        height: 26px;
+     vertical-align: bottom;
+    }
+    .filter-place-holder{
+        min-height: 65px;
     }
 </style>
 <script type="text/ng-template" id="myModalContent.html">
@@ -371,6 +374,7 @@
             <div class="clearfix" >
             <span class="form-cell horizontalFilters header-section-title" openlmis-message="title.coverage"></span>
                 <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.coverage.product" on-change="coverageCallBack()"></vaccine-product-filter>
+                <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.coverage.period"  class="form-cell horizontalFilters" on-change="coverageCallBack()"></vaccine-monthly-period-tree-filter>
             </div>
                 <div class="dashlet-container">
 
@@ -396,7 +400,7 @@
 <div class="clearfix">
     <span class="header-section-title" openlmis-message="title.dropout"></span>
     <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.dropout.product" on-change="dropoutCallback()"></vaccine-product-filter>
-
+    <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.dropout.period"  class="form-cell horizontalFilters" on-change="dropoutCallback()"></vaccine-monthly-period-tree-filter>
 </div>
 
             <div class="dashlet-container" >
@@ -419,7 +423,7 @@
             <div class="clearfix">
                 <span class="header-section-title" openlmis-message="title.westage.rate"></span>
                 <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.wastage.product" on-change="wastageCallback ()"></vaccine-product-filter>
-
+                <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.wastage.period"  class="form-cell horizontalFilters" on-change="wastageCallback()"></vaccine-monthly-period-tree-filter>
             </div>
 
 
@@ -450,7 +454,7 @@
             <div class="clearfix">
                 <span class="header-section-title" openlmis-message="title.sessions"></span>
                 <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.sessions.product" on-change="sessionsCallback()"></vaccine-product-filter>
-
+                <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.sessions.period"  class="form-cell horizontalFilters" on-change="sessionsCallback()"></vaccine-monthly-period-tree-filter>
             </div>
             <div class="dashlet-container">
 

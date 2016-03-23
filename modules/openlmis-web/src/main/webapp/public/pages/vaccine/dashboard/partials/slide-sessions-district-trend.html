@@ -3,7 +3,8 @@
 <div class="app-form vaccine-form-filter">
     <form  name="districtSessionForm" novalidate>
         <div  class="clearfix">
-            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtSessions.period"  class="form-cell horizontalFilters" on-change="districtSessionsCallback()"></vaccine-monthly-period-tree-filter>
+            <range-pagination field-label="label.district"  class="form-cell horizontalFilters" total="filter.districtSessions" range="filter.districtRange" offset="filter.districtSessionsOffset" label-all="all districts" on-change="districtSessionsPagination()"></range-pagination>
+            <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtSessions.period"  class="form-cell horizontalFilters" on-change="districtSessionsCallback()"></vaccine-monthly-period-tree-filter>-->
         </div>
     </form>
 </div>
