@@ -367,7 +367,9 @@ public interface VaccineDashboardMapper {
          * ---------------- Wastage ------------------------------------
         */
         @Select("with temp as (\n" +
-                "select period_name, period_start_date::date,\n" +
+                "select period_name, period_start_date::date," +
+                " sum(COALESCE(vaccinated,0)) vaccinated,\n" +
+                " sum(COALESCE(usage_denominator,0)) usage_denominator, \n" +
                 "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +
                 "THEN (100 - round(sum(COALESCE(vaccinated,0)) / (sum(COALESCE(usage_denominator,0))), 4) * 100)\n" +
                 "else 0\n" +
@@ -377,7 +379,7 @@ public interface VaccineDashboardMapper {
                 "and product_id = #{product}\n" +
                 "and vss.product_category_code = 'Vaccine'\n" +
                 "group by 1,2 \n" +
-                ")select t.period_name, t.period_start_date, wastage_rate\n" +
+                ")select t.period_name, t.period_start_date, wastage_rate, t.vaccinated, t.usage_denominator\n" +
                 "from temp t\n" +
                 "where wastage_rate > 0\n" +
                 "order by 2")
@@ -386,6 +388,8 @@ public interface VaccineDashboardMapper {
         /* */
         @Select("with temp as (\n" +
                 "select geographic_zone_name,\n" +
+                " sum(COALESCE(vaccinated,0)) vaccinated,\n" +
+                " sum(COALESCE(usage_denominator,0)) usage_denominator, \n" +
                 "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +
                 "THEN (100 - round(sum(COALESCE(vaccinated,0)) / (sum(COALESCE(usage_denominator,0))), 4) * 100)\n" +
                 "else 0\n" +
@@ -395,7 +399,7 @@ public interface VaccineDashboardMapper {
                 "and product_id = #{product}\n" +
                 "and vss.product_category_code = 'Vaccine'\n" +
                 "group by 1 )\n" +
-                "select t.geographic_zone_name, wastage_rate\n" +
+                "select t.geographic_zone_name, wastage_rate, t.vaccinated, t.usage_denominator\n" +
                 "from temp t\n" +
                 "where wastage_rate > 0\n")
         List<HashMap<String, Object>> getWastageByDistrict(@Param("period") Long period, @Param("product") Long product);
@@ -404,6 +408,8 @@ public interface VaccineDashboardMapper {
         @Select("SELECT \n" +
                 "d.district_name,  \n" +
                 "ss.facility_name,\n" +
+                " COALESCE(vaccinated,0) vaccinated,\n" +
+                "COALESCE(usage_denominator,0) usage_denominator, \n" +
                 "usage_rate,\n" +
                 "wastage_rate \n" +
                 "FROM  \n" +

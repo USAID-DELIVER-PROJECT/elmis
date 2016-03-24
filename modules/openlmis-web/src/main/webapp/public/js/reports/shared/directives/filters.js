@@ -1484,14 +1484,10 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
                 $scope.range = range;
 
                 $scope.pages = getRange($scope.total, $scope.range);
-                if (!isUndefined($scope.pages) && $scope.total <= $scope.range) {
 
-                    $scope.offset = -1;
-                    $scope.pages.unshift({offset: -1, range: $scope.range, value: $scope.labelAll});
-                } else {
 
                     $scope.offset = 0;
-                }
+
             };
 
             $scope.$watch('offset', function () {

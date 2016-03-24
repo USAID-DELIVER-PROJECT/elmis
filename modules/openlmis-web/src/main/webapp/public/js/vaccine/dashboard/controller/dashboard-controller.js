@@ -145,8 +145,10 @@ $scope.district_user_level=isDistrictUser.district_user;
     //////////////////////////////////////////////////////////////////////////
     $scope.monthlyWastage = {
         dataPoints: [],
-        dataColumns: [{
-            "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "line"
+        dataColumns: [
+            {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "bar"},
+            { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
+            { "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "line"
         }
         ],
         dataX: {"id": "period_name"}
@@ -154,8 +156,10 @@ $scope.district_user_level=isDistrictUser.district_user;
 
     $scope.districtWastage = {
         dataPoints: [],
-        dataColumns: [{
-            "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "scatter"
+        dataColumns: [
+            {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "bar"},
+            { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
+            { "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "scatter"
         }
         ],
         dataX: {"id": "geographic_zone_name"}
@@ -165,7 +169,9 @@ $scope.district_user_level=isDistrictUser.district_user;
         dataPoints: [],
         dataColumns: [{
         },
-            {"id": "usage_rate", "name": messageService.get('label.actual'), "type": "bar"}
+            {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "bar"},
+            { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
+            {"id": "wastage_rate", "name": messageService.get('label.actual'), "type": "bar"}
         ],
         dataX: {"id": "facility_name"}
     };
