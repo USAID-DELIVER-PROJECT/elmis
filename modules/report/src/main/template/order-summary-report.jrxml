@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order-summary-report" language="groovy" pageWidth="595" pageHeight="842" columnWidth="545" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="51"/>
 	<property name="ireport.y" value="16"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -681,46 +681,46 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="34" splitType="Stretch">
+		<band height="51" splitType="Stretch">
 			<textField>
-				<reportElement x="59" y="0" width="35" height="22" uuid="045878dc-8c84-413b-88c7-19c986a1f475"/>
+				<reportElement x="59" y="0" width="70" height="18" uuid="045878dc-8c84-413b-88c7-19c986a1f475"/>
 				<textFieldExpression><![CDATA[$P{PROGRAM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="220" y="0" width="47" height="22" uuid="832d8532-df92-4dc2-80b5-2732059c0938"/>
+				<reportElement x="268" y="0" width="81" height="18" uuid="832d8532-df92-4dc2-80b5-2732059c0938"/>
 				<textFieldExpression><![CDATA[$P{SCHEDULE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="0" width="52" height="22" uuid="e49dc9bf-0063-45f3-8a1f-08be6cc8ad32"/>
+				<reportElement x="155" y="0" width="52" height="18" uuid="e49dc9bf-0063-45f3-8a1f-08be6cc8ad32"/>
 				<textFieldExpression><![CDATA[$P{YEAR}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="327" y="0" width="64" height="22" uuid="6d841637-171c-4a03-8f68-d696d07498c2"/>
+				<reportElement x="388" y="0" width="153" height="18" uuid="6d841637-171c-4a03-8f68-d696d07498c2"/>
 				<textFieldExpression><![CDATA[$P{PERIOD}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="11" y="20" width="48" height="18" uuid="09c583d1-2779-42e2-9a6f-956ab291c5ad"/>
+				<text><![CDATA[Depot:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="0" width="48" height="18" uuid="2d84fc3a-d0d1-4054-a2e4-cc85a3e69fbd"/>
+				<text><![CDATA[Program:]]></text>
+			</staticText>
 			<textField>
-				<reportElement x="470" y="0" width="56" height="22" uuid="8f02b9ca-e0dc-4d7d-b903-3b63939c32a7"/>
+				<reportElement x="59" y="20" width="421" height="18" uuid="8f02b9ca-e0dc-4d7d-b903-3b63939c32a7"/>
 				<textFieldExpression><![CDATA[$P{DEPOT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="11" y="0" width="48" height="22" uuid="2d84fc3a-d0d1-4054-a2e4-cc85a3e69fbd"/>
-				<text><![CDATA[Program:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="94" y="0" width="26" height="22" uuid="0be9f6d3-a326-4c05-b8fc-0487f13eff4d"/>
+				<reportElement x="129" y="0" width="26" height="18" uuid="0be9f6d3-a326-4c05-b8fc-0487f13eff4d"/>
 				<text><![CDATA[Year:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="172" y="0" width="48" height="22" uuid="44f1ff16-9476-4157-b7ae-9dd6bf9e5a72"/>
-				<text><![CDATA[Schedule:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="288" y="0" width="34" height="22" uuid="5b6328f0-8932-44b2-98a2-4dac43b5d0ab"/>
+				<reportElement x="349" y="0" width="34" height="18" uuid="5b6328f0-8932-44b2-98a2-4dac43b5d0ab"/>
 				<text><![CDATA[Period:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="430" y="0" width="36" height="22" uuid="09c583d1-2779-42e2-9a6f-956ab291c5ad"/>
-				<text><![CDATA[Depot:]]></text>
+				<reportElement x="220" y="0" width="48" height="18" uuid="44f1ff16-9476-4157-b7ae-9dd6bf9e5a72"/>
+				<text><![CDATA[Schedule:]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
