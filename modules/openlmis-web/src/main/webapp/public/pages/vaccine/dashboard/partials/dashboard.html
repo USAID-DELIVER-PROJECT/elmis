@@ -30,7 +30,7 @@
      vertical-align: bottom;
     }
     .filter-place-holder{
-        min-height: 65px;
+        min-height: 50px;
     }
 </style>
 <script type="text/ng-template" id="myModalContent.html">
@@ -459,7 +459,7 @@
 
             <div class="clearfix">
                 <span class="header-section-title" openlmis-message="title.sessions"></span>
-                <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.sessions.product" on-change="sessionsCallback()"></vaccine-product-filter>
+
                 <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.sessions.period"  class="form-cell horizontalFilters" on-change="sessionsCallback()"></vaccine-monthly-period-tree-filter>
             </div>
             <div class="dashlet-container">

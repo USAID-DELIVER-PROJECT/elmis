@@ -203,9 +203,55 @@ var utils = {
             enddate: utils.formatDate(endDate)
         };
 
+    },
 
+    getDistrictBasedReportDataWithSubAndGrandTotal : function(reportData, districtNameKey,
+                                                              columnKeys, includeGrandTotal){
+        if(reportData.length === 0)
+            return;
+
+        var uniqueDistrictName = _.uniq(_.pluck(reportData, districtNameKey));
+        var reportDataWithAggregates = [];
+        var grandTotal = {};
+
+        _.each(uniqueDistrictName, function(districtName) {
+
+            var district_total = {};
+            var districtData = _.where(reportData, {district_name: districtName});
+
+            reportDataWithAggregates.push({data: districtData});
+
+            if (districtData.length > 1) {
+
+                _.each(columnKeys, function (columnKey) {
+                    district_total[columnKey] = utils.getColumnSubTotal(reportData, districtName, columnKey);
+                });
+
+                reportDataWithAggregates.push({subtotal: district_total});
+            }
+
+        });
+
+        // Calculate grand Total
+        if(includeGrandTotal) {
+
+            _.each(columnKeys, function (columnKey) {
+                grandTotal[columnKey] = utils.getGrandTotal(reportData, districtNameKey, columnKey);
+            });
+
+            reportDataWithAggregates.push({grandtotal: grandTotal});
+        }
+
+        return reportDataWithAggregates;
+    },
+
+    getColumnSubTotal: function(reportData, districtName, columnToBeAgregated){
+        return _.chain(reportData).where({district_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
+    },
+
+    getGrandTotal: function(reportData, columnToBeAgregated){
+        return _.chain(reportData).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
     }
-
 
 };
 
