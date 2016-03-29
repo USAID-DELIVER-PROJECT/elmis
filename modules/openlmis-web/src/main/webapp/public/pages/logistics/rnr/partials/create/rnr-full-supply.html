@@ -110,7 +110,7 @@
               ng-class="getCellErrorClass(rnrLineItem)" class="position-relative">
             <input id="{{getId(column.name, $parent)}}" type="text"
                    ng-required="true"
-                   ng-disabled="formDisabled || rnrLineItem.skipped"
+                   ng-disabled="formDisabled || rnrLineItem.skipped || (column.calculationOption == 'LOCK_DATA_ENTRY')"
                    name="beginningBalance{{rnrLineItem['id']}}"
                    ng-model="rnrLineItem[column.name]"
                    numeric-validator="positiveInteger" maxlength="8"

@@ -26,38 +26,32 @@
         min-width: 60px;
         max-width: 123px;
     }
+
+    .aggregate-row{
+        border-top: 2px #000 solid !important;
+        font-weight:bold;
+    }
 </style>
-<div class="alert alert-success" id="saveSuccessMsgDiv" ng-bind="message" ng-show="message"/>
 
 <div class="row-fluid">
     <div class="box span12">
         <div class="box-header">
-
-            <h2 openlmis-message="report.status.vaccination.received.permonth.report"><i class="icon-edit"></i><span
-                    class="break"></span>
-            </h2>
-
-            <div class="box-icon">
-
-            </div>
+            <h2 openlmis-message="report.status.vaccination.received.permonth.report"><i class="icon-edit"></i><span class="break"></span></h2>
+            <div class="box-icon"></div>
         </div>
         <div>
-
             <div class="app-form " style="padding: 5px;">
-
                 <form ng-submit="filterGrid()" name="filterForm" novalidate>
                     <div class="clearfix">
-
-                        <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
-                                             faccility="true" pro="filter.program" user_geo_level="user_geo_level"
-                                             zones="zones" val="filter.zone"></vaccine-zone-filter>
-                        <vaccine-product-filter class="form-cell horizontalFilters" default="defaultProduct"
-                                                cm-model="filter.product"
-                        "></vaccine-product-filter>
-
-                        <!--<static-period-filter range="range" startdate="filter.periodStart" enddate="filter.periodEnd"-->
-                                              <!--rangemax="10" error="perioderror"></static-period-filter>-->
-
+                        <vaccine-zone-filter class="horizontalFilters form-cell"
+                                             facilityid="filter.facility"
+                                             faccility="true"
+                                             pro="filter.program"
+                                             user_geo_level="user_geo_level"
+                                             zones="zones"
+                                             val="filter.zone">
+                        </vaccine-zone-filter>
+                        <vaccine-product-filter class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.product"></vaccine-product-filter>
                         <static-year-filter year="year" startdate="filter.periodStart" enddate="filter.periodEnd" ></static-year-filter>
                         <br/>
                     </div>
@@ -79,7 +73,6 @@
             </div>
 
             <div class="content-body">
-
                 <table client-side-sort-pagination class="table table-bordered"
                        ng-show="data == undefined || data.length == 0">
                     <tr>
@@ -88,169 +81,50 @@
                 </table>
 
                 <div ng-show="data.length > 0">
-
-
-                    <table id="fullSupplyTable" ng-show="datarows.length > 0"
-                           class="rnr-table table-bordered table"
-                           ng-table="tableParams">
+                    <table id="fullSupplyTable" ng-show="datarows.length > 0" class="rnr-table table-bordered table" ng-table="tableParams">
                         <thead>
-                        <tr>
-                            <th rowspan="2">
-                                <span openlmis-message="label.region">	</span>
-                            </th>
-                            <th rowspan="2"
-                                style=" width: 40px">
-                                <span openlmis-message="label.district">	 </span>
-                            </th>
-                            <th ng-if="reportType==true" rowspan="2"
-                                style=" width: 40px">
-                                <span openlmis-message="label.facility">	 </span>
-                            </th>
-
-                            <th rowspan="2">
-                                <span openlmis-message="label.period"></span>
-
-                            </th>
-                            <th rowspan="2" style="width: 30px;width: 10px">
-                                <span openlmis-message="label.population"></span>
-
-                            </th>
-                            <th colspan="6" style="width: 30px; text-align: center; vertical-align: middle">
-                                <span openlmis-message=" "></span>
-
-                            </th>
-
+                            <th openlmis-message="label.region"/>
+                            <th openlmis-message="label.district"/>
+                            <th ng-if="reportType==true" openlmis-message="label.facility"/>
+                            <th openlmis-message="label.period"/>
+                            <th openlmis-message="label.population"/>
+                            <th><span openlmis-message="label.vaccine.supply.status.received"></span></th>
+                            <th><span openlmis-message="label.vaccine.supply.status.onhand"></span></th>
+                            <th> <span openlmis-message="label.vaccine.supply.status.issued"></span></th>
+                            <th><span openlmis-message="label.vaccine.supply.status.used"></span></th>
+                            <th><span openlmis-message="label.vaccine.supply.status.wastage"></span></th>
+                            <th style="max-width: 30px "><span openlmis-message="label.vaccine.supply.status.administered"></span></th>
                         </tr>
-
-                        <tr>
-                            <th>
-                                <span openlmis-message="label.vaccine.supply.status.received"></span>
-
-                            </th>
-                            <th>
-                                <span openlmis-message="label.vaccine.supply.status.onhand"></span>
-
-                            </th>
-                            <th>
-                                <span openlmis-message="label.vaccine.supply.status.issued"></span>
-
-                            </th>
-                            <th>
-                                <span openlmis-message="label.vaccine.supply.status.used"></span>
-
-                            </th>
-                            <th>
-                                <span openlmis-message="label.vaccine.supply.status.wastage"></span>
-
-                            </th>
-                            <th style="max-width: 30px ">
-                                <span openlmis-message="label.vaccine.supply.status.administered"></span>
-
-                            </th>
-                        </tr>
-                        <tr style="height: 15px">
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th ng-if="reportType==true">
-                                <span></span>
-
-                            </th>
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th>
-                                <span></span>
-
-                            </th>
-                            <th >
-                                <span ></span>
-
-                            </th>
-
-                        </tr>
-
                         </thead>
                         <tbody>
-
-                        <tr ng-repeat="subRow in data">
-
-                            <td
-
-                                    >
-
-
-                        <span ng-if="data[$index-1].region_name!=subRow.region_name"
-
-                              ng-bind="subRow.region_name"></span>
-                            </td>
-                            <td><span ng-if="data[$index-1].district_name!=subRow.district_name"
-
-                                      ng-bind="subRow.district_name"></span></td>
-
-                            <td ng-if="reportType==true"><span
-                                    ng-if="data[$index-1].facility_name!=subRow.facility_name"
-
-                                    ng-bind="subRow.facility_name"></span></td>
-
-
-                            <td ng-bind="subRow.period_name"
-                                ng-style="{'text-align':'right'}"/>
-
-                            <td ng-bind="subRow.targetpopulation| number"
-                                ng-style="{'text-align':'right'}"/>
-
-                            <td ng-bind="subRow.received| number"
-                                ng-style="{'text-align':'right'}"/>
-
-
-                            <td ng-bind="subRow.onhand| number"
-                                ng-style="{'text-align':'right'}"/>
-
-
-                            <td ng-bind="subRow.issued| number"
-                                ng-style="{'text-align':'right'}"/>
-
-                            <td ng-bind="subRow.used| number"
-                                ng-style="{'text-align':'right'}"/>
-                            <td ng-bind="subRow.wasted| number"
-                                ng-style="{'text-align':'right'}"/>
-
-                            <td ng-bind="subRow.administered| number"
-                                ng-style="{'text-align':'right'}"/>
-
+                        <tr ng-repeat-start="d in datarows"></tr>
+                        <tr ng-repeat="subRow in d.data">
+                            <td><span ng-if="data[$index-1].region_name!=subRow.region_name" ng-bind="subRow.region_name"></span></td>
+                            <td><span ng-if="data[$index-1].district_name!=subRow.district_name" ng-bind="subRow.district_name"></span></td>
+                            <td ng-if="reportType==true"><span ng-if="data[$index-1].facility_name!=subRow.facility_name" ng-bind="subRow.facility_name"></span></td>
+                            <td ng-bind="subRow.period_name"  ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.targetpopulation | number" ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.received | number" ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.onhand | number" ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.issued | number" ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.used | number" ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.wasted | number" ng-style="{'text-align':'right'}"/>
+                            <td ng-bind="subRow.administered | number"  ng-style="{'text-align':'right'}"/>
                         </tr>
-
+                        <tr ng-repeat-end ng-if="d.subtotal" class="aggregate-row">
+                            <td></td>
+                            <td></td>
+                            <td class="number aggregate-row">Sub Total</td>
+                            <td class="number aggregate-row">{{d.subtotal.targetpopulation | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.received | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.onhand | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.issued | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.used | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.wasted | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.administered | number}}</td>
+                        </tr>
                         </tbody>
-
-                        <tfoot style="'border-top-style':'solid'; 'border-top-color': 'black'; 'border-top-width': '2px'"
-                                >
+                        <tfoot style="'border-top-style':'solid'; 'border-top-color': 'black'; 'border-top-width': '2px'">
                         <tr>
                             <td ng-if="reportType==false" colspan="2"/>
                             <td ng-if="reportType==true" colspan="3"/>
@@ -284,11 +158,10 @@
                             </td>
                         </tr>
                         </tfoot>
-                    </table>
+                        </table>
                 </div>
 
                 <div ng-show="regionrows.length > 0">
-
                     <table id="dropOutRegiontReport" ng-show="regionrows.length > 0"
                            class="rnr-table table-bordered table"
                            ng-table="tableParams">
@@ -297,8 +170,6 @@
                             <th rowspan="2">
                                 <span openlmis-message="label.region">	</span>
                             </th>
-
-
                             <th rowspan="2">
                                 <span openlmis-message="label.period"></span>
 
@@ -309,11 +180,8 @@
                             </th>
                             <th colspan="6" style=" text-align: center; vertical-align: middle">
                                 <span openlmis-message=""></span>
-
                             </th>
-
                         </tr>
-
                         <tr>
                             <th>
                                 <span openlmis-message="label.vaccine.supply.status.received"></span>
