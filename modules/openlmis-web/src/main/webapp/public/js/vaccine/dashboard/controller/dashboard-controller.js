@@ -72,8 +72,8 @@ $scope.district_user_level=isDistrictUser.district_user;
             "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"
         },
 
-            {"id": "target", "name": messageService.get('label.target'), "type": "bar"},
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"}
+            {"id": "target", "name": messageService.get('label.target'), "type": "area"},
+            {"id": "actual", "name": messageService.get('label.actual'), "type": "area"}
         ],
         dataX: {"id": "period_name"}
     };
@@ -112,8 +112,8 @@ $scope.district_user_level=isDistrictUser.district_user;
         dataColumns: [{
             "id": "bcg_mr_dropout", "name": bcgDropout, "type": "line"
         },
-            {"id": "bcg_vaccinated", "name": bcgVaccinated, "type": "bar"},
-            {"id": "mr_vaccinated", "name": mrVaccinated, "type": "bar"}
+            {"id": "bcg_vaccinated", "name": bcgVaccinated, "type": "area"},
+            {"id": "mr_vaccinated", "name": mrVaccinated, "type": "area"}
         ],
         dataX: {"id": "period_name"}
     };
@@ -146,8 +146,8 @@ $scope.district_user_level=isDistrictUser.district_user;
     $scope.monthlyWastage = {
         dataPoints: [],
         dataColumns: [
-            {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "bar"},
-            { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
+            {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "area"},
+            { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "area"},
             { "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "line"
         }
         ],
@@ -171,7 +171,7 @@ $scope.district_user_level=isDistrictUser.district_user;
         },
             {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "bar"},
             { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
-            {"id": "wastage_rate", "name": messageService.get('label.actual'), "type": "bar"}
+            {"id": "wastage_rate", "name": messageService.get('label.actual'), "type": "scatter"}
         ],
         dataX: {"id": "facility_name"}
     };
@@ -184,9 +184,9 @@ $scope.district_user_level=isDistrictUser.district_user;
         dataColumns: [{
             "id": "outreach_sessions",
             "name": messageService.get('label.outreach.sessions'),
-            "type": "bar"
+            "type": "area"
         },
-            {"id": "fixed_sessions", "name": messageService.get('label.fixed.sessions'), "type": "bar"}],
+            {"id": "fixed_sessions", "name": messageService.get('label.fixed.sessions'), "type": "area"}],
         dataX: {"id": "period_name"}
     };
 
