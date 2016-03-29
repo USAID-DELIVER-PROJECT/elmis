@@ -20,10 +20,10 @@
 
     }
     .header-section-title{
-        background-color: lightblue;
+        background-color: white;
         font-size: 1em;
         font-weight: bold;
-        margin-top: 35px;
+        margin-top: 25px;
         float:left;
         padding-right: 20px;
         height: 26px;
@@ -313,7 +313,7 @@
     </div>
 </script>
 
-<div xmlns="http://www.w3.org/1999/html">
+<span xmlns="http://www.w3.org/1999/html">
 
     <accordion>
         <accordion-group class="gray-cascade" is-open="actionBar.openPanel">
@@ -328,34 +328,43 @@
                 </div>
             </accordion-heading>
 
-            <div class="reporting-header" style="padding: 0; margin:0; border: none; background: none">
-                <span><span style="font-size: 1em; background: lightblue;">Reporting</span><span
-                        openlmis-message="label.expected"></span>: <a
-                        ng-click="openDetailDialog()"
-                        href="">{{reportingPerformance.expected | number}} </a>
-                </span>
-                <span><span openlmis-message="label.on.time"></span>:  <a
-                        ng-click="openDetailDialog()"
-                        href="">{{reportingPerformance.ontime | number}}</a></span>
-                <span><span openlmis-message="label.late"></span>:<a
-                        ng-click="openDetailDialog()"
-                        href=""> {{reportingPerformance.late | number}} </a></span>
-
-                <span><span style="font-size: 1em; background: lightblue;">Supplying</span><span
-                        openlmis-message="label.orders"></span>: {{supplying.orders | number}}8</span>
-                <span><span openlmis-message="label.fulfilled"></span>: {{supplying.fulfilled | number}}4</span>
-
-                <span><span style="font-size: 1em; background: lightblue;">Repairing</span><span
-                        openlmis-message="label.refrigerator.repair.tickets"></span>: <a
+            <span class="reporting-header" style="padding: 0; margin:0; border: none; background: none">
+                <!-- reporting-->
+                <div class="box">
+                    <h2>Reporting</h2>
+                    <span><span openlmis-message="label.expected"></span>:
+                    <a ng-click="openDetailDialog()" href="">{{reportingPerformance.expected | number}} </a>
+                    </span>
+                    <span><span openlmis-message="label.on.time"></span>:  <a
+                            ng-click="openDetailDialog()"
+                            href="">{{reportingPerformance.ontime | number}}</a>
+                    </span>
+                    <span><span openlmis-message="label.late"></span>:
+                        <a ng-click="openDetailDialog()" href=""> {{reportingPerformance.late | number}} </a>
+                    </span>
+                </div>
+                <!-- Supplying-->
+                <div class="box" style="margin-left: 10px;">
+                    <h2>Supplying</h2>
+                    <span openlmis-message="label.orders"></span>: {{supplying.orders | number}}8
+                    <span openlmis-message="label.fulfilled"></span>: {{supplying.fulfilled | number}}4
+                </div>
+                <!-- Supplying-->
+                <div class="box" style="margin-left: 10px;">
+                    <h2>Repairing</h2>
+                <span openlmis-message="label.refrigerator.repair.tickets"></span>: <a
                         ng-click="openRepairingDetailDialog()"
-                        href=""> {{repairing.repairing}}</a> </span>
-                <span><span style="font-size: 1em; background: lightblue;">Investigating</span><span
-                        openlmis-message="label.aefi"></span>:  <a
+                        href=""> {{repairing.repairing}}</a>
+                </div>
+              <!-- Investigating-->
+                <div class="box" style="margin-left: 10px;">
+                    <h2>Investigating</h2>
+                    <span openlmis-message="label.aefi"></span>:  <a
                         ng-click="openInvestigatingDetailDialog()"
-                        href="">{{investigating.count}}</a></span>
+                        href="">{{investigating.count}}</a>
+                </div>
 
-            </div>
-
+            </span>
         </accordion-group>
     </accordion>
 
@@ -372,10 +381,7 @@
                 </div>
             </accordion-heading>
             <div class="clearfix" >
-            <span class="form-cell horizontalFilters header-section-title" openlmis-message="title.coverage"></span>
-                <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.coverage.product" on-change="coverageCallBack()"></vaccine-product-filter>
-                <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.coverage.period"  class="form-cell horizontalFilters" on-change="coverageCallBack()"></vaccine-monthly-period-tree-filter>
-            </div>
+             </div>
                 <div class="dashlet-container">
 
 

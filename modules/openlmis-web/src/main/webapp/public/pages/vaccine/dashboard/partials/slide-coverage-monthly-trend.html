@@ -1,12 +1,13 @@
-
-
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
-           <div class="filter-place-holder" >
+            <span class="form-cell horizontalFilters header-section-title" openlmis-message="title.coverage"></span>
+             <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.coverage.product" on-change="coverageCallBack()"></vaccine-product-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.coverage.period"  class="form-cell horizontalFilters" on-change="coverageCallBack()"></vaccine-monthly-period-tree-filter>
 
-           </div>
-            <!--<range-pagination  class="form-cell horizontalFilters" total="totalZone" range="zoneRange" offset="zoneOffset" label-all="all zone"></range-pagination>-->
+        </div>
+
+        <!--<range-pagination  class="form-cell horizontalFilters" total="totalZone" range="zoneRange" offset="zoneOffset" label-all="all zone"></range-pagination>-->
             <!--<vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.monthlyCoverage.product" on-change="monthlyCoverageCallback()"></vaccine-product-filter>-->
             <!--<static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyCoverage.range" startdate="filter.monthlyCoverage.startDate" enddate="filter.monthlyCoverage.endDate" rangemax="10" error="perioderror" on-change="monthlyCoverageCallback()" ></static-period-filter>-->
             <!--<static-year-filter  on-change="monthlyCoverageCallback()" year="staticYear" startdate="filter.monthlyCoverage.startDate" enddate="filter.monthlyCoverage.endDate" ></static-year-filter>-->
