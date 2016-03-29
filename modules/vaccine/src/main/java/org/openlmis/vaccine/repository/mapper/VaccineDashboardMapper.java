@@ -111,6 +111,7 @@ public interface VaccineDashboardMapper {
                 "                   from vw_vaccine_iefi i\n" +
                 "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
                 "                    where is_investigated = 'f'  \n" +
+                "                    and relatedtolineitemid is null \n" +
                 "                    and program_id = (select id from programs where enableivdform = 't' limit 1)  \n" +
                 "                    and  period_id = fn_get_vaccine_current_reporting_period()\n" +
                 "		             and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
