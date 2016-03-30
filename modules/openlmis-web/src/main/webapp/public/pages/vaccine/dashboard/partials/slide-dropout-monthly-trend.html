@@ -2,9 +2,10 @@
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
-            <div class="filter-place-holder" >
 
-            </div>
+            <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.dropout.product" on-change="dropoutCallback()"></vaccine-product-filter>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.dropout.period"  class="form-cell horizontalFilters" on-change="dropoutCallback()"></vaccine-monthly-period-tree-filter>
+
             <!--<vaccine-dropout-filter defaultselction="defaultProduct"  class="form-cell horizontalFilters" filterproduct="filter.monthlyDropout.product" on-change="monthlyDropoutCallback()"></vaccine-dropout-filter>-->
             <!--<static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlyDropout.range" startdate="filter.monthlyDropout.startDate" enddate="filter.monthlyDropout.endDate" rangemax="10" error="perioderror" on-change="monthlyDropoutCallback()"></static-period-filter>-->
             <!--<static-year-filter  on-change="monthlyDropoutCallback()" year="staticYear" startdate="filter.monthlyDropout.startDate" enddate="filter.monthlyDropout.endDate" ></static-year-filter>-->

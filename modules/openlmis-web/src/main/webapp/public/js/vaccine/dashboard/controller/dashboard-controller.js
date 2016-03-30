@@ -72,8 +72,8 @@ $scope.district_user_level=isDistrictUser.district_user;
             "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"
         },
 
-            {"id": "target", "name": messageService.get('label.target'), "type": "area"},
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "area"}
+            {"id": "target", "name": messageService.get('label.target'), "type": "bar"},
+            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"}
         ],
         dataX: {"id": "period_name"}
     };

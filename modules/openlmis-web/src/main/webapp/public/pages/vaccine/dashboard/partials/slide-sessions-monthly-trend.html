@@ -3,9 +3,7 @@
 <div class="app-form vaccine-form-filter">
     <form  name="monthlySessionForm" novalidate>
         <div  class="clearfix">
-            <div class="filter-place-holder" >
-
-            </div>
+            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.sessions.period"  class="form-cell horizontalFilters" on-change="sessionsCallback()"></vaccine-monthly-period-tree-filter>
             <!--<static-period-filter name="testInput" default="defaultPeriodTrend" range="filter.monthlySessions.range" startdate="filter.monthlySessions.startDate" enddate="filter.monthlySessions.endDate" rangemax="10" error="perioderror" on-change="monthlySessionsCallback()"></static-period-filter>-->
             <!--<static-year-filter  on-change="monthlySessionsCallback()" year="staticYear" startdate="filter.monthlySessions.startDate" enddate="filter.monthlySessions.endDate" ></static-year-filter>-->
         </div>
