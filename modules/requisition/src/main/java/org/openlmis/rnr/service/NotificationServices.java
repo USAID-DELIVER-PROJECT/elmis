@@ -99,6 +99,7 @@ public class NotificationServices {
         String approvalURL = String.format("%1$s/public/pages/logistics/rnr/index.html#/rnr-for-approval/%2$s/%3$s?supplyType=full-supply&page=1", baseURL, requisition.getId(), requisition.getProgram().getId());
 
         emailMessage = emailMessage.replaceAll("\\{facility_name\\}", requisition.getFacility().getName());
+        emailMessage = emailMessage.replaceAll("\\{program_name\\}", requisition.getProgram().getName());
         emailMessage = emailMessage.replaceAll("\\{approver_name\\}", user.getFirstName() + " " + user.getLastName());
         emailMessage = emailMessage.replaceAll("\\{period\\}", requisition.getPeriod().getName());
         emailMessage = emailMessage.replaceAll("\\{link\\}", approvalURL);
