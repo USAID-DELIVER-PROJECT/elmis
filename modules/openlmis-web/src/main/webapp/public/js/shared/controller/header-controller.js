@@ -10,7 +10,7 @@
 
 function HeaderController($scope, localStorageService, loginConfig, ConfigSettingsByKey, $window) {
   $scope.loginConfig = loginConfig;
-  $scope.user = localStorageService.get(localStorageKeys.USERNAME);
+  $scope.user = localStorageService.get(localStorageKeys.FULLNAME);
   $scope.userId = localStorageService.get(localStorageKeys.USER_ID);
 
   var isGoogleAnalyticsEnabled  = localStorageService.get('ENABLE_GOOGLE_ANALYTICS');
@@ -32,6 +32,7 @@ function HeaderController($scope, localStorageService, loginConfig, ConfigSettin
     localStorageService.remove(localStorageKeys.RIGHT);
     localStorageService.remove(localStorageKeys.USERNAME);
     localStorageService.remove(localStorageKeys.USER_ID);
+    localStorageService.remove(localStorageKeys.FULLNAME);
     localStorageService.remove('ENABLE_GOOGLE_ANALYTICS');
     localStorageService.remove('GOOGLE_ANALYTICS_TRACKING_CODE');
 
