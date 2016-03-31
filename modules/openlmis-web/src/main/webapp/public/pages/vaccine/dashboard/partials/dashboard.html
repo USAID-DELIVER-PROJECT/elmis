@@ -26,10 +26,10 @@
 
 </style>
 <script type="text/ng-template" id="myModalContent.html">
-    <div class="modal-header">
-        <h3 ng-show="!show_email">Reporting Detail</h3>
+    <div class="modal-header modal-header">
+        <h2 ng-show="!show_email"><i class="flaticon-bar"></i>Reporting Detail</h2>
 
-        <h3 ng-show="show_email">Email Notification</h3>
+        <h2 ng-show="show_email"><i class="flaticon-bar"></i>Email Notification</h2>
     </div>
     <div class="modal-body">
         <div ng-show="show_email">
@@ -231,6 +231,11 @@
     </div>
 </script>
 <script type="text/ng-template" id="investigating.html">
+    <div class="modal-header modal-header">
+        <h2 ><i class="flaticon-bar"></i>Investigation Detail</h2>
+
+
+    </div>
     <div class="modal-body">
         <table id="investigatingTable" ng-show="items.length > 0"
                class="rnr-table table-bordered table"
@@ -381,10 +386,10 @@
                                 <span class="caption-helper">monthly...</span>
 
                                 <div class="actions">
-                                    <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <a class="btn btn-circle btn-icon-only btn-default" ng-click="openCoverageHelp()">
                                         <i class="icon-info"></i>
                                     </a>
-                                    <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <a ng-click="coverageDetailCallback()" class="btn btn-circle btn-icon-only btn-default" tooltip="Detail Coverage">
                                         <i class="icon-table"></i>
                                     </a>
                                 </div>
@@ -400,10 +405,10 @@
                                 <span class="caption-subject bold uppercase font-dark" openlmis-message="title.coverage"></span>
                                 <span class="caption-helper">by district...</span>
                                 <div class="actions">
-                                    <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <a class="btn btn-circle btn-icon-only btn-default" ng-click="openCoverageHelp()">
                                         <i class="icon-info"></i>
                                     </a>
-                                    <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <a class="btn btn-circle btn-icon-only btn-default" ng-click="coverageDetailCallback()">
                                         <i class="icon-table"></i>
                                     </a>
                                 </div>
@@ -418,10 +423,10 @@
                                 <span class="caption-subject bold uppercase font-dark" openlmis-message="title.coverage"></span>
                                 <span class="caption-helper">by facility...</span>
                                 <div class="actions">
-                                    <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <a class="btn btn-circle btn-icon-only btn-default" ng-click="openCoverageHelp()">
                                         <i class="icon-info"></i>
                                     </a>
-                                    <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <a class="btn btn-circle btn-icon-only btn-default" ng-click="coverageDetailCallback()">
                                         <i class="icon-table"></i>
                                     </a>
                                 </div>
@@ -445,10 +450,10 @@
                             <span class="caption-helper">monthly...</span>
 
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openDropoutHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="dropoutDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -464,10 +469,10 @@
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.dropout"></span>
                             <span class="caption-helper">by district...</span>
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openDropoutHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="dropoutDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -482,10 +487,10 @@
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.dropout"></span>
                             <span class="caption-helper">by facility...</span>
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openDropoutHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="dropoutDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -509,10 +514,10 @@
                             <span class="caption-helper">monthly...</span>
 
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openWastageHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="wastageDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -528,10 +533,10 @@
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.westage.rate"></span>
                             <span class="caption-helper">by district...</span>
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openWastageHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="wastageDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -546,10 +551,10 @@
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.westage.rate"></span>
                             <span class="caption-helper">by facility...</span>
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openWastageHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="wastageDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -574,10 +579,10 @@
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
                             <span class="caption-helper">monthly...</span>
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openSessionsHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="sessionDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -593,10 +598,10 @@
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
                             <span class="caption-helper">by district...</span>
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openSessionsHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="sessionDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -611,10 +616,10 @@
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
                             <span class="caption-helper">by facility...</span>
                             <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openSessionsHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="sessionDetailCallback()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
