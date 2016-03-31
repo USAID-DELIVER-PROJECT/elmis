@@ -335,19 +335,19 @@
                     <span class="box-value"><a ng-click="openDetailDialog()" href=""> {{reportingPerformance.late | number}} </a></span>
                 </div>
                 <!-- Supplying-->
-                <div class="box-col2" style="margin-left: 10px;">
+                <div class="box box-col2" style="margin-left: 10px;">
                     <h2><i class="flaticon-bar"></i>Supplying</h2>
                     <span openlmis-message="label.orders"></span>: <span class="box-value">{{supplying.orders | number}}8</span>
                     <span openlmis-message="label.fulfilled"></span>: <span class="box-value">{{supplying.fulfilled | number}}4</span>
                 </div>
                 <!-- Supplying-->
-                <div class="box-col3" style="margin-left: 10px;">
+                <div class="box box-col3" style="margin-left: 10px;">
                     <h2><i class="flaticon-bar"></i>Repairing</h2>
                     <span openlmis-message="label.refrigerator.repair.tickets"></span>:
                     <span class="box-value"><a ng-click="openRepairingDetailDialog()" href=""> {{repairing.repairing}}</a></span>
                 </div>
               <!-- Investigating-->
-                <div class="box-col4" style="margin-left: 10px;">
+                <div class="box box-col4" style="margin-left: 10px;">
                     <h2><i class="flaticon-bar"></i>Investigating</h2>
                     <span openlmis-message="label.aefi"></span>:  <span class="box-value"><a
                         ng-click="openInvestigatingDetailDialog()"
@@ -371,6 +371,70 @@
                 </div>
 
             </accordion-heading>
+
+            <!-- session -->
+            <div class="clearfix" ></div>
+            <!-- begin row -->
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
+                            <span class="caption-helper">monthly...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-sessions-monthly-trend.html'"></ng-include>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
+                            <span class="caption-helper">by district...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include ng-if="district_user_level==false"
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-district-trend.html'"></ng-include>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
+                            <span class="caption-helper">by facility...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-sessions-facility-trend.html'"></ng-include>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+<!-- coverage -->
             <div class="clearfix" ></div>
             <!-- begin row -->
                 <div class="row">
@@ -557,71 +621,6 @@
                         </div>
                         <ng-include
                                 src="'/public/pages/vaccine/dashboard/partials/slide-wastage-facility-trend.html'"></ng-include>
-                    </div>
-                </div>
-            </div>
-            <!-- end row -->
-
-
-
-<!-- session -->
-            <div class="clearfix" ></div>
-            <!-- begin row -->
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <div class="portlet light">
-                        <div class="caption">
-                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
-                            <span class="caption-helper">monthly...</span>
-                            <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
-                                    <i class="icon-info"></i>
-                                </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
-                                    <i class="icon-table"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <ng-include
-                                src="'/public/pages/vaccine/dashboard/partials/slide-sessions-monthly-trend.html'"></ng-include>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-sm-6">
-                    <div class="portlet light">
-                        <div class="caption">
-                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
-                            <span class="caption-helper">by district...</span>
-                            <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
-                                    <i class="icon-info"></i>
-                                </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
-                                    <i class="icon-table"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <ng-include ng-if="district_user_level==false"
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-district-trend.html'"></ng-include>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <div class="portlet light">
-                        <div class="caption">
-                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
-                            <span class="caption-helper">by facility...</span>
-                            <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
-                                    <i class="icon-info"></i>
-                                </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" href="#">
-                                    <i class="icon-table"></i>
-                                </a>
-                            </div>
-
-                        </div>
-                        <ng-include
-                                src="'/public/pages/vaccine/dashboard/partials/slide-sessions-facility-trend.html'"></ng-include>
                     </div>
                 </div>
             </div>
