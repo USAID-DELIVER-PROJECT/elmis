@@ -8,7 +8,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-function ApproveRnrController($scope, requisitionData, comments, Requisitions, RejectRequisition, rnrColumns, regimenTemplate, equipmentOperationalStatus , $location, pageSize, $routeParams, $dialog, requisitionService, $q) {
+function ApproveRnrController($scope, requisitionData, comments, Requisitions, RejectRequisition, rnrColumns, regimenTemplate, equipmentOperationalStatus, showMaxStock, $location, pageSize, $routeParams, $dialog, requisitionService, $q) {
 
   $scope.canApproveRnr = requisitionData.canApproveRnr;
   $scope.rnr = new Rnr(requisitionData.rnr, rnrColumns, requisitionData.numberOfMonths);
@@ -20,6 +20,7 @@ function ApproveRnrController($scope, requisitionData, comments, Requisitions, R
   $scope.regimenCount = $scope.rnr.regimenLineItems.length;
   $scope.equipmentCount = $scope.rnr.equipmentLineItems.length;
 
+  $scope.showMaxStock = showMaxStock;
   $scope.equipmentOperationalStatus = equipmentOperationalStatus;
 
   $scope.errorPages = {};
@@ -204,7 +205,15 @@ ApproveRnrController.resolve = {
     }, 100);
     return deferred.promise;
   },
-
+  showMaxStock: function($q, $timeout, ConfigSettingsByKey){
+    var deferred = $q.defer();
+    $timeout(function () {
+      ConfigSettingsByKey.get({key: 'USE_GLOBAL_MAX_MOS_ON_DISPLAY'}, function (data){
+        deferred.resolve(data.settings.value == 'true');
+      });
+    }, 100);
+    return deferred.promise;
+  },
   pageSize: function ($q, $timeout, LineItemsPerPage) {
     var deferred = $q.defer();
     $timeout(function () {
