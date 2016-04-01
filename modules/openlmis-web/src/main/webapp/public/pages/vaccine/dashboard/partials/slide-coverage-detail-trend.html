@@ -1,5 +1,8 @@
-<div class="modal-header modal-header">
+<div class="modal-header">
+    <button  class="close" ng-click="ok()">X</button>
     <h2><i class="flaticon-bar"></i>Coverage Detail</h2>
+
+
 </div>
 <div   class="modal-body">
 
@@ -9,15 +12,16 @@
         <table ng-show="facilityDetails" id="summary-table" class="table-bordered table">
             <thead style="background-color: red" >
             <tr class="gradient-header" style="background-color: red">
-                <th>District</th>
-                <th>Facility</th>
-                <th></th>
-                <th style="text-align: center" ng-repeat="period in periodsList">{{period}}</th>
-                <th style="text-align: center; background-color: red !important;">Total</th>
+                <th class="modal-table-div">District</th>
+                <th class="modal-table-div">Facility</th>
+                <th class="modal-table-div"></th>
+                <th class="modal-table-div" style="text-align: center" ng-repeat="period in periodsList">{{period}}</th>
+                <th class="modal-table-div" style="text-align: center; background-color: red !important;">Total</th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="detail in facilityDetails" >
+            <tr ng-style="{'background-color': getBackGroundColor($index).bgColor , 'color':getBackGroundColor($index).fColor}"
+                    ng-repeat="detail in facilityDetails" >
                 <td ng-show="$first" rowspan="{{facilityDetails.length}}">{{detail.district}}</td>
                 <td ng-show="$index%3 == 0" rowspan="3">{{detail.facilityName}}</td>
                 <td>{{detail.indicator}}</td>
@@ -29,5 +33,5 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-primary modal-ok-btn" ng-click="ok()">OK</button>
 </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 
 <!--
   ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
@@ -27,6 +27,7 @@
 </style>
 <script type="text/ng-template" id="myModalContent.html">
     <div class="modal-header modal-header">
+        <button  class="close" ng-click="ok()">X</button>
         <h2 ng-show="!show_email"><i class="flaticon-bar"></i>Reporting Detail</h2>
 
         <h2 ng-show="show_email"><i class="flaticon-bar"></i>Email Notification</h2>
@@ -58,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="!show_email">
+        <div class="row-fluid dashlet-scroll-table" ng-show="!show_email">
             <table id="fullSupplyTable" ng-show="items.length > 0"
                    class="rnr-table table-bordered table"
                    ng-table="tableParams">
@@ -125,6 +126,7 @@
 </script>
 <script type="text/ng-template" id="repairing.html">
     <div class="modal-header">
+        <button  class="close" ng-click="ok()">X</button>
         <h3 ng-show="!show_email">Repairing</h3>
 
         <h3 ng-show="show_email">Email Notification</h3>
@@ -156,7 +158,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="!show_email">
+        <div class="row-fluid dashlet-scroll-table" ng-show="!show_email">
             <table id="repairingTable" ng-show="items.length > 0"
                    class="rnr-table table-bordered table"
                    ng-table="tableParams">
@@ -232,11 +234,13 @@
 </script>
 <script type="text/ng-template" id="investigating.html">
     <div class="modal-header modal-header">
+        <button  class="close" ng-click="ok()">X</button>
         <h2 ><i class="flaticon-bar"></i>Investigation Detail</h2>
 
 
     </div>
     <div class="modal-body">
+        <div class="row-fluid dashlet-scroll-table">
         <table id="investigatingTable" ng-show="items.length > 0"
                class="rnr-table table-bordered table"
                ng-table="tableParams">
@@ -286,6 +290,7 @@
             </tbody>
 
         </table>
+        </div>
         <div class="modal-footer">
 
             <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
@@ -310,7 +315,7 @@
     </div>
 </script>
 
-<span xmlns="http://www.w3.org/1999/html">
+<div>
 
     <accordion>
         <accordion-group class="gray-cascade" is-open="actionBar.openPanel">
@@ -734,3 +739,4 @@
    -->
 
 </div>
+    </div>

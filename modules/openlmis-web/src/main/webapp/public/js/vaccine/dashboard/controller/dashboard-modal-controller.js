@@ -16,6 +16,20 @@ function DashboardModalInstanceCtrl($scope, $modalInstance,items,  VaccineDashbo
 
     $scope.facilityDetails=items.facilityDetails;
     $scope.periodsList= items.periodsList;
+    $scope.getBackGroundColor = function (_index) {
+        var bgColor = '';
+        var fColor='black';
+
+        if (_index % 2 === 0) {
+            bgColor = 'lightblue';
+            fColor='white';
+        } else {
+            bgColor = 'white';
+        }
+
+
+        return {fColor:fColor, bgColor:bgColor};
+    };
     $scope.ok = function () {
         $modalInstance.close();
     };
@@ -29,6 +43,20 @@ function DashboardDropoutModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
 
     $scope.facilityDropoutDetails=items.facilityDetails;
     $scope.dropoutPeriodsList= items.periodsList;
+    $scope.getBackGroundColor = function (_index) {
+        var bgColor = '';
+        var fColor='black';
+
+        if (_index % 2 === 0) {
+            bgColor = 'lightblue';
+            fColor='white';
+        } else {
+            bgColor = 'white';
+        }
+
+
+        return {fColor:fColor, bgColor:bgColor};
+    };
     $scope.ok = function () {
         $modalInstance.close();
     };
@@ -42,6 +70,20 @@ function DashboardSessionModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
 
     $scope.facilitySessionsDetails=items.facilityDetails;
     $scope.sessionsPeriodsList= items.periodsList;
+    $scope.getBackGroundColor = function (_index) {
+        var bgColor = '';
+        var fColor='black';
+
+        if (_index % 2 === 0) {
+            bgColor = 'lightblue';
+            fColor='white';
+        } else {
+            bgColor = 'white';
+        }
+
+
+        return {fColor:fColor, bgColor:bgColor};
+    };
     $scope.ok = function () {
         $modalInstance.close();
     };
@@ -55,6 +97,20 @@ function DashboardWastageModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
 
     $scope.facilityWastageDetails=items.facilityDetails;
     $scope.wastagePeriodsList= items.periodsList;
+    $scope.getBackGroundColor = function (_index) {
+        var bgColor = '';
+        var fColor='black';
+
+        if (_index % 2 === 0) {
+            bgColor = 'lightblue';
+            fColor='white';
+        } else {
+            bgColor = 'white';
+        }
+
+
+        return {fColor:fColor, bgColor:bgColor};
+    };
     $scope.ok = function () {
         $modalInstance.close();
     };
