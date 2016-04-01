@@ -40,7 +40,7 @@ function StatusVaccinationReceiceController($scope, StatuVaccinationSupply, Sett
     $scope.OnFilterChanged = function () {
 
         $scope.data = $scope.datarows = [];
-        $scope.filter.facilityId='' ;
+        $scope.filter.facility='' ;
         $scope.filter.geographicZoneId = $scope.filter.zone;
         $scope.filter.productId = $scope.filter.product;
         $scope.filter.periodId = 0;

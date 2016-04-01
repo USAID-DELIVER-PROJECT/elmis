@@ -35,9 +35,9 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     reportingDetailList,
                                     InvestigatingDetails,
                                     investigatingDetailList,
-                                    ContactList,isDistrictUser,
+                                    ContactList, isDistrictUser,
                                     VaccineDashboardFacilityStock,
-                                    settingValues) {
+                                    settingValues, $log) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -46,15 +46,15 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     };
 
 
-var monthlyDashletPeriods=utils.getCustomizedStartAndEndDate(settingValues.monthsRange, settingValues.cuttoff);
+    var monthlyDashletPeriods = utils.getCustomizedStartAndEndDate(settingValues.monthsRange, settingValues.cuttoff);
 
-    $scope.startDate=monthlyDashletPeriods.startdate;
-    $scope.endDate=monthlyDashletPeriods.enddate;
+    $scope.startDate = monthlyDashletPeriods.startdate;
+    $scope.endDate = monthlyDashletPeriods.enddate;
 
     var bcgVaccinated = " BCG Vaccinated";
     var mrVaccinated = " MR Vaccinated";
     var bcgDropout = " BCG Droput";
-$scope.district_user_level=isDistrictUser.district_user;
+    $scope.district_user_level = isDistrictUser.district_user;
     $scope.dashboardHelps = dashboardSlidesHelp;
     $scope.defaultPeriodTrend = parseInt(defaultPeriodTrend, 10);
     $scope.defaultProduct = defaultProduct;
@@ -96,8 +96,8 @@ $scope.district_user_level=isDistrictUser.district_user;
         dataColumns: [{
             "id": "coverage", "name": messageService.get('label.coverage'), "type": "scatter"
         },
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"},
-            {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
+            {"id": "actual", "name": messageService.get('label.actual'), "type": "scatter"},
+            {"id": "target", "name": messageService.get('label.target'), "type": "scatter"}
         ],
         dataX: {"id": "facility_name"}
     };
@@ -147,9 +147,10 @@ $scope.district_user_level=isDistrictUser.district_user;
         dataPoints: [],
         dataColumns: [
             {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "area"},
-            { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "area"},
-            { "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "line"
-        }
+            {"id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "area"},
+            {
+                "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "line"
+            }
         ],
         dataX: {"id": "period_name"}
     };
@@ -158,19 +159,19 @@ $scope.district_user_level=isDistrictUser.district_user;
         dataPoints: [],
         dataColumns: [
             {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "bar"},
-            { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
-            { "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "scatter"
-        }
+            {"id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
+            {
+                "id": "wastage_rate", "name": messageService.get('label.wastage.rate'), "type": "scatter"
+            }
         ],
         dataX: {"id": "geographic_zone_name"}
     };
 
     $scope.facilityWastage = {
         dataPoints: [],
-        dataColumns: [{
-        },
+        dataColumns: [{},
             {"id": "vaccinated", "name": messageService.get('label.wastage.vaccinated'), "type": "bar"},
-            { "id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
+            {"id": "usage_denominator", "name": messageService.get('label.wastage.denominator'), "type": "bar"},
             {"id": "wastage_rate", "name": messageService.get('label.actual'), "type": "scatter"}
         ],
         dataX: {"id": "facility_name"}
@@ -266,12 +267,12 @@ $scope.district_user_level=isDistrictUser.district_user;
 //////////////////
 //  Coverage
 ///////////////////
-$scope.coverageCallBack= function(){
-    $scope.monthlyCoverageCallback();
-    $scope.districtCoverageCallback();
-    $scope.facilityCoverageCallback();
+    $scope.coverageCallBack = function () {
+        $scope.monthlyCoverageCallback();
+        $scope.districtCoverageCallback();
+        $scope.facilityCoverageCallback();
 
-};
+    };
     $scope.monthlyCoverageCallback = function () {
 
         if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {
@@ -292,7 +293,7 @@ $scope.coverageCallBack= function(){
                 period: $scope.filter.coverage.period,
                 product: $scope.filter.coverage.product
             }, function (data) {
-                $scope.districtCoverage.data= data.districtCoverage;
+                $scope.districtCoverage.data = data.districtCoverage;
                 if (!isUndefined($scope.districtCoverage.data)) {
                     $scope.filter.totalDistrictCoverage = $scope.districtCoverage.data.length;
                 } else {
@@ -330,15 +331,15 @@ $scope.coverageCallBack= function(){
     $scope.districtCoveragePagination = function () {
         var s = parseInt($scope.filter.districtCoverageOffset, 10) + parseInt($scope.filter.districtRange, 10);
         if (!isUndefined($scope.filter.districtCoverageOffset)) {
-            $scope.districtCoverage.dataPoints  = $scope.districtCoverage.data.slice(parseInt($scope.filter.districtCoverageOffset, 10), s);
+            $scope.districtCoverage.dataPoints = $scope.districtCoverage.data.slice(parseInt($scope.filter.districtCoverageOffset, 10), s);
         }
     };
     $scope.coverageDetailCallback = function () {
-        if (!isUndefined($scope.filter.detailCoverage.startDate) && !isUndefined($scope.filter.detailCoverage.endDate) && !isUndefined($scope.filter.detailCoverage.product) && $scope.filter.detailCoverage.product !== 0) {
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {
             // VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
             VaccineDashboardFacilityTrend.coverageDetails({
-                startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
-                product: $scope.filter.detailCoverage.product
+                startDate: $scope.startDate, endDate: $scope.endDate,
+                product: $scope.filter.coverage.product
             }, function (data) {
 
                 $scope.coverageDetails = data.facilityCoverageDetails;
@@ -369,16 +370,37 @@ $scope.coverageCallBack= function(){
                     });
 
                 });
+                var modalInstance = $modal.open({
+                    templateUrl: 'partials/slide-coverage-detail-trend.html',
+                    controller: 'DashboardModalInstanceCtrl',
+                    resolve: {
+                        items: function () {
+
+                            return {facilityDetails: $scope.facilityDetails, periodsList: $scope.periodsList};
+                        }
+                    }
+                });
             });
 
         }
     };
+    $scope.openCoverageHelp = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'partials/slide-coverage-help-content.html',
+            controller: 'DashboardHelpModalInstanceCtrl',
+            resolve: {
+                items: function () {
 
+                    return {dashboardHelps:  $scope.dashboardHelps};
+                }
+            }
+        });
+    };
 
 //////////////////
 //  Dropout
 ///////////////////
-    $scope.dropoutCallback= function(){
+    $scope.dropoutCallback = function () {
         $scope.monthlyDropoutCallback();
         $scope.districtDropoutCallback();
         $scope.facilityDropoutCallback();
@@ -444,19 +466,19 @@ $scope.coverageCallBack= function(){
     $scope.districtDropoutPagination = function () {
         var s = parseInt($scope.filter.districtDropoutOffset, 10) + parseInt($scope.filter.districtRange, 10);
         if (!isUndefined($scope.filter.districtDropoutOffset)) {
-            $scope.districtDropout.dataPoints  = $scope.districtDropout.data.slice(parseInt($scope.filter.districtDropoutOffset, 10), s);
+            $scope.districtDropout.dataPoints = $scope.districtDropout.data.slice(parseInt($scope.filter.districtDropoutOffset, 10), s);
         }
     };
     $scope.dropoutDetailCallback = function () {
-        if (!isUndefined($scope.filter.detailDropout.startDate) && !isUndefined($scope.filter.detailDropout.endDate) && !isUndefined($scope.filter.detailDropout.product) && $scope.filter.detailDropout.product !== 0) {
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.dropout.product) && $scope.filter.dropout.product !== 0) {
 
             VaccineDashboardFacilityTrend.dropoutDetails({
-                startDate: $scope.filter.detailDropout.startDate,
-                endDate: $scope.filter.detailDropout.endDate,
-                product: $scope.filter.detailDropout.product
+                startDate: $scope.startDate,
+                endDate: $scope.endDate,
+                product: $scope.filter.dropout.product
             }, function (data) {
 
-                $scope.dropoutDetails = dropoutSelector(data.facilityDropoutDetails, $scope.filter.detailDropout.product);
+                $scope.dropoutDetails = dropoutSelector(data.facilityDropoutDetails, $scope.filter.dropout.product);
 
                 $scope.dropoutPeriodsList = _.uniq(_.pluck($scope.dropoutDetails, 'period_name'));
                 var facilities = _.uniq(_.pluck($scope.dropoutDetails, 'facility_name'));
@@ -468,22 +490,46 @@ $scope.coverageCallBack= function(){
                     $scope.facilityDropoutDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator:  messageService.get('label.bcg.mr.dropout'),
+                        indicator: messageService.get('label.bcg.mr.dropout'),
                         indicatorValues: $scope.getIndicatorValues(facility, 'bcg_mr_dropout', $scope.dropoutDetails)
                     });
                     $scope.facilityDropoutDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator:messageService.get('label.dtp.dropout'),
+                        indicator: messageService.get('label.dtp.dropout'),
                         indicatorValues: $scope.getIndicatorValues(facility, 'dtp1_dtp3_dropout', $scope.dropoutDetails)
                     });
 
+                });
+                var modalInstance = $modal.open({
+                    templateUrl: 'partials/slide-dropout-detail-trend.html',
+                    controller: 'DashboardDropoutModalInstanceCtrl',
+                    resolve: {
+                        items: function () {
+
+                            return {
+                                facilityDetails: $scope.facilityDropoutDetails,
+                                periodsList: $scope.dropoutPeriodsList
+                            };
+                        }
+                    }
                 });
             });
 
         }
     };
+    $scope.openDropoutHelp = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'partials/slide-dropout-help-content.html',
+            controller: 'DashboardHelpModalInstanceCtrl',
+            resolve: {
+                items: function () {
 
+                    return {dashboardHelps:  $scope.dashboardHelps};
+                }
+            }
+        });
+    };
 //////////////
 // wastage
 //////////////
@@ -548,15 +594,15 @@ $scope.coverageCallBack= function(){
     $scope.districtWastagePagination = function () {
         var s = parseInt($scope.filter.districtWastageOffset, 10) + parseInt($scope.filter.districtRange, 10);
         if (!isUndefined($scope.filter.districtWastageOffset)) {
-            $scope.districtWastage.dataPoints  = $scope.districtWastage.data.slice(parseInt($scope.filter.districtWastageOffset, 10), s);
+            $scope.districtWastage.dataPoints = $scope.districtWastage.data.slice(parseInt($scope.filter.districtWastageOffset, 10), s);
         }
     };
     $scope.wastageDetailCallback = function () {
-        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.detailWastage.product) && $scope.filter.detailWastage.product !== 0) {
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.wastage.product) && $scope.filter.wastage.product !== 0) {
 
             VaccineDashboardFacilityTrend.wastageDetails({
-                startDate: $scop.startDate, endDate: $scope.endDate,
-                product: $scope.filter.detailWastage.product
+                startDate: $scope.startDate, endDate: $scope.endDate,
+                product: $scope.filter.wastage.product
             }, function (data) {
 
                 $scope.wastageDetails = data.facilityWastageDetails;
@@ -580,16 +626,40 @@ $scope.coverageCallBack= function(){
                     });
 
                 });
+                var modalInstance = $modal.open({
+                    templateUrl: 'partials/slide-wastage-detail-trend.html',
+                    controller: 'DashboardWastageModalInstanceCtrl',
+                    resolve: {
+                        items: function () {
+
+                            return {
+                                facilityDetails: $scope.facilityWastageDetails,
+                                periodsList: $scope.wastagePeriodsList
+                            };
+                        }
+                    }
+                });
             });
 
         }
     };
+    $scope.openWastageHelp = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'partials/slide-wastage-help-content.html',
+            controller: 'DashboardHelpModalInstanceCtrl',
+            resolve: {
+                items: function () {
 
+                    return {dashboardHelps:  $scope.dashboardHelps};
+                }
+            }
+        });
+    };
 
 ///////////////
 // Sessions
 ///////////////
-    $scope.sessionsCallback= function(){
+    $scope.sessionsCallback = function () {
         $scope.monthlySessionsCallback();
         $scope.districtSessionsCallback();
         $scope.facilitySessionsCallback();
@@ -609,7 +679,7 @@ $scope.coverageCallBack= function(){
         if (!isUndefined($scope.filter.sessions.period)) {
             VaccineDashboardDistrictSessions.get({period: $scope.filter.sessions.period}, function (data) {
 
-                $scope.districtSessions.data= data.districtSessions;
+                $scope.districtSessions.data = data.districtSessions;
                 if (!isUndefined($scope.districtSessions.data)) {
                     $scope.filter.districtSessions = $scope.districtSessions.data.length;
                 } else {
@@ -643,15 +713,15 @@ $scope.coverageCallBack= function(){
     $scope.districtSessionsPagination = function () {
         var s = parseInt($scope.filter.districtSessionsOffset, 10) + parseInt($scope.filter.districtRange, 10);
         if (!isUndefined($scope.filter.districtSessionsOffset)) {
-            $scope.districtSessions.dataPoints  = $scope.districtSessions.data.slice(parseInt($scope.filter.districtSessionsOffset, 10), s);
+            $scope.districtSessions.dataPoints = $scope.districtSessions.data.slice(parseInt($scope.filter.districtSessionsOffset, 10), s);
         }
     };
     $scope.sessionDetailCallback = function () {
-        if (!isUndefined($scope.filter.detailSessions.startDate) && !isUndefined($scope.filter.detailSessions.endDate)) {
+        if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate)) {
 
             VaccineDashboardFacilityTrend.sessionsDetails({
-                startDate: $scope.filter.detailSessions.startDate,
-                endDate: $scope.filter.detailSessions.endDate
+                startDate: $scope.startDate,
+                endDate: $scope.endDate
             }, function (data) {
 
                 $scope.sessionsDetails = data.facilitySessionsDetails;
@@ -675,11 +745,35 @@ $scope.coverageCallBack= function(){
                     });
 
                 });
+                var modalInstance = $modal.open({
+                    templateUrl: 'partials/slide-sessions-detail-trend.html',
+                    controller: 'DashboardSessionModalInstanceCtrl',
+                    resolve: {
+                        items: function () {
+
+                            return {
+                                facilityDetails: $scope.facilitySessionsDetails,
+                                periodsList: $scope.sessionsPeriodsList
+                            };
+                        }
+                    }
+                });
             });
 
         }
     };
+    $scope.openSessionsHelp = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'partials/slide-sessions-help-content.html',
+            controller: 'DashboardHelpModalInstanceCtrl',
+            resolve: {
+                items: function () {
 
+                    return {dashboardHelps:  $scope.dashboardHelps};
+                }
+            }
+        });
+    };
 
 /////////////////
 // Stock Status
@@ -707,7 +801,7 @@ $scope.coverageCallBack= function(){
         }
     };
 
-    $scope.facilityStockCallback = function(){
+    $scope.facilityStockCallback = function () {
 
         if (!isUndefined($scope.filter.facilityStock.period) && !isUndefined($scope.filter.facilityStock.product) && $scope.filter.facilityStock.product !== 0) {
             VaccineDashboardFacilityStock.get({
@@ -759,6 +853,7 @@ $scope.coverageCallBack= function(){
                     });
 
                 });
+
 
             });
 
@@ -999,11 +1094,17 @@ $scope.coverageCallBack= function(){
                 }
             }
         });
-
         modalInstance.result.then(function (selectedItem) {
             $scope.selected = selectedItem;
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+    $scope.openMonthlyCoverageDetailDialog = function () {
+
+        var modalInstance = $modal.open({
+            templateUrl: 'partials/slide-coverage-detail-trend.html',
+            controller: 'DashboardModalInstanceCtrl'
         });
     };
     $scope.openRepairingDetailDialog = function (size) {
@@ -1083,14 +1184,13 @@ $scope.coverageCallBack= function(){
         }
 
 
-
         return dropoutList;
     }
 
 }
 VaccineDashboardController.resolve = {
 
-    dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey,messageService) {
+    dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey, messageService) {
 
         var deferred = $q.defer();
         var helps = {};
@@ -1098,62 +1198,62 @@ VaccineDashboardController.resolve = {
             HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function (data) {
 
 
-                if(!isUndefined(data.siteContent)){
+                if (!isUndefined(data.siteContent)) {
 
                     helps.coverageHelp = data.siteContent;
 
-                }else{
+                } else {
 
-                    helps.coverageHelp={htmlContent: messageService.get('content.help.default')};
+                    helps.coverageHelp = {htmlContent: messageService.get('content.help.default')};
 
                 }
 
             });
             HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function (data) {
 
-                if(!isUndefined(data.siteContent)){
+                if (!isUndefined(data.siteContent)) {
 
                     helps.wastageHelp = data.siteContent;
 
-                }else{
+                } else {
 
-                    helps.wastageHelp= {htmlContent: messageService.get('content.help.default')};
+                    helps.wastageHelp = {htmlContent: messageService.get('content.help.default')};
 
                 }
             });
             HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function (data) {
 
-                if(!isUndefined(data.siteContent)){
+                if (!isUndefined(data.siteContent)) {
 
                     helps.sessionsHelp = data.siteContent;
 
-                }else{
+                } else {
 
-                    helps.sessionsHelp= {htmlContent: messageService.get('content.help.default')};
+                    helps.sessionsHelp = {htmlContent: messageService.get('content.help.default')};
 
                 }
             });
             HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function (data) {
 
-                if(!isUndefined(data.siteContent)){
+                if (!isUndefined(data.siteContent)) {
 
                     helps.dropoutHelp = data.siteContent;
 
-                }else{
+                } else {
 
-                    helps.dropoutHelp= {htmlContent: messageService.get('content.help.default')};
+                    helps.dropoutHelp = {htmlContent: messageService.get('content.help.default')};
 
                 }
             });
             HelpContentByKey.get({content_key: 'Stockhelp'}, function (data) {
 
-                if(!isUndefined(data.siteContent)){
+                if (!isUndefined(data.siteContent)) {
 
                     helps.stockHelp = data.siteContent;
 
-                }else{
+                } else {
 
-                    helps.stockHelp= {htmlContent: messageService.get('content.help.default')};
+                    helps.stockHelp = {htmlContent: messageService.get('content.help.default')};
 
                 }
             });
@@ -1163,31 +1263,31 @@ VaccineDashboardController.resolve = {
         }, 100);
         return deferred.promise;
     },
-    settingValues: function($q, $timeout,SettingsByKey){
+    settingValues: function ($q, $timeout, SettingsByKey) {
         var deferred = $q.defer();
         var settings = {};
 
-        $timeout(function(){
+        $timeout(function () {
 
             SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data) {
                 if (!utils.isNullOrUndefined(data.settings.value)) {
                     settings.cuttoff = data.settings.value;
-                }else{
-                    settings.cuttoff=10;
+                } else {
+                    settings.cuttoff = 10;
                 }
 
             });
             SettingsByKey.get({key: 'VCP_DASHBOARD_MONTHS_RANGE'}, function (data) {
-                if (!utils.isNullOrUndefined(data.settings) &&!utils.isNullOrUndefined(data.settings.value)) {
+                if (!utils.isNullOrUndefined(data.settings) && !utils.isNullOrUndefined(data.settings.value)) {
                     settings.monthsRange = data.settings.value;
-                }else{
-                    settings.monthsRange=6;
+                } else {
+                    settings.monthsRange = 6;
                 }
 
             });
 
             deferred.resolve(settings);
-        },100);
+        }, 100);
         return deferred.promise;
     },
     defaultProduct: function ($q, $timeout, SettingsByKey) {

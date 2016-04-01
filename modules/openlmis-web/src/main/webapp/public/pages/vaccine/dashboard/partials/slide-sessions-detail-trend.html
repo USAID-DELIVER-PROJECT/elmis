@@ -1,16 +1,13 @@
 
-<div>Session Detail</div>
-<div class="app-form vaccine-form-filter">
-    <form  novalidate>
-        <div  class="clearfix">
-            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailSessions.range" startdate="filter.detailSessions.startDate" enddate="filter.detailSessions.endDate" rangemax="10" error="perioderror" on-change="sessionDetailCallback()" ></static-period-filter>-->
-            <static-year-filter  on-change="sessionDetailCallback()" year="staticYear" startdate="filter.detailSessions.startDate" enddate="filter.detailSessions.endDate" ></static-year-filter>
-        </div>
-    </form>
+
+<div class="modal-header modal-header">
+    <h2><i class="flaticon-bar"></i>Session Detail</h2>
 </div>
+<div class="modal-body">
+
 <div style="font-weight: bold" ng-hide="facilitySessionsDetails" openlmis-message="label.report.no.data.to.show"></div>
 
-<div style="overflow:scroll;" class="row-fluid">
+    <div class="row-fluid dashlet-scroll-table">
 <table ng-show="facilitySessionsDetails" id="summary-table" class="table-bordered table">
     <thead  >
     <tr class="gradient-header">
@@ -31,4 +28,8 @@
     </tr>
     </tbody>
 </table>
+</div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
 </div>
