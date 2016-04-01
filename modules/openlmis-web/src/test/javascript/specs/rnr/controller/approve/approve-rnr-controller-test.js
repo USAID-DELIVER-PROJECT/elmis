@@ -52,6 +52,7 @@ describe('Approve Requisition controller', function () {
       regimenTemplate: regimenTemplate, pageSize: pageSize, $location: location, $routeParams: routeParams, requisitionService: requisitionService,
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
   }));
@@ -63,6 +64,7 @@ describe('Approve Requisition controller', function () {
       currency: '$', pageSize: pageSize, $location: location, $routeParams: routeParams,
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
     //expect(spyOnRnr).toHaveBeenCalledWith(requisitionData.rnr, programRnrColumnList, requisitionData.numberOfMonths);
@@ -201,6 +203,7 @@ describe('Approve Requisition controller', function () {
       regimenTemplate: regimenTemplate, $location: location, $routeParams: routeParams,
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 
@@ -221,6 +224,7 @@ describe('Approve Requisition controller', function () {
       regimenTemplate: regimenTemplate, $location: location, $routeParams: routeParams,
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 
@@ -240,6 +244,7 @@ describe('Approve Requisition controller', function () {
       regimenTemplate: regimenTemplate, $location: location, $routeParams: routeParams,
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 
@@ -262,6 +267,7 @@ describe('Approve Requisition controller', function () {
       regimenTemplate: regimenTemplate, $location: location, $routeParams: routeParams,
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 
@@ -282,6 +288,7 @@ describe('Approve Requisition controller', function () {
       regimenTemplate: regimenTemplate, $location: location, $routeParams: routeParams,
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 

@@ -111,6 +111,7 @@ describe('CreateRequisitionController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 
@@ -407,6 +408,7 @@ describe('CreateRequisitionController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 
@@ -422,6 +424,7 @@ describe('CreateRequisitionController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 
@@ -437,6 +440,7 @@ describe('CreateRequisitionController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 
@@ -451,6 +455,7 @@ describe('CreateRequisitionController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       comments: [],
       equipmentOperationalStatus:[]});
 

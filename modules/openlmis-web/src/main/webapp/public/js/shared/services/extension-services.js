@@ -987,65 +987,6 @@ services.factory('AdjustmentProductSearch', function ($resource){
     return $resource('/season-rationing/search.json', {}, {});
 });
 
-services.factory('PublicSiteData', function ($resource) {
-
-    return {
-
-        regions : function() {
-            var resource = $resource('/public-data/regions.json', {}, {});
-            return resource;
-        },
-
-        districts : function() {
-            var resource = $resource('/public-data/districts.json', {}, {});
-            return resource;
-        },
-
-        facilities : function() {
-            var resource = $resource('/public-data/facilities.json', {}, {});
-            return resource;
-         },
-
-        ARVProducts : function() {
-            var resource = $resource('/public-data/arv-products.json', {}, {});
-            return resource;
-        },
-
-        ILSProducts : function() {
-            var resource = $resource('/public-data/ils-products.json', {}, {});
-            return resource;
-        },
-
-        TBProducts : function() {
-            var resource = $resource('/public-data/tb-products.json', {}, {});
-            return resource;
-        },
-
-        NationalLabProducts : function() {
-            var resource = $resource('/public-data/labnational-products.json', {}, {});
-            return resource;
-        },
-
-        RegionalLabProducts : function() {
-            var resource = $resource('/public-data/labregional-products.json', {}, {});
-            return resource;
-        },
-
-        DistrictLabProducts : function() {
-            var resource = $resource('/public-data/labdist-products.json', {}, {});
-            return resource;
-        },
-
-        ZoneLabProducts : function() {
-            var resource = $resource('/public-data/labzone-products.json', {}, {});
-            return resource;
-        }
-
-
-    };
-});
-
-
 
 
 services.factory('getTimelinessReport',function($resource){
