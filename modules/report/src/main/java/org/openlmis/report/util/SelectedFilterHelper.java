@@ -95,17 +95,25 @@ public class SelectedFilterHelper {
 
   public String getProgramGeoZoneFacility(Map<String, String[]> params) {
 
+    String filterSummary = "";
+
     String program = StringHelper.getValue(params, PROGRAM);
     String zone = StringHelper.getValue(params, ZONE);
     String facility = StringHelper.getValue(params, FACILITY);
 
+    if(program != null)
+      filterSummary = String.format("Program: %s", "0".equals(program) ? "" : programService.getById(Long.parseLong(program)).getName());
 
-    GeographicZone zoneObject = geoZoneRepsotory.getById(Long.parseLong(zone));
-    Facility facilityObject = facilityRepository.getById(Long.parseLong(facility));
-    String filterSummary;
-    filterSummary = String.format("Program: %s", "0".equals(program) ? "" : programService.getById(Long.parseLong(program)).getName());
-    filterSummary = filterSummary + (zoneObject == null ? "\nGeographic Zone: National" : String.format("%nGeographic Zone: %s", zoneObject.getName()));
-    filterSummary = filterSummary + (facilityObject == null ? "\nFacility: All Facilities" : String.format("%nFacility: %s", facilityObject.getName()));
+    if(zone != null) {
+      GeographicZone zoneObject = geoZoneRepsotory.getById(Long.parseLong(zone));
+      filterSummary = filterSummary + (zoneObject == null ? "\nGeographic Zone: National" : String.format("%nGeographic Zone: %s", zoneObject.getName()));
+    }
+
+    if(facility != null){
+      Facility facilityObject = facilityRepository.getById(Long.parseLong(facility));
+      filterSummary = filterSummary + (facilityObject == null ? "\nFacility: All Facilities" : String.format("%nFacility: %s", facilityObject.getName()));
+    }
+
     return filterSummary;
   }
 
