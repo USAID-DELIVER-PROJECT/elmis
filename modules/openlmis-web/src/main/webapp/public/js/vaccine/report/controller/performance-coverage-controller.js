@@ -19,8 +19,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     });
 
     $scope.perioderror = "";
-    $scope.grayCount={};
-    $scope.regionGrayCount={};
+    $scope.grayCount = {};
+    $scope.regionGrayCount = {};
     $scope.OnFilterChanged = function () {
 
         // prevent first time loading
@@ -37,8 +37,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
             },
 
             function (data) {
-var formattedDistrictJson=[];
-                var formattedRegionJson=[];
+                var formattedDistrictJson = [];
+                var formattedRegionJson = [];
                 if (data.performanceCoverage.status) {
                     $scope.error = data.performanceCoverage.status[0].error;
                     $scope.datarows = $scope.datarows = null;
@@ -60,22 +60,22 @@ var formattedDistrictJson=[];
                             $scope.regionSelected = true;
 
                             extractPopulationInfo($scope.datarows, $scope.districtPopulation, 2);
-                            formattedDistrictJson=findMonthValue( $scope.datarows, 2);
-                            $scope.datarows=formattedDistrictJson.reportList;
-                            $scope.grayCount=formattedDistrictJson.grayCount;
+                            formattedDistrictJson = findMonthValue($scope.datarows, 2);
+                            $scope.datarows = formattedDistrictJson.reportList;
+                            $scope.grayCount = formattedDistrictJson.grayCount;
                             if (!utils.isEmpty($scope.dataRowsRegionAggregate)) {
                                 extractPopulationInfo($scope.dataRowsRegionAggregate, $scope.regionPopulation, 3);
-                                formattedRegionJson= findMonthValue(  $scope.dataRowsRegionAggregate, 3);
+                                formattedRegionJson = findMonthValue($scope.dataRowsRegionAggregate, 3);
                                 $scope.dataRowsRegionAggregate = formattedRegionJson.reportList;
-                                $scope.regionGrayCount=formattedRegionJson.grayCount;
+                                $scope.regionGrayCount = formattedRegionJson.grayCount;
                             }
                         }
                         else {
                             $scope.regionSelected = false;
                             extractPopulationInfo($scope.datarows, $scope.districtPopulation, 1);
-                            formattedDistrictJson=findMonthValue( $scope.datarows, 1);
-                            $scope.datarows=formattedDistrictJson.reportList;
-                            $scope.grayCount=formattedDistrictJson.grayCount;
+                            formattedDistrictJson = findMonthValue($scope.datarows, 1);
+                            $scope.datarows = formattedDistrictJson.reportList;
+                            $scope.grayCount = formattedDistrictJson.grayCount;
 
                         }
                         populateCumulativeColumns();
@@ -155,20 +155,22 @@ var formattedDistrictJson=[];
                 $scope.colors.color_80_percent = item.value;
             else if (item.key === "VCP_ORANGE")
                 $scope.colors.color_50_percent_above = item.value;
-            else if (item.key === "VCP_RED")
+            else if (item.key === "VCP_RED") {
                 $scope.colors.color_50_percent_below = item.value;
-            else if(item.key === "VCP_NON_REPORTING"){
-                $scope.colors.color_non_reporting=item.value;
+                $scope.colors.color_80_percent = item.value;
+            }
+            else if (item.key === "VCP_NON_REPORTING") {
+                $scope.colors.color_non_reporting = item.value;
             }
         });
     });
 
 
     $scope.bgColorCode = function (value) {
-       var percentageCoverage=value.coverage;
+        var percentageCoverage = value.coverage;
 
-        if(value.generated!=='undefined' && value.generated===true){
-            return  $scope.colors.color_non_reporting;
+        if (value.generated !== 'undefined' && value.generated === true) {
+            return $scope.colors.color_non_reporting;
         }
         if (percentageCoverage > 90)
             return $scope.colors.color_ninty_percent;
@@ -181,10 +183,10 @@ var formattedDistrictJson=[];
     };
 
     $scope.reporting = function (value) {
-        var percentageCoverage=value.coverage;
+        var percentageCoverage = value.coverage;
 
-        if(value.generated!=='undefined' && value.generated===true){
-            return  messageService.get('label.reported.no');
+        if (value.generated !== 'undefined' && value.generated === true) {
+            return messageService.get('label.reported.no');
         }
         return messageService.get('label.reported.yes');
     };
@@ -396,17 +398,17 @@ var formattedDistrictJson=[];
 
     function findMonthValue(reportList, type) {
         var formattedData = [];
-        var grayCount={};
+        var grayCount = {};
         if (utils.isEmpty(reportList)) {
             return reportList;
         }
 
-        if($scope.staticYear!=='0') {
+        if ($scope.staticYear !== '0') {
             var len = reportList.length;
 
             var distrctList = {};
             var periodList = utils.generatePeriodNamesForVaccineYear($scope.staticYear);
-             grayCount=intializeGrayCount(periodList);
+            grayCount = intializeGrayCount(periodList);
             reportList.forEach(function (value) {
                 var district = getPopulationKey(value, type);
                 if (!(district in distrctList)) {
@@ -429,32 +431,33 @@ var formattedDistrictJson=[];
                             denominator: distrctList[key].denominator,
                             month: i + 1,
                             year: $scope.staticYear,
-                            period_name: periodList[i] ,
+                            period_name: periodList[i],
                             region_name: distrctList[key].region_name,
                             district_name: distrctList[key].district_name,
                             facility_name: distrctList[key].facility_name,
                             vaccinated: 0,
-                            generated:true
+                            generated: true
 
                         };
-                        grayCount[$scope.staticYear+"_"+i].count++;
+                        grayCount[$scope.staticYear + "_" + i].count++;
                         formattedData.push(object);
                     }
                 }
             }
-        }else{
-            formattedData=reportList;
+        } else {
+            formattedData = reportList;
         }
 
-        return {reportList:formattedData, grayCount:grayCount};
+        return {reportList: formattedData, grayCount: grayCount};
 
     }
-    function intializeGrayCount(periods){
-        var grayCount={};
-        for(var i=0;i < 12;i ++){
-            grayCount[$scope.staticYear+"_"+i]= {count:0};
+
+    function intializeGrayCount(periods) {
+        var grayCount = {};
+        for (var i = 0; i < 12; i++) {
+            grayCount[$scope.staticYear + "_" + i] = {count: 0};
         }
 
-       return grayCount;
+        return grayCount;
     }
 }
