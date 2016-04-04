@@ -96,8 +96,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         dataColumns: [{
             "id": "coverage", "name": messageService.get('label.coverage'), "type": "scatter"
         },
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "scatter"},
-            {"id": "target", "name": messageService.get('label.target'), "type": "scatter"}
+            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"},
+            {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
         ],
         dataX: {"id": "facility_name"}
     };
