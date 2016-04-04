@@ -1,6 +1,7 @@
 
 
 <div class="modal-header modal-header">
+    <button  class="close" ng-click="ok()">X</button>
     <h2><i class="flaticon-bar"></i>Wastage Detail</h2>
 </div>
 <div class="modal-body">
@@ -10,15 +11,16 @@
 <table ng-show="facilityWastageDetails" id="summary-table" class="table-bordered table">
     <thead  >
     <tr class="gradient-header">
-        <th>District</th>
-        <th>Facility</th>
-        <th></th>
-        <th style="text-align: center" ng-repeat="period in wastagePeriodsList">{{period}}</th>
-        <th style="text-align: center">Total</th>
+        <th class="modal-table-div">District</th>
+        <th class="modal-table-div">Facility</th>
+        <th class="modal-table-div"></th>
+        <th class="modal-table-div" style="text-align: center" ng-repeat="period in wastagePeriodsList">{{period}}</th>
+        <th class="modal-table-div" style="text-align: center">Total</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="detail in facilityWastageDetails" >
+    <tr  ng-style="{'background-color': getBackGroundColor($index).bgColor , 'color':getBackGroundColor($index).fColor}"
+            ng-repeat="detail in facilityWastageDetails" >
         <td ng-show="$first" rowspan="{{facilityWastageDetails.length}}">{{detail.district}}</td>
         <td ng-show="$index%2 == 0" rowspan="2">{{detail.facilityName}}</td>
         <td>{{detail.indicator}}</td>
@@ -30,5 +32,5 @@
 </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-primary modal-ok-btn" ng-click="ok()">OK</button>
 </div>
