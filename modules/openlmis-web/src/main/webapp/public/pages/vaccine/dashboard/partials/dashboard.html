@@ -275,6 +275,14 @@
 
                 </th>
                 <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.expiryDate"></span>
+                </th>
+                <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.adverse.effect.manufacturer"></span>
+                </th>
+
+
+                <th style=" text-align: center; vertical-align: middle">
                     <span openlmis-message="label.vaccine.dashboard.note"></span>
 
                 </th>
@@ -291,6 +299,8 @@
                 <td ng-bind="subRow.aefi_date| date:'dd-MMM-yyyy'"/>
                 <td ng-bind="subRow.product_name"></td>
                 <td ng-bind="subRow.aefi_batch"></td>
+                <td ng-bind="subRow.aefi_expiry_date| date:'dd-MMM-yyyy'"/>
+                <td ng-bind="subRow.manufacturer"></td>
                 <td ng-bind="subRow.aefi_notes"></td>
             </tr>
             </tbody>

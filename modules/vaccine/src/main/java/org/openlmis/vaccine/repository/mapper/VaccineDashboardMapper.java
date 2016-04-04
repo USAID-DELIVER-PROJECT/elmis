@@ -121,7 +121,7 @@ public interface VaccineDashboardMapper {
         Map<String, Object> getInvestigatingSummary(@Param("userId") Long userId);
 
         /* */
-        @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case,product_name, aefi_batch, aefi_date, aefi_notes \n" +
+        @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case,product_name, aefi_batch, aefi_date, aefi_notes,aefi_expiry_date,manufacturer \n" +
                 "                   from vw_vaccine_iefi i\n" +
                 "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
                 "                    where is_investigated = 'f'  \n" +
