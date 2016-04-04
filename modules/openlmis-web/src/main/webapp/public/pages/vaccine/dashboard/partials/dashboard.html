@@ -87,6 +87,10 @@
 
                     </th>
 
+                    <th>
+                        <span openlmis-message="label.phone"></span>
+
+                    </th>
 
                 </tr>
 
@@ -107,6 +111,7 @@
 
                     <td
                             ><input ng-if="subRow.hascontacts" ng-click="itemChecked($index)" type="checkbox"/></td>
+                    <td ng-bind="subRow.mainphone"></td>
                 </tr>
                 </tbody>
                 <tfoot>

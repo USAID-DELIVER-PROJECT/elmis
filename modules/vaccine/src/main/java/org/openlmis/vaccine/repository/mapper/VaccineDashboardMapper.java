@@ -69,7 +69,7 @@ public interface VaccineDashboardMapper {
                 "                           FROM configuration_settings \n" +
                 "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'L'::text \n" +
                 "                        ELSE 'N'::text \n" +
-                "                    END AS reporting_status \n" +
+                "                    END AS reporting_status, f.mainphone \n" +
                 "                from programs_supported ps \n" +
                 "                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid and vr.periodid = fn_get_vaccine_current_reporting_period() \n" +
                 "                left join processing_periods pp on pp.id = vr.periodid      \n" +
@@ -78,7 +78,7 @@ public interface VaccineDashboardMapper {
                 "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
                 "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or \n" +
                 "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)))              \n" +
-                "            ) select district, facility_name, facility_code, reported_date, reporting_status,facility_id, hasContacts from temp t")
+                "            ) select district, facility_name, facility_code, reported_date, reporting_status,facility_id, hasContacts, mainphone  from temp t")
         List<HashMap<String, Object>> getReportingDetails(@Param("userId") Long userId);
 
         /* */
