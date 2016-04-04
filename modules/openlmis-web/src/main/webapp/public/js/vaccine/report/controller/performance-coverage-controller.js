@@ -151,8 +151,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
             if (item.key === "VCP_GREEN")
                 $scope.colors.color_ninty_percent = item.value;
-            else if (item.key === "VCP_BLUE")
-                $scope.colors.color_80_percent = item.value;
+            //else if (item.key === "VCP_BLUE")
+            //    $scope.colors.color_80_percent = item.value;
             else if (item.key === "VCP_ORANGE")
                 $scope.colors.color_50_percent_above = item.value;
             else if (item.key === "VCP_RED") {
