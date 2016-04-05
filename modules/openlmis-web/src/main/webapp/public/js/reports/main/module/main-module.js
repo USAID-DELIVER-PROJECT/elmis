@@ -23,6 +23,10 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
         when('/facility-list', {controller: ListFacilitiesController, templateUrl:'partials/facility-list.html',reloadOnSearch:false}).
         when('/lab-equipments-by-donor', {controller: LabEquipmentListByDonorReportController, templateUrl:'partials/lab-equipments-by-donor.html',reloadOnSearch:false}).
         when('/lab-equipments-list', {controller: LabEquipmentListReportController, templateUrl:'partials/lab-equipment-list.html',reloadOnSearch:false}).
+
+        when('/lab-equipments-functioning', {controller: LabEquipmentFunctioningReportController, templateUrl:'partials/lab-equipment-functioning.html',reloadOnSearch:false}).
+        when('/lab-equipments-non-functioning', {controller: LabEquipmentNonFunctioningReportController, templateUrl:'partials/lab-equipment-non-functioning.html',reloadOnSearch:false}).
+
         when('/non-reporting', {controller: NonReportingController, templateUrl:'partials/non-reporting.html',reloadOnSearch:false}).
         when('/order', {controller: OrderReportController, templateUrl:'partials/order.html',reloadOnSearch:false}).
         when('/order-fill-rate', {controller: OrderFillRateController, templateUrl:'partials/order-fill-rate.html',reloadOnSearch:false}).
