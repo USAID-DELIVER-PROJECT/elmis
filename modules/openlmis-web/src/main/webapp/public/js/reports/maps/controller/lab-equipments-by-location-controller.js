@@ -293,7 +293,7 @@ function LabEquipmentStatusByLocationController($scope, $window, leafletData, $f
             backgroundOpacity:1,
             labelFormatter: function(label, series) {
                 var percent= Math.round(series.percent);
-                var number= series.data[0][1];
+                var number= series.data;
                 return('<b>'+label+'</b>');
             }
         },
