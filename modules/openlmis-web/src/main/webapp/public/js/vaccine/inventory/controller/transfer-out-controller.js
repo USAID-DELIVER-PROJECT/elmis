@@ -162,7 +162,7 @@ function TransferOutController($scope,$location, $document,$window,configuration
                  distribution.programId=$scope.selectedProgramId;
                  distribution.distributionDate = new Date();
                  distribution.lineItems=[];
-                 distribution.distributionType="EMERGENCE";
+                 distribution.distributionType="TRANSFER";
                  distribution.status="PENDING";
 
                  $scope.stockCardsToDisplay.forEach(function(category){

@@ -11,7 +11,7 @@
  */
 
 
-function MassDistributionController($scope,$location, $document,$window,configurations,$timeout,homeFacility,OneLevelSupervisedFacilities,FacilityWithProducts,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
+function MassDistributionController($scope,$location, $document,$window,configurations,$timeout,homeFacility,OneLevelSupervisedFacilities,FacilityWithProducts,DistributionsByDate,StockCards,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
 
      $scope.userPrograms=configurations.programs;
      $scope.period=configurations.period;
@@ -20,6 +20,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
      $scope.toIssue=[];
      $scope.distributionType='ROUTINE';
      $scope.UnScheduledFacility=undefined;
+     $scope.toDay=new Date();
      $scope.maxModalBodyHeight='max-height:'+parseInt($document.height() * 0.46,10)+'px !important';
      $scope.loadSupervisedFacilities=function(programId){
            OneLevelSupervisedFacilities.get({programId:programId},function(data){
@@ -35,6 +36,57 @@ function MassDistributionController($scope,$location, $document,$window,configur
                 $scope.routineFacility=data;
          });
      };
+
+     $scope.loadStockCards=function(){
+        StockCards.get({facilityId:$scope.homeFacility.id},function(data){
+            $scope.stockCards=data.stockCards;
+        });
+     };
+     $scope.loadDistributionsByDate=function(searchDate){
+        $scope.distributionsByDate=[];
+        DistributionsByDate.get({facilityId:$scope.homeFacility.id,date:searchDate},function(data){
+            $scope.distributionsByDate=data.distributions;
+        });
+     };
+
+     $scope.searchDistributions=function(searchDate){
+        $scope.dateChange=true;
+        $scope.loadDistributionsByDate(searchDate);
+     };
+
+     $scope.enableSearchChange=function(){
+
+        if($scope.enableSearch ===false)
+        {
+             $scope.searchDate=$scope.toDay;
+             $scope.loadDistributionsByDate($scope.toDay);
+        }
+     };
+
+     $scope.printAll=function(distributions){
+            var ids='';
+            distributions.forEach(function(d){
+                ids=ids + d.id + ',';
+            });
+            ids = ids.slice(0, -1);
+            var url='/vaccine/inventory/distribution/summary/print/'+ids+'.json';
+            $window.open(url,'_blank');
+     };
+     $scope.getQuantityDistributionForProduct=function(distribution,stockCard){
+           var product= _.findWhere(distribution.lineItems,{productId:stockCard.product.id});
+           var quantity=(product !== undefined)?product.quantity:null;
+           return quantity;
+     };
+
+     $scope.getTotalDistributionForProduct=function(stockCard){
+            var total=0;
+            $scope.distributionsByDate.forEach(function(distribution){
+                 var product= _.findWhere(distribution.lineItems,{productId:stockCard.product.id});
+                 var quantity=(product !== undefined)?product.quantity:0;
+                 total=total+quantity;
+            });
+            return total;
+      };
 
      $scope.closeModal=function(){
           $scope.currentProduct.lots=$scope.oldProductLots;
@@ -140,11 +192,17 @@ function MassDistributionController($scope,$location, $document,$window,configur
           //TODO: load stock cards on program change
           $scope.selectedProgram=$scope.userPrograms[0];
           $scope.loadSupervisedFacilities($scope.userPrograms[0]);
+          $scope.loadStockCards();
+          $scope.searchDate=$scope.toDay;
+          $scope.loadDistributionsByDate($scope.toDay);
      }
      else if($scope.userPrograms.length === 1){
            $scope.showPrograms=false;
            $scope.selectedProgram=$scope.userPrograms[0];
            $scope.loadSupervisedFacilities($scope.userPrograms[0].id);
+           $scope.loadStockCards();
+           $scope.searchDate=$scope.toDay;
+           $scope.loadDistributionsByDate($scope.toDay);
      }
 
      $scope.showIssueModal=function(facility, type){

@@ -111,4 +111,8 @@ public class VaccineInventoryDistributionRepository {
         return mapper.getFacilitiesSameType(facilityId, query.toLowerCase());
     }
 
+    public List<VaccineDistribution> getDistributionsByDate(Long facilityId, String date) {
+        return mapper.getDistributionsByDate(facilityId, date);
+    }
+
 }

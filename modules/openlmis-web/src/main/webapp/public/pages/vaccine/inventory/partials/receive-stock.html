@@ -134,12 +134,12 @@
             </div>
                 <div class="rnr-table" ng-show=" !hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
                     <ng-include
-                            src="'/public/pages/vaccine/inventory/partials/voucher-receive-stock-partial.html?i=1'"></ng-include>
+                            src="'/public/pages/vaccine/inventory/partials/voucher-receive-stock-partial.html?i=14'"></ng-include>
             </div>
             </div>
             <div ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || hasPermission('INITIALIZE_STOCK') || !hasStock">
                 <ng-include
-                        src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html'"></ng-include>
+                        src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html?'"></ng-include>
             </div>
         </div>
     </div>
@@ -147,14 +147,18 @@
     <div form-toolbar id="action_buttons" class="action-buttons">
         <div class="form-cell button-row">
             <input ng-show="hasStock && !hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !hasPermission('INITIALIZE_STOCK')"
-                   ng-disabled="occurredDate ==null || distribution == undefined "
-                   type="submit" id="submit-button" ng-click="receive()"
+                   ng-disabled="receivingForm.$valid || occurredDate ==null || distribution == undefined"
+                   type="submit"
+                   id="submit-button"
+                   ng-click="receive()"
                    class="btn btn-primary save-button"
                    openlmis-message="button.submit"/>
 
             <input ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock || hasPermission('INITIALIZE_STOCK')"
                    ng-disabled="openReceiveForm.$invalid || receivedProducts.length == 0 ||(hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderNumber ==null) || (hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderDate==null)"
-                   type="submit" id="submit-button2" ng-click="openReceive()"
+                   type="submit"
+                   id="submit-button2"
+                   ng-click="openReceive()"
                    class="btn btn-primary save-button"
                    openlmis-message="button.submit"/>
 

@@ -100,20 +100,21 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
             });
          });
 
-
+          $scope.closeIssueModal();
          StockEvent.save({facilityId:$scope.homeFacility.id},events, function (data) {
              if(data.success)
              {
                  SaveDistribution.save(distribution,function(distribution){
                       $scope.showMessages();
-                      $scope.closeIssueModal();
+
                       $scope.distributionId=distribution.distributionId;
-                      var url = '/vaccine/orderRequisition/issue/print/'+$scope.distributionId;
-                      printWindow.location.href=url;
+                      $scope.loadDistributionsByDate($scope.toDay);
+                      //var url = '/vaccine/orderRequisition/issue/print/'+$scope.distributionId;
+                    //  printWindow.location.href=url;
                  });
              }
          });
-         printWindow= $window.open('about:blank','_blank');
+       //  printWindow= $window.open('about:blank','_blank');
 
      };
 

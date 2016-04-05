@@ -38,6 +38,12 @@
     .rnr-table .table-bordered th.p-column, .rnr-table .table-bordered td.p-column{
         border-right:solid 3px #ddd !important;
     }
+    th.header {
+    background: #F2F2F2; !important;
+    color:#000 !important;
+    font-weight: normal !important;
+    text-shadow: none !important;
+    }
 </style>
 
 <div >
@@ -64,7 +70,7 @@
         </div>
         <br/>
 
-        <div class="rnr-table" style="background-color: #fff; padding: 5px">
+        <div style="background-color: #fff; padding: 5px" class="rnr-table">
             <select style="min-width:300px !important" ui-select2
                     ng-change="loadFacilityDistributionData()"
                     ng-model="selectedRoutineFacility"
@@ -102,7 +108,7 @@
                     <tr>
                         <th colspan="2">
                             <span openlmis-message="label.period" class="cell-text"></span>:
-                            <strong id='periodLabel' ng-bind="routineFacility.currentPeriod.name"> </strong>
+                            <strong id='periodLabel' ng-bind="routineFacility.currentPeriod.name"> </strong><br/>&nbsp;
                         </th>
                     </tr>
                     <tr>
@@ -112,7 +118,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-class="{'pod':(facility.status === 'PENDING')}"
+                    <tr ng-class="{'pod':(routineFacility.status === 'PENDING')}"
                         ng-click="setSelectedFacility(routineFacility)"
                         style="{{getSelectedFacilityColor(facility)}}">
                         <td class="col-facility">
@@ -121,15 +127,18 @@
                         <td style="width:100px;max-width:100px;min-width:100px" class="col-action">
                             <input ng-show="(routineFacility.status !== 'RECEIVED' && routineFacility.status === undefined && routineFacility.status !=='PENDING')"
                                    ng-click="showIssueModal(routineFacility,'ROUTINE')"
-                                   type="submit" class="btn btn-primary" openlmis-message="button.add">
+                                   type="submit" class="btn btn-primary" openlmis-message="button.add"
+                                   title="Add Products to distribute"
+                                    >
                             <input ng-show="routineFacility.status ==='RECEIVED'"
                                    ng-click="showIssueModal(routineFacility,'EMERGENCE')"
                                    type="submit" class="btn btn-primary" openlmis-message="button.add">
-                            <input uib-popover="I appeared on mouse enter!" popover-trigger="mouseenter"
+                            <input uib-popover="I appeared on mouse enter!"
                                    ng-show="routineFacility.status === 'PENDING'"
                                    ng-click="showPODModal(routineFacility)"
                                    type="submit"
-                                   class="btn btn-primary" value="POD" openlmis-message="button.vaccine.stock.pod">
+                                   class="btn btn-primary" value="POD" title="Proof of Delivery"
+                                   openlmis-message="button.vaccine.stock.pod">
                         </td>
                     </tr>
                     </tbody>
@@ -145,17 +154,20 @@
                             openlmis-message="label.products"></th>
                     </tr>
                     <tr>
-                        <th style="text-align:center" colspan="2" class="p-column"
+                        <th style="text-align:left" colspan="1" class="p-column"
                             ng-repeat="product in routineFacility.productsToIssue">
-                            {{product.name}}
+                            {{product.name}} <br/> ({{product.dosageUnit}})
                         </th>
                     </tr>
                     <tr colspan="2">
                         <th style="max-width:80px;width:80px;min-width:80px"
-                            ng-repeat-start="product in routineFacility.productsToIssue"
+                            ng-show="(routineFacility.status !== 'RECEIVED' && routineFacility.status === undefined && routineFacility.status !=='PENDING')"
+                            ng-repeat="product in routineFacility.productsToIssue"
                             openlmis-message="label.vaccine.stock.quantity.required">
                         </th>
-                        <th style="max-width:80px;width:80px;min-width:80px" class="p-column" ng-repeat-end
+                        <th ng-show="routineFacility.status === 'PENDING'"
+                            style="max-width:80px;width:80px;min-width:80px" class="p-column"
+                            ng-repeat="product in routineFacility.productsToIssue"
                             openlmis-message="label.vaccine.stock.quantity.toissue"></th>
                     </tr>
                     </thead>
@@ -165,11 +177,13 @@
                         ng-click="setSelectedFacility(routineFacility)"
                         style="{{getSelectedFacilityColor(facility)}}"
                             >
-                        <td class="col-facility" ng-repeat-start="product in routineFacility.productsToIssue">
+                        <td ng-show="(routineFacility.status !== 'RECEIVED' && routineFacility.status === undefined && routineFacility.status !=='PENDING')"
+                            class="col-facility" ng-repeat-start="product in routineFacility.productsToIssue">
                             <span style="float:left;margin:9px 2px 10px 3px;padding-left:10px;"
                                   ng-bind="product.quantityRequired"></span>
                         </td>
-                        <td style="text-align:left !important" class="col-facility p-column" ng-repeat-end>
+                        <td ng-show="routineFacility.status === 'PENDING'" style="text-align:left !important"
+                            class="col-facility p-column" ng-repeat-end>
                             <span style="float:left;margin:9px 2px 10px 3px;padding-left:2px;"
                                   ng-if="(routineFacility.status === undefined || routineFacility.status === 'PENDING') && product.quantity !==0"
                                   ng-bind="product.quantity"></span>
@@ -181,17 +195,92 @@
             </div>
             <div class="clear-both"><br/></div>
 
+
         </div>
-    </div>
+            <br/>
+                 <span>
+                <input type="checkbox" value="false" ng-model="enableSearch" ng-change="enableSearchChange()">
+                 </span>
+            <span>Search</span>
+                <span ng-show="enableSearch">
+                     <input
+                             id="distributionDateSearch"
+                             class="receivingDate"
+                             name="searchDate"
+                             type="text"
+                             ng-change="searchDistributions(searchDate)"
+                             ui-date="{dateFormat: 'dd/mm/yy', changeYear: true, maxDate:'today'}"
+                             ng-model="searchDate"
+                             ui-date-format="yy-mm-dd"/>
+                 </span>
+            <br/>
+
+            <div ng-if="distributionsByDate.length == 0 && dateChange && enableSearch && searchDate !== undefined">No
+                Distributions found
+            </div>
+            <div ng-if="distributionsByDate.length > 0">
+
+                <a style="float:right" id="pdf-button"
+                   class="btn-small btn-info"
+                   ng-click="printAll(distributionsByDate)" href title="Print distribution summary">
+                    <span>PDF</span>
+                </a>
+                <table class="table table-bordered" fixed-table-header>
+                    <thead>
+                    <tr>
+                        <th class="header" colspan="1">
+                            <span openlmis-message="label.vaccine.issue.date"></span>:<b> {{searchDate |
+                            date:'dd-MM-yyyy'}}</b></th>
+                        <th class="header" colspan="{{stockCards.length}}">
+                            <span openlmis-message="label.products"></span>
+
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="header" colspan="1"><span openlmis-message="label.facility"></span></th>
+                        <th class="header" style="text-align:left" class="p-column" ng-repeat="stockCard in stockCards">
+                            {{stockCard.product.primaryName}}<br/>({{stockCard.product.dosageUnit.code}})
+                        </th>
+                    </tr>
+
+
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="distribution in distributionsByDate">
+                        <td><span ng-bind="distribution.toFacility.name"></span></td>
+                        <!--<td>-->
+                        <!--<a  id="pdf-button" class="btn-small btn-info"  ng-click="print(distribution.id)" href-->
+                        <!--title="Print {{distribution.toFacility.name}} issue voucher">-->
+                        <!--<span>PDF</span>-->
+                        <!--</a>-->
+                        <!--</td>-->
+                        <td class="col-facility" ng-repeat="stockCard in stockCards">
+                            {{getQuantityDistributionForProduct(distribution,stockCard)}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="header" openlmis-message="label.total"></th>
+                        <!--<th class="header">Issue Voucher</th>-->
+                        <th class="header" style="text-align:left" class="p-column" ng-repeat="stockCard in stockCards">
+                            <b>{{getTotalDistributionForProduct(stockCard)}}</b>
+                        </th>
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
     </div>
 
 
     <div ng-controller="SaveIssueController" id="popup-box" ng-form="issueForm" modal="issueModal"
          options="{'backdrop':'static', 'escape':false}"
          style="width:80% !important;margin-left:-40% !important;">
+
         <div class="modal-header">
             <h3 openlmis-message="label.vaccine.stock.issue.voucher"></h3>
         </div>
+
         <div class="modal-body" style="{{maxModalBodyHeight}}">
             <div class="row-fluid ">
                 <div class="info-box span12">
@@ -202,9 +291,14 @@
                     <div class="span4">
                         <strong id="received-date-label" openlmis-message="label.vaccine.issue.date"> </strong>
                         <span class="label-required">*</span>:&nbsp;
-                        <input ng-required="true" id="receivingDate" name="issueDate" type="text"
+                        <input ng-required="true"
+                               id="receivingDate"
+                               class="receivingDate"
+                               name="issueDate"
+                               type="text"
                                ui-date="{dateFormat: 'dd/mm/yy', changeYear: false, maxDate:'today',minDate:period.stringStartDate}"
-                               ng-model="facilityToIssue.issueDate"/>
+                               ng-model="facilityToIssue.issueDate"
+                               ui-date-format="yy-mm-dd"/>
                     </div>
                     <div class="span4">
                         <strong id='issueTypeLabel' openlmis-message="label.type"> </strong>:&nbsp;
@@ -213,12 +307,25 @@
                 </div>
             </div>
             <div class="alert alert-danger" ng-show="showNoProductErrorMessage" openlmis-message="error.message.no.product.to.issue"></div>
-            <div class="alert alert-danger" ng-show="showFormErrorMessage" openlmis-message="error.message.invalid.form"></div>
+            <div class="alert alert-danger"
+                 ng-show="issueForm.$dirty && (issueForm.$error.divisibleByPresentationValidator.length >0 || issueForm.$error.maximumValidator.length >0)">
+                <ul ng-show="issueForm.$error.divisibleByPresentationValidator.length >0 || issueForm.$error.maximumValidator.length >0">
+                    <li ng-repeat="error in issueForm.$error.divisibleByPresentationValidator">
+                        {{error.$name}} <span
+                            openlmis-message="error.message.quantity.not.multiple.of.presentation"></span>
+                    </li>
+                    <li ng-repeat="error in issueForm.$error.maximumValidator">
+                        {{error.$name}} <span openlmis-message="error.message.quantity.greater.than.soh"></span>
+                    </li>
+                </ul>
+            </div>
             <div class="rnr-table">
                 <table id="issueTable" class="table table-bordered">
                 <thead>
                 <tr>
                     <th class="col-lot"><span openlmis-message="label.product"></span></th>
+                    <th class="col-quantity " style="max-width:120px !important; width:120px !important"><span
+                            openlmis-message="label.unit.of.measure"></span></th>
                     <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
                             openlmis-message="label.stock.batch"></span></th>
                     <th class="col-lot " style="max-width:100px !important; width:100px !important"><span
@@ -247,6 +354,9 @@
                         <td class="cell-input disabled last-row" rowspan="{{product.lots.length}}">
                         <span class="cell-text"  ng-bind="product.name"></span>
                     </td>
+                        <td class="cell-input disabled last-row" rowspan="{{product.lots.length}}">
+                            <span class="cell-text" ng-bind="product.dosageUnit"></span>
+                        </td>
                         <td class="cell-input disabled"
                             ng-class="{'skip':product.lots === undefined,'last-row':product.lots.length==1}">
                         <span class="cell-text" ng-bind="product.lots[0].lotCode"></span>
@@ -267,15 +377,24 @@
                                   ng-show="product.lots === undefined"></span>
                     </td>
                         <td class="col-general cell-input" ng-class="{'last-row':product.lots.length==1}">
-                            <input ng-show="product.lots.length > 0" min="{{0}}" max="{{product.lots[0].quantityOnHand}}" name="quantity" ng-model="product.lots[0].quantity"
-                                   ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
+                            <input ng-show="product.lots.length > 0"
+                                   maximum="{{product.lots[0].quantityOnHand}}"
+                                   name="{{product.name}} Batch {{product.lots[0].lotCode}}"
+                                   ng-model="product.lots[0].quantity"
+                                   ng-change="updateCurrentTotal(product)"
+                                   numeric-validator="positiveInteger"
                                    divisible-by-presentation="{{product.presentation}}"
-                            maxlength="8" type="number"/>
-                            <input ng-show="product.lots === undefined" min="{{0}}"
-                                   max="{{product.totalQuantityOnHand}}" name="quantity" ng-model="product.quantity"
-                                   ng-change="updateCurrentTotal(product)" numeric-validator="positiveInteger"
-                                   maxlength="8" type="number" divisible-by-presentation="{{product.presentation}}"
-                                   title="Quantity To Issue"
+                                   ng-disabled="product.lots.length > 1 && product.lots[1].quantity >0"
+                                   maxlength="8"
+                                   type="text"/>
+                            <input ng-show="product.lots === undefined"
+                                   maximum="{{product.totalQuantityOnHand}}"
+                                   name="{{product.name}}" ng-model="product.quantity"
+                                   ng-change="updateCurrentTotal(product)"
+                                   numeric-validator="positiveInteger"
+                                   maxlength="8"
+                                   type="text"
+                                   divisible-by-presentation="{{product.presentation}}"
                                     />
                     </td>
                         <td class="cell-input disabled last-row" rowspan="{{product.lots.length}}">
@@ -301,14 +420,18 @@
                             <span class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
                     </td>
                         <td class="col-general cell-input" ng-class="{'last-row':$last}">
-                            <input ng-disabled="(product.quantityRequired < product.lots[$index -1].quantityOnHand) || (product.quantityRequested > product.lots[$index -1].quantityOnHand && (product.lots[$index -1].quantity ===undefined || (product.lots[$index -1].quantity < product.lots[$index -1].quantityOnHand)))"
+                            <input
                                    ng-show="product.lots.length > 0"
-                                   min="{{0}}" max="{{lot.quantityOnHand}}"
-                                   name="lotQuantity{{$index}}"
+                                   maximum="{{lot.quantityOnHand}}"
+                                   name="{{product.name}} Batch {{lot.lotCode}}"
                                    ng-model="lot.quantity"
                                    ng-change="updateCurrentTotal(product)"
                                    numeric-validator="positiveInteger"
-                                   maxlength="8" type="number" divisible-by-presentation="{{product.presentation}}"/>
+                                   maxlength="8" type="text"
+                                   divisible-by-presentation="{{product.presentation}}"
+                                   ng-disabled="product.lots[$index-1].quantity ===undefined || product.lots[$index-1].quantity != product.lots[$index-1].quantityOnHand ||
+                                        product.lots[$index +1].quantity >0"
+                                    />
                     </td>
                 </tr>
                 </tbody>
@@ -380,9 +503,21 @@
                         <span class="cell-text" ng-bind="product.lots[0].vvmStatus"></span>
                     </td>
                     <td class="col-general cell-input">
-                        <input ng-change="updateCurrentPOD(product)" ng-show="product.lots.length > 0" type="number"
-                               ng-model="product.lots[0].quantity">
-                        <input ng-show="product.lots === undefined" type="number" ng-model="product.quantity"/>
+                        <input ng-change="updateCurrentPOD(product)"
+                               ng-show="product.lots.length > 0"
+                               type="text"
+                               ng-model="product.lots[0].quantity"
+                               divisible-by-presentation="{{product.presentation}}"
+                               numeric-validator="positiveInteger"
+                               maximum="{{product.lots[0].quantityOnHand}}"
+                                >
+                        <input ng-show="product.lots === undefined"
+                               type="text"
+                               ng-model="product.quantity"
+                               divisible-by-presentation="{{product.presentation}}"
+                               numeric-validator="positiveInteger"
+                               maximum="{{product.totalQuantityOnHand}}"
+                                />
                     </td>
                 </tr>
                 <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first" ng-class="color">
@@ -393,7 +528,13 @@
                         <span class="cell-text" ng-bind="lot.vvmStatus"></span>
                     </td>
                     <td class="col-general cell-input">
-                        <input ng-change="updateCurrentPOD(product)" type="number" ng-model="lot.quantity"/>
+                        <input ng-change="updateCurrentPOD(product)"
+                               type="text"
+                               ng-model="lot.quantity"
+                               divisible-by-presentation="{{product.presentation}}"
+                               numeric-validator="positiveInteger"
+                               maximum="{{lot.quantityOnHand}}"
+                                />
                     </td>
                 </tr>
                 </tbody>
