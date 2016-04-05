@@ -29,6 +29,8 @@ public class VaccineDistribution extends BaseModel {
 
     Facility fromFacility;
 
+    Facility toFacility;
+
     String voucherNumber;
 
     Long periodId;

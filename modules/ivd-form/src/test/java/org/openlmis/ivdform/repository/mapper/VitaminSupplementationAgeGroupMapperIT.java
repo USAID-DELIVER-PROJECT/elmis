@@ -42,6 +42,6 @@ public class VitaminSupplementationAgeGroupMapperIT {
   @Test
   public void shouldGetAll() throws Exception {
     List<VitaminSupplementationAgeGroup> groups = mapper.getAll();
-    assertThat(groups.size(), is(2));
+    assertThat(groups.size(), is(3));
   }
 }

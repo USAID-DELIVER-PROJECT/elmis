@@ -12,17 +12,25 @@
 package org.openlmis.web.controller.vaccine.inventory;
 
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import org.apache.ibatis.annotations.Param;
 import org.openlmis.core.domain.*;
+import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramProductService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
+import org.openlmis.report.util.Constants;
+import org.openlmis.reporting.model.Template;
+import org.openlmis.reporting.service.JasperReportsViewFactory;
+import org.openlmis.reporting.service.TemplateService;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.service.StockRequirementsService;
 import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,13 +39,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -56,6 +66,8 @@ public class VaccineInventoryDistributionController extends BaseController {
     private static final String SUPERVISOR_ID = "supervisorId";
     private static final String PENDING_CONSIGNMENT = "pendingConsignments";
     private static final String PENDING_CONSIGNMENT_FOR_LOWER_LEVEL = "pendingConsignmentNotification";
+    private static final String DISTRIBUTIONS = "distributions";
+    private static final String PRINT_VACCINE_DISTRIBUTION_SUMMARY = "Print_Vaccine_Distribution_Summary";
 
     @Autowired
     VaccineInventoryDistributionService service;
@@ -67,6 +79,17 @@ public class VaccineInventoryDistributionController extends BaseController {
 
     @Autowired
     StockRequirementsService requirementsService;
+
+    @Autowired
+    TemplateService templateService;
+    @Autowired
+    ConfigurationSettingService settingService;
+    @Autowired
+    private JasperReportsViewFactory jasperReportsViewFactory;
+
+    public static String getCommaSeparatedIds(List<Long> idList) {
+        return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
+    }
 
     @RequestMapping(value = "save", method = POST, headers = ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
@@ -95,7 +118,7 @@ public class VaccineInventoryDistributionController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getDistributionByVoucherNumber(@Param("voucherNumber") String voucherNumber,
                                                                            HttpServletRequest request) {
         Long userId = loggedInUserId(request);
-        return OpenLmisResponse.response("distribution", service.getDistributionByVoucherNumber(userId,voucherNumber));
+        return OpenLmisResponse.response("distribution", service.getDistributionByVoucherNumber(userId, voucherNumber));
     }
 
     @RequestMapping(value = "saveConsolidatedDistributionList", method = POST, headers = ACCEPT_JSON)
@@ -105,7 +128,6 @@ public class VaccineInventoryDistributionController extends BaseController {
         Long userId = loggedInUserId(request);
         return OpenLmisResponse.response("distributionIds", service.saveConsolidatedList(distribution, userId));
     }
-
 
     @RequestMapping(value = "getAllDistributionsForNotification", method = GET, headers = ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
@@ -170,8 +192,6 @@ public class VaccineInventoryDistributionController extends BaseController {
 
     }
 
-
-
     @RequestMapping(value = "facilities/same-type/{facilityId}/{query}", method = GET)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")
     public ResponseEntity<OpenLmisResponse> getFacilitiesSameType(@PathVariable Long facilityId, @PathVariable String query,
@@ -183,5 +203,44 @@ public class VaccineInventoryDistributionController extends BaseController {
             return response;
         }
     }
+
+    @RequestMapping(value = "get-by-date/{facilityId}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")
+    public ResponseEntity<OpenLmisResponse> getDistributionsByDate(@PathVariable Long facilityId, @Param("date") String date,
+                                                                   HttpServletRequest request) throws ParseException {
+        if (null == facilityId) {
+            return OpenLmisResponse.error(messageService.message("error.facility.unknown"), HttpStatus.BAD_REQUEST);
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = (date == null) ? formatter.format(new Date()) : date;
+            ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(DISTRIBUTIONS, service.getDistributionsByDate(facilityId, dateString));
+            return response;
+        }
+    }
+
+    @RequestMapping(value = "summary/print/{distributionId}", method = GET, headers = ACCEPT_JSON)
+    public ModelAndView printConsolidatedList(@PathVariable List<Long> distributionId) throws JRException, IOException, ClassNotFoundException {
+        Template orPrintTemplate = templateService.getByName(PRINT_VACCINE_DISTRIBUTION_SUMMARY);
+        JasperReportsMultiFormatView jasperView = jasperReportsViewFactory.getJasperReportsView(orPrintTemplate);
+        Map<String, Object> map = new HashMap<>();
+        map.put("format", "pdf");
+        Locale currentLocale = messageService.getCurrentLocale();
+        map.put(JRParameter.REPORT_LOCALE, currentLocale);
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", currentLocale);
+        map.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+        Resource reportResource = new ClassPathResource("report");
+        Resource imgResource = new ClassPathResource("images");
+        ConfigurationSetting configuration = settingService.getByKey(Constants.OPERATOR_NAME);
+        map.put(Constants.OPERATOR_NAME, configuration.getValue());
+
+        String separator = System.getProperty("file.separator");
+        map.put("image_dir", imgResource.getFile().getAbsolutePath() + separator);
+        map.put("DISTRIBUTION_ID", getCommaSeparatedIds(distributionId));
+
+        return new ModelAndView(jasperView, map);
+    }
+
+
+
 
 }

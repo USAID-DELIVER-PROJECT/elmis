@@ -263,4 +263,8 @@ public class VaccineInventoryDistributionService {
         return repository.getFacilitiesSameType(facilityId, query);
     }
 
+    public List<VaccineDistribution> getDistributionsByDate(Long facilityId, String date) {
+        return repository.getDistributionsByDate(facilityId, date);
+    }
+
 }

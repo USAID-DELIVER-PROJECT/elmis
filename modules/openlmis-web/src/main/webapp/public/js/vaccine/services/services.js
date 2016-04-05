@@ -529,3 +529,7 @@ services.factory('verifyDistribution',function($resource){
 services.factory('FacilitiesSameType',function($resource){
     return $resource('/vaccine/inventory/distribution/facilities/same-type/:facilityId/:query',{facilityId:'@facilityId',query:'@query'},{});
 });
+
+services.factory('DistributionsByDate',function($resource){
+    return $resource('/vaccine/inventory/distribution/get-by-date/:facilityId',{facilityId:'@facilityId'},{});
+});
