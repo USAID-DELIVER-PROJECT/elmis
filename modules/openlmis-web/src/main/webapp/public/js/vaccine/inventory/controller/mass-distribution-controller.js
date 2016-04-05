@@ -40,7 +40,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
      $scope.loadStockCards=function(){
         StockCards.get({facilityId:$scope.homeFacility.id},function(data){
             $scope.stockCards=data.stockCards;
-        })
+        });
      };
      $scope.loadDistributionsByDate=function(searchDate){
         $scope.distributionsByDate=[];
@@ -56,7 +56,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
 
      $scope.enableSearchChange=function(){
 
-        if($scope.enableSearch ==false)
+        if($scope.enableSearch ===false)
         {
              $scope.searchDate=$scope.toDay;
              $scope.loadDistributionsByDate($scope.toDay);
