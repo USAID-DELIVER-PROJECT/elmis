@@ -94,28 +94,27 @@
                   <div class="clearfix"></div>
                 </div>
               </div>
-
-
             </div>
             <div class="float-right" ng-class="{'content-body': report.currentFilters.length > 0}">
               <div class="box" style="padding-top: 0px;margin-top:0px; ">
-
                 <div class="box-content" style="min-height: 400px;">
                   <h4>
                     {{report.name}}
                     <a class="pull-right btn btn-small btn-primary" ng-show="data.length > 0" href="" ng-click="exportCSV();">Export CSV</a>
                   </h4>
                   <hr/>
+                  <span ng-show="meta" style="padding-right: 5px; font-size: 9px" class="pull-right">
+                    As of <strong>{{ meta.date | date : 'hh:mm a dd-MMM-yyyy' }}</strong>
+                  </span>
+                  <div>
+                    {{report.description}}
+                  </div>
                   <table ng-show="data.length == 0">
                     <tr>
                       <td>No data to show under selected filters</td>
                     </tr>
                   </table>
-                  <div client-side-sort-pagination ng-show="data.length > 0">
-                    <span ng-show="meta" style="padding-right: 5px; font-size: 9px" class="pull-right">
-                      As of <strong>{{ meta.date | date : 'hh:mm a dd-MMM-yyyy' }}</strong>
-                    </span>
-
+                  <div client-side-sort-pagination ng-show="data.length > 0" style=" overflow-x: auto;min-width: 100%;table-layout: fixed;">
                     <table ng-table="tableParams" class="table-bordered table table-striped ng-table">
                       <thead>
                       <tr>

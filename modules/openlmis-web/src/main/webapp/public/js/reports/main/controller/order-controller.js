@@ -27,6 +27,12 @@ function OrderReportController($scope, OrderReport) {
     });
   };
 
+  $scope.exportReport   = function (type){
+    $scope.filter.pdformat = 1;
+    var params = jQuery.param($scope.getSanitizedParameter());
+    var url = '/reports/download/order_summary/' + type +'?' + params;
+    window.open(url);
+  };
 
   $scope.formatNumber = function (value) {
     return utils.formatNumber(value, '0,000');

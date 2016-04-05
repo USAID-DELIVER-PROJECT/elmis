@@ -35,7 +35,7 @@
           <strong id='operatedByLabel' openlmis-message="label.facility.operatedBy"></strong>: &nbsp;<span
           id='operatedBy' ng-bind="rnr.facility.operatedBy.text"></span>
         </div>
-        <div class="span3">
+        <div class="span3" ng-show="showMaxStock">
           <strong id='maximumStockLabel' openlmis-message="label.facility.maximumStock"> </strong>:&nbsp;<span
           id='maximumStock' ng-bind="rnr.facility.facilityType.nominalMaxMonth"></span>
         </div>

@@ -129,4 +129,8 @@ public class User extends BaseModel implements Importable {
   public User basicInformation() {
     return new User(id, userName);
   }
+
+  public String getFullName() {
+    return String.format("%s %s", this.getFirstName(), this.getLastName());
+  }
 }

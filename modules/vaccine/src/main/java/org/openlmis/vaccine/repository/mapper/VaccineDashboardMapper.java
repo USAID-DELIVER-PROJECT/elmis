@@ -69,7 +69,7 @@ public interface VaccineDashboardMapper {
                 "                           FROM configuration_settings \n" +
                 "                          WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision THEN 'L'::text \n" +
                 "                        ELSE 'N'::text \n" +
-                "                    END AS reporting_status \n" +
+                "                    END AS reporting_status, f.mainphone \n" +
                 "                from programs_supported ps \n" +
                 "                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid and vr.periodid = fn_get_vaccine_current_reporting_period() \n" +
                 "                left join processing_periods pp on pp.id = vr.periodid      \n" +
@@ -78,7 +78,7 @@ public interface VaccineDashboardMapper {
                 "            where ps.programId = (select id from programs where enableivdform = 't' limit 1)\n" +
                 "            and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or \n" +
                 "                 vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)))              \n" +
-                "            ) select district, facility_name, facility_code, reported_date, reporting_status,facility_id, hasContacts from temp t")
+                "            ) select district, facility_name, facility_code, reported_date, reporting_status,facility_id, hasContacts, mainphone  from temp t")
         List<HashMap<String, Object>> getReportingDetails(@Param("userId") Long userId);
 
         /* */
@@ -111,6 +111,7 @@ public interface VaccineDashboardMapper {
                 "                   from vw_vaccine_iefi i\n" +
                 "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
                 "                    where is_investigated = 'f'  \n" +
+                "                    and relatedtolineitemid is null \n" +
                 "                    and program_id = (select id from programs where enableivdform = 't' limit 1)  \n" +
                 "                    and  period_id = fn_get_vaccine_current_reporting_period()\n" +
                 "		             and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
@@ -120,7 +121,7 @@ public interface VaccineDashboardMapper {
         Map<String, Object> getInvestigatingSummary(@Param("userId") Long userId);
 
         /* */
-        @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case,product_name, aefi_batch, aefi_date, aefi_notes \n" +
+        @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case,product_name, aefi_batch, aefi_date, aefi_notes,aefi_expiry_date,manufacturer \n" +
                 "                   from vw_vaccine_iefi i\n" +
                 "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
                 "                    where is_investigated = 'f'  \n" +
@@ -367,7 +368,9 @@ public interface VaccineDashboardMapper {
          * ---------------- Wastage ------------------------------------
         */
         @Select("with temp as (\n" +
-                "select period_name, period_start_date::date,\n" +
+                "select period_name, period_start_date::date," +
+                " sum(COALESCE(vaccinated,0)) vaccinated,\n" +
+                " sum(COALESCE(usage_denominator,0)) usage_denominator, \n" +
                 "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +
                 "THEN (100 - round(sum(COALESCE(vaccinated,0)) / (sum(COALESCE(usage_denominator,0))), 4) * 100)\n" +
                 "else 0\n" +
@@ -377,7 +380,7 @@ public interface VaccineDashboardMapper {
                 "and product_id = #{product}\n" +
                 "and vss.product_category_code = 'Vaccine'\n" +
                 "group by 1,2 \n" +
-                ")select t.period_name, t.period_start_date, wastage_rate\n" +
+                ")select t.period_name, t.period_start_date, wastage_rate, t.vaccinated, t.usage_denominator\n" +
                 "from temp t\n" +
                 "where wastage_rate > 0\n" +
                 "order by 2")
@@ -386,6 +389,8 @@ public interface VaccineDashboardMapper {
         /* */
         @Select("with temp as (\n" +
                 "select geographic_zone_name,\n" +
+                " sum(COALESCE(vaccinated,0)) vaccinated,\n" +
+                " sum(COALESCE(usage_denominator,0)) usage_denominator, \n" +
                 "CASE WHEN sum(COALESCE(usage_denominator,0)) > 0 \n" +
                 "THEN (100 - round(sum(COALESCE(vaccinated,0)) / (sum(COALESCE(usage_denominator,0))), 4) * 100)\n" +
                 "else 0\n" +
@@ -395,7 +400,7 @@ public interface VaccineDashboardMapper {
                 "and product_id = #{product}\n" +
                 "and vss.product_category_code = 'Vaccine'\n" +
                 "group by 1 )\n" +
-                "select t.geographic_zone_name, wastage_rate\n" +
+                "select t.geographic_zone_name, wastage_rate, t.vaccinated, t.usage_denominator\n" +
                 "from temp t\n" +
                 "where wastage_rate > 0\n")
         List<HashMap<String, Object>> getWastageByDistrict(@Param("period") Long period, @Param("product") Long product);
@@ -404,6 +409,8 @@ public interface VaccineDashboardMapper {
         @Select("SELECT \n" +
                 "d.district_name,  \n" +
                 "ss.facility_name,\n" +
+                " COALESCE(vaccinated,0) vaccinated,\n" +
+                "COALESCE(usage_denominator,0) usage_denominator, \n" +
                 "usage_rate,\n" +
                 "wastage_rate \n" +
                 "FROM  \n" +

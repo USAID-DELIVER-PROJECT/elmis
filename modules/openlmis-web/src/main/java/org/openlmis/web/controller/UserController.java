@@ -76,12 +76,14 @@ public class UserController extends BaseController {
     Long userId = (Long) httpServletRequest.getSession().getAttribute(USER_ID);
     if (userId != null) {
       String userName = (String) httpServletRequest.getSession().getAttribute(USER);
+      User userObject = userService.getById(userId);
 
       OpenLmisResponse openLmisResponse = new OpenLmisResponse("name", userName);
       openLmisResponse.addData("authenticated", TRUE);
       openLmisResponse.addData("userId", userId);
       openLmisResponse.addData("rights", roleRightService.getRights(userId));
       openLmisResponse.addData("preferences", userService.getPreferences(userId));
+      openLmisResponse.addData("fullName", userObject.getFullName() );
       openLmisResponse.addData("homePage", settingService.getConfigurationStringValue(ConfigurationSettingKey.LOGIN_SUCCESS_DEFAULT_LANDING_PAGE));
       return openLmisResponse.response(OK);
     } else {

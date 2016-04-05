@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+
 <!--
   ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
   ~
@@ -15,26 +16,22 @@
     .left{float:left; width:33%; }
     .dashlet-container{
         min-height: 450px;
-    top:auto;}
+        top:auto;}
     .header-section{
 
     }
-    .header-section-title{
-        background-color: lightblue;
-        font-size: 1.2em;
-        font-weight: bold;
-        margin-top: 15px;
-        float:left;
-        padding-right: 20px;
-        height: 50px;
-        align-content: center;
+
+    .filter-place-holder{
+        min-height: 40px;
     }
+
 </style>
 <script type="text/ng-template" id="myModalContent.html">
-    <div class="modal-header">
-        <h3 ng-show="!show_email">Reporting Detail</h3>
+    <div class="modal-header modal-header">
+        <button  class="close" ng-click="ok()">X</button>
+        <h2 ng-show="!show_email"><i class="flaticon-bar"></i>Reporting Detail</h2>
 
-        <h3 ng-show="show_email">Email Notification</h3>
+        <h2 ng-show="show_email"><i class="flaticon-bar"></i>Email Notification</h2>
     </div>
     <div class="modal-body">
         <div ng-show="show_email">
@@ -63,7 +60,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="!show_email">
+        <div class="row-fluid dashlet-scroll-table" ng-show="!show_email">
             <table id="fullSupplyTable" ng-show="items.length > 0"
                    class="rnr-table table-bordered table"
                    ng-table="tableParams">
@@ -90,6 +87,10 @@
 
                     </th>
 
+                    <th>
+                        <span openlmis-message="label.phone"></span>
+
+                    </th>
 
                 </tr>
 
@@ -110,6 +111,7 @@
 
                     <td
                             ><input ng-if="subRow.hascontacts" ng-click="itemChecked($index)" type="checkbox"/></td>
+                    <td ng-bind="subRow.mainphone"></td>
                 </tr>
                 </tbody>
                 <tfoot>
@@ -130,6 +132,7 @@
 </script>
 <script type="text/ng-template" id="repairing.html">
     <div class="modal-header">
+        <button  class="close" ng-click="ok()">X</button>
         <h3 ng-show="!show_email">Repairing</h3>
 
         <h3 ng-show="show_email">Email Notification</h3>
@@ -161,7 +164,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="!show_email">
+        <div class="row-fluid dashlet-scroll-table" ng-show="!show_email">
             <table id="repairingTable" ng-show="items.length > 0"
                    class="rnr-table table-bordered table"
                    ng-table="tableParams">
@@ -236,7 +239,14 @@
     </div>
 </script>
 <script type="text/ng-template" id="investigating.html">
+    <div class="modal-header modal-header">
+        <button  class="close" ng-click="ok()">X</button>
+        <h2 ><i class="flaticon-bar"></i>Investigation Detail</h2>
+
+
+    </div>
     <div class="modal-body">
+        <div class="row-fluid dashlet-scroll-table">
         <table id="investigatingTable" ng-show="items.length > 0"
                class="rnr-table table-bordered table"
                ng-table="tableParams">
@@ -265,6 +275,14 @@
 
                 </th>
                 <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.expiryDate"></span>
+                </th>
+                <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.adverse.effect.manufacturer"></span>
+                </th>
+
+
+                <th style=" text-align: center; vertical-align: middle">
                     <span openlmis-message="label.vaccine.dashboard.note"></span>
 
                 </th>
@@ -281,11 +299,14 @@
                 <td ng-bind="subRow.aefi_date| date:'dd-MMM-yyyy'"/>
                 <td ng-bind="subRow.product_name"></td>
                 <td ng-bind="subRow.aefi_batch"></td>
+                <td ng-bind="subRow.aefi_expiry_date| date:'dd-MMM-yyyy'"/>
+                <td ng-bind="subRow.manufacturer"></td>
                 <td ng-bind="subRow.aefi_notes"></td>
             </tr>
             </tbody>
 
         </table>
+        </div>
         <div class="modal-footer">
 
             <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
@@ -310,14 +331,14 @@
     </div>
 </script>
 
-<div xmlns="http://www.w3.org/1999/html">
+<div>
 
     <accordion>
         <accordion-group class="gray-cascade" is-open="actionBar.openPanel">
             <accordion-heading>
                 <div class="accordion-title">
-                    <div class="caption">
-                        <span openlmis-message="label.action.bar"></span>
+                    <div class="caption"><i class="flaticon-alert"></i>
+                        <span class="caption-subject bold uppercase font-dark" openlmis-message="label.action.bar"></span>
                     </div>
                     <div class="tools">
                         <i ng-class="{'icon-minus-sign': actionBar.openPanel, 'icon-plus-sign': !actionBar.openPanel}"></i>
@@ -325,162 +346,316 @@
                 </div>
             </accordion-heading>
 
-            <div class="reporting-header" style="padding: 0; margin:0; border: none; background: none">
-                <span><span style="font-size: 1em; background: lightblue;">Reporting</span><span
-                        openlmis-message="label.expected"></span>: <a
-                        ng-click="openDetailDialog()"
-                        href="">{{reportingPerformance.expected | number}} </a>
-                </span>
-                <span><span openlmis-message="label.on.time"></span>:  <a
-                        ng-click="openDetailDialog()"
-                        href="">{{reportingPerformance.ontime | number}}</a></span>
-                <span><span openlmis-message="label.late"></span>:<a
-                        ng-click="openDetailDialog()"
-                        href=""> {{reportingPerformance.late | number}} </a></span>
+            <span class="reporting-header" style="padding: 0; margin:0; border: none; background: none">
+                <!-- reporting-->
+                <div class="box">
+                    <h2><i class="flaticon-bar"></i>Reporting</h2>
+                    <span openlmis-message="label.expected"></span>:
+                    <span class="box-value"><a ng-click="openDetailDialog()" href="">{{reportingPerformance.expected | number}} </a></span>
 
-                <span><span style="font-size: 1em; background: lightblue;">Supplying</span><span
-                        openlmis-message="label.orders"></span>: {{supplying.orders | number}}8</span>
-                <span><span openlmis-message="label.fulfilled"></span>: {{supplying.fulfilled | number}}4</span>
-
-                <span><span style="font-size: 1em; background: lightblue;">Repairing</span><span
-                        openlmis-message="label.refrigerator.repair.tickets"></span>: <a
-                        ng-click="openRepairingDetailDialog()"
-                        href=""> {{repairing.repairing}}</a> </span>
-                <span><span style="font-size: 1em; background: lightblue;">Investigating</span><span
-                        openlmis-message="label.aefi"></span>:  <a
+                    <span openlmis-message="label.on.time"></span>:  <span class="box-value"><a
+                            ng-click="openDetailDialog()"
+                            href="">{{reportingPerformance.ontime | number}}</a>
+                    </span>
+                    <span openlmis-message="label.late"></span>:
+                    <span class="box-value"><a ng-click="openDetailDialog()" href=""> {{reportingPerformance.late | number}} </a></span>
+                </div>
+                <!-- Supplying-->
+                <div class="box-col2" style="margin-left: 10px;">
+                    <h2><i class="flaticon-bar"></i>Supplying</h2>
+                    <span openlmis-message="label.orders"></span>: <span class="box-value">{{supplying.orders | number}}8</span>
+                    <span  openlmis-message="label.fulfilled"></span>: <span class="box-value">{{supplying.fulfilled | number}}4</span>
+                </div>
+                <!-- Supplying-->
+                <div class="box-col3" style="margin-left: 10px;">
+                    <h2><i class="flaticon-bar"></i>Repairing</h2>
+                    <span openlmis-message="label.refrigerator.repair.tickets"></span>:
+                    <span class="box-value"><a ng-click="openRepairingDetailDialog()" href=""> {{repairing.repairing}}</a></span>
+                </div>
+              <!-- Investigating-->
+                <div class="box-col4" style="margin-left: 10px;">
+                    <h2><i class="flaticon-bar"></i>Investigating</h2>
+                    <span openlmis-message="label.aefi"></span>:  <span class="box-value"><a
                         ng-click="openInvestigatingDetailDialog()"
                         href="">{{investigating.count}}</a></span>
+                </div>
 
-            </div>
-
+            </span>
         </accordion-group>
     </accordion>
 
     <accordion>
         <accordion-group class="gray-cascade" is-open="performance.openPanel">
             <accordion-heading>
-                <div class="accordion-title">
-                    <div class="caption">
-                        <span openlmis-message="label.performance"></span>
+                 <div class="accordion-title">
+                    <div class="caption"><i class="flaticon-filter"></i>
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="label.performance"></span>
                     </div>
                     <div class="tools">
                         <i ng-class="{'icon-minus-sign': performance.openPanel, 'icon-plus-sign': !performance.openPanel}"></i>
                     </div>
                 </div>
+
             </accordion-heading>
-            <div class="clearfix" >
-            <span class="form-cell horizontalFilters header-section-title" openlmis-message="title.coverage"></span>
-                <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.coverage.product" on-change="coverageCallBack()"></vaccine-product-filter>
-            </div>
-                <div class="dashlet-container">
 
-
-
-
-                        <div class="left">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-monthly-trend.html'"></ng-include>
+            <!-- session -->
+            <div class="clearfix" ></div>
+            <!-- begin row -->
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
+                            <span class="caption-helper">monthly...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openSessionsHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="sessionDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
                         </div>
-
-                        <div class="left">
-                            <ng-include ng-if="district_user_level==false"
-                                        src="'/public/pages/vaccine/dashboard/partials/slide-coverage-district-trend.html'"></ng-include>
-                        </div>
-                        <div class="left">
-                            <ng-include
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-facility-trend.html'"></ng-include>
-                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-sessions-monthly-trend.html'"></ng-include>
                     </div>
-
-
-<div class="clearfix">
-    <span class="header-section-title" openlmis-message="title.dropout"></span>
-    <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.dropout.product" on-change="dropoutCallback()"></vaccine-product-filter>
-
-</div>
-
-            <div class="dashlet-container" >
-                <div class="left">
-                    <ng-include
-                            src="'/public/pages/vaccine/dashboard/partials/slide-dropout-monthly-trend.html'"></ng-include>
                 </div>
 
-                <div class="left">
-                    <ng-include ng-if="district_user_level==false"
-                            src="'/public/pages/vaccine/dashboard/partials/slide-dropout-district-trend.html'"></ng-include>
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
+                            <span class="caption-helper">by district...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openSessionsHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="sessionDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include ng-if="district_user_level==false"
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-sessions-district-trend.html'"></ng-include>
+                    </div>
                 </div>
-                <div class="left">
-                    <ng-include
-                            src="'/public/pages/vaccine/dashboard/partials/slide-dropout-facility-trend.html'"></ng-include>
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.sessions"></span>
+                            <span class="caption-helper">by facility...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openSessionsHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="sessionDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-sessions-facility-trend.html'"></ng-include>
+                    </div>
                 </div>
             </div>
+            <!-- end row -->
+<!-- coverage -->
+            <div class="clearfix" ></div>
+            <!-- begin row -->
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.coverage"></span>
+                            <span class="caption-helper">monthly...</span>
 
-
-            <div class="clearfix">
-                <span class="header-section-title" openlmis-message="title.westage.rate"></span>
-                <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.wastage.product" on-change="wastageCallback ()"></vaccine-product-filter>
-
-            </div>
-
-
-
-
-            <div class="dashlet-container">
-
-
-
-
-               <div class="left">
-                    <ng-include
-                            src="'/public/pages/vaccine/dashboard/partials/slide-wastage-monthly-trend.html'"></ng-include>
-               </div>
-               <div class="left" ng-if="district_user_level==false">
-                    <ng-include
-                            src="'/public/pages/vaccine/dashboard/partials/slide-wastage-district-trend.html'"></ng-include>
-               </div>
-               <div class="left">
-                    <ng-include
-                            src="'/public/pages/vaccine/dashboard/partials/slide-wastage-facility-trend.html'"></ng-include>
-               </div>
-
-
-           </div>
-
-
-            <div class="clearfix">
-                <span class="header-section-title" openlmis-message="title.sessions"></span>
-                <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.sessions.product" on-change="sessionsCallback()"></vaccine-product-filter>
-
-            </div>
-            <div class="dashlet-container">
-
-
-
-
-                <div class="left">
-                    <ng-include
-                            src="'/public/pages/vaccine/dashboard/partials/slide-sessions-monthly-trend.html'"></ng-include>
-                </div>
-                <div class="left" ng-if="district_user_level==false">
-                    <ng-include
-                            src="'/public/pages/vaccine/dashboard/partials/slide-sessions-district-trend.html'"></ng-include>
-                </div>
-                <div class="left">
-                    <ng-include
-                            src="'/public/pages/vaccine/dashboard/partials/slide-sessions-facility-trend.html'"></ng-include>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openCoverageHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a ng-click="coverageDetailCallback()" class="btn btn-circle btn-icon-only btn-default" tooltip="Detail Coverage">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-coverage-monthly-trend.html'"></ng-include>
+                    </div>
                 </div>
 
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.coverage"></span>
+                            <span class="caption-helper">by district...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openCoverageHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="coverageDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include ng-if="district_user_level==false"
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-coverage-district-trend.html'"></ng-include>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.coverage"></span>
+                            <span class="caption-helper">by facility...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openCoverageHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="coverageDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
 
+                        </div>
+
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-coverage-facility-trend.html'"></ng-include>
+                    </div>
+                </div>
             </div>
+            <!-- end row -->
+            <!-- drop out-->
+            <div class="clearfix" ></div>
+            <!-- begin row -->
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.dropout"></span>
+                            <span class="caption-helper">monthly...</span>
 
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openDropoutHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="dropoutDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-dropout-monthly-trend.html'"></ng-include>
+                    </div>
+                </div>
 
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.dropout"></span>
+                            <span class="caption-helper">by district...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openDropoutHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="dropoutDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include ng-if="district_user_level==false"
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-dropout-district-trend.html'"></ng-include>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.dropout"></span>
+                            <span class="caption-helper">by facility...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openDropoutHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="dropoutDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
 
+                        </div>
 
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-dropout-facility-trend.html'"></ng-include>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+            <!-- wastage -->
+            <div class="clearfix" ></div>
+            <!-- begin row -->
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.westage.rate"></span>
+                            <span class="caption-helper">monthly...</span>
+
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openWastageHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="wastageDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-wastage-monthly-trend.html'"></ng-include>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.westage.rate"></span>
+                            <span class="caption-helper">by district...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openWastageHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="wastageDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include ng-if="district_user_level==false"
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-wastage-district-trend.html'"></ng-include>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.westage.rate"></span>
+                            <span class="caption-helper">by facility...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openWastageHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="wastageDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-wastage-facility-trend.html'"></ng-include>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
         </accordion-group>
     </accordion>
 
-
-    <!-- <accordion>
+<!--
+    <accordion>
            <accordion-group class="gray-cascade" is-open="stockStatus.openPanel">
                <accordion-heading>
                    <div class="accordion-title">
@@ -542,6 +717,6 @@
 
            </accordion-group>
        </accordion>
-   -->
+-->
 
-</div>
+    </div>

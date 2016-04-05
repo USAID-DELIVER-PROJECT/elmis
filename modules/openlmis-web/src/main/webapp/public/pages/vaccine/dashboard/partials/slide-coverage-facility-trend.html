@@ -1,11 +1,11 @@
 
-<div>Coverage By Facility</div>
+
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
             <!--<vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters" default="defaultProduct"  cm-model="filter.facilityCoverage.product" on-change="facilityCoverageCallback()"></vaccine-product-filter>-->
-            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilityCoverage.period"  class="form-cell horizontalFilters" on-change="facilityCoverageCallback()"></vaccine-monthly-period-tree-filter>
-            <range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalFacilityCoverage" range="filter.facilityCoverageRange" offset="filter.facilityCoverageOffset" label-all="all facility" on-change="facilityCoveragePagination()"></range-pagination>
+            <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilityCoverage.period"  class="form-cell horizontalFilters" on-change="facilityCoverageCallback()"></vaccine-monthly-period-tree-filter>-->
+            <range-pagination iszone="true" field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalFacilityCoverage" range="filter.facilityCoverageRange" offset="filter.facilityCoverageOffset" label-all="all facility" on-change="facilityCoveragePagination()"></range-pagination>
         </div>
     </form>
 </div>

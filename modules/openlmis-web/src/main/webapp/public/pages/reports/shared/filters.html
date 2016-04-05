@@ -544,8 +544,8 @@
 <script type="text/ng-template" id="filter-range-pagination">
     <div>
             <label for="range-pagination"  class="labels" openlmis-message="{{fieldLabel}}"> <span class="label-required">*</span></label>
-            <div>
-                <select style="width: 140px" id="range-pagination" ui-select2 class="input-large" ng-model="offset">
+            <div style="width: 60px; max-height: 12px;">
+                <select style="width: 80px; height:20px " id="range-pagination" ui-select2 class="input-large" ng-model="offset">
                     <option ng-repeat="page in pages" ng-value="{{ page.offset }}" ng-selected="offset == page.offset">{{ page.value }}</option>
                 </select>
             </div>

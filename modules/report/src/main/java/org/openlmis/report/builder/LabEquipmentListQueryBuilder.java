@@ -32,7 +32,7 @@ public class LabEquipmentListQueryBuilder {
                 " equipment_type AS equipmentType, equipment_model AS model, serial_number AS serialNumber, equipment_name AS equipmentName, equipment_status AS operationalStatus");
         FROM("vw_lab_equipment_status");
         writePredicates(filter);
-        ORDER_BY("facilityName, equipmentName");
+        ORDER_BY("facility_name, equipment_name");
         return SQL();
 
     }

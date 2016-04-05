@@ -1455,6 +1455,7 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
             fieldLabel: '@fieldLabel',
             total: '=total',
             offset: '=?offset',
+            iszone: '=iszone',
             onChange: '&'
         },
 
@@ -1462,10 +1463,16 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
 
             //$scope.fieldLabel = 'label.facility';
 
-            SettingsByKey.get({key: 'VACCINE_DASHBOARD_MAX_X_POINTS_FOR_CHART'}, function (data, er) {
-                $scope.Max_X_Points = !isUndefined(data.settings) ? data.settings.value : null;
-            });
+            if (!isUndefined($scope.iszone) && $scope.iszone === true) {
+                SettingsByKey.get({key: 'VACCINE_DASHBOARD_DISTRICT_MAX_X_POINTS_FOR_CHART'}, function (data, er) {
+                    $scope.Max_X_Points = !isUndefined(data.settings) ? data.settings.value : null;
+                });
+            } else {
+                SettingsByKey.get({key: 'VACCINE_DASHBOARD_MAX_X_POINTS_FOR_CHART'}, function (data, er) {
+                    $scope.Max_X_Points = !isUndefined(data.settings) ? data.settings.value : null;
 
+                });
+            }
             var computePages = function () {
                 var range = 0;
                 if (!isUndefined($scope.range)) {
@@ -1484,14 +1491,10 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
                 $scope.range = range;
 
                 $scope.pages = getRange($scope.total, $scope.range);
-                if (!isUndefined($scope.pages) && $scope.total <= $scope.range) {
 
-                    $scope.offset = -1;
-                    $scope.pages.unshift({offset: -1, range: $scope.range, value: $scope.labelAll});
-                } else {
 
-                    $scope.offset = 0;
-                }
+                $scope.offset = 0;
+
             };
 
             $scope.$watch('offset', function () {
@@ -1602,8 +1605,8 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
             SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data, er) {
                 if (!utils.isNullOrUndefined(data.settings.value)) {
                     $scope.cutoffdate = data.settings.value;
-                }else{
-                    $scope.cutoffdate=0;
+                } else {
+                    $scope.cutoffdate = 0;
                 }
             });
             StaticYears.get({}, function (data) {
@@ -1619,7 +1622,7 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
 
             $scope.$watch('staticYear', function (newValues, oldValues) {
                 if (!utils.isNullOrUndefined($scope.staticYear)) {
-                    periods = utils.getYearStartAndEnd($scope.staticYear,$scope.cutoffdate);
+                    periods = utils.getYearStartAndEnd($scope.staticYear, $scope.cutoffdate);
 
 
                     $scope.periodStartdate = periods.startdate;

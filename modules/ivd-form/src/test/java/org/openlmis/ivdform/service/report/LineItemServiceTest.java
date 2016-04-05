@@ -127,7 +127,9 @@ public class LineItemServiceTest {
     lineItem.setReportId(2L);
     lineItem.setId(3L);
     service.saveAdverseEffectLineItems(asList(lineItem), 2L);
-    verify(adverseLineItemRepository).update(lineItem);
+    verify(adverseLineItemRepository).deleteLineItems(2L);
+    verify(adverseLineItemRepository).insert(lineItem);
+
   }
 
   @Test

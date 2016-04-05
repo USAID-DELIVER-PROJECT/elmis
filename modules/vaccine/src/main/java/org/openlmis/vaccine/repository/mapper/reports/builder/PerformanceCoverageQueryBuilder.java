@@ -72,7 +72,6 @@ public class PerformanceCoverageQueryBuilder {
                 "                                                    period_name ,  \n" +
                 "                                                    CASE WHEN coverage > 90 THEN 'G1'  \n" +
                 "                                                         WHEN coverage >= 80 THEN 'G2'  \n" +
-                "                                                         WHEN coverage >= 50 THEN 'G3'  \n" +
                 "                                                         ELSE 'G4'  \n" +
                 "                                                    END coverageGroup  \n" +
                 "                                          FROM      ( SELECT    i.period_start_date ,  \n" +
@@ -160,7 +159,6 @@ public class PerformanceCoverageQueryBuilder {
                 "                                    period_name , \n" +
                 "                                    CASE WHEN coverage > 90 THEN 'G1' \n" +
                 "                                         WHEN coverage >= 80 THEN 'G2' \n" +
-                "                                         WHEN coverage >= 50 THEN 'G3' \n" +
                 "                                         ELSE 'G4' \n" +
                 "                                    END coverageGroup \n" +
                 "                          FROM      ( SELECT    i.period_start_date , \n" +
@@ -255,7 +253,6 @@ public class PerformanceCoverageQueryBuilder {
                 "                    period_name ,\n" +
                 "                    CASE WHEN coverage > 90 THEN 'G1'\n" +
                 "                         WHEN coverage >= 80 THEN 'G2'\n" +
-                "                         WHEN coverage >= 50 THEN 'G3'\n" +
                 "                         ELSE 'G4'\n" +
                 "                    END coverageGroup\n" +
                 "          FROM      ( SELECT    i.period_start_date ,\n" +

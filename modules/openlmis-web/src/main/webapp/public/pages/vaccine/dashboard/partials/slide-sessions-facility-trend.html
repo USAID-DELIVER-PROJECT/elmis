@@ -1,9 +1,9 @@
 
-<div>Coverage By Facility</div>
+
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
-           <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilitySessions.period"  class="form-cell horizontalFilters" on-change="facilitySessionsCallback()"></vaccine-monthly-period-tree-filter>
+           <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilitySessions.period"  class="form-cell horizontalFilters" on-change="facilitySessionsCallback()"></vaccine-monthly-period-tree-filter>-->
             <range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalFacilitySessions" range="filter.facilitySessionsRange" offset="filter.facilitySessionsOffset" label-all="all facility" on-change="facilitySessionsPagination()"></range-pagination>
         </div>
     </form>
@@ -18,5 +18,6 @@
             <!--<chart-axis-x-tick tick-rotate="50"/>-->
         </chart-axis-x>
     </chart-axis>
+    <chart-group group-values="outreach_sessions,fixed_sessions"/>
 </c3chart>
 <div style="font-weight: bold" ng-hide="facilitySessions.dataPoints" openlmis-message="label.report.no.data.to.show"></div>
