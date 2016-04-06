@@ -62,6 +62,9 @@
           <th class="span1" ng-if="column.name != 'productName' && column.name != 'skipped'" ng-repeat-end="">
             {{column.label}}
           </th>
+          <th openlmis-message="label.children.immunized"></th>
+          <th openlmis-message="label.usage.rate.formula"></th>
+          <th openlmis-message="label.wastage.rate.formula"></th>
         </tr>
         </thead>
         <tbody>
@@ -248,6 +251,21 @@
               type="text"/>
           </td>
           <td ng-if="false" ng-repeat-end=""></td>
+          <td style="background-color:silver;" class="number">
+            <span>
+              {{product.childrenImmunized() | number : 0}}
+            </span>
+          </td>
+          <td style="background-color:silver;" class="number">
+            <span ng-show="product.usageRate() != '-'">
+              {{product.usageRate() | number : 2}} %
+            </span>
+          </td>
+          <td style="background-color:silver;" class="number">
+            <span ng-show="product.usageRate() != '-'">
+              {{product.wastageRate() | number : 2}} %
+            </span>
+          </td>
         </tr>
         </tbody>
       </table>

@@ -71,9 +71,9 @@ function ViewIvdFormDetailController($scope, $location, report, discardingReason
   };
 
 
-  $scope.getDiscardingReasonName = function(reasoneId){
-     var reason = _.findWhere($scope.discardingReasons, {id: parseInt(reasoneId, 10)});
-     return reason.name;
+  $scope.getDiscardingReasonName = function(reasonId){
+     var reason = _.findWhere($scope.discardingReasons, {id: utils.parseIntWithBaseTen(reasonId)});
+     return (reason !== undefined)?reason.name: '-';
   };
 
   $scope.getVitaminAStock = function(){
