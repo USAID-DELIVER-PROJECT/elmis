@@ -293,7 +293,7 @@ function LabEquipmentStatusByLocationController($scope, $window, leafletData, $f
             backgroundOpacity:1,
             labelFormatter: function(label, series) {
                 var percent= Math.round(series.percent);
-                var number= series.data;
+                var number= series.data[0][1];
                 return('<b>'+label+'</b>');
             }
         },
@@ -345,7 +345,7 @@ function LabEquipmentStatusByLocationController($scope, $window, leafletData, $f
                 $.each(data.equipmentsStatus, function(index, value) {
 
                     urlParams.facility = value.facility_id;
-                    value.url = '/public/pages/reports/main/index.html#/lab-equipments-list?'+$.param(urlParams);
+                    value.url = '/public/pages/reports/lab-equipment-list/index.html#/list?'+$.param(urlParams);
                 });
 
                 $scope.facilitySummaryModal = true;
