@@ -42,7 +42,7 @@ public class DiscardingReasonMapperIT {
   @Test
   public void shouldGetAll() throws Exception {
     List<DiscardingReason> reasons = mapper.getAll();
-    assertThat(reasons.size(), is(4));
+    assertThat(reasons.size(), is(6));
   }
 
 }

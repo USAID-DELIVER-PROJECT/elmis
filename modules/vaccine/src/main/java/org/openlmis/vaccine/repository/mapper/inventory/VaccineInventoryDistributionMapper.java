@@ -218,4 +218,18 @@ public interface VaccineInventoryDistributionMapper {
             " and f.id <> #{facilityId} and LOWER(f.name) LIKE '%' || LOWER(#{query}) || '%'")
     List<Facility> getFacilitiesSameType(@Param("facilityId") Long facilityId, @Param("query") String query);
 
+    @Select("SELECT *" +
+            " FROM vaccine_distributions " +
+            " WHERE fromfacilityid=#{facilityId} AND  " +
+            " status='PENDING' AND " +
+            " distributiondate::DATE = #{date}::DATE AND distributionType='ROUTINE'" +
+            " order by createddate DESC")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "toFacilityId", column = "toFacilityId"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "toFacility", column = "toFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    List<VaccineDistribution> getDistributionsByDate(@Param("facilityId") Long facilityId, @Param("date") String date);
+
 }
