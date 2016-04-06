@@ -76,7 +76,7 @@ public class VaccineReport extends BaseModel {
   private List<ReportStatusChange> reportStatusChanges;
 
 
-  public void initializeLogisticsLineItems(List<ProgramProduct> programProducts, VaccineReport previousReport) {
+  public void initializeLogisticsLineItems(List<ProgramProduct> programProducts, VaccineReport previousReport, Boolean defaultFieldsToZero) {
     logisticsLineItems = new ArrayList<>();
     Map<String, LogisticsLineItem> previousLineItemMap = new HashMap<>();
     if (previousReport != null) {
@@ -99,14 +99,30 @@ public class VaccineReport extends BaseModel {
         LogisticsLineItem lineitem = previousLineItemMap.get(item.getProductCode());
         if (lineitem != null) {
           item.setOpeningBalance(lineitem.getClosingBalance());
+          item.setClosingBalance(item.getOpeningBalance());
         }
       }
+      if(defaultFieldsToZero){
+        if(item.getOpeningBalance() == null){
+          item.setOpeningBalance(0L);
+        }
+        item.setClosingBalance(item.getOpeningBalance());
+        item.setQuantityReceived(0L);
+        item.setQuantityIssued(0L);
+        item.setQuantityVvmAlerted(0L);
+        item.setQuantityExpired(0L);
+        item.setQuantityDiscardedOpened(0L);
+        item.setQuantityDiscardedUnopened(0L);
+        item.setQuantityWastedOther(0L);
+        item.setDaysStockedOut(0L);
+      }
+
       logisticsLineItems.add(item);
     }
 
   }
 
-  public void initializeDiseaseLineItems(List<VaccineDisease> diseases) {
+  public void initializeDiseaseLineItems(List<VaccineDisease> diseases, Boolean defaultFieldsToZero) {
     diseaseLineItems = new ArrayList<>();
     for (VaccineDisease disease : diseases) {
       DiseaseLineItem lineItem = new DiseaseLineItem();
@@ -115,11 +131,16 @@ public class VaccineReport extends BaseModel {
       lineItem.setDiseaseName(disease.getName());
       lineItem.setDisplayOrder(disease.getDisplayOrder());
 
+      if(defaultFieldsToZero){
+        lineItem.setCases(0L);
+        lineItem.setDeath(0L);
+      }
+
       diseaseLineItems.add(lineItem);
     }
   }
 
-  public void initializeCoverageLineItems(List<VaccineProductDose> dosesToCover) {
+  public void initializeCoverageLineItems(List<VaccineProductDose> dosesToCover, Boolean defaultFieldsToZero) {
     coverageLineItems = new ArrayList<>();
     for (VaccineProductDose dose : dosesToCover) {
       VaccineCoverageItem item = new VaccineCoverageItem();
@@ -130,15 +151,33 @@ public class VaccineReport extends BaseModel {
       item.setDisplayOrder(dose.getDisplayOrder());
       item.setDisplayName(dose.getDisplayName());
       item.setProductId(dose.getProductId());
+      if(defaultFieldsToZero){
+        item.setRegularMale(0L);
+        item.setRegularFemale(0L);
+        item.setCampaignMale(0L);
+        item.setCampaignFemale(0L);
+        item.setOutreachMale(0L);
+        item.setOutreachFemale(0L);
+      }
+
       coverageLineItems.add(item);
     }
   }
 
-  public void initializeColdChainLineItems(List<ColdChainLineItem> lineItems) {
+  public void initializeColdChainLineItems(List<ColdChainLineItem> lineItems, Boolean defaultFieldsToZero) {
+    if(defaultFieldsToZero) {
+      for (ColdChainLineItem lineItem : lineItems) {
+        lineItem.setMinTemp(0F);
+        lineItem.setMaxTemp(0F);
+
+        lineItem.setMinEpisodeTemp(0F);
+        lineItem.setMaxEpisodeTemp(0F);
+      }
+    }
     coldChainLineItems = lineItems;
   }
 
-  public void initializeVitaminLineItems(List<Vitamin> vitamins, List<VitaminSupplementationAgeGroup> ageGroups) {
+  public void initializeVitaminLineItems(List<Vitamin> vitamins, List<VitaminSupplementationAgeGroup> ageGroups, Boolean defaultFieldsToZero) {
     this.vitaminSupplementationLineItems = new ArrayList<>();
     Long displayOrder = 1L;
     for (Vitamin vitamin : vitamins) {
@@ -148,6 +187,12 @@ public class VaccineReport extends BaseModel {
         item.setDisplayOrder(displayOrder);
         item.setVitaminName(vitamin.getName());
         item.setVaccineVitaminId(vitamin.getId());
+
+        if(defaultFieldsToZero){
+          item.setMaleValue(0L);
+          item.setFemaleValue(0L);
+        }
+
         this.vitaminSupplementationLineItems.add(item);
         displayOrder++;
       }

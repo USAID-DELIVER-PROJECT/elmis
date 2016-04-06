@@ -66,7 +66,7 @@ public class ProgramRnrTemplate extends Template {
 
   @Getter
   @Setter
-  private Boolean ApplyDefaultZero = false;
+  private Boolean applyDefaultZero = false;
 
   public ProgramRnrTemplate(Long programId, List<? extends Column> rnrColumns) {
     this.programId = programId;
