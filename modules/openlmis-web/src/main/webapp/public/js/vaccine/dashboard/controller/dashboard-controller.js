@@ -37,7 +37,11 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     investigatingDetailList,
                                     ContactList, isDistrictUser,
                                     VaccineDashboardFacilityStock,
-                                    settingValues, $log) {
+                                    settingValues, $log,
+                                    VaccineDashboardMonthlyStockStatus,
+                                    VaccineDashboardDistrictStockStatus,
+                                    VaccineDashboardFacilityStockStatus,
+                                    VaccineDashboardFacilityStockStatusDetails) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -266,10 +270,18 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.districtStockStatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "coverage", "name": messageService.get('label.coverage'), "type": "scatter"
+            "id": "mos_g1", "name":"actual below 3000", "type": "bar", "color":"yellow"
         },
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar","color":"blue"},
-            {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
+            {"id": "mos_g2", "name":"actual between 3000 500", "type": "bar","color":function (id, type,name) {
+
+
+                return "red";}
+            },
+            {"id": "mos_g3", "name":"actual above 500", "type": "bar", "color":"blue"}
+            ,
+            {"id": "minmonthsofstock", "name":"min", "type": "line", "color":"black"}
+            ,
+            {"id": "maxmonthsofstock", "name":"max", "type": "line", "color":"black"}
         ],
         dataX: {"id": "geographic_zone_name"}
     };
@@ -1045,11 +1057,11 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
         if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
 
-            VaccineDashboardMonthlyCoverage.get({
+            VaccineDashboardMonthlyStockStatus.get({
                 startDate: $scope.startDate, endDate: $scope.endDate,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
-                $scope.monthlyStockstatus.dataPoints = data.monthlyCoverage;
+                $scope.monthlyStockstatus.dataPoints = data.monthlyStockStatus;
             });
 
         }
@@ -1057,11 +1069,12 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
     $scope.districtStockStatusCallback = function () {
         if (!isUndefined($scope.filter.stockstatus.period) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
-            VaccineDashboardDistrictCoverage.get({
+            VaccineDashboardDistrictStockStatus.get({
                 period: $scope.filter.stockstatus.period,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
-                $scope.districtStockStatus.data = data.districtCoverage;
+                $scope.districtStockStatus.data = data.districtStockStatus;
+                alert(JSON.stringify($scope.districtStockStatus.data))
                 if (!isUndefined($scope.districtStockStatus.data)) {
                     $scope.filter.totalDistrictStockStatus = $scope.districtStockStatus.data.length;
                 } else {
@@ -1074,11 +1087,11 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.facilityStockStatusCallback = function () {
         if (!isUndefined($scope.filter.stockstatus.period) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
             //VaccineDashboardFacilityCoverage.get({period: $scope.filter.facilityCoverage.period,
-            VaccineDashboardFacilityTrend.coverage({
+            VaccineDashboardFacilityStockStatus.coverage({
                 period: $scope.filter.stockstatus.period,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
-                $scope.facilityStockstatus.data = data.facilityCoverage;
+                $scope.facilityStockstatus.data = data.facilityStockStatus;
                 if (!isUndefined($scope.facilityStockstatus.data)) {
                     $scope.filter.totalFacilityStockStatus = $scope.facilityStockstatus.data.length;
                 } else {
@@ -1105,12 +1118,12 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.stockStatusDetailCallback = function () {
         if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
             // VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
-            VaccineDashboardFacilityTrend.coverageDetails({
+            VaccineDashboardFacilityStockStatusDetails.coverageDetails({
                 startDate: $scope.startDate, endDate: $scope.endDate,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
 
-                $scope.stockstatusDetails = data.facilityCoverageDetails;
+                $scope.stockstatusDetails = data.facilityStockStatusDetails;
                 $scope.stockstatusPeriodsList = _.uniq(_.pluck( $scope.stockstatusDetails, 'period_name'));
                 var facilities = _.uniq(_.pluck( $scope.stockstatusDetails, 'facility_name'));
 
