@@ -20,6 +20,7 @@ function VaccineForecastingController($scope,$routeParams,$location,programs,hom
     var facilityId =0;
 
     facilityId = homeFacility;
+    $scope.homeFacility=homeFacility;
     if(programs.length == 1){
         program = programs[0].id;
 
