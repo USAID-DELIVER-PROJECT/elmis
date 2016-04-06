@@ -120,6 +120,33 @@ function DashboardWastageModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
     };
 
 }
+function DashboardStockStatusModalInstanceCtrl($scope, $modalInstance,items) {
+
+    $scope.facilityStockStatusDetails=items.facilityDetails;
+    $scope.stockstatusPeriodsList= items.periodsList;
+    $scope.getBackGroundColor = function (_index) {
+        var bgColor = '';
+        var fColor='black';
+
+        if (_index % 2 === 0) {
+            bgColor = 'lightblue';
+            fColor='white';
+        } else {
+            bgColor = 'white';
+        }
+
+
+        return {fColor:fColor, bgColor:bgColor};
+    };
+    $scope.ok = function () {
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+}
 function DashboardHelpModalInstanceCtrl($scope, $modalInstance,items) {
 
     $scope.dashboardHelps=items.dashboardHelps;
