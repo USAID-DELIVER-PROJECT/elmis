@@ -270,37 +270,35 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.districtStockStatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "mos_g1", "name":"actual below 3000", "type": "bar", "color":"yellow"
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":"yellow"
         },
-            {"id": "mos_g2", "name":"actual between 3000 500", "type": "bar","color":function (id, type,name) {
-
-
-                return "red";}
-            },
-            {"id": "mos_g3", "name":"actual above 500", "type": "bar", "color":"blue"},
-            {"id": "minmonthsofstock", "name":"min", "type": "line", "color":"black"},
-            {"id": "maxmonthsofstock", "name":"max", "type": "line", "color":"black"}
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":"red"    },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":"blue"},
+            {"id": "minmonthsofstock", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
+            {"id": "maxmonthsofstock", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
-        dataX: {"id": "geographic_zone_name"}
+        dataX: {"id": "district_name"}
     };
     $scope.monthlyStockstatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":"yellow"
         },
-
-            {"id": "target", "name": messageService.get('label.target'), "type": "bar"},
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"}
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":"red"    },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":"blue"},
+            {"id": "min", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
+            {"id": "max", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
         dataX: {"id": "period_name"}
     };
     $scope.facilityStockstatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"
-        },
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"},
-            {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":"yellow"    },
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":"red"    },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":"blue"},
+            {"id": "minmonthsofstock", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
+            {"id": "maxmonthsofstock", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
         dataX: {"id": "facility_name"}
     };
@@ -1060,6 +1058,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 product: $scope.filter.stockstatus.product
             }, function (data) {
                 $scope.monthlyStockstatus.dataPoints = data.monthlyStockStatus;
+
             });
 
         }
@@ -1085,7 +1084,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.facilityStockStatusCallback = function () {
         if (!isUndefined($scope.filter.stockstatus.period) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
             //VaccineDashboardFacilityCoverage.get({period: $scope.filter.facilityCoverage.period,
-            VaccineDashboardFacilityStockStatus.coverage({
+            VaccineDashboardFacilityStockStatus.get({
                 period: $scope.filter.stockstatus.period,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
@@ -1117,7 +1116,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.stockStatusDetailCallback = function () {
         if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
             // VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
-            VaccineDashboardFacilityStockStatusDetails.coverageDetails({
+            VaccineDashboardFacilityStockStatusDetails.get({
                 startDate: $scope.startDate, endDate: $scope.endDate,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
@@ -1133,20 +1132,20 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                     $scope.facilityStockStatusDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'target',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'target', $scope.stockstatusDetails)
+                        indicator: 'Max MOS',
+                        indicatorValues: $scope.getIndicatorValues(facility, 'max', $scope.stockstatusDetails)
                     });
                     $scope.facilityStockStatusDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'actual',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'actual', $scope.stockstatusDetails)
+                        indicator: 'MIN MOS',
+                        indicatorValues: $scope.getIndicatorValues(facility, 'min', $scope.stockstatusDetails)
                     });
                     $scope.facilityStockStatusDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'coverage',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'coverage', $scope.stockstatusDetails)
+                        indicator: 'MOS',
+                        indicatorValues: $scope.getIndicatorValues(facility, 'mos', $scope.stockstatusDetails)
                     });
 
                 });

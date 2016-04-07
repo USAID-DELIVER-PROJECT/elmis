@@ -691,8 +691,8 @@ public interface VaccineDashboardMapper {
                 "left join vw_districts vd on ss.geographic_zone_id=vd.district_id\n" +
                 "left join facilities f on f.id= ss.facility_id\n" +
                 "where program_id = fn_get_vaccine_program_id() \n" +
-                "and period_start_date::date <= #{startDate}\n" +
-                "and period_end_date::date  >= #{endDate}\n" +
+                "and period_start_date::date>= #{startDate}\n" +
+                "and period_end_date::date  <= #{endDate}\n" +
                 "and product_id = #{product}\n" +
                 "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
                 "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
@@ -781,7 +781,8 @@ public interface VaccineDashboardMapper {
                 "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
                 "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
                 ")\n" +
-                "select t.region_name,t.district_name, t.facility_name, t.period_name, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock), max(t.maxmonthsofstock),\n" +
+                "select t.region_name,t.district_name, t.facility_name, t.period_name, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min," +
+                " max(t.maxmonthsofstock) max,\n" +
                 "case when sum(t.need)> 0 then sum(t.closing_balance)  / sum(t.need)::numeric  end mos , \n" +
                 "case when sum(t.need)> 0 and (sum(t.closing_balance) / sum(t.need)::numeric<=min(minmonthsofstock))then sum(t.closing_balance)  / sum(t.need)::numeric  end mos_g1 ,\n" +
                 "case when sum(t.need) > 0 and (sum(t.closing_balance)  / sum(t.need)::numeric>min(minmonthsofstock))and (sum(t.closing_balance)  / sum(t.need)::numeric<=max(maxmonthsofstock))\n" +
