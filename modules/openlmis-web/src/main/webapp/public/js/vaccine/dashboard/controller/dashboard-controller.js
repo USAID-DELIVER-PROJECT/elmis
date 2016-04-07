@@ -277,10 +277,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
                 return "red";}
             },
-            {"id": "mos_g3", "name":"actual above 500", "type": "bar", "color":"blue"}
-            ,
-            {"id": "minmonthsofstock", "name":"min", "type": "line", "color":"black"}
-            ,
+            {"id": "mos_g3", "name":"actual above 500", "type": "bar", "color":"blue"},
+            {"id": "minmonthsofstock", "name":"min", "type": "line", "color":"black"},
             {"id": "maxmonthsofstock", "name":"max", "type": "line", "color":"black"}
         ],
         dataX: {"id": "geographic_zone_name"}
@@ -1113,6 +1111,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         var s = parseInt($scope.filter.districtStockstatusOffset, 10) + parseInt($scope.filter.districtRange, 10);
         if (!isUndefined($scope.filter.districtStockstatusOffset)) {
             $scope.districtStockStatus.dataPoints = $scope.districtStockStatus.data.slice(parseInt($scope.filter.districtStockstatusOffset, 10), s);
+
         }
     };
     $scope.stockStatusDetailCallback = function () {
