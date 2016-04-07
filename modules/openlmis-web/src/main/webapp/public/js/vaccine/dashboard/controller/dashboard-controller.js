@@ -41,13 +41,16 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardMonthlyStockStatus,
                                     VaccineDashboardDistrictStockStatus,
                                     VaccineDashboardFacilityStockStatus,
-                                    VaccineDashboardFacilityStockStatusDetails) {
+                                    VaccineDashboardFacilityStockStatusDetails,colors) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
     $scope.sessions = {
         openPanel: true
     };
+
+
+
 
 
     var monthlyDashletPeriods = utils.getCustomizedStartAndEndDate(settingValues.monthsRange, settingValues.cuttoff);
@@ -270,22 +273,23 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.districtStockStatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":"yellow"
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
         },
-            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":"red"    },
-            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":"blue"},
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
             {"id": "minmonthsofstock", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
             {"id": "maxmonthsofstock", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
         dataX: {"id": "district_name"}
     };
+
     $scope.monthlyStockstatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":"yellow"
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
         },
-            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":"red"    },
-            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":"blue"},
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
             {"id": "min", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
             {"id": "max", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
@@ -294,9 +298,10 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.facilityStockstatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":"yellow"    },
-            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":"red"    },
-            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":"blue"},
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
+        },
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
             {"id": "minmonthsofstock", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
             {"id": "maxmonthsofstock", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
@@ -1362,6 +1367,39 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
 }
 VaccineDashboardController.resolve = {
+    colors:function($q, $timeout, SettingsByKey){
+        var deferred= $q.defer();
+        var color_values={};
+        $timeout(function(){
+                SettingsByKey.get({key: 'VCP_GREEN'}, function (data) {
+                    if (!utils.isNullOrUndefined(data.settings.value)) {
+                        color_values.green_color = data.settings.value;
+                    } else {
+                        color_values.green_color = 'green';
+                    }
+
+                });
+                SettingsByKey.get({key: 'VCP_BLUE'}, function (data) {
+                    if (!utils.isNullOrUndefined(data.settings.value)) {
+                        color_values.blue_color = data.settings.value;
+                    } else {
+                        color_values.blue_color = 'blue';
+                    }
+
+                });
+                SettingsByKey.get({key: 'VCP_RED'}, function (data) {
+                    if (!utils.isNullOrUndefined(data.settings.value)) {
+                        color_values.red_color = data.settings.value;
+                    } else {
+                        color_values.blue_color = 'red';
+                    }
+
+                });
+            deferred.resolve(color_values);
+        }, 100);
+
+        return deferred.promise;
+    },
 
     dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey, messageService) {
 
