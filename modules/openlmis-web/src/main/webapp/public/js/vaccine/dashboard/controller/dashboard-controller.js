@@ -1074,7 +1074,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 product: $scope.filter.stockstatus.product
             }, function (data) {
                 $scope.districtStockStatus.data = data.districtStockStatus;
-                alert(JSON.stringify($scope.districtStockStatus.data))
+
                 if (!isUndefined($scope.districtStockStatus.data)) {
                     $scope.filter.totalDistrictStockStatus = $scope.districtStockStatus.data.length;
                 } else {
