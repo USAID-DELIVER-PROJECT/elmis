@@ -47,7 +47,7 @@
         <tbody>
         <tr ng-repeat-start="(productId, productGroup) in report.coverageLineItemViews"></tr>
         <tr ng-repeat-start="dose in productGroup">
-          <td class="col-product cell-input" ng-if="$index == 0" rowspan="{{productGroup.length * 2}}">
+          <td class="cell-input" ng-if="$index == 0" rowspan="{{productGroup.length * 2}}">
             <span class="cell-text">{{dose.product.primaryName}}</span>
           </td>
           <td class="cell-input">

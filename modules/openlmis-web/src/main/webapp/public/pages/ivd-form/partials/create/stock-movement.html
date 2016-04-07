@@ -62,6 +62,9 @@
           <th class="span1" ng-if="column.name != 'productName' && column.name != 'skipped'" ng-repeat-end="">
             {{column.label}}
           </th>
+          <th openlmis-message="label.children.immunized"></th>
+          <th openlmis-message="label.usage.rate.formula"></th>
+          <th openlmis-message="label.wastage.rate.formula"></th>
         </tr>
         </thead>
         <tbody>
@@ -225,11 +228,21 @@
             </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'daysStockedOut'">
-            <input
-              ng-disabled="!report.editable || product.skipped"
-              maxlength="8" ng-model="product.daysStockedOut"
-              numeric-validator="positiveInteger"
-              type="text"/>
+            <span
+                    class="input-error-parent-cell">
+                <input
+                  name="daysStockedOut-{{product.id}}"
+                  ng-disabled="!report.editable || product.skipped"
+                  maxlength="3"
+                  ng-model="product.daysStockedOut"
+                  numeric-validator="positiveNumberBetween,0,{{report.period.days}}"
+                  type="text"/>
+                <span class="rnr-form-error"
+                      style="display:none;"
+                      id="daysStockedOut-{{product.id}}"
+                      openlmis-message="error.number.between.0.and.number.of.days.in.period"
+                ></span>
+              </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'remarks'">
             <input
@@ -238,6 +251,21 @@
               type="text"/>
           </td>
           <td ng-if="false" ng-repeat-end=""></td>
+          <td style="background-color:silver;" class="number">
+            <span>
+              {{product.childrenImmunized() | number : 0}}
+            </span>
+          </td>
+          <td style="background-color:silver;" class="number">
+            <span ng-show="product.usageRate() != '-'">
+              {{product.usageRate() | number : 2}} %
+            </span>
+          </td>
+          <td style="background-color:silver;" class="number">
+            <span ng-show="product.usageRate() != '-'">
+              {{product.wastageRate() | number : 2}} %
+            </span>
+          </td>
         </tr>
         </tbody>
       </table>

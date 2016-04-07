@@ -31,8 +31,9 @@ public class ConfigurationSettingKey {
   public static final String EMAIL_SUBJECT_IVD_FORM_SUBMISSION = "EMAIL_SUBJECT_IVD_FORM_SUBMISSION";
   public static final String EMAIL_SUBJECT_IVD_FORM_APPROVAL = "EMAIL_SUBJECT_IVD_FORM_APPROVAL";
   public static final String EMAIL_SUBJECT_IVD_FORM_REJECTION = "EMAIL_SUBJECT_IVD_FORM_REJECTION";
+  public static final String DEFAULT_ZERO = "DEFAULT_ZERO";
 
-    private ConfigurationSettingKey(){
+  private ConfigurationSettingKey(){
 
   }
 }

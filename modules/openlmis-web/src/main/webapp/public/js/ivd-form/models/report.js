@@ -2,10 +2,12 @@ var VaccineReport = function (report) {
 
   $.extend(this, report);
 
+  report.period.days = Math.abs((report.period.endDate - report.period.startDate) / (1000 * 60 * 60 * 24));
+
   VaccineReport.prototype.init = function () {
 
     this.month =  new Date(this.period.startDate).getMonth() + 1;
-    
+
     function getCoverageLineItems(collection, r) {
       var lineItems = [];
       angular.forEach(collection, function (coverage) {

@@ -1,6 +1,5 @@
-var LogisticsLineItem = function(lineItem) {
+var LogisticsLineItem = function(lineItem, report) {
   $.extend(this, lineItem);
-
 
   LogisticsLineItem.prototype.isValid = function(){
     return this.isClosingBalanceValid();
@@ -11,6 +10,42 @@ var LogisticsLineItem = function(lineItem) {
       return false;
     }
     return (this.skipped || utils.parseIntWithBaseTen( this.closingBalance ) === (utils.parseIntWithBaseTen(this.openingBalance) + utils.parseIntWithBaseTen(this.quantityReceived) - utils.parseIntWithBaseTen(this.quantityIssued)) - utils.parseIntWithBaseTen(this.quantityDiscardedUnopened));
+  };
+
+  LogisticsLineItem.prototype.childrenImmunized = function(){
+    if(report.coverageLineItemViews === undefined || report.coverageLineItemViews[this.productId] === undefined){
+      return  '-';
+    }
+    return _.reduce(report.coverageLineItemViews[this.productId],
+      function(sum, item2){
+        return sum + item2.getMonthlyTotal();
+      }, 0);
+  };
+
+  LogisticsLineItem.prototype.usageRate = function(){
+    if(this.childrenImmunized() === '-'){
+      return '-';
+    }
+    var discardedUnopened = utils.parseIntWithBaseTen(this.quantityDiscardedUnopened);
+    var issued = utils.parseIntWithBaseTen(this.quantityIssued);
+    var total = 0;
+    if(utils.isNumber(issued)){
+      total += issued;
+    }
+    if(utils.isNumber(discardedUnopened) ){
+      total += discardedUnopened;
+    }
+    if(total === 0){
+      return 0;
+    }
+    return ((this.childrenImmunized() / (total)) * 100).toFixed(2);
+  };
+
+  LogisticsLineItem.prototype.wastageRate = function(){
+    if(this.usageRate() === '-'){
+      return '-';
+    }
+    return 100 - this.usageRate();
   };
 
   LogisticsLineItem.prototype.calculateClosingBalance = function(){
@@ -24,22 +59,5 @@ var LogisticsLineItem = function(lineItem) {
       this.closingBalance = (utils.parseIntWithBaseTen(this.openingBalance) + utils.parseIntWithBaseTen(this.quantityReceived) - utils.parseIntWithBaseTen(this.quantityIssued)) - utils.parseIntWithBaseTen(discarded);
     }
   };
-
-  //TODO: Define the children immunized filed in logistic line item
-  LogisticsLineItem.prototype.setChildrenImmunized = function(){
-    this.childrenImmunized = 5000;
-  };
-
-  LogisticsLineItem.prototype.setUsageRate = function(){
-      this.usageRate =  (this.childrenImmunized / (utils.parseIntWithBaseTen(this.quantityIssued) + utils.parseIntWithBaseTen(this.closingBalance))).toFixed(2);
-  };
-
-  LogisticsLineItem.prototype.setWastageRate = function(){
-    this.wastageRate = (100 - this.usageRate).toFixed(2);
-  };
-
-  this.setChildrenImmunized();
-  this.setUsageRate();
-  this.setWastageRate();
 
 };

@@ -22,9 +22,9 @@ import java.util.List;
 public interface VitaminSupplementationLineItemMapper {
 
   @Insert("INSERT into vaccine_report_vitamin_supplementation_line_items " +
-      " (reportId, vaccineVitaminId, vitaminAgeGroupId,vitaminName, displayOrder , createdBy, createdDate, modifiedBy, modifiedDate) " +
+      " (reportId, vaccineVitaminId, vitaminAgeGroupId,vitaminName, displayOrder, maleValue, femaleValue, createdBy, createdDate, modifiedBy, modifiedDate) " +
       " values" +
-      " (#{reportId}, #{vaccineVitaminId}, #{vitaminAgeGroupId}, #{vitaminName}, #{displayOrder} , #{createdBy}, NOW(), #{modifiedBy}, NOW())")
+      " (#{reportId}, #{vaccineVitaminId}, #{vitaminAgeGroupId}, #{vitaminName}, #{displayOrder}, #{maleValue}, #{femaleValue}, #{createdBy}, NOW(), #{modifiedBy}, NOW())")
   @Options(useGeneratedKeys = true)
   Integer insert(VitaminSupplementationLineItem lineItem);
 
