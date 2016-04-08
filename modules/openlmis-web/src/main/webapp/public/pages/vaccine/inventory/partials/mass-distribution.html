@@ -226,7 +226,7 @@
             <div ng-if="distributionsByDate.length == 0 && dateChange && enableSearch && searchDate !== undefined">
                 <span openlmis-message="message.vaccine.distribution.not.found"></span>
             </div>
-            <div class="rnr-table" ng-if="distributionsByDate.length > 0">
+            <div class="rnr-table" ng-if="distributionsByDate.length > 0 && stockCards.length >0">
 
                 <a style="float:right" id="pdf-button"
                    class="btn-small btn-info"
