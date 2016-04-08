@@ -52,7 +52,7 @@ public interface StockCardMapper {
 
   @Select("SELECT *" +
       " FROM stock_cards" +
-      " WHERE facilityid = #{facilityId}")
+          " WHERE facilityid = #{facilityId} order by productId")
   @Results({
       @Result(property = "id", column = "id"),
       @Result(property = "product", column = "productId", javaType = Product.class,
@@ -94,7 +94,7 @@ public interface StockCardMapper {
   @Select("SELECT loh.*" +
           " FROM lots_on_hand loh" +
           " WHERE loh.stockcardid = #{stockCardId}")
-  @Results({
+  @Results({@Result(property = "lotId", column = "lotId"),
       @Result(
           property = "keyValues", column = "id", javaType = List.class,
           one = @One(select = "getLotOnHandKeyValues")),
