@@ -295,7 +295,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                     total_used = unformattedReport[i].used;
                 }
                 usage_rate = total_vaccinated / total_used * 100;
-                coverage_rate =total_population!=null && total_population!==0 ? total_vaccinated / (total_population * target * 0.1):0;
+                coverage_rate =total_population!==null && total_population!==0 ? total_vaccinated / (total_population * target * 0.1):0;
                 wastage_rate = 100 - usage_rate;
                 unformattedReport[i].total_population = total_population;
                 unformattedReport[i].total_vaccinated = total_vaccinated;
