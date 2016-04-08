@@ -38,10 +38,10 @@
 
             VaccineOrderRequisitionsForViewing.get(requisitionQueryParameters, function (data) {
                 $scope.requisitions = $scope.filteredRequisitions = data.search;
-
                 setRequisitionsFoundMessage();
             }, function () {
             });
+
         };
 
         $scope.selectedFacilityId = navigateBackService.facilityId;
@@ -83,7 +83,7 @@
                 {field: 'facilityName', displayName: messageService.get("option.value.facility.name")},
                 {field: 'periodStartDate', displayName: messageService.get("label.period.start.date"), cellFilter: 'date:\'dd-MM-yyyy\''},
                 {field: 'periodEndDate', displayName: messageService.get("label.period.end.date"), cellFilter: 'date:\'dd-MM-yyyy\''},
-                {field: 'orderDate', displayName: messageService.get("label.date.submitted"), cellFilter: 'date:\'dd-MM-yyyy\''},
+                {field: 'createdDate', displayName: messageService.get("label.date.submitted"), cellFilter: 'date:\'dd-MM-yyyy\''},
                 {field: 'status', displayName: messageService.get("label.status")},
                 {field: 'emergency', displayName: messageService.get("requisition.type.emergency"),
                     cellTemplate: '<div id="emergency{{$parent.$index}}" class="ngCellText checked"><i ng-class="{\'icon-ok\': row.entity.emergency}"></i></div>',
@@ -142,7 +142,6 @@
             $scope.filteredRequisitions = $.grep($scope.requisitions, function (rnr) {
                 return contains(rnr.requisitionStatus, query);
             });
-
         };
 
         function contains(string, query) {
