@@ -70,13 +70,18 @@
 	</parameter>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select p.primaryname product,annualneed,supplyperiodneed,isaValue, reorderlevel,
-bufferstock,maximumstock,productCategory, (select name from facilities where id = $P{FACILITY_ID}) facilityName from stock_requirements sr
-JOIN products p on sr.productId = p.id
+		<![CDATA[SELECT p.primaryname product,annualneed,supplyperiodneed,isaValue, reorderlevel,
+bufferstock,maximumstock,productCategory, (SELECT name FROM facilities WHERE id = $P{FACILITY_ID}) facilityName,
+(
+SELECT ft.name type_name from facilities f
+JOIN facility_types ft ON f.typeId = ft.id
+WHERE f.id = $P{FACILITY_ID} limit 1)
+FROM stock_requirements sr
+JOIN products p ON sr.productId = p.id
 JOIN program_products pp ON p.id = pp.productId
 JOIN product_categories pc ON pp.productcategoryId = PC.ID
-where facilityId = $P{FACILITY_ID}
-order by pc.displayOrder]]>
+WHERE facilityId = $P{FACILITY_ID}
+ORDER BY pc.displayOrder]]>
 	</queryString>
 	<field name="product" class="java.lang.String"/>
 	<field name="annualneed" class="java.lang.Long"/>
@@ -87,6 +92,7 @@ order by pc.displayOrder]]>
 	<field name="maximumstock" class="java.lang.Long"/>
 	<field name="productcategory" class="java.lang.String"/>
 	<field name="facilityname" class="java.lang.String"/>
+	<field name="type_name" class="java.lang.String"/>
 	<variable name="vFirstName" class="java.lang.String">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -240,27 +246,11 @@ order by pc.displayOrder]]>
 				<textFieldExpression><![CDATA[$R{label.title.vaccine.forecasting}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="608" y="3" width="112" height="19" forecolor="#3D9297" backcolor="#3D9297" uuid="90ee5c05-f377-4993-b7b3-0b79e59ba2a7"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
+				<reportElement x="294" y="1" width="265" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="7eb76047-e697-4b0b-898b-929721a8e2bc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$R{label.store}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement mode="Transparent" x="720" y="2" width="10" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="373ef608-0bec-4247-a91d-d489a8fb3ce7"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[':']]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="730" y="2" width="98" height="20" uuid="7eb76047-e697-4b0b-898b-929721a8e2bc"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{facilityname}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{type_name}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
