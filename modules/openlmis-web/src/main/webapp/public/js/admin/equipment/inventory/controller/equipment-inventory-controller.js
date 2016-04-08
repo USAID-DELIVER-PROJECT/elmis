@@ -232,7 +232,6 @@ function EquipmentInventoryController($scope,NumberOfYears, UserFacilityList, Eq
       $scope.loadInventory();
     }
   });
-
   function getGeographicZone(item) {
     return item.facility.geographicZone.name;
   }

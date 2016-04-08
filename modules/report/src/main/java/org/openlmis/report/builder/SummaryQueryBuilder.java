@@ -108,7 +108,7 @@ public class SummaryQueryBuilder {
     }
 
     if(filter.getProduct() > 0){
-      productFilteredBy("products.id");
+     WHERE( productFilteredBy("products.id"));
     }
 
     if(filter.getZone() > 0){

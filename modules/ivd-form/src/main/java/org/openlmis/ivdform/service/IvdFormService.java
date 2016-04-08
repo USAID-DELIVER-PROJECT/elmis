@@ -14,10 +14,7 @@ package org.openlmis.ivdform.service;
 
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
-import org.openlmis.core.domain.Facility;
-import org.openlmis.core.domain.ProcessingPeriod;
-import org.openlmis.core.domain.ProgramProduct;
-import org.openlmis.core.domain.RightName;
+import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.service.*;
@@ -111,6 +108,9 @@ public class IvdFormService {
   @Autowired
   IVDNotificationService ivdNotificationService;
 
+  @Autowired
+  ConfigurationSettingService configService;
+
   private static final String DATE_FORMAT = "yyyy-MM-dd";
 
   @Transactional
@@ -157,19 +157,20 @@ public class IvdFormService {
     report.setPeriodId(periodId);
     report.setStatus(ReportStatus.DRAFT);
 
+    Boolean defaultFieldsToZero = (configService != null)? configService.getBoolValue(ConfigurationSettingKey.DEFAULT_ZERO) : false;
     // 1. copy the products list and initiate the logistics tab.
-    report.initializeLogisticsLineItems(programProducts, previousReport);
+    report.initializeLogisticsLineItems(programProducts, previousReport, defaultFieldsToZero);
 
     // 2. copy the product + dosage settings and initiate the coverage tab.
-    report.initializeCoverageLineItems(dosesToCover);
+    report.initializeCoverageLineItems(dosesToCover, defaultFieldsToZero);
 
     // 3. copy the disease list and initiate the disease tab.
-    report.initializeDiseaseLineItems(diseases);
+    report.initializeDiseaseLineItems(diseases, defaultFieldsToZero);
 
     // 4. initialize the cold chain line items.
-    report.initializeColdChainLineItems(coldChainLineItems);
+    report.initializeColdChainLineItems(coldChainLineItems, defaultFieldsToZero);
 
-    report.initializeVitaminLineItems(vitamins, ageGroups);
+    report.initializeVitaminLineItems(vitamins, ageGroups,defaultFieldsToZero);
     return report;
   }
 

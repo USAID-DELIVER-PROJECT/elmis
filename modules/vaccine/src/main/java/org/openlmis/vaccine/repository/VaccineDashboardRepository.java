@@ -52,7 +52,7 @@ public class VaccineDashboardRepository {
     }
 
     public List<HashMap<String, Object>> getMonthlyCoverage(Date startDate, Date endDate,Long userId, Long product){
-        return mapper.getMonthlyCoverage(startDate, endDate,userId, product);
+        return mapper.getMonthlyCoverage(startDate, endDate, userId, product);
     }
 
     public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product){
@@ -135,4 +135,19 @@ public class VaccineDashboardRepository {
     public List<HashMap<String, Object>> getFacilityStockDetail(Date fromDate, Date toDate, Long product, Long userId) {
         return mapper.getFacilityStockDetail(fromDate, toDate, product, userId);
     }
+    public List<HashMap<String, Object>> getStockStatusByMonthly(Date startDate, Date endDate,Long userId, Long product){
+        return mapper.getStockStatusByMonthly(startDate, endDate, userId, product);
+    }
+
+    public List<HashMap<String, Object>> getDistrictStockStatus(Long period, Long product,Long user){
+        return mapper.getDistrictStockStatus(period, product,user);
+    }
+
+    public List<HashMap<String, Object>> getFacilityStockStatus(Long period, Long product, Long userId){
+        return mapper.getFacilityStockStatus(period, product, userId);
+    }
+    public List<HashMap<String, Object>> getFacilityStockStatusDetails(Date startDate, Date endDate, Long productId, Long userId){
+        return mapper.getFacilityStockStatusDetails(startDate, endDate, productId, userId);
+    }
+
 }

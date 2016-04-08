@@ -10,6 +10,7 @@
 
 package org.openlmis.rnr.service;
 
+import org.openlmis.core.domain.ConfigurationSettingKey;
 import org.openlmis.core.message.OpenLmisMessage;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.ProgramService;
@@ -68,7 +69,7 @@ public class RnrTemplateService {
   public ProgramRnrTemplate fetchProgramTemplateForRequisition(Long programId) {
     ProgramRnrTemplate template =  new ProgramRnrTemplate(programId ,fetchColumnsForRequisition(programId));
     // read if system should populate 0 or not
-    template.setApplyDefaultZero(Boolean.parseBoolean(configService.getConfigurationStringValue("DEFAULT_ZERO") ));
+    template.setApplyDefaultZero(configService.getBoolValue(ConfigurationSettingKey.DEFAULT_ZERO));
     return template;
   }
 }

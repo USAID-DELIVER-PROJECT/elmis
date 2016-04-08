@@ -9,22 +9,22 @@
   </form>
 </div>
 <c3chart  bindto-id="stock_status_chart" chart-data="districtStockStatus.dataPoints" chart-columns="districtStockStatus.dataColumns" chart-x="districtStockStatus.dataX" ng-show="districtStockStatus.dataPoints">
-  <chart-axes y2="coverage"/>
+  <!--<chart-axes y2="minmonthsofstock,maxmonthsofstock"/>-->
   <chart-axis>
 
     <chart-tooltip value-format-function="formatValue" />
     <chart-axis-x axis-position="outer-center"
-                  axis-label="{{label.zone}}"
+                  axis-label=""
                   axis-type="category">
       <!--<chart-axis-x-tick tick-rotate="50"/>-->
     </chart-axis-x>
-    <chart-axis-y axis-id="y2"
-                  axis-position="outer-right"
-                  padding-top="10"
-                  padding-bottom="0"
-                  range-max="100"
-                  range-min="0"
-            />
+    <!--<chart-axis-y axis-id="y2"-->
+                  <!--axis-position="outer-right"-->
+                  <!--padding-top="10"-->
+                  <!--padding-bottom="0"-->
+                  <!--range-max="100"-->
+                  <!--range-min="0"-->
+            <!--/>-->
   </chart-axis>
 </c3chart>
 <div style="font-weight: bold" ng-hide="districtStockStatus.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

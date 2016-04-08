@@ -107,7 +107,7 @@ public interface VaccineOrderRequisitionMapper {
             " WHERE programId = #{programId} AND periodId = #{periodId} and facilityId = #{facilityId} and R.STATUS  IN('SUBMITTED') ")
     List<OrderRequisitionDTO> getAllBy(@Param("programId") Long programId, @Param("periodId") Long periodId, @Param("facilityId") Long facilityId);
 
-    @Select("select r.id,p.name programName, f.name facilityName,r.status,pp.startdate periodStartDate,pp.enddate periodEndDate,emergency, orderDate  from vaccine_order_requisitions r   " +
+    @Select("select r.id,p.name programName, f.name facilityName,r.status,pp.startdate periodStartDate,pp.enddate periodEndDate,emergency, orderDate,r.createdDate  from vaccine_order_requisitions r   " +
             "JOIN programs p on r.programId =p.id  " +
             "JOIN processing_periods pp on r.periodId = pp.id  " +
             "JOIN facilities f on r.facilityId= f.id    "+

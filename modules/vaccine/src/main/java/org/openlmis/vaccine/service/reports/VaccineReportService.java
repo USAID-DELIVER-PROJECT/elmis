@@ -289,7 +289,6 @@ public class VaccineReportService {
 
         result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId));
         result.put("summary", repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId));
-
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
 
         return result;

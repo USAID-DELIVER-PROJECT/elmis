@@ -671,6 +671,125 @@ public interface VaccineDashboardMapper {
                 "            where userid=2 and userpreferencekey='DEFAULT_GEOGRAPHIC_ZONE' limit 1)")
 
         public Long isDistrictUser(@Param("userId") Long userId);
-}
 
-/* End Stock */
+
+        /* End Stock */
+ /*
+         * ---------------- Stock Status ------------------------------------
+        */
+        @Select("with temp as (select ss.period_name,  coalesce(ss.closing_balance,0) closing_balance, \n" +
+                "coalesce((select isavalue from stock_requirements where facilityid = ss.facility_id \n" +
+                "and programid = ss.program_id\n" +
+                "and productid = ss.product_id \n" +
+                "and year = extract(year from ss.period_start_date)),0) need,\n" +
+                "coalesce(fp.minmonthsofstock,0) minmonthsofstock, \n" +
+                "coalesce(fp.maxmonthsofstock,0) maxmonthsofstock, vd.region_name, vd.district_name\n" +
+                ", f.name facility_name\n" +
+                "from vw_vaccine_stock_status ss\n" +
+                "left join program_products pp on pp.programid = ss.program_id and pp.productid = ss.product_id\n" +
+                "left join facility_approved_products fp on fp.programproductid = pp.id and fp.facilitytypeid = ss.facility_type_id\n" +
+                "left join vw_districts vd on ss.geographic_zone_id=vd.district_id\n" +
+                "left join facilities f on f.id= ss.facility_id\n" +
+                "where program_id = fn_get_vaccine_program_id() \n" +
+                "and period_start_date::date>= #{startDate}\n" +
+                "and period_end_date::date  <= #{endDate}\n" +
+                "and product_id = #{product}\n" +
+                "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
+                ")\n" +
+                "select t.period_name, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min, max(t.maxmonthsofstock) max, \n" +
+                "case when sum(t.need)> 0 and (sum(t.closing_balance) / sum(t.need)::numeric<=min(minmonthsofstock))then sum(t.closing_balance)  / sum(t.need)::numeric  end mos_g1 ,\n" +
+                "case when sum(t.need) > 0 and (sum(t.closing_balance)  / sum(t.need)::numeric>min(minmonthsofstock))and (sum(t.closing_balance)  / sum(t.need)::numeric<=max(maxmonthsofstock))\n" +
+                "then sum(t.closing_balance) / sum(t.need)::numeric  end mos_g2 ,\n" +
+                "case when sum(t.need) > 0 and (sum(t.closing_balance) / sum(t.need)::numeric>max(maxmonthsofstock))then sum(t.closing_balance)  /sum(t.need)::numeric  end mos_g3\n" +
+                "from temp t\n" +
+                "group by 1\n" +
+                "order by 1,2;")
+        List<HashMap<String, Object>> getStockStatusByMonthly(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("user") Long userId, @Param("product") Long product);
+
+        @Select("with temp as (select coalesce(ss.closing_balance,0) closing_balance, \n" +
+                "coalesce((select isavalue from stock_requirements where facilityid = ss.facility_id \n" +
+                "and programid = ss.program_id\n" +
+                "and productid = ss.product_id \n" +
+                "and year = extract(year from ss.period_start_date)),0) need,\n" +
+                "coalesce(fp.minmonthsofstock,0) minmonthsofstock, \n" +
+                "coalesce(fp.maxmonthsofstock,0) maxmonthsofstock, vd.region_name, vd.district_name\n" +
+                ", f.name facility_name\n" +
+                "from vw_vaccine_stock_status ss\n" +
+                "left join program_products pp on pp.programid = ss.program_id and pp.productid = ss.product_id\n" +
+                "left join facility_approved_products fp on fp.programproductid = pp.id and fp.facilitytypeid = ss.facility_type_id\n" +
+                "left join vw_districts vd on ss.geographic_zone_id=vd.district_id\n" +
+                "left join facilities f on f.id= ss.facility_id\n" +
+                "where program_id = fn_get_vaccine_program_id() \n" +
+                "and period_id = #{period}\n" +
+                "and product_id = #{product}\n" +
+                "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
+                ")\n" +
+                "select t.region_name, t.district_name, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) minmonthsofstock, max(t.maxmonthsofstock) maxmonthsofstock, \n" +
+                "case when sum(t.need)> 0 and (sum(t.closing_balance) / sum(t.need)::numeric<=min(minmonthsofstock))then sum(t.closing_balance)  / sum(t.need)::numeric  end mos_g1 ,\n" +
+                "case when sum(t.need) > 0 and (sum(t.closing_balance)  / sum(t.need)::numeric>min(minmonthsofstock))and (sum(t.closing_balance)  / sum(t.need)::numeric<=max(maxmonthsofstock))\n" +
+                "then sum(t.closing_balance) / sum(t.need)::numeric  end mos_g2 ,\n" +
+                "case when sum(t.need) > 0 and (sum(t.closing_balance) / sum(t.need)::numeric>max(maxmonthsofstock))then sum(t.closing_balance)  /sum(t.need)::numeric  end mos_g3\n" +
+                "from temp t\n" +
+                "group by 1,2\n" +
+                "order by 1,2")
+        List<HashMap<String, Object>> getDistrictStockStatus(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("with temp as (select coalesce(ss.closing_balance,0) closing_balance, \n" +
+                "coalesce((select isavalue from stock_requirements where facilityid = ss.facility_id and programid = ss.program_id\n" +
+                "and productid = ss.product_id and year = extract(year from ss.period_start_date)),0) need,\n" +
+                "coalesce(fp.minmonthsofstock,0) minmonthsofstock, coalesce(fp.maxmonthsofstock,0) maxmonthsofstock, vd.region_name, vd.district_name\n" +
+                ", f.name facility_name\n" +
+                "from vw_vaccine_stock_status ss\n" +
+                "left join program_products pp on pp.programid = ss.program_id and pp.productid = ss.product_id\n" +
+                "left join facility_approved_products fp on fp.programproductid = pp.id and fp.facilitytypeid = ss.facility_type_id\n" +
+                "left join vw_districts vd on ss.geographic_zone_id=vd.district_id\n" +
+                "left join facilities f on f.id= ss.facility_id\n" +
+                "where program_id = fn_get_vaccine_program_id() \n" +
+                "and period_id = #{period}\n" +
+                "and product_id = #{product}\n" +
+                "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
+                ")\n" +
+                "select t.region_name, t.district_name,t.facility_name, t.closing_balance, t.need, t.minmonthsofstock, t.maxmonthsofstock, \n" +
+                "case when t.need > 0 and (t.closing_balance / t.need::numeric<=minmonthsofstock)then t.closing_balance / t.need::numeric  end mos_g1 ,\n" +
+                "case when t.need > 0 and (t.closing_balance / t.need::numeric>minmonthsofstock)and (t.closing_balance / t.need::numeric<=maxmonthsofstock)\n" +
+                "then t.closing_balance / t.need::numeric  end mos_g2 ,\n" +
+                "case when t.need > 0 and (t.closing_balance / t.need::numeric>maxmonthsofstock)then t.closing_balance / t.need::numeric  end mos_g3\n" +
+                "from temp t\n" +
+                "order by 1,2,3")
+        List<HashMap<String, Object>> getFacilityStockStatus(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("with temp as (select ss.period_name,  coalesce(ss.closing_balance,0) closing_balance, \n" +
+                "coalesce((select isavalue from stock_requirements where facilityid = ss.facility_id \n" +
+                "and programid = ss.program_id\n" +
+                "and productid = ss.product_id \n" +
+                "and year = extract(year from ss.period_start_date)),0) need,\n" +
+                "coalesce(fp.minmonthsofstock,0) minmonthsofstock, \n" +
+                "coalesce(fp.maxmonthsofstock,0) maxmonthsofstock, vd.region_name, vd.district_name\n" +
+                ", f.name facility_name\n" +
+                "from vw_vaccine_stock_status ss\n" +
+                "left join program_products pp on pp.programid = ss.program_id and pp.productid = ss.product_id\n" +
+                "left join facility_approved_products fp on fp.programproductid = pp.id and fp.facilitytypeid = ss.facility_type_id\n" +
+                "left join vw_districts vd on ss.geographic_zone_id=vd.district_id\n" +
+                "left join facilities f on f.id= ss.facility_id\n" +
+                "where program_id = fn_get_vaccine_program_id() \n" +
+                "and period_start_date::date >= #{startDate}\n" +
+                "and period_end_date::date <= #{endDate}\n" +
+                "and product_id = #{product}\n" +
+                "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
+                "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
+                ")\n" +
+                "select t.region_name,t.district_name, t.facility_name, t.period_name, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min," +
+                " max(t.maxmonthsofstock) max,\n" +
+                "case when sum(t.need)> 0 then sum(t.closing_balance)  / sum(t.need)::numeric  end mos , \n" +
+                "case when sum(t.need)> 0 and (sum(t.closing_balance) / sum(t.need)::numeric<=min(minmonthsofstock))then sum(t.closing_balance)  / sum(t.need)::numeric  end mos_g1 ,\n" +
+                "case when sum(t.need) > 0 and (sum(t.closing_balance)  / sum(t.need)::numeric>min(minmonthsofstock))and (sum(t.closing_balance)  / sum(t.need)::numeric<=max(maxmonthsofstock))\n" +
+                "then sum(t.closing_balance) / sum(t.need)::numeric  end mos_g2 ,\n" +
+                "case when sum(t.need) > 0 and (sum(t.closing_balance) / sum(t.need)::numeric>max(maxmonthsofstock))then sum(t.closing_balance)  /sum(t.need)::numeric  end mos_g3\n" +
+                "from temp t\n" +
+                "group by 1,2,3,4\n" +
+                "order by 1,2;")
+        List<HashMap<String, Object>> getFacilityStockStatusDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
+}

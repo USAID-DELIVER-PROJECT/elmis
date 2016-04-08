@@ -102,7 +102,7 @@
                     <th openlmis-message="label.equipment.year.of.installation"></th>
                     <th openlmis-message="label.equipment.age"></th>
                     <th openlmis-message="label.equipment.replacement.year"></th>
-                    <th>Temperature Status</th>
+                    <th ng-show="">Temperature Status</th>
                 </tr>
                 </thead>
                 <tbody ng-repeat="(key, items) in inventoryList">
@@ -140,7 +140,7 @@
                     <td>{{item.yearOfInstallation}}</td>
                     <td>{{getAge(item.yearOfInstallation)}}</td>
                     <td>{{getReplacementYear(item.yearOfInstallation)}}</td>
-                    <td><span >
+                    <td ng-show =""><span>
                          <a ng-show="item.equipment.id" class="btn btn-primary" ng-click="updateTemperatureStatusModal(item)"
                             ng-href="">
                              <span>Add</span>

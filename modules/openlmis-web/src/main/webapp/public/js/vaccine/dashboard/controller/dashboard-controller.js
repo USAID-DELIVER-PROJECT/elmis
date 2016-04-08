@@ -37,13 +37,20 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     investigatingDetailList,
                                     ContactList, isDistrictUser,
                                     VaccineDashboardFacilityStock,
-                                    settingValues, $log) {
+                                    settingValues, $log,
+                                    VaccineDashboardMonthlyStockStatus,
+                                    VaccineDashboardDistrictStockStatus,
+                                    VaccineDashboardFacilityStockStatus,
+                                    VaccineDashboardFacilityStockStatusDetails,colors) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
     $scope.sessions = {
         openPanel: true
     };
+
+
+
 
 
     var monthlyDashletPeriods = utils.getCustomizedStartAndEndDate(settingValues.monthsRange, settingValues.cuttoff);
@@ -266,31 +273,37 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.districtStockStatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "coverage", "name": messageService.get('label.coverage'), "type": "scatter"
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
         },
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar","color":"blue"},
-            {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
+            {"id": "minmonthsofstock", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
+            {"id": "maxmonthsofstock", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
-        dataX: {"id": "geographic_zone_name"}
+        dataX: {"id": "district_name"}
     };
+
     $scope.monthlyStockstatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
         },
-
-            {"id": "target", "name": messageService.get('label.target'), "type": "bar"},
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"}
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
+            {"id": "min", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
+            {"id": "max", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
         dataX: {"id": "period_name"}
     };
     $scope.facilityStockstatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "coverage", "name": messageService.get('label.coverage'), "type": "line"
+            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
         },
-            {"id": "actual", "name": messageService.get('label.actual'), "type": "bar"},
-            {"id": "target", "name": messageService.get('label.target'), "type": "bar"}
+            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
+            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
+            {"id": "minmonthsofstock", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
+            {"id": "maxmonthsofstock", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
         ],
         dataX: {"id": "facility_name"}
     };
@@ -1045,11 +1058,12 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
         if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
 
-            VaccineDashboardMonthlyCoverage.get({
+            VaccineDashboardMonthlyStockStatus.get({
                 startDate: $scope.startDate, endDate: $scope.endDate,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
-                $scope.monthlyStockstatus.dataPoints = data.monthlyCoverage;
+                $scope.monthlyStockstatus.dataPoints = data.monthlyStockStatus;
+
             });
 
         }
@@ -1057,11 +1071,12 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
     $scope.districtStockStatusCallback = function () {
         if (!isUndefined($scope.filter.stockstatus.period) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
-            VaccineDashboardDistrictCoverage.get({
+            VaccineDashboardDistrictStockStatus.get({
                 period: $scope.filter.stockstatus.period,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
-                $scope.districtStockStatus.data = data.districtCoverage;
+                $scope.districtStockStatus.data = data.districtStockStatus;
+
                 if (!isUndefined($scope.districtStockStatus.data)) {
                     $scope.filter.totalDistrictStockStatus = $scope.districtStockStatus.data.length;
                 } else {
@@ -1074,11 +1089,11 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.facilityStockStatusCallback = function () {
         if (!isUndefined($scope.filter.stockstatus.period) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
             //VaccineDashboardFacilityCoverage.get({period: $scope.filter.facilityCoverage.period,
-            VaccineDashboardFacilityTrend.coverage({
+            VaccineDashboardFacilityStockStatus.get({
                 period: $scope.filter.stockstatus.period,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
-                $scope.facilityStockstatus.data = data.facilityCoverage;
+                $scope.facilityStockstatus.data = data.facilityStockStatus;
                 if (!isUndefined($scope.facilityStockstatus.data)) {
                     $scope.filter.totalFacilityStockStatus = $scope.facilityStockstatus.data.length;
                 } else {
@@ -1100,17 +1115,18 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         var s = parseInt($scope.filter.districtStockstatusOffset, 10) + parseInt($scope.filter.districtRange, 10);
         if (!isUndefined($scope.filter.districtStockstatusOffset)) {
             $scope.districtStockStatus.dataPoints = $scope.districtStockStatus.data.slice(parseInt($scope.filter.districtStockstatusOffset, 10), s);
+
         }
     };
     $scope.stockStatusDetailCallback = function () {
         if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.stockstatus.product) && $scope.filter.stockstatus.product !== 0) {
             // VaccineDashboardFacilityCoverageDetails.get({startDate: $scope.filter.detailCoverage.startDate, endDate: $scope.filter.detailCoverage.endDate,
-            VaccineDashboardFacilityTrend.coverageDetails({
+            VaccineDashboardFacilityStockStatusDetails.get({
                 startDate: $scope.startDate, endDate: $scope.endDate,
                 product: $scope.filter.stockstatus.product
             }, function (data) {
 
-                $scope.stockstatusDetails = data.facilityCoverageDetails;
+                $scope.stockstatusDetails = data.facilityStockStatusDetails;
                 $scope.stockstatusPeriodsList = _.uniq(_.pluck( $scope.stockstatusDetails, 'period_name'));
                 var facilities = _.uniq(_.pluck( $scope.stockstatusDetails, 'facility_name'));
 
@@ -1121,20 +1137,20 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                     $scope.facilityStockStatusDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'target',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'target', $scope.stockstatusDetails)
+                        indicator: 'Max MOS',
+                        indicatorValues: $scope.getIndicatorValues(facility, 'max', $scope.stockstatusDetails)
                     });
                     $scope.facilityStockStatusDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'actual',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'actual', $scope.stockstatusDetails)
+                        indicator: 'MIN MOS',
+                        indicatorValues: $scope.getIndicatorValues(facility, 'min', $scope.stockstatusDetails)
                     });
                     $scope.facilityStockStatusDetails.push({
                         district: district,
                         facilityName: facility,
-                        indicator: 'coverage',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'coverage', $scope.stockstatusDetails)
+                        indicator: 'MOS',
+                        indicatorValues: $scope.getIndicatorValues(facility, 'mos', $scope.stockstatusDetails)
                     });
 
                 });
@@ -1351,6 +1367,39 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
 }
 VaccineDashboardController.resolve = {
+    colors:function($q, $timeout, SettingsByKey){
+        var deferred= $q.defer();
+        var color_values={};
+        $timeout(function(){
+                SettingsByKey.get({key: 'VCP_GREEN'}, function (data) {
+                    if (!utils.isNullOrUndefined(data.settings.value)) {
+                        color_values.green_color = data.settings.value;
+                    } else {
+                        color_values.green_color = 'green';
+                    }
+
+                });
+                SettingsByKey.get({key: 'VCP_BLUE'}, function (data) {
+                    if (!utils.isNullOrUndefined(data.settings.value)) {
+                        color_values.blue_color = data.settings.value;
+                    } else {
+                        color_values.blue_color = 'blue';
+                    }
+
+                });
+                SettingsByKey.get({key: 'VCP_RED'}, function (data) {
+                    if (!utils.isNullOrUndefined(data.settings.value)) {
+                        color_values.red_color = data.settings.value;
+                    } else {
+                        color_values.blue_color = 'red';
+                    }
+
+                });
+            deferred.resolve(color_values);
+        }, 100);
+
+        return deferred.promise;
+    },
 
     dashboardSlidesHelp: function ($q, $timeout, HelpContentByKey, messageService) {
 

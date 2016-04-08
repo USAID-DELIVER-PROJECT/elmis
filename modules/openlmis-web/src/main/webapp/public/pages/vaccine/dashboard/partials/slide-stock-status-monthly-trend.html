@@ -18,7 +18,7 @@
 </div>
 <div style="margin-top: -15px;">
   <c3chart   bindto-id="monthly_stock_chart" chart-data="monthlyStockstatus.dataPoints" chart-columns="monthlyStockstatus.dataColumns" chart-x="monthlyStockstatus.dataX" ng-show="monthlyStockstatus.dataPoints">
-    <chart-axes y2="coverage"/>
+
     <chart-axis>
 
       <chart-tooltip value-format-function="formatValue" />
@@ -27,13 +27,7 @@
                     axis-type="category">
         <!--<chart-axis-x-tick tick-rotate="50"/>-->
       </chart-axis-x>
-      <chart-axis-y axis-id="y2"
-                    axis-position="outer-right"
-                    padding-top="10"
-                    padding-bottom="0"
-                    range-max="100"
-                    range-min="0"
-              />
+
     </chart-axis>
 
   </c3chart>

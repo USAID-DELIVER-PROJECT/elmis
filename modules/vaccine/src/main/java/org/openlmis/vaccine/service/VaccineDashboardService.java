@@ -385,4 +385,55 @@ public class VaccineDashboardService {
         }
         return facilityStockDetailList;
     }
+    public List<HashMap<String, Object>> getStockStatusByMonthly(String startDate, String endDate, Long userId, Long product) {
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+        List<HashMap<String, Object>> repairingDetailList = null;
+        try {
+
+
+            repairingDetailList =repository.getStockStatusByMonthly(fromDate, toDate, userId, product);
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return repairingDetailList;
+    }
+
+    public List<HashMap<String, Object>> getFacilityStockStatus(Long period, Long product, Long userId) {
+        List<HashMap<String, Object>> repairingDetailList = null;
+        try {
+
+
+            repairingDetailList =repository.getFacilityStockStatus(period, product, userId);
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return repairingDetailList;
+    }
+
+    public List<HashMap<String, Object>> getFacilityStockStatusDetails(String startDate, String endDate, Long product, Long userId) {
+        Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
+        Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
+        List<HashMap<String, Object>> repairingDetailList = null;
+        try {
+
+
+            repairingDetailList =repository.getFacilityStockStatusDetails(fromDate, toDate, product, userId);
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return repairingDetailList;
+    }
+    public List<HashMap<String, Object>> getDistrictStockStatus(Long period, Long product,Long user) {
+        List<HashMap<String, Object>> repairingDetailList = null;
+        try {
+
+
+            repairingDetailList = repository.getDistrictStockStatus(period, product,user);
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return repairingDetailList;
+    }
+
 }
