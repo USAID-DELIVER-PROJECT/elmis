@@ -285,7 +285,12 @@
                     <span class="label-required">*</span>
                 </label>
                                 <span class="position-relative">
-                                <input ng-required="true" class="span12" ng-required="true" id="newLot.expirationDate" name="expirationDate" type="text"
+                                <input ng-required="true" class="span12"
+                                       ng-required="true"
+                                       id="newLot.expirationDate"
+                                       name="expirationDate"
+                                       type="text"
+                                       ui-date-format="yy-mm-dd"
                                        ui-date="{dateFormat: 'dd/mm/yy', changeYear: true, minDate:'today + 1'}"
                                        ng-model="newLot.expirationDate"/>
                                 </span>
