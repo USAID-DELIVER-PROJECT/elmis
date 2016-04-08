@@ -187,7 +187,6 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
       }
 
       SaveEquipmentInventory.save($scope.inventory, function (data) {
-        console.log($scope.inventory);
         $scope.$parent.message = messageService.get(data.success);
         $scope.$parent.selectedProgram = {id: $scope.inventory.programId};
         //console.info($scope.$parent.selectedProgram);
