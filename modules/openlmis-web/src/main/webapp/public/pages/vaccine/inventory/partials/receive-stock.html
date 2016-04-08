@@ -113,6 +113,7 @@
                                             <input ng-required="(distribution !== undefined && !noVoucherNumber) || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')"
                                                    id="receivingDate" name="receivingDate" type="text"
                                                    ui-date="{dateFormat: 'dd/mm/yy', changeYear: false,maxDate:'today',minDate:period.stringStartDate}"
+                                                   ui-date-format="yy-mm-dd"
                                                    ng-model="occurredDate"/>
 
                                         </div>
