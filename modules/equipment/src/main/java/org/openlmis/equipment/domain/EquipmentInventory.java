@@ -20,8 +20,10 @@ import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.equipment.dto.ColdChainEquipmentTemperatureStatusDTO;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -52,7 +54,7 @@ public class EquipmentInventory extends BaseModel {
   private Date dateLastAssessed;
   private Boolean hasStabilizer;
   private String nameOfSparePart;
-
+  private Long equipmentInventoryId;
   public String getDateLastAssessedString() {
     return DateUtil.getFormattedDate(this.dateLastAssessed, "yyyy-MM-dd");
   }
@@ -61,4 +63,5 @@ public class EquipmentInventory extends BaseModel {
     return DateUtil.getFormattedDate(this.dateDecommissioned, "yyyy-MM-dd");
   }
 
+  private List<ColdChainEquipmentTemperatureStatusDTO> coldChainLineItems;
 }

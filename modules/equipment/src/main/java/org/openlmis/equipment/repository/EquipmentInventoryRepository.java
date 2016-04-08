@@ -15,6 +15,7 @@ package org.openlmis.equipment.repository;
 import org.apache.log4j.Logger;
 import org.openlmis.core.domain.Pagination;
 import org.openlmis.equipment.domain.*;
+import org.openlmis.equipment.dto.ColdChainEquipmentTemperatureStatusDTO;
 import org.openlmis.equipment.repository.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -140,5 +141,9 @@ public class EquipmentInventoryRepository {
 
   public String updateNonFunctionalEquipments() {
     return mapper.updateNonFunctionalEquipments();
+  }
+
+  public List<ColdChainEquipmentTemperatureStatusDTO>getAll(Long equipmentId){
+    return mapper.getLineItemsByEquipmentInventory(equipmentId);
   }
 }

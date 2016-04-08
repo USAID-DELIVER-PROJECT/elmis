@@ -18,6 +18,7 @@ import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.domain.EquipmentInventory;
+import org.openlmis.equipment.dto.ColdChainEquipmentTemperatureStatusDTO;
 import org.openlmis.equipment.repository.EquipmentInventoryRepository;
 import org.openlmis.equipment.repository.EquipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +125,10 @@ public class EquipmentInventoryService {
 
   public void updateNonFunctionalEquipments() {
     repository.updateNonFunctionalEquipments();
+  }
+
+public List<ColdChainEquipmentTemperatureStatusDTO>getAllbyId(Long equipmentId){
+    return repository.getAll(equipmentId);
   }
 
 }
