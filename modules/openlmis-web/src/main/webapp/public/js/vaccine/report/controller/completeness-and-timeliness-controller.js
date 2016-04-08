@@ -12,20 +12,16 @@
  *
  */
 
-function CompletenesssAndTimelinessReportController($scope, $routeParams, CompletenessAndTimeliness, Settings,
-                                                    ReportProductsByProgram, TreeGeographicZoneList, messageService,
-                                                    GetUserUnassignedSupervisoryNode) {
+function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimeliness) {
 
-    $scope.perioderror = "";
-
-    $scope.OnFilterChanged = function () {
+       $scope.OnFilterChanged = function () {
 
         // prevent first time loading
         if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
 
-        CompletenessAndTimeliness.get(
+         CompletenessAndTimeliness.get(
             {
 
                 periodStart: $scope.periodStartDate,
@@ -41,59 +37,23 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
                     var includeGrandTotal = true;
 
                      $scope.error = "";
-                     $scope.datarows = utils.getDistrictBasedReportDataWithSubAndGrandTotal($scope.completenessAndTimeliness.mainreport, districtNameKey,
-                                                                                        columnKeysToBeAggregated, includeGrandTotal);
+                     $scope.datarows = utils.getDistrictBasedReportDataWithSubAndGrandTotal(data.completenessAndTimeliness.mainreport,
+                                                                                            districtNameKey,
+                                                                                            columnKeysToBeAggregated,
+                                                                                            includeGrandTotal);
                      $scope.summary = data.completenessAndTimeliness.summary;
                      $scope.summaryPeriodLists = data.completenessAndTimeliness.summaryPeriodLists;
                      $scope.aggregateSummary = data.completenessAndTimeliness.aggregateSummary;
 
                      // Get a unique periods for the header
-                     var uniquePeriods = _.chain($scope.summary).indexBy("period").values().value();
-                     $scope.sortedPeriods = _.sortBy(uniquePeriods, function (up) {
-                         return up.row;
-                     });
+                     var uniquePeriods    = _.chain($scope.summary).indexBy("period").values().value();
+                     $scope.sortedPeriods = _.sortBy(uniquePeriods, function (up) { return up.row; });
 
                      if($scope.summary !== null) {
                         pivotResultSet($scope.summary);
                      }
-
-                    if(angular.isUndefined($scope.filter.zone) || (!angular.isUndefined($scope.filter.zone) && $scope.filter.zone === 0)) {
-                        $scope.allRegionSelection = true;
-                        generateDistrictStoreAggregateData($scope.aggregateSummary);
-                    }
-                   else{
-                        $scope.allRegionSelection = false;
-                    }
             });
     };
-
-
-    function generateDistrictStoreAggregateData(summary){
-        $scope.aggregateTableData = [];
-        $scope.aggregateExpectedStoresCount;
-
-        _.each(summary, function(item, index) {
-
-            var col = [];
-
-            for(i=0; i<$scope.summaryPeriodLists.length; i++)
-            {
-                if(i === 0) {
-                    col.push({val: item.district_name});
-                    $scope.aggregateExpectedStoresCount = item.expected;
-                }
-
-                if(item.year === $scope.summaryPeriodLists[i].year && item.month === $scope.summaryPeriodLists[i].month)
-                    col.push({val : item.reporting_status});
-
-                else
-                   col.push({val : '-'});
-
-            }
-            $scope.aggregateTableData.push(col);
-
-        });
-    }
 
     function pivotResultSet(summary){
 
