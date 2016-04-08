@@ -45,6 +45,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -61,6 +62,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -77,6 +79,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -97,6 +100,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -117,6 +121,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -138,6 +143,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -155,6 +161,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -173,6 +180,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -194,6 +202,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -214,6 +223,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -237,6 +247,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -260,6 +271,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -286,6 +298,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -312,6 +325,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});
@@ -336,6 +350,7 @@ describe('ViewRnrController', function () {
       hideAdditionalCommoditiesTab: false,
       hideSkippedProducts: false,
       enableSkipPeriod: false,
+      showMaxStock: true,
       $dialog: {},
       comments: [],
       equipmentOperationalStatus:[]});

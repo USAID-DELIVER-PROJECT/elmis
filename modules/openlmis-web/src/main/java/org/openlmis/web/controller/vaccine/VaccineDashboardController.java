@@ -211,5 +211,29 @@ public class VaccineDashboardController  extends BaseController {
         }
         return OpenLmisResponse.response("district_user", isUserDistrict);
     }
+    @RequestMapping(value = "monthly-stock-status.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getStockStatusByMonthly(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
 
+        return OpenLmisResponse.response("monthlyStockStatus", service.getStockStatusByMonthly(startDate, endDate, userId, product));
+    }
+
+    @RequestMapping(value = "facility-stock-status.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityStockStatus(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilityStockStatus", service.getFacilityStockStatus(period, product, userId));
+    }
+
+    @RequestMapping(value = "facility-stock-status-details.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityStockStatusDetails(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+
+        return OpenLmisResponse.response("facilityStockStatusDetails", service.getFacilityStockStatusDetails(startDate, endDate, product, userId));
+    }
+    @RequestMapping(value = "district-stock-status.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getDistrictStockStatus(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("districtStockStatus", service.getDistrictStockStatus(period, product,userId));
+    }
 }

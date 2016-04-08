@@ -21,9 +21,11 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.core.builder.ProcessingPeriodBuilder;
+import org.openlmis.core.domain.ConfigurationSettingKey;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.ProgramProduct;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
+import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.ProgramProductService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.db.categories.UnitTests;
@@ -103,6 +105,9 @@ public class IvdFormServiceTest {
   @Mock
   IVDNotificationService ivdNotificationService;
 
+  @Mock
+  ConfigurationSettingService configService;
+
   @InjectMocks
   IvdFormService service;
 
@@ -139,6 +144,8 @@ public class IvdFormServiceTest {
     VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
 
     when(repository.getByProgramPeriod(1L, 1L, 1L)).thenReturn(null);
+    when(configService.getBoolValue(ConfigurationSettingKey.DEFAULT_ZERO))
+        .thenReturn(Boolean.FALSE);
 
     doNothing().when(repository).insert(report);
 

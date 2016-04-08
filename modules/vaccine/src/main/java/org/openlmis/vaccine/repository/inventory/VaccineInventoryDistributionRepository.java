@@ -107,4 +107,12 @@ public class VaccineInventoryDistributionRepository {
     public List<VaccineDistributionAlertDTO>getPendingNotificationFoLowerLevel(Long facilityId){
         return mapper.getPendingConsignmentToLowerLevel(facilityId);
     }
+    public List<Facility> getFacilitiesSameType(Long facilityId, String query) {
+        return mapper.getFacilitiesSameType(facilityId, query.toLowerCase());
+    }
+
+    public List<VaccineDistribution> getDistributionsByDate(Long facilityId, String date) {
+        return mapper.getDistributionsByDate(facilityId, date);
+    }
+
 }

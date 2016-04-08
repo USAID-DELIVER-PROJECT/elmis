@@ -40,5 +40,6 @@ private String region_name;
     private float used;
     private float administered;
     private Long targetpopulation;
+    private String reporting_status;
 
 }

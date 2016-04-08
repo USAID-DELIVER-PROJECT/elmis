@@ -12,20 +12,16 @@
  *
  */
 
-function CompletenesssAndTimelinessReportController($scope, $routeParams, CompletenessAndTimeliness, Settings,
-                                                    ReportProductsByProgram, TreeGeographicZoneList, messageService,
-                                                    GetUserUnassignedSupervisoryNode) {
+function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimeliness) {
 
-    $scope.perioderror = "";
-
-    $scope.OnFilterChanged = function () {
+       $scope.OnFilterChanged = function () {
 
         // prevent first time loading
         if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
 
-        CompletenessAndTimeliness.get(
+         CompletenessAndTimeliness.get(
             {
 
                 periodStart: $scope.periodStartDate,
@@ -36,106 +32,28 @@ function CompletenesssAndTimelinessReportController($scope, $routeParams, Comple
 
             function (data) {
 
+                    var columnKeysToBeAggregated = ["target", "expected", "reported", "late", "fixed", "outreach", "session_total"];
+                    var districtNameKey = "district_name";
+                    var includeGrandTotal = true;
+
                      $scope.error = "";
-                     $scope.datarows = mainReportDataWithSubAndGrandTotal(data.completenessAndTimeliness.mainreport);
+                     $scope.datarows = utils.getDistrictBasedReportDataWithSubAndGrandTotal(data.completenessAndTimeliness.mainreport,
+                                                                                            districtNameKey,
+                                                                                            columnKeysToBeAggregated,
+                                                                                            includeGrandTotal);
                      $scope.summary = data.completenessAndTimeliness.summary;
                      $scope.summaryPeriodLists = data.completenessAndTimeliness.summaryPeriodLists;
                      $scope.aggregateSummary = data.completenessAndTimeliness.aggregateSummary;
 
                      // Get a unique periods for the header
-                     var uniquePeriods = _.chain($scope.summary).indexBy("period").values().value();
-                     $scope.sortedPeriods = _.sortBy(uniquePeriods, function (up) {
-                         return up.row;
-                     });
+                     var uniquePeriods    = _.chain($scope.summary).indexBy("period").values().value();
+                     $scope.sortedPeriods = _.sortBy(uniquePeriods, function (up) { return up.row; });
 
                      if($scope.summary !== null) {
                         pivotResultSet($scope.summary);
                      }
-
-                    if(angular.isUndefined($scope.filter.zone) || (!angular.isUndefined($scope.filter.zone) && $scope.filter.zone === 0)) {
-                        $scope.allRegionSelection = true;
-                        generateDistrictStoreAggregateData($scope.aggregateSummary);
-                    }
-                   else{
-                        $scope.allRegionSelection = false;
-                    }
             });
     };
-
-    $scope.groupBy = "district_name";
-
-    function mainReportDataWithSubAndGrandTotal(reportData){
-
-       if(reportData.length === 0)
-           return;
-
-        // get unique district
-        var uniqueDistrictName = _.uniq(_.pluck(reportData,  $scope.groupBy));
-        var reportDataWithAggregates = [];
-
-        _.each(uniqueDistrictName, function(districtName){
-            //main report rows
-            reportDataWithAggregates.push({data: _.where(reportData, {district_name: districtName})});
-            //sub total
-            reportDataWithAggregates.push({subtotal : {
-                target_total:   getColumnSubTotal(reportData, districtName, "target"),
-                expected_total: getColumnSubTotal(reportData, districtName, "expected"),
-                reported_total: getColumnSubTotal(reportData, districtName, "reported"),
-                late_total:     getColumnSubTotal(reportData, districtName, "late"),
-                fixed_total:    getColumnSubTotal(reportData, districtName, "fixed"),
-                outreach_total: getColumnSubTotal(reportData, districtName, "outreach"),
-                session_total:  getColumnSubTotal(reportData, districtName, "session_total")
-            }});
-        });
-            // grand total
-           reportDataWithAggregates.push({grandtotal : {
-                target_total:   getGrandTotal(reportData, "target"),
-                expected_total: getGrandTotal(reportData, "expected"),
-                reported_total: getGrandTotal(reportData, "reported"),
-                late_total:     getGrandTotal(reportData, "late"),
-                fixed_total:    getGrandTotal(reportData, "fixed"),
-                outreach_total: getGrandTotal(reportData, "outreach"),
-                session_total:  getGrandTotal(reportData, "session_total")
-            }});
-
-        return reportDataWithAggregates;
-    }
-
-    function getColumnSubTotal(reportData, districtName, columnToBeAgregated){
-        return _.chain(reportData).where({district_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
-    }
-
-    function getGrandTotal(reportData, columnToBeAgregated){
-        return _.chain(reportData).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
-    }
-
-    function generateDistrictStoreAggregateData(summary){
-        $scope.aggregateTableData = [];
-        $scope.aggregateExpectedStoresCount;
-
-        _.each(summary, function(item, index) {
-
-            var col = [];
-
-            for(i=0; i<$scope.summaryPeriodLists.length; i++)
-            {
-                if(i === 0) {
-                    col.push({val: item.district_name});
-                    $scope.aggregateExpectedStoresCount = item.expected;
-                }
-
-                if(item.year === $scope.summaryPeriodLists[i].year && item.month === $scope.summaryPeriodLists[i].month)
-                    col.push({val : item.reporting_status});
-
-                else
-                   col.push({val : '-'});
-
-            }
-            $scope.aggregateTableData.push(col);
-
-        });
-
-    }
 
     function pivotResultSet(summary){
 

@@ -4,7 +4,7 @@
   ~
   ~ The U.S. Agency for International Development (USAID) funded this section of the application development under the terms of the USAID | DELIVER PROJECT contract no. GPO-I-00-06-00007-00.
   -->
-<html lang="en" ng-app="vaccine-dashboard">
+<html  lang="en" ng-app="vaccine-dashboard">
 <head>
     <meta charset="utf-8">
     <title openlmis-message="app.title"></title>
@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="/public/lib/select2/select2.css">
     <script src="/public/lib/angular-ui/angular-ui.min.js"></script>
     <link rel="stylesheet" href="/public/lib/angular-ui/angular-ui.min.css">
+
     <script src="/public/lib/angular-ui/ng-grid/ng-grid-2.0.7.min.js"></script>
 
 
@@ -87,9 +88,11 @@
     <script src="/public/lib/select2/select2.js"></script>
     <script src="/public/js/shared/localStorageKeys.js"></script>
     <script src="/public/js/vaccine/dashboard/controller/dashboard-message-controller.js"></script>
+    <script src="/public/js/vaccine/dashboard/controller/dashboard-modal-controller.js"></script>
     <link type="text/css" rel="stylesheet" href="/public/css/ng-grid.css"/>
     <link type="text/css" rel="stylesheet" href="/public/css/app.css"/>
     <link rel="stylesheet" href="/public/css/dashboard.css">
+    <link rel="stylesheet" href="/public/css/vims-dashboard.css">
 
     <!--[if IE 9]>
     <link rel="stylesheet" href="/public/css/ie9.css"/>
@@ -107,12 +110,12 @@
     <![endif]-->
 
 </head>
-<body>
+<body >
 <ng-include src="'/public/pages/header.html'"></ng-include>
 <ng-include src="'/public/pages/navigation.html'"></ng-include>
 
-<div class="content rnr-content">
-    <div ng-view></div>
+<div class="content rnr-content dashboard-html ">
+    <div  ng-view></div>
 </div>
 </body>
 </html>

@@ -31,6 +31,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                   product.productId=stockCard.product.id;
                   product.productCode=stockCard.product.code;
                   product.totalQuantityOnHand=stockCard.totalQuantityOnHand;
+                  product.dosageUnit=stockCard.product.dosageUnit.code;
                   var programProduct= _.filter(programProducts, function(obj) {
                         return obj.product.primaryName === stockCard.product.primaryName;
                   });
@@ -47,7 +48,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                     product.quantityRequired=(quantityRequired >0)?quantityRequired:0;
                   }
                   else{
-                    product.quantityRequired="?";
+                    product.quantityRequired="-";
                   }
                   product.quantity=(distributedProduct===undefined || facilityDistribution.status==="RECEIVED")?null:distributedProduct.quantity;
                   product.lineItemId=(distributedProduct===undefined)?null:distributedProduct.id;
@@ -72,17 +73,19 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                        lotOnHand.expirationDate=lot.lot.expirationDate;
                             product.lots.push(lotOnHand);
                        });
-                       //Make sort of lots by vvm and expiration
-                       var lotsAscExpiration=_.sortBy(product.lots,'expirationDate');
-                       var lotsDescExpiration=lotsAscExpiration.reverse();
-                       var lotAscVVM=_.sortBy(lotsDescExpiration,'vvmStatus');
 
-                       product.lots=lotAscVVM.reverse();
+                       var lotsAscExpiration=product.lots.sort(function(a,b){
+                           return (a.expirationDate > b.expirationDate) ? 1 : ((b.expirationDate > a.expirationDate) ? -1 : 0);
+                       });
+                       var lotsDescVvmStatus=lotsAscExpiration.sort(function(a,b){
+                            return (a.vvmStatus > b.vvmStatus) ? -1 : ((b.vvmStatus > a.vvmStatus) ? 1 : 0);
+                       });
+
+                       product.lots=lotsDescVvmStatus;
                   }
                   productsToIssue.push(product);
            });
            productsToIssue=_.sortBy(productsToIssue,'displayOrder');
-//           productsToIssue=_.sortBy(productsToIssue,'productCategory');
            var byCategory=_.groupBy(productsToIssue,function(p){
                return p.productCategory.name;
            });

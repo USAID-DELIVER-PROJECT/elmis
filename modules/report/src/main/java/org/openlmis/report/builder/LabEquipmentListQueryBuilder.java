@@ -32,7 +32,7 @@ public class LabEquipmentListQueryBuilder {
                 " equipment_type AS equipmentType, equipment_model AS model, serial_number AS serialNumber, equipment_name AS equipmentName, equipment_status AS operationalStatus");
         FROM("vw_lab_equipment_status");
         writePredicates(filter);
-        ORDER_BY("facilityName, equipmentName");
+        ORDER_BY("facility_name, equipment_name");
         return SQL();
 
     }
@@ -53,7 +53,7 @@ public class LabEquipmentListQueryBuilder {
                 " JOIN equipment_service_vendors ON equipment_service_vendors.id = equipment_service_contracts.vendorid) contract\n" +
                 " on vw_lab_equipment_status.equipment_id = contract.equipmentid AND contract.facilityid = vw_lab_equipment_status.facility_id ");
         writePredicatesForServiceContractReports(filter);
-        WHERE("equipment_status  = 'Fully Operational'");
+        WHERE("equipment_status in ('Fully Operational', 'Functional')");
         ORDER_BY("facilityName, equipmentName");
         return SQL();
     }
@@ -65,7 +65,6 @@ public class LabEquipmentListQueryBuilder {
         SELECT("facility_code AS facilityCode, facility_name AS facilityName, facility_type AS facilityType, disrict as district, zone," +
                 " equipment_type AS equipmentType, equipment_model AS model, serial_number AS serialNumber, equipment_name AS equipmentName, 'Not Functioning' AS operationalStatus," +
                 " case when contract.contractid is null THEN 'NO' else 'YES' END AS serviceContract, contract.name AS vendorName, contract.contractid as contractId");
-     //        " case when hasservicecontract = 'f' THEN 'NO' when hasservicecontract = 't' THEN 'YES' END AS serviceContract, contract.name AS vendorName, contract.contractid as contractId");
         FROM("vw_lab_equipment_status");
         LEFT_OUTER_JOIN("(SELECT distinct name, vendorid, equipment_service_contracts.id contractid, equipmentid, facilityid FROM equipment_service_contracts JOIN equipment_service_contract_equipments ON\n" +
                 " equipment_service_contracts.id = equipment_service_contract_equipments.contractid JOIN\n" +
@@ -73,7 +72,7 @@ public class LabEquipmentListQueryBuilder {
                 " JOIN equipment_service_vendors ON equipment_service_vendors.id = equipment_service_contracts.vendorid) contract\n" +
                 " on vw_lab_equipment_status.equipment_id = contract.equipmentid AND contract.facilityid = vw_lab_equipment_status.facility_id ");
         writePredicatesForServiceContractReports(filter);
-        WHERE("equipment_status  = 'Not Operational'");
+        WHERE("equipment_status  in ('Not Operational', 'Not Functional', 'Waiting For Repair', 'Waiting For Spare Parts', 'Obsolete')");
         ORDER_BY("facilityName, equipmentName");
         return SQL();
     }

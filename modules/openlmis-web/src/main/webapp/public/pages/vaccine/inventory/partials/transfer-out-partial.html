@@ -1,0 +1,192 @@
+<div class="row-fluid">
+    <h2><span openlmis-message="label.vaccine.transfer.out"></span></h2>
+    <div class="form-row clearfix">
+        <div class="span3 form-cell">
+            <label id="facilityLabel" for="searchFacility">
+                <span openlmis-message="label.to.facility"></span>
+                <span class="label-required"> *</span>
+            </label>
+
+            <div class="form-field autosuggest-input">
+                <div class="suggest-field">
+                    <input id="searchFacility" type="text" ng-change="showFacilitySearchResults()"
+                           ng-model="query" maxlength="50"
+                           openlmis-message="placeholder.facility.search" ng-hide="facilitySelected"/>
+
+                    <div id="searchList" class="search-list" ng-show="query.length > 2" style="width:300px !important">
+                        <ul>
+                            <li ng-repeat="facility in filteredFacilityList">
+                                <a href="" id="result{{$index}}" ng-click="setSelectedFacility(facility)"
+                                   ng-bind="facility.name"></a>
+                            </li>
+                            <li ng-show="hasSearch && facilityResultCount == 0">
+                                <a href="" openlmis-message="msg.no.matches|query"></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div ng-show="facilitySelected">
+                        <span ng-bind="facilitySelected.name"></span>
+                        <a id="clearNodeSearch" href="" class="clear-search" ng-click="clearSelectedFacility()"></a>
+                    </div>
+                </div>
+                <div class="form-tip" openlmis-message="search.threeCharacters"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="alert alert-danger" ng-show='facilitySelected && stockCardsToDisplay.length === 0'>
+        <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
+        <strong><a href="/public/pages/vaccine/inventory/index.html#/receive"
+                   openlmis-message="stock.initialize.stock"></a></strong>
+    </div>
+    <div ng-form="transferOutForm" class="rnr-table" ng-show="facilitySelected && stockCardsToDisplay.length >0 ">
+        <div class="alert alert-danger" ng-show="showNoProductErrorMessage"
+             openlmis-message="error.message.no.product.to.issue"></div>
+        <div class="alert alert-danger" ng-show="transferOutForm.$dirty && transferOutForm.$invalid">
+            <ul ng-show="transferOutForm.$error.divisibleByPresentationValidator.length >0 || transferOutForm.$error.maximumValidator.length >0">
+                <li ng-repeat="error in transferOutForm.$error.divisibleByPresentationValidator">
+                    {{error.$name}} <span openlmis-message="error.message.quantity.not.multiple.of.presentation"></span>
+                </li>
+                <li ng-repeat="error in transferOutForm.$error.maximumValidator">
+                    {{error.$name}} <span openlmis-message="error.message.quantity.greater.than.soh"></span>
+                </li>
+            </ul>
+        </div>
+
+        <table id="issueTable" class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="col-lot" style="max-width:300px !important; width:300px !important"><br/><span
+                        openlmis-message="label.product"></span></th>
+                <th class="col-quantity " style="max-width:120px !important; width:120px !important">
+                    <span openlmis-message="label.unit.of.measure"></span>
+                </th>
+                <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                        openlmis-message="label.stock.batch"></span></th>
+                <th class="col-lot " style="max-width:100px !important; width:100px !important"><span
+                        openlmis-message="label.stock.vvm"></span></th>
+                <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                        openlmis-message="label.expiration.date "></span></th>
+                <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                        openlmis-message="header.stock.in.Hand "></span></th>
+                <th class="col-quantity " style="max-width:150px !important; width:150px !important"><span
+                        openlmis-message="header.stock.quantity.to.issue"></span></th>
+                <th class="col-quantity " style="max-width:120px !important; width:120px !important"><span
+                        openlmis-message="header.total.issued"></span></th>
+                <th class="col-quantity " style="max-width:auto !important; width:auto !important">
+                    <span>&nbsp;</span>
+                </th>
+
+            </tr>
+            </thead>
+            <tbody ng-repeat="stock in stockCardsToDisplay">
+            <tr>
+                <td class="productCategory" id="vaccine" colspan="9">
+                    {{stock.productCategory}}
+                </td>
+            </tr>
+            <tr ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
+                ng-repeat-start="c in stock.stockCards">
+                <td class="cell-input disabled last-row" rowspan="{{c.lotsOnHand.length}}">
+                    <span class="cell-text" ng-bind="c.product.primaryName"></span>
+                </td>
+                <td class="cell-input disabled last-row" rowspan="{{c.lotsOnHand.length}}">
+                    <span class="cell-text" ng-bind="c.product.dosageUnit.code"></span>
+                </td>
+                <td class="cell-input disabled"
+                    ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.lotCode"></span>
+                </td>
+                <td class="cell-input disabled"
+                    ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <span class="cell-text" ng-bind="c.lotsOnHand[0].customProps.vvmstatus"></span>
+                </td>
+                <td class="cell-input disabled"
+                    ng-class="{'skip':c.lotsOnHand.length===1,'last-row':c.lotsOnHand.length ===1}">
+                    <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.expirationDate | date:'MMM-yyyy'"></span>
+                </td>
+                <td class="cell-input disabled "
+                    ng-class="{'last-row':c.lotsOnHand.length===1, 'max-error':(c.lotsOnHand[0].quantityOnHand < c.lotsOnHand[0].quantity)}">
+                            <span class="cell-text" ng-bind="c.lotsOnHand[0].quantityOnHand | number"
+                                  ng-show="c.lotsOnHand.length > 0"></span>
+                            <span class="cell-text" ng-bind="c.totalQuantityOnHand | number"
+                                  ng-show="c.lotsOnHand.length === 0"></span>
+                </td>
+                <td class="col-general cell-input" ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <input ng-show="c.lotsOnHand.length > 0"
+                           name="{{c.product.primaryName}} Batch {{c.lotsOnHand[0].lot.lotCode}}"
+                           ng-model="c.lotsOnHand[0].quantity"
+                           ng-change="updateStockCardTotal(c)"
+                           numeric-validator="positiveInteger"
+                           divisible-by-presentation="{{c.presentation}}"
+                           maximum="{{c.lotsOnHand[0].quantityOnHand}}"
+                           maxlength="10" type="text"
+                           ng-disabled="c.lotsOnHand.length > 1 && c.lotsOnHand[1].quantity >0"/>
+                    <input ng-show="c.lotsOnHand.length === 0"
+                           maximum="{{c.totalQuantityOnHand}}"
+                           name="{{c.product.primaryName}}"
+                           ng-model="c.quantity"
+                           ng-change="updateStockCardTotal(c)"
+                           numeric-validator="positiveInteger"
+                           maxlength="10" type="text"
+                           divisible-by-presentation="{{c.presentation}}"
+                            />
+                </td>
+                <td class="cell-input disabled last-row" rowspan="{{c.lotsOnHand.length}}">
+                    <span class="cell-text" ng-show="c.quantity >0" ng-bind="c.quantity"></span>
+                </td>
+                <td rowspan="{{c.lotsOnHand.length}}">&nbsp;</td>
+
+            </tr>
+            <tr ng-repeat-end ng-repeat="lot in c.lotsOnHand" ng-show="!$first" ng-class="color">
+                <td class="cell-input disabled" ng-class="{'last-row':$last}">
+                    <span class="cell-text" ng-bind="lot.lot.lotCode"></span>
+                </td>
+                <td class="cell-input disabled" ng-class="{'last-row':$last}">
+                    <span class="cell-text" ng-bind="lot.customProps.vvmstatus"></span>
+                </td>
+                <td class="cell-input disabled" ng-class="{'last-row':$last}">
+                    <span class="cell-text" ng-bind="lot.lot.expirationDate | date:'MMM-yyyy'"></span>
+                </td>
+                <td class="cell-input disabled"
+                    ng-class="{'last-row':$last, 'max-error':lot.quantityOnHand < lot.quantity}">
+                    <span class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
+                </td>
+                <td style="border-right:2px solid #ddd" class="col-general cell-input" ng-class="{'last-row':$last}">
+                    <input
+                            maximum="{{lot.quantityOnHand}}"
+                            name="{{c.product.primaryName}} Batch {{lot.lot.lotCode}}" ng-model="lot.quantity"
+                            ng-change="updateStockCardTotal(c)" numeric-validator="positiveInteger"
+                            maxlength="10" type="text"
+                            divisible-by-presentation="{{c.presentation}}"
+                            ng-disabled="c.lotsOnHand[$index-1].quantity ===undefined || c.lotsOnHand[$index-1].quantity != c.lotsOnHand[$index-1].quantityOnHand ||
+                                        c.lotsOnHand[$index +1].quantity >0"
+                            />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div form-toolbar id="action_buttons" class="action-buttons">
+        <div class="form-cell button-row">
+
+            <input id="update" ng-click="distribute()" type="submit"
+                   ng-disabled="transferOutForm.$invalid || !facilitySelected || stockCardsToDisplay.length === 0"
+                   id="requisition-button" class="btn btn-primary save-button"
+                   openlmis-message="button.save"/>
+
+            <input id="cancel" type="submit" id="cancel-button" ng-click="cancel()" class="btn btn-cancel cancel-button"
+                   openlmis-message="button.cancel"/>
+        </div>
+
+        <div class="toolbar-error" id="saveErrorMsgDiv">
+            <span openlmis-message="error" ng-show="error"></span>&nbsp;
+            <span ng-show="errorProgram" ng-bind="errorProgram"></span>
+        </div>
+
+    </div>
+
+
+</div>

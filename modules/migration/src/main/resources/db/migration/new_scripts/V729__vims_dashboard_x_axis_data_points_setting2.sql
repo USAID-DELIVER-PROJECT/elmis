@@ -1,0 +1,3 @@
+delete from configuration_settings where key = 'VACCINE_DASHBOARD_DISTRICT_MAX_X_POINTS_FOR_CHART';
+INSERT INTO public.configuration_settings (key, value, name, description, groupname, displayorder, valuetype, valueoptions, isconfigurable)
+VALUES ('VACCINE_DASHBOARD_DISTRICT_MAX_X_POINTS_FOR_CHART', '5', 'VACCINE_DASHBOARD_DISTRICT_MAX_X_POINTS_FOR_CHART', NULL, 'Dashboard', '1', 'TEXT', NULL, 't');

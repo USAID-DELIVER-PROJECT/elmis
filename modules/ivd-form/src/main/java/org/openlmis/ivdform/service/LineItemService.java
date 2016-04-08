@@ -80,12 +80,22 @@ public class LineItemService {
   }
 
   public void saveAdverseEffectLineItems(List<AdverseEffectLineItem> adverseEffectLineItems, Long reportId) {
+
+    // delete and recreate the line items here.
+    adverseLineItemRepository.deleteLineItems(reportId);
+
     for (AdverseEffectLineItem lineItem : emptyIfNull(adverseEffectLineItems)) {
       lineItem.setReportId(reportId);
-      if (!lineItem.hasId()) {
-        adverseLineItemRepository.insert(lineItem);
-      } else {
-        adverseLineItemRepository.update(lineItem);
+      adverseLineItemRepository.insert(lineItem);
+      for(AdverseEffectLineItem relatedIssue : emptyIfNull(lineItem.getRelatedLineItems())){
+        relatedIssue.setReportId(reportId);
+        relatedIssue.setRelatedToLineItemId(lineItem.getId());
+        // copy important details from the main aefi
+        relatedIssue.setCases(lineItem.getCases());
+        relatedIssue.setDate(lineItem.getDate());
+        relatedIssue.setIsInvestigated(lineItem.getIsInvestigated());
+        relatedIssue.setInvestigationDate(lineItem.getInvestigationDate());
+        adverseLineItemRepository.insert(relatedIssue);
       }
     }
   }

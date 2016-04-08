@@ -13,7 +13,6 @@
 package org.openlmis.core.service;
 
 
-import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@NoArgsConstructor
 public class ConfigurationSettingService {
 
-  private ConfigurationSettingRepository configurationSettingRepository;
-
-
   @Autowired
-  public ConfigurationSettingService(ConfigurationSettingRepository configurationSettingRepository) {
-    this.configurationSettingRepository = configurationSettingRepository;
-  }
+  private ConfigurationSettingRepository configurationSettingRepository;
 
   public ConfigurationSetting getByKey(String key) {
     return configurationSettingRepository.getByKey(key);

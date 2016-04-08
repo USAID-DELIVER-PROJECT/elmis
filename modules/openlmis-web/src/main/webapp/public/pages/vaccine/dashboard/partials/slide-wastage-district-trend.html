@@ -1,21 +1,30 @@
 
-<div>Wastage By District</div>
+
 <div class="app-form vaccine-form-filter">
     <form  novalidate>
         <div  class="clearfix">
             <!--<vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.districtWastage.product" on-change="districtWastageCallback()"></vaccine-product-filter>-->
-            <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtWastage.period"  class="form-cell horizontalFilters" on-change="districtWastageCallback()"></vaccine-monthly-period-tree-filter>
+            <range-pagination field-label="label.district"  class="form-cell horizontalFilters" total="filter.totalDistrictWastage" range="filter.districtRange" offset="filter.districtWastageOffset" label-all="all districts" on-change="districtWastagePagination()"></range-pagination>
+            <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtWastage.period"  class="form-cell horizontalFilters" on-change="districtWastageCallback()"></vaccine-monthly-period-tree-filter>-->
         </div>
     </form>
 </div>
 <c3chart  bindto-id="district_wastage" chart-data="districtWastage.dataPoints" chart-columns="districtWastage.dataColumns" chart-x="districtWastage.dataX" ng-show="districtWastage.dataPoints">
+    <chart-axes y2="wastage_rate"/>
     <chart-axis>
         <chart-tooltip value-format-function="formatValue" />
         <chart-axis-x axis-position="outer-center"
-                      axis-label="{{label.zone}}"
+                      axis-label=""
                       axis-type="category">
             <!--<chart-axis-x-tick tick-rotate="50"/>-->
         </chart-axis-x>
+        <chart-axis-y axis-id="y2"
+                      axis-position="outer-right"
+                      padding-top="10"
+                      padding-bottom="0"
+                      range-max="100"
+                      range-min="0"
+                />
     </chart-axis>
 </c3chart>
 <div style="font-weight: bold" ng-hide="districtWastage.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

@@ -100,17 +100,17 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
 
     function validateEquipmentStatus(lineItem){
       lineItem.isEquipmentValid = true;
-      if(lineItem.equipments !== undefined && ((lineItem.calculatedOrderQuantity > 0 && lineItem.quantityRequested !== 0) || lineItem.quantityRequested > 0 )){
-        for(var i = 0; i < lineItem.equipments.length; i++){
-          var status = _.findWhere(this.operationalStatusList, {'id': lineItem.equipments[i].operationalStatusId});
-          if( statis !== undefined && status.isBad === true && (lineItem.equipments[i].remarks === '' || lineItem.equipments[i].remarks === undefined)){
+      if(!isUndefined(lineItem.equipments) && ((lineItem.calculatedOrderQuantity > 0 && utils.isEmpty(lineItem.quantityRequested)) || utils.parseIntWithBaseTen(lineItem.quantityRequested) > 0 )){
+        angular.forEach(lineItem.equipments, function(equipment){
+          var status = _.findWhere(operationalStatuses, {'id': equipment.operationalStatusId});
+          if(!isUndefined(status) && status.isBad && utils.isEmpty(equipment.remarks)){
             lineItem.isEquipmentValid = false;
           }
-        }
+        });
       }
-      return true;
+      return lineItem.isEquipmentValid;
     }
-    this.equipmentErrorMessage = "";
+
     $(this.fullSupplyLineItems).each(function (i, lineItem) {
       if (lineItem.skipped)
         return;
@@ -126,12 +126,28 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
 
   Rnr.prototype.validateEquipments = function(){
     var errorMessage = null;
-    $(this.equipmentLineItems).each(function(i,lineItem){
-      if(lineItem.operationalStatusId === 3 && lineItem.remarks === undefined || lineItem.remarks === ''){
-        lineItem.IsRemarkRequired = true;
-        errorMessage = 'Remarks are required for equipments that are not operational';
+    var rnr = this;
+    var invalidLineItems = _.map(this.equipmentLineItems, function(equipmentLineItem){
+      var currentStatus = _.findWhere(operationalStatuses, {'id': utils.parseIntWithBaseTen(equipmentLineItem.operationalStatusId)});
+      if (!isUndefined(currentStatus) && (!currentStatus.isBad || ! utils.isEmpty( equipmentLineItem.remarks)) ) {
+        return false;
       }
+      return _.any(equipmentLineItem.relatedProducts, function (product) {
+        var lineItem = _.findWhere(rnr.fullSupplyLineItems, {productCode: product.code});
+        if (!isUndefined(lineItem) && utils.parseIntWithBaseTen(lineItem.quantityRequested) > 0) {
+          return true;
+        }
+        return false;
+      });
     });
+
+    var hasInvalidLineItems = _.any(invalidLineItems, function(invalid){
+      return invalid;
+    });
+
+    if(true === hasInvalidLineItems){
+      errorMessage = 'error.rnr.equipment.non.functional.requires.remarks';
+    }
     return errorMessage;
   };
 
@@ -240,24 +256,22 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
   };
 
   Rnr.prototype.initEquipments = function(){
-
-    for(var i= 0; this.equipmentLineItems !== undefined && i < this.equipmentLineItems.length; i++){
-      var eqli = this.equipmentLineItems[i];
-      for(var j = 0;eqli.relatedProducts !== undefined && j < eqli.relatedProducts.length;j++){
-        var prod = eqli.relatedProducts[j];
-        var lineItem = _.findWhere(this.fullSupplyLineItems, {productCode: prod.code});
-        if(lineItem !== null && lineItem.equipments === undefined){
-            lineItem.equipments = [];
-        }else if(lineItem !== null){
-          lineItem.equipments.push(eqli);
+    var rnr = this;
+    angular.forEach(this.equipmentLineItems, function(eLineItem){
+      angular.forEach(eLineItem.relatedProducts, function(product){
+        var lineItem = _.findWhere(rnr.fullSupplyLineItems, {productCode: product.code});
+        if(!isUndefined(lineItem) && isUndefined(lineItem.equipments)){
+          lineItem.equipments = [];
+          lineItem.equipments.push(eLineItem);
+        }else if(!isUndefined(lineItem)){
+          lineItem.equipments.push(eLineItem);
         }
-      }
-    }
+      });
+    });
   };
 
   Rnr.prototype.init = function () {
     var thisRnr = this;
-
     function prepareLineItems(lineItems) {
       var regularLineItems = [];
       $(lineItems).each(function (i, lineItem) {
@@ -278,8 +292,9 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
 
     this.calculateFullSupplyItemsSubmittedCost();
     this.calculateNonFullSupplyItemsSubmittedCost();
+    this.initEquipments();
   };
 
   this.init();
-  this.initEquipments();
+
 };

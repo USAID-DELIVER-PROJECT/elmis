@@ -79,7 +79,7 @@ public interface VaccineReportMapper {
     List<DiseaseLineItem> getDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select equipment_name as equipmentName, model, minTemp, maxTemp, \n" +
-            " minEpisodeTemp, maxEpisodeTemp, energy_source as energySource, serialnumber as serial, geographic_zone_name location_value\n" +
+            " minEpisodeTemp, maxEpisodeTemp, energy_source as energySource, serialnumber as serial, facility_type_name location_value\n" +
             "from vw_vaccine_cold_chain \n" +
             "where report_id = #{reportId} order by 1 ")
     List<ColdChainLineItem> getColdChain(@Param("reportId") Long reportId);
@@ -88,7 +88,7 @@ public interface VaccineReportMapper {
             "model,\n" +
             "energy_source as energySource" +
             ", serialnumber as serial, " +
-            "geographic_zone_name as location_value, \n" +
+            "facility_type_name as location_value, \n" +
             "MIN(COALESCE(minTemp,0)) minTemp,\n" +
             "MAX(COALESCE(maxTemp,0)) maxTemp,\n" +
             "MIN(COALESCE(minEpisodeTemp,0)) minEpisodeTemp,\n" +
@@ -96,7 +96,7 @@ public interface VaccineReportMapper {
              "from vw_vaccine_cold_chain \n" +
             "join vw_districts d ON d.district_id = geographic_zone_id\n" +
             "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId})\n" +
-            "group by equipment_name, model, energy_source, serialnumber,location_value order by 1\n")
+            "group by equipment_name, model, energy_source, serialnumber,facility_type_name order by 1\n")
     List<ColdChainLineItem> getColdChainAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
 
     @Select("select product_name as productName, aefi_expiry_date as expiry, aefi_case as cases, aefi_batch as batch, manufacturer, is_investigated as isInvestigated from vw_vaccine_iefi \n" +

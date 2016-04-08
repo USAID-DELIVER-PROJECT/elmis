@@ -1,0 +1,26 @@
+
+
+<div class="app-form vaccine-form-filter">
+  <form  novalidate>
+    <div  class="clearfix">
+      <!--<vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters" default="defaultProduct"  cm-model="filter.facilityCoverage.product" on-change="facilityCoverageCallback()"></vaccine-product-filter>-->
+      <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.facilityCoverage.period"  class="form-cell horizontalFilters" on-change="facilityCoverageCallback()"></vaccine-monthly-period-tree-filter>-->
+      <range-pagination iszone="true" field-label="label.facility"  class="form-cell horizontalFilters" total="filter.totalFacilityStockStatus" range="filter.facilityStockStatusRange" offset="filter.facilityStockStatusOffset" label-all="all facility" on-change="facilityStockPagination()"></range-pagination>
+    </div>
+  </form>
+</div>
+
+<c3chart  bindto-id="facility_stockstatus_chart" chart-data="facilityStockstatus.dataPoints" chart-columns="facilityStockstatus.dataColumns" chart-x="facilityStockstatus.dataX" ng-show="facilityStockstatus.dataPoints">
+
+  <chart-axis>
+
+    <chart-tooltip value-format-function="formatValue" />
+    <chart-axis-x axis-position="outer-center"
+                  axis-label="{{label.facility}}"
+                  axis-type="category">
+      <!--<chart-axis-x-tick tick-rotate="50"/>-->
+    </chart-axis-x>
+
+  </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="facilityStockstatus.dataPoints" openlmis-message="label.report.no.data.to.show"></div>

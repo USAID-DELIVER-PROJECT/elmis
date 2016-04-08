@@ -184,6 +184,26 @@ app.integer = function (value, errorHolder, length) {
 };
 
 
+app.positiveNumberBetween = function (value, errorHolder, minNumber, maxNumber) {
+  var POSITIVE_INTEGER_REGEXP_FIXED_LENGTH = /^[0-9]*$/, valid;
+
+  if (value === undefined || value === null)
+    valid = true;
+  else if (value.toString().length >= 0)
+    valid = POSITIVE_INTEGER_REGEXP_FIXED_LENGTH.test(value);
+
+  var number = utils.parseIntWithBaseTen(value);
+  if(number < minNumber || number > maxNumber){
+    valid = false;
+  }
+
+  if (errorHolder !== undefined && document.getElementById(errorHolder) !== null) {
+    document.getElementById(errorHolder).style.display = (valid) ? 'none' : 'block';
+  }
+
+  return valid;
+};
+
 app.positiveInteger = function (value, errorHolder) {
   var POSITIVE_INTEGER_REGEXP_FIXED_LENGTH = /^[0-9]*$/, valid;
 
@@ -254,10 +274,10 @@ angular.module('angular-google-analytics', []).run(
         var ga = document.createElement('script');
         ga.type = 'text/javascript';
         ga.async = false;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
-      } 
+      }
     }
 
   }])
@@ -278,7 +298,6 @@ angular.module('angular-google-analytics', []).run(
       $window._gaq.push(['_trackPageview', path]);
     }
 
-    //fire on each route change
     $rootScope.$on('$viewContentLoaded', track);
 
     return true;

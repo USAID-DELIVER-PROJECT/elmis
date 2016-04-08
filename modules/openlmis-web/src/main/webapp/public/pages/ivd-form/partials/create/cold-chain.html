@@ -71,7 +71,7 @@
                 name="minTemp-{{$index}}"
                 ng-disabled="!report.editable || item.skipped"
                 numeric-validator="numericValue,4,2"
-                maxlength="7"
+                maxlength="4"
                 ng-model="item.minTemp"
                 type="text"/>
             <span class="rnr-form-error"
@@ -90,7 +90,7 @@
               name="maxTemp-{{$index}}"
               ng-disabled="!report.editable || item.skipped"
               numeric-validator="numericValue,4,2"
-              maxlength="7"
+              maxlength="4"
               ng-model="item.maxTemp"
               type="text"/>
            </span>
@@ -108,15 +108,15 @@
             ng-class="highlightRequired(report.validate, item.minEpisodeTemp, item.skipped)"
             name="lowTemp-{{$index}}"
             ng-disabled="!report.editable || item.skipped"
-            numeric-validator="numericValue,4,2"
-            maxlength="7"
+            numeric-validator="positiveNumberBetween,0,{{report.period.days}}"
+            maxlength="2"
             ng-model="item.minEpisodeTemp"
             type="text"/>
          </span>
           <span class="rnr-form-error"
                 style="display:none;"
                 id="lowTemp-{{$index}}"
-                openlmis-message="error.number.only"
+                openlmis-message="error.number.between.0.and.number.of.days.in.period"
           ></span>
       </td>
       <td class="cell-input col-general">
@@ -127,15 +127,15 @@
             ng-class="highlightRequired(report.validate, item.maxEpisodeTemp, item.skipped)"
             name="highTemp-{{$index}}"
             ng-disabled="!report.editable || item.skipped"
-            numeric-validator="numericValue,4,2"
-            maxlength="7"
+            numeric-validator="positiveNumberBetween,0,{{report.period.days}}"
+            maxlength="2"
             ng-model="item.maxEpisodeTemp"
             type="text"/>
          </span>
         <span class="rnr-form-error"
               style="display:none;"
               id="highTemp-{{$index}}"
-              openlmis-message="error.number.only"
+              openlmis-message="error.number.between.0.and.number.of.days.in.period"
         ></span>
       </td>
     </tr>

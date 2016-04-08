@@ -49,7 +49,7 @@ function ModalInstanceCtrl($scope, $modalInstance, items, ContactList,SettingsBy
         var bgColor = '';
 
         if (_index % 2 === 0) {
-            bgColor = 'lightGreen';
+            bgColor = 'lightblue';
         } else {
             bgColor = 'white';
         }

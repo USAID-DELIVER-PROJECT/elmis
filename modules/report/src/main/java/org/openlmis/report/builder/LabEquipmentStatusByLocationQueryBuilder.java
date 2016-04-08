@@ -26,19 +26,11 @@ public class LabEquipmentStatusByLocationQueryBuilder {
 
         BEGIN();
         SELECT("facility_id, facility_code, facility_name , latitude, longitude, " +
-                " SUM(CASE" +
-                "            WHEN equipment_status = 'Partially Operational' THEN 1::int" +
-                "            ELSE 0::int" +
-                "        END) AS total_partially_operational," +
-                "        SUM(CASE" +
-                "            WHEN equipment_status = 'Not Operational' THEN 1::int" +
-                "            ELSE 0::int" +
-                "        END) AS total_not_operational," +
-                "        SUM(CASE" +
-                "            WHEN equipment_status = 'Fully Operational' THEN 1::int" +
-                "            ELSE 0::int" +
-                "        END) AS total_fully_operational");
-        FROM("vw_lab_equipment_status");
+                "SUM(case when equipment_status in ('Partially Operational','Functional But Not Installed') then 1::int else 0::int end) AS total_partially_operational, \n" +
+                "SUM(case when equipment_status in ('Not Operational', 'Not Functional','Waiting For Repair','Waiting For Spare Parts','Obsolete')\n" +
+                "       then 1::int  else 0::int end) AS total_not_operational,        \n" +
+                "SUM(case when equipment_status in ('Fully Operational','Functional') then 1::int else 0::int end) AS total_fully_operational");
+               FROM("vw_lab_equipment_status");
         writePredicates(params);
         GROUP_BY("facility_id, facility_code, facility_name, latitude, longitude");
         ORDER_BY("facility_name");
@@ -56,18 +48,10 @@ public class LabEquipmentStatusByLocationQueryBuilder {
                 "    ELSE 'Partially Operational'" +
                 "  END AS equipment_status" +
                 " FROM  (SELECT facility_id, facility_code, facility_name , latitude, longitude, " +
-                " SUM(CASE" +
-                "    WHEN equipment_status = 'Partially Operational' THEN 1::int" +
-                "    ELSE 0::int" +
-                " END) AS total_partially_operational," +
-                " SUM(CASE" +
-                "    WHEN equipment_status = 'Not Operational' THEN 1::int" +
-                "    ELSE 0::int" +
-                " END) AS total_not_operational," +
-                " SUM(CASE" +
-                "    WHEN equipment_status = 'Fully Operational' THEN 1::int" +
-                "    ELSE 0::int" +
-                " END) AS total_fully_operational" +
+                "SUM(case when equipment_status in ('Partially Operational','Functional But Not Installed') then 1::int else 0::int end) AS total_partially_operational, \n" +
+                "SUM(case when equipment_status in ('Not Operational', 'Not Functional','Waiting For Repair','Waiting For Spare Parts','Obsolete')\n" +
+                "\t       then 1::int  else 0::int end) AS total_not_operational,        \n" +
+                "SUM(case when equipment_status in ('Fully Operational','Functional') then 1::int else 0::int end) AS total_fully_operational" +
                 "  FROM vw_lab_equipment_status" +
                 writeSummaryPredicates(filterCriteria) +
                 "  GROUP BY facility_id, facility_code, facility_name, latitude, longitude" +
@@ -97,13 +81,14 @@ public class LabEquipmentStatusByLocationQueryBuilder {
                         "     WHEN total_partially_operational + total_fully_operational = 0 and total_not_operational > 0 THEN 'Not Operational'  " +
                         "     ELSE 'Partially Operational'  " +
                         "   END AS equipment_status  " +
-                        "FROM  (SELECT   " +
+                        " FROM  (SELECT   " +
                         "  facility_id, facility_code, facility_name, disrict, facility_type, " +
-                        "  SUM(CASE  WHEN equipment_status = 'Partially Operational' THEN 1::int   ELSE 0::int END) AS total_partially_operational,  " +
-                        "  SUM(CASE  WHEN equipment_status = 'Not Operational' THEN 1::int  ELSE 0::int END) AS total_not_operational,  " +
-                        "  SUM(CASE WHEN equipment_status = 'Fully Operational' THEN 1::int ELSE 0::int END) AS total_fully_operational  " +
-                        "       FROM vw_lab_equipment_status    " +
-               writeFacilitiesByEquipmentStatusPredicates(params, null) +
+                        "   SUM(case when equipment_status in ('Partially Operational','Functional But Not Installed') then 1::int else 0::int end) AS total_partially_operational, \n" +
+                        "   SUM(case when equipment_status in ('Not Operational', 'Not Functional','Waiting For Repair','Waiting For Spare Parts','Obsolete')\n" +
+                        "\t       then 1::int  else 0::int end) AS total_not_operational,        \n" +
+                        "   SUM(case when equipment_status in ('Fully Operational','Functional') then 1::int else 0::int end) AS total_fully_operational" +
+                        "   FROM vw_lab_equipment_status    " +
+                writeFacilitiesByEquipmentStatusPredicates(params, null) +
                         "       GROUP BY facility_id, facility_code, facility_name, latitude, longitude, disrict, facility_type  " +
                         "       ORDER BY facility_name  " +
                         "     ) AS temp ) AS FES "+

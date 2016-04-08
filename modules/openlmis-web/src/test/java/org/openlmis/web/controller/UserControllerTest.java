@@ -18,6 +18,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openlmis.authentication.web.UserAuthenticationSuccessHandler;
+import org.openlmis.core.builder.UserBuilder;
 import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.domain.Right;
 import org.openlmis.core.domain.User;
@@ -97,8 +98,10 @@ public class UserControllerTest {
   public void shouldReturnUserInfoOfLoggedInUser() {
     String username = "Foo";
     Long userId = 1234L;
+    User userObject = make(a(UserBuilder.defaultUser));
     request.getSession().setAttribute(UserAuthenticationSuccessHandler.USER, username);
     request.getSession().setAttribute(UserAuthenticationSuccessHandler.USER_ID, userId);
+    when(userService.getById(userId)).thenReturn(userObject);
 
     ResponseEntity<OpenLmisResponse> response = userController.user(request);
 
@@ -119,13 +122,17 @@ public class UserControllerTest {
   @Test
   public void shouldGetAllPrivilegesForTheLoggedInUser() throws Exception {
     Long userId = 1234L;
+    User userObject = make(a(UserBuilder.defaultUser));
     request.getSession().setAttribute(UserAuthenticationSuccessHandler.USER_ID, userId);
     List<Right> rights = new ArrayList<>();
     when(roleRightService.getRights(userId)).thenReturn(rights);
+    when(userService.getById(userId)).thenReturn(userObject);
 
     ResponseEntity<OpenLmisResponse> response = userController.user(request);
 
     verify(roleRightService).getRights(userId);
+    verify(userService).getById(userId);
+
     assertThat((List<Right>) response.getBody().getData().get("rights"), is(rights));
   }
 

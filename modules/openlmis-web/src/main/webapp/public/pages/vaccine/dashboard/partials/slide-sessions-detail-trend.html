@@ -1,28 +1,27 @@
 
-<div>Session Detail</div>
-<div class="app-form vaccine-form-filter">
-    <form  novalidate>
-        <div  class="clearfix">
-            <!--<static-period-filter default="defaultPeriodTrend" range="filter.detailSessions.range" startdate="filter.detailSessions.startDate" enddate="filter.detailSessions.endDate" rangemax="10" error="perioderror" on-change="sessionDetailCallback()" ></static-period-filter>-->
-            <static-year-filter  on-change="sessionDetailCallback()" year="staticYear" startdate="filter.detailSessions.startDate" enddate="filter.detailSessions.endDate" ></static-year-filter>
-        </div>
-    </form>
+
+<div class="modal-header modal-header">
+    <button  class="close" ng-click="ok()">X</button>
+    <h2><i class="flaticon-bar"></i>Session Detail</h2>
 </div>
+<div class="modal-body">
+
 <div style="font-weight: bold" ng-hide="facilitySessionsDetails" openlmis-message="label.report.no.data.to.show"></div>
 
-<div style="overflow:scroll;" class="row-fluid">
+    <div class="row-fluid dashlet-scroll-table">
 <table ng-show="facilitySessionsDetails" id="summary-table" class="table-bordered table">
     <thead  >
     <tr class="gradient-header">
-        <th>District</th>
-        <th>Facility</th>
-        <th></th>
-        <th style="text-align: center" ng-repeat="period in sessionsPeriodsList">{{period}}</th>
-        <th style="text-align: center">Total</th>
+        <th class="modal-table-div">District</th>
+        <th class="modal-table-div">Facility</th>
+        <th class="modal-table-div"></th>
+        <th class="modal-table-div" style="text-align: center" ng-repeat="period in sessionsPeriodsList">{{period}}</th>
+        <th class="modal-table-div" style="text-align: center">Total</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="detail in facilitySessionsDetails" >
+    <tr  ng-style="{'background-color': getBackGroundColor($index).bgColor , 'color':getBackGroundColor($index).fColor}"
+            ng-repeat="detail in facilitySessionsDetails" >
         <td ng-show="$first" rowspan="{{facilitySessionsDetails.length}}">{{detail.district}}</td>
         <td ng-show="$index%2 == 0" rowspan="2">{{detail.facilityName}}</td>
         <td>{{detail.indicator}}</td>
@@ -31,4 +30,8 @@
     </tr>
     </tbody>
 </table>
+</div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary modal-ok-btn" ng-click="ok()">OK</button>
 </div>
