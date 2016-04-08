@@ -76,7 +76,8 @@
                                     <div class="span4 input-append"
                                          ng-show=" !hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !hasPermission('INITIALIZE_STOCK')">
                                         <button id="searchOptionButton" class="btn dropdown-toggle">
-                                            <span id="selectedSearchOption" openlmis-message="label.stock.issue.voucher"></span>
+                                            <span id="selectedSearchOption"
+                                                  openlmis-message="label.stock.enter.issue.voucher"></span>
                                         </button>
                                         <input type="text" name="voucherNumber" ng-required="true"
                                                ng-model="receivedProducts.voucherNumber" ng-change="clear()"/>

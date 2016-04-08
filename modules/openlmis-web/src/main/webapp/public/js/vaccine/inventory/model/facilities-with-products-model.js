@@ -27,6 +27,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                   {
                       distributedProduct=_.findWhere(facilityDistribution.lineItems,{productId:stockCard.product.id});
                   }
+
                   product.name=stockCard.product.primaryName;
                   product.productId=stockCard.product.id;
                   product.productCode=stockCard.product.code;
@@ -52,25 +53,30 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                   }
                   product.quantity=(distributedProduct===undefined || facilityDistribution.status==="RECEIVED")?null:distributedProduct.quantity;
                   product.lineItemId=(distributedProduct===undefined)?null:distributedProduct.id;
+                  if(facilityDistribution !== undefined && facilityDistribution.status==="PENDING" && distributedProduct !== undefined)
+                  {
+                      product.isPOD=true;
+                      product.maximum=product.quantity + product.totalQuantityOnHand;
+                      product.originalIssueQuantity=product.quantity;
+                  }
 
                   //Add lots to product to be added to facility object
-                  if(stockCard.lotsOnHand !== undefined && stockCard.lotsOnHand.length >0)
-                  {
+                  if(stockCard.lotsOnHand !== undefined && stockCard.lotsOnHand.length >0){
                        product.lots=[];
                        stockCard.lotsOnHand.forEach(function(lot){
-                       var lotOnHand={};
-                       var distributedLot;
-                       if(distributedProduct !== undefined)
-                       {
-                           distributedLot=_.findWhere(distributedProduct.lots,{lotId:lot.lot.id});
-                       }
-                       lotOnHand.lotId=lot.lot.id;
-                       lotOnHand.lotCode=lot.lot.lotCode;
-                       lotOnHand.quantityOnHand=lot.quantityOnHand;
-                       lotOnHand.quantity=(distributedLot === undefined || facilityDistribution.status==="RECEIVED" )?null:distributedLot.quantity;
-                       lotOnHand.lineItemLotId=(distributedLot === undefined)?null:distributedLot.id;
-                       lotOnHand.vvmStatus=(lot.customProps !== undefined && lot.customProps !== null && lot.customProps.vvmstatus !== undefined)?lot.customProps.vvmstatus:null;
-                       lotOnHand.expirationDate=lot.lot.expirationDate;
+                           var lotOnHand={};
+                           var distributedLot;
+                           if(distributedProduct !== undefined)
+                           {
+                               distributedLot=_.findWhere(distributedProduct.lots,{lotId:lot.lot.id});
+                           }
+                           lotOnHand.lotId=lot.lot.id;
+                           lotOnHand.lotCode=lot.lot.lotCode;
+                           lotOnHand.quantityOnHand=lot.quantityOnHand;
+                           lotOnHand.quantity=(distributedLot === undefined || facilityDistribution.status==="RECEIVED" )?null:distributedLot.quantity;
+                           lotOnHand.lineItemLotId=(distributedLot === undefined)?null:distributedLot.id;
+                           lotOnHand.vvmStatus=(lot.customProps !== undefined && lot.customProps !== null && lot.customProps.vvmstatus !== undefined)?lot.customProps.vvmstatus:null;
+                           lotOnHand.expirationDate=lot.lot.expirationDate;
                             product.lots.push(lotOnHand);
                        });
 
@@ -82,6 +88,27 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                        });
 
                        product.lots=lotsDescVvmStatus;
+                  }
+                  //Add lot object for POD to make sure zero lotOnHand appear during POD
+                  if(facilityDistribution !== undefined && facilityDistribution.status ==="PENDING" && distributedProduct !== undefined && distributedProduct.lots.length >0){
+                      product.podLots=[];
+                      distributedProduct.lots.forEach(function(lot){
+                            var podLot={};
+                            var sohLot;
+                            if(stockCard.lotsOnHand !== null)
+                            sohLot=_.findWhere(stockCard.lotsOnHand,{lotId:lot.lotId});
+
+                            podLot.lineItemLotId=lot.id;
+                            podLot.lotId=lot.lotId;
+                            podLot.lotCode=lot.lot.lotCode;
+                            podLot.quantityOnHand=(sohLot === undefined)?0:sohLot.quantityOnHand;
+                            podLot.quantity=lot.quantity;
+                            podLot.originalIssueQuantity=lot.quantity;
+                            podLot.vvmStatus=lot.vvmStatus;
+                            podLot.maximum= podLot.quantityOnHand + podLot.quantity;
+                            product.podLots.push(podLot);
+
+                      });
                   }
                   productsToIssue.push(product);
            });

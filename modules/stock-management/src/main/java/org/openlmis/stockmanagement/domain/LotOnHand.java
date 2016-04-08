@@ -26,6 +26,8 @@ public class LotOnHand extends BaseModel {
 
   private Lot lot;
 
+  private Long lotId;
+
   private Long quantityOnHand;
 
   @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
@@ -42,11 +44,24 @@ public class LotOnHand extends BaseModel {
     Objects.requireNonNull(lot);
     Objects.requireNonNull(stockCard);
     this.lot = lot;
+    this.lotId = lot.getId();
     this.stockCard = stockCard;
     this.quantityOnHand = 0L;
     this.effectiveDate = new Date();
     this.keyValues = new ArrayList<>();
     this.strategy = null;
+  }
+
+  /**
+   * This method creates a zeroed lot on hand. If lot or stockCard are null, it will throw an exception, rather than
+   * returning null.
+   *
+   * @param lot
+   * @param stockCard
+   * @return
+   */
+  public static final LotOnHand createZeroedLotOnHand(Lot lot, StockCard stockCard) {
+    return new LotOnHand(lot, stockCard);
   }
 
   public Map<String, String> getCustomProps() {
@@ -59,16 +74,5 @@ public class LotOnHand extends BaseModel {
 
   public void addToQuantityOnHand(long quantity) {
     this.quantityOnHand += quantity;
-  }
-
-  /**
-   * This method creates a zeroed lot on hand. If lot or stockCard are null, it will throw an exception, rather than
-   * returning null.
-   * @param lot
-   * @param stockCard
-   * @return
-   */
-  public static final LotOnHand createZeroedLotOnHand(Lot lot, StockCard stockCard) {
-    return new LotOnHand(lot, stockCard);
   }
 }
