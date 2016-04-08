@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="a0a4e861-0726-422f-b3d5-54b1aefe96ce">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="162"/>
+	<property name="ireport.y" value="7"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -71,8 +71,7 @@
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<parameter name="ISSUE_ID" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[
-SELECT p.primaryname productName,lotNumber batchNumber,expirationDate::date,VOL.quantityRequested,
+		<![CDATA[SELECT p.primaryname productName,lotNumber batchNumber,expirationDate::date,VOL.quantityRequested,
 case when (lil.id IS null) then li.quantity else lil.quantity end, voucherNumber, distributionDate::date,
 f2.name toFacilityName,u.firstName,u.lastName
 
@@ -94,7 +93,7 @@ WHERE vd.id =$P{ISSUE_ID}]]>
 	<field name="lastName" class="java.lang.String"/>
 	<field name="productName" class="java.lang.String"/>
 	<field name="toFacilityName" class="java.lang.String"/>
-	<field name="distributionDate" class="java.lang.String"/>
+	<field name="distributionDate" class="java.util.Date"/>
 	<field name="voucherNumber" class="java.lang.String"/>
 	<field name="batchNumber" class="java.lang.String"/>
 	<field name="expirationDate" class="java.lang.String"/>
@@ -115,7 +114,7 @@ WHERE vd.id =$P{ISSUE_ID}]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="16" isUnderline="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$R{label.vaccine.distribution}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{label.vaccine.stock.issue.voucher}]]></textFieldExpression>
 				</textField>
 			</band>
 			<band height="83">
@@ -141,7 +140,7 @@ WHERE vd.id =$P{ISSUE_ID}]]>
 						<textElement>
 							<font size="12" isBold="true" isUnderline="false"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$R{label.vaccine.stock.issue.voucher}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$R{label.stock.issue.voucher}]]></textFieldExpression>
 					</textField>
 					<staticText>
 						<reportElement x="112" y="14" width="15" height="20" uuid="0ddeb019-12d8-4bb9-b104-18c61404d546"/>
@@ -171,12 +170,12 @@ WHERE vd.id =$P{ISSUE_ID}]]>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{toFacilityName}]]></textFieldExpression>
 					</textField>
-					<textField isStretchWithOverflow="true" pattern="dd-MM-yyyy">
+					<textField isStretchWithOverflow="true" pattern="dd-MM-yyyy" isBlankWhenNull="true">
 						<reportElement x="127" y="34" width="236" height="20" isPrintInFirstWholeBand="true" uuid="219fe371-17e1-4ab4-acfb-8e262215827d"/>
 						<textElement verticalAlignment="Middle">
 							<font size="12" isUnderline="false"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$F{distributionDate}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format($F{distributionDate})]]></textFieldExpression>
 					</textField>
 				</frame>
 				<textField isStretchWithOverflow="true" pattern="dd-MM-yyyy">
@@ -405,18 +404,22 @@ WHERE vd.id =$P{ISSUE_ID}]]>
 			</line>
 			<textField>
 				<reportElement x="54" y="0" width="114" height="17" uuid="8defe30e-b64e-4735-a8a8-3cb2644861a3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{productName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="168" y="2" width="123" height="16" uuid="a295cc26-fddc-4b69-8156-4241daa02c6c"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{batchNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="292" y="1" width="123" height="16" uuid="96c00dd4-a1ca-423d-8b1e-4dd2215ee2e6"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{expirationDate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="415" y="0" width="116" height="16" uuid="699d01bb-c49a-43d2-81e7-431a00ec999f"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{quantityRequested}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -429,6 +432,7 @@ WHERE vd.id =$P{ISSUE_ID}]]>
 			</textField>
 			<textField>
 				<reportElement x="531" y="0" width="88" height="16" uuid="f04da71d-5073-4ec5-a2fa-2fec6858939a"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 		</band>
