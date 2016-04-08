@@ -122,7 +122,7 @@ ViewRnrController.resolve = {
     var deferred = $q.defer();
     $timeout(function () {
       ConfigSettingsByKey.get({key: 'USE_GLOBAL_MAX_MOS_ON_DISPLAY'}, function (data){
-        deferred.resolve(data.settings.value == 'true');
+        deferred.resolve(data.settings.value === 'true');
       });
     }, 100);
     return deferred.promise;
