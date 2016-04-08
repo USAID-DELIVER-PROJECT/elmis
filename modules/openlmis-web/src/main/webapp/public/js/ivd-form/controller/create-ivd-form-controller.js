@@ -31,10 +31,20 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
     return null;
   };
 
+  $scope.changeTab = function( tabName ){
+    $scope.visibleTab = tabName;
+    if($scope.ivdForm.$dirty){
+      $scope.save();
+    }else{
+      $scope.message = '';
+    }
+  };
+
   $scope.save = function () {
     VaccineReportSave.update($scope.report, function () {
       $scope.error = '';
       $scope.message = "msg.ivd.saved.successfully";
+      $scope.ivdForm.$setPristine();
     });
   };
 
