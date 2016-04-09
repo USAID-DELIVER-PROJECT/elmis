@@ -101,7 +101,7 @@ public interface VaccineInventoryDistributionMapper {
     @Select("Select li.*,oli.quantityRequested from vaccine_distribution_line_items li " +
             " left outer JOIN vaccine_order_requisitions o ON o.id = (select orderid from vaccine_distributions where id=#{distributionId} limit 1) " +
             " left outer join Vaccine_order_requisition_line_items oli ON o.id=oli.orderId AND li.productId = oli.productId" +
-            " where li.distributionid=#{distributionId}")
+            " where li.distributionid=#{distributionId} order by li.id")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lots", column = "id", javaType = List.class,
                     many = @Many(select = "getLineItemsLots")),
@@ -221,7 +221,6 @@ public interface VaccineInventoryDistributionMapper {
     @Select("SELECT *" +
             " FROM vaccine_distributions " +
             " WHERE fromfacilityid=#{facilityId} AND  " +
-            " status='PENDING' AND " +
             " distributiondate::DATE = #{date}::DATE AND distributionType='ROUTINE'" +
             " order by createddate DESC")
     @Results({@Result(property = "id", column = "id"),

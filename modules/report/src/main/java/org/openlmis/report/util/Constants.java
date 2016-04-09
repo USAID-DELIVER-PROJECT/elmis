@@ -38,6 +38,7 @@ public class Constants {
     public static String REPORT_SUB_TITLE = "REPORT_SUB_TITLE";
     public static String REPORT_FILTER_PARAM_VALUES = "REPORT_FILTER_PARAM_VALUES";
     public static String REPORT_MESSAGE_WHEN_NO_DATA = "REPORT_MESSAGE_WHEN_NO_DATA";
+    public static String REPORT_PROGRAM_TITLE = "REPORTING_PROGRAM_TITLE";
 
 
     /**

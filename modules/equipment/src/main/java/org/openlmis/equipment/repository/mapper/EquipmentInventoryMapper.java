@@ -17,6 +17,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.domain.EquipmentInventory;
+import org.openlmis.equipment.dto.ColdChainEquipmentTemperatureStatusDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -48,7 +49,10 @@ public interface EquipmentInventoryMapper {
       @Result(property = "facilityId", column = "facilityId"),
       @Result(
           property = "facility", column = "facilityId", javaType = Facility.class,
-          one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))
+          one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById")),
+      @Result(property = "coldChainLineItems", javaType = List.class, column = "equipmentInventoryId",
+           many = @Many(select = "getLineItemsByEquipmentInventory"))
+
   })
   List<EquipmentInventory> getInventory(@Param("programId")Long programId, @Param("equipmentTypeId")Long equipmentTypeId, @Param("facilityIds")String facilityIds, RowBounds rowBounds);
 
@@ -102,5 +106,16 @@ public interface EquipmentInventoryMapper {
 
     @Select("Select * from fn_populate_alert_equipment_nonfunctional(1);")
     String updateNonFunctionalEquipments();
+
+    @Select("SELECT  i.id, eq.name as equipmentName, eq.model as model, e.serialNumber as serial, eq.energyTypeId, i.* " +
+            " from " +
+            " vaccine_report_cold_chain_line_items i " +
+            "   join equipment_inventories e on e.id = i.equipmentInventoryId " +
+            "   join equipments eq on eq.id = e.equipmentId " +
+            " where " +
+            " i.equipmentInventoryId = #{equipmentInventoryId} order by i.id")
+    List<ColdChainEquipmentTemperatureStatusDTO> getLineItemsByEquipmentInventory(@Param("equipmentInventoryId") Long equipmentInventoryId);
+
+
 
 }

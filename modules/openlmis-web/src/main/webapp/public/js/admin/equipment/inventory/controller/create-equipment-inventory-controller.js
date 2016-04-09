@@ -40,7 +40,6 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
      $scope.designationList = _.uniq(designationList, 'name');
    }
   });
-
   $scope.updateManufacturer = function () {
 
     GetEquipmentByDesignation.get({id:$scope.selected.designation}, function(data){
@@ -150,6 +149,7 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
     ) {
       $scope.inventory.equipment = _.where($scope.equipments, {manufacturer: $scope.selected.manufacturer, model: $scope.selected.model})[0];
       $scope.inventory.equipmentId = $scope.inventory.equipment.id;
+
     }
   };
 
@@ -187,7 +187,6 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
       }
 
       SaveEquipmentInventory.save($scope.inventory, function (data) {
-        console.log($scope.inventory);
         $scope.$parent.message = messageService.get(data.success);
         $scope.$parent.selectedProgram = {id: $scope.inventory.programId};
         //console.info($scope.$parent.selectedProgram);

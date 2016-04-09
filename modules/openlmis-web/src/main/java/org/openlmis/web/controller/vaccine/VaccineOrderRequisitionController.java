@@ -240,7 +240,11 @@ public class VaccineOrderRequisitionController extends BaseController {
         Resource reportResource = new ClassPathResource("report");
         Resource imgResource = new ClassPathResource("images");
         ConfigurationSetting configuration = settingService.getByKey(Constants.OPERATOR_NAME);
+
         map.put(Constants.OPERATOR_NAME, configuration.getValue());
+
+        configuration=  settingService.getByKey(Constants.REPORT_PROGRAM_TITLE);
+        map.put(Constants.REPORT_PROGRAM_TITLE,configuration.getValue());
 
         String separator = System.getProperty("file.separator");
         map.put("image_dir", imgResource.getFile().getAbsolutePath() + separator);

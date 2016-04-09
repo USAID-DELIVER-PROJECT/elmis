@@ -25,39 +25,40 @@ function SavePODController($scope,$location, $window,$timeout,StockEvent,SaveDis
                  category.productsToIssue.forEach(function(product){
                  if(product.quantity >0)
                  {
-                     var list = {};
+                     var lineItem = {};
 
-                     list.productId = product.productId;
-                     list.quantity=product.quantity;
-                     list.id=product.lineItemId;
+                     lineItem.productId = product.productId;
+                     lineItem.quantity=parseInt(product.quantity,10);
+                     lineItem.id=product.lineItemId;
 
-                     if(product.lots !==undefined && product.lots.length >0)
-                     {
-                         list.lots = [];
-                         product.lots.forEach(function(l)
+                     if(product.podLots !==undefined && product.podLots.length >0){
+                         lineItem.lots = [];
+                         product.podLots.forEach(function(l)
                          {
-                              if(l.quantity !==null && l.quantity >0)
+                              if(parseInt(l.quantity,10) !==null && parseInt(l.quantity,10) >0)
                               {
-                                  if(l.quantity !== l.originalIssueQuantity)
+                                  if(parseInt(l.quantity,10) !== l.originalIssueQuantity)
                                   {
                                        var event={};
                                        event.productCode =product.productCode;
                                        event.facilityId=$scope.facilityPOD.id;
                                        event.customProps={};
                                        event.customProps.occurred=$scope.facilityPOD.issueDate;
+                                       event.occurred=$scope.facilityPOD.issueDate;
                                        event.lotId=l.lotId;
-                                       if(l.quantity > l.originalIssueQuantity)  {
+                                       if(parseInt(l.quantity,10) > l.originalIssueQuantity)  {
                                          event.type='ISSUE';
-                                         event.quantity=l.quantity-l.originalIssueQuantity;
+                                         event.quantity=parseInt(l.quantity,10)-l.originalIssueQuantity;
                                          event.customProps.issuedto=$scope.facilityPOD.name;
                                          if((l.quantity -l.originalIssueQuantity) <= l.quantityOnHand)
                                          {
                                              events.push(event);
                                          }
                                        }
-                                       else if(l.quantity < l.originalIssueQuantity){
+                                       else if(parseInt(l.quantity,10) < l.originalIssueQuantity){
                                          event.type='RECEIPT';
-                                         event.quantity=l.originalIssueQuantity-l.quantity;
+                                         event.quantity=l.originalIssueQuantity-parseInt(l.quantity,10);
+                                         event.customProps.receivedfrom="Proof of Delivery";
                                          events.push(event);
                                        }
 
@@ -66,20 +67,41 @@ function SavePODController($scope,$location, $window,$timeout,StockEvent,SaveDis
                                   lot.lotId = l.lotId;
                                   lot.id=l.lineItemLotId;
                                   lot.vvmStatus=l.vvmStatus;
-                                  lot.quantity = l.quantity;
-                                  list.lots.push(lot);
+                                  lot.quantity = parseInt(l.quantity,10);
+                                  lineItem.lots.push(lot);
                               }
 
                          });
                      }
-                     else{
-
+                     else if(product.podLots ===undefined){
+                         if(parseInt(product.quantity,10) !== product.originalIssueQuantity){
+                              var event={};
+                              event.productCode =product.productCode;
+                              event.facilityId=$scope.facilityPOD.id;
+                              event.customProps={};
+                              event.customProps.occurred=$scope.facilityPOD.issueDate;
+                              event.occurred=$scope.facilityPOD.issueDate;
+                              if(parseInt(product.quantity,10) > product.originalIssueQuantity)  {
+                                  event.type='ISSUE';
+                                  event.quantity=product.quantity-product.originalIssueQuantity;
+                                  event.customProps.issuedto=$scope.facilityPOD.name;
+                                  if((parseInt(product.quantity,10) -product.originalIssueQuantity) <= product.totalQuantityOnHand)
+                                  {
+                                       events.push(event);
+                                  }
+                              }
+                              else if(product.quantity < product.originalIssueQuantity){
+                                  event.type='RECEIPT';
+                                  event.quantity=product.originalIssueQuantity-parseInt(product.quantity,10);
+                                  event.customProps.receivedfrom="Proof of Delivery";
+                                  events.push(event);
+                              }
+                         }
                      }
-                     distribution.lineItems.push(list);
+                     distribution.lineItems.push(lineItem);
                  }
                  });
               });
-
               SaveDistribution.save(distribution,function(data){
                  if(events.length >0)
                  {
@@ -87,8 +109,9 @@ function SavePODController($scope,$location, $window,$timeout,StockEvent,SaveDis
 
                     });
                  }
+                 $scope.closePODModal();
+                 $scope.showPODMessages();
               });
-              $scope.closePODModal();
-              $scope.showMessages();
+
           };
 }

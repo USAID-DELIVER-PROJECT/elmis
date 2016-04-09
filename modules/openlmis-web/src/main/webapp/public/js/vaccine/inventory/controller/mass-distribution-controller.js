@@ -21,7 +21,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
      $scope.distributionType='ROUTINE';
      $scope.UnScheduledFacility=undefined;
      $scope.toDay=new Date();
-     $scope.maxModalBodyHeight='max-height:'+parseInt($document.height() * 0.46,10)+'px !important';
+     $scope.maxModalBodyHeight='max-height:'+parseInt($document.height() * 0.45,10)+'px !important;height:'+parseInt($document.height() * 0.39,10)+'px !important';
      $scope.loadSupervisedFacilities=function(programId){
            OneLevelSupervisedFacilities.get({programId:programId},function(data){
                 $scope.supervisedFacilities=data.facilities;
@@ -31,6 +31,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
      $scope.loadFacilityDistributionData=function(){
         $scope.routineFacility=undefined;
         $scope.message=false;
+        $scope.podMessage=false;
         if($scope.selectedRoutineFacility !== null)
          FacilityWithProducts.get($scope.selectedProgram,$scope.selectedRoutineFacility,$scope.homeFacility.id).then(function(data){
                 $scope.routineFacility=data;
@@ -66,11 +67,16 @@ function MassDistributionController($scope,$location, $document,$window,configur
      $scope.printAll=function(distributions){
             var ids='';
             distributions.forEach(function(d){
+               if(d.isSelected)
                 ids=ids + d.id + ',';
             });
             ids = ids.slice(0, -1);
-            var url='/vaccine/inventory/distribution/summary/print/'+ids+'.json';
-            $window.open(url,'_blank');
+            if(ids !=='')
+            {
+                var url='/vaccine/inventory/distribution/summary/print/'+ids+'.json';
+                $window.open(url,'_blank');
+            }
+            else{alert('No facility selected');}
      };
      $scope.getQuantityDistributionForProduct=function(distribution,stockCard){
            var product= _.findWhere(distribution.lineItems,{productId:stockCard.product.id});
@@ -81,9 +87,12 @@ function MassDistributionController($scope,$location, $document,$window,configur
      $scope.getTotalDistributionForProduct=function(stockCard){
             var total=0;
             $scope.distributionsByDate.forEach(function(distribution){
-                 var product= _.findWhere(distribution.lineItems,{productId:stockCard.product.id});
-                 var quantity=(product !== undefined)?product.quantity:0;
-                 total=total+quantity;
+                 if(distribution.isSelected)
+                 {
+                     var product= _.findWhere(distribution.lineItems,{productId:stockCard.product.id});
+                     var quantity=(product !== undefined)?product.quantity:0;
+                     total=total+quantity;
+                 }
             });
             return total;
       };
@@ -119,7 +128,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
      };
      $scope.updateCurrentPOD=function(product){
            var totalCurrentLots = 0;
-           product.lots.forEach(function (lot) {
+           product.podLots.forEach(function (lot) {
            if(lot.quantity !== undefined){
                 totalCurrentLots = totalCurrentLots + parseInt(lot.quantity,10);
             }
@@ -209,6 +218,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
         $scope.facilityToIssue=angular.copy(facility);
         $scope.facilityToIssue.type=type;
         $scope.issueModal=true;
+        console.log(JSON.stringify(facility));
      };
      $scope.closeIssueModal=function(){
         $scope.facilityToIssue=undefined;
@@ -343,6 +353,11 @@ function MassDistributionController($scope,$location, $document,$window,configur
      };
      $scope.showMessages=function(){
          $scope.message=true;
+         $scope.selectedRoutineFacility = null;
+         $scope.routineFacility=false;
+     };
+     $scope.showPODMessages=function(){
+         $scope.podMessage=true;
          $scope.selectedRoutineFacility = null;
          $scope.routineFacility=false;
      };

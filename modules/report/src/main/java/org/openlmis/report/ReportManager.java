@@ -190,6 +190,10 @@ public class ReportManager {
         configuration =  configurationService.getByKey(Constants.OPERATOR_NAME);
         params.put(Constants.OPERATOR_NAME, configuration.getValue());
 
+        configuration = configurationService.getByKey(Constants.VIMS_LOGO_FILE_NAME_KEY);
+        params.put(Constants.VIMS_LOGO,this.getClass().getClassLoader().getResourceAsStream(configuration != null ? configuration.getValue() : "logo.png"));
+
+
         // populate all the rest of the report parameters as overriden by the report data provider
         Map<String, String> values = report.getReportDataProvider().getExtendedHeader(filterCriteria);
         if(values != null){
