@@ -57,8 +57,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         var param = $scope.filter;
 
         $scope.error_message = '';
-        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)
-            && !utils.isNullOrUndefined($scope.filter.product)) {
+        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)&& !utils.isNullOrUndefined($scope.filter.product)) {
             PerformanceByDropoutRateByDistrict.get(param, function (data) {
                 var reportVal;
                 if (data !== undefined && data.PerformanceByDropoutRateList !== null && !utils.isEmpty(data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList)) {

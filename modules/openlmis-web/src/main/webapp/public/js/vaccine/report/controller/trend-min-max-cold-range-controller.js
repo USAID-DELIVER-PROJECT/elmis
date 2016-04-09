@@ -50,8 +50,7 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
         var param = $scope.filter;
 
         $scope.error_message = '';
-        if (!utils.isNullOrUndefined($scope.filter) && !utils.isNullOrUndefined($scope.filter.periodStart)
-            && !utils.isNullOrUndefined($scope.filter.periodEnd) && !utils.isNullOrUndefined($scope.filter.periodStart)){
+        if (!utils.isNullOrUndefined($scope.filter) && !utils.isNullOrUndefined($scope.filter.periodStart)&& !utils.isNullOrUndefined($scope.filter.periodEnd) && !utils.isNullOrUndefined($scope.filter.periodStart)){
             TrendOfMinMasColdRange.get(param, function (data) {
 
                 if (data !== undefined&&!utils.isNullOrUndefined(data.trendMinMaxColdRangeReport)&&!utils.isNullOrUndefined(data.trendMinMaxColdRangeReport.chainTempratureDetailReportTree)) {
