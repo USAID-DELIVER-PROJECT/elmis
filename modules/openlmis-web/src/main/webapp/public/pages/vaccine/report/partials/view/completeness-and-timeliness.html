@@ -136,8 +136,8 @@
                                 <td class="number aggregate-row" >{{d.subtotal.expected | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.reported | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.late | number}}</td>
-                                <td class="number aggregate-row" ></td>
-                                <td class="number aggregate-row" ></td>
+                                <td class="number aggregate-row" >{{d.subtotal.reported /d.subtotal.expected * 100 | number:0}}%</td>
+                                <td class="number aggregate-row" >{{d.subtotal.late /d.subtotal.reported * 100 | number:0}}%</td>
                                 <td class="number aggregate-row" >{{d.subtotal.fixed | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.outreach | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.session_total | number}}</td>
@@ -183,11 +183,11 @@
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.completeness"></td>
-                                <td ng-repeat="comp in completeness">{{comp.total | number}}</td>
+                                <td ng-repeat="comp in completeness">{{comp.total | number}}%</td>
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.timeliness"></td>
-                                <td ng-repeat="tim in timelines">{{tim.total | number}}</td>
+                                <td ng-repeat="tim in timelines">{{tim.total | number}}%</td>
                             </tr>
                             </tbody>
                         </table>
