@@ -200,6 +200,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         var totalDistricts = 0;
         var totalFacilities = 0;
         var totalPopulation = 0;
+        var totalRegionPopulation = 0;
         var districts = _.pluck($scope.zonereport, 'geographic_zone_name'),
             facilities = _.pluck($scope.zonereport, 'facility_count');
 
@@ -208,9 +209,13 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
             totalFacilities += facility.report.facility_count;
             totalPopulation += facility.report.population;
         });
+        _.each($scope.regionMainReport, function (facility) {
+            totalRegionPopulation += facility.report.population;
+        });
         $scope.totalDistricts = totalDistricts;
         $scope.totalFacilities = totalFacilities;
         $scope.totalPopulation = totalPopulation;
+        $scope.totalRegionPopulation = totalRegionPopulation;
     }
 
 
