@@ -31,10 +31,20 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
     return null;
   };
 
+  $scope.changeTab = function( tabName ){
+    $scope.visibleTab = tabName;
+    if($scope.ivdForm.$dirty){
+      $scope.save();
+    }else{
+      $scope.message = '';
+    }
+  };
+
   $scope.save = function () {
     VaccineReportSave.update($scope.report, function () {
       $scope.error = '';
       $scope.message = "msg.ivd.saved.successfully";
+      $scope.ivdForm.$setPristine();
     });
   };
 
@@ -80,8 +90,8 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
     $scope.adverseEffectModal = true;
   };
 
-  $scope.applyAdverseEffect = function (adverseEffectForm) {
-    if(adverseEffectForm.$valid){
+  $scope.applyAdverseEffect = function () {
+    if($scope.adverseEffectForm.$valid){
       var product = _.findWhere($scope.report.products, {'id': utils.parseIntWithBaseTen($scope.currentEffect.productId)});
       $scope.currentEffect.productName = product.primaryName;
       if (!$scope.currentEffectMode) {

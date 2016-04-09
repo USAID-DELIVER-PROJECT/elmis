@@ -66,13 +66,12 @@ function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimel
 
             for(i=0; i<summary.length; i++)
             {
-
                 if(item.year === summary[i].year && item.month === summary[i].month) {
                     $scope.expected.push     ({total:summary[i].expected});
                     $scope.reported.push     ({total:summary[i].reported});
                     $scope.ontime.push       ({total:summary[i].ontime});
-                    $scope.completeness.push ({total:Math.round(((summary[i].reported/summary[i].expected) * 100)*100)/100});
-                    $scope.timelines.push    ({total:Math.round(((summary[i].ontime/summary[i].reported) * 100)*100)/100});
+                    $scope.completeness.push ({total:summary[i].reported === 0 ? 0 : Math.round(((summary[i].reported/summary[i].expected) * 100)*100)/100});
+                    $scope.timelines.push    ({total:summary[i].ontime === 0 ? 0 : Math.round(((summary[i].ontime/summary[i].reported) * 100)*100)/100});
                     break;
                 }
                 // if no match is found add a dummy object as a place holder

@@ -236,7 +236,7 @@ var utils = {
         if(includeGrandTotal) {
 
             _.each(columnKeys, function (columnKey) {
-                grandTotal[columnKey] = utils.getGrandTotal(reportData, districtNameKey, columnKey);
+                grandTotal[columnKey] = utils.getGrandTotal(reportData, columnKey);
             });
 
             reportDataWithAggregates.push({grandtotal: grandTotal});
