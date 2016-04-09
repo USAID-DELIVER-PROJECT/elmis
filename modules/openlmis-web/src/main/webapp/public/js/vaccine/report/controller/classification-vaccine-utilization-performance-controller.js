@@ -306,7 +306,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                 unformattedReport[i].classification = determineClass(coverage_rate, wastage_rate);
                 unformattedReport[i].hide = unformattedReport[i].year_number == $scope.year && unformattedReport[i].month_number < $scope.month ? true : false;
 
-                console.log(i + "\n" +JSON.stringify(unformattedReport[i]));
+
             }
         }
 
@@ -331,7 +331,8 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
     }
 
     function extractPopulationInfo(reportList, popuplationList, type) {
-
+console.log("report list \n" + type + "\n"+ JSON.stringify(reportList));
+        console.log("population list \n" + type + "\n"+ JSON.stringify(popuplationList));
         if(utils.isNullOrUndefined(reportList)||  utils.isNullOrUndefined(popuplationList)){
             return;
         }
@@ -345,11 +346,14 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
         for (i; i < repLen; i++) {
             var j = 0;
-            var repKey = getPopulationKey(reportList[i], type)+ "_" + parseInt(reportList[i].year_number, 10);
+            var repKey = type===1?reportList[i].facility_name: type==2?reportList[i].geographic_zone_name:reportList[i].region_name;
+            repKey=repKey  + "_" + parseInt(reportList[i].year_number, 10);
                       for (j; j < popuLen; j++) {
                 population = 0;
                 denominator = 0;
                 var currentKey = getPopulationKey(popuplationList[j], type)+ "_" + parseInt(popuplationList[j].year, 10);
+                          console.log("rep_key\n"+ repKey);
+                          console.log("currentKey\n"+ currentKey);
 
                 if (repKey=== currentKey) {
                     population = popuplationList[j].population;
