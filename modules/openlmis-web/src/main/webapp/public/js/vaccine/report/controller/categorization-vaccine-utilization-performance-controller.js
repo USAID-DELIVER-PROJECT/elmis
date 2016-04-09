@@ -42,12 +42,23 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
             function (data) {
                 console.log(data);
                 $scope.error = "";
-                $scope.zonereport = cumulateMonthProgressive(data.categorizationVaccineUtilizationPerformance.zoneReport, 2);
-                $scope.facilityReportList = cumulateMonthProgressive(data.categorizationVaccineUtilizationPerformance.facilityReport, 1);
+                $scope.zonereport =data.categorizationVaccineUtilizationPerformance.zoneReport;
+                $scope.facilityReportList = data.categorizationVaccineUtilizationPerformance.facilityReport;
+                $scope.regionReportList = data.categorizationVaccineUtilizationPerformance.regionReport;
+                $scope.population=data.categorizationVaccineUtilizationPerformance.population;
+                $scope.regionPopulation=data.categorizationVaccineUtilizationPerformance.regionPopulation;
+                extractPopulationInfo($scope.zonereport,  $scope.population,2);
+                extractPopulationInfo($scope.facilityReportList,  $scope.population,1);
+                extractPopulationInfo($scope.regionReportList, $scope.regionPopulation,3);
+                $scope.zonereport = cumulateMonthProgressive($scope.zonereport, 2);
+                $scope.facilityReportList = cumulateMonthProgressive($scope.facilityReportList, 1);
+                $scope.regionReportList = cumulateMonthProgressive(  $scope.regionReportList, 3);
                 $scope.periodlist = data.categorizationVaccineUtilizationPerformance.summaryPeriodLists;
-                $scope.regionReportList = cumulateMonthProgressive(data.categorizationVaccineUtilizationPerformance.regionReport, 3);
+
+
                 $scope.facilityReport = !utils.isEmpty($scope.facilityReportList);
                 $scope.regionReport = !utils.isEmpty($scope.regionReportList);
+
 
                 if ($scope.facilityReport === true) {
                     extractPeriod($scope.facilityReportList);
@@ -188,6 +199,7 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
         var totalDistricts = 0;
         var totalFacilities = 0;
         var totalPopulation = 0;
+        var totalRegionPopulation = 0;
         var districts = _.pluck($scope.zonereport, 'geographic_zone_name'),
             facilities = _.pluck($scope.zonereport, 'facility_count');
         console.log("facility count");
@@ -197,9 +209,14 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
             totalFacilities += facility.report.facility_count;
             totalPopulation += facility.report.population;
         });
+        _.each($scope.regionMainReport, function (facility) {
+
+            totalRegionPopulation += facility.report.population;
+        });
         $scope.totalDistricts = totalDistricts;
         $scope.totalFacilities = totalFacilities;
         $scope.totalPopulation = totalPopulation;
+        $scope.totalRegionPopulation=totalRegionPopulation;
     }
 
 
@@ -366,7 +383,59 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
         }
         return classfication;
     }
+    function extractPopulationInfo(reportList, popuplationList, type) {
+        console.log("report list \n" + type + "\n"+ JSON.stringify(reportList));
+        console.log("population list \n" + type + "\n"+ JSON.stringify(popuplationList));
+        if(utils.isNullOrUndefined(reportList)||  utils.isNullOrUndefined(popuplationList)){
+            return;
+        }
+        var population = 0;
+        var denominator = 0;
+        var i = 0;
 
+
+        var repLen = reportList.length;
+        var popuLen = popuplationList.length;
+
+        for (i; i < repLen; i++) {
+            var j = 0;
+            var repKey = type===1?reportList[i].facility_name: type==2?reportList[i].geographic_zone_name:reportList[i].region_name;
+            repKey=repKey  + "_" + parseInt(reportList[i].year_number, 10);
+            for (j; j < popuLen; j++) {
+                population = 0;
+                denominator = 0;
+                var currentKey = getPopulationKey(popuplationList[j], type)+ "_" + parseInt(popuplationList[j].year, 10);
+                console.log("rep_key\n"+ repKey);
+                console.log("currentKey\n"+ currentKey);
+
+                if (repKey=== currentKey) {
+                    population = popuplationList[j].population;
+                    denominator = popuplationList[j].denominator;
+
+                    break;
+                }
+
+            }
+            reportList[i].population = population;
+
+        }
+
+        return population;
+    }
+    function getPopulationKey(dreport, type) {
+        var keyValue = '';
+        if (type === 1) {
+            keyValue = dreport.facility_name ;
+        } else if (type === 2) {
+            keyValue = dreport.district_name ;
+
+        }
+        else {
+            keyValue = dreport.region_name ;
+        }
+
+        return keyValue;
+    }
 
 }
 
