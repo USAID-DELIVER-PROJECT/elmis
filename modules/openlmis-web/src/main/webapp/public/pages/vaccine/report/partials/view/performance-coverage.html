@@ -8,7 +8,7 @@
 ~ You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
 -->
 <style>
-    #summary-table{
+    .summary-table{
         table-layout: fixed;
         width: 100% !important;
         border: 1px solid #000;
@@ -159,7 +159,7 @@
                 </table>
 
                 <div ng-show="datarows.length > 0">
-                    <table id="summary-table" class="rnr-table table-bordered table">
+                    <table id="region-summary" class="summary-table rnr-table table-bordered table">
                         <thead >
                         <tr>
                             <th style="width:17%;"></th>
@@ -208,7 +208,7 @@
                     <tr>
                         <th></th>
                         <th></th>
-
+                        <th></th>
                         <th>{{getLocalMessage('label.A')}}</th>
                         <th>{{getLocalMessage('label.B')}}</th>
                         <th>{{getLocalMessage('label.C')}}</th>
@@ -218,7 +218,7 @@
                     </thead>
                     <tbody ng-repeat="row in dataRowsRegionAggregate">
                     <tr ng-if="(dataRowsRegionAggregate[$index-1].region_name != row.region_name)&&$index>0 && staticYear>0">
-                        <td class="aggregate-row"  >Sub Total</td>
+                        <td class="aggregate-row"  >Annual Reporting Rate</td>
                         <td class="aggregate-row" ></td>
                         <td class="aggregate-row" ></td>
                         <td class="aggregate-row"  >{{getRegionSubTotalRow(dataRowsRegionAggregate[$index-1]).target | number}}</td>
@@ -266,7 +266,7 @@
                 </table>
 
                 <div  ng-show="dataRowsRegionAggregate">
-                    <table id="summary-table" class="rnr-table table-bordered table">
+                    <table id="all-region-summary" class="summary-table rnr-table table-bordered table">
                         <thead >
                         <tr>
                             <th style="width:17%;"></th>
@@ -282,7 +282,7 @@
                             <td  style="background-color : {{colors.color_80_percent}}" openlmis-message="coverage.greater.than.or.equal.eighty.percent"></td>
                             <td   style="background-color : {{colors.color_80_percent}}" ng-repeat="a in gAll2">{{a.total}}</td>
                         </tr>
-                      >
+
                         <tr>
                             <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
                             <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="a in gAll4">{{a.total}}</td>
