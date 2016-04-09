@@ -50,22 +50,24 @@ function StatusVaccinationReceiceController($scope, StatuVaccinationSupply, Sett
         var param=   $scope.filter;
 
         $scope.error_message='';
+        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)
+            && !utils.isNullOrUndefined($scope.filter.product)&&$scope.filter.product!==0) {
+            StatuVaccinationSupply.get(param, function (data) {
 
-        StatuVaccinationSupply.get(param, function (data) {
+                if (data !== undefined || data !== null) {
 
-            if (data !== undefined || data !== null) {
+                    var columnKeysToBeAggregated = ["targetpopulation", "received", "onhand", "issued", "used", "wasted", "administered"];
+                    var districtNameKey = "district_name";
+                    var includeGrandTotal = false;
 
-                var columnKeysToBeAggregated = ["targetpopulation", "received", "onhand", "issued", "used", "wasted", "administered"];
-                var districtNameKey = "district_name";
-                var includeGrandTotal = false;
-
-                $scope.data = data.statusOfVaccinationSupplyReceiveReport.facilityDistrictVaccineStatusList;
-                $scope.datarows = utils.getDistrictBasedReportDataWithSubAndGrandTotal($scope.data, districtNameKey, columnKeysToBeAggregated, includeGrandTotal);
-                $scope.regionrows = data.statusOfVaccinationSupplyReceiveReport.regionVaccineStatusList;
-                $scope.reportType = data.statusOfVaccinationSupplyReceiveReport.facilityReport;
-                $scope.report = data.statusOfVaccinationSupplyReceiveReport;
-            }
-        });
+                    $scope.data = data.statusOfVaccinationSupplyReceiveReport.facilityDistrictVaccineStatusList;
+                    $scope.datarows = utils.getDistrictBasedReportDataWithSubAndGrandTotal($scope.data, districtNameKey, columnKeysToBeAggregated, includeGrandTotal);
+                    $scope.regionrows = data.statusOfVaccinationSupplyReceiveReport.regionVaccineStatusList;
+                    $scope.reportType = data.statusOfVaccinationSupplyReceiveReport.facilityReport;
+                    $scope.report = data.statusOfVaccinationSupplyReceiveReport;
+                }
+            });
+        }
     };
 
 
