@@ -150,4 +150,8 @@ public class VaccineDashboardRepository {
         return mapper.getFacilityStockStatusDetails(startDate, endDate, productId, userId);
     }
 
+    public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId) {
+        return mapper.getFacilityVaccineInventoryStockStatus(facilityId);
+    }
+
 }

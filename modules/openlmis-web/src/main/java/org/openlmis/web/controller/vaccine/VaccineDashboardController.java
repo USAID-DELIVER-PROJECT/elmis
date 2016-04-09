@@ -30,9 +30,10 @@ import java.util.Map;
 @RequestMapping(value = "/vaccine/dashboard/")
 public class VaccineDashboardController  extends BaseController {
 
+    private static final Logger LOGGER = Logger.getLogger(VaccineDashboardController.class);
     @Autowired
     VaccineDashboardService service;
-    private static final Logger LOGGER = Logger.getLogger(VaccineDashboardController.class);
+
     @RequestMapping(value = "summary.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getReportingSummary(HttpServletRequest request){
         Long userId = this.loggedInUserId(request);
@@ -235,5 +236,10 @@ public class VaccineDashboardController  extends BaseController {
     public ResponseEntity<OpenLmisResponse> getDistrictStockStatus(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
         Long userId = this.loggedInUserId(request);
         return OpenLmisResponse.response("districtStockStatus", service.getDistrictStockStatus(period, product,userId));
+    }
+
+    @RequestMapping(value = "facility-inventory-stock-status.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityVaccineInventoryStockStatus(@RequestParam("facilityId") Long facilityId) {
+        return OpenLmisResponse.response("facilityStockStatus", service.getFacilityVaccineInventoryStockStatus(facilityId));
     }
 }

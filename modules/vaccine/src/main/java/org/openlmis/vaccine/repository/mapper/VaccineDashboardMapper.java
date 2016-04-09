@@ -792,4 +792,7 @@ public interface VaccineDashboardMapper {
                 "group by 1,2,3,4\n" +
                 "order by 1,2;")
         List<HashMap<String, Object>> getFacilityStockStatusDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
+
+        @Select("select * from vw_vaccine_inventory_stock_status where facility_id=#{facilityId}")
+        List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId);
 }

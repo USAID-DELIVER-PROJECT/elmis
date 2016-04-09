@@ -1,0 +1,29 @@
+<div>{{myStockVaccine.productCategory}}</div>
+<div class="app-form vaccine-form-filter">
+    <!--<form  novalidate>-->
+    <!--<div  class="clearfix">-->
+    <!--<vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.districtStock.product" on-change="districtStockCallback()"></vaccine-product-filter>-->
+    <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtStock.period"  class="form-cell horizontalFilters" on-change="districtStockCallback()"></vaccine-monthly-period-tree-filter>-->
+    <!--</div>-->
+    <!--</form>-->
+</div>
+
+<c3chart bindto-id="stacked-bar-plot1-chart"
+         chart-data="myStockVaccine.dataPoints"
+         chart-columns="myStockVaccine.dataColumns"
+         chart-x="myStockVaccine.dataX"
+        >
+    <chart-tooltip value-format-function="getSOHVaccine" show-tooltip="true"/>
+    <chart-colors color-function="getColorVaccine"/>
+    <chart-axis>
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{myStockVaccine.productCategory}}"
+                      axis-type="category">
+        </chart-axis-x>
+        <chart-axis-y axis-position="outer-center"
+                      axis-label="MOS">
+        </chart-axis-y>
+    </chart-axis>
+</c3chart>
+<div style="font-weight: bold" ng-hide="myStockVaccine.dataPoints"
+     openlmis-message="label.report.no.data.to.show"></div>

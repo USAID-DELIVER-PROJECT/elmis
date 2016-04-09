@@ -436,4 +436,14 @@ public class VaccineDashboardService {
         return repairingDetailList;
     }
 
+    public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId) {
+        List<HashMap<String, Object>> stockStatusList = null;
+        try {
+            stockStatusList = repository.getFacilityVaccineInventoryStockStatus(facilityId);
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return stockStatusList;
+    }
+
 }

@@ -38,10 +38,12 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     ContactList, isDistrictUser,
                                     VaccineDashboardFacilityStock,
                                     settingValues, $log,
-                                    VaccineDashboardMonthlyStockStatus,
-                                    VaccineDashboardDistrictStockStatus,
+//                                    VaccineDashboardMonthlyStockStatus,
+//                                    VaccineDashboardDistrictStockStatus,
                                     VaccineDashboardFacilityStockStatus,
-                                    VaccineDashboardFacilityStockStatusDetails,colors) {
+                                    VaccineDashboardFacilityStockStatusDetails,colors,
+                                    VaccineDashboardFacilityInventoryStockStatus,homeFacility
+                                    ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -817,6 +819,65 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             }
         });
     };
+
+ //////////////
+ //My Stock
+ //////////////
+
+$scope.myStockVaccine = {
+         dataPoints:[],
+         dataColumns: [{
+             "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
+         ],
+         dataX: {"id": "product"},
+         productCategory:""
+ };
+
+ $scope.myStockSupplies = {
+         dataPoints:[],
+         dataColumns: [{
+             "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
+         ],
+         dataX: {"id": "product"},
+         productCategory:""
+ };
+VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(homeFacility.id,10)},function(data){
+      if(data.facilityStockStatus !== null)
+      {
+            var allProducts=data.facilityStockStatus;
+            var byCategory=_.groupBy(allProducts,function(p){
+                  return p.product_category;
+            });
+            var allDataPointsByCategory = $.map(byCategory, function(value, index) {
+                return [{"productCategory":index,"dataPoints":value}];
+            });
+            $scope.myStockVaccine.dataPoints=allDataPointsByCategory[0].dataPoints;
+            $scope.myStockVaccine.productCategory=allDataPointsByCategory[0].productCategory;
+
+            $scope.myStockSupplies.dataPoints=allDataPointsByCategory[1].dataPoints;
+            $scope.myStockSupplies.productCategory=allDataPointsByCategory[1].productCategory;
+      }
+});
+
+$scope.getSOHVaccine=function (value, ratio, id, index) {
+        var toolTipValue=value + " = "+$scope.myStockVaccine.dataPoints[index].soh +" "+ $scope.myStockVaccine.dataPoints[index].unity_of_measure;
+        return toolTipValue;
+};
+$scope.getColorVaccine=function (color, d) {
+       if(typeof d === 'object') {
+         return $scope.myStockVaccine.dataPoints[d.index].color;
+       }
+};
+
+$scope.getSOHSupplies=function (value, ratio, id, index) {
+        var toolTipValue=value + " = "+$scope.myStockSupplies.dataPoints[index].soh +" "+ $scope.myStockSupplies.dataPoints[index].unity_of_measure;
+        return toolTipValue;
+};
+$scope.getColorSupplies=function (color, d) {
+       if(typeof d === 'object') {
+         return $scope.myStockSupplies.dataPoints[d.index].color;
+       }
+};
 
 /////////////////
 // Stock Status
@@ -1638,6 +1699,19 @@ VaccineDashboardController.resolve = {
 
         return deferred.promise;
 
-    }
+    },
+    homeFacility: function ($q, $timeout,UserFacilityList) {
+           var deferred = $q.defer();
+           var homeFacility={};
+
+           $timeout(function () {
+             UserFacilityList.get({}, function (data) {
+                  homeFacility = data.facilityList[0];
+                    deferred.resolve(homeFacility);
+             });
+
+           }, 100);
+                return deferred.promise;
+     }
 
 };

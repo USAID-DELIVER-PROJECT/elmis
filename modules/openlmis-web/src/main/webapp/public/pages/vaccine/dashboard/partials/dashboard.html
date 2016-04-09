@@ -674,7 +674,7 @@
                     <div class="portlet light">
                         <div class="caption">
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
-                            <span class="caption-helper">monthly...</span>
+                            <span class="caption-helper"> to date</span>
 
                             <div class="actions">
                                 <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
@@ -686,7 +686,7 @@
                             </div>
                         </div>
                         <ng-include
-                                src="'/public/pages/vaccine/dashboard/partials/slide-stock-status-monthly-trend.html'"></ng-include>
+                                src="'/public/pages/vaccine/dashboard/partials/slide-my-stock-vaccine.html'"></ng-include>
                     </div>
                 </div>
 
@@ -704,8 +704,10 @@
                                 </a>
                             </div>
                         </div>
-                        <ng-include ng-if="district_user_level==false"
-                                    src="'/public/pages/vaccine/dashboard/partials/slide-stock-status-district.html'"></ng-include>
+                        <!--<ng-include-->
+                        <!--src="'/public/pages/vaccine/dashboard/partials/slide-my-stock-supplies.html'"></ng-include>-->
+                        <!--<ng-include ng-if="district_user_level==false"-->
+                        <!--src="'/public/pages/vaccine/dashboard/partials/slide-stock-status-district.html'"></ng-include>-->
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6">

@@ -546,3 +546,7 @@ services.factory('VaccineDashboardFacilityStockStatus', function($resource){
 services.factory('VaccineDashboardFacilityStockStatusDetails', function($resource){
     return $resource('/vaccine/dashboard/facility-stock-status-details.json',{},{});
 });
+
+services.factory('VaccineDashboardFacilityInventoryStockStatus', function($resource){
+    return $resource('/vaccine/dashboard/facility-inventory-stock-status.json',{},{});
+});
