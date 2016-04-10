@@ -150,8 +150,8 @@
                                 <td class="number aggregate-row" >{{d.grandtotal.expected | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.reported | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.late | number}}</td>
-                                <td class="number aggregate-row" ></td>
-                                <td class="number aggregate-row" ></td>
+                                <td class="number aggregate-row" >{{d.grandtotal.reported /d.grandtotal.expected * 100 | number:0}}%</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.lated /d.grandtotal.reported * 100 | number:0}}%</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.fixed | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.outreach | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.session_total | number}}</td>
