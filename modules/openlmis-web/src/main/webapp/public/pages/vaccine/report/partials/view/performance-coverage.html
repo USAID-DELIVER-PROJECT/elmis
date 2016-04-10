@@ -30,7 +30,6 @@
         <div class="box-header">
             <h2 openlmis-message="report.title.performance.coverage"><i class="icon-edit"></i><span class="break"></span></h2>
             <div class="box-icon">
-
             </div>
         </div>
         <div class="app-form">
@@ -62,13 +61,7 @@
             </div>
         </div>
         <div class="content-body">
-            <table class="table table-bordered" ng-show="datarows.length < 1">
-                <tr>
-                    <td>No data to show under selected filters</td>
-                </tr>
-            </table>
-            <div>
-
+            <div style="font-weight: normal" ng-show="datarows == undefined || datarows.length == 0" openlmis-message="label.report.no.data.to.show"></div>
             <div id="parent" ng-show="datarows.length > 0">
                 <h2 ng-show="!regionSelected">District Level</h2>
                 <h2 ng-show="regionSelected">Region Level</h2>
@@ -296,10 +289,6 @@
                     </table>
                 </div>
             </div>
-
         </div>
-
-
     </div>
-</div>
 </div>
