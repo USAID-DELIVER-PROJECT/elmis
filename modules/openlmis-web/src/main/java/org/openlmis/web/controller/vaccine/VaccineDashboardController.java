@@ -234,6 +234,11 @@ public class VaccineDashboardController  extends BaseController {
     @RequestMapping(value = "district-stock-status.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getDistrictStockStatus(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
         Long userId = this.loggedInUserId(request);
-        return OpenLmisResponse.response("districtStockStatus", service.getDistrictStockStatus(period, product,userId));
+        return OpenLmisResponse.response("districtStockStatus", service.getDistrictStockStatus(period, product, userId));
+    }
+    @RequestMapping(value = "vaccine-current-period.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getVaccineCurrentPeriod(){
+
+        return OpenLmisResponse.response("vaccineCurrentPeriod", service.getVaccineCurrentReportingPeriod());
     }
 }

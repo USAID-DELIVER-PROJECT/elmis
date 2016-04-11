@@ -435,5 +435,7 @@ public class VaccineDashboardService {
         }
         return repairingDetailList;
     }
-
+public Map<String, Object> getVaccineCurrentReportingPeriod(){
+    return repository.getVaccineCurrentPeriod();
+}
 }

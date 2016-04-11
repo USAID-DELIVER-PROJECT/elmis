@@ -149,5 +149,7 @@ public class VaccineDashboardRepository {
     public List<HashMap<String, Object>> getFacilityStockStatusDetails(Date startDate, Date endDate, Long productId, Long userId){
         return mapper.getFacilityStockStatusDetails(startDate, endDate, productId, userId);
     }
-
+public Map<String, Object> getVaccineCurrentPeriod(){
+    return mapper.getVaccineCurrentReportingPeriod();
+}
 }
