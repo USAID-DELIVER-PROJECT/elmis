@@ -197,7 +197,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         var totalFacilities = 0;
         var totalPopulation = 0;
         var totalRegionPopulation = 0;
-        var districts = _.pluck($scope.facilityReport ? $scope.facilityReportList : $scope.zonereport, 'geographic_zone_name'),
+        var districts = _.pluck($scope.facilityReport ? $scope.facilityReportList : $scope.zonereport, 'geographic_zone_name');
             //facilities = _.pluck($scope.facilityReport ? $scope.facilityReportList : $scope.zonereport, 'facility_count');
 
         totalDistricts = _.uniq(districts).length;
