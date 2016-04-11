@@ -35,7 +35,7 @@
     }
 
     .NONREPORTING_rows{
-        background-color: #527756;
+        background-color: #DCDCDC;
     }
 
 </style>
@@ -109,7 +109,7 @@
                         <tbody>
                             <tr ng-repeat-start="d in datarows"></tr>
                              <tr ng-repeat="row in d.data">
-                                 <td >{{ d.data[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                                 <td >{{ d.data[$index-1].region_name == row.region_name  ? '' : row.region_name }}</td>
                                  <td >{{ d.data[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                                  <td class="{{row.reporting_status}}_rows" >{{row.period_name}}</td>
                                  <td class="number {{row.reporting_status}}_rows"  >{{ row.reporting_status === "REPORTING" ? getLocalMessage('label.yes') : getLocalMessage('label.no')  }}</td>
