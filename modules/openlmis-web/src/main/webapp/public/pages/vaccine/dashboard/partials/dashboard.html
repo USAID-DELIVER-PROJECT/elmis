@@ -348,8 +348,8 @@
                         <i ng-class="{'icon-minus-sign': actionBar.openPanel, 'icon-plus-sign': !actionBar.openPanel}"></i>
                     </div>
                     <div class=" pull-right ">
-                        <span class="caption-subject bold uppercase font-dark" openlmis-message="label.current.period"></span>: <span class="caption-helper">{{userPreferences.period_name}}</span>
-                        <span class="caption-subject bold uppercase font-dark"  openlmis-message="label.user.perimission.zone"></span>: <span class="caption-helper">{{userPreferences.zone_name}}</span>
+                        <span class="caption-subject bold  font-dark" openlmis-message="label.current.period"></span>: <span class="caption-helper">{{userPreferences.startdate| date:'MMMM,yyyy'}}</span>
+                        <span class="caption-subject bold  font-dark"  openlmis-message="label.user.perimission.zone"></span>: <span class="caption-helper">{{userPreferences.zone_name}}</span>
                     </div>
                 </div>
 

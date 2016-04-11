@@ -1406,9 +1406,11 @@ VaccineDashboardController.resolve = {
                 if (!utils.isNullOrUndefined(data.vaccineCurrentPeriod)) {
                     user_preferences.period_name = data.vaccineCurrentPeriod.name;
                     user_preferences.period_id = data.vaccineCurrentPeriod.current_period;
+                    user_preferences.startdate = data.vaccineCurrentPeriod.startdate;
                 } else {
                     user_preferences.period_name = "";
                     user_preferences.period_id = "";
+                    user_preferences.startdate ="";
                 }
 
             });
