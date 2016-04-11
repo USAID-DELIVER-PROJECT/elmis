@@ -34,6 +34,7 @@
         <h2 ng-show="show_email"><i class="flaticon-bar"></i>Email Notification</h2>
     </div>
     <div class="modal-body">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
         <div ng-show="show_email">
             <div>
                 <p>
@@ -138,7 +139,8 @@
         <h3 ng-show="show_email">Email Notification</h3>
     </div>
     <div class="modal-body">
-        <div ng-show="show_email">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
+         <div ng-show="show_email">
             <div>
                 <p>
                     Use this form to customize and send email notifications for
@@ -246,6 +248,7 @@
 
     </div>
     <div class="modal-body">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
         <div class="row-fluid dashlet-scroll-table">
         <table id="investigatingTable" ng-show="items.length > 0"
                class="rnr-table table-bordered table"

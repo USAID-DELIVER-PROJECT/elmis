@@ -67,14 +67,8 @@
                     </div>
             </div>
         </div>
-        <div class="content-body">
-            <table class="table table-bordered" ng-show="datarows.length < 1">
-                <tr>
-                    <td>No data to show under selected filters</td>
-                </tr>
-            </table>
-            <div>
-
+        <div style="font-weight: normal" ng-show="datarows.length < 1" openlmis-message="label.report.no.data.to.show"></div>
+        <div class="content-body"><div>
             <h2 ng-show="districtReport.length > 0" >District Level</h2>
             <div id="parent" ng-show="districtReport.length > 0">
                 <table id="fixTableDistrict" class="rnr-table table-bordered table">

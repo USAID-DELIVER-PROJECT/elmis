@@ -15,10 +15,6 @@
 function ClassificationVaccineUtilizationPerformanceController($scope, ClassificationVaccineUtilizationPerformance, ReportProductsByProgram) {
 
 
-    ReportProductsByProgram.get({programId: 82}, function (data) {
-        $scope.product = data.productList;
-    });
-
     $scope.perioderror = "";
 
     $scope.OnFilterChanged = function () {
@@ -201,8 +197,8 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         var totalFacilities = 0;
         var totalPopulation = 0;
         var totalRegionPopulation = 0;
-        var districts = _.pluck($scope.zonereport, 'geographic_zone_name'),
-            facilities = _.pluck($scope.zonereport, 'facility_count');
+        var districts = _.pluck($scope.facilityReport ? $scope.facilityReportList : $scope.zonereport, 'geographic_zone_name');
+            //facilities = _.pluck($scope.facilityReport ? $scope.facilityReportList : $scope.zonereport, 'facility_count');
 
         totalDistricts = _.uniq(districts).length;
         _.each($scope.zoneMainReport, function (facility) {
@@ -213,7 +209,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
             totalRegionPopulation += facility.report.population;
         });
         $scope.totalDistricts = totalDistricts;
-        $scope.totalFacilities = totalFacilities;
+        $scope.totalFacilities = $scope.facilityReport && !utils.isEmpty($scope.zoneMainReport) ? $scope.zoneMainReport.length : totalFacilities;
         $scope.totalPopulation = totalPopulation;
         $scope.totalRegionPopulation = totalRegionPopulation;
     }

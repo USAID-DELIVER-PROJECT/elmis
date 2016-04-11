@@ -35,7 +35,7 @@
     }
 
     .NONREPORTING_rows{
-        background-color: #527756;
+        background-color: #DCDCDC;
     }
 
 </style>
@@ -70,14 +70,8 @@
             </div>
         </div>
         <div class="content-body">
-            <table class="table table-bordered" ng-show="datarows.length < 1">
-                <tr>
-                    <td>No data to show under selected filters</td>
-                </tr>
-            </table>
-            <div>
-                <br/>
-                <div id="parent" ng-show="datarows.length > 0">
+        <div style="font-weight: normal" ng-show="datarows == undefined || datarows.length == 0" openlmis-message="label.report.no.data.to.show"></div>
+            <div id="parent" ng-show="datarows.length > 0">
                     <h2 openlmis-message="completeness.and.timliness.header.comp.and.tim.by.district"></h2>
                     <table class="rnr-table table-bordered table">
                         <thead>
@@ -115,7 +109,7 @@
                         <tbody>
                             <tr ng-repeat-start="d in datarows"></tr>
                              <tr ng-repeat="row in d.data">
-                                 <td >{{ d.data[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                                 <td >{{ d.data[$index-1].region_name == row.region_name  ? '' : row.region_name }}</td>
                                  <td >{{ d.data[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                                  <td class="{{row.reporting_status}}_rows" >{{row.period_name}}</td>
                                  <td class="number {{row.reporting_status}}_rows"  >{{ row.reporting_status === "REPORTING" ? getLocalMessage('label.yes') : getLocalMessage('label.no')  }}</td>
@@ -197,4 +191,3 @@
             </div>
         </div>
     </div>
-</div>
