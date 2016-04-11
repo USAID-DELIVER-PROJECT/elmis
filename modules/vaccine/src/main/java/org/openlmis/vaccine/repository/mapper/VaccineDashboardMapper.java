@@ -676,7 +676,7 @@ public interface VaccineDashboardMapper {
  /*
          * ---------------- Stock Status ------------------------------------
         */
-        @Select("with temp as (select ss.period_name,  coalesce(ss.closing_balance,0) closing_balance, \n" +
+        @Select("with temp as (select ss.period_name, ss.period_start_date period_start_date,  coalesce(ss.closing_balance,0) closing_balance, \n" +
                 "coalesce((select isavalue from stock_requirements where facilityid = ss.facility_id \n" +
                 "and programid = ss.program_id\n" +
                 "and productid = ss.product_id \n" +
@@ -696,14 +696,14 @@ public interface VaccineDashboardMapper {
                 "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
                 "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
                 ")\n" +
-                "select t.period_name, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min, max(t.maxmonthsofstock) max, \n" +
+                "select t.period_name,period_start_date, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min, max(t.maxmonthsofstock) max, \n" +
                 "case when sum(t.need)> 0 and (sum(t.closing_balance) / sum(t.need)::numeric<=min(minmonthsofstock))then sum(t.closing_balance)  / sum(t.need)::numeric  end mos_g1 ,\n" +
                 "case when sum(t.need) > 0 and (sum(t.closing_balance)  / sum(t.need)::numeric>min(minmonthsofstock))and (sum(t.closing_balance)  / sum(t.need)::numeric<=max(maxmonthsofstock))\n" +
                 "then sum(t.closing_balance) / sum(t.need)::numeric  end mos_g2 ,\n" +
                 "case when sum(t.need) > 0 and (sum(t.closing_balance) / sum(t.need)::numeric>max(maxmonthsofstock))then sum(t.closing_balance)  /sum(t.need)::numeric  end mos_g3\n" +
                 "from temp t\n" +
-                "group by 1\n" +
-                "order by 1,2;")
+                "group by 1,2\n" +
+                "order by 2,1;")
         List<HashMap<String, Object>> getStockStatusByMonthly(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("user") Long userId, @Param("product") Long product);
 
         @Select("with temp as (select coalesce(ss.closing_balance,0) closing_balance, \n" +
