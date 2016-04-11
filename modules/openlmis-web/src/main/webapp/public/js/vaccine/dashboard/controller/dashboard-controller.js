@@ -41,7 +41,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardMonthlyStockStatus,
                                     VaccineDashboardDistrictStockStatus,
                                     VaccineDashboardFacilityStockStatus,
-                                    VaccineDashboardFacilityStockStatusDetails,colors,
+                                    VaccineDashboardFacilityStockStatusDetails, colors,
                                     userPreferences) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
@@ -49,9 +49,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.sessions = {
         openPanel: true
     };
-
-
-
 
 
     var monthlyDashletPeriods = utils.getCustomizedStartAndEndDate(settingValues.monthsRange, settingValues.cuttoff);
@@ -68,7 +65,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.defaultProduct = defaultProduct;
     $scope.defaultMonthlyPeriod = defaultMonthlyPeriod;
     $scope.label = {zone: messageService.get('label.zone'), period: messageService.get('label.period')};
-
+    $scope.userPreferences = userPreferences;
 
     /////////////////////////////////////////////////////////////////////////
     // coverage - Monthly, District, Facility
@@ -274,12 +271,22 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.districtStockStatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
+            "id": "mos_g1", "name": messageService.get('label.value.min.mos'), "type": "bar", "color": colors.red_color
         },
-            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
-            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
-            {"id": "minmonthsofstock", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
-            {"id": "maxmonthsofstock", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
+            {
+                "id": "mos_g2",
+                "name": messageService.get('label.value.between.mos'),
+                "type": "bar",
+                "color": colors.green_color
+            },
+            {
+                "id": "mos_g3",
+                "name": messageService.get('label.value.above.mos'),
+                "type": "bar",
+                "color": colors.blue_color
+            },
+            {"id": "minmonthsofstock", "name": messageService.get('label.min.mos'), "type": "line", "color": "black"},
+            {"id": "maxmonthsofstock", "name": messageService.get('label.max.mos'), "type": "line", "color": "black"}
         ],
         dataX: {"id": "district_name"}
     };
@@ -287,24 +294,44 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.monthlyStockstatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
+            "id": "mos_g1", "name": messageService.get('label.value.min.mos'), "type": "bar", "color": colors.red_color
         },
-            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
-            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
-            {"id": "min", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
-            {"id": "max", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
+            {
+                "id": "mos_g2",
+                "name": messageService.get('label.value.between.mos'),
+                "type": "bar",
+                "color": colors.green_color
+            },
+            {
+                "id": "mos_g3",
+                "name": messageService.get('label.value.above.mos'),
+                "type": "bar",
+                "color": colors.blue_color
+            },
+            {"id": "min", "name": messageService.get('label.min.mos'), "type": "line", "color": "black"},
+            {"id": "max", "name": messageService.get('label.max.mos'), "type": "line", "color": "black"}
         ],
         dataX: {"id": "period_name"}
     };
     $scope.facilityStockstatus = {
         dataPoints: [],
         dataColumns: [{
-            "id": "mos_g1", "name":messageService.get('label.value.min.mos'), "type": "bar", "color":colors.red_color
+            "id": "mos_g1", "name": messageService.get('label.value.min.mos'), "type": "bar", "color": colors.red_color
         },
-            {"id": "mos_g2", "name":messageService.get('label.value.between.mos'), "type": "bar","color":colors.green_color   },
-            {"id": "mos_g3", "name":messageService.get('label.value.above.mos'), "type": "bar", "color":colors.blue_color},
-            {"id": "minmonthsofstock", "name":messageService.get('label.min.mos'), "type": "line", "color":"black"},
-            {"id": "maxmonthsofstock", "name":messageService.get('label.max.mos'), "type": "line", "color":"black"}
+            {
+                "id": "mos_g2",
+                "name": messageService.get('label.value.between.mos'),
+                "type": "bar",
+                "color": colors.green_color
+            },
+            {
+                "id": "mos_g3",
+                "name": messageService.get('label.value.above.mos'),
+                "type": "bar",
+                "color": colors.blue_color
+            },
+            {"id": "minmonthsofstock", "name": messageService.get('label.min.mos'), "type": "line", "color": "black"},
+            {"id": "maxmonthsofstock", "name": messageService.get('label.max.mos'), "type": "line", "color": "black"}
         ],
         dataX: {"id": "facility_name"}
     };
@@ -435,7 +462,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             resolve: {
                 items: function () {
 
-                    return {dashboardHelps:  $scope.dashboardHelps};
+                    return {dashboardHelps: $scope.dashboardHelps};
                 }
             }
         });
@@ -569,7 +596,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             resolve: {
                 items: function () {
 
-                    return {dashboardHelps:  $scope.dashboardHelps};
+                    return {dashboardHelps: $scope.dashboardHelps};
                 }
             }
         });
@@ -694,7 +721,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             resolve: {
                 items: function () {
 
-                    return {dashboardHelps:  $scope.dashboardHelps};
+                    return {dashboardHelps: $scope.dashboardHelps};
                 }
             }
         });
@@ -813,7 +840,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             resolve: {
                 items: function () {
 
-                    return {dashboardHelps:  $scope.dashboardHelps};
+                    return {dashboardHelps: $scope.dashboardHelps};
                 }
             }
         });
@@ -1128,8 +1155,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             }, function (data) {
 
                 $scope.stockstatusDetails = data.facilityStockStatusDetails;
-                $scope.stockstatusPeriodsList = _.uniq(_.pluck( $scope.stockstatusDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck( $scope.stockstatusDetails, 'facility_name'));
+                $scope.stockstatusPeriodsList = _.uniq(_.pluck($scope.stockstatusDetails, 'period_name'));
+                var facilities = _.uniq(_.pluck($scope.stockstatusDetails, 'facility_name'));
 
                 $scope.facilityStockStatusDetails = [];
                 angular.forEach(facilities, function (facility) {
@@ -1161,7 +1188,10 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                     resolve: {
                         items: function () {
 
-                            return {facilityDetails: $scope.facilityStockStatusDetails, periodsList: $scope.stockstatusPeriodsList};
+                            return {
+                                facilityDetails: $scope.facilityStockStatusDetails,
+                                periodsList: $scope.stockstatusPeriodsList
+                            };
                         }
                     }
                 });
@@ -1176,7 +1206,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             resolve: {
                 items: function () {
 
-                    return {dashboardHelps:  $scope.dashboardHelps};
+                    return {dashboardHelps: $scope.dashboardHelps};
                 }
             }
         });
@@ -1368,27 +1398,27 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
 }
 VaccineDashboardController.resolve = {
-    userPreferences:function($q, $timeout, VaccineCurrentPeriod,UserGeographicZonePereference){
-        var deferred= $q.defer();
-        var user_preferences={};
-        $timeout(function(){
+    userPreferences: function ($q, $timeout, VaccineCurrentPeriod, UserGeographicZonePereference) {
+        var deferred = $q.defer();
+        var user_preferences = {};
+        $timeout(function () {
             VaccineCurrentPeriod.get({}, function (data) {
                 if (!utils.isNullOrUndefined(data.vaccineCurrentPeriod)) {
                     user_preferences.period_name = data.vaccineCurrentPeriod.name;
-                    user_preferences.period_id =data.vaccineCurrentPeriod.current_period;
+                    user_preferences.period_id = data.vaccineCurrentPeriod.current_period;
                 } else {
                     user_preferences.period_name = "";
-                    user_preferences.period_id ="";
+                    user_preferences.period_id = "";
                 }
 
             });
             UserGeographicZonePereference.get({}, function (data) {
                 if (!utils.isNullOrUndefined(data.UserGeographicZonePreference)) {
                     user_preferences.zone_name = data.UserGeographicZonePreference.zone_name;
-                    user_preferences.level_name =data.UserGeographicZonePreference.level_name;
+                    user_preferences.level_name = data.UserGeographicZonePreference.level_name;
                 } else {
                     user_preferences.zone_name = "";
-                    user_preferences.level_name ="";
+                    user_preferences.level_name = "";
                 }
 
             });
@@ -1398,34 +1428,34 @@ VaccineDashboardController.resolve = {
 
         return deferred.promise;
     },
-    colors:function($q, $timeout, SettingsByKey){
-        var deferred= $q.defer();
-        var color_values={};
-        $timeout(function(){
-                SettingsByKey.get({key: 'VCP_GREEN'}, function (data) {
-                    if (!utils.isNullOrUndefined(data.settings.value)) {
-                        color_values.green_color = data.settings.value;
-                    } else {
-                        color_values.green_color = 'green';
-                    }
+    colors: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+        var color_values = {};
+        $timeout(function () {
+            SettingsByKey.get({key: 'VCP_GREEN'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.green_color = data.settings.value;
+                } else {
+                    color_values.green_color = 'green';
+                }
 
-                });
-                SettingsByKey.get({key: 'VCP_BLUE'}, function (data) {
-                    if (!utils.isNullOrUndefined(data.settings.value)) {
-                        color_values.blue_color = data.settings.value;
-                    } else {
-                        color_values.blue_color = 'blue';
-                    }
+            });
+            SettingsByKey.get({key: 'VCP_BLUE'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.blue_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'blue';
+                }
 
-                });
-                SettingsByKey.get({key: 'VCP_RED'}, function (data) {
-                    if (!utils.isNullOrUndefined(data.settings.value)) {
-                        color_values.red_color = data.settings.value;
-                    } else {
-                        color_values.blue_color = 'red';
-                    }
+            });
+            SettingsByKey.get({key: 'VCP_RED'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.red_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'red';
+                }
 
-                });
+            });
             deferred.resolve(color_values);
         }, 100);
 
