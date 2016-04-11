@@ -241,4 +241,8 @@ public class VaccineDashboardController  extends BaseController {
 
         return OpenLmisResponse.response("vaccineCurrentPeriod", service.getVaccineCurrentReportingPeriod());
     }
+    @RequestMapping(value = "user-geographic-zone-preference.json", method = RequestMethod.GET)
+    public  ResponseEntity<OpenLmisResponse> getUserZoneInformation() {
+          return OpenLmisResponse.response("UserGeographicZonePreference", service.getUserZoneInformation());
+    }
 }

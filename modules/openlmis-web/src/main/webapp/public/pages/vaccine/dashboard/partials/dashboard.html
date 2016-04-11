@@ -343,10 +343,16 @@
                     <div class="caption"><i class="flaticon-alert"></i>
                         <span class="caption-subject bold uppercase font-dark" openlmis-message="label.action.bar"></span>
                     </div>
-                    <div class="tools">
+
+                    <div  class="tools  pull-right">
                         <i ng-class="{'icon-minus-sign': actionBar.openPanel, 'icon-plus-sign': !actionBar.openPanel}"></i>
                     </div>
+                    <div class=" pull-right ">
+                        <span openlmis-message="label.current.period"></span>: <span class="caption-helper">{{userPreferences.period_name}}</span>
+                        <span  openlmis-message="label.user.perimission.zone"></span>: <span class="caption-helper">{{userPreferences.zone_name}}</span>
+                    </div>
                 </div>
+
             </accordion-heading>
 
             <span class="reporting-header" style="padding: 0; margin:0; border: none; background: none">

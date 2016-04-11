@@ -549,3 +549,6 @@ services.factory('VaccineDashboardFacilityStockStatusDetails', function($resourc
 services.factory('VaccineCurrentPeriod', function($resource){
     return $resource('/vaccine/dashboard/vaccine-current-period.json',{},{});
 });
+services.factory('UserGeographicZonePereference', function($resource){
+    return $resource('/vaccine/dashboard/user-geographic-zone-preference.json',{},{});
+});

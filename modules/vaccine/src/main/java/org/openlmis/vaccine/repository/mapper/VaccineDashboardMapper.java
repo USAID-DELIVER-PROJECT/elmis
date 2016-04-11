@@ -792,6 +792,14 @@ public interface VaccineDashboardMapper {
                 "group by 1,2,3,4,5\n" +
                 "order by 5,1,2;")
         List<HashMap<String, Object>> getFacilityStockStatusDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
-        @Select("select fn_get_vaccine_current_reporting_period current_period from fn_get_vaccine_current_reporting_period()\n")
+        @Select("select id current_period, name, startdate from processing_periods p where\n" +
+                "p.id=  fn_get_vaccine_current_reporting_period()")
         Map<String,Object> getVaccineCurrentReportingPeriod();
+        @Select("select d.name zone_name, l.name level_name from \n" +
+                "geographic_zones  d\n" +
+                "inner join geographic_levels l on d.levelid=l.id\n" +
+                " where d.id = \n" +
+                "(select value from user_preferences up where up.userid = 2 \n" +
+                "and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int limit 1")
+        Map<String,Object> getUserZoneInformation();
 }

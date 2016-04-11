@@ -429,7 +429,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList = repository.getDistrictStockStatus(period, product,user);
+            repairingDetailList = repository.getDistrictStockStatus(period, product, user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -438,4 +438,7 @@ public class VaccineDashboardService {
 public Map<String, Object> getVaccineCurrentReportingPeriod(){
     return repository.getVaccineCurrentPeriod();
 }
+    public Map<String, Object> getUserZoneInformation() {
+        return repository.getUserZoneInformation();
+    }
 }

@@ -41,7 +41,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardMonthlyStockStatus,
                                     VaccineDashboardDistrictStockStatus,
                                     VaccineDashboardFacilityStockStatus,
-                                    VaccineDashboardFacilityStockStatusDetails,colors) {
+                                    VaccineDashboardFacilityStockStatusDetails,colors,
+                                    userPreferences) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -1367,6 +1368,36 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
 }
 VaccineDashboardController.resolve = {
+    userPreferences:function($q, $timeout, VaccineCurrentPeriod,UserGeographicZonePereference){
+        var deferred= $q.defer();
+        var user_preferences={};
+        $timeout(function(){
+            VaccineCurrentPeriod.get({}, function (data) {
+                if (!utils.isNullOrUndefined(data.vaccineCurrentPeriod)) {
+                    user_preferences.period_name = data.vaccineCurrentPeriod.name;
+                    user_preferences.period_id =data.vaccineCurrentPeriod.current_period;
+                } else {
+                    user_preferences.period_name = "";
+                    user_preferences.period_id ="";
+                }
+
+            });
+            UserGeographicZonePereference.get({}, function (data) {
+                if (!utils.isNullOrUndefined(data.UserGeographicZonePreference)) {
+                    user_preferences.zone_name = data.UserGeographicZonePreference.zone_name;
+                    user_preferences.level_name =data.UserGeographicZonePreference.level_name;
+                } else {
+                    user_preferences.zone_name = "";
+                    user_preferences.level_name ="";
+                }
+
+            });
+
+            deferred.resolve(user_preferences);
+        }, 100);
+
+        return deferred.promise;
+    },
     colors:function($q, $timeout, SettingsByKey){
         var deferred= $q.defer();
         var color_values={};
