@@ -472,7 +472,7 @@
                 <!--<optgroup ng-repeat="year in periods"  label="{{year.year}}">-->
 
                     <!--<option ng-repeat-start="v in year.children" value="-1">{{v.groupname}}</option>-->
-                    <option ng-repeat="v in periods" value="{{v.periodid}}" ng-selected="period == v.periodid"> &nbsp; &nbsp; {{v.periodname}}</option>
+                    <option ng-repeat="v in periods" value="{{v.periodid}}" ng-selected="period == v.periodid"> &nbsp; &nbsp; {{v.startdate|date:'MMM yyyy'}}</option>
 
                 <!--</optgroup>-->
             </select>
