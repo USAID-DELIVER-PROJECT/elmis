@@ -32,7 +32,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                   product.productId=stockCard.product.id;
                   product.productCode=stockCard.product.code;
                   product.totalQuantityOnHand=stockCard.totalQuantityOnHand;
-                  product.dosageUnit=stockCard.product.dosageUnit.code;
+                  product.dosageUnit=(stockCard.product.dosageUnit !==undefined)?stockCard.product.dosageUnit.code:null;
                   var programProduct= _.filter(programProducts, function(obj) {
                         return obj.product.primaryName === stockCard.product.primaryName;
                   });
