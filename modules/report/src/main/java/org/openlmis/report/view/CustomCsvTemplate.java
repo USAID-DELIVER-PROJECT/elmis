@@ -85,7 +85,7 @@ public class CustomCsvTemplate extends AbstractView {
           String colValue = m.get(col.get("name").asText()).toString();
           writer.write( colValue );
         }
-        if(index < m.values().size() - 1){
+        if(index < columns.size() - 1){
           writer.write(",");
         }
         index++ ;
