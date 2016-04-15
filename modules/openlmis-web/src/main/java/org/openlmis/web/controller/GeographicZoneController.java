@@ -48,7 +48,7 @@ public class GeographicZoneController extends BaseController {
   private GeographicZoneService service;
 
   @RequestMapping(value = "/geographicZones/{id}", method = GET, headers = ACCEPT_JSON)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_GEOGRAPHIC_ZONE')")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_DISTRIBUTION, MANAGE_GEOGRAPHIC_ZONE')")
   public ResponseEntity<OpenLmisResponse> get(@PathVariable Long id) {
     return OpenLmisResponse.response("geoZone", service.getById(id));
   }
