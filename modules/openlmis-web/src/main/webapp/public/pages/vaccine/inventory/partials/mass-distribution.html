@@ -236,7 +236,7 @@
                 <table class="table table-bordered" fixed-table-header>
                     <thead>
                     <tr>
-                        <th class="header" colspan="3">
+                        <th class="header" colspan="4">
                             <span openlmis-message="label.vaccine.issue.date"></span>:<b> {{searchDate |
                             date:'dd-MM-yyyy'}}</b></th>
                         <th class="header" colspan="{{stockCards.length}}">
@@ -247,7 +247,9 @@
                     <tr>
                         <th class="header" colspan="1"><span openlmis-message="label.facility"></span></th>
                         <th style="max-width:50px !important"><span openlmis-message="label.select"></span></th>
-                        <th style="max-width:100px !important"><span openlmis-message="header.issue.type"></span></th>
+                        <th style="max-width:60px !important"><span
+                                openlmis-message="label.vaccine.stock.issue.voucher"></span></th>
+                        <th style="max-width:80px !important"><span openlmis-message="header.issue.type"></span></th>
                         <th class="header" style="text-align:left" class="p-column" ng-repeat="stockCard in stockCards">
                             {{stockCard.product.primaryName}}<br/>({{stockCard.product.dosageUnit.code}})
                         </th>
@@ -263,15 +265,25 @@
                                    ng-model="distribution.isSelected">
                         </td>
                         <td>
+                            <a ng-show="distribution.isSelected === true" style="float:right" id="pdf-button"
+                               class="btn-small btn-info"
+                               ng-click="print(distribution.id)" href title="Print Issue Voucher">
+                                <span>PDF</span>
+                            </a>
+                        </td>
+                        <td>
                             <span ng-show="distribution.isSelected === true"
                                   ng-bind="distribution.distributionType"></span>
                         </td>
+
                         <td class="col-facility" ng-repeat="stockCard in stockCards">
-                            <span ng-show="distribution.isSelected === true">{{getQuantityDistributionForProduct(distribution,stockCard)}}</span>
+                            <span ng-show="distribution.isSelected === true">
+                                {{getQuantityDistributionForProduct(distribution,stockCard)}}
+                            </span>
                         </td>
                     </tr>
                     <tr>
-                        <th colspan="3" class="header" openlmis-message="label.total"></th>
+                        <th colspan="4" class="header" openlmis-message="label.total"></th>
                         <th class="header" style="text-align:left" class="p-column" ng-repeat="stockCard in stockCards">
                             <b>{{getTotalDistributionForProduct(stockCard)}}</b>
                         </th>
@@ -331,30 +343,32 @@
                 </ul>
             </div>
             <div class="rnr-table">
-                <table id="issueTable" class="table table-bordered">
+                <table id="issueTable" class="table table-bordered" fixed-table-header>
                 <thead>
                 <tr>
-                    <th class="col-lot"><span openlmis-message="label.product"></span></th>
-                    <th class="col-quantity " style="max-width:120px !important; width:120px !important"><span
+                    <th class="col-product" style="max-width:150px !important; width:150px !important">
+                        <span openlmis-message="label.product"></span></th>
+                    <th class="col-quantity " style="max-width:70px !important; width:70px !important"><span
                             openlmis-message="label.unit.of.measure"></span></th>
-                    <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                    <th class="col-lot " style="max-width:80px !important; width:80px !important"><span
                             openlmis-message="label.stock.batch"></span></th>
-                    <th class="col-lot " style="max-width:100px !important; width:100px !important"><span
+                    <th class="col-lot " style="max-width:60px !important; width:60px !important"><span
                             openlmis-message="label.stock.vvm"></span></th>
-                    <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                    <th class="col-lot " style="max-width:70px !important; width:70px !important"><span
                             openlmis-message="label.expiration.date "></span></th>
-                    <th class="col-lot " style="max-width:120px !important; width:120px !important"><span
+                    <th class="col-lot " style="max-width:90px !important; width:90px !important"><span
                             openlmis-message="header.stock.in.Hand "></span></th>
-                    <th class="col-quantity " style="max-width:150px !important; width:150px !important"><span
-                            openlmis-message="header.stock.quantity.to.issue"></span></th>
                     <th class="col-quantity " style="max-width:120px !important; width:120px !important"><span
+                            openlmis-message="header.stock.quantity.to.issue"></span></th>
+                    <th class="col-quantity "><span
                             openlmis-message="header.total.issued"></span></th>
-                    <th style="max-width:120px !important; width:120px !important"
-                        ng-if="routineFacility.status !== 'RECEIVED'" class="col-quantity "><span
-                            openlmis-message="label.vaccine.stock.quantity.required"></span></th>
+                    <th ng-if="routineFacility.status !== 'RECEIVED'" class="col-quantity ">
+                        <span
+                                openlmis-message="label.vaccine.stock.quantity.required"></span>
+                    </th>
                 </tr>
                 </thead>
-                    <tbody ng-repeat="category in facilityToIssue.productsToIssueByCategory">
+                    <tbody style="padding-top:60px" ng-repeat="category in facilityToIssue.productsToIssueByCategory">
                     <tr>
                         <td class="productCategory" id="vaccine" colspan="10">
                             {{category.productCategory}}
@@ -509,11 +523,19 @@
             <table id="podTable3" class="table table-bordered">
                 <thead>
                 <tr>
-                    <th class="col-product"><span openlmis-message="label.product"></span></th>
-                    <th class="col-lot "><span openlmis-message="label.stock.batch"></span></th>
-                    <th class="col-lot "><span openlmis-message="header.vvm.status"></span></th>
-                    <th class="col-lot "><span openlmis-message="header.stock.in.Hand"></span></th>
-                    <th class="col-quantity "><span openlmis-message="header.stock.quantity.issued"></span></th>
+                    <th style="max-width:150px !important; width:150px !important" class="col-product"><span
+                            openlmis-message="label.product"></span></th>
+                    <th class="col-quantity " style="max-width:70px !important; width:70px !important"><span
+                            openlmis-message="label.unit.of.measure"></span></th>
+                    <th style="max-width:80px !important; width:80px !important" class="col-lot "><span
+                            openlmis-message="label.stock.batch"></span></th>
+                    <th style="max-width:60px !important; width:60px !important" class="col-lot "><span
+                            openlmis-message="header.vvm.status"></span></th>
+                    <th style="max-width:90px !important; width:90px !important" class="col-lot "><span
+                            openlmis-message="header.stock.in.Hand"></span></th>
+                    <th style="max-width:120px !important; width:120px !important" class="col-quantity "><span
+                            openlmis-message="header.stock.quantity.issued"></span></th>
+                    <th class="col-quantity "></th>
                 </tr>
                 </thead>
                 <tbody ng-repeat="category in facilityPOD.productsToIssueByCategory">
@@ -526,6 +548,9 @@
                     ng-repeat-start="product in category.productsToIssue" ng-if="product.isPOD">
                     <td class="cell-input disabled" rowspan="{{product.podLots.length}}">
                         <span class="cell-text" ng-bind="product.name"></span>
+                    </td>
+                    <td class="cell-input disabled last-row" rowspan="{{product.podLots.length}}">
+                        <span class="cell-text" ng-bind="product.dosageUnit"></span>
                     </td>
                     <td class="cell-input disabled"  ng-class="{'skip':product.lots === undefined}">
                         <span class="cell-text" ng-bind="product.podLots[0].lotCode"></span>
@@ -559,6 +584,7 @@
 
                                 />
                     </td>
+                    <td rowspan="{{product.podLots.length}}"></td>
                 </tr>
                 <tr ng-repeat-end ng-repeat="lot in product.podLots" ng-show="!$first" ng-class="color">
                     <td class="col-general cell-input disabled">

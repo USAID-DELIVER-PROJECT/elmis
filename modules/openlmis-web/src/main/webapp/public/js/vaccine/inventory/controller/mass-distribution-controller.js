@@ -218,7 +218,6 @@ function MassDistributionController($scope,$location, $document,$window,configur
         $scope.facilityToIssue=angular.copy(facility);
         $scope.facilityToIssue.type=type;
         $scope.issueModal=true;
-        console.log(JSON.stringify(facility));
      };
      $scope.closeIssueModal=function(){
         $scope.facilityToIssue=undefined;
@@ -242,7 +241,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
 
      $scope.showPODModal=function(facility){
         $scope.podModal=true;
-        $scope.facilityPOD=facility;
+        $scope.facilityPOD=facility;print
      };
 
      $scope.closePODModal=function(){
