@@ -1570,9 +1570,9 @@ VaccineDashboardController.resolve = {
                     settings.monthsRange = 6;
                 }
 
-            });
+              });
 
-            deferred.resolve(settings);
+           deferred.resolve(settings);
         }, 100);
         return deferred.promise;
     },

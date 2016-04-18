@@ -1436,6 +1436,15 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
         var extremeVal;
         var loops = Math.floor(total / range) + 1;
 
+        if (total == 1) {
+
+            pages.push({
+                offset: offset,
+                range: range,
+                value: '1'
+            });
+
+        } else {
         for (var i = 1; i <= loops; i++) {
             offset = (i - 1) * range;
             extremeVal = total > i * range ? i * range : total;
@@ -1445,6 +1454,7 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
                 range: range,
                 value: (offset + 1).toString().concat('-').concat(extremeVal.toString())
             });
+        }
 
         }
 
