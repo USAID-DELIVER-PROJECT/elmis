@@ -101,11 +101,13 @@
 
                         <tr>
                             <th>
-                                <span>BCG</span>
+                                <span ng-if="report.dtpProduct==false" openlmis-message="label.dropout.bcg"></span>
+                                <span ng-if="report.dtpProduct==true" openlmis-message="label.dropout.dtp1"></span>
 
                             </th>
                             <th>
-                                <span>MR</span>
+                                <span ng-if="report.dtpProduct==false" openlmis-message="label.dropout.mr"></span>
+                                <span ng-if="report.dtpProduct==true" openlmis-message="label.dropout.dtp3"></span>
 
                             </th>
                             <th>
@@ -352,11 +354,13 @@
 
                         <tr>
                             <th>
-                                <span>BCG</span>
+                                <span ng-if="report.dtpProduct==false" openlmis-message="label.dropout.bcg"></span>
+                                <span ng-if="report.dtpProduct==true" openlmis-message="label.dropout.dtp1"></span>
 
                             </th>
                             <th>
-                                <span>MR</span>
+                                <span ng-if="report.dtpProduct==false" openlmis-message="label.dropout.mr"></span>
+                                <span ng-if="report.dtpProduct==true" openlmis-message="label.dropout.dtp3"></span>
 
                             </th>
                             <th>

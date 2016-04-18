@@ -102,6 +102,9 @@ public class PerformanceByDropoutRateByDistrictService {
 
 
         performanceByDisrictReport = this.aggregateReport(performanceByDropoutRateByDistrictList);
+      if(  filterParam.getProduct_id().equals(DTP_PRODUCT_ID)){
+          performanceByDisrictReport.setDtpProduct(true);
+      }
         performanceByDisrictReport.setPopulation(population);
         performanceByDisrictReport.setRegionPopulation(regionPpulation);
         performanceByDisrictReport.setRegionReport(isRegionReport);

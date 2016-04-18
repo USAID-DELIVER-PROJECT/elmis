@@ -41,6 +41,7 @@ public class PerformanceByDisrictReport {
     private Long total_bcg_mr_dropout;
     private boolean isFacillityReport;
     private boolean isRegionReport;
+    private boolean isDtpProduct;
     private  List<Map<String,Object>> population;
     private  List<Map<String,Object>> regionPopulation;
 
