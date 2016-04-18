@@ -19,7 +19,7 @@ import java.util.List;
 @Repository
 public interface VaccineInventoryDistributionMapper {
 
-    @Select("SELECT f.id ,f.code,f.name FROM requisition_group_members rgm\n" +
+    @Select("SELECT DISTINCT f.id ,f.code,f.name FROM requisition_group_members rgm\n" +
             "JOIN facilities f ON f.id=rgm.facilityid\n" +
             "JOIN requisition_groups rg ON rg.id=rgm.requisitiongroupid\n" +
             "JOIN supervisory_nodes sn ON sn.id= rg.supervisorynodeid\n" +

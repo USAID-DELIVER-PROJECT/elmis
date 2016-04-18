@@ -295,6 +295,8 @@ public class StockRequirementsService
     }
 
     private void setSafetyBox(List<FacilityProgramProduct> programProductsByProgram, StockRequirements supplyRequirements) {
+        Objects.requireNonNull(supplyRequirements);
+        Objects.requireNonNull(programProductsByProgram);
        ConfigurationSetting configurationSetting=configurationSettingService.getByKey("VACCINE_STOCK_REQUIREMENTS_SAFETY_BOX_CODE");
         if(configurationSetting != null)
         {

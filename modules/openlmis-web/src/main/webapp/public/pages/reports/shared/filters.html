@@ -613,3 +613,40 @@
 
     </div>
 </script>
+<script type="text/ng-template" id="filter-vaccine-stock-date-template">
+    <div>
+
+        <label class="labels" openlmis-message="label.to.date"><span class="label-required">*</span></label>
+
+        <div>
+            <input style="width:90px !important; height:20px !important "
+                   name="searchDate"
+                   type="text"
+                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true, maxDate:'today'}"
+                   ng-model="filterToDate"
+                   ui-date-format="yy-mm-dd"/>
+        </div>
+
+    </div>
+</script>
+
+<script type="text/ng-template" id="filter-vaccine-facility-levels-template">
+    <div>
+
+        <label class="labels" openlmis-message="label.facility.level"><span class="label-required">*</span></label>
+
+        <div>
+            <select ui-select2 class="input-large"
+                    ng-model="filterFacilityLevel">
+                <option ng-value="0" ng-selected="filterFacilityLevel ==undefined ||filterFacilityLevel == 0">Select
+                </option>
+                <option ng-repeat="option in facilityLevels " value="{{option.code}}"
+                        ng-selected="filterFacilityLevel == option.code">{{option.code}}
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+</script>

@@ -64,13 +64,12 @@
 </style>
 
 <div >
-    <h2><span openlmis-message="label.vaccine.stock.receive"></span></h2>
+    <h2 ng-if="isTransferIn === undefined"><span openlmis-message="label.vaccine.stock.receive"></span></h2>
+
+    <h2 ng-if="isTransferIn === true"><span openlmis-message="label.vaccine.transfer.in"></span></h2>
 
     <div ng-show="hasStock && !hasPermission('INITIALIZE_STOCK') && hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
-        <input type="checkbox"
-               ng-init="isTransferIn=false"
 
-               ng-model="isTransferIn">&nbsp;<span openlmis-message="label.vaccine.transfer.in"></span>
     </div>
     <br/>
     <div class="row-fluid" >
@@ -101,7 +100,7 @@
                                         <span class="label-required">*</span>:&nbsp;
                                         <input ng-reqiured=" hasPermission('OPEN_STOCK_RECEIVING_PROCESS')" type="text"
                                                name="orderNumber" ng-required="true"
-                                               ng-model="orderNumber" ng-change="clear()"/>
+                                               ng-model="orderNumber" ng-change="clear()" ng-blur="checkOrderNumber()"/>
 
                                     </div>
                                     <div class="span4"
@@ -156,7 +155,7 @@
             </div>
             <div ng-show="!isTransferIn && (hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || hasPermission('INITIALIZE_STOCK') || !hasStock)">
                 <ng-include
-                        src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html?'"></ng-include>
+                        src="'/public/pages/vaccine/inventory/partials/open-receive-stock-partial.html?i=11'"></ng-include>
             </div>
         </div>
     </div>
