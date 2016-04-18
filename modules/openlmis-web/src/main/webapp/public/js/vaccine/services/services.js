@@ -546,6 +546,12 @@ services.factory('VaccineDashboardFacilityStockStatus', function($resource){
 services.factory('VaccineDashboardFacilityStockStatusDetails', function($resource){
     return $resource('/vaccine/dashboard/facility-stock-status-details.json',{},{});
 });
+services.factory('VaccineCurrentPeriod', function($resource){
+    return $resource('/vaccine/dashboard/vaccine-current-period.json',{},{});
+});
+services.factory('UserGeographicZonePereference', function($resource){
+    return $resource('/vaccine/dashboard/user-geographic-zone-preference.json',{},{});
+});
 
 services.factory('VaccineDashboardFacilityInventoryStockStatus', function($resource){
     return $resource('/vaccine/dashboard/facility-inventory-stock-status.json',{},{});

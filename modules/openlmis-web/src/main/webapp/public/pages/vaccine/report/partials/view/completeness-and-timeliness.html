@@ -35,7 +35,7 @@
     }
 
     .NONREPORTING_rows{
-        background-color: #527756;
+        background-color: #DCDCDC;
     }
 
 </style>
@@ -70,14 +70,8 @@
             </div>
         </div>
         <div class="content-body">
-            <table class="table table-bordered" ng-show="datarows.length < 1">
-                <tr>
-                    <td>No data to show under selected filters</td>
-                </tr>
-            </table>
-            <div>
-                <br/>
-                <div id="parent" ng-show="datarows.length > 0">
+        <div style="font-weight: normal" ng-show="datarows == undefined || datarows.length == 0" openlmis-message="label.report.no.data.to.show"></div>
+            <div id="parent" ng-show="datarows.length > 0">
                     <h2 openlmis-message="completeness.and.timliness.header.comp.and.tim.by.district"></h2>
                     <table class="rnr-table table-bordered table">
                         <thead>
@@ -115,7 +109,7 @@
                         <tbody>
                             <tr ng-repeat-start="d in datarows"></tr>
                              <tr ng-repeat="row in d.data">
-                                 <td >{{ d.data[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                                 <td >{{ d.data[$index-1].region_name == row.region_name  ? '' : row.region_name }}</td>
                                  <td >{{ d.data[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                                  <td class="{{row.reporting_status}}_rows" >{{row.period_name}}</td>
                                  <td class="number {{row.reporting_status}}_rows"  >{{ row.reporting_status === "REPORTING" ? getLocalMessage('label.yes') : getLocalMessage('label.no')  }}</td>
@@ -130,14 +124,14 @@
                             </tr>
                             <tr  ng-if="d.subtotal" class="aggregate-row">
                                 <td></td>
-                                <td class="aggregate-row">Sub Total</td>
+                                <td class="aggregate-row">Annual Report Rate</td>
                                 <td class="aggregate-row"></td>
                                <td class="aggregate-row"  ></td>
                                 <td class="number aggregate-row" >{{d.subtotal.expected | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.reported | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.late | number}}</td>
-                                <td class="number aggregate-row" ></td>
-                                <td class="number aggregate-row" ></td>
+                                <td class="number aggregate-row" >{{d.subtotal.reported /d.subtotal.expected * 100 | number:0}}%</td>
+                                <td class="number aggregate-row" >{{d.subtotal.late /d.subtotal.reported * 100 | number:0}}%</td>
                                 <td class="number aggregate-row" >{{d.subtotal.fixed | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.outreach | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.session_total | number}}</td>
@@ -147,13 +141,13 @@
                                 <td class="aggregate-row">Grand Total</td>
                                 <td class="aggregate-row"></td>
                                 <td class="aggregate-row"  ></td>
-                                <td class="number aggregate-row" >{{d.grandtotal.expected_total | number}}</td>
-                                <td class="number aggregate-row" >{{d.grandtotal.reported_total | number}}</td>
-                                <td class="number aggregate-row" >{{d.grandtotal.late_total | number}}</td>
-                                <td class="number aggregate-row" ></td>
-                                <td class="number aggregate-row" ></td>
-                                <td class="number aggregate-row" >{{d.grandtotal.fixed_total | number}}</td>
-                                <td class="number aggregate-row" >{{d.grandtotal.outreach_total | number}}</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.expected | number}}</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.reported | number}}</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.late | number}}</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.reported /d.grandtotal.expected * 100 | number:0}}%</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.lated /d.grandtotal.reported * 100 | number:0}}%</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.fixed | number}}</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.outreach | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.session_total | number}}</td>
                             </tr>
                         </tbody>
@@ -183,12 +177,13 @@
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.completeness"></td>
-                                <td ng-repeat="comp in completeness">{{comp.total | number}}</td>
+                                <td ng-repeat="comp in completeness">{{comp.total | number}}%</td>
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.timeliness"></td>
-                                <td ng-repeat="tim in timelines">{{tim.total | number}}</td>
+                                <td ng-repeat="tim in timelines">{{tim.total | number}}%</td>
                             </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -196,4 +191,3 @@
             </div>
         </div>
     </div>
-</div>

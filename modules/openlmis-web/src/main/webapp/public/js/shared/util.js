@@ -78,11 +78,11 @@ var utils = {
             }
 
             endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
-            startDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1);
+            startDate = new Date(endDate.getFullYear(), endDate.getMonth() +1, 1);
 
             switch (periodRange) {
                 case '1':
-                    months = startDate.getMonth() - 1;
+                    months = startDate.getMonth() ;
                     break;
                 case '2':
                     months = startDate.getMonth() - 3;
@@ -96,7 +96,7 @@ var utils = {
                 default :
                     months = 0;
             }
-            startDate.setMonth(months);
+            startDate.setMonth(months+1);
 
             return {
                 startdate: utils.formatDate(startDate),
@@ -236,7 +236,7 @@ var utils = {
         if(includeGrandTotal) {
 
             _.each(columnKeys, function (columnKey) {
-                grandTotal[columnKey] = utils.getGrandTotal(reportData, districtNameKey, columnKey);
+                grandTotal[columnKey] = utils.getGrandTotal(reportData, columnKey);
             });
 
             reportDataWithAggregates.push({grandtotal: grandTotal});

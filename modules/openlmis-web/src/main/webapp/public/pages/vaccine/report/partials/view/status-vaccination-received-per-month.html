@@ -77,13 +77,7 @@
             </div>
 
             <div class="content-body">
-                <table client-side-sort-pagination class="table table-bordered"
-                       ng-show="data == undefined || data.length == 0">
-                    <tr>
-                        <td>No data to show under selected filters</td>
-                    </tr>
-                </table>
-<br/>
+                <div style="font-weight: normal" ng-show="datarows == undefined || datarows.length == 0" openlmis-message="label.report.no.data.to.show"></div>
                 <div ng-show="data.length > 0">
                     <table id="fullSupplyTable" ng-show="datarows.length > 0" class="rnr-table table-bordered table">
                         <thead>
@@ -118,8 +112,8 @@
                             <td ng-bind="subRow.administered | number"  class="number {{subRow.reporting_status}}_rows"/>
                         </tr>
                         <tr ng-repeat-end ng-if="d.subtotal" class="aggregate-row">
-                            <td></td>
-                            <td></td>
+                            <td ng-if="reportType==false" colspan="2"/>
+                            <td ng-if="reportType==true" colspan="3"/>
                             <td></td>
                             <td class="number aggregate-row">Sub Total</td>
                             <td class="number aggregate-row">{{d.subtotal.targetpopulation | number}}</td>
@@ -136,14 +130,14 @@
                             <td ng-if="reportType==false" colspan="2"/>
                             <td ng-if="reportType==true" colspan="3"/>
                             <td></td>
-                            <td class="aggregate-row" ><span openlmis-message="label.total"></span></td>
-                            <td class="aggregate-row" ng-bind="report.totalPopulation| number"></td>
-                            <td class="aggregate-row"  ng-bind="report.totalReceived| number"></td>
-                            <td class="aggregate-row"  ng-bind="report.totalOnHand| number"></td>
-                            <td class="aggregate-row"><span ng-bind="report.totalIssued| number"/></td>
-                            <td class="aggregate-row"><span ng-bind="report.totalUsed| number"/></td>
-                            <td class="aggregate-row" ><span ng-bind="report.totalWasted| number"/></td>
-                            <td class="aggregate-row" ><span ng-bind="report.totalAdminstered| number"/></td>
+                            <td class="number aggregate-row" ><span openlmis-message="label.total"></span></td>
+                            <td class="number aggregate-row" ng-bind="report.totalPopulation| number"></td>
+                            <td class="number aggregate-row"  ng-bind="report.totalReceived| number"></td>
+                            <td class="number aggregate-row"  ng-bind="report.totalOnHand| number"></td>
+                            <td class="number aggregate-row"><span ng-bind="report.totalIssued| number"/></td>
+                            <td class="number aggregate-row"><span ng-bind="report.totalUsed| number"/></td>
+                            <td class="number aggregate-row" ><span ng-bind="report.totalWasted| number"/></td>
+                            <td class="number aggregate-row" ><span ng-bind="report.totalAdminstered| number"/></td>
                         </tr>
                         </tfoot>
                         </table>
@@ -195,13 +189,7 @@
                     </table>
                     <!-- end of the table-->
                 </div>
-
-
             </div>
-
-
         </div>
     </div>
-
-</div>
 </div>

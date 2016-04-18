@@ -63,14 +63,7 @@
             </div>
 
             <div class="content-body">
-
-                <table client-side-sort-pagination class="table table-bordered"
-                       ng-show="data == undefined || data.length == 0">
-                    <tr>
-                        <td>No data to show under selected filters</td>
-                    </tr>
-                </table>
-
+                <div style="font-weight: normal" ng-show="datarows == undefined || datarows.length == 0" openlmis-message="label.report.no.data.to.show"></div>
                 <div ng-show="datarows.length > 0">
 
                     <table id="fullSupplyTable" ng-show="datarows.length > 0"
@@ -108,11 +101,13 @@
 
                         <tr>
                             <th>
-                                <span>BCG</span>
+                                <span ng-if="report.dtpProduct==false" openlmis-message="label.dropout.bcg"></span>
+                                <span ng-if="report.dtpProduct==true" openlmis-message="label.dropout.dtp1"></span>
 
                             </th>
                             <th>
-                                <span>MR</span>
+                                <span ng-if="report.dtpProduct==false" openlmis-message="label.dropout.mr"></span>
+                                <span ng-if="report.dtpProduct==true" openlmis-message="label.dropout.dtp3"></span>
 
                             </th>
                             <th>
@@ -359,11 +354,13 @@
 
                         <tr>
                             <th>
-                                <span>BCG</span>
+                                <span ng-if="report.dtpProduct==false" openlmis-message="label.dropout.bcg"></span>
+                                <span ng-if="report.dtpProduct==true" openlmis-message="label.dropout.dtp1"></span>
 
                             </th>
                             <th>
-                                <span>MR</span>
+                                <span ng-if="report.dtpProduct==false" openlmis-message="label.dropout.mr"></span>
+                                <span ng-if="report.dtpProduct==true" openlmis-message="label.dropout.dtp3"></span>
 
                             </th>
                             <th>
@@ -557,13 +554,9 @@
                         </tr>
                         </tbody>
                     </table>
-
                 </div>
-
-
             </div>
         </div>
     </div>
+</div>
 
-</div>
-</div>

@@ -34,6 +34,7 @@
         <h2 ng-show="show_email"><i class="flaticon-bar"></i>Email Notification</h2>
     </div>
     <div class="modal-body">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
         <div ng-show="show_email">
             <div>
                 <p>
@@ -138,7 +139,8 @@
         <h3 ng-show="show_email">Email Notification</h3>
     </div>
     <div class="modal-body">
-        <div ng-show="show_email">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
+         <div ng-show="show_email">
             <div>
                 <p>
                     Use this form to customize and send email notifications for
@@ -246,6 +248,7 @@
 
     </div>
     <div class="modal-body">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
         <div class="row-fluid dashlet-scroll-table">
         <table id="investigatingTable" ng-show="items.length > 0"
                class="rnr-table table-bordered table"
@@ -340,10 +343,16 @@
                     <div class="caption"><i class="flaticon-alert"></i>
                         <span class="caption-subject bold uppercase font-dark" openlmis-message="label.action.bar"></span>
                     </div>
-                    <div class="tools">
+
+                    <div  class="tools  pull-right">
                         <i ng-class="{'icon-minus-sign': actionBar.openPanel, 'icon-plus-sign': !actionBar.openPanel}"></i>
                     </div>
+                    <div class=" pull-right ">
+                        <span class="caption-subject bold  font-dark" openlmis-message="label.current.period"></span>: <span class="caption-helper">{{userPreferences.startdate| date:'MMMM,yyyy'}}</span>
+                        <span class="caption-subject bold  font-dark"  openlmis-message="label.user.perimission.zone"></span>: <span class="caption-helper">{{userPreferences.zone_name}}&nbsp;</span>
+                    </div>
                 </div>
+
             </accordion-heading>
 
             <span class="reporting-header" style="padding: 0; margin:0; border: none; background: none">
@@ -398,8 +407,8 @@
 
             </accordion-heading>
 
-            <!-- session -->
-            <div class="clearfix" >&nbsp;</div>
+            <!-- session
+            <div class="clearfix" >&nbsp;</div>-->
             <!-- begin row -->
             <div class="row">
                 <div class="col-md-6 col-sm-6">
@@ -668,7 +677,9 @@
             </div>
 
         </accordion-heading>
-            <div class="clearfix" >&nbsp;</div>
+
+            <!-- stock status
+            <div class="clearfix" >&nbsp;</div> -->
             <div class="row">
                 <div class="col-md-6 col-sm-6">
                     <div class="portlet light">

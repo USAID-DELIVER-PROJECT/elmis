@@ -31,6 +31,7 @@ var VaccineReport = function (report) {
     this.logisticsLineItems = getLogisticsLineItems(this.logisticsLineItems, this);
     this.coverageLineItemViews = _.groupBy(this.coverageLineItems, 'productId');
     this.editable = (this.status === 'DRAFT' || this.status === 'REJECTED');
+    this.ready = true;
   };
 
 

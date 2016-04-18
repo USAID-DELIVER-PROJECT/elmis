@@ -56,8 +56,6 @@
                                             cm-model="filter.product"
                     "></vaccine-product-filter>
 
-                    <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate"-->
-                                          <!--formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
                     <static-year-filter year="staticYear" startdate="periodStartDate" enddate="periodEnddate" ></static-year-filter>
                     <!--======================== filter end =========================-->
                 </div>
@@ -75,14 +73,7 @@
             </div>
         </div>
         <div class="content-body">
-            <div>
-                <table class="table table-bordered" ng-show="zoneMainReport.length < 1">
-                    <tr>
-                        <td>No data to show under selected filters</td>
-                    </tr>
-                </table>
-                <div>
-
+            <div style="font-weight: normal" ng-show="zoneMainReport == undefined || zoneMainReport.length == 0" openlmis-message="label.report.no.data.to.show"></div>
                     <div id="parent" ng-show="zoneMainReport.length > 0">
                         <h2 ng-show="!regionSelected">District Level</h2>
 
@@ -245,7 +236,7 @@
                                 <td>
                                     {{totalFacilities | number}}
                                 </td>
-                                <td>{{totalPopulation|number}}</td>
+                                <td>{{totalRegionPopulation|number}}</td>
                                 <td colspan=" {{ periodlist.length }}">
 
                                 </td>
@@ -281,13 +272,8 @@
                             </thead>
 
                         </table>
-
-
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
-</div>

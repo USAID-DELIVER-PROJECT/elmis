@@ -1235,8 +1235,8 @@ app.directive('vaccineProductFilter', ['VaccineProducts', 'VaccineSupervisedIvdP
     }
 ]);
 
-app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodFlat', 'messageService', 'SettingsByKey',
-    function (GetVaccineReportPeriodFlat, messageService, SettingsByKey) {
+app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodFlat', 'messageService', 'SettingsByKey', 'VaccineCurrentPeriod',
+    function (GetVaccineReportPeriodFlat, messageService, SettingsByKey, VaccineCurrentPeriod) {
         return {
             restrict: 'E',
             scope: {
@@ -1250,19 +1250,24 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodFlat', '
                 SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data, er) {
                     $scope.cutoffdate = data.settings.value;
                 });
+                VaccineCurrentPeriod.get({}, function (data) {
+                    if (!utils.isNullOrUndefined(data) && !utils.isNullOrUndefined(data).vaccineCurrentPeriod) {
+                        var defaultPeriodId = data.vaccineCurrentPeriod.current_period;
+                        $scope.filter = {defaultPeriodId: defaultPeriodId};
+
+                    }
+
+                });
                 $scope.$evalAsync(function () {
                     //Load period tree
                     GetVaccineReportPeriodFlat.get({}, function (data) {
                         $scope.periods = data.vaccinePeriods.periods;
-
-                        var defaultPeriodId = utils.getVaccineMonthlyDefaultPeriod($scope.periods, $scope.cutoffdate);
-
-                        $scope.filter = {defaultPeriodId: defaultPeriodId};
                         if (!angular.isUndefined($scope.periods)) {
                             if ($scope.periods.length === 0)
                                 $scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
                         }
-                        $scope.period = defaultPeriodId;
+
+                        $scope.period = $scope.filter.defaultPeriodId;
 
                     });
                 });
@@ -1431,6 +1436,15 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
         var extremeVal;
         var loops = Math.floor(total / range) + 1;
 
+        if (total == 1) {
+
+            pages.push({
+                offset: offset,
+                range: range,
+                value: '1'
+            });
+
+        } else {
         for (var i = 1; i <= loops; i++) {
             offset = (i - 1) * range;
             extremeVal = total > i * range ? i * range : total;
@@ -1440,6 +1454,7 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
                 range: range,
                 value: (offset + 1).toString().concat('-').concat(extremeVal.toString())
             });
+        }
 
         }
 

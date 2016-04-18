@@ -27,127 +27,147 @@ public class VaccineDashboardRepository {
     @Autowired
     VaccineDashboardMapper mapper;
 
-    public Map<String, Object> getReportingSummary(  Long user){
+    public Map<String, Object> getReportingSummary(Long user) {
         return mapper.getReportingSummary(user);
     }
 
-    public List<HashMap<String, Object>> getReportingDetails(Long userId){
+    public List<HashMap<String, Object>> getReportingDetails(Long userId) {
         return mapper.getReportingDetails(userId);
     }
 
-    public Map<String, Object> getRepairingSummary(Long userId){
-        return mapper.getRepairingSummary( userId);
+    public Map<String, Object> getRepairingSummary(Long userId) {
+        return mapper.getRepairingSummary(userId);
     }
 
-    public List<HashMap<String, Object>> getRepairingDetails(Long userId){
+    public List<HashMap<String, Object>> getRepairingDetails(Long userId) {
         return mapper.getRepairingDetails(userId);
     }
 
-    public Map<String, Object> getInvestigatingSummary(Long userId){
+    public Map<String, Object> getInvestigatingSummary(Long userId) {
         return mapper.getInvestigatingSummary(userId);
     }
 
-    public List<HashMap<String, Object>> getInvestigatingDetails(Long userId){
+    public List<HashMap<String, Object>> getInvestigatingDetails(Long userId) {
         return mapper.getInvestigatingDetails(userId);
     }
 
-    public List<HashMap<String, Object>> getMonthlyCoverage(Date startDate, Date endDate,Long userId, Long product){
+    public List<HashMap<String, Object>> getMonthlyCoverage(Date startDate, Date endDate, Long userId, Long product) {
         return mapper.getMonthlyCoverage(startDate, endDate, userId, product);
     }
 
-    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product){
+    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product) {
         return mapper.getDistrictCoverage(period, product);
     }
 
-    public List<HashMap<String, Object>> getFacilityCoverage(Long period, Long product, Long userId){
+    public List<HashMap<String, Object>> getFacilityCoverage(Long period, Long product, Long userId) {
         return mapper.getFacilityCoverage(period, product, userId);
     }
-    public List<HashMap<String, Object>> getFacilityCoverageDetails(Date startDate, Date endDate, Long productId, Long userId){
+
+    public List<HashMap<String, Object>> getFacilityCoverageDetails(Date startDate, Date endDate, Long productId, Long userId) {
         return mapper.getFacilityCoverageDetails(startDate, endDate, productId, userId);
     }
 
-    public List<HashMap<String, Object>> getFacilitySessions(Long period, Long userId){
+    public List<HashMap<String, Object>> getFacilitySessions(Long period, Long userId) {
         return mapper.getFacilitySessions(period, userId);
     }
-    public List<HashMap<String, Object>> getFacilitySessionsDetails(Date startDate, Date endDate, Long userId){
+
+    public List<HashMap<String, Object>> getFacilitySessionsDetails(Date startDate, Date endDate, Long userId) {
         return mapper.getFacilitySessionsDetails(startDate, endDate, userId);
     }
 
-    public List<HashMap<String, Object>> getFacilityWastage(Long period, Long product, Long userId){
+    public List<HashMap<String, Object>> getFacilityWastage(Long period, Long product, Long userId) {
         return mapper.getFacilityWastage(period, product, userId);
     }
-    public List<HashMap<String, Object>> getFacilityWastageDetails(Date startDate, Date endDate, Long productId, Long userId){
+
+    public List<HashMap<String, Object>> getFacilityWastageDetails(Date startDate, Date endDate, Long productId, Long userId) {
         return mapper.getFacilityWastageDetails(startDate, endDate, productId, userId);
     }
-    public List<HashMap<String, Object>> getFacilityDropout(Long period, Long product, Long userId){
+
+    public List<HashMap<String, Object>> getFacilityDropout(Long period, Long product, Long userId) {
         return mapper.getFacilityDropout(period, product, userId);
     }
-    public List<HashMap<String, Object>> getFacilityDropoutDetails(Date startDate, Date endDate, Long productId, Long userId){
+
+    public List<HashMap<String, Object>> getFacilityDropoutDetails(Date startDate, Date endDate, Long productId, Long userId) {
         return mapper.getFacilityDropoutDetails(startDate, endDate, productId, userId);
     }
 
-    public List<HashMap<String, Object>> getMonthlyWastage(Date startDate, Date endDate, Long productId){
+    public List<HashMap<String, Object>> getMonthlyWastage(Date startDate, Date endDate, Long productId) {
         return mapper.getMonthlyWastage(startDate, endDate, productId);
     }
 
-    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product){
+    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product) {
         return mapper.getWastageByDistrict(period, product);
     }
 
-    public List<HashMap<String, Object>> getMonthlySessions(Date startDate, Date endDate){
+    public List<HashMap<String, Object>> getMonthlySessions(Date startDate, Date endDate) {
 
         return mapper.getMonthlySessions(startDate, endDate);
     }
 
-    public List<HashMap<String, Object>> getDistrictSessions(Long period){
+    public List<HashMap<String, Object>> getDistrictSessions(Long period) {
 
         return mapper.getDistrictSessions(period);
     }
 
 
-    public List<HashMap<String, Object>> getBundling(Date startDate, Date endDate, Long productId){
+    public List<HashMap<String, Object>> getBundling(Date startDate, Date endDate, Long productId) {
 
         return mapper.getBundling(startDate, endDate, productId);
     }
-    public List<HashMap<String, Object>> getMonthlyDropout(Date startDate, Date endDate, Long product){
+    
+
+    public List<HashMap<String, Object>> getMonthlyDropout(Date startDate, Date endDate, Long product) {
 
         return mapper.getMonthlyDropout(startDate, endDate, product);
     }
-    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product){
+
+    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product) {
         return mapper.getDistrictDropout(period, product);
     }
 
-    public List<HashMap<String, Object>> getMonthlyStock(Date startDate, Date endDate, Long product){
+    public List<HashMap<String, Object>> getMonthlyStock(Date startDate, Date endDate, Long product) {
 
         return mapper.getMonthlyStock(startDate, endDate, product);
     }
-    public List<HashMap<String, Object>> getDistrictStock(Long period, Long product){
+
+    public List<HashMap<String, Object>> getDistrictStock(Long period, Long product) {
         return mapper.getDistrictStock(period, product);
     }
-    public Long isDistrictUser(Long userId){
+
+    public Long isDistrictUser(Long userId) {
         return mapper.isDistrictUser(userId);
     }
 
-    public List<HashMap<String,Object>> getFacilityStock(Long period, Long product, Long userId) {
+    public List<HashMap<String, Object>> getFacilityStock(Long period, Long product, Long userId) {
         return mapper.getFacilityStock(period, product, userId);
     }
 
     public List<HashMap<String, Object>> getFacilityStockDetail(Date fromDate, Date toDate, Long product, Long userId) {
         return mapper.getFacilityStockDetail(fromDate, toDate, product, userId);
     }
-    public List<HashMap<String, Object>> getStockStatusByMonthly(Date startDate, Date endDate,Long userId, Long product){
+
+    public List<HashMap<String, Object>> getStockStatusByMonthly(Date startDate, Date endDate, Long userId, Long product) {
         return mapper.getStockStatusByMonthly(startDate, endDate, userId, product);
     }
 
-    public List<HashMap<String, Object>> getDistrictStockStatus(Long period, Long product,Long user){
-        return mapper.getDistrictStockStatus(period, product,user);
+    public List<HashMap<String, Object>> getDistrictStockStatus(Long period, Long product, Long user) {
+        return mapper.getDistrictStockStatus(period, product, user);
     }
 
-    public List<HashMap<String, Object>> getFacilityStockStatus(Long period, Long product, Long userId){
+    public List<HashMap<String, Object>> getFacilityStockStatus(Long period, Long product, Long userId) {
         return mapper.getFacilityStockStatus(period, product, userId);
     }
-    public List<HashMap<String, Object>> getFacilityStockStatusDetails(Date startDate, Date endDate, Long productId, Long userId){
+
+    public List<HashMap<String, Object>> getFacilityStockStatusDetails(Date startDate, Date endDate, Long productId, Long userId) {
         return mapper.getFacilityStockStatusDetails(startDate, endDate, productId, userId);
+    }
+
+    public Map<String, Object> getVaccineCurrentPeriod() {
+        return mapper.getVaccineCurrentReportingPeriod();
+    }
+
+    public Map<String, Object> getUserZoneInformation() {
+        return mapper.getUserZoneInformation();
     }
 
     public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId, String date) {

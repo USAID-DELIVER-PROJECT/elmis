@@ -57,49 +57,51 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         var param = $scope.filter;
 
         $scope.error_message = '';
-        PerformanceByDropoutRateByDistrict.get(param, function (data) {
-            var reportVal;
-            if (data !== undefined &&  data.PerformanceByDropoutRateList!==null && !utils.isEmpty(data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList)) {
+        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)&& !utils.isNullOrUndefined($scope.filter.product)) {
+            PerformanceByDropoutRateByDistrict.get(param, function (data) {
+                var reportVal;
+                if (data !== undefined && data.PerformanceByDropoutRateList !== null && !utils.isEmpty(data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList)) {
 
-                $scope.data = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
-                $scope.datarows = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
-                $scope.regionrows = data.PerformanceByDropoutRateList.performanceByDropOutRegionsList;
-                $scope.reportType = data.PerformanceByDropoutRateList.facillityReport;
-                $scope.columnVals = data.PerformanceByDropoutRateList.columnNames;
-                $scope.regionColumnVals = data.PerformanceByDropoutRateList.regionColumnsValueList;
-                $scope.report = data.PerformanceByDropoutRateList;
-                $scope.colValueList = data.PerformanceByDropoutRateList.columnsValueList;
-                $scope.population = data.PerformanceByDropoutRateList.population;
-                $scope.regionPopulation = data.PerformanceByDropoutRateList.regionPopulation;
+                    $scope.data = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
+                    $scope.datarows = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
+                    $scope.regionrows = data.PerformanceByDropoutRateList.performanceByDropOutRegionsList;
+                    $scope.reportType = data.PerformanceByDropoutRateList.facillityReport;
+                    $scope.columnVals = data.PerformanceByDropoutRateList.columnNames;
+                    $scope.regionColumnVals = data.PerformanceByDropoutRateList.regionColumnsValueList;
+                    $scope.report = data.PerformanceByDropoutRateList;
+                    $scope.colValueList = data.PerformanceByDropoutRateList.columnsValueList;
+                    $scope.population = data.PerformanceByDropoutRateList.population;
+                    $scope.regionPopulation = data.PerformanceByDropoutRateList.regionPopulation;
 
-                if (!utils.isEmpty($scope.datarows)) {
+                    if (!utils.isEmpty($scope.datarows)) {
 
-                    if ($scope.reportType === true) {
-                        reportVal=findMonthValue($scope.datarows,1);
-                        $scope.datarows=reportVal.reportList;
-                        $scope.nonReportingDistrict=reportVal.grayCount;
-                        extractPopulationInfo($scope.datarows, $scope.population, 1);
-                        $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 1);
+                        if ($scope.reportType === true) {
+                            reportVal = findMonthValue($scope.datarows, 1);
+                            $scope.datarows = reportVal.reportList;
+                            $scope.nonReportingDistrict = reportVal.grayCount;
+                            extractPopulationInfo($scope.datarows, $scope.population, 1);
+                            $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 1);
 
-                    } else {
-                        reportVal=findMonthValue($scope.datarows,2);
-                        $scope.datarows=reportVal.reportList;
-                        $scope.nonReportingDistrict=reportVal.grayCount;
-                        extractPopulationInfo($scope.datarows, $scope.population, 2);
-                        $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
+                        } else {
+                            reportVal = findMonthValue($scope.datarows, 2);
+                            $scope.datarows = reportVal.reportList;
+                            $scope.nonReportingDistrict = reportVal.grayCount;
+                            extractPopulationInfo($scope.datarows, $scope.population, 2);
+                            $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
+
+                        }
 
                     }
-
+                    if (!utils.isEmpty($scope.regionrows)) {
+                        var regportVal = findMonthValue($scope.regionrows, 3);
+                        $scope.regionrows = regportVal.reportList;
+                        $scope.nonReportingRegion = regportVal.grayCount;
+                        extractPopulationInfo($scope.regionrows, $scope.regionPopulation, 3);
+                        $scope.regionSubAggregate = aggregateSubTotal($scope.regionrows, 3);
+                    }
                 }
-                if (!utils.isEmpty($scope.regionrows)) {
-                   var  regportVal=findMonthValue($scope.regionrows,3);
-                    $scope.regionrows=regportVal.reportList;
-                    $scope.nonReportingRegion=regportVal.grayCount;
-                    extractPopulationInfo($scope.regionrows, $scope.regionPopulation, 3);
-                    $scope.regionSubAggregate = aggregateSubTotal($scope.regionrows, 3);
-                }
-            }
-        });
+            });
+        }
     };
     $scope.reporting = function (value) {
 

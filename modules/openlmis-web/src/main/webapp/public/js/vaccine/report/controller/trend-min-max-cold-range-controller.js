@@ -40,33 +40,35 @@ function TrendMinMaxColdRangeController($scope,TrendOfMinMasColdRange,SettingsBy
     $scope.OnFilterChanged = function () {
 
         $scope.data = $scope.datarows = [];
-        $scope.filter.facilityId='' ;
+        $scope.filter.facilityId = '';
         $scope.filter.geographicZoneId = $scope.filter.zone;
         $scope.filter.productId = $scope.filter.product;
         $scope.filter.periodId = 0;
         $scope.filter.programId = $scope.filter.program;
-        $scope.reportType=false;
+        $scope.reportType = false;
 
-        var param=   $scope.filter;
+        var param = $scope.filter;
 
-        $scope.error_message='';
-        TrendOfMinMasColdRange.get(param, function (data) {
+        $scope.error_message = '';
+        if (!utils.isNullOrUndefined($scope.filter) && !utils.isNullOrUndefined($scope.filter.periodStart)&& !utils.isNullOrUndefined($scope.filter.periodEnd) && !utils.isNullOrUndefined($scope.filter.periodStart)){
+            TrendOfMinMasColdRange.get(param, function (data) {
 
-            if (data !== undefined) {
+                if (data !== undefined&&!utils.isNullOrUndefined(data.trendMinMaxColdRangeReport)&&!utils.isNullOrUndefined(data.trendMinMaxColdRangeReport.chainTempratureDetailReportTree)) {
 
-                $scope.data = data.trendMinMaxColdRangeReport.chainTempratureDetailReportTree;
+                    $scope.data = data.trendMinMaxColdRangeReport.chainTempratureDetailReportTree;
 
-                $scope.datarows = $scope.data;
-                $scope.regionrows = data.trendMinMaxColdRangeReport.chainTempratureDetailRegionReportTree;
-                $scope.reportType = data.trendMinMaxColdRangeReport.facilityReport;
-                $scope.columnVals = data.trendMinMaxColdRangeReport.columnNames;
-                $scope.regionColumnVals =  data.trendMinMaxColdRangeReport.regionSummaryColumnList;
-                $scope.report = data.trendMinMaxColdRangeReport;
-                $scope.colValueList = data.trendMinMaxColdRangeReport.districtFacilitySummaryColumnList;
+                    $scope.datarows = $scope.data;
+                    $scope.regionrows = data.trendMinMaxColdRangeReport.chainTempratureDetailRegionReportTree;
+                    $scope.reportType = data.trendMinMaxColdRangeReport.facilityReport;
+                    $scope.columnVals = data.trendMinMaxColdRangeReport.columnNames;
+                    $scope.regionColumnVals = data.trendMinMaxColdRangeReport.regionSummaryColumnList;
+                    $scope.report = data.trendMinMaxColdRangeReport;
+                    $scope.colValueList = data.trendMinMaxColdRangeReport.districtFacilitySummaryColumnList;
 
 
-            }
-        });
+                }
+            });
+    }
     };
     $scope.getBackGroundColorForTd=function(value) {
         var bgColor='blue';

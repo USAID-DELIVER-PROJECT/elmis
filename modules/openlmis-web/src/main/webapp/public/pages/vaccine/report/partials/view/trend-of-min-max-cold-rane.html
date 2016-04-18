@@ -67,17 +67,8 @@
             </div>
 
     <div class="content-body">
-
-        <table client-side-sort-pagination class="table table-bordered"
-               ng-show="data == undefined || data.length == 0">
-            <tr>
-                <td>No data to show under selected filters</td>
-            </tr>
-        </table>
-
+        <div style="font-weight: normal" ng-show="data == undefined || data.length == 0" openlmis-message="label.report.no.data.to.show"></div>
         <div ng-show="data.length > 0">
-
-
             <table  id="fullSupplyTable" ng-show="datarows.length > 0"
                    class="rnr-table table-bordered table"
                    ng-table="tableParams">
@@ -145,10 +136,7 @@
                         <span></span>
 
                     </th>
-                    <th>
-                        <span></span>
 
-                    </th>
                     <th>
                         <span>A</span>
 
@@ -333,10 +321,7 @@
 
 
                     </th>
-                    <th>
 
-
-                    </th>
                     <th>
                         <span>A</span>
 
@@ -450,15 +435,8 @@
                 </tr>
                 </tbody>
             </table>
-
-        </div>
-
-
-    </div>
-
-
         </div>
     </div>
-
-</div>
+        </div>
+    </div>
 </div>

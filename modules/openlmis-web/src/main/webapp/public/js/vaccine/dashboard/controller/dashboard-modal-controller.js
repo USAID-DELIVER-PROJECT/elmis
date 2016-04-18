@@ -18,15 +18,18 @@ function DashboardModalInstanceCtrl($scope, $modalInstance,items,  VaccineDashbo
     $scope.periodsList= items.periodsList;
     $scope.getBackGroundColor = function (_index) {
         var bgColor = '';
-        var fColor='black';
-
+        var fColor='#a6a6a6';
+/*
         if (_index % 2 === 0) {
-            bgColor = 'lightblue';
-            fColor='white';
+            //bgColor = 'lightblue';
+            //fColor='white';
+            bgColor = 'white';
+            fColor='#a6a6a6';
         } else {
             bgColor = 'white';
+            fColor='#a6a6a6';
         }
-
+*/
 
         return {fColor:fColor, bgColor:bgColor};
     };
@@ -45,8 +48,9 @@ function DashboardDropoutModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
     $scope.dropoutPeriodsList= items.periodsList;
     $scope.getBackGroundColor = function (_index) {
         var bgColor = '';
-        var fColor='black';
+        var fColor='#a6a6a6';
 
+/*
         if (_index % 2 === 0) {
             bgColor = 'lightblue';
             fColor='white';
@@ -54,7 +58,7 @@ function DashboardDropoutModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
             bgColor = 'white';
         }
 
-
+*/
         return {fColor:fColor, bgColor:bgColor};
     };
     $scope.ok = function () {
@@ -72,8 +76,8 @@ function DashboardSessionModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
     $scope.sessionsPeriodsList= items.periodsList;
     $scope.getBackGroundColor = function (_index) {
         var bgColor = '';
-        var fColor='black';
-
+        var fColor='#a6a6a6';
+/*
         if (_index % 2 === 0) {
             bgColor = 'lightblue';
             fColor='white';
@@ -81,7 +85,7 @@ function DashboardSessionModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
             bgColor = 'white';
         }
 
-
+*/
         return {fColor:fColor, bgColor:bgColor};
     };
     $scope.ok = function () {
@@ -99,8 +103,9 @@ function DashboardWastageModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
     $scope.wastagePeriodsList= items.periodsList;
     $scope.getBackGroundColor = function (_index) {
         var bgColor = '';
-        var fColor='black';
+        var fColor='#a6a6a6';
 
+/*
         if (_index % 2 === 0) {
             bgColor = 'lightblue';
             fColor='white';
@@ -108,7 +113,7 @@ function DashboardWastageModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
             bgColor = 'white';
         }
 
-
+*/
         return {fColor:fColor, bgColor:bgColor};
     };
     $scope.ok = function () {
@@ -126,8 +131,8 @@ function DashboardStockStatusModalInstanceCtrl($scope, $modalInstance,items) {
     $scope.stockstatusPeriodsList= items.periodsList;
     $scope.getBackGroundColor = function (_index) {
         var bgColor = '';
-        var fColor='black';
-
+        var fColor='#a6a6a6';
+/*
         if (_index % 2 === 0) {
             bgColor = 'lightblue';
             fColor='white';
@@ -135,7 +140,7 @@ function DashboardStockStatusModalInstanceCtrl($scope, $modalInstance,items) {
             bgColor = 'white';
         }
 
-
+*/
         return {fColor:fColor, bgColor:bgColor};
     };
     $scope.ok = function () {

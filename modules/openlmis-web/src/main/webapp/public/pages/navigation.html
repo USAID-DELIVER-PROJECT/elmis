@@ -98,7 +98,7 @@
       </div>
     </li>
     <li  ng-show="hasPermission('MANAGE_DISTRIBUTION') || hasPermission('VIEW_ORDER_REQUISITION') || hasPermission('VIEW_PENDING_REQUEST') || hasPermission('CREATE_ORDER_REQUISITION')">
-      <a id="vaccine" href="" openlmis-message="link.vaccine"></a>
+      <a id="vaccine" href="" openlmis-message="link.stock.management"></a>
       <div class="submenu">
         <ul>
           <li ng-show="hasPermission('MANAGE_DISTRIBUTION')">
@@ -108,52 +108,6 @@
           </li>
           <li class="beak"></li>
 
-            <li  class="has-children">
-
-                <a href="javascript: void(0);"
-                  >Reports</a>
-
-            <div class="submenu">
-                <ul>
-                    <li>
-                        <a href="/public/pages/vaccine/index.html#/vaccine-report"
-                           openlmis-message="link.vaccine.report"></a>
-                    </li>
-                    <li >
-                        <a id='reportingPeformance'
-                           href="/public/pages/vaccine/report/index.html#/completeness-and-timeliness"
-                           openlmis-message="report.completeness.and.timeliness.by.district.report"   ></a>
-                    </li>
-                    <li>
-                        <a href="/public/pages/vaccine/report/index.html#/performance-coverage" openlmis-message="link.vaccine.report.performance.by.coverage"></a>
-                    </li>
-                    <li >
-                        <a id='performanceByDropout'
-                           href="/public/pages/vaccine/report/index.html#/performance-by-dropout-rate-by-district"
-                       openlmis-message="link.vaccine.report.performance.dropout"   ></a>
-                    </li>
-                    <li>
-                        <a href="/public/pages/vaccine/report/index.html#/status-vaccination-supply-receive" openlmis-message="link.vaccine.report.status.vaccination.supply.receive"></a>
-                    </li>
-
-                    <li >
-                        <a id='trendMinMaxColdRange'
-                           href="/public/pages/vaccine/report/index.html#/trend-min-max-cold-range"
-                           openlmis-message="link.vaccine.report.trend.min.max.cold.range"   ></a>
-                    </li>
-
-                    <li>
-                        <a href="/public/pages/vaccine/report/index.html#/classification-vaccine-utilization-performance" openlmis-message="link.vaccine.report.classification.vaccine.utilization.performance"></a>
-                    </li>
-                    <li>
-                        <a href="/public/pages/vaccine/report/index.html#/categorization-vaccine-utilization-performance" openlmis-message="link.vaccine.report.categorization.vaccine.utilization.performance"></a>
-                    </li>
-                    <!--<li>-->
-                        <!--<a href="/public/pages/vaccine/report/index.html#/adequacy-level-of-supply" openlmis-message="link.vaccine.report.adequacy.level.of.supply"></a>-->
-                    <!--</li>-->
-                     </ul>
-                </div>
-            </li>
           <li>
             <a href="/public/pages/vaccine/inventory/index.html#/vaccine-forecasting"
                openlmis-message="link.vaccine.forecasting"></a>
@@ -166,32 +120,20 @@
             <div class="submenu">
               <ul>
                 <li ng-show="hasPermission('CREATE_ORDER_REQUISITION')">
-
-                  <a  href="/public/pages/vaccine/order-requisition/index.html#/initiate" openlmis-message="button.create.requisition" ></a>
-
+                  <a  href="/public/pages/vaccine/order-requisition/index.html#/initiate"
+                      openlmis-message="link.vaccine.create.requisition" ></a>
                 </li>
-
                 <li ng-show="hasPermission('VIEW_PENDING_REQUEST')">
-                  <a href="/public/pages/vaccine/order-requisition/index.html#/view" openlmis-message="link.vaccine.pending.orders"></a>
-
-
+                  <a href="/public/pages/vaccine/order-requisition/index.html#/view"
+                     openlmis-message="link.vaccine.pending.orders"></a>
                 </li>
-
-
                 <li ng-show="hasPermission('VIEW_ORDER_REQUISITION')">
-                  <a href="/public/pages/vaccine/order-requisition/index.html#/search" openlmis-message="link.vaccine.view"></a>
-
-
+                  <a href="/public/pages/vaccine/order-requisition/index.html#/search"
+                     openlmis-message="link.vaccine.requisition.view"></a>
                 </li>
-
               </ul>
-
             </div>
-
-
           </li>
-
-
 
           <li class="has-children">
             <a href="javascript: void(0);"
@@ -248,6 +190,24 @@
               </ul>
             </div>
           </li>
+
+          <li ng-show="hasPermission('MANAGE_STOCK') ">
+            <a href="/public/pages/vaccine/inventory/index.html#/receive"
+               openlmis-message="link.vaccine.receive"></a>
+          </li>
+          <li ng-show="hasPermission('MASS_DISTRIBUTION')">
+            <a href="/public/pages/vaccine/inventory/index.html#/mass-distribution"
+               openlmis-message="link.vaccine.distribute"></a>
+          </li>
+          <li ng-show="hasPermission('MANAGE_STOCK')">
+            <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment"
+               openlmis-message="link.vaccine.stock.adjustment"></a>
+          </li>
+          <li ng-show="hasPermission('MANAGE_STOCK')">
+            <a href="/public/pages/vaccine/inventory/index.html#/transfer-out"
+               openlmis-message="link.vaccine.transfer.out"></a>
+          </li>
+
           <li>
             <a href="/public/pages/var/index.html#/">VAR</a>
           </li>

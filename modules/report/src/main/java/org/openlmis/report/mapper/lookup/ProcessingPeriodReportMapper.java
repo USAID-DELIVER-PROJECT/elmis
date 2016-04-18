@@ -42,7 +42,7 @@ public interface ProcessingPeriodReportMapper {
     List<YearSchedulePeriodTree> getYearSchedulePeriodTree();
 
 
-    @Select(" select  EXTRACT(YEAR FROM pp.startdate) as year, ps.name as groupname, pp.name as periodname, pp.id AS periodid, ps.id as groupid   \n" +
+    @Select(" select pp.startdate as startdate,  EXTRACT(YEAR FROM pp.startdate) as year, ps.name as groupname, pp.name as periodname, pp.id AS periodid, ps.id as groupid   \n" +
             " from processing_periods pp    \n" +
             " join processing_schedules ps on pp.scheduleid = ps.id and lower(ps.code) = lower('Monthly') \n" +
             " join (select distinct programid, scheduleid from requisition_group_program_schedules) rps on rps.scheduleid = ps.id and rps.scheduleid = pp.scheduleid  \n" +

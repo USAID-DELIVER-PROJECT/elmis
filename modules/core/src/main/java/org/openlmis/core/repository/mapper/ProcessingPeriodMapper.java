@@ -65,14 +65,16 @@ public interface ProcessingPeriodMapper {
 
   @Select({"SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId} ",
     "AND (( startDate<=#{startDate} AND endDate>=#{startDate}) OR (startDate<=#{endDate} AND endDate>=#{endDate})",
-    "OR (startDate>=#{startDate} AND endDate<=#{endDate}))"})
+    "OR (startDate>=#{startDate} AND endDate<=#{endDate})) ",
+    "ORDER BY startDate" })
   List<ProcessingPeriod> getAllPeriodsForDateRange(@Param("scheduleId") Long scheduleId,
                                                    @Param("startDate") Date startDate,
                                                    @Param("endDate") Date endDate);
 
   @Select({"SELECT * FROM processing_periods WHERE id in ( select periodId from requisitions where programId  = #{programId} and facilityId = #{facilityId}) ",
       "AND (( startDate<=#{startDate} AND endDate>=#{startDate}) OR (startDate<=#{endDate} AND endDate>=#{endDate})",
-      "OR (startDate>=#{startDate} AND endDate<=#{endDate}))"})
+      "OR (startDate>=#{startDate} AND endDate<=#{endDate}))",
+      "ORDER BY startDate"})
   List<ProcessingPeriod> getRnrPeriodsForDateRange(@Param("facilityId") Long facilityId,
                                                    @Param("programId") Long programId,
                                                    @Param("startDate") Date startDate,
@@ -81,7 +83,8 @@ public interface ProcessingPeriodMapper {
 
   @Select({"SELECT * FROM processing_periods where id in " +
                                                   " ( select periodId from requisitions where facilityId = #{facilityId} and programId = #{programId} and emergency = false and status in ( 'INITIATED' , 'SUBMITTED' ) ) " +
-                                                 " "})
+                                                 " ",
+            "ORDER BY startDate"})
   List<ProcessingPeriod> getOpenPeriods(@Param("facilityId") Long facilityId, @Param("programId") Long programId, @Param("startPeriodId") Long startPeriodId);
 
 

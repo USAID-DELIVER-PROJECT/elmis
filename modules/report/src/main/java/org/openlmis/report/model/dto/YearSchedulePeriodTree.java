@@ -15,6 +15,7 @@ package org.openlmis.report.model.dto;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -28,6 +29,8 @@ public class YearSchedulePeriodTree {
     private String year;
     private String groupname;
     private String periodname;
+    private Date startdate;
+
 
     private List<YearSchedulePeriodTree> children = new ArrayList<YearSchedulePeriodTree>();
 

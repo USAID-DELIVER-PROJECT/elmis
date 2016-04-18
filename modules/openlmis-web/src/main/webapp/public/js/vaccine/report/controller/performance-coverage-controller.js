@@ -14,10 +14,6 @@
 
 function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, Settings, ReportProductsByProgram, TreeGeographicZoneList, messageService, GetUserUnassignedSupervisoryNode) {
 
-    ReportProductsByProgram.get({programId: 82}, function (data) {
-        $scope.product = data.productList;
-    });
-
     $scope.perioderror = "";
     $scope.grayCount = {};
     $scope.regionGrayCount = {};
@@ -167,7 +163,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
 
     $scope.bgColorCode = function (value) {
-        var percentageCoverage = value.coverage;
+        var percentageCoverage = $scope.calculateVaccinated(value.target, value.vaccinated);// value.coverage;
 
         if (value.generated !== 'undefined' && value.generated === true) {
             return $scope.colors.color_non_reporting;
@@ -183,7 +179,6 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     };
 
     $scope.reporting = function (value) {
-        var percentageCoverage = value.coverage;
 
         if (value.generated !== 'undefined' && value.generated === true) {
             return messageService.get('label.reported.no');
@@ -293,23 +288,6 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
         return temp;
     }
-
-    // ================need to find to reuse the report filter =====/
-    TreeGeographicZoneList.get(function (data) {
-        $scope.zones = data.zone;
-    });
-
-    GetUserUnassignedSupervisoryNode.get({
-        program: 82
-    }, function (data) {
-        $scope.user_geo_level = "-- All Regions/Districts---";//messageService.get('report.filter.all.geographic.zones');
-        if (!angular.isUndefined(data.supervisory_nodes)) {
-            if (data.supervisory_nodes === 0)
-                $scope.user_geo_level = messageService.get('report.filter.national');
-        }
-    });
-
-    //+====================================================
 
     function aggregateSubTotal(reportList, type) {
         var subAggregateTotal = [];

@@ -186,8 +186,9 @@ public class ReportLookupController extends BaseController {
   }
 
   @RequestMapping(value = "/geographic-zones/tree-no-zones", method = GET, headers = ACCEPT_JSON)
-  public ResponseEntity<OpenLmisResponse> getGeographicZoneTreeWithoutZone(@RequestParam(value = "program", required = true, defaultValue = "0") long program) {
-    GeoZoneTree geoZoneTree = reportLookupService.getGeoZoneTreeWithOutZones(program);
+  public ResponseEntity<OpenLmisResponse> getGeographicZoneTreeWithoutZone(HttpServletRequest request,@RequestParam(value = "program", required = true, defaultValue = "0") long program) {
+   Long userId=this.loggedInUserId(request);
+    GeoZoneTree geoZoneTree = reportLookupService.getGeoZoneTreeWithOutZones(program,userId);
 
     return OpenLmisResponse.response(ZONE, geoZoneTree);
   }

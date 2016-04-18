@@ -27,17 +27,22 @@ import java.util.Map;
 @Repository
 public interface VaccineReportMapper {
 
-    @Select("select COALESCE(cases, 0) as cases, COALESCE(death, 0) as death, COALESCE(cum_cases, 0) as cumulative, disease_name as diseaseName \n" +
-            "from vw_vaccine_disease_surveillance \n" +
+    @Select("select  distinct COALESCE(cases, 0) as cases, COALESCE(death, 0) as death," +
+            " COALESCE(cum_cases, 0) as cumulative, disease_name as diseaseName ,display_order as display_order\n" +
+            "from vw_vaccine_disease_surveillance ds " +
+            " inner join geographic_zones gz on ds.geographic_zone_id=gz.id\n" +
+            "            inner join (select distinct vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId}) sq \n" +
+            "                 on (sq.district_id = gz.id or sq.zone_id = gz.id or gz.id = sq.region_id or gz.id = sq.parent)\n" +
             "where report_id = #{reportId} order by display_order")
-    List<DiseaseLineItem> getDiseaseSurveillance(@Param("reportId") Long reportId);
+    List<DiseaseLineItem> getDiseaseSurveillance(@Param("reportId") Long reportId, @Param("userId") Long userId);
 
     @Select("SELECT disease_name as diseaseName,display_order,\n" +
             " sum(COALESCE (cases, 0)) AS calculatedCumulativeCases,\n" +
             " sum(COALESCE (death, 0)) AS calculatedCumulativeDeaths\n" +
             "FROM\n" +
             " vw_vaccine_disease_surveillance d\n" +
-            " INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
+            "  INNER JOIN  (select distinct vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} )sq \n" +
+            "              ON sq.district_id = geographic_zone_id  " +
             "               where period_start_date <= (select startdate from processing_periods \n" +
             "                           where id = (select periodid from vaccine_reports where id = #{reportId})) \n" +
             "            and   period_year = (select extract(year from startdate) from processing_periods           \n" +
@@ -46,23 +51,24 @@ public interface VaccineReportMapper {
             "group by diseaseName, display_order order by display_order")
     @MapKey("diseaseName")
     @ResultType(HashMap.class)
-    Map<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId );
+    Map<String, DiseaseLineItem> getCumFacilityDiseaseSurveillance(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId, @Param("userId") Long userId );
 
     @Select("SELECT disease_name as diseaseName, display_order,\n" +
             " sum(COALESCE (cases, 0)) AS calculatedCumulativeCases,\n" +
             " sum(COALESCE (death, 0)) AS calculatedCumulativeDeaths\n" +
             "FROM\n" +
             " vw_vaccine_disease_surveillance d\n" +
-            " INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
+            "  INNER JOIN  (select distinct vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} )sq \n" +
+            "              ON sq.district_id = geographic_zone_id  " +
             "where period_start_date::date <= (select startdate::date from processing_periods \n" +
             "                          where id =  #{periodId}) \n" +
             "            and   period_year = (select extract(year from startdate) from processing_periods \n" +
             "                          where id = #{periodId})\n" +
-            " and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} ) " +
+            " and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} ) " +
             "group by diseaseName, display_order order by display_order")
     @MapKey("diseaseName")
     @ResultType(HashMap.class)
-    Map<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    Map<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId,@Param("userId") Long userId);
 
     @Select("Select id from vaccine_reports where facilityid = #{facilityId} and periodid = #{periodId}")
     Long getReportIdForFacilityAndPeriod(@Param("facilityId") Long facilityId, @Param("periodId") Long periodId);
@@ -73,16 +79,20 @@ public interface VaccineReportMapper {
             "SUM(COALESCE(cases, 0)) cases,\n" +
             "SUM(COALESCE(death,0)) death\n" +
             "from vw_vaccine_disease_surveillance\n" +
-            "INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id\n" +
-            "where period_id = #{periodId} and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )\n" +
+            "  INNER JOIN  (select distinct vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} )sq \n" +
+            "              ON sq.district_id = geographic_zone_id  " +
+            "where period_id = #{periodId} and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} )\n" +
             "group by disease_name, display_order order by display_order \n")
-    List<DiseaseLineItem> getDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    List<DiseaseLineItem> getDiseaseSurveillanceAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId,@Param("userId") Long userId );
 
     @Select("select equipment_name as equipmentName, model, minTemp, maxTemp, \n" +
             " minEpisodeTemp, maxEpisodeTemp, energy_source as energySource, serialnumber as serial, facility_type_name location_value\n" +
             "from vw_vaccine_cold_chain \n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd " +
+            "inner join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
             "where report_id = #{reportId} order by 1 ")
-    List<ColdChainLineItem> getColdChain(@Param("reportId") Long reportId);
+    List<ColdChainLineItem> getColdChain(@Param("reportId") Long reportId, @Param("userId") Long userId);
 
     @Select("select equipment_name as equipmentName,\n" +
             "model,\n" +
@@ -94,16 +104,19 @@ public interface VaccineReportMapper {
             "MIN(COALESCE(minEpisodeTemp,0)) minEpisodeTemp,\n" +
             "MAX(COALESCE(maxEpisodeTemp,0)) maxEpisodeTemp \n" +
              "from vw_vaccine_cold_chain \n" +
-            "join vw_districts d ON d.district_id = geographic_zone_id\n" +
-            "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId})\n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd " +
+            "inner join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
+            "where period_id = #{periodId} and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId})\n" +
             "group by equipment_name, model, energy_source, serialnumber,facility_type_name order by 1\n")
-    List<ColdChainLineItem> getColdChainAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    List<ColdChainLineItem> getColdChainAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
-    @Select("select product_name as productName, aefi_expiry_date as expiry, aefi_case as cases, aefi_batch as batch, manufacturer, is_investigated as isInvestigated from vw_vaccine_iefi \n" +
+    @Select("select product_name as productName, aefi_expiry_date as expiry, " +
+            "aefi_case as cases, aefi_batch as batch, manufacturer, is_investigated as isInvestigated from vw_vaccine_iefi \n" +
             "where report_id = #{reportId}    order by display_order"
 
     )
-    List<AdverseEffectLineItem> getAdverseEffectReport(@Param("reportId") Long reportId);
+    List<AdverseEffectLineItem> getAdverseEffectReport(@Param("reportId") Long reportId, @Param("userId") Long userId);
 
     @Select("select product_name as productName, display_order,\n" +
             "MIN(aefi_expiry_date) as expiry,\n" +
@@ -112,11 +125,13 @@ public interface VaccineReportMapper {
             "null as manufacturer,\n" +
             "null as isInvestigated \n" +
             "from vw_vaccine_iefi \n" +
-            "join vw_districts d ON d.district_id = geographic_zone_id\n" +
-            "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} )\n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "  ON sq.district_id = geographic_zone_id " +
+            "where period_id = #{periodId} and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} )\n" +
             "group by product_name,display_order" +
             " order by display_order ")
-    List<AdverseEffectLineItem> getAdverseEffectAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    List<AdverseEffectLineItem> getAdverseEffectAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
     @Select("" +
             "select \n" +
@@ -132,6 +147,9 @@ public interface VaccineReportMapper {
             "           then round(sum(  COALESCE(within_outside_total,0)) / sum(COALESCE(denominator,0))::numeric * 100,2) \n" +
             "           else 0 end within_outside_coverage  \n" +
             "              from vw_vaccine_coverage \n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
             "              where period_start_date <= (select startdate from processing_periods\n" +
             "               where id = (select periodid from vaccine_reports where id = #{reportId}))" +
             "and   period_year = (select extract(year from startdate) from processing_periods\n" +
@@ -142,11 +160,10 @@ public interface VaccineReportMapper {
 
     @MapKey("product_name")
     @ResultType(HashMap.class)
-    Map<String, VaccineCoverageReport> calculateVaccineCoverageReport(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId);
+    Map<String, VaccineCoverageReport> calculateVaccineCoverageReport(@Param("reportId") Long reportId,@Param("facilityId") Long facilityId, @Param("userId") Long userId);
 
     @Select("" +
             "select \n" +
-            " \n" +
             "            product_name ||'_'|| display_name product_name,\n" +
 
             "           sum(  COALESCE(within_total,0)) within_total,  \n" +
@@ -161,17 +178,19 @@ public interface VaccineReportMapper {
             "           else 0 end within_outside_coverage   \n" +
 
             "              from vw_vaccine_coverage \n" +
-            " INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
             "              where period_start_date <= (select startdate from processing_periods\n" +
             "               where id =  #{periodId})" +
             "and   period_year = (select extract(year from startdate) from processing_periods\n" +
             "               where id   = #{periodId})" +
-            " and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )" +
+            " and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} )" +
             "              group by 1")
 
     @MapKey("product_name")
     @ResultType(HashMap.class)
-    Map<String, VaccineCoverageReport> calculateAggeregatedVaccineCoverageReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    Map<String, VaccineCoverageReport> calculateAggeregatedVaccineCoverageReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
     @Select("select \n" +
             "product_name,\n" +
@@ -198,9 +217,12 @@ public interface VaccineReportMapper {
             "case when dtp_1 > 0 then ((dtp_1 - dtp_3)::double precision / dtp_1::double precision) * 100 else 0 end dtp_dropout, \n" +
             "case when bcg_1 > 0 then ((bcg_1 - mr_1)::double precision / bcg_1::double precision) * 100 else 0 end bcg_mr_dropout \n" +
             "  from vw_vaccine_coverage  \n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
             "  where report_id = #{reportId}" +
             " order by display_order")
-    List<HashMap<String, Object>> getVaccineCoverageReport(@Param("reportId") Long reportId);
+    List<HashMap<String, Object>> getVaccineCoverageReport(@Param("reportId") Long reportId, @Param("userId") Long userId);
 
     @Select("select \n" +
             "product_name product_name,\n" +
@@ -230,13 +252,18 @@ public interface VaccineReportMapper {
             "SUM(COALESCE(case when dtp_1 > 0 then ((dtp_1 - dtp_3)::double precision / dtp_1::double precision) * 100 else 0 end)) dtp_dropout, \n" +
             "SUM(COALESCE(case when bcg_1 > 0 then ((bcg_1 - mr_1)::double precision / bcg_1::double precision) * 100 else 0 end)) bcg_mr_dropout \n" +
             "from vw_vaccine_coverage  \n" +
-            "INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id \n" +
-            "where period_id = #{periodId} and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )\n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
+            "where period_id = #{periodId} and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} )\n" +
             "group by product_name,display_name,display_order \n" +
             "order by display_order")
-    List<HashMap<String, Object>> getVaccineCoverageAggregateReportByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    List<HashMap<String, Object>> getVaccineCoverageAggregateReportByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
-    @Select("SELECT COALESCE(fixedimmunizationsessions, 0) fixedimmunizationsessions, COALESCE(outreachimmunizationsessions, 0) outreachimmunizationsessions, COALESCE(outreachimmunizationsessionscanceled, 0) outreachimmunizationsessionscanceled FROM vaccine_reports WHERE id = #{reportId} ")
+    @Select("SELECT COALESCE(fixedimmunizationsessions, 0) fixedimmunizationsessions," +
+            " COALESCE(outreachimmunizationsessions, 0) outreachimmunizationsessions, " +
+            " COALESCE(outreachimmunizationsessionscanceled, 0) outreachimmunizationsessionscanceled " +
+            "FROM vaccine_reports WHERE id = #{reportId} ")
     List<VaccineReport> getImmunizationSession(@Param("reportId") Long reportId);
 
     @Select("SELECT \n" +
@@ -245,15 +272,21 @@ public interface VaccineReportMapper {
             "sum(COALESCE(outreachimmunizationsessionscanceled, 0)) outreachimmunizationsessionscanceled \n" +
             "FROM vaccine_reports r\n" +
             "join facilities f on r.facilityid = f.id\n" +
-            "join vw_districts d ON d.district_id = f.geographiczoneid\n" +
-            "where r.periodid = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} )\n")
-    List<VaccineReport> getImmunizationSessionAggregate(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id =  f.geographiczoneid\n" +
+            "where r.periodid = #{periodId} and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} )\n")
+    List<VaccineReport> getImmunizationSessionAggregate(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
-    @Select("select * from vw_vaccine_stock_status where product_category_code = " +
+    @Select("select * from vw_vaccine_stock_status\n" +
+            " INNER JOIN  (select distinct vd.* from vw_districts vd inner join\n " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
+            " where product_category_code = " +
             "(select value from configuration_settings" +
             " where key = #{productCategoryCode}) and report_id = #{reportId}" +
             " order by display_order")
-    List<HashMap<String, Object>> getVaccinationReport(@Param("productCategoryCode") String categoryCode, @Param("reportId") Long reportId);
+    List<HashMap<String, Object>> getVaccinationReport(@Param("productCategoryCode") String categoryCode, @Param("reportId") Long reportId, @Param("userId") Long userId);
 
     @Select("select * from vw_vaccine_target_population\n" +
             "where facility_id = #{facilityId} and year =  (select date_part('year'::text, processing_periods.startdate) from processing_periods where id = #{periodId})\n" +
@@ -264,14 +297,16 @@ public interface VaccineReportMapper {
             "             sum(COALESCE(tp.target_value_annual,0)) target_value_annual,   \n" +
             "             round(sum(COALESCE(tp.target_value_annual,0))/12) target_value_monthly   \n" +
             "             from vw_vaccine_target_population tp   \n" +
-            "              join vw_districts d on d.district_id = tp.geographic_zone_id\n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
             "              join vaccine_reports vr on vr.facilityid = tp.facility_id and vr.programid = tp.program_id            \n" +
             "             where  tp.year = (select date_part('year'::text, processing_periods.startdate) from processing_periods where id = #{periodId} )  \n" +
-            "             and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId})\n" +
+            "             and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId})\n" +
             "             and vr.periodid = #{periodId}   \n" +
             "             group by tp.category_id, tp.category_name   \n" +
             "             order by tp.category_id  \n")
-    List<HashMap<String, Object>> getTargetPopulationAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    List<HashMap<String, Object>> getTargetPopulationAggregateByGeoZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
     @Select("Select age_group AS ageGroup, vitamin_name AS vitaminName, male_value AS maleValue, female_value AS femaleValue from vw_vaccine_vitamin_supplementation where report_id = #{reportId} order by age_group_display_order")
     List<VitaminSupplementationLineItem> getVitaminSupplementationReport(@Param("reportId") Long reportId);
@@ -282,11 +317,13 @@ public interface VaccineReportMapper {
             "SUM(COALESCE(male_value, 0)) AS maleValue,\n" +
             "SUM(COALESCE(female_value,0)) AS femaleValue\n" +
             "from vw_vaccine_vitamin_supplementation\n" +
-            "join vw_districts d ON d.district_id = geographic_zone_id\n" +
-            "where period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} ) \n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
+            "where period_id = #{periodId} and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} ) \n" +
             "group by 1,2,3\n" +
             "order by age_group_display_order\n")
-    List<VitaminSupplementationLineItem> getVitaminSupplementationAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    List<VitaminSupplementationLineItem> getVitaminSupplementationAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
     @Select("select COALESCE(fr.quantity_issued, 0) quantity_issued, COALESCE(fr.closing_balance, 0) closing_balance, pp.name period_name \n" +
             "from fn_vaccine_facility_n_rnrs('Vaccine',#{facilityCode}, #{productCode},4) fr \n" +
@@ -335,11 +372,14 @@ public interface VaccineReportMapper {
             "   end \n" +
             "end wastage_rate \n" +
             "from vw_vaccine_stock_status \n" +
-            "INNER JOIN vw_districts vd ON vd.district_id = geographic_zone_id\n" +
-            "where  product_category_code = (select value from configuration_settings where key = #{productCategoryCode}) and period_id = #{periodId} and (vd.parent = #{zoneId} or vd.district_id = #{zoneId} or vd.region_id = #{zoneId} or vd.zone_id = #{zoneId} )\n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
+            "where  product_category_code = (select value from configuration_settings where key = #{productCategoryCode}) " +
+            "and period_id = #{periodId} and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} )\n" +
             "group by product_code \n" +
             " order by display_order")
-    List<HashMap<String, Object>> getVaccinationAggregateByGeoZoneReport(@Param("productCategoryCode") String categoryCode, @Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    List<HashMap<String, Object>> getVaccinationAggregateByGeoZoneReport(@Param("productCategoryCode") String categoryCode, @Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
     @Select("select COALESCE(fr.quantity_issued, 0) quantity_issued, COALESCE(fr.closing_balance, 0) closing_balance, pp.name period_name \n" +
             "from fn_vaccine_geozone_n_rnrs('Vaccine', #{periodId}::integer ,#{zoneId}::integer, #{productCode},4) fr\n" +
@@ -360,18 +400,20 @@ public interface VaccineReportMapper {
             "             case when sum(dtp_1) > 0 then round((sum(dtp_1) - sum(dtp_3))::numeric /sum(dtp_3)::numeric,4) * 100 else 0 end   \n" +
             "            end dropout \n" +
             "from vw_vaccine_dropout i\n" +
-            "join vw_districts d on i.geographic_zone_id = d.district_id\n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = geographic_zone_id " +
             "join vaccine_reports vr on i.report_id = vr.id\n" +
             "JOIN program_products pp ON pp.programid = vr.programid AND pp.productid = i.product_id\n" +
             "JOIN product_categories pg ON pp.productcategoryid = pg.id\n" +
             "where \n" +
             " product_code in (select value from configuration_settings \n" +
             " where key in ('VACCINE_DROPOUT_BCG','VACCINE_DROPOUT_MR','VACCINE_DROPOUT_DTP'))\n" +
-            "and i.period_id = #{periodId} and (d.parent = #{zoneId} or d.district_id = #{zoneId} or d.region_id = #{zoneId} or d.zone_id = #{zoneId} )\n" +
+            "and i.period_id = #{periodId} and (sq.parent = #{zoneId} or sq.district_id = #{zoneId} or sq.region_id = #{zoneId} or sq.zone_id = #{zoneId} )\n" +
             "and i.product_code in ('V001','V010')\n" +
             "group by 1\n" +
             "  order by 1,2")
-    List<HashMap<String, Object>> getAggregateDropOuts(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId);
+    List<HashMap<String, Object>> getAggregateDropOuts(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
     @Select("select product_code, \n" +
             "case when product_code = (select value from configuration_settings where key = ('VACCINE_DROPOUT_BCG')) then \n" +
@@ -385,7 +427,9 @@ public interface VaccineReportMapper {
             "             case when sum(dtp_1) > 0 then round((sum(dtp_1) - sum(dtp_3))::numeric /sum(dtp_3)::numeric,4) * 100 else 0 end   \n" +
             "            end dropout\n" +
             "from vw_vaccine_dropout i\n" +
-            "join vw_districts d on i.geographic_zone_id = d.district_id\n" +
+            "INNER JOIN  (select distinct vd.* from vw_districts vd inner join " +
+            " vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId} order by vd.district_id )sq  \n" +
+            "                          ON sq.district_id = i.geographic_zone_id " +
             "join vaccine_reports vr on i.report_id = vr.id\n" +
             "JOIN program_products pp ON pp.programid = vr.programid AND pp.productid = i.product_id\n" +
             "JOIN product_categories pg ON pp.productcategoryid = pg.id\n" +
@@ -396,7 +440,7 @@ public interface VaccineReportMapper {
             "and i.product_code in ('V001','V010')\n" +
             "group by 1\n" +
             " order by 1,2")
-    List<HashMap<String, Object>> getDropOuts(@Param("reportId") Long reportId);
+    List<HashMap<String, Object>> getDropOuts(@Param("reportId") Long reportId,@Param("userId")Long userId);
 
     @Select("select * from geographic_zones where parentid is null")
     GeographicZone getNationalZone();

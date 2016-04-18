@@ -15,6 +15,89 @@
 <div id="report-submenu" class="submenu" ui-nav>
   <ul>
     <li class="has-children">
+      <a href="" openlmis-message="menu.report.routine.immunization"></a>
+      <div class="submenu">
+        <ul>
+          <li>
+            <a href="/public/pages/vaccine/index.html#/vaccine-report"
+               openlmis-message="link.vaccine.report"></a>
+          </li>
+          <li>
+            <a href="/public/pages/vaccine/report/index.html#/status-vaccination-supply-receive"
+               openlmis-message="link.vaccine.report.status.vaccination.supply.receive"></a>
+          </li>
+          <li>
+            <a href="/public/pages/vaccine/report/index.html#/performance-coverage"
+               openlmis-message="link.vaccine.report.performance.by.coverage"></a>
+          </li>
+          <li >
+            <a id='performanceByDropout'
+               href="/public/pages/vaccine/report/index.html#/performance-by-dropout-rate-by-district"
+               openlmis-message="link.vaccine.report.performance.dropout"   ></a>
+          </li>
+          <li>
+            <a href="/public/pages/vaccine/report/index.html#/classification-vaccine-utilization-performance"
+               openlmis-message="link.vaccine.report.classification.vaccine.utilization.performance"></a>
+          </li>
+          <li >
+            <a id='reportingPeformance'
+               href="/public/pages/vaccine/report/index.html#/completeness-and-timeliness"
+               openlmis-message="report.completeness.and.timeliness.by.district.report"   ></a>
+          </li>
+        </ul>
+      </div>
+    </li>
+
+    <li class="has-children">
+      <a href="" openlmis-message="link.stock.management"></a>
+      <div class="submenu">
+        <ul>
+          <li ng-show="hasPermission('VIEW_STOCK_LEDGER_REPORT')">
+            <a href="/public/pages/reports/main/index.html#stock-ledger-report"
+               openlmis-message="menu.report.stock.ledger.report"></a>
+          </li>
+          <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
+            <a href="/public/pages/reports/main/index.html#vaccine-stock-status"
+               openlmis-message="menu.report.vaccine.stock.status"></a>
+          </li>
+
+        </ul>
+      </div>
+    </li>
+
+    <li class="has-children">
+      <a href="" openlmis-message="link.report.cold.chain.equipment"></a>
+      <div class="submenu">
+        <ul>
+          <li ng-show="hasPermission('VIEW_COLD_CHAIN_EQUIPMENT_LIST_REPORT')">
+            <a ng-href="/public/pages/reports/main/index.html#cold-chain-equipment-inventory"
+               openlmis-message="menu.report.lab.equipment.coldchain.inventory"></a>
+          </li>
+
+
+          <li ng-show="hasPermission('VIEW_REPAIR_MANAGEMENT_REPORT')">
+            <a ng-href="/public/pages/reports/main/index.html#cce-repair-management"
+               openlmis-message="menu.report.repair.management"></a>
+
+
+          <li ng-show="hasPermission('VIEW_CCE_STORAGE_CAPACITY_REPORT')">
+            <a ng-href="/public/pages/reports/main/index.html#cce-storage-capacity"
+               openlmis-message="menu.report.cce.storage.capacity"></a>
+          </li>
+          <li>
+            <a id='trendMinMaxColdRange'
+               href="/public/pages/vaccine/report/index.html#/trend-min-max-cold-range"
+               openlmis-message="link.vaccine.report.trend.min.max.cold.range" ></a>
+          </li>
+          <li ng-show="hasPermission('VIEW_VACCINE_REPLACEMENT_PLAN_SUMMARY')">
+            <a ng-href="/public/pages/reports/main/index.html#replacement-plan-summary"
+               openlmis-message="menu.report.vaccine.replacement.plan.summary"></a>
+          </li>
+        </ul>
+      </div>
+    </li>
+
+    <li class="has-children">
       <a href="javascript: void(0);" openlmis-message="menu.report.admin"></a>
 
       <div class="submenu">
@@ -71,24 +154,6 @@
             <a ng-href="/public/pages/reports/maps/index.html#lab-equipments-by-location"
                openlmis-message="menu.report.lab.equipment.by.location"></a>
           </li>
-
-          <li ng-show="hasPermission('VIEW_REPAIR_MANAGEMENT_REPORT')">
-            <a ng-href="/public/pages/reports/main/index.html#cce-repair-management"
-               openlmis-message="menu.report.repair.management"></a>
-
-          <li ng-show="hasPermission('VIEW_COLD_CHAIN_EQUIPMENT_LIST_REPORT')">
-            <a ng-href="/public/pages/reports/main/index.html#cold-chain-equipment-inventory"
-               openlmis-message="menu.report.lab.equipment.coldchain.inventory"></a>
-          </li>
-          <li ng-show="hasPermission('VIEW_CCE_STORAGE_CAPACITY_REPORT')">
-            <a ng-href="/public/pages/reports/main/index.html#cce-storage-capacity"
-               openlmis-message="menu.report.cce.storage.capacity"></a>
-          </li>
-          <li ng-show="hasPermission('VIEW_VACCINE_REPLACEMENT_PLAN_SUMMARY')">
-            <a ng-href="/public/pages/reports/main/index.html#replacement-plan-summary"
-               openlmis-message="menu.report.vaccine.replacement.plan.summary"></a>
-          </li>
-
           <li class="beak"></li>
         </ul>
       </div>
@@ -178,14 +243,7 @@
 
       <div class="submenu">
         <ul>
-          <li ng-show="hasPermission('VIEW_STOCK_LEDGER_REPORT')">
-            <a href="/public/pages/reports/main/index.html#stock-ledger-report"
-               openlmis-message="menu.report.stock.ledger.report"></a>
-          </li>
-          <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
-            <a href="/public/pages/reports/main/index.html#vaccine-stock-status"
-               openlmis-message="menu.report.vaccine.stock.status"></a>
-          </li>
+
           <li ng-show="hasPermission('VIEW_ADJUSTMENT_SUMMARY_REPORT')">
             <a ng-href="/public/pages/reports/main/index.html#adjustment-summary"
                openlmis-message="menu.report.adjustment.summary"></a>

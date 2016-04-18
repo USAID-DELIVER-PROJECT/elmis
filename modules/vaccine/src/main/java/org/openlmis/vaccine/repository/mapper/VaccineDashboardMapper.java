@@ -253,7 +253,7 @@ public interface VaccineDashboardMapper {
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
                 ")\n" +
                 "GROUP BY 1,2,3, 4\n" +
-                "ORDER BY 2, 4;")
+                "ORDER BY 4,2;")
         List<HashMap<String, Object>> getFacilityCoverageDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
         /*
@@ -358,7 +358,7 @@ public interface VaccineDashboardMapper {
                 "and i.period_start_date::date >= #{startDate} and i.period_end_date::date <= #{endDate}\n" +
                 "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
-                "ORDER BY 1,2;")
+                "ORDER BY 4,1,2;")
         List<HashMap<String, Object>> getFacilityDropoutDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
 
@@ -449,7 +449,7 @@ public interface VaccineDashboardMapper {
                 "and ss.period_start_date::date >= #{startDate} and  ss.period_end_date::date <= #{endDate}\n" +
                 "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
-                "ORDER BY 2;")
+                "ORDER BY 5,2;")
         List<HashMap<String, Object>> getFacilityWastageDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
 /* End Wastage */
@@ -472,8 +472,7 @@ public interface VaccineDashboardMapper {
                 "sum(t.outreach_sessions) outreach_sessions\n" +
                 "from temp t\n" +
                 "group by 1,2\n" +
-                "order by 2 desc\n" +
-                "limit 5")
+                "order by 2 ")
         List<HashMap<String, Object>> getMonthlySessions(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
         /* */
@@ -529,7 +528,7 @@ public interface VaccineDashboardMapper {
                 "and s.period_start_date::date >= #{startDate}  and s.period_end_date::date <= #{endDate} \n" +
                 "and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
                 "or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
-                "ORDER BY 2;")
+                "ORDER BY 4,2;")
         List<HashMap<String, Object>> getFacilitySessionsDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("user") Long user);
 
 /* End Session */
@@ -677,7 +676,7 @@ public interface VaccineDashboardMapper {
  /*
          * ---------------- Stock Status ------------------------------------
         */
-        @Select("with temp as (select ss.period_name,  coalesce(ss.closing_balance,0) closing_balance, \n" +
+        @Select("with temp as (select ss.period_name, ss.period_start_date period_start_date,  coalesce(ss.closing_balance,0) closing_balance, \n" +
                 "coalesce((select isavalue from stock_requirements where facilityid = ss.facility_id \n" +
                 "and programid = ss.program_id\n" +
                 "and productid = ss.product_id \n" +
@@ -697,14 +696,14 @@ public interface VaccineDashboardMapper {
                 "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
                 "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
                 ")\n" +
-                "select t.period_name, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min, max(t.maxmonthsofstock) max, \n" +
+                "select t.period_name,period_start_date, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min, max(t.maxmonthsofstock) max, \n" +
                 "case when sum(t.need)> 0 and (sum(t.closing_balance) / sum(t.need)::numeric<=min(minmonthsofstock))then sum(t.closing_balance)  / sum(t.need)::numeric  end mos_g1 ,\n" +
                 "case when sum(t.need) > 0 and (sum(t.closing_balance)  / sum(t.need)::numeric>min(minmonthsofstock))and (sum(t.closing_balance)  / sum(t.need)::numeric<=max(maxmonthsofstock))\n" +
                 "then sum(t.closing_balance) / sum(t.need)::numeric  end mos_g2 ,\n" +
                 "case when sum(t.need) > 0 and (sum(t.closing_balance) / sum(t.need)::numeric>max(maxmonthsofstock))then sum(t.closing_balance)  /sum(t.need)::numeric  end mos_g3\n" +
                 "from temp t\n" +
-                "group by 1\n" +
-                "order by 1,2;")
+                "group by 1,2\n" +
+                "order by 2,1;")
         List<HashMap<String, Object>> getStockStatusByMonthly(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("user") Long userId, @Param("product") Long product);
 
         @Select("with temp as (select coalesce(ss.closing_balance,0) closing_balance, \n" +
@@ -765,7 +764,8 @@ public interface VaccineDashboardMapper {
                 "coalesce((select isavalue from stock_requirements where facilityid = ss.facility_id \n" +
                 "and programid = ss.program_id\n" +
                 "and productid = ss.product_id \n" +
-                "and year = extract(year from ss.period_start_date)),0) need,\n" +
+                "and year = extract(year from ss.period_start_date)),0) need," +
+                "ss.period_start_date period_start_date,\n" +
                 "coalesce(fp.minmonthsofstock,0) minmonthsofstock, \n" +
                 "coalesce(fp.maxmonthsofstock,0) maxmonthsofstock, vd.region_name, vd.district_name\n" +
                 ", f.name facility_name\n" +
@@ -781,7 +781,7 @@ public interface VaccineDashboardMapper {
                 "and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int\n" +
                 "or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int)\n" +
                 ")\n" +
-                "select t.region_name,t.district_name, t.facility_name, t.period_name, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min," +
+                "select t.region_name,t.district_name, t.facility_name, t.period_name,t.period_start_date, sum(t.closing_balance), sum(t.need), min(t.minmonthsofstock) min," +
                 " max(t.maxmonthsofstock) max,\n" +
                 "case when sum(t.need)> 0 then sum(t.closing_balance)  / sum(t.need)::numeric  end mos , \n" +
                 "case when sum(t.need)> 0 and (sum(t.closing_balance) / sum(t.need)::numeric<=min(minmonthsofstock))then sum(t.closing_balance)  / sum(t.need)::numeric  end mos_g1 ,\n" +
@@ -789,9 +789,19 @@ public interface VaccineDashboardMapper {
                 "then sum(t.closing_balance) / sum(t.need)::numeric  end mos_g2 ,\n" +
                 "case when sum(t.need) > 0 and (sum(t.closing_balance) / sum(t.need)::numeric>max(maxmonthsofstock))then sum(t.closing_balance)  /sum(t.need)::numeric  end mos_g3\n" +
                 "from temp t\n" +
-                "group by 1,2,3,4\n" +
-                "order by 1,2;")
+                "group by 1,2,3,4,5\n" +
+                "order by 5,1,2;")
         List<HashMap<String, Object>> getFacilityStockStatusDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
+        @Select("select id current_period, name, startdate from processing_periods p where\n" +
+                "p.id=  fn_get_vaccine_current_reporting_period()")
+        Map<String,Object> getVaccineCurrentReportingPeriod();
+        @Select("select d.name zone_name, l.name level_name from \n" +
+                "geographic_zones  d\n" +
+                "inner join geographic_levels l on d.levelid=l.id\n" +
+                " where d.id = \n" +
+                "(select value from user_preferences up where up.userid = 2 \n" +
+                "and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int limit 1")
+        Map<String,Object> getUserZoneInformation();
 
 //        @Select("select * from vw_vaccine_inventory_stock_status st where facility_id=#{facilityId}")
 //        List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId);
