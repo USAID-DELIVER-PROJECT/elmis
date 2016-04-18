@@ -87,7 +87,6 @@ public class ProcessingPeriodController extends BaseController {
   }
 
   @RequestMapping(value = "/periods/{id}", method = GET, headers = ACCEPT_JSON)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_DISTRIBUTION')")
   public ResponseEntity<OpenLmisResponse> get(@PathVariable("id") Long id) {
     ProcessingPeriod processingPeriod = processingScheduleService.getPeriodById(id);
     return response("period", processingPeriod);

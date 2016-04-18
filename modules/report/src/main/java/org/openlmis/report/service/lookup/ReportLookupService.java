@@ -363,8 +363,8 @@ public class ReportLookupService {
     return tree;
   }
 
-  public GeoZoneTree getGeoZoneTreeWithOutZones(Long programId) {
-    List<GeoZoneTree> allGeozones = geographicZoneMapper.getGeoZones(programId);
+  public GeoZoneTree getGeoZoneTreeWithOutZones(Long programId,Long userId) {
+    List<GeoZoneTree> allGeozones = geographicZoneMapper.getGeoZones(programId,userId);
     GeoZoneTree tree = geographicZoneMapper.getParentZoneTree();
     List<GeoZoneTree> zoneList = this.loadZoneList(tree, allGeozones);
     List<GeoZoneTree> regions = this.loadZoneChildren(zoneList, allGeozones);
