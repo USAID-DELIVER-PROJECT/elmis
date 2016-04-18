@@ -598,6 +598,21 @@
     </div>
 </script>
 
+
+<script type="text/ng-template" id="filter-vaccine-product-doses-template">
+    <div>
+        <div  class="horizontalFilters form-cell">
+            <label for="vaccine-product-doeses"  class="labels" openlmis-message="label.vaccine.product.filter"></label>
+            <div>
+                <select id="vaccine-product-doeses" ui-select2 class="input-large" ng-model="filter.dose" ng-change="filterChanged();">
+                    <option ng-repeat="dose in doses" value="{{dose.doseId}}" ng-selected="filter.dose === dose.id">{{dose.displayName}}</option>
+                </select>
+            </div>
+        </div>
+
+
+    </div>
+</script>
 <script type="text/ng-template" id="filter-vaccine-stock-date-template">
     <div>
 

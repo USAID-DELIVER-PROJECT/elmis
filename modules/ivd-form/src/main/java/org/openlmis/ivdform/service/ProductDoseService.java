@@ -73,4 +73,10 @@ public class ProductDoseService {
       }
     }
   }
+
+
+  public List<VaccineProductDose> getProductDosesListByProgramProduct(Long programId, Long productId) {
+    return repository.getDosesForProduct(programId, productId);
+  }
+
 }

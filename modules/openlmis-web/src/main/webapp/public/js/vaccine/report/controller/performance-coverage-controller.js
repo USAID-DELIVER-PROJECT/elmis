@@ -20,7 +20,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     $scope.OnFilterChanged = function () {
 
         // prevent first time loading
-        if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
+        if (utils.isEmpty($scope.filter.product) || $scope.filter.product === "0" || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
         PerformanceCoverage.get(
@@ -29,7 +29,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                 periodEnd: $scope.periodEnddate,
                 range: $scope.range,
                 district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
-                product: $scope.filter.product
+                product: $scope.filter.product,
+                doseId : utils.isEmpty($scope.filter.dose) ? 0 : $scope.filter.dose
             },
 
             function (data) {
@@ -40,10 +41,9 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                     $scope.datarows = $scope.datarows = null;
                 }
                 else {
+
                     $scope.error = "";
-
                     $scope.datarows = data.performanceCoverage.mainreport;
-
                     $scope.summary = data.performanceCoverage.summary;
                     $scope.summaryRegionAggregate = data.performanceCoverage.summaryRegionAggregate;
                     $scope.dataRowsRegionAggregate = data.performanceCoverage.mainreportRegionAggregate;

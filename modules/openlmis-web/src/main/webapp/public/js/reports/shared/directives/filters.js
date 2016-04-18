@@ -1325,10 +1325,10 @@ app.directive('staticPeriodFilter', [function () {
                     $scope.periodStartdate = periods.startdate;
                     $scope.periodEnddate = periods.enddate;
 
-                    $timeout(function () {
+                    $scope.$evalAsync(function () {
                         $scope.onChange();
                         $scope.$parent.OnFilterChanged();
-                    }, 10);
+                    });
 
                     $scope.showCustomeDateInputs = false;
                 }
@@ -1653,6 +1653,49 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
         },
         templateUrl: 'filter-static-year'
     };
+}]);
+
+app.directive('vaccineProductDosesFilter', ['VaccineProductDoseList', 'messageService', 'VaccineSupervisedIvdPrograms',
+        function (VaccineProductDoseList, messageService, VaccineSupervisedIvdPrograms) {
+
+        return {
+            restrict: 'E',
+            scope: {
+                product: '=product'
+
+            },
+            controller: function ($scope) {
+
+                var selectAllDoses = messageService.get('filter.vaccine.doses.select.all');
+
+                $scope.$watch('product', function (newValues, oldValues) {
+
+                    VaccineSupervisedIvdPrograms.get({}, function (data) {
+
+                        VaccineProductDoseList.get(
+                            {  programId: data.programs[0].id,
+                                productId: $scope.product
+                            },
+
+                            function(result){
+                                $scope.doses = !utils.isNullOrUndefined(result.doses) ? result.doses : null;
+                                !utils.isNullOrUndefined(result.doses) ? $scope.doses.unshift({displayName: selectAllDoses}) :
+                                        $scope.doses.push({displayName: selectAllDoses});
+                            });
+                    });
+                });
+
+                $scope.filterChanged = function(){
+                    $scope.$parent.filter.dose = $scope.filter.dose;
+                  $scope.$parent.OnFilterChanged();
+                };
+
+            },
+            templateUrl: 'filter-vaccine-product-doses-template'
+        };
+
+    }
+]);
 }]);
 
 app.directive('vaccineStockDateFilter', [

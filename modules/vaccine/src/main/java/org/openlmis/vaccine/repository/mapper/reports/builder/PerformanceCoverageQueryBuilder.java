@@ -16,18 +16,13 @@ package org.openlmis.vaccine.repository.mapper.reports.builder;
 import java.util.Date;
 import java.util.Map;
 
-import static org.apache.ibatis.jdbc.SqlBuilder.WHERE;
-
 public class PerformanceCoverageQueryBuilder {
 
+    private static String sql;
+
     public static String  selectPerformanceCoverageMainReportDataByRegionAggregate(Map params){
-        Long zone = (Long) params.get("districtId");
-        Date startDate   = (Date) params.get("startDate");
-        Date endDate     = (Date) params.get("endDate");
-        Long productId   = (Long) params.get("productId");
 
-
-        String sql = "SELECT\n" +
+        sql = "SELECT\n" +
                 "d.region_name,\n" +
                 "sum(i.denominator) target,\n" +
                 "i.period_name,\n" +
@@ -44,9 +39,8 @@ public class PerformanceCoverageQueryBuilder {
                 "JOIN product_categories pg ON pp.productcategoryid = pg.ID\n" +
                 "WHERE\n" +
                 "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
-                " AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
-                " and i.product_id = " +productId +"\n"+
-                writeDistrictPredicate(zone) +
+                " AND "+
+                writePredicate(params)+
                 " group by d.region_name, i.period_name, i.period_start_date\n" +
                 " ORDER BY\n" +
                 " d.region_name,\n" +
@@ -57,12 +51,7 @@ public class PerformanceCoverageQueryBuilder {
 
     public static String selectPerformanceCoverageSummaryReportDataByRegionAggregate(Map params){
 
-        Long zone = (Long) params.get("districtId");
-        Date startDate   = (Date) params.get("startDate");
-        Date endDate     = (Date) params.get("endDate");
-        Long productId   = (Long) params.get("productId");
-
-        String sql = "SELECT  row_number() over (order by period_start_date nulls last) \"row\",\n" +
+         sql = "SELECT  row_number() over (order by period_start_date nulls last) \"row\",\n" +
                 "                                        period_name period,  \n" +
                 "                                        coverageGroup \"group\" ,  \n" +
                 "                                        COUNT(coverageGroup) total,  \n" +
@@ -92,9 +81,8 @@ public class PerformanceCoverageQueryBuilder {
                 "                                                                                 FROM   programs p  \n" +
                 "                                                                                 WHERE  p.enableivdform = TRUE  \n" +
                 "                                                                               )  \n" +
-                "                                               AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
-                "                                                    AND i.product_id = " +productId +" "+
-                                                        writeDistrictPredicate(zone) +
+                "                                                         AND                   "+
+                                                                                    writePredicate(params)+
                 "                                                GROUP BY  d.region_id, i.period_start_date, i.period_name\n" +
                 "                                                ORDER BY  i.period_start_date  \n" +
                 "                                                    ) a  \n" +
@@ -106,13 +94,8 @@ public class PerformanceCoverageQueryBuilder {
     }
 
     public static String selectPerformanceCoverageMainReportDataByRegion(Map params){
-        Long zone = (Long) params.get("districtId");
-        Date startDate   = (Date) params.get("startDate");
-        Date endDate     = (Date) params.get("endDate");
-        Long productId   = (Long) params.get("productId");
 
-
-        String sql = "SELECT\n" +
+          sql = "SELECT\n" +
                 "d.district_id,\n" +
                 "d.region_name,\n" +
                 "d.district_name,\n" +
@@ -131,9 +114,8 @@ public class PerformanceCoverageQueryBuilder {
                 "JOIN product_categories pg ON pp.productcategoryid = pg.ID\n" +
                 "WHERE\n" +
                 "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
-                "AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
-                "and i.product_id = " +productId +"\n"+
-                writeDistrictPredicate(zone) +
+                " AND "+
+                writePredicate(params)+
                 "group by d.region_name,d.district_name, d.district_id, i.period_name, i.period_start_date\n" +
                 "ORDER BY\n" +
                 "d.region_name,\n" +
@@ -145,11 +127,7 @@ public class PerformanceCoverageQueryBuilder {
 
     public static String selectPerformanceCoverageSummaryReportDataByRegion(Map params){
 
-        Long zone = (Long) params.get("districtId");
-        Date startDate   = (Date) params.get("startDate");
-        Date endDate     = (Date) params.get("endDate");
-        Long productId   = (Long) params.get("productId");
-        String sql = "SELECT  row_number() over (order by period_start_date nulls last) \"row\",\n" +
+         sql = "SELECT  row_number() over (order by period_start_date nulls last) \"row\",\n" +
                 "                        period_name period, \n" +
                 "                        coverageGroup \"group\" , \n" +
                 "                        COUNT(coverageGroup) total, \n" +
@@ -179,9 +157,8 @@ public class PerformanceCoverageQueryBuilder {
                 "                                                                 FROM   programs p \n" +
                 "                                                                 WHERE  p.enableivdform = TRUE \n" +
                 "                                                               ) \n" +
-                "                        AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
-                "                                AND i.product_id = " +productId +" "+
-                                                        writeDistrictPredicate(zone)
+                "                           AND "+
+                                writePredicate(params)
                 +"                                GROUP BY  d.district_id, i.period_name, i.period_start_date " +
                 "                                ORDER BY  i.period_start_date \n" +
                 "                                    ) a \n" +
@@ -194,14 +171,7 @@ public class PerformanceCoverageQueryBuilder {
 
     public static String selectPerformanceCoverageMainReportDataByDistrict(Map params){
 
-
-
-        Long zone = (Long) params.get("districtId");
-        Date startDate   = (Date) params.get("startDate");
-        Date endDate     = (Date) params.get("endDate");
-        Long productId   = (Long) params.get("productId");
-
-        String sql = "SELECT\n" +
+         sql = "SELECT\n" +
                 "d.district_id,\n" +
                 "d.region_name,\n" +
                 "d.district_name,\n" +
@@ -221,10 +191,8 @@ public class PerformanceCoverageQueryBuilder {
                 "JOIN product_categories pg ON pp.productcategoryid = pg.ID\n" +
                 "WHERE\n" +
                 "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
-                "AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
-                " and i.product_id = " +productId
-                +""+
-                writeDistrictPredicate(zone)
+                "AND "+
+                writePredicate(params)
                 +" ORDER BY\n" +
                 "d.region_name,\n" +
                 "d.district_name, "+
@@ -235,14 +203,7 @@ public class PerformanceCoverageQueryBuilder {
 
     public static String selectPerformanceCoverageSummaryReportDataByDistrict(Map params){
 
-
-        Long zone = (Long) params.get("districtId");
-        Date startDate   = (Date) params.get("startDate");
-        Date endDate     = (Date) params.get("endDate");
-        Long productId   = (Long) params.get("productId");
-       // Long facilityId  = (Long) params.get("facilityId");
-
-        String sql =
+         sql =
                 " SELECT  row_number() over (order by period_start_date nulls last) \"row\",\n" +
                 "        period_name period,\n" +
                 "        coverageGroup \"group\" ,\n" +
@@ -272,9 +233,8 @@ public class PerformanceCoverageQueryBuilder {
                 "                                                 FROM   programs p\n" +
                 "                                                 WHERE  p.enableivdform = TRUE\n" +
                 "                                               )\n" +
-                "                        AND i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n" +
-                "                                AND i.product_id = " +productId +" "+
-                              writeDistrictPredicate(zone)
+                "                        AND "+
+                        writePredicate(params)
                 +"                      ORDER BY  i.period_start_date\n" +
                 "                    ) a\n" +
                 "        ) b\n" +
@@ -287,12 +247,25 @@ public class PerformanceCoverageQueryBuilder {
 
     }
 
-    private static String writeDistrictPredicate(Long zone) {
+    private static String writePredicate(Map params) {
+
+        Long zone = (Long) params.get("districtId");
+        Date startDate   = (Date) params.get("startDate");
+        Date endDate     = (Date) params.get("endDate");
+        Long productId   = (Long) params.get("productId");
+        Long doseId = (Long) params.get("doseId");
 
         String predicate = "";
+        predicate = " i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n";
+        predicate +=" AND i.product_id = " +productId +" ";
+
         if (zone != 0 && zone != null) {
-            predicate = " AND (district_id = "+zone+" or zone_id = "+zone+" or region_id = "+zone+" or parent = "+zone+")";
+            predicate += " AND (district_id = "+zone+" or zone_id = "+zone+" or region_id = "+zone+" or parent = "+zone+")";
         }
+
+        if(doseId > 0)
+            predicate += " AND dose_id = "+ doseId;
+
         return predicate;
     }
 
