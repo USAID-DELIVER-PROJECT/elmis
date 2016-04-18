@@ -73,104 +73,104 @@ public class VaccineReportService {
         return repository.getReportIdForFacilityAndPeriod(facilityId, periodId);
     }
 
-    private List<DiseaseLineItem> getDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<DiseaseLineItem> getDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
 
-            return repository.getDiseaseSurveillance(reportId);
+            return repository.getDiseaseSurveillance(reportId,userId);
         }
 
-        return repository.getDiseaseSurveillanceAggregateReport(periodId, zoneId);
+        return repository.getDiseaseSurveillanceAggregateReport(periodId, zoneId,userId);
     }
 
-    private Map<String, DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private Map<String, DiseaseLineItem> getCumulativeDiseaseSurveillance(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
 
-            return repository.getCumFacilityDiseaseSurveillance(reportId, facilityId);
+            return repository.getCumFacilityDiseaseSurveillance(reportId, facilityId,userId);
         }
 
-        return repository.getCumDiseaseSurveillanceAggregateReport(periodId, zoneId);
+        return repository.getCumDiseaseSurveillanceAggregateReport(periodId, zoneId,userId);
     }
 
-    private List<ColdChainLineItem> getColdChain(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<ColdChainLineItem> getColdChain(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
-            return repository.getColdChain(reportId);
+            return repository.getColdChain(reportId,userId);
         }
-        return repository.getColdChainAggregateReport(periodId, zoneId);
+        return repository.getColdChainAggregateReport(periodId, zoneId,userId);
     }
 
-    private List<AdverseEffectLineItem> getAdverseEffectReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<AdverseEffectLineItem> getAdverseEffectReport(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
-            return repository.getAdverseEffectReport(reportId);
+            return repository.getAdverseEffectReport(reportId,userId);
         }
-        return repository.getAdverseEffectAggregateReport(periodId, zoneId);
+        return repository.getAdverseEffectAggregateReport(periodId, zoneId,userId);
     }
 
-    private List<HashMap<String, Object>> getVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<HashMap<String, Object>> getVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
 
-            return repository.getVaccineCoverageReport(reportId);
+            return repository.getVaccineCoverageReport(reportId,userId);
         }
-        return repository.getVaccineCoverageAggregateReport(periodId, zoneId);
+        return repository.getVaccineCoverageAggregateReport(periodId, zoneId,userId);
     }
 
-    private Map<String, VaccineCoverageReport> calculateVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private Map<String, VaccineCoverageReport> calculateVaccineCoverageReport(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
-            return repository.calculateVaccineCoverageReportForFacility(reportId, facilityId);
+            return repository.calculateVaccineCoverageReportForFacility(reportId, facilityId,userId);
         }
-        return repository.calculateVaccineCoverageReport(periodId, zoneId);
+        return repository.calculateVaccineCoverageReport(periodId, zoneId,userId);
     }
 
-    private List<VaccineReport> getImmunizationSession(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<VaccineReport> getImmunizationSession(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
             return repository.getImmunizationSession(reportId);
         }
-        return repository.getImmunizationSessionAggregate(periodId, zoneId);
+        return repository.getImmunizationSessionAggregate(periodId, zoneId,userId);
     }
 
-    private List<HashMap<String, Object>> getVaccineReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<HashMap<String, Object>> getVaccineReport(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
-            return repository.getVaccinationReport(VACCINE_REPORT_VACCINE_CATEGORY_CODE, reportId);
+            return repository.getVaccinationReport(VACCINE_REPORT_VACCINE_CATEGORY_CODE, reportId,userId);
         } else {
 
-            return repository.getVaccinationAggregateByGeoZoneReport(VACCINE_REPORT_VACCINE_CATEGORY_CODE, periodId, zoneId);
+            return repository.getVaccinationAggregateByGeoZoneReport(VACCINE_REPORT_VACCINE_CATEGORY_CODE, periodId, zoneId,userId);
         }
     }
 
-    private List<HashMap<String, Object>> getSyringeAndSafetyBoxReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<HashMap<String, Object>> getSyringeAndSafetyBoxReport(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
-            return repository.getVaccinationReport(VACCINE_REPORT_SYRINGES_CATEGORY_CODE, reportId);
+            return repository.getVaccinationReport(VACCINE_REPORT_SYRINGES_CATEGORY_CODE, reportId,userId);
         }
-        return repository.getVaccinationAggregateByGeoZoneReport(VACCINE_REPORT_SYRINGES_CATEGORY_CODE, periodId, zoneId);
+        return repository.getVaccinationAggregateByGeoZoneReport(VACCINE_REPORT_SYRINGES_CATEGORY_CODE, periodId, zoneId,userId);
 
     }
 
-    private List<HashMap<String, Object>> getVitaminsReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<HashMap<String, Object>> getVitaminsReport(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
-            return repository.getVaccinationReport(VACCINE_REPORT_VITAMINS_CATEGORY_CODE, reportId);
+            return repository.getVaccinationReport(VACCINE_REPORT_VITAMINS_CATEGORY_CODE, reportId,userId);
         }
-        return repository.getVaccinationAggregateByGeoZoneReport(VACCINE_REPORT_VITAMINS_CATEGORY_CODE, periodId, zoneId);
+        return repository.getVaccinationAggregateByGeoZoneReport(VACCINE_REPORT_VITAMINS_CATEGORY_CODE, periodId, zoneId,userId);
     }
 
-    private List<HashMap<String, Object>> getTargetPopulation(Long facilityId, Long periodId, Long zoneId) {
+    private List<HashMap<String, Object>> getTargetPopulation(Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
             return repository.getTargetPopulation(facilityId, periodId);
         }
-        return repository.getTargetPopulationAggregateByGeoZone(periodId, zoneId);
+        return repository.getTargetPopulationAggregateByGeoZone(periodId, zoneId,userId);
     }
 
-    private List<VitaminSupplementationLineItem> getVitaminSupplementationReport(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<VitaminSupplementationLineItem> getVitaminSupplementationReport(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
 
             return repository.getVitaminSupplementationReport(reportId);
         }
-        return repository.getVitaminSupplementationAggregateReport(periodId, zoneId);
+        return repository.getVitaminSupplementationAggregateReport(periodId, zoneId,userId);
     }
 
-    private List<HashMap<String, Object>> getDropOuts(Long reportId, Long facilityId, Long periodId, Long zoneId) {
+    private List<HashMap<String, Object>> getDropOuts(Long reportId, Long facilityId, Long periodId, Long zoneId,Long userId) {
         if (facilityId != null && facilityId != 0) {
-            return repository.getDropOuts(reportId);
+            return repository.getDropOuts(reportId,userId);
         }
-        return repository.getAggregateDropOuts(periodId, zoneId);
+        return repository.getAggregateDropOuts(periodId, zoneId,userId);
     }
 
     public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long periodId, Long zoneId) {
@@ -197,7 +197,7 @@ public class VaccineReportService {
         return vaccineUsageTrend;
     }
 
-    public Map<String, Object> getMonthlyVaccineReport(Long facilityId, Long periodId, Long zoneId) {
+    public Map<String, Object> getMonthlyVaccineReport(Long facilityId, Long periodId, Long zoneId,Long userId) {
 
         Map<String, Object> data = new HashMap();
         Long reportId = null;
@@ -215,19 +215,19 @@ public class VaccineReportService {
         try {
 
 
-            data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, districtId));
-            data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, districtId));
-            data.put("cumDiseaseSurveillance", this.getCumulativeDiseaseSurveillance(reportId, facilityId, periodId, districtId));
-            data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, districtId));
-            data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, districtId));
-            data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, districtId));
-            data.put("vitaminSupplementation", getVitaminSupplementationReport(reportId, facilityId, periodId, districtId));
-            data.put("adverseEffect", getAdverseEffectReport(reportId, facilityId, periodId, districtId));
-            data.put("coldChain", getColdChain(reportId, facilityId, periodId, districtId));
-            data.put("targetPopulation", getTargetPopulation(facilityId, periodId, districtId));
-            data.put("syringes", getSyringeAndSafetyBoxReport(reportId, facilityId, periodId, districtId));
-            data.put("vitamins", getVitaminsReport(reportId, facilityId, periodId, districtId));
-            data.put("dropOuts", getDropOuts(reportId, facilityId, periodId, districtId));
+            data.put("vaccination", getVaccineReport(reportId, facilityId, periodId, districtId,userId));
+            data.put("diseaseSurveillance", getDiseaseSurveillance(reportId, facilityId, periodId, districtId,userId));
+            data.put("cumDiseaseSurveillance", this.getCumulativeDiseaseSurveillance(reportId, facilityId, periodId, districtId,userId));
+            data.put("vaccineCoverage", getVaccineCoverageReport(reportId, facilityId, periodId, districtId,userId));
+            data.put("vaccineCoverageCalculation", calculateVaccineCoverageReport(reportId, facilityId, periodId, districtId,userId));
+            data.put("immunizationSession", getImmunizationSession(reportId, facilityId, periodId, districtId,userId));
+            data.put("vitaminSupplementation", getVitaminSupplementationReport(reportId, facilityId, periodId, districtId,userId));
+            data.put("adverseEffect", getAdverseEffectReport(reportId, facilityId, periodId, districtId,userId));
+            data.put("coldChain", getColdChain(reportId, facilityId, periodId, districtId,userId));
+            data.put("targetPopulation", getTargetPopulation(facilityId, periodId, districtId,userId));
+            data.put("syringes", getSyringeAndSafetyBoxReport(reportId, facilityId, periodId, districtId,userId));
+            data.put("vitamins", getVitaminsReport(reportId, facilityId, periodId, districtId,userId));
+            data.put("dropOuts", getDropOuts(reportId, facilityId, periodId, districtId,userId));
         } catch (Exception ex) {
 
             LOGGER.warn("error while loading Reporting summary:... ", ex);
