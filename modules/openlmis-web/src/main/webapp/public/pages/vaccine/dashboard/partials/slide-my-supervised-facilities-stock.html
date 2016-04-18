@@ -1,0 +1,64 @@
+<div></div>
+<style>
+    .input-large {
+    width: 80px;
+    }
+</style>
+<div class="app-form vaccine-form-filter">
+    <form ng-submit="filterGrid()" name="filterForm" novalidate>
+        <div filter-container class="row-fluid clearfix">
+            <div class="span3">
+                <vaccine-stock-facility-level-filter
+                        default="defaultLevel" class="form-cell horizontalFilters"
+                        cm-model="mySupervisedFilter.level"
+                        on-change="mySupervisedFacilitiesCallback(mySupervisedFilter)">
+
+                </vaccine-stock-facility-level-filter>
+            </div>
+            <div class="span3">
+                <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"
+                                        cm-model="mySupervisedFilter.product"
+                                        on-change="mySupervisedFacilitiesCallback(mySupervisedFilter)">
+
+                </vaccine-product-filter>
+            </div>
+            <div class="span3">
+                <range-pagination field-label="label.facility" class="form-cell horizontalFilters"
+                                  total="20" range="5"
+                                  offset="1" label-all="all facility"
+                                  on-change="facilitySessionsPagination()"></range-pagination>
+            </div>
+            <div class="span3">
+                <vaccine-stock-date-filter default="defaultToDate" class="form-cell horizontalFilters"
+                                           cm-model="mySupervisedFilter.date"
+                                           on-change="mySupervisedFacilitiesCallback(mySupervisedFilter)">
+
+                </vaccine-stock-date-filter>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<div ng-show="mySupervisedFacilityStock.dataPoints">
+    <c3chart bindto-id="my-supervised-stock"
+             chart-data="mySupervisedFacilityStock.dataPoints"
+             chart-columns="mySupervisedFacilityStock.dataColumns"
+             chart-x="mySupervisedFacilityStock.dataX"
+             padding-bottom="10">
+        <chart-legend show-legend="false"/>
+        <chart-tooltip value-format-function="getSupervisedSOHTooltip" show-tooltip="true"/>
+        <chart-colors color-function="getColorSupervised"/>
+        <chart-axis>
+            <chart-axis-x axis-position="outer-center"
+                          axis-label="{{mySupervisedFacilityStock.productCategory}}"
+                          axis-type="category">
+            </chart-axis-x>
+            <chart-axis-y axis-position="outer-middle"
+                          axis-label="MOS">
+            </chart-axis-y>
+        </chart-axis>
+    </c3chart>
+</div>
+<div style="font-weight: bold" ng-hide="mySupervisedFacilityStock.dataPoints"
+     openlmis-message="label.report.no.data.to.show"></div>

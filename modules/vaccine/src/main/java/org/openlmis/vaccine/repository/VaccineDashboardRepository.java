@@ -150,8 +150,11 @@ public class VaccineDashboardRepository {
         return mapper.getFacilityStockStatusDetails(startDate, endDate, productId, userId);
     }
 
-    public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId) {
-        return mapper.getFacilityVaccineInventoryStockStatus(facilityId);
+    public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId, String date) {
+        return mapper.getFacilityVaccineInventoryStockStatus(facilityId, date);
     }
 
+    public List<HashMap<String, Object>> getSupervisedFacilitiesVaccineInventoryStockStatus(String facilityIds, Long productId, String date, String level) {
+        return mapper.getSupervisedFacilitiesProductStockStatus(facilityIds, productId, date, level);
+    }
 }

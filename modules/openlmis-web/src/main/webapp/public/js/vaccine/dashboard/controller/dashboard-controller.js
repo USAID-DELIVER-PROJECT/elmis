@@ -42,7 +42,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 //                                    VaccineDashboardDistrictStockStatus,
                                     VaccineDashboardFacilityStockStatus,
                                     VaccineDashboardFacilityStockStatusDetails,colors,
-                                    VaccineDashboardFacilityInventoryStockStatus,homeFacility
+                                    VaccineDashboardFacilityInventoryStockStatus,homeFacility,
+                                    VaccineDashboardSupervisedFacilityInventoryStockStatus
                                     ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
@@ -841,26 +842,59 @@ $scope.myStockVaccine = {
          dataX: {"id": "product"},
          productCategory:""
  };
-VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(homeFacility.id,10)},function(data){
-      if(data.facilityStockStatus !== null)
-      {
-            var allProducts=data.facilityStockStatus;
-            var byCategory=_.groupBy(allProducts,function(p){
-                  return p.product_category;
-            });
-            var allDataPointsByCategory = $.map(byCategory, function(value, index) {
-                return [{"productCategory":index,"dataPoints":value}];
-            });
-            $scope.myStockVaccine.dataPoints=allDataPointsByCategory[0].dataPoints;
-            $scope.myStockVaccine.productCategory=allDataPointsByCategory[0].productCategory;
 
-            $scope.myStockSupplies.dataPoints=allDataPointsByCategory[1].dataPoints;
-            $scope.myStockSupplies.productCategory=allDataPointsByCategory[1].productCategory;
-      }
-});
+ $scope.mySupervisedFacilityStock = {
+          dataPoints:[],
+          dataColumns: [{
+              "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
+          ],
+          dataX: {"id": "facility_name"},
+          productCategory:""
+  };
+
+$scope.facilityInventoryStockStatusCallback=function(myStock){
+   if(!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate))
+   {
+        VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(homeFacility.id,10),date:myStock.toDate},function(data){
+              if(data.facilityStockStatus !== null)
+              {
+                    var allProducts=data.facilityStockStatus;
+                    var byCategory=_.groupBy(allProducts,function(p){
+                          return p.product_category;
+                    });
+                    var allDataPointsByCategory = $.map(byCategory, function(value, index) {
+                        return [{"productCategory":index,"dataPoints":value}];
+                    });
+                    $scope.myStockVaccine.dataPoints=allDataPointsByCategory[0].dataPoints;
+                    $scope.myStockVaccine.productCategory=allDataPointsByCategory[0].productCategory;
+
+                    $scope.myStockSupplies.dataPoints=allDataPointsByCategory[1].dataPoints;
+                    $scope.myStockSupplies.productCategory=allDataPointsByCategory[1].productCategory;
+
+
+              }
+        });
+    }
+};
+
+
+$scope.mySupervisedFacilitiesCallback=function(filter){
+    if(!isUndefined(filter.product) && filter.product !== "0" && !isUndefined(filter.date) && !isUndefined(filter.level) && filter.level !=="0")
+    {
+           VaccineDashboardSupervisedFacilityInventoryStockStatus.get({
+                                                                       productId:filter.product,
+                                                                       date:filter.date,
+                                                                       level:filter.level},
+                                                                       function(data){
+                       $scope.mySupervisedFacilityStock.dataPoints=data.facilityStockStatus;
+                       $scope.mySupervisedFacilityStock.productCategory=data.facilityStockStatus[0].product;
+           });
+     }
+};
+
 
 $scope.getSOHVaccine=function (value, ratio, id, index) {
-        var toolTipValue=value + " = "+$scope.myStockVaccine.dataPoints[index].soh +" "+ $scope.myStockVaccine.dataPoints[index].unity_of_measure;
+        var toolTipValue=value + " | "+$filter('number')($scope.myStockVaccine.dataPoints[index].soh) +" "+ $scope.myStockVaccine.dataPoints[index].unity_of_measure;
         return toolTipValue;
 };
 $scope.getColorVaccine=function (color, d) {
@@ -870,12 +904,22 @@ $scope.getColorVaccine=function (color, d) {
 };
 
 $scope.getSOHSupplies=function (value, ratio, id, index) {
-        var toolTipValue=value + " = "+$scope.myStockSupplies.dataPoints[index].soh +" "+ $scope.myStockSupplies.dataPoints[index].unity_of_measure;
+        var toolTipValue=value + " | "+$filter('number')($scope.myStockSupplies.dataPoints[index].soh) +" "+ $scope.myStockSupplies.dataPoints[index].unity_of_measure;
         return toolTipValue;
 };
 $scope.getColorSupplies=function (color, d) {
        if(typeof d === 'object') {
          return $scope.myStockSupplies.dataPoints[d.index].color;
+       }
+};
+
+$scope.getSupervisedSOHTooltip=function (value, ratio, id, index) {
+        var toolTipValue=value + " | "+$filter('number')($scope.mySupervisedFacilityStock.dataPoints[index].soh) +" "+ $scope.mySupervisedFacilityStock.dataPoints[index].unity_of_measure;
+        return toolTipValue;
+};
+$scope.getColorSupervised=function (color, d) {
+       if(typeof d === 'object') {
+         return $scope.mySupervisedFacilityStock.dataPoints[d.index].color;
        }
 };
 

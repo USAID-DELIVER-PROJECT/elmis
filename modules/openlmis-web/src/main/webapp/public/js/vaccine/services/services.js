@@ -550,3 +550,7 @@ services.factory('VaccineDashboardFacilityStockStatusDetails', function($resourc
 services.factory('VaccineDashboardFacilityInventoryStockStatus', function($resource){
     return $resource('/vaccine/dashboard/facility-inventory-stock-status.json',{},{});
 });
+
+services.factory('VaccineDashboardSupervisedFacilityInventoryStockStatus', function($resource){
+    return $resource('/vaccine/dashboard/supervised-facilities-inventory-stock-status.json',{},{});
+});

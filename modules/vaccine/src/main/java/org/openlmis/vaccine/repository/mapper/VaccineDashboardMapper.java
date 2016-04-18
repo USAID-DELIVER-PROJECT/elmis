@@ -793,6 +793,80 @@ public interface VaccineDashboardMapper {
                 "order by 1,2;")
         List<HashMap<String, Object>> getFacilityStockStatusDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
-        @Select("select * from vw_vaccine_inventory_stock_status where facility_id=#{facilityId}")
-        List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId);
+//        @Select("select * from vw_vaccine_inventory_stock_status st where facility_id=#{facilityId}")
+//        List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId);
+
+        @Select("SELECT " +
+                "  vvisc.facility_name," +
+                "  vvisc.product," +
+                "  vvisc.maximum_stock," +
+                "  vvisc.reorder_level," +
+                "  vvisc.buffer_stock," +
+                "  vvisc.unity_of_measure," +
+                "  vvisc.product_category," +
+                "  CASE WHEN (select NOW()::DATE) =#{date}::DATE THEN " +
+                "       vvisc.soh " +
+                "  ELSE " +
+                "  (select SUM(quantity) from stock_card_entries sce " +
+                "      join stock_cards sc on sc.id=sce.stockcardid " +
+                "      where sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::integer " +
+                "  END AS soh," +
+                "  CASE WHEN (select NOW()::DATE) =#{date}::DATE THEN " +
+                "       vvisc.mos" +
+                "  ELSE " +
+                "      round((select SUM(quantity) from stock_card_entries sce " +
+                "      join stock_cards sc on sc.id=sce.stockcardid " +
+                "      where sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::numeric(10,2) / vvisc.monthly_stock::numeric(10,2), 2) " +
+                "  END AS mos," +
+                "  CASE WHEN (select NOW()::DATE) =#{date}::DATE THEN " +
+                "       vvisc.color " +
+                "  ELSE " +
+                "      ( SELECT fn_get_vaccine_stock_color(COALESCE(vvisc.maximum_stock::integer, 0), COALESCE(vvisc.reorder_level::integer, 0)," +
+                "        COALESCE(vvisc.buffer_stock::integer, 0), " +
+                "        COALESCE((select SUM(quantity) from stock_card_entries sce" +
+                "      join stock_cards sc on sc.id=sce.stockcardid " +
+                "      where sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::integer, 0))) " +
+                "  END AS color " +
+                " FROM vw_vaccine_inventory_stock_status vvisc WHERE vvisc.facility_id=#{facilityId}")
+        List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId, @Param("date") String date);
+
+        @Select("SELECT " +
+                "  vvisc.facility_name," +
+                "  vvisc.product," +
+                "  vvisc.maximum_stock," +
+                "  vvisc.reorder_level," +
+                "  vvisc.buffer_stock," +
+                "  vvisc.unity_of_measure," +
+                "  vvisc.product_category," +
+                "  CASE WHEN (select NOW()::DATE) =#{date}::DATE THEN " +
+                "       vvisc.soh " +
+                "  ELSE " +
+                "  (select SUM(quantity) from stock_card_entries sce" +
+                "      join stock_cards sc on sc.id=sce.stockcardid" +
+                "      where sc.facilityid=vvisc.facility_id and sc.productid=#{productId} and sce.createddate <=#{date}::DATE)::integer " +
+                "  END AS soh," +
+                "  CASE WHEN (select NOW()::DATE) =#{date}::DATE THEN " +
+                "       vvisc.mos" +
+                "  ELSE " +
+                "      round((select SUM(quantity) from stock_card_entries sce" +
+                "      join stock_cards sc on sc.id=sce.stockcardid" +
+                "      where sc.facilityid=vvisc.facility_id and sc.productid=#{productId} and sce.createddate <=#{date}::DATE)::numeric(10,2) / vvisc.monthly_stock::numeric(10,2), 2) " +
+                "  END AS mos," +
+                "  CASE WHEN (select NOW()::DATE) =#{date}::DATE THEN " +
+                "       vvisc.color" +
+                "  ELSE " +
+                "      ( SELECT fn_get_vaccine_stock_color(COALESCE(vvisc.maximum_stock::integer, 0), COALESCE(vvisc.reorder_level::integer, 0)," +
+                "        COALESCE(vvisc.buffer_stock::integer, 0), " +
+                "        COALESCE((select SUM(quantity) from stock_card_entries sce " +
+                "      join stock_cards sc on sc.id=sce.stockcardid " +
+                "      where sc.facilityid=vvisc.facility_id and sc.productid=#{productId} and sce.createddate <=#{date}::DATE)::integer, 0))) " +
+                "  END AS color " +
+                " from vw_vaccine_inventory_stock_status vvisc " +
+                " left join facilities f on f.id=vvisc.facility_id " +
+                " left join facility_types ft on ft.id=f.typeid " +
+                " where vvisc.facility_id = ANY (#{facilityIds}::INT[]) AND vvisc.product_id=#{productId} AND LOWER(ft.code) =LOWER(#{level})")
+        List<HashMap<String, Object>> getSupervisedFacilitiesProductStockStatus(@Param("facilityIds") String facilityIds,
+                                                                                @Param("productId") Long productId,
+                                                                                @Param("date") String date,
+                                                                                @Param("level") String level);
 }

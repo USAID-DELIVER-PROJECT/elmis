@@ -1,18 +1,23 @@
-<div>{{myStockVaccine.productCategory}}</div>
+<div></div>
 <div class="app-form vaccine-form-filter">
-    <!--<form  novalidate>-->
-    <!--<div  class="clearfix">-->
-    <!--<vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.districtStock.product" on-change="districtStockCallback()"></vaccine-product-filter>-->
-    <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtStock.period"  class="form-cell horizontalFilters" on-change="districtStockCallback()"></vaccine-monthly-period-tree-filter>-->
-    <!--</div>-->
-    <!--</form>-->
+    <form ng-submit="filterGrid()" name="filterForm" novalidate>
+        <div filter-container class="clearfix">
+            <vaccine-stock-date-filter default="defaultToDate" class="form-cell horizontalFilters"
+                                       cm-model="myStock.toDate"
+                                       on-change="facilityInventoryStockStatusCallback(myStock)">
+
+            </vaccine-stock-date-filter>
+        </div>
+    </form>
 </div>
 
-<c3chart bindto-id="stacked-bar-plot1-chart"
+<div ng-show="myStockVaccine.dataPoints">
+    <c3chart bindto-id="mystock-vaccine"
          chart-data="myStockVaccine.dataPoints"
          chart-columns="myStockVaccine.dataColumns"
          chart-x="myStockVaccine.dataX"
-        >
+         padding-bottom="10">
+        <chart-legend show-legend="false"/>
     <chart-tooltip value-format-function="getSOHVaccine" show-tooltip="true"/>
     <chart-colors color-function="getColorVaccine"/>
     <chart-axis>
@@ -20,10 +25,11 @@
                       axis-label="{{myStockVaccine.productCategory}}"
                       axis-type="category">
         </chart-axis-x>
-        <chart-axis-y axis-position="outer-center"
+        <chart-axis-y axis-position="outer-middle"
                       axis-label="MOS">
         </chart-axis-y>
     </chart-axis>
 </c3chart>
+</div>
 <div style="font-weight: bold" ng-hide="myStockVaccine.dataPoints"
      openlmis-message="label.report.no.data.to.show"></div>

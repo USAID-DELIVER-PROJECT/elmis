@@ -1639,3 +1639,96 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
         templateUrl: 'filter-static-year'
     };
 }]);
+
+app.directive('vaccineStockDateFilter', [
+    function () {
+
+
+        return {
+            restrict: 'E',
+            scope: {
+                filterToDate: '=cmModel',
+                default: '=default',
+                onChange: '&'
+            },
+            controller: function ($scope) {
+
+                if (!isUndefined($scope.default)) {
+                    $scope.filterToDate = $scope.default;
+                } else {
+                      var d = new Date();
+                      month = '' + (d.getMonth() + 1);
+                      day = '' + d.getDate();
+                      year = d.getFullYear();
+
+                      if (month.length < 2) month = '0' + month;
+                      if (day.length < 2) day = '0' + day;
+
+                     $scope.filterToDate =[year, month, day].join('-');
+                }
+
+                $scope.$watch('filterToDate', function (newValues, oldValues) {
+                    $scope.$parent.OnFilterChanged();
+                    $scope.onChange();
+                });
+
+            },
+            templateUrl: 'filter-vaccine-stock-date-template'
+        };
+    }
+]);
+
+app.directive('vaccineStockFacilityLevelFilter', ['ReportFacilityLevels', 'VaccineSupervisedIvdPrograms',
+    function (ReportFacilityLevels, VaccineSupervisedIvdPrograms) {
+
+
+        return {
+            restrict: 'E',
+            scope: {
+                filterFacilityLevel: '=cmModel',
+                default: '=default',
+                onChange: '&'
+            },
+            controller: function ($scope) {
+
+                VaccineSupervisedIvdPrograms.get({},function(data){
+                    ReportFacilityLevels.get({program:data.programs[0].id},function(data2){
+                         var facilityLevels=[];
+                         var hasRVS=_.where(data2.facilityLevels,{code:'rvs'});
+                         var hasCVS=_.where(data2.facilityLevels,{code:'cvs'});
+                         var isUpperThanDvs=(hasRVS.length >0)?true:false;
+                         var isUpperThanRVS=(hasCVS.length >0)?true:false;
+
+                         data2.facilityLevels.forEach(function(level){
+                              if(level.code === 'rvs' && isUpperThanRVS){
+                                     facilityLevels.push(level);
+                              }
+                              if(level.code === 'dvs' && isUpperThanDvs){
+                                     facilityLevels.push(level);
+                              }
+
+                         });
+                         $scope.facilityLevels=facilityLevels.sort(function(a,b){
+                             return (a.displayOrder > b.displayOrder) ? 1 : ((b.displayOrder > a.displayOrder) ? -1 : 0);
+                         });
+                         $scope.filterFacilityLevel = $scope.facilityLevels[0].code;
+                    });
+
+                });
+
+                if (!isUndefined($scope.default)) {
+                    $scope.filterFacilityLevel = $scope.default;
+                } else {
+
+                }
+
+                $scope.$watch('filterFacilityLevel', function (newValues, oldValues) {
+                    $scope.$parent.OnFilterChanged();
+                    $scope.onChange();
+                });
+
+            },
+            templateUrl: 'filter-vaccine-facility-levels-template'
+        };
+    }
+]);

@@ -1,18 +1,26 @@
-<div>{{myStockSupplies.productCategory}}</div>
 <div class="app-form vaccine-form-filter">
-    <!--<form  novalidate>-->
+    <form novalidate>
     <!--<div  class="clearfix">-->
     <!--<vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"  cm-model="filter.districtStock.product" on-change="districtStockCallback()"></vaccine-product-filter>-->
     <!--<vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.districtStock.period"  class="form-cell horizontalFilters" on-change="districtStockCallback()"></vaccine-monthly-period-tree-filter>-->
     <!--</div>-->
-    <!--</form>-->
+        <!--<input style="width: 100px; height:20px "-->
+        <!--name="searchDate"-->
+        <!--type="text"-->
+        <!--ng-change="facilityInventoryStockStatusCallback(toDate)"-->
+        <!--ui-date="{dateFormat: 'dd/mm/yy', changeYear: true, maxDate:'today'}"-->
+        <!--ng-model="toDate"-->
+        <!--ui-date-format="yy-mm-dd"/>-->
+    </form>
+    <br/><br/>
 </div>
 
-<c3chart bindto-id="stacked-bar-plot1-chart"
+<c3chart bindto-id="mystock-supplies"
          chart-data="myStockSupplies.dataPoints"
          chart-columns="myStockSupplies.dataColumns"
          chart-x="myStockSupplies.dataX"
-        >
+         padding-bottom="10">
+    <chart-legend show-legend="false"/>
     <chart-tooltip value-format-function="getSOHSupplies" show-tooltip="true"/>
     <chart-colors color-function="getColorSupplies"/>
     <chart-axis>
@@ -20,7 +28,7 @@
                       axis-label="{{myStockSupplies.productCategory}}"
                       axis-type="category">
         </chart-axis-x>
-        <chart-axis-y axis-position="outer-center"
+        <chart-axis-y axis-position="outer-middle"
                       axis-label="MOS">
         </chart-axis-y>
     </chart-axis>

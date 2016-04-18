@@ -674,7 +674,7 @@
                     <div class="portlet light">
                         <div class="caption">
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
-                            <span class="caption-helper"> to date</span>
+                            <span class="caption-helper">My Vaccine stock</span>
 
                             <div class="actions">
                                 <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
@@ -694,7 +694,7 @@
                     <div class="portlet light">
                         <div class="caption">
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
-                            <span class="caption-helper">by district...</span>
+                            <span class="caption-helper">My Supplies stock</span>
                             <div class="actions">
                                 <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
                                     <i class="icon-info"></i>
@@ -704,30 +704,29 @@
                                 </a>
                             </div>
                         </div>
-                        <!--<ng-include-->
-                        <!--src="'/public/pages/vaccine/dashboard/partials/slide-my-stock-supplies.html'"></ng-include>-->
-                        <!--<ng-include ng-if="district_user_level==false"-->
-                        <!--src="'/public/pages/vaccine/dashboard/partials/slide-stock-status-district.html'"></ng-include>-->
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-my-stock-supplies.html'"></ng-include>
+
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="portlet light">
                         <div class="caption">
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
-                            <span class="caption-helper">by facility...</span>
-                            <div class="actions">
-                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
-                                    <i class="icon-info"></i>
-                                </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="stockStatusDetailCallback()">
-                                    <i class="icon-table"></i>
-                                </a>
-                            </div>
+                            <span class="caption-helper">My supervised facilities stock</span>
+                            <!--<div class="actions">-->
+                            <!--<a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">-->
+                            <!--<i class="icon-info"></i>-->
+                            <!--</a>-->
+                            <!--<a class="btn btn-circle btn-icon-only btn-default" ng-click="stockStatusDetailCallback()">-->
+                            <!--<i class="icon-table"></i>-->
+                            <!--</a>-->
+                            <!--</div>-->
 
                         </div>
-
                         <ng-include
-                                src="'/public/pages/vaccine/dashboard/partials/slide-stock-status-facility.html'"></ng-include>
+                                src="'/public/pages/vaccine/dashboard/partials/slide-my-supervised-facilities-stock.html'"></ng-include>
+
                     </div>
                 </div>
             </div>
