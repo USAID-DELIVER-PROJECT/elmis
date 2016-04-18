@@ -74,16 +74,18 @@ public class VaccineReportController extends BaseController {
         return new ModelAndView("orderRequisitionPDF", "listOrders", listOrders);
     }
 
-    @RequestMapping(value = "/performanceCoverage", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> performanceCoverage(@RequestParam(value = "periodStart", required = false) String periodStart,
-                                                                @RequestParam(value = "periodEnd", required = false) String periodEnd,
-                                                                @RequestParam("district") Long districtId,
-                                                                @RequestParam("product") Long product) {
+  @RequestMapping(value = "/performanceCoverage", method = RequestMethod.GET)
+  public ResponseEntity<OpenLmisResponse> performanceCoverage(@RequestParam(value = "periodStart", required = false) String periodStart,
+                                                              @RequestParam(value = "periodEnd", required = false) String periodEnd,
+                                                              @RequestParam("district") Long districtId,
+                                                              @RequestParam("product") Long product,
+                                                              @RequestParam("doseId") Long doseId
+  ) {
 
+    return OpenLmisResponse.response("performanceCoverage",
+        service.getPerformanceCoverageReportData(periodStart, periodEnd, districtId, product, doseId));
+  }
 
-        return OpenLmisResponse.response("performanceCoverage",
-                service.getPerformanceCoverageReportData(periodStart, periodEnd, districtId, product));
-    }
 
     @RequestMapping(value = "/completenessAndTimeliness", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> completenessAndTimeliness(@RequestParam(value = "periodStart", required = false) String periodStart,

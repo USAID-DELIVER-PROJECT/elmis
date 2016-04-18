@@ -69,10 +69,10 @@
             <table class="table table-bordered">
             <thead>
             <tr>
-                <th></th>
-                <th>Cases this month</th>
-                <th>Cases cumulative</th>
-                <th>Death this month</th>
+                <th><span openlmis-message="label.vaccine.disease.name"></span></th>
+                <th><span openlmis-message="label.vaccine.disease.cases"></span></th>
+                <th><span openlmis-message="label.vaccine.disease.cumulative.cases"></span></th>
+                <th><span openlmis-message="label.vaccine.disease.death"></span></th>
             </tr>
             </thead>
             <tbody>
@@ -96,9 +96,9 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>Fixed (conducted)</td>
-                    <td>Outreach conducted</td>
-                    <td>Outreach cancelled</td>
+                    <th class="span2" openlmis-message="vaccine.immunization.sessions.fixed"></th>
+                    <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.conducted"></td>
+                    <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.outreach">
                 </tr>
                 <tr>
                     <td>{{report.fixedImmunizationSessions}}</td>
@@ -117,33 +117,36 @@
             <table id="ivd-tbl-vaccination" class="table table-bordered">
                 <thead>
                 <tr>
-                    <th rowspan="3">Antigens</th>
-                    <th rowspan="3">Doses</th>
-                    <th colspan="9">Monthly Vaccination</th>
-                    <th colspan="4" class="shady-header">Cummulative Vaccination</th>
+                    <th rowspan="4"><span openlmis-message="label.vaccine.coverage.product"></span></th>
+                    <th rowspan="4"><span openlmis-message="label.vaccine.coverage.dose"></span></th>
                 </tr>
                 <tr>
-                    <th colspan="4">With in catchment</th>
-                    <th colspan="3">Outside Catchment</th>
-                    <th colspan="2">Total Vaccinations <br/>(with and outside catchment area)</th>
-                    <th colspan="2" class="shady-header">With in catchment</th>
-                    <th class="shady-header">Outside Catchment</th>
-                    <th class="shady-header">Cummulative total Vaccinations <br/>( Within & Outside Catchment Area)</th>
+                    <th colspan="9" openlmis-message="label.vaccine.coverage.monthly.coverage"></th>
+                    <th colspan="4" openlmis-message="label.vaccine.coverage.cumulative.coverage"></th>
                 </tr>
                 <tr>
-                    <th>Male</th>
-                    <th>Female</th>
-                    <th>Total Vaccinated</th>
-                    <th>Coverage (%)</th>
-                    <th>Male</th>
-                    <th>Female</th>
-                    <th>Total</th>
-                    <th>Total</th>
-                    <th>Coverage (%)</th>
-                    <th class="shady-header">Total</th>
-                    <th class="shady-header">Coverage (%)</th>
-                    <th class="shady-header">Total</th>
-                    <th class="shady-header">Total</th>
+                    <th colspan="4" openlmis-message="label.vaccine.coverage.within.catchment"></th>
+                    <th colspan="3" openlmis-message="label.vaccine.coverage.outside.catchment"></th>
+                    <th colspan="2" openlmis-message="label.vaccine.coverage.total.vaccination"></th>
+                    <th colspan="2" openlmis-message="label.vaccine.coverage.within.catchment"></th>
+                    <th colspan="1" openlmis-message="label.vaccine.coverage.outside"></th>
+                    <th openlmis-message="label.vaccine.coverage.total"></th>
+                </tr>
+                <tr>
+                    <th openlmis-message="label.vaccine.coverage.male"></th>
+                    <th openlmis-message="label.vaccine.coverage.female"></th>
+                    <th openlmis-message="label.vaccine.coverage.total"></th>
+                    <th openlmis-message="label.vaccine.coverage.coverage"></th>
+                    <th openlmis-message="label.vaccine.coverage.male"></th>
+                    <th openlmis-message="label.vaccine.coverage.female"></th>
+                    <th openlmis-message="label.vaccine.coverage.total"></th>
+                    <th openlmis-message="label.vaccine.coverage.total"></th>
+                    <th openlmis-message="label.vaccine.coverage.coverage"></th>
+                    <th openlmis-message="label.vaccine.coverage.total"></th>
+                    <th openlmis-message="label.vaccine.coverage.coverage"></th>
+                    <th openlmis-message="label.vaccine.coverage.total"></th>
+                    <th openlmis-message="label.vaccine.coverage.total"></th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -211,13 +214,13 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th colspan="2" rowspan="2">Age group</th>
+                    <th colspan="2" rowspan="2"><span openlmis-message="label.vaccine.vitamin.age.group"></th>
                     <th colspan="3">Vitamin Supplimentation</th>
                 </tr>
                 <tr>
-                    <th>Male</th>
-                    <th>Female</th>
-                    <th>Total <br>Supplemented</th>
+                    <th><span openlmis-message="label.vaccine.vitamin.supplementation.male"></span></th>
+                    <th><span openlmis-message="label.vaccine.vitamin.supplementation.female"></span></th>
+                    <th><span openlmis-message="label.vaccine.vitamin.supplementation.total"></span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -235,7 +238,7 @@
     </div>
     <!-- ==== Other Major Immunization Activities ===== ----->
     <div class="row-fluid">
-        <h5>4. Other Major Immunization Activities</h5>
+        <h5>4. <span openlmis-message="label.vaccine.major.immunization.activities"></span></h5>
             <div class="span9 offset1 summary-text">
                 {{report.majorImmunizationActivities}}
             </div>
