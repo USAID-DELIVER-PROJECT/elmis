@@ -421,10 +421,8 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
      };
 
      $scope.checkOrderNumber=function(){
-        if($scope.orderNumber != null){
-         console.log($scope.orderNumber);
+        if($scope.orderNumber !== null){
          Distribution.get({voucherNumber:$scope.orderNumber},function(data){
-             console.log(data.distribution);
 
          });
         }

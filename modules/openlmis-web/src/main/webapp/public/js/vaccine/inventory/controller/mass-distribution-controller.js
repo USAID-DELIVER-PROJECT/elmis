@@ -241,7 +241,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
 
      $scope.showPODModal=function(facility){
         $scope.podModal=true;
-        $scope.facilityPOD=facility;print
+        $scope.facilityPOD=facility;
      };
 
      $scope.closePODModal=function(){
