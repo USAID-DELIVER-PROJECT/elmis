@@ -233,10 +233,10 @@
                    ng-click="printAll(distributionsByDate)" href title="Print distribution summary">
                     <span>PDF</span>
                 </a>
-                <table class="table table-bordered" fixed-table-header>
+                <table class="table table-bordered " fixed-table-header>
                     <thead>
                     <tr>
-                        <th class="header" colspan="4">
+                        <th class="header" colspan="3">
                             <span openlmis-message="label.vaccine.issue.date"></span>:<b> {{searchDate |
                             date:'dd-MM-yyyy'}}</b></th>
                         <th class="header" colspan="{{stockCards.length}}">
@@ -249,8 +249,9 @@
                         <th style="max-width:50px !important"><span openlmis-message="label.select"></span></th>
                         <th style="max-width:60px !important"><span
                                 openlmis-message="label.vaccine.stock.issue.voucher"></span></th>
-                        <th style="max-width:80px !important"><span openlmis-message="header.issue.type"></span></th>
-                        <th class="header" style="text-align:left" class="p-column" ng-repeat="stockCard in stockCards">
+                        <!--<th style="max-width:80px !important"><span openlmis-message="header.issue.type"></span></th>-->
+                        <th style="min-width:80px !important; max-width:80px !important;width:80px !important; text-align:left"
+                            class="header p-column" ng-repeat="stockCard in stockCards">
                             {{stockCard.product.primaryName}}<br/>({{stockCard.product.dosageUnit.code}})
                         </th>
                     </tr>
@@ -271,10 +272,10 @@
                                 <span>PDF</span>
                             </a>
                         </td>
-                        <td>
-                            <span ng-show="distribution.isSelected === true"
-                                  ng-bind="distribution.distributionType"></span>
-                        </td>
+                        <!--<td>-->
+                        <!--<span ng-show="distribution.isSelected === true"-->
+                        <!--ng-bind="distribution.distributionType"></span>-->
+                        <!--</td>-->
 
                         <td class="col-facility" ng-repeat="stockCard in stockCards">
                             <span ng-show="distribution.isSelected === true">
@@ -283,7 +284,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th colspan="4" class="header" openlmis-message="label.total"></th>
+                        <th colspan="3" class="header" openlmis-message="label.total"></th>
                         <th class="header" style="text-align:left" class="p-column" ng-repeat="stockCard in stockCards">
                             <b>{{getTotalDistributionForProduct(stockCard)}}</b>
                         </th>
@@ -292,10 +293,11 @@
 
             </div>
 
+
         </div>
     </div>
 
-
+    <br/><br/>
     <div ng-controller="SaveIssueController" id="popup-box" ng-form="issueForm" modal="issueModal"
          options="{'backdrop':'static', 'escape':false}"
          style="width:80% !important;margin-left:-40% !important;">

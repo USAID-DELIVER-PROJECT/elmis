@@ -268,7 +268,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
       };
 
       $scope.cancel=function(){
-        $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+        $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
       };
 
      $scope.setSelectedFacility=function(facility)

@@ -26,6 +26,8 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
     $scope.productsConfiguration=configurations.productsConfiguration;
     $scope.period=configurations.period;
     $scope.manufacturers = manufacturers;
+    $scope.isTransferIn=($location.url() ==='/transfer-in')?true:undefined;
+//    console.log($location.url());
 
     $scope.loadProducts=function(facilityId,programId){
         FacilityTypeAndProgramProducts.get({facilityId:facilityId, programId:programId},function(data){
@@ -162,7 +164,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
                                  });
                             }
                             $timeout(function(){
-                                $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                                $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
                             },900);
                          });
 
@@ -249,7 +251,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
                          }
                          $scope.message=true;
                          $timeout(function(){
-                              $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                              $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
                           },900);
                     });
 
@@ -267,7 +269,7 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
 
 
     $scope.cancel=function(){
-       $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+       $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
     };
     if($scope.userPrograms.length > 1)
     {
@@ -310,11 +312,10 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
         });
      };
     $scope.addLot=function(lotToAdd){
+    console.log(lotToAdd);
             $scope.productToAdd.lots.push(lotToAdd);
             $scope.lotToAdd={};
             updateLotsToDisplay($scope.productToAdd.lots);
-            $location.hash('scroll-to-lot');
-            $anchorScroll();
     };
 
     $scope.removeProductLot=function(lot){
@@ -419,6 +420,16 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
         $scope.voucherNumberSearched=false;
      };
 
+     $scope.checkOrderNumber=function(){
+        if($scope.orderNumber != null){
+         console.log($scope.orderNumber);
+         Distribution.get({voucherNumber:$scope.orderNumber},function(data){
+             console.log(data.distribution);
+
+         });
+        }
+     };
+
      $scope.showNewLotModal=function(productToAdd){
         $scope.newLotModal=true;
         $scope.newLot={};
@@ -437,8 +448,8 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
        newLot.expirationDate=$filter('date')($scope.newLot.expirationDate,"yyyy-MM-dd");
         Lot.create(newLot,function(data){
                $scope.newLotModal=false;
+//               $scope.selectedLot=data.lot;
                $scope.loadProductLots(data.lot.product);
-               //$scope.productToAdd.lot=data.lot;
         });
      };
 

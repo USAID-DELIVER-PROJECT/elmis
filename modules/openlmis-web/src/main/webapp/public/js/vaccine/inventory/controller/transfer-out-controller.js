@@ -98,7 +98,7 @@ function TransferOutController($scope,$location, $document,$window,configuration
       };
 
       $scope.cancel=function(){
-        $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+        $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
       };
 
      if($scope.userPrograms.length > 1)
@@ -222,7 +222,7 @@ function TransferOutController($scope,$location, $document,$window,configuration
                          var url = '/vaccine/orderRequisition/issue/print/'+$scope.distributionId;
                          printWindow.location.href=url;
                          $timeout(function(){
-                            $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                            $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
                          },900);
                       });
 
@@ -238,7 +238,7 @@ function TransferOutController($scope,$location, $document,$window,configuration
 
         var options = {
            id: "confirmDialog",
-           header: "label.confirm.issue.stock.action",
+           header: "label.confirm.transfer.stock.action",
            body: "msg.question.issue.stock.confirmation"
         };
         OpenLmisDialog.newDialog(options, callBack, $dialog);
