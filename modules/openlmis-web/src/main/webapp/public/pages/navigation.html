@@ -107,6 +107,10 @@
                openlmis-message="link.distributions"></a>
           </li>
           <li class="beak"></li>
+            <li ng-show="hasPermission('MANAGE_VACCINE_PRODUCTS_CONFIGURATION')">
+                <a href="/public/pages/vaccine/inventory/index.html#/configuration"
+                   openlmis-message="link.vaccine.configuration"></a>
+            </li>
 
           <li>
             <a href="/public/pages/vaccine/inventory/index.html#/vaccine-forecasting"
@@ -135,44 +139,44 @@
             </div>
           </li>
 
-          <li class="has-children">
-            <a href="javascript: void(0);"
-               openlmis-message="link.vaccine.inventory"></a>
-            <div class="submenu">
-              <ul>
-                <li ng-show="hasPermission('MANAGE_VACCINE_PRODUCTS_CONFIGURATION')">
-                  <a href="/public/pages/vaccine/inventory/index.html#/configuration"
-                     openlmis-message="link.vaccine.configuration"></a>
-                </li>
-                <li ng-show="hasPermission('VIEW_STOCK_ON_HAND')">
-                  <a href="/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand"
-                     openlmis-message="link.vaccine.stock.on.hand"></a>
-                </li>
-                  <li ng-show="hasPermission('MANAGE_STOCK')">
-                  <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment"
-                     openlmis-message="link.vaccine.stock.adjustment"></a>
-                </li>
-                  <li ng-show="hasPermission('MANAGE_STOCK') ">
-                  <a href="/public/pages/vaccine/inventory/index.html#/receive"
-                      openlmis-message="link.vaccine.receive"></a>
-                </li>
-                <li ng-show="hasPermission('MASS_DISTRIBUTION')">
-                      <a href="/public/pages/vaccine/inventory/index.html#/mass-distribution"
-                      openlmis-message="link.vaccine.distribute"></a>
-                </li>
-                  <li ng-show="hasPermission('MANAGE_STOCK')">
-                      <a href="/public/pages/vaccine/inventory/index.html#/transfer-in"
-                         openlmis-message="link.vaccine.transfer.in"></a>
-                  </li>
-                  <li ng-show="hasPermission('MANAGE_STOCK')">
-                      <a href="/public/pages/vaccine/inventory/index.html#/transfer-out"
-                         openlmis-message="link.vaccine.transfer.out"></a>
-                  </li>
+            <!--<li class="has-children">-->
+            <!--<a href="javascript: void(0);"-->
+            <!--openlmis-message="link.vaccine.inventory"></a>-->
+            <!--<div class="submenu">-->
+            <!--<ul>-->
+            <!--<li ng-show="hasPermission('MANAGE_VACCINE_PRODUCTS_CONFIGURATION')">-->
+            <!--<a href="/public/pages/vaccine/inventory/index.html#/configuration"-->
+            <!--openlmis-message="link.vaccine.configuration"></a>-->
+            <!--</li>-->
+            <!--<li ng-show="hasPermission('VIEW_STOCK_ON_HAND')">-->
+            <!--<a href="/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand"-->
+            <!--openlmis-message="link.vaccine.stock.on.hand"></a>-->
+            <!--</li>-->
+            <!--<li ng-show="hasPermission('MANAGE_STOCK')">-->
+            <!--<a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment"-->
+            <!--openlmis-message="link.vaccine.stock.adjustment"></a>-->
+            <!--</li>-->
+            <!--<li ng-show="hasPermission('MANAGE_STOCK') ">-->
+            <!--<a href="/public/pages/vaccine/inventory/index.html#/receive"-->
+            <!--openlmis-message="link.vaccine.receive"></a>-->
+            <!--</li>-->
+            <!--<li ng-show="hasPermission('MASS_DISTRIBUTION')">-->
+            <!--<a href="/public/pages/vaccine/inventory/index.html#/mass-distribution"-->
+            <!--openlmis-message="link.vaccine.distribute"></a>-->
+            <!--</li>-->
+            <!--<li ng-show="hasPermission('MANAGE_STOCK')">-->
+            <!--<a href="/public/pages/vaccine/inventory/index.html#/transfer-in"-->
+            <!--openlmis-message="link.vaccine.transfer.in"></a>-->
+            <!--</li>-->
+            <!--<li ng-show="hasPermission('MANAGE_STOCK')">-->
+            <!--<a href="/public/pages/vaccine/inventory/index.html#/transfer-out"-->
+            <!--openlmis-message="link.vaccine.transfer.out"></a>-->
+            <!--</li>-->
 
-                <li class="beak"></li>
-              </ul>
-            </div>
-          </li>
+            <!--<li class="beak"></li>-->
+            <!--</ul>-->
+            <!--</div>-->
+            <!--</li>-->
           <li class="has-children">
             <a href="javascript: void(0);"
                openlmis-message="link.vaccine.manage"></a>
@@ -203,10 +207,14 @@
             <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment"
                openlmis-message="link.vaccine.stock.adjustment"></a>
           </li>
-          <li ng-show="hasPermission('MANAGE_STOCK')">
-            <a href="/public/pages/vaccine/inventory/index.html#/transfer-out"
-               openlmis-message="link.vaccine.transfer.out"></a>
-          </li>
+            <li ng-show="hasPermission('MANAGE_STOCK')">
+                <a href="/public/pages/vaccine/inventory/index.html#/transfer-in"
+                   openlmis-message="link.vaccine.transfer.in"></a>
+            </li>
+            <li ng-show="hasPermission('MANAGE_STOCK')">
+                <a href="/public/pages/vaccine/inventory/index.html#/transfer-out"
+                   openlmis-message="link.vaccine.transfer.out"></a>
+            </li>
 
           <li>
             <a href="/public/pages/var/index.html#/">VAR</a>
