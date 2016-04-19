@@ -162,5 +162,16 @@ public interface VaccineOrderRequisitionMapper {
             +" isVerified = true " +
             "WHERE id = #{orderId}  ")
     Long verifyVaccineOrderRequisition(@Param("orderId") Long orderId);
+
+    @Select("SELECT SUM(f.id) as totalPending " +
+            "   FROM facilities f  " +
+            "     JOIN requisition_group_members m ON m.facilityid = f.id  " +
+            "     JOIN requisition_groups rg ON rg.id = m.requisitiongroupid  " +
+            "     JOIN supervisory_nodes sn ON sn.id = rg.supervisorynodeid  " +
+            "     JOIN role_assignments ra ON ra.supervisorynodeid = sn.id OR ra.supervisorynodeid = sn.parentid " +
+            "     JOIN vaccine_order_requisitions r on f.id = r.facilityId and sn.id = r.supervisorynodeid " +
+            "     JOIN processing_periods pp on r.periodId = pp.id " +
+            "     WHERE ra.userId = #{userId} AND R.STATUS  IN('SUBMITTED') AND  isVerified = false AND r.programId = #{programId} AND sn.facilityId = #{facilityId}")
+    Integer getTotalPendingRequest(@Param("userId") Long userId, @Param("facilityId") Long facilityId, @Param("programId") Long programId);
 }
 

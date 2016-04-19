@@ -44,7 +44,9 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardFacilityStockStatusDetails, colors,
                                     userPreferences,
                                     VaccineDashboardFacilityInventoryStockStatus,homeFacility,
-                                    VaccineDashboardSupervisedFacilityInventoryStockStatus
+                                    VaccineDashboardSupervisedFacilityInventoryStockStatus,
+                                    EquipmentNonFunctional,
+                                    VaccinePendingRequisitions
                                     ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
@@ -880,6 +882,35 @@ $scope.myStockVaccine = {
           productCategory:""
   };
 
+  $scope.supplyingPendingOrdersDetailCallback=function(){
+          VaccinePendingRequisitions.get({facilityId:parseInt(homeFacility.id,10)},function(data){
+             $scope.supplyingAllPendingOrders=data.pendingRequest;
+             if(data.pendingRequest !== undefined)
+               $scope.supplying.orders=data.pendingRequest.length;
+               else
+             $scope.supplying.orders=0;
+          });
+  };
+  $scope.equipmentActionBarCallback=function(){
+    EquipmentNonFunctional.get({},function(data){
+        $scope.nonFunctionalEquipments=data.Alerts;
+        if(!isUndefined(data.Alerts))
+        {
+           $scope.totalNonFunctionalEquipments=$scope.nonFunctionalEquipments.length;
+
+            var byStatus=_.groupBy($scope.nonFunctionalEquipments,function(e){
+                   return e.status;
+             });
+            $scope.allNonFunctionalEquipmentsByStatus = $.map(byStatus, function(value, index) {
+                  return [{"status":index,"data":value}];
+            });
+            console.log(JSON.stringify($scope.allNonFunctionalEquipmentsByStatus));
+        }
+    });
+  };
+
+$scope.supplyingPendingOrdersDetailCallback();
+$scope.equipmentActionBarCallback();
 $scope.facilityInventoryStockStatusCallback=function(myStock){
    if(!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate))
    {
@@ -905,7 +936,7 @@ $scope.facilityInventoryStockStatusCallback=function(myStock){
     }
 };
 
-
+$scope.mySupervisedFacilityFilterSize=5;
 $scope.mySupervisedFacilitiesCallback=function(filter){
     if(!isUndefined(filter.product) && filter.product !== "0" && !isUndefined(filter.date) && !isUndefined(filter.level) && filter.level !=="0")
     {
@@ -914,10 +945,25 @@ $scope.mySupervisedFacilitiesCallback=function(filter){
                                                                        date:filter.date,
                                                                        level:filter.level},
                                                                        function(data){
-                       $scope.mySupervisedFacilityStock.dataPoints=data.facilityStockStatus;
-                       $scope.mySupervisedFacilityStock.productCategory=data.facilityStockStatus[0].product;
+                        if(!isUndefined(data.facilityStockStatus))
+                        {
+                           $scope.mySupervisedFilterTotal=data.facilityStockStatus.length;
+                           $scope.mySupervisedFacilityStock.data=data.facilityStockStatus;
+                           $scope.mySupervisedFacilityStock.productCategory=data.facilityStockStatus[0].product;
+                           $scope.mySupervisedFacilitiesPagination(0);
+                        }
+                        else{
+                           $scope.mySupervisedFacilityStock.data=[];
+                           $scope.mySupervisedFilterTotal=0;
+                        }
            });
      }
+};
+$scope.mySupervisedFacilitiesPagination=function(offset =0){
+  var s =  parseInt($scope.mySupervisedFacilityFilterSize, 10)+ parseInt(offset, 10);
+          if (!isUndefined(offset)) {
+              $scope.mySupervisedFacilityStock.dataPoints = $scope.mySupervisedFacilityStock.data.slice(parseInt(offset, 10), s);
+          }
 };
 
 
@@ -1421,6 +1467,22 @@ $scope.getColorSupervised=function (color, d) {
             controller: 'DashboardModalInstanceCtrl'
         });
     };
+    $scope.openSupplyingOrdersDetailDialog = function (size) {
+
+            var modalInstance = $modal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'supplying.html',
+                controller: 'ModalInstanceCtrl',
+                size: 'lg',
+                windowClass: 'my-modal-popup',
+                resolve: {
+                    items: function () {
+
+                        return $scope.supplyingAllPendingOrders;
+                    }
+                }
+            });
+        };
     $scope.openRepairingDetailDialog = function (size) {
 
         var modalInstance = $modal.open({
@@ -1432,7 +1494,8 @@ $scope.getColorSupervised=function (color, d) {
             resolve: {
                 items: function () {
 
-                    return reparingDetailList.repairingDetails;
+                    //return reparingDetailList.repairingDetails;
+                    return $scope.allNonFunctionalEquipmentsByStatus;
                 }
             }
         });
