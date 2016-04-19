@@ -47,7 +47,7 @@ console.log($scope.report);
                         var url = '/vaccine/orderRequisition/' + data.report.id + '/print';
                         printWindow.location.href=url;
                         $scope.disableButton = true;
-                        $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                        $window.location = '/public/pages/vaccine/dashboard/index.html#/dashboard';
                     });
                     printWindow= $window.open('about:blank','_blank');
                     $scope.message = "label.form.Submitted.Successfully";
@@ -74,7 +74,7 @@ console.log($scope.report);
             var url = '/vaccine/orderRequisition/' + data.report.id + '/print';
             printWindow.location.href=url;
             $scope.message = "label.form.Submitted.Successfully";
-            $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+            $window.location = '/public/pages/vaccine/dashboard/index.html#/dashboard';
         });
         printWindow= $window.open('about:blank','_blank');
 
@@ -82,7 +82,7 @@ console.log($scope.report);
     };
 
     $scope.cancel = function () {
-        $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+        $window.location = '/public/pages/vaccine/dashboard/index.html#/dashboard';
     };
 
     $scope.viewOrderPrint = function () {

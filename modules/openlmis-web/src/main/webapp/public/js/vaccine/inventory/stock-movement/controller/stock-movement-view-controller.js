@@ -209,7 +209,7 @@ function StockMovementViewController($scope,verifyDistribution, $window,$timeout
 
                        });
                        $timeout(function(){
-                           $window.location = '/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+                           $window.location = '/public/pages/vaccine/dashboard/index.html#/dashboard';
 
                        },900);
                    });

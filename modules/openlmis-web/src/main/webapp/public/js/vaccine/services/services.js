@@ -211,7 +211,7 @@ services.factory('VaccineOrderRequisitionColumns', function ($resource) {
 });
 
 services.factory('VaccinePendingRequisitions', function ($resource) {
-    return $resource('/vaccine/orderRequisition/getPendingRequest/:facilityId/:programId.json', {}, {});
+    return $resource('/vaccine/orderRequisition/getPendingRequest/:facilityId.json', {}, {});
 });
 
 
@@ -563,4 +563,8 @@ services.factory('VaccineDashboardFacilityInventoryStockStatus', function($resou
 
 services.factory('VaccineDashboardSupervisedFacilityInventoryStockStatus', function($resource){
     return $resource('/vaccine/dashboard/supervised-facilities-inventory-stock-status.json',{},{});
+});
+
+services.factory('VaccineTotalPendingRequisitions', function ($resource) {
+    return $resource('/vaccine/orderRequisition/getTotalPendingRequest/:facilityId.json', {}, {});
 });

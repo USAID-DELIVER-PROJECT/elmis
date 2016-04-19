@@ -90,4 +90,8 @@ public class VaccineOrderRequisitionRepository {
     public Long verifyVaccineOrderRequisition(Long orderId){
         return orderRequisitionMapper.verifyVaccineOrderRequisition(orderId);
     }
+
+    public Integer getTotalPendingRequest(Long userId, Long facilityId, Long programId) {
+        return orderRequisitionMapper.getTotalPendingRequest(userId, facilityId, programId);
+    }
 }
