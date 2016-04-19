@@ -108,11 +108,11 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
     return mapper.getVitaminSupplementationAggregateReport(periodId, zoneId,userId);
   }
 
-  public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode){
-    return mapper.vaccineUsageTrend(facilityCode, productCode);
+  public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long userId){
+    return mapper.vaccineUsageTrend(facilityCode, productCode,userId);
   }
-  public List<HashMap<String, Object>> vaccineUsageTrendByGeographicZone(Long periodId, Long zoneId, String productCode){
-    return mapper.vaccineUsageTrendByGeographicZone(periodId, zoneId, productCode);
+  public List<HashMap<String, Object>> vaccineUsageTrendByGeographicZone(Long periodId, Long zoneId, String productCode, Long userId){
+    return mapper.vaccineUsageTrendByGeographicZone(periodId, zoneId, productCode,userId);
   }
 
   public List<HashMap<String, Object>> getAggregateDropOuts(Long periodId, Long zoneId,Long userId){

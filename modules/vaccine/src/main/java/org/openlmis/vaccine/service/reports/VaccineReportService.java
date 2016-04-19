@@ -173,7 +173,7 @@ public class VaccineReportService {
         return repository.getAggregateDropOuts(periodId, zoneId,userId);
     }
 
-    public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long periodId, Long zoneId) {
+    public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long periodId, Long zoneId, Long userId) {
         List<HashMap<String, Object>> vaccineUsageTrend = null;
         Long districtId;
         try {
@@ -186,9 +186,9 @@ public class VaccineReportService {
             }
 
             if ((facilityCode == null || facilityCode.isEmpty()) && periodId != 0) {
-                vaccineUsageTrend = repository.vaccineUsageTrendByGeographicZone(periodId, districtId, productCode);
+                vaccineUsageTrend = repository.vaccineUsageTrendByGeographicZone(periodId, districtId, productCode,userId);
             } else {
-                vaccineUsageTrend = repository.vaccineUsageTrend(facilityCode, productCode);
+                vaccineUsageTrend = repository.vaccineUsageTrend(facilityCode, productCode,userId);
 
             }
         } catch (Exception ex) {
