@@ -541,20 +541,23 @@ public interface VaccineReportMapper {
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
-            @Param("productId") Long productId);
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
     @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getDistrictPopulationInformation")
     public  List<Map<String,Object>> getClassficationVaccinePopulationForDistrict(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
-            @Param("productId") Long productId);
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
 
     @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getRegionPopulationInformation")
     public  List<Map<String,Object>> getClassficationVaccinePopulationForRegion(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
-            @Param("productId") Long productId);
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
     @SelectProvider(type=ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getYearQuery")
     public List<Map<String,Object>> getDistincitYearList();
 }
