@@ -142,7 +142,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "    join vw_districts vd on vd.district_id = nonreporting.geographiczoneid\n" +
                 "    left outer join completeness_with_reporting_periods c  On c.geographiczoneid = nonreporting.geographiczoneid     \n" +
                 "                AND nonreporting.id = c.priod_id\n" +
-                "                order by 1";
+                "                order by 1,2,4";
 
 
         return sql;

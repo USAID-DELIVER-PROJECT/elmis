@@ -1,0 +1,35 @@
+<div></div>
+<div class="app-form vaccine-form-filter">
+    <form ng-submit="filterGrid()" name="filterForm" novalidate>
+        <div filter-container class="clearfix">
+            <vaccine-stock-date-filter default="defaultToDate" class="form-cell horizontalFilters"
+                                       cm-model="myStock.toDate"
+                                       on-change="facilityInventoryStockStatusCallback(myStock)">
+
+            </vaccine-stock-date-filter>
+        </div>
+    </form>
+</div>
+
+<div ng-show="myStockVaccine.dataPoints">
+    <c3chart bindto-id="mystock-vaccine"
+         chart-data="myStockVaccine.dataPoints"
+         chart-columns="myStockVaccine.dataColumns"
+         chart-x="myStockVaccine.dataX"
+         padding-bottom="10">
+        <chart-legend show-legend="false"/>
+    <chart-tooltip value-format-function="getSOHVaccine" show-tooltip="true"/>
+    <chart-colors color-function="getColorVaccine"/>
+    <chart-axis>
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="{{myStockVaccine.productCategory}}"
+                      axis-type="category">
+        </chart-axis-x>
+        <chart-axis-y axis-position="outer-middle"
+                      axis-label="MOS">
+        </chart-axis-y>
+    </chart-axis>
+</c3chart>
+</div>
+<div style="font-weight: bold" ng-hide="myStockVaccine.dataPoints"
+     openlmis-message="label.report.no.data.to.show"></div>

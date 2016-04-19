@@ -114,6 +114,7 @@ public class VaccineDashboardRepository {
 
         return mapper.getBundling(startDate, endDate, productId);
     }
+    
 
     public List<HashMap<String, Object>> getMonthlyDropout(Date startDate, Date endDate, Long product) {
 
@@ -169,4 +170,11 @@ public class VaccineDashboardRepository {
         return mapper.getUserZoneInformation();
     }
 
+    public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId, String date) {
+        return mapper.getFacilityVaccineInventoryStockStatus(facilityId, date);
+    }
+
+    public List<HashMap<String, Object>> getSupervisedFacilitiesVaccineInventoryStockStatus(String facilityIds, Long productId, String date, String level) {
+        return mapper.getSupervisedFacilitiesProductStockStatus(facilityIds, productId, date, level);
+    }
 }

@@ -15,11 +15,12 @@ angular.module('vaccine-inventory', ['openlmis', 'ngTable','ui.bootstrap','angul
         $routeProvider.
             when('/stock-adjustment', {controller:StockAdjustmentController, templateUrl:'partials/stock-adjustment.html',resolve:StockAdjustmentController.resolve}).
             when('/receive', {controller:ReceiveStockController, templateUrl:'partials/receive-stock.html',reloadOnSearch:false,resolve:ReceiveStockController.resolve}).
+            when('/transfer-in', {controller:ReceiveStockController, templateUrl:'partials/receive-stock.html',reloadOnSearch:false,resolve:ReceiveStockController.resolve}).
             when('/mass-distribution', {controller:MassDistributionController, templateUrl:'partials/mass-distribution.html',reloadOnSearch:false,resolve:MassDistributionController.resolve}).
             when('/configuration', {controller:VaccineInventoryConfigurationController, templateUrl:'partials/configuration.html',reloadOnSearch:false,resolve:VaccineInventoryConfigurationController.resolve}).
             when('/vaccine-forecasting', {controller:VaccineForecastingController, templateUrl:'partials/vaccine-forecast.html',reloadOnSearch:false,resolve:VaccineForecastingController.resolve}).
             when('/transfer-out', {controller:TransferOutController, templateUrl:'partials/transfer-out-partial.html',reloadOnSearch:false,resolve:TransferOutController.resolve}).
-            otherwise({redirectTo:'/stock-on-hand'});
+            otherwise({redirectTo:'/public/pages/vaccine/dashboard/index.html#/dashboard'});
     }]).run(function ($rootScope, AuthorizationService) {
 
      }).config(function(angularCombineConfigProvider) {

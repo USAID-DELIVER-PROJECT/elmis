@@ -13,6 +13,7 @@ package org.openlmis.ivdform.controller;
 
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
+import org.openlmis.ivdform.domain.VaccineProductDose;
 import org.openlmis.ivdform.dto.VaccineServiceConfigDTO;
 import org.openlmis.ivdform.service.ProductDoseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 @Controller
 @RequestMapping(value = "/vaccine/product-dose/")
 public class ProductDoseController extends BaseController {
 
   private static final String PROTOCOL = "protocol";
+  private static final String DOSES = "doses";
 
   @Autowired
   private ProductDoseService service;
@@ -42,6 +46,13 @@ public class ProductDoseController extends BaseController {
   public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineServiceConfigDTO config) {
     service.save(config.getProtocols());
     return OpenLmisResponse.response(PROTOCOL, config);
+  }
+
+  @RequestMapping(value = "get/{programId}/{productId}")
+  public ResponseEntity<OpenLmisResponse> getDosesByProductAndProgram(@PathVariable Long programId,
+                                                                      @PathVariable Long productId) {
+    List<VaccineProductDose> doses = service.getProductDosesListByProgramProduct(programId, productId);
+    return OpenLmisResponse.response(DOSES, doses);
   }
 
 }

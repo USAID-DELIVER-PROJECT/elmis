@@ -13,7 +13,13 @@ package org.openlmis.vaccine.service;
 
 import lombok.NoArgsConstructor;
 import org.joda.time.format.DateTimeFormat;
+import org.openlmis.core.domain.Program;
+import org.openlmis.core.domain.RightName;
+import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProgramService;
+import org.openlmis.report.util.StringHelper;
 import org.openlmis.vaccine.repository.VaccineDashboardRepository;
+import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
+
 @Service
 @NoArgsConstructor
 public class VaccineDashboardService {
@@ -33,6 +41,10 @@ public class VaccineDashboardService {
 
     @Autowired
     VaccineDashboardRepository repository;
+    @Autowired
+    ProgramService programService;
+    @Autowired
+    private FacilityService facilityService;
 
     public Map<String, Object> getReportingSummary(Long userId) {
 
@@ -440,5 +452,34 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
 }
     public Map<String, Object> getUserZoneInformation() {
         return repository.getUserZoneInformation();
+    }
+
+    public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId, String date) {
+        List<HashMap<String, Object>> stockStatusList = null;
+        try {
+            stockStatusList = repository.getFacilityVaccineInventoryStockStatus(facilityId, date);
+        } catch (Exception ex) {
+            LOGGER.warn("error occured.... ", ex);
+        }
+        return stockStatusList;
+    }
+
+    public List<HashMap<String, Object>> getSupervisedFacilitiesVaccineInventoryStockStatus(Long userId, Long productId, String date, String level) {
+        List<HashMap<String, Object>> stockStatusList = null;
+
+        List<Program> vaccineProgram = programService.getAllIvdPrograms();
+        if (vaccineProgram != null) {
+            Long programId = vaccineProgram.get(0).getId();
+            List<org.openlmis.core.domain.Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, RightName.MANAGE_STOCK);
+
+            String facilityIds = StringHelper.getStringFromListIds(facilities);
+            try {
+                stockStatusList = repository.getSupervisedFacilitiesVaccineInventoryStockStatus(facilityIds, productId, date, level);
+            } catch (Exception ex) {
+                LOGGER.warn("error occured.... ", ex);
+            }
+        }
+        return stockStatusList;
+
     }
 }

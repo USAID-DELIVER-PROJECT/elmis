@@ -552,3 +552,15 @@ services.factory('VaccineCurrentPeriod', function($resource){
 services.factory('UserGeographicZonePereference', function($resource){
     return $resource('/vaccine/dashboard/user-geographic-zone-preference.json',{},{});
 });
+
+services.factory('VaccineProductDoseList', function($resource){
+    return $resource('/vaccine/product-dose/get/:programId/:productId.json',{},{});
+});
+
+services.factory('VaccineDashboardFacilityInventoryStockStatus', function($resource){
+    return $resource('/vaccine/dashboard/facility-inventory-stock-status.json',{},{});
+});
+
+services.factory('VaccineDashboardSupervisedFacilityInventoryStockStatus', function($resource){
+    return $resource('/vaccine/dashboard/supervised-facilities-inventory-stock-status.json',{},{});
+});

@@ -11,6 +11,7 @@
  */
 package org.openlmis.web.controller.vaccine;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +33,10 @@ import java.util.Map;
 @RequestMapping(value = "/vaccine/dashboard/")
 public class VaccineDashboardController  extends BaseController {
 
+    private static final Logger LOGGER = Logger.getLogger(VaccineDashboardController.class);
     @Autowired
     VaccineDashboardService service;
-    private static final Logger LOGGER = Logger.getLogger(VaccineDashboardController.class);
+
     @RequestMapping(value = "summary.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getReportingSummary(HttpServletRequest request){
         Long userId = this.loggedInUserId(request);
@@ -245,4 +249,31 @@ public class VaccineDashboardController  extends BaseController {
     public  ResponseEntity<OpenLmisResponse> getUserZoneInformation() {
           return OpenLmisResponse.response("UserGeographicZonePreference", service.getUserZoneInformation());
     }
+
+    @RequestMapping(value = "facility-inventory-stock-status.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFacilityVaccineInventoryStockStatus(@RequestParam("facilityId") Long facilityId,
+                                                                                   @Param("date") String date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = (date == null) ? formatter.format(new Date()) : date;
+
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("facilityStockStatus", service.getFacilityVaccineInventoryStockStatus(facilityId, dateString));
+        response.getBody().addData("date", dateString);
+        return response;
+    }
+
+    @RequestMapping(value = "supervised-facilities-inventory-stock-status.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getSupervisedFacilitiesVaccineInventoryStockStatus(@RequestParam("productId") Long productId,
+                                                                                               @RequestParam("date") String date,
+                                                                                               @RequestParam("level") String level,
+                                                                                               HttpServletRequest request) {
+
+        Long userId = this.loggedInUserId(request);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = (date == null) ? formatter.format(new Date()) : date;
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("facilityStockStatus", service.getSupervisedFacilitiesVaccineInventoryStockStatus(userId, productId, dateString, level));
+        response.getBody().addData("date", dateString);
+        return response;
+    }
+
+
 }

@@ -218,7 +218,6 @@ function MassDistributionController($scope,$location, $document,$window,configur
         $scope.facilityToIssue=angular.copy(facility);
         $scope.facilityToIssue.type=type;
         $scope.issueModal=true;
-        console.log(JSON.stringify(facility));
      };
      $scope.closeIssueModal=function(){
         $scope.facilityToIssue=undefined;
@@ -269,7 +268,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
       };
 
       $scope.cancel=function(){
-        $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+        $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
       };
 
      $scope.setSelectedFacility=function(facility)

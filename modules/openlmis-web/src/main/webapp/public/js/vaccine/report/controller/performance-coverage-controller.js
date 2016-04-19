@@ -20,7 +20,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     $scope.OnFilterChanged = function () {
 
         // prevent first time loading
-        if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
+        if (utils.isEmpty($scope.filter.product) || $scope.filter.product === "0" || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
         PerformanceCoverage.get(
@@ -29,7 +29,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                 periodEnd: $scope.periodEnddate,
                 range: $scope.range,
                 district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
-                product: $scope.filter.product
+                product: $scope.filter.product,
+                doseId : utils.isEmpty($scope.filter.dose) ? 0 : $scope.filter.dose
             },
 
             function (data) {
@@ -40,10 +41,9 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                     $scope.datarows = $scope.datarows = null;
                 }
                 else {
+
                     $scope.error = "";
-
                     $scope.datarows = data.performanceCoverage.mainreport;
-
                     $scope.summary = data.performanceCoverage.summary;
                     $scope.summaryRegionAggregate = data.performanceCoverage.summaryRegionAggregate;
                     $scope.dataRowsRegionAggregate = data.performanceCoverage.mainreportRegionAggregate;
@@ -380,13 +380,12 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         if (utils.isEmpty(reportList)) {
             return reportList;
         }
-
         if ($scope.staticYear !== '0') {
             var len = reportList.length;
 
             var distrctList = {};
             var periodList = utils.generatePeriodNamesForVaccineYear($scope.staticYear);
-            grayCount = intializeGrayCount(periodList);
+            grayCount = intializeGrayCount(12);
             reportList.forEach(function (value) {
                 var district = getPopulationKey(value, type);
                 if (!(district in distrctList)) {
@@ -424,6 +423,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
             }
         } else {
             formattedData = reportList;
+            grayCount = intializeGrayCount(1);
         }
 
         return {reportList: formattedData, grayCount: grayCount};
@@ -432,10 +432,9 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
     function intializeGrayCount(periods) {
         var grayCount = {};
-        for (var i = 0; i < 12; i++) {
+        for (var i = 0; i < periods; i++) {
             grayCount[$scope.staticYear + "_" + i] = {count: 0};
         }
-
         return grayCount;
     }
 }
