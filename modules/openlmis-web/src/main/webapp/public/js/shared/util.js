@@ -244,11 +244,66 @@ var utils = {
 
         return reportDataWithAggregates;
     },
+    getReportDataWithSubAndGrandTotal : function(reportData, nameKey,
+                                                              columnKeys, includeGrandTotal,type){
+        if(reportData.length === 0)
+            return;
+
+        var uniqueName = _.uniq(_.pluck(reportData, nameKey));
+        console.log(JSON.stringify(uniqueName));
+        var reportDataWithAggregates = [];
+        var grandTotal = {};
+
+        _.each(uniqueName, function(districtName) {
+
+            var district_total = {};
+            var districtData;
+            if(type===1){
+                districtData = _.where(reportData, {facility_name: districtName});
+            }else if(type===2) {
+                districtData = _.where(reportData, {district_name: districtName});
+            }else{
+                districtData = _.where(reportData, {region_name: districtName});
+            }
+
+            reportDataWithAggregates.push({data: districtData});
+
+            if (districtData.length > 1) {
+
+                _.each(columnKeys, function (columnKey) {
+                    district_total[columnKey] = utils.getReportColumnSubTotal(reportData, districtName, columnKey,type);
+                });
+
+                reportDataWithAggregates.push({subtotal: district_total});
+            }
+
+        });
+
+        // Calculate grand Total
+        if(includeGrandTotal) {
+
+            _.each(columnKeys, function (columnKey) {
+                grandTotal[columnKey] = utils.getGrandTotal(reportData, columnKey);
+            });
+
+            reportDataWithAggregates.push({grandtotal: grandTotal});
+        }
+
+        return reportDataWithAggregates;
+    },
 
     getColumnSubTotal: function(reportData, districtName, columnToBeAgregated){
         return _.chain(reportData).where({district_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
     },
+    getReportColumnSubTotal: function(reportData, districtName, columnToBeAgregated,type){
 
+        if(type===1){
+            return _.chain(reportData).where({facility_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
+        }else if(type===3){
+            return _.chain(reportData).where({region_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
+        }
+        return _.chain(reportData).where({district_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
+    },
     getGrandTotal: function(reportData, columnToBeAgregated){
         return _.chain(reportData).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
     }
