@@ -78,11 +78,11 @@ var utils = {
             }
 
             endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
-            startDate = new Date(endDate.getFullYear(), endDate.getMonth() +1, 1);
+            startDate = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
 
-            switch (periodRange) {
+ /*            switch (periodRange) {
                 case '1':
-                    months = startDate.getMonth() ;
+                    months = startDate.getMonth();
                     break;
                 case '2':
                     months = startDate.getMonth() - 3;
@@ -96,8 +96,8 @@ var utils = {
                 default :
                     months = 0;
             }
-            startDate.setMonth(months+1);
-
+            //startDate.setMonth(months);
+*/
             return {
                 startdate: utils.formatDate(startDate),
                 enddate: utils.formatDate(endDate)
