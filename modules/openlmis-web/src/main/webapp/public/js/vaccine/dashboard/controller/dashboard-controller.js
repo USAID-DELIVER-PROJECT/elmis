@@ -959,7 +959,7 @@ $scope.mySupervisedFacilitiesCallback=function(filter){
            });
      }
 };
-$scope.mySupervisedFacilitiesPagination=function(offset =0){
+$scope.mySupervisedFacilitiesPagination=function(offset){
   var s =  parseInt($scope.mySupervisedFacilityFilterSize, 10)+ parseInt(offset, 10);
           if (!isUndefined(offset)) {
               $scope.mySupervisedFacilityStock.dataPoints = $scope.mySupervisedFacilityStock.data.slice(parseInt(offset, 10), s);
