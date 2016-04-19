@@ -213,8 +213,15 @@ public class VaccineOrderRequisitionService {
         return orderRequisitionRepository.getReportedPeriodsForFacility(facilityId, programId);
     }
 
-    public List<OrderRequisitionDTO> getPendingRequest(Long userId, Long facilityId, Long programId) {
-        return orderRequisitionRepository.getPendingRequest(userId, facilityId, programId);
+    public List<OrderRequisitionDTO> getPendingRequest(Long userId, Long facilityId) {
+
+        List<Program> vaccineProgram = programService.getAllIvdPrograms();
+        if (vaccineProgram != null) {
+            Long programId = vaccineProgram.get(0).getId();
+            return orderRequisitionRepository.getPendingRequest(userId, facilityId, programId);
+        } else {
+            return null;
+        }
     }
 
     public List<OrderRequisitionDTO> getAllBy(Long programId, Long periodId, Long facilityId) {
@@ -247,5 +254,15 @@ public class VaccineOrderRequisitionService {
 
     public Long verifyVaccineOrderRequisition(Long orderId){
         return orderRequisitionRepository.verifyVaccineOrderRequisition(orderId);
+    }
+
+    public Integer getTotalPendingRequest(Long userId, Long facilityId) {
+        Integer total = 0;
+        List<Program> vaccineProgram = programService.getAllIvdPrograms();
+        if (vaccineProgram != null) {
+            Long programId = vaccineProgram.get(0).getId();
+            total = orderRequisitionRepository.getTotalPendingRequest(userId, facilityId, programId);
+        }
+        return total;
     }
 }

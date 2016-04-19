@@ -5,36 +5,31 @@
     }
 </style>
 <div class="app-form vaccine-form-filter">
-    <form ng-submit="filterGrid()" name="filterForm" novalidate>
-        <div filter-container class="row-fluid clearfix">
-            <div class="span3">
+    <form novalidate>
+        <div class="clearfix">
+            <vaccine-stock-date-filter default="defaultToDate" class="form-cell horizontalFilters"
+                                       cm-model="mySupervisedFilter.date"
+                                       on-change="mySupervisedFacilitiesCallback(mySupervisedFilter)">
+
+            </vaccine-stock-date-filter>
                 <vaccine-stock-facility-level-filter
                         default="defaultLevel" class="form-cell horizontalFilters"
                         cm-model="mySupervisedFilter.level"
                         on-change="mySupervisedFacilitiesCallback(mySupervisedFilter)">
 
                 </vaccine-stock-facility-level-filter>
-            </div>
-            <div class="span3">
-                <vaccine-product-filter default="defaultProduct" class="form-cell horizontalFilters"
+
+            <vaccine-product-filter style="margin-top:2px" default="defaultProduct" class="form-cell horizontalFilters"
                                         cm-model="mySupervisedFilter.product"
                                         on-change="mySupervisedFacilitiesCallback(mySupervisedFilter)">
 
                 </vaccine-product-filter>
-            </div>
-            <div class="span3">
-                <range-pagination field-label="label.facility" class="form-cell horizontalFilters"
-                                  total="20" range="5"
-                                  offset="1" label-all="all facility"
-                                  on-change="facilitySessionsPagination()"></range-pagination>
-            </div>
-            <div class="span3">
-                <vaccine-stock-date-filter default="defaultToDate" class="form-cell horizontalFilters"
-                                           cm-model="mySupervisedFilter.date"
-                                           on-change="mySupervisedFacilitiesCallback(mySupervisedFilter)">
 
-                </vaccine-stock-date-filter>
-            </div>
+            <range-pagination style="margin-top:-1px" field-label="label.facility" class="form-cell horizontalFilters"
+                              total="mySupervisedFilterTotal" range="mySupervisedFacilityFilterSize"
+                              offset="mySupervisedFilter.page" label-all="all facility"
+                              on-change="mySupervisedFacilitiesPagination(mySupervisedFilter.page)"></range-pagination>
+
 
         </div>
     </form>
