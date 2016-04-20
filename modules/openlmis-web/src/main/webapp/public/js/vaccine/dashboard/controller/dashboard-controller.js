@@ -43,11 +43,10 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardFacilityStockStatus,
                                     VaccineDashboardFacilityStockStatusDetails, colors,
                                     userPreferences,
-                                    VaccineDashboardFacilityInventoryStockStatus,homeFacility,
+                                    VaccineDashboardFacilityInventoryStockStatus, homeFacility,
                                     VaccineDashboardSupervisedFacilityInventoryStockStatus,
                                     EquipmentNonFunctional,
-                                    VaccinePendingRequisitions
-                                    ) {
+                                    VaccinePendingRequisitions) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -421,7 +420,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 $scope.coverageDetails = data.facilityCoverageDetails;
                 $scope.periodsList = _.uniq(_.pluck(data.facilityCoverageDetails, 'period_name'));
                 var facilities = _.uniq(_.pluck(data.facilityCoverageDetails, 'facility_name'));
-
+                $scope.addPlaceHolderFornonExistingPeriodData( $scope.coverageDetails, $scope.periodsList,facilities);
                 $scope.facilityDetails = [];
                 angular.forEach(facilities, function (facility) {
                     var district = _.findWhere($scope.coverageDetails, {facility_name: facility}).district_name;
@@ -558,7 +557,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
                 $scope.dropoutPeriodsList = _.uniq(_.pluck($scope.dropoutDetails, 'period_name'));
                 var facilities = _.uniq(_.pluck($scope.dropoutDetails, 'facility_name'));
-
+                $scope.addPlaceHolderFornonExistingPeriodData( $scope.dropoutDetails, $scope.dropoutPeriodsList,facilities);
                 $scope.facilityDropoutDetails = [];
                 angular.forEach(facilities, function (facility) {
                     var district = _.findWhere($scope.dropoutDetails, {facility_name: facility}).district_name;
@@ -684,6 +683,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 $scope.wastageDetails = data.facilityWastageDetails;
                 $scope.wastagePeriodsList = _.uniq(_.pluck($scope.wastageDetails, 'period_name'));
                 var facilities = _.uniq(_.pluck($scope.wastageDetails, 'facility_name'));
+                $scope.addPlaceHolderFornonExistingPeriodData( $scope.wastageDetails, $scope.wastagePeriodsList,facilities);
                 $scope.facilityWastageDetails = [];
                 angular.forEach(facilities, function (facility) {
                     var district = _.findWhere($scope.wastageDetails, {facility_name: facility}).district_name;
@@ -803,6 +803,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 $scope.sessionsDetails = data.facilitySessionsDetails;
                 $scope.sessionsPeriodsList = _.uniq(_.pluck($scope.sessionsDetails, 'period_name'));
                 var facilities = _.uniq(_.pluck($scope.sessionsDetails, 'facility_name'));
+                $scope.addPlaceHolderFornonExistingPeriodData( $scope.sessionsDetails, $scope.sessionsPeriodsList,facilities);
                 $scope.facilitySessionsDetails = [];
                 angular.forEach(facilities, function (facility) {
                     var district = _.findWhere($scope.sessionsDetails, {facility_name: facility}).district_name;
@@ -851,151 +852,153 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         });
     };
 
- //////////////
- //My Stock
- //////////////
+    //////////////
+    //My Stock
+    //////////////
 
-$scope.myStockVaccine = {
-         dataPoints:[],
-         dataColumns: [{
-             "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
-         ],
-         dataX: {"id": "product"},
-         productCategory:""
- };
-
- $scope.myStockSupplies = {
-         dataPoints:[],
-         dataColumns: [{
-             "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
-         ],
-         dataX: {"id": "product"},
-         productCategory:""
- };
-
- $scope.mySupervisedFacilityStock = {
-          dataPoints:[],
-          dataColumns: [{
-              "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
-          ],
-          dataX: {"id": "facility_name"},
-          productCategory:""
-  };
-
-  $scope.supplyingPendingOrdersDetailCallback=function(){
-          VaccinePendingRequisitions.get({facilityId:parseInt(homeFacility.id,10)},function(data){
-             $scope.supplyingAllPendingOrders=data.pendingRequest;
-             if(data.pendingRequest !== undefined)
-               $scope.supplying.orders=data.pendingRequest.length;
-               else
-             $scope.supplying.orders=0;
-          });
-  };
-  $scope.equipmentActionBarCallback=function(){
-    EquipmentNonFunctional.get({},function(data){
-        $scope.nonFunctionalEquipments=data.Alerts;
-        if(!isUndefined(data.Alerts))
-        {
-           $scope.totalNonFunctionalEquipments=$scope.nonFunctionalEquipments.length;
-
-            var byStatus=_.groupBy($scope.nonFunctionalEquipments,function(e){
-                   return e.status;
-             });
-            $scope.allNonFunctionalEquipmentsByStatus = $.map(byStatus, function(value, index) {
-                  return [{"status":index,"data":value}];
-            });
-            console.log(JSON.stringify($scope.allNonFunctionalEquipmentsByStatus));
+    $scope.myStockVaccine = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "mos", "name": messageService.get('label.mos'), "type": "bar"
         }
-    });
-  };
+        ],
+        dataX: {"id": "product"},
+        productCategory: ""
+    };
 
-$scope.supplyingPendingOrdersDetailCallback();
-$scope.equipmentActionBarCallback();
-$scope.facilityInventoryStockStatusCallback=function(myStock){
-   if(!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate))
-   {
-        VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(homeFacility.id,10),date:myStock.toDate},function(data){
-              if(data.facilityStockStatus !== null)
-              {
-                    var allProducts=data.facilityStockStatus;
-                    var byCategory=_.groupBy(allProducts,function(p){
-                          return p.product_category;
-                    });
-                    var allDataPointsByCategory = $.map(byCategory, function(value, index) {
-                        return [{"productCategory":index,"dataPoints":value}];
-                    });
-                    $scope.myStockVaccine.dataPoints=allDataPointsByCategory[0].dataPoints;
-                    $scope.myStockVaccine.productCategory=allDataPointsByCategory[0].productCategory;
+    $scope.myStockSupplies = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "mos", "name": messageService.get('label.mos'), "type": "bar"
+        }
+        ],
+        dataX: {"id": "product"},
+        productCategory: ""
+    };
 
-                    $scope.myStockSupplies.dataPoints=allDataPointsByCategory[1].dataPoints;
-                    $scope.myStockSupplies.productCategory=allDataPointsByCategory[1].productCategory;
+    $scope.mySupervisedFacilityStock = {
+        dataPoints: [],
+        dataColumns: [{
+            "id": "mos", "name": messageService.get('label.mos'), "type": "bar"
+        }
+        ],
+        dataX: {"id": "facility_name"},
+        productCategory: ""
+    };
 
-
-              }
+    $scope.supplyingPendingOrdersDetailCallback = function () {
+        VaccinePendingRequisitions.get({facilityId: parseInt(homeFacility.id, 10)}, function (data) {
+            $scope.supplyingAllPendingOrders = data.pendingRequest;
+            if (data.pendingRequest !== undefined)
+                $scope.supplying.orders = data.pendingRequest.length;
+            else
+                $scope.supplying.orders = 0;
         });
-    }
-};
+    };
+    $scope.equipmentActionBarCallback = function () {
+        EquipmentNonFunctional.get({}, function (data) {
+            $scope.nonFunctionalEquipments = data.Alerts;
+            if (!isUndefined(data.Alerts)) {
+                $scope.totalNonFunctionalEquipments = $scope.nonFunctionalEquipments.length;
 
-$scope.mySupervisedFacilityFilterSize=5;
-$scope.mySupervisedFacilitiesCallback=function(filter){
-    if(!isUndefined(filter.product) && filter.product !== "0" && !isUndefined(filter.date) && !isUndefined(filter.level) && filter.level !=="0")
-    {
-           VaccineDashboardSupervisedFacilityInventoryStockStatus.get({
-                                                                       productId:filter.product,
-                                                                       date:filter.date,
-                                                                       level:filter.level},
-                                                                       function(data){
-                        if(!isUndefined(data.facilityStockStatus))
-                        {
-                           $scope.mySupervisedFilterTotal=data.facilityStockStatus.length;
-                           $scope.mySupervisedFacilityStock.data=data.facilityStockStatus;
-                           $scope.mySupervisedFacilityStock.productCategory=data.facilityStockStatus[0].product;
-                           $scope.mySupervisedFacilitiesPagination(0);
-                        }
-                        else{
-                           $scope.mySupervisedFacilityStock.data=[];
-                           $scope.mySupervisedFilterTotal=0;
-                        }
-           });
-     }
-};
-$scope.mySupervisedFacilitiesPagination=function(offset){
-  var s =  parseInt($scope.mySupervisedFacilityFilterSize, 10)+ parseInt(offset, 10);
-          if (!isUndefined(offset)) {
-              $scope.mySupervisedFacilityStock.dataPoints = $scope.mySupervisedFacilityStock.data.slice(parseInt(offset, 10), s);
-          }
-};
+                var byStatus = _.groupBy($scope.nonFunctionalEquipments, function (e) {
+                    return e.status;
+                });
+                $scope.allNonFunctionalEquipmentsByStatus = $.map(byStatus, function (value, index) {
+                    return [{"status": index, "data": value}];
+                });
+                console.log(JSON.stringify($scope.allNonFunctionalEquipmentsByStatus));
+            }
+        });
+    };
+
+    $scope.supplyingPendingOrdersDetailCallback();
+    $scope.equipmentActionBarCallback();
+    $scope.facilityInventoryStockStatusCallback = function (myStock) {
+        if (!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate)) {
+            VaccineDashboardFacilityInventoryStockStatus.get({
+                facilityId: parseInt(homeFacility.id, 10),
+                date: myStock.toDate
+            }, function (data) {
+                if (data.facilityStockStatus !== null) {
+                    var allProducts = data.facilityStockStatus;
+                    var byCategory = _.groupBy(allProducts, function (p) {
+                        return p.product_category;
+                    });
+                    var allDataPointsByCategory = $.map(byCategory, function (value, index) {
+                        return [{"productCategory": index, "dataPoints": value}];
+                    });
+                    $scope.myStockVaccine.dataPoints = allDataPointsByCategory[0].dataPoints;
+                    $scope.myStockVaccine.productCategory = allDataPointsByCategory[0].productCategory;
+
+                    $scope.myStockSupplies.dataPoints = allDataPointsByCategory[1].dataPoints;
+                    $scope.myStockSupplies.productCategory = allDataPointsByCategory[1].productCategory;
 
 
-$scope.getSOHVaccine=function (value, ratio, id, index) {
-        var toolTipValue=value + " | "+$filter('number')($scope.myStockVaccine.dataPoints[index].soh) +" "+ $scope.myStockVaccine.dataPoints[index].unity_of_measure;
+                }
+            });
+        }
+    };
+
+    $scope.mySupervisedFacilityFilterSize = 5;
+    $scope.mySupervisedFacilitiesCallback = function (filter) {
+        if (!isUndefined(filter.product) && filter.product !== "0" && !isUndefined(filter.date) && !isUndefined(filter.level) && filter.level !== "0") {
+            VaccineDashboardSupervisedFacilityInventoryStockStatus.get({
+                    productId: filter.product,
+                    date: filter.date,
+                    level: filter.level
+                },
+                function (data) {
+                    if (!isUndefined(data.facilityStockStatus)) {
+                        $scope.mySupervisedFilterTotal = data.facilityStockStatus.length;
+                        $scope.mySupervisedFacilityStock.data = data.facilityStockStatus;
+                        $scope.mySupervisedFacilityStock.productCategory = data.facilityStockStatus[0].product;
+                        $scope.mySupervisedFacilitiesPagination(0);
+                    }
+                    else {
+                        $scope.mySupervisedFacilityStock.data = [];
+                        $scope.mySupervisedFilterTotal = 0;
+                    }
+                });
+        }
+    };
+    $scope.mySupervisedFacilitiesPagination = function (offset) {
+        var s = parseInt($scope.mySupervisedFacilityFilterSize, 10) + parseInt(offset, 10);
+        if (!isUndefined(offset)) {
+            $scope.mySupervisedFacilityStock.dataPoints = $scope.mySupervisedFacilityStock.data.slice(parseInt(offset, 10), s);
+        }
+    };
+
+
+    $scope.getSOHVaccine = function (value, ratio, id, index) {
+        var toolTipValue = value + " | " + $filter('number')($scope.myStockVaccine.dataPoints[index].soh) + " " + $scope.myStockVaccine.dataPoints[index].unity_of_measure;
         return toolTipValue;
-};
-$scope.getColorVaccine=function (color, d) {
-       if(typeof d === 'object') {
-         return $scope.myStockVaccine.dataPoints[d.index].color;
-       }
-};
+    };
+    $scope.getColorVaccine = function (color, d) {
+        if (typeof d === 'object') {
+            return $scope.myStockVaccine.dataPoints[d.index].color;
+        }
+    };
 
-$scope.getSOHSupplies=function (value, ratio, id, index) {
-        var toolTipValue=value + " | "+$filter('number')($scope.myStockSupplies.dataPoints[index].soh) +" "+ $scope.myStockSupplies.dataPoints[index].unity_of_measure;
+    $scope.getSOHSupplies = function (value, ratio, id, index) {
+        var toolTipValue = value + " | " + $filter('number')($scope.myStockSupplies.dataPoints[index].soh) + " " + $scope.myStockSupplies.dataPoints[index].unity_of_measure;
         return toolTipValue;
-};
-$scope.getColorSupplies=function (color, d) {
-       if(typeof d === 'object') {
-         return $scope.myStockSupplies.dataPoints[d.index].color;
-       }
-};
+    };
+    $scope.getColorSupplies = function (color, d) {
+        if (typeof d === 'object') {
+            return $scope.myStockSupplies.dataPoints[d.index].color;
+        }
+    };
 
-$scope.getSupervisedSOHTooltip=function (value, ratio, id, index) {
-        var toolTipValue=value + " | "+$filter('number')($scope.mySupervisedFacilityStock.dataPoints[index].soh) +" "+ $scope.mySupervisedFacilityStock.dataPoints[index].unity_of_measure;
+    $scope.getSupervisedSOHTooltip = function (value, ratio, id, index) {
+        var toolTipValue = value + " | " + $filter('number')($scope.mySupervisedFacilityStock.dataPoints[index].soh) + " " + $scope.mySupervisedFacilityStock.dataPoints[index].unity_of_measure;
         return toolTipValue;
-};
-$scope.getColorSupervised=function (color, d) {
-       if(typeof d === 'object') {
-         return $scope.mySupervisedFacilityStock.dataPoints[d.index].color;
-       }
-};
+    };
+    $scope.getColorSupervised = function (color, d) {
+        if (typeof d === 'object') {
+            return $scope.mySupervisedFacilityStock.dataPoints[d.index].color;
+        }
+    };
 
 /////////////////
 // Stock Status
@@ -1094,15 +1097,42 @@ $scope.getColorSupervised=function (color, d) {
     };
 
     $scope.getIndicatorValues = function (facility, indicator, data) {
+
         var facilityDetail = _.where(data, {facility_name: facility});
         var values = _.pluck(facilityDetail, indicator);
         var tot = _.reduce(values, function (res, num) {
-            return res + num;
+            res=utils.isNullOrUndefined(res)?0:res;
+            num=utils.isNullOrUndefined(num)?0: num;
+            return res+num;
         }, 0);
         values.push(tot);
+        console.log(JSON.stringify(values));
+        console.log(_.reduce(values, function (res, num) {
+            res=utils.isNullOrUndefined(res)?0:res;
+            num=utils.isNullOrUndefined(num)?0: num;
+            return res+num;
+        }));
         return values;
     };
+    $scope.addPlaceHolderFornonExistingPeriodData = function (data, periods,facilities) {
+        var i;
+        var j;
 
+        for (i = 0; i < periods.length; i++) {
+            var period = periods[i];
+            for (j = 0; j < facilities.length; j++) {
+                var facility = facilities[j];
+                var facilityDetail=_.findWhere(data, {facility_name: facility, period_name: period});
+
+                if (utils.isNullOrUndefined(facilityDetail)) {
+                    data.push({facility_name: facility, period_name: period});
+                }
+
+
+            }
+        }
+        data= _.sortBy(data, 'period_start_date');
+    };
     $scope.getDetail = function (facility, period) {
         return _.findWhere($scope.stockDetail, {facility_name: facility, period_name: period});
     };
@@ -1469,20 +1499,20 @@ $scope.getColorSupervised=function (color, d) {
     };
     $scope.openSupplyingOrdersDetailDialog = function (size) {
 
-            var modalInstance = $modal.open({
-                animation: $scope.animationsEnabled,
-                templateUrl: 'supplying.html',
-                controller: 'ModalInstanceCtrl',
-                size: 'lg',
-                windowClass: 'my-modal-popup',
-                resolve: {
-                    items: function () {
+        var modalInstance = $modal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'supplying.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'lg',
+            windowClass: 'my-modal-popup',
+            resolve: {
+                items: function () {
 
-                        return $scope.supplyingAllPendingOrders;
-                    }
+                    return $scope.supplyingAllPendingOrders;
                 }
-            });
-        };
+            }
+        });
+    };
     $scope.openRepairingDetailDialog = function (size) {
 
         var modalInstance = $modal.open({
@@ -1578,7 +1608,7 @@ VaccineDashboardController.resolve = {
                 } else {
                     user_preferences.period_name = "";
                     user_preferences.period_id = "";
-                    user_preferences.startdate ="";
+                    user_preferences.startdate = "";
                 }
 
             });
@@ -1738,9 +1768,9 @@ VaccineDashboardController.resolve = {
                     settings.monthsRange = 6;
                 }
 
-              });
+            });
 
-           deferred.resolve(settings);
+            deferred.resolve(settings);
         }, 100);
         return deferred.promise;
     },
@@ -1870,18 +1900,18 @@ VaccineDashboardController.resolve = {
         return deferred.promise;
 
     },
-    homeFacility: function ($q, $timeout,UserFacilityList) {
-           var deferred = $q.defer();
-           var homeFacility={};
+    homeFacility: function ($q, $timeout, UserFacilityList) {
+        var deferred = $q.defer();
+        var homeFacility = {};
 
-           $timeout(function () {
-             UserFacilityList.get({}, function (data) {
-                  homeFacility = data.facilityList[0];
-                    deferred.resolve(homeFacility);
-             });
+        $timeout(function () {
+            UserFacilityList.get({}, function (data) {
+                homeFacility = data.facilityList[0];
+                deferred.resolve(homeFacility);
+            });
 
-           }, 100);
-                return deferred.promise;
-     }
+        }, 100);
+        return deferred.promise;
+    }
 
 };
