@@ -850,6 +850,83 @@
         </accordion-group>
     </accordion>
 
+<!-- Stock Status By Facility -->
+    <accordion>
+        <accordion-group class="gray-cascade" is-open="stockStatus.openPanel">
+            <accordion-heading>
+                <div class="accordion-title">
+                    <div class="caption"><i class="flaticon-filter"></i>
+                        <span class="caption-subject bold uppercase font-dark" openlmis-message="label.stock.status.bar"></span>
+                    </div>
+                    <div class="tools">
+                        <i ng-class="{'icon-minus-sign': performance.openPanel, 'icon-plus-sign': !performance.openPanel}"></i>
+                    </div>
+                </div>
+            </accordion-heading>
+            <div class="clearfix" ></div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
+                            <span class="caption-helper">monthly...</span>
+
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a ng-click="stockStatusDetailCallback()" class="btn btn-circle btn-icon-only btn-default" tooltip="Detail Coverage">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-stock-status-monthly-trend.html'"></ng-include>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
+                            <span class="caption-helper">by district...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="stockStatusDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-include ng-if="district_user_level==false"
+                                    src="'/public/pages/vaccine/dashboard/partials/slide-stock-status-district.html'"></ng-include>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="portlet light">
+                        <div class="caption">
+                            <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
+                            <span class="caption-helper">by facility...</span>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
+                                    <i class="icon-info"></i>
+                                </a>
+                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="stockStatusDetailCallback()">
+                                    <i class="icon-table"></i>
+                                </a>
+                            </div>
+
+                        </div>
+
+                        <ng-include
+                                src="'/public/pages/vaccine/dashboard/partials/slide-stock-status-facility.html'"></ng-include>
+                    </div>
+                </div>
+            </div>
+        </accordion-group>
+    </accordion>
+
 <!--
     <accordion>
            <accordion-group class="gray-cascade" is-open="stockStatus.openPanel">
