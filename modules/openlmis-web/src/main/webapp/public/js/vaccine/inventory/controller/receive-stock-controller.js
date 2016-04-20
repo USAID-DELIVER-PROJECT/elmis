@@ -11,7 +11,7 @@
  */
 
 
-function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,UpdateOrderRequisitionStatus,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution,DistributionWithSupervisorId, ProductLots,StockEvent,localStorageService,$location, $anchorScroll) {
+function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,UpdateOrderRequisitionStatus,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution,DistributionWithSupervisorId, ProductLots,StockEvent,localStorageService,$location, $anchorScroll,ExistingDistribution) {
 
     $scope.hasStock=homeFacility.hasStock;
     $scope.userPrograms=configurations.programs;
@@ -313,17 +313,10 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
      };
     $scope.addLot=function(lotToAdd){
 
-            console.log(JSON.stringify($scope.lotsToDisplay));
-            console.log(lotToAdd.lotId);
             lotToAdd.lot=_.findWhere($scope.lotsToDisplay,{id:parseInt(lotToAdd.lotId,10)});
-            console.log(lotToAdd.lot);
             $scope.productToAdd.lots.push(lotToAdd);
             $scope.lotToAdd={};
             updateLotsToDisplay($scope.productToAdd.lots);
-    };
-    $scope.showForm=function(){
-       console.log($scope.productToAddForm);
-       console.log($scope.batchToAddForm);
     };
 
     $scope.removeProductLot=function(lot){
@@ -420,19 +413,23 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
             $scope.distribution.categorisedLineItems= $.map(byCategory, function (value, index) {
                  return [{"productCategory": index, "lineItems": value}];
             });
-//            console.log(JSON.stringify($scope.distribution.categorisedLineItems));
      };
 
      $scope.clear=function(){
         $scope.distribution=undefined;
         $scope.voucherNumberSearched=false;
+        $scope.orderNumberExist=false;
      };
 
      $scope.checkOrderNumber=function(){
-        if($scope.orderNumber !== null){
-         Distribution.get({voucherNumber:$scope.orderNumber},function(data){
-
-         });
+        if($scope.orderNumber !== undefined){
+             ExistingDistribution.get({voucherNumber:$scope.orderNumber},function(data){
+                  console.log(data);
+                  if(data.distribution !== null)
+                   {
+                      $scope.orderNumberExist =true;
+                  }
+             });
         }
      };
 

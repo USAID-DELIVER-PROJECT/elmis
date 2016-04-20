@@ -150,7 +150,6 @@
                    maxlength="10"
                    type="text"
                    numeric-validator="positiveInteger"
-                   ng-change="showForm()"
                    divisible-by-presentation="{{getPresentation(productToAdd.programProduct.product)}}"/>
             <input ng-required="(productToAdd.programProduct.product !==undefined || productToAdd.programProduct.product ===null ) && (productToAdd.batchTracked===false || productToAdd.batchTracked===null)"
                    name="{{productToAdd.programProduct.product.primaryName}}"

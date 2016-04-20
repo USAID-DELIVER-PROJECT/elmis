@@ -568,3 +568,7 @@ services.factory('VaccineDashboardSupervisedFacilityInventoryStockStatus', funct
 services.factory('VaccineTotalPendingRequisitions', function ($resource) {
     return $resource('/vaccine/orderRequisition/getTotalPendingRequest/:facilityId.json', {}, {});
 });
+
+services.factory('ExistingDistribution', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/get-if-exist/', {}, {});
+});

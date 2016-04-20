@@ -240,6 +240,14 @@ public class VaccineInventoryDistributionController extends BaseController {
         return new ModelAndView(jasperView, map);
     }
 
+    @RequestMapping(value = "get-if-exist", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getDistributionByVoucherNumberIfExist(@Param("voucherNumber") String voucherNumber,
+                                                                                  HttpServletRequest request) {
+        Long userId = loggedInUserId(request);
+        return OpenLmisResponse.response("distribution", service.getDistributionByVoucherNumberIfExist(userId, voucherNumber));
+    }
+
 
 
 

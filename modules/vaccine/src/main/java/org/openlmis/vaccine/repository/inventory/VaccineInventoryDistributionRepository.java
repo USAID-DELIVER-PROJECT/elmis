@@ -115,4 +115,8 @@ public class VaccineInventoryDistributionRepository {
         return mapper.getDistributionsByDate(facilityId, date);
     }
 
+    public VaccineDistribution getDistributionByVoucherNumberIfExist(Long facilityId, String voucherNumber) {
+        return mapper.getDistributionByVoucherNumberIfExist(facilityId, voucherNumber);
+    }
+
 }

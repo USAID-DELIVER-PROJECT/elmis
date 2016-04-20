@@ -47,6 +47,7 @@
     }
 
     input[type="text"]{height:30px !important;}
+    input[type="text"].orderNumberError{border:1px solid #ff0000 !important;}
 
     table.receive{
         background:#FAFAFA;
@@ -100,7 +101,13 @@
                                         <span class="label-required">*</span>:&nbsp;
                                         <input ng-reqiured=" hasPermission('OPEN_STOCK_RECEIVING_PROCESS')" type="text"
                                                name="orderNumber" ng-required="true"
+                                               ng-class="{'orderNumberError':orderNumberExist}"
                                                ng-model="orderNumber" ng-change="clear()" ng-blur="checkOrderNumber()"/>
+                                        <span ng-show="orderNumberExist" style="color:#ff0000">
+                                            <br/>
+                                            <span style="margin-left:120px"
+                                                  openlmis-message="error.message.order.number.exist"></span>
+                                        </span>
 
                                     </div>
                                     <div class="span4"
@@ -171,7 +178,7 @@
                    openlmis-message="button.submit"/>
 
             <input ng-show="!isTransferIn && (hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock || hasPermission('INITIALIZE_STOCK'))"
-                   ng-disabled="openReceiveForm.$invalid || receivedProducts.length == 0 ||(hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderNumber ==null) || (hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderDate==null)"
+                   ng-disabled="orderNumberExist || openReceiveForm.$invalid || receivedProducts.length == 0 ||(hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderNumber ==null) || (hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderDate==null)"
                    type="submit"
                    id="submit-button2"
                    ng-click="openReceive()"
