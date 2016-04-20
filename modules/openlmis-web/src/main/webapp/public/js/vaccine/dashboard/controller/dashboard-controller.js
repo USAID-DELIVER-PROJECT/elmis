@@ -1003,6 +1003,19 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         }
     };
 
+    $scope.openMyStockHelp = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'partials/slide-mystock-help-content.html',
+            controller: 'DashboardHelpModalInstanceCtrl',
+            resolve: {
+                items: function () {
+
+                    return {dashboardHelps: $scope.dashboardHelps};
+                }
+            }
+        });
+    };
+
 /////////////////
 // Stock Status
 ////////////////
@@ -1141,122 +1154,6 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     };
 
 
-    /* $scope.$watchCollection('[filter.monthlyCoverage.startDate, filter.monthlyCoverage.endDate, filter.monthlyCoverage.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.monthlyCoverage.startDate) &&
-     !isUndefined( $scope.filter.monthlyCoverage.endDate) &&
-     !isUndefined($scope.filter.monthlyCoverage.product)){
-     VaccineDashboardMonthlyCoverage.get({startDate: $scope.filter.monthlyCoverage.startDate, endDate: $scope.filter.monthlyCoverage.endDate,
-     product: $scope.filter.monthlyCoverage.product}, function(data){
-     $scope.monthlyCoverage.dataPoints = data.monthlyCoverage;
-     });
-     }
-     });*/
-
-    /* $scope.$watchCollection('[filter.districtCoverage.period, filter.districtCoverage.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtCoverage.period) &&
-     !isUndefined($scope.filter.districtCoverage.product)){
-     VaccineDashboardDistrictCoverage.get({period: $scope.filter.districtCoverage.period,
-     product: $scope.filter.districtCoverage.product}, function(data){
-     $scope.districtCoverage.dataPoints = data.districtCoverage;
-     });
-     }
-     });*/
-
-    /*  $scope.$watchCollection('[filter.monthlyWastage.startDate, filter.monthlyWastage.endDate, filter.monthlyWastage.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.monthlyWastage.startDate) &&
-     !isUndefined( $scope.filter.monthlyWastage.endDate) &&
-     !isUndefined($scope.filter.monthlyWastage.product)){
-     VaccineDashboardMonthlyWastage.get({startDate: $scope.filter.monthlyWastage.startDate, endDate: $scope.filter.monthlyWastage.endDate,
-     product: $scope.filter.monthlyWastage.product}, function(data){
-     $scope.monthlyWastage.dataPoints = data.wastageMonthly;
-     });
-     }
-     });
-
-     $scope.$watchCollection('[filter.districtWastage.period, filter.districtWastage.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtWastage.period) &&
-     !isUndefined( $scope.filter.districtWastage.product) ){
-     VaccineDashboardDistrictWastage.get({period: $scope.filter.districtWastage.period,  product: $scope.filter.districtWastage.product}, function(data){
-     $scope.districtWastage.dataPoints = data.districtWastage;
-     });
-     }
-     });
-     */
-    /*  $scope.$watchCollection('[filter.monthlyDropout.startDate, filter.monthlyDropout.endDate, filter.monthlyDropout.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.monthlyDropout.startDate) &&
-     !isUndefined( $scope.filter.monthlyDropout.endDate) &&
-     !isUndefined($scope.filter.monthlyDropout.product)){
-     VaccineDashboardMonthlyDropout.get({startDate: $scope.filter.monthlyDropout.startDate, endDate: $scope.filter.monthlyDropout.endDate,
-     product: $scope.filter.monthlyDropout.product}, function(data){
-     $scope.monthlyDropout.dataPoints = data.monthlyDropout;
-     });
-     }
-     });
-
-     $scope.$watchCollection('[filter.districtDropout.period, filter.districtDropout.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtDropout.period) &&
-     !isUndefined($scope.filter.districtDropout.product)){
-     VaccineDashboardDistrictDropout.get({period: $scope.filter.districtDropout.period,
-     product: $scope.filter.districtDropout.product}, function(data){
-     $scope.districtDropout.dataPoints = data.districtDropout;
-     });
-     }
-     });
-
-     $scope.$watchCollection('[filter.monthlyStock.startDate, filter.monthlyStock.endDate, filter.monthlyStock.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.monthlyStock.startDate) &&
-     !isUndefined( $scope.filter.monthlyStock.endDate) &&
-     !isUndefined($scope.filter.monthlyStock.product)){
-     VaccineDashboardMonthlyStock.get({startDate: $scope.filter.monthlyStock.startDate, endDate: $scope.filter.monthlyStock.endDate,
-     product: $scope.filter.monthlyStock.product}, function(data){
-     $scope.monthlyStock.dataPoints = data.monthlyStock;
-     });
-     }
-     });
-
-     $scope.$watchCollection('[filter.districtStock.period, filter.districtStock.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtStock.period) &&
-     !isUndefined( $scope.filter.districtStock.product) ){
-     VaccineDashboardDistrictStock.get({period: $scope.filter.districtStock.period,  product: $scope.filter.districtStock.product}, function(data){
-     $scope.districtStock.dataPoints = data.districtStock;
-     });
-     }
-     });
-
-
-     $scope.$watchCollection('[filter.monthlySessions.startDate, filter.monthlySessions.endDate]', function(newValues, oldValues){
-
-     if(!isUndefined( $scope.filter.monthlySessions.startDate) && !isUndefined( $scope.filter.monthlySessions.endDate)){
-     VaccineDashboardSessions.get({startDate: $scope.filter.monthlySessions.startDate, endDate: $scope.filter.monthlySessions.endDate}, function(data){
-
-     $scope.monthlySessions.dataPoints =   data.monthlySessions;
-     });
-     }
-     });
-
-
-     $scope.$watchCollection('[filter.bundling.startDate, filter.bundling.endDate, filter.bundling.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.bundling.startDate) &&
-     !isUndefined( $scope.filter.bundling.endDate) &&
-     !isUndefined($scope.filter.bundling.product)){
-     VaccineDashboardBundle.get({startDate: $scope.filter.bundling.startDate, endDate: $scope.filter.bundling.endDate,
-     product: $scope.filter.bundling.product}, function(data){
-     $scope.bundling.dataPoints = data.bundling;
-     });
-     }
-     });
-
-     $scope.$watch('filter.districtSessions.period', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtSessions.period) ) {
-     VaccineDashboardDistrictSessions.get({period: $scope.filter.districtSessions.period}, function(data){
-
-     $scope.districtSessions.dataPoints =   data.districtSessions;
-     });
-     }
-
-     });
-
-     */
 //////////////////
 //  Stock Status
 ///////////////////
@@ -1383,7 +1280,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
         }
     };
-    $scope.openStockStatusHelp = function () {
+
+     $scope.openStockStatusHelp = function () {
         var modalInstance = $modal.open({
             templateUrl: 'partials/slide-stock-status-help-content.html',
             controller: 'DashboardHelpModalInstanceCtrl',
@@ -1670,7 +1568,7 @@ VaccineDashboardController.resolve = {
         var deferred = $q.defer();
         var helps = {};
         $timeout(function () {
-            HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function (data) {
+            HelpContentByKey.get({content_key: 'Coverage Help'}, function (data) {
 
 
                 if (!isUndefined(data.siteContent)) {
@@ -1684,7 +1582,7 @@ VaccineDashboardController.resolve = {
                 }
 
             });
-            HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function (data) {
+            HelpContentByKey.get({content_key: 'Wastage Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1696,7 +1594,7 @@ VaccineDashboardController.resolve = {
 
                 }
             });
-            HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function (data) {
+            HelpContentByKey.get({content_key: 'Sessions Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1708,7 +1606,7 @@ VaccineDashboardController.resolve = {
 
                 }
             });
-            HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function (data) {
+            HelpContentByKey.get({content_key: 'Dropout Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1720,7 +1618,7 @@ VaccineDashboardController.resolve = {
 
                 }
             });
-            HelpContentByKey.get({content_key: 'Stockhelp'}, function (data) {
+            HelpContentByKey.get({content_key: 'My Stock Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1732,7 +1630,7 @@ VaccineDashboardController.resolve = {
 
                 }
             });
-            HelpContentByKey.get({content_key: 'StockStatushelp'}, function (data) {
+            HelpContentByKey.get({content_key: 'Facility Stock Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1750,6 +1648,7 @@ VaccineDashboardController.resolve = {
         }, 100);
         return deferred.promise;
     },
+
     settingValues: function ($q, $timeout, SettingsByKey) {
         var deferred = $q.defer();
         var settings = {};
