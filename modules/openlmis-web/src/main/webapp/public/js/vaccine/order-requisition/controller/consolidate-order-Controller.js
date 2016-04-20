@@ -1,3 +1,13 @@
+/*
+* Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+*
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI)/MoHCDGEC Tanzania.
+*
+* This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
+*/
+
 function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequisitionStatus, SaveDistributionList, $filter, $location, $window, $routeParams, StockEvent) {
     $scope.inputClass = false;
 
@@ -51,12 +61,6 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
     };
 
-    var print = function (distributionList) {
-
-        var url = '/vaccine/orderRequisition/consolidate/print/' + distributionList;
-        $window.open(url, '_blank');
-    };
-
 
     $scope.cancel = function () {
         $location.path('/');
@@ -104,7 +108,7 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
         var events = [];
 
         var distributionLineItemList = [];
-
+        var printWindow;
         angular.forEach($scope.consolidatedOrders, function (facility) {
 
             var distribution = {};
@@ -151,7 +155,8 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
 
         StockEvent.save({facilityId: $routeParams.homeFacility}, events, function (data) {
-
+            if(data.success)
+            {
             SaveDistributionList.save(distributionLineItemList, function (distribution) {
 
                 var printList = [];
@@ -166,12 +171,19 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
                     printList.push(parseInt(distributionId.id, 10));
 
                 });
-                print(printList);
+
+
+                var url = '/vaccine/orderRequisition/consolidate/print/' + printList;
+
+               printWindow.location.href = url;
+
                 $scope.cancel();
 
             });
-
+        }
         });
+        printWindow = $window.open('about:blank','_blank');
+
     };
 
 
