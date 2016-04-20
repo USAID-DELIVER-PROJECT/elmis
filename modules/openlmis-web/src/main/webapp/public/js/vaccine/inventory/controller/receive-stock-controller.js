@@ -321,6 +321,10 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
             $scope.lotToAdd={};
             updateLotsToDisplay($scope.productToAdd.lots);
     };
+    $scope.showForm=function(){
+       console.log($scope.productToAddForm);
+       console.log($scope.batchToAddForm);
+    };
 
     $scope.removeProductLot=function(lot){
             var index = $scope.productToAdd.lots.indexOf(lot);

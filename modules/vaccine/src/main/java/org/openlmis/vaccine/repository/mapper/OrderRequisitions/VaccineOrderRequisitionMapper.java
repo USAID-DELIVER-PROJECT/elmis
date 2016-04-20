@@ -163,7 +163,7 @@ public interface VaccineOrderRequisitionMapper {
             "WHERE id = #{orderId}  ")
     Long verifyVaccineOrderRequisition(@Param("orderId") Long orderId);
 
-    @Select("SELECT SUM(f.id) as totalPending " +
+    @Select("SELECT COUNT(DISTINCT f.id) as totalPending " +
             "   FROM facilities f  " +
             "     JOIN requisition_group_members m ON m.facilityid = f.id  " +
             "     JOIN requisition_groups rg ON rg.id = m.requisitiongroupid  " +
