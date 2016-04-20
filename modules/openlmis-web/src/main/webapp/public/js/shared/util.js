@@ -246,11 +246,11 @@ var utils = {
     },
     getReportDataWithSubAndGrandTotal : function(reportData, nameKey,
                                                               columnKeys, includeGrandTotal,type){
-        if(reportData.length === 0)
+        if(utils.isNullOrUndefined(reportData)||utils.isEmpty(reportData)||reportData.length === 0)
             return;
 
         var uniqueName = _.uniq(_.pluck(reportData, nameKey));
-        console.log(JSON.stringify(uniqueName));
+
         var reportDataWithAggregates = [];
         var grandTotal = {};
 
