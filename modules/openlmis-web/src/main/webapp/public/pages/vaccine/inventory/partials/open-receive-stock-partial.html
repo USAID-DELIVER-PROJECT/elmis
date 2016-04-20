@@ -102,17 +102,26 @@
         <td  class="col-lot  cell-input cell-text last-row row-add-batch ">
             <div class="row-fluid" ng-if="productToAdd.batchTracked===true">
                 <div ng-show="hasPermission('CREATE_LOT')" style="width:20%; float:left;margin-top:1px">
-                    <input type="button" ng-disabled="lotToAdd.lot !== undefined "
+                    <input type="button" ng-disabled="lotToAdd.lotId !== undefined "
                            class="btn btn-primary btn-small"
                            href ng-click="showNewLotModal(productToAdd)"
                            openlmis-message="button.create"/>
                 </div>
                 <div style="width:80%; float:left">
+                    <!--<select ng-show="productToAdd.batchTracked" name="lotToAdd" ui-select2-->
+                    <!--ng-required="productToAdd.batchTracked===true" style="min-width:200px !important"-->
+                    <!--ng-model="lotToAdd.lot"-->
+                    <!--ng-options="lot as lot.lotCode for lot in lotsToDisplay track by lot.lotCode">-->
+                    <!--<option value="" openlmis-message="placeholder.select.batch"></option>-->
+                    <!--</select>-->
                     <select ng-show="productToAdd.batchTracked" name="lotToAdd" ui-select2
                             ng-required="productToAdd.batchTracked===true" style="min-width:200px !important"
-                            ng-model="lotToAdd.lot"
-                            ng-options="lot as lot.lotCode for lot in lotsToDisplay track by lot.lotCode">
+                            ng-model="lotToAdd.lotId"
+                            >
                         <option value="" openlmis-message="placeholder.select.batch"></option>
+                        <option ng-repeat="lot in lotsToDisplay" value="{{lot.id}}"
+                                ng-selected="lotToAdd.lotId == lot.id">{{lot.lotCode}}
+                        </option>
                     </select>
                 </div>
 
