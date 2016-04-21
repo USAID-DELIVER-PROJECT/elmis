@@ -1,14 +1,13 @@
 <!--
-  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
-  ~
-  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
+* Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+*
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI)/MoHCDGEC Tanzania.
+*
+* This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
+*
+-->
 
 <div ng-show="emergency==false">
     <h2><span openlmis-message="label.vaccine.order.requisition.title"></span></h2>
@@ -54,10 +53,10 @@
         </div>
     </div>
 
-    <div class="alert alert-danger"  ng-show='stockLoaded === true'>
+  <!--  <div class="alert alert-danger"  ng-show='stockLoaded === true'>
         <span openlmis-message="error.message.no.stock.found"></span>&nbsp;
         <strong><a href="/public/pages/vaccine/inventory/index.html#/receive" openlmis-message="stock.initialize.stock"></a></strong>
-    </div>
+    </div>-->
 
     <div class="alert alert-info row-fluid" style="width: auto" id="saveSuccessMsgDiv" ng-show="message">
         <div>
@@ -72,7 +71,7 @@
         <div class="row-fluid ">
             <div class="span6 init-rnr-grid">
                 <div class="gridStyle small" ng-grid="periodGridOptions"
-                     ng-show="!(periodGridData.length == 0) && !(periodGridData.emergency) && stockLoaded === false"></div>
+                     ng-show="!(periodGridData.length == 0) && !(periodGridData.emergency)"></div>
             </div>
             <!-- <div class="clearfix"></div>-->
             <div class="span6 padding2px" style="text-align:right;"><br>

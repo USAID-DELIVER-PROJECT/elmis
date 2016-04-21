@@ -173,7 +173,7 @@ public class VaccineReportService {
         return repository.getAggregateDropOuts(periodId, zoneId,userId);
     }
 
-    public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long periodId, Long zoneId) {
+    public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long periodId, Long zoneId, Long userId) {
         List<HashMap<String, Object>> vaccineUsageTrend = null;
         Long districtId;
         try {
@@ -186,9 +186,9 @@ public class VaccineReportService {
             }
 
             if ((facilityCode == null || facilityCode.isEmpty()) && periodId != 0) {
-                vaccineUsageTrend = repository.vaccineUsageTrendByGeographicZone(periodId, districtId, productCode);
+                vaccineUsageTrend = repository.vaccineUsageTrendByGeographicZone(periodId, districtId, productCode,userId);
             } else {
-                vaccineUsageTrend = repository.vaccineUsageTrend(facilityCode, productCode);
+                vaccineUsageTrend = repository.vaccineUsageTrend(facilityCode, productCode,userId);
 
             }
         } catch (Exception ex) {
@@ -257,18 +257,18 @@ public class VaccineReportService {
         if (districtId == 0) {
             result.put("mainreportRegionAggregate", repository.getPerformanceCoverageMainReportDataByRegionAggregate(startDate, endDate, districtId, productId, doseId));
             result.put("summaryRegionAggregate", repository.getPerformanceCoverageSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId, doseId));
-            result.put("regionPopulation", repository.getClassficationVaccinePopulationForRegion(startDate,endDate,districtId,productId));
+            result.put("regionPopulation", repository.getClassficationVaccinePopulationForRegion(startDate,endDate,districtId,productId,doseId));
 
         }
 
         if (zone != null && zone.getLevel().getCode().equals("dist")) {
             result.put("mainreport", repository.getPerformanceCoverageMainReportDataByDistrict(startDate, endDate, districtId, productId, doseId));
             result.put("summary", repository.getPerformanceCoverageSummaryReportDataByDistrict(startDate, endDate, districtId, productId, doseId));
-            result.put("population", repository.getClassficationVaccinePopulationForFacility(startDate, endDate, districtId, productId));
+            result.put("population", repository.getClassficationVaccinePopulationForFacility(startDate, endDate, districtId, productId,doseId));
         } else {
             result.put("mainreport", repository.getPerformanceCoverageMainReportDataByRegion(startDate, endDate, districtId, productId, doseId));
             result.put("summary", repository.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId, doseId));
-            result.put("population", repository.getClassficationVaccinePopulationForDistrict(startDate,endDate,districtId,productId));
+            result.put("population", repository.getClassficationVaccinePopulationForDistrict(startDate,endDate,districtId,productId,doseId));
         }
 
         result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));

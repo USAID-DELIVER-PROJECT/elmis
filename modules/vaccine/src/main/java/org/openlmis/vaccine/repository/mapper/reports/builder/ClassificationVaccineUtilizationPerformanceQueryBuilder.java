@@ -180,23 +180,27 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
     public String getFacilityPopulationInformation(Map params) {
         Long productId = (Long) params.get("productId");
         Long zone = (Long) params.get("zoneId");
+            Long doseId = (Long) params.get("doseId");
         return " select year, region_name, district_name, facility_name, " +
                 " denominator, population from vw_vaccine_population_denominator vd " +
-                " where programid = 82 and " +
+                " where programid = fn_get_vaccine_program_id() and " +
                 " (productid = " + productId + " or "+ productId +"=0 )"+
+                " and (doseid = " + doseId + " or "+doseId +"=0 )"+
                 "  and (vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) ";
 
 
     }
         public String getDistrictPopulationInformation(Map params) {
                 Long productId = (Long) params.get("productId");
+                Long doseId = (Long) params.get("doseId");
                 Long zone = (Long) params.get("zoneId");
                 return " select year, region_name, district_name, " +
                         "coalesce(sum(denominator),0) denominator, " +
                         "coalesce(sum(population),0) population \n" +
                         "from vw_vaccine_population_denominator vd " +
-                        " where programid = 82 and " +
+                        " where programid = fn_get_vaccine_program_id() and " +
                         " (productid = " + productId + " or "+ productId +"=0 )"+
+                        " and (doseid = " + doseId + " or "+doseId +"=0 )"+
                         "  and (vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) " +
                         " group by 1,2,3";
 
@@ -205,12 +209,14 @@ public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
         public String getRegionPopulationInformation(Map params) {
                 Long productId = (Long) params.get("productId");
                 Long zone = (Long) params.get("zoneId");
+                Long doseId = (Long) params.get("doseId");
                 return " select year, region_name,  " +
                         "coalesce(sum(denominator),0) denominator, " +
                         "coalesce(sum(population),0) population \n" +
                         "from vw_vaccine_population_denominator vd " +
-                        " where programid = 82 and " +
+                        " where programid = fn_get_vaccine_program_id() and " +
                         " (productid = " + productId + " or "+ productId +"=0 )"+
+                        " and (doseid = " + doseId + " or "+doseId +"=0 )"+
                         "  and ( vd.district_id = " + zone + "       or vd.region_id = " + zone + "      or 0=" + zone + "       ) " +
                         " group by 1,2";
 

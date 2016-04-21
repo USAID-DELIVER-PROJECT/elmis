@@ -49,7 +49,7 @@
                     <div class="clearfix">
                         <vaccine-zone-filter class="horizontalFilters form-cell"
                                              facilityid="filter.facility"
-                                             faccility="true"
+                                             faccility="false"
                                              pro="filter.program"
                                              user_geo_level="user_geo_level"
                                              zones="zones"
@@ -144,10 +144,12 @@
                 </div>
 
                 <div ng-show="regionrows.length > 0">
-                    <table id="dropOutRegiontReport" ng-show="regionrows.length > 0" class="rnr-table table-bordered table">
+
+                    <table id="dropOutRegiontReport"ng-show="regionrows.length > 0" class="rnr-table table-bordered table">
                         <thead>
                         <tr>
                             <th rowspan="2"><span openlmis-message="label.region"></span></th>
+                            <th openlmis-message="label.reported"/>
                             <th rowspan="2"> <span openlmis-message="label.period"></span></th>
                             <th rowspan="2" style="width: 10px"><span openlmis-message="label.population"></span></th>
                             <th><span openlmis-message="label.vaccine.supply.status.received"></span></th>
@@ -159,34 +161,51 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr ng-repeat-start="d in datarows"></tr>
+                        <tr ng-repeat="subRow in d.data">
+                            <td><span ng-if="d.data[$index-1].region_name!=subRow.region_name" ng-bind="subRow.region_name"></span></td>
 
-                        <tr ng-repeat="subRow in regionrows">
-                            <td><span ng-if="regionrows[$index-1].region_name!=subRow.region_name" ng-bind="subRow.region_name"></span></td>
-                            <td ng-bind="subRow.period_name" class="number"/>
-                            <td ng-bind="subRow.targetpopulation| number" class="number"/>
-                            <td ng-bind="subRow.received| number" class="number"/>
-                            <td ng-bind="subRow.onhand| number" class="number"/>
-                            <td ng-bind="subRow.issued| number" class="number"/>
-                            <td ng-bind="subRow.used| number" class="number"/>
-                            <td ng-bind="subRow.wasted| number" class="number"/>
-                            <td ng-bind="subRow.administered| number" class="number"/>
+                            <td class="number {{subRow.reporting_status}}_rows"  >{{ subRow.reporting_status === "REPORTING" ? getLocalMessage('label.yes') : getLocalMessage('label.no')  }}</td>
+                            <td ng-bind="subRow.period_name"  class="number {{subRow.reporting_status}}_rows"/>
+                            <td ng-bind="subRow.targetpopulation | number" class="number {{subRow.reporting_status}}_rows"/>
+                            <td ng-bind="subRow.received | number" class="number {{subRow.reporting_status}}_rows"/>
+                            <td ng-bind="subRow.onhand | number" class="number {{subRow.reporting_status}}_rows"/>
+                            <td ng-bind="subRow.issued | number" class="number {{subRow.reporting_status}}_rows"/>
+                            <td ng-bind="subRow.used | number" class="number {{subRow.reporting_status}}_rows"/>
+                            <td ng-bind="subRow.wasted | number" class="number {{subRow.reporting_status}}_rows"/>
+                            <td ng-bind="subRow.administered | number"  class="number {{subRow.reporting_status}}_rows"/>
+                        </tr>
+                        <tr ng-repeat-end ng-if="d.subtotal" class="aggregate-row">
+                            <td ng-if="reportType==false" />
+
+                            <td></td>
+                            <td class="number aggregate-row">Sub Total</td>
+                            <td class="number aggregate-row">{{d.subtotal.targetpopulation | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.received | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.onhand | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.issued | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.used | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.wasted | number}}</td>
+                            <td class="number aggregate-row" >{{d.subtotal.administered | number}}</td>
                         </tr>
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td/>
-                                <td  class="aggregate-row number"><span openlmis-message="label.total"></span></td>
-                                <td  class="aggregate-row number" ng-bind="report.totalPopulation| number"></td>
-                                <td  class="aggregate-row number" ng-bind="report.totalReceived| number"></td>
-                                <td  class="aggregate-row number" ng-bind="report.totalOnHand| number"></td>
-                                <td  class="aggregate-row number"><span ng-bind="report.totalIssued| number"/></td>
-                                <td  class="aggregate-row number"><span ng-bind="report.totalUsed| number"/></td>
-                                <td class="aggregate-row number"><span ng-bind="report.totalWasted| number"/></td>
-                                <td  class="aggregate-row number"><span ng-bind="report.totalAdminstered| number"/>
-                            </td>
+                            <td ng-if="reportType==false" />
+
+                            <td></td>
+                            <td class="number aggregate-row" ><span openlmis-message="label.total"></span></td>
+                            <td class="number aggregate-row" ng-bind="report.totalPopulation| number"></td>
+                            <td class="number aggregate-row"  ng-bind="report.totalReceived| number"></td>
+                            <td class="number aggregate-row"  ng-bind="report.totalOnHand| number"></td>
+                            <td class="number aggregate-row"><span ng-bind="report.totalIssued| number"/></td>
+                            <td class="number aggregate-row"><span ng-bind="report.totalUsed| number"/></td>
+                            <td class="number aggregate-row" ><span ng-bind="report.totalWasted| number"/></td>
+                            <td class="number aggregate-row" ><span ng-bind="report.totalAdminstered| number"/></td>
                         </tr>
                         </tfoot>
                     </table>
+
                     <!-- end of the table-->
                 </div>
             </div>

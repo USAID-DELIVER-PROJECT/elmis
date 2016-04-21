@@ -61,9 +61,9 @@ public class VaccineReportController extends BaseController {
     }
 
     @RequestMapping(value = "vaccine-usage-trend")
-    public ResponseEntity<OpenLmisResponse> vaccineUsageTrend(@RequestParam("facilityCode") String facilityCode, @RequestParam("productCode") String productCode, @RequestParam("period") Long periodId, @RequestParam("zone") Long zoneId) {
-
-        return OpenLmisResponse.response("vaccineUsageTrend", service.vaccineUsageTrend(facilityCode, productCode, periodId, zoneId));
+    public ResponseEntity<OpenLmisResponse> vaccineUsageTrend( HttpServletRequest request,@RequestParam("facilityCode") String facilityCode, @RequestParam("productCode") String productCode, @RequestParam("period") Long periodId, @RequestParam("zone") Long zoneId) {
+Long userId= this.loggedInUserId(request);
+        return OpenLmisResponse.response("vaccineUsageTrend", service.vaccineUsageTrend(facilityCode, productCode, periodId, zoneId,userId));
     }
 
     @RequestMapping(value = "/orderRequisition/downloadPDF", method = RequestMethod.GET)

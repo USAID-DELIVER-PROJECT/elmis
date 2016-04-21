@@ -25,7 +25,7 @@
                 <td ng-show="$first" rowspan="{{facilityDetails.length}}">{{detail.district}}</td>
                 <td ng-show="$index%3 == 0" rowspan="3">{{detail.facilityName}}</td>
                 <td>{{detail.indicator}}</td>
-                <td class="number" ng-repeat="value in detail.indicatorValues track by $index">{{value | number:0}}{{detail.indicator === 'coverage' ?'%' : ''}}</td>
+                <td class="number" ng-repeat="value in detail.indicatorValues track by $index">{{value | number:2}}{{detail.indicator === 'coverage' ?'%' : ''}}</td>
 
             </tr>
             </tbody>

@@ -43,7 +43,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardFacilityStockStatus,
                                     VaccineDashboardFacilityStockStatusDetails, colors,
                                     userPreferences,
-                                    VaccineDashboardFacilityInventoryStockStatus,homeFacility,
+                                    VaccineDashboardFacilityInventoryStockStatus, homeFacility,
                                     VaccineDashboardSupervisedFacilityInventoryStockStatus,
                                     EquipmentNonFunctional,
                                     VaccinePendingRequisitions,
@@ -420,30 +420,32 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             }, function (data) {
 
                 $scope.coverageDetails = data.facilityCoverageDetails;
+
                 $scope.periodsList = _.uniq(_.pluck(data.facilityCoverageDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck(data.facilityCoverageDetails, 'facility_name'));
+                var facilities = _.uniq(_.pluck(data.facilityCoverageDetails, 'key_val'));
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.coverageDetails, $scope.periodsList, facilities);
 
                 $scope.facilityDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.coverageDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.coverageDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.coverageDetails, {key_val: facility}).facility_name;
                     $scope.facilityDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'target',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'target', $scope.coverageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'target', $scope.coverageDetails)
                     });
                     $scope.facilityDetails.push({
                         district: district,
                         facilityName: facility,
                         indicator: 'actual',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'actual', $scope.coverageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'actual', $scope.coverageDetails)
                     });
                     $scope.facilityDetails.push({
                         district: district,
                         facilityName: facility,
                         indicator: 'coverage',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'coverage', $scope.coverageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'coverage', $scope.coverageDetails)
                     });
 
                 });
@@ -558,23 +560,23 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 $scope.dropoutDetails = dropoutSelector(data.facilityDropoutDetails, $scope.filter.dropout.product);
 
                 $scope.dropoutPeriodsList = _.uniq(_.pluck($scope.dropoutDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck($scope.dropoutDetails, 'facility_name'));
-
+                var facilities = _.uniq(_.pluck($scope.dropoutDetails, 'key_val'));
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.dropoutDetails, $scope.dropoutPeriodsList, facilities);
                 $scope.facilityDropoutDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.dropoutDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.dropoutDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.dropoutDetails, {key_val: facility}).facility_name;
                     $scope.facilityDropoutDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: messageService.get('label.bcg.mr.dropout'),
-                        indicatorValues: $scope.getIndicatorValues(facility, 'bcg_mr_dropout', $scope.dropoutDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'bcg_mr_dropout', $scope.dropoutDetails)
                     });
                     $scope.facilityDropoutDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: messageService.get('label.dtp.dropout'),
-                        indicatorValues: $scope.getIndicatorValues(facility, 'dtp1_dtp3_dropout', $scope.dropoutDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'dtp1_dtp3_dropout', $scope.dropoutDetails)
                     });
 
                 });
@@ -684,22 +686,23 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
                 $scope.wastageDetails = data.facilityWastageDetails;
                 $scope.wastagePeriodsList = _.uniq(_.pluck($scope.wastageDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck($scope.wastageDetails, 'facility_name'));
+                var facilities = _.uniq(_.pluck($scope.wastageDetails, 'key_val'));
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.wastageDetails, $scope.wastagePeriodsList, facilities);
                 $scope.facilityWastageDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.wastageDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.wastageDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.wastageDetails, {key_val: facility}).facility_name;
                     $scope.facilityWastageDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Wastage Rate',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'wastage_rate', $scope.wastageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'wastage_rate', $scope.wastageDetails)
                     });
                     $scope.facilityWastageDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Usage Rate',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'usage_rate', $scope.wastageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'usage_rate', $scope.wastageDetails)
                     });
 
                 });
@@ -803,22 +806,26 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
                 $scope.sessionsDetails = data.facilitySessionsDetails;
                 $scope.sessionsPeriodsList = _.uniq(_.pluck($scope.sessionsDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck($scope.sessionsDetails, 'facility_name'));
+                var facilities = _.uniq(_.pluck($scope.sessionsDetails, 'key_val'));
+                console.log(" period list" + JSON.stringify($scope.sessionsPeriodsList) + "\n");
+                console.log(" sessionsDetails list" + JSON.stringify(_.where($scope.sessionsDetails, {facility_name: "Chamwino"})) + "\n");
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.sessionsDetails, $scope.sessionsPeriodsList, facilities);
+                console.log(" sessionsDetails list" + JSON.stringify(_.where($scope.sessionsDetails, {facility_name: "Chamwino"})) + "\n");
                 $scope.facilitySessionsDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.sessionsDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.sessionsDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.sessionsDetails, {key_val: facility}).facility_name;
                     $scope.facilitySessionsDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Fixed Sessions',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'fixed_sessions', $scope.sessionsDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'fixed_sessions', $scope.sessionsDetails)
                     });
                     $scope.facilitySessionsDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Outreach Sessions',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'outreach_sessions', $scope.sessionsDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'outreach_sessions', $scope.sessionsDetails)
                     });
 
                 });
@@ -852,9 +859,9 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
         });
     };
 
- //////////////
- //My Stock
- //////////////
+    //////////////
+    //My Stock
+    //////////////
 
 $scope.myStockVaccine = {
          dataPoints:[],
@@ -1012,6 +1019,19 @@ $scope.getColorSupervised=function (color, d) {
        }
 };
 
+    $scope.openMyStockHelp = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'partials/slide-mystock-help-content.html',
+            controller: 'DashboardHelpModalInstanceCtrl',
+            resolve: {
+                items: function () {
+
+                    return {dashboardHelps: $scope.dashboardHelps};
+                }
+            }
+        });
+    };
+
 /////////////////
 // Stock Status
 ////////////////
@@ -1079,14 +1099,14 @@ $scope.getColorSupervised=function (color, d) {
                         district: district,
                         facilityName: facility,
                         indicator: 'Issued',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'issued', $scope.stockDetail)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'issued', $scope.stockDetail)
                     });
 
                     $scope.facilityStockDetails.push({
                         district: district,
                         facilityName: facility,
                         indicator: 'Closing Balance',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'cb', $scope.stockDetail)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'cb', $scope.stockDetail)
                     });
 
                 });
@@ -1108,137 +1128,54 @@ $scope.getColorSupervised=function (color, d) {
         return $filter('number')(value);
     };
 
-    $scope.getIndicatorValues = function (facility, indicator, data) {
-        var facilityDetail = _.where(data, {facility_name: facility});
+    $scope.getIndicatorValues = function (district, facility, indicator, data) {
+
+        var facilityDetail = _.where(data, {key_val: facility});
         var values = _.pluck(facilityDetail, indicator);
         var tot = _.reduce(values, function (res, num) {
+            res = utils.isNullOrUndefined(res) ? 0 : res;
+            num = utils.isNullOrUndefined(num) ? 0 : num;
             return res + num;
         }, 0);
         values.push(tot);
+        console.log(JSON.stringify(values));
+        console.log(_.reduce(values, function (res, num) {
+            res = utils.isNullOrUndefined(res) ? 0 : res;
+            num = utils.isNullOrUndefined(num) ? 0 : num;
+            return res + num;
+        }));
         return values;
     };
+    $scope.addPlaceHolderFornonExistingPeriodData = function (data, periods, facilities) {
+        var i;
+        var j;
 
+        for (i = 0; i < periods.length; i++) {
+            var period = periods[i];
+            for (j = 0; j < facilities.length; j++) {
+                var facility = facilities[j];
+                var facilityObj = _.findWhere(data, {key_val: facility});
+                var facilityDetail = _.findWhere(data, {key_val: facility, period_name: period});
+
+                if (utils.isNullOrUndefined(facilityDetail)) {
+                    data.push({
+                        facility_name: facilityObj.facility_name,
+                        district_name: facilityObj.district_name,
+                        key_val: facility,
+                        period_name: period
+                    });
+                }
+
+
+            }
+        }
+        data = _.sortBy(data, 'period_start_date');
+    };
     $scope.getDetail = function (facility, period) {
         return _.findWhere($scope.stockDetail, {facility_name: facility, period_name: period});
     };
 
 
-    /* $scope.$watchCollection('[filter.monthlyCoverage.startDate, filter.monthlyCoverage.endDate, filter.monthlyCoverage.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.monthlyCoverage.startDate) &&
-     !isUndefined( $scope.filter.monthlyCoverage.endDate) &&
-     !isUndefined($scope.filter.monthlyCoverage.product)){
-     VaccineDashboardMonthlyCoverage.get({startDate: $scope.filter.monthlyCoverage.startDate, endDate: $scope.filter.monthlyCoverage.endDate,
-     product: $scope.filter.monthlyCoverage.product}, function(data){
-     $scope.monthlyCoverage.dataPoints = data.monthlyCoverage;
-     });
-     }
-     });*/
-
-    /* $scope.$watchCollection('[filter.districtCoverage.period, filter.districtCoverage.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtCoverage.period) &&
-     !isUndefined($scope.filter.districtCoverage.product)){
-     VaccineDashboardDistrictCoverage.get({period: $scope.filter.districtCoverage.period,
-     product: $scope.filter.districtCoverage.product}, function(data){
-     $scope.districtCoverage.dataPoints = data.districtCoverage;
-     });
-     }
-     });*/
-
-    /*  $scope.$watchCollection('[filter.monthlyWastage.startDate, filter.monthlyWastage.endDate, filter.monthlyWastage.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.monthlyWastage.startDate) &&
-     !isUndefined( $scope.filter.monthlyWastage.endDate) &&
-     !isUndefined($scope.filter.monthlyWastage.product)){
-     VaccineDashboardMonthlyWastage.get({startDate: $scope.filter.monthlyWastage.startDate, endDate: $scope.filter.monthlyWastage.endDate,
-     product: $scope.filter.monthlyWastage.product}, function(data){
-     $scope.monthlyWastage.dataPoints = data.wastageMonthly;
-     });
-     }
-     });
-
-     $scope.$watchCollection('[filter.districtWastage.period, filter.districtWastage.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtWastage.period) &&
-     !isUndefined( $scope.filter.districtWastage.product) ){
-     VaccineDashboardDistrictWastage.get({period: $scope.filter.districtWastage.period,  product: $scope.filter.districtWastage.product}, function(data){
-     $scope.districtWastage.dataPoints = data.districtWastage;
-     });
-     }
-     });
-     */
-    /*  $scope.$watchCollection('[filter.monthlyDropout.startDate, filter.monthlyDropout.endDate, filter.monthlyDropout.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.monthlyDropout.startDate) &&
-     !isUndefined( $scope.filter.monthlyDropout.endDate) &&
-     !isUndefined($scope.filter.monthlyDropout.product)){
-     VaccineDashboardMonthlyDropout.get({startDate: $scope.filter.monthlyDropout.startDate, endDate: $scope.filter.monthlyDropout.endDate,
-     product: $scope.filter.monthlyDropout.product}, function(data){
-     $scope.monthlyDropout.dataPoints = data.monthlyDropout;
-     });
-     }
-     });
-
-     $scope.$watchCollection('[filter.districtDropout.period, filter.districtDropout.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtDropout.period) &&
-     !isUndefined($scope.filter.districtDropout.product)){
-     VaccineDashboardDistrictDropout.get({period: $scope.filter.districtDropout.period,
-     product: $scope.filter.districtDropout.product}, function(data){
-     $scope.districtDropout.dataPoints = data.districtDropout;
-     });
-     }
-     });
-
-     $scope.$watchCollection('[filter.monthlyStock.startDate, filter.monthlyStock.endDate, filter.monthlyStock.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.monthlyStock.startDate) &&
-     !isUndefined( $scope.filter.monthlyStock.endDate) &&
-     !isUndefined($scope.filter.monthlyStock.product)){
-     VaccineDashboardMonthlyStock.get({startDate: $scope.filter.monthlyStock.startDate, endDate: $scope.filter.monthlyStock.endDate,
-     product: $scope.filter.monthlyStock.product}, function(data){
-     $scope.monthlyStock.dataPoints = data.monthlyStock;
-     });
-     }
-     });
-
-     $scope.$watchCollection('[filter.districtStock.period, filter.districtStock.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtStock.period) &&
-     !isUndefined( $scope.filter.districtStock.product) ){
-     VaccineDashboardDistrictStock.get({period: $scope.filter.districtStock.period,  product: $scope.filter.districtStock.product}, function(data){
-     $scope.districtStock.dataPoints = data.districtStock;
-     });
-     }
-     });
-
-
-     $scope.$watchCollection('[filter.monthlySessions.startDate, filter.monthlySessions.endDate]', function(newValues, oldValues){
-
-     if(!isUndefined( $scope.filter.monthlySessions.startDate) && !isUndefined( $scope.filter.monthlySessions.endDate)){
-     VaccineDashboardSessions.get({startDate: $scope.filter.monthlySessions.startDate, endDate: $scope.filter.monthlySessions.endDate}, function(data){
-
-     $scope.monthlySessions.dataPoints =   data.monthlySessions;
-     });
-     }
-     });
-
-
-     $scope.$watchCollection('[filter.bundling.startDate, filter.bundling.endDate, filter.bundling.product]', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.bundling.startDate) &&
-     !isUndefined( $scope.filter.bundling.endDate) &&
-     !isUndefined($scope.filter.bundling.product)){
-     VaccineDashboardBundle.get({startDate: $scope.filter.bundling.startDate, endDate: $scope.filter.bundling.endDate,
-     product: $scope.filter.bundling.product}, function(data){
-     $scope.bundling.dataPoints = data.bundling;
-     });
-     }
-     });
-
-     $scope.$watch('filter.districtSessions.period', function(newValues, oldValues){
-     if(!isUndefined( $scope.filter.districtSessions.period) ) {
-     VaccineDashboardDistrictSessions.get({period: $scope.filter.districtSessions.period}, function(data){
-
-     $scope.districtSessions.dataPoints =   data.districtSessions;
-     });
-     }
-
-     });
-
-     */
 //////////////////
 //  Stock Status
 ///////////////////
@@ -1322,29 +1259,29 @@ $scope.getColorSupervised=function (color, d) {
 
                 $scope.stockstatusDetails = data.facilityStockStatusDetails;
                 $scope.stockstatusPeriodsList = _.uniq(_.pluck($scope.stockstatusDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck($scope.stockstatusDetails, 'facility_name'));
-
+                var facilities = _.uniq(_.pluck($scope.stockstatusDetails, 'key_val'));
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.stockstatusDetails, $scope.stockstatusPeriodsList, facilities);
                 $scope.facilityStockStatusDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.stockstatusDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.stockstatusDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.stockstatusDetails, {key_val: facility}).facility_name;
                     $scope.facilityStockStatusDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Max MOS',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'max', $scope.stockstatusDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'max', $scope.stockstatusDetails)
                     });
                     $scope.facilityStockStatusDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'MIN MOS',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'min', $scope.stockstatusDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'min', $scope.stockstatusDetails)
                     });
                     $scope.facilityStockStatusDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'MOS',
-                        indicatorValues: $scope.getIndicatorValues(facility, 'mos', $scope.stockstatusDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'mos', $scope.stockstatusDetails)
                     });
 
                 });
@@ -1365,7 +1302,8 @@ $scope.getColorSupervised=function (color, d) {
 
         }
     };
-    $scope.openStockStatusHelp = function () {
+
+     $scope.openStockStatusHelp = function () {
         var modalInstance = $modal.open({
             templateUrl: 'partials/slide-stock-status-help-content.html',
             controller: 'DashboardHelpModalInstanceCtrl',
@@ -1496,18 +1434,19 @@ $scope.getColorSupervised=function (color, d) {
     };
     $scope.openSupplyingOrdersDetailDialog = function (size) {
 
-            var modalInstance = $modal.open({
-                animation: $scope.animationsEnabled,
-                templateUrl: 'supplying.html',
-                controller: 'ModalInstanceCtrl',
-                size: 'lg',
-                windowClass: 'my-modal-popup',
-                resolve: {
-                    items: function () {
+        var modalInstance = $modal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'supplying.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'lg',
+            windowClass: 'my-modal-popup',
+            resolve: {
+                items: function () {
 
-                        return $scope.supplyingAllPendingOrders;
-                    }
+                    return $scope.supplyingAllPendingOrders;
                 }
+            }
+   
             });
         };
 
@@ -1621,7 +1560,7 @@ VaccineDashboardController.resolve = {
                 } else {
                     user_preferences.period_name = "";
                     user_preferences.period_id = "";
-                    user_preferences.startdate ="";
+                    user_preferences.startdate = "";
                 }
 
             });
@@ -1688,7 +1627,7 @@ VaccineDashboardController.resolve = {
         var deferred = $q.defer();
         var helps = {};
         $timeout(function () {
-            HelpContentByKey.get({content_key: 'Coverage Dashboard'}, function (data) {
+            HelpContentByKey.get({content_key: 'Coverage Help'}, function (data) {
 
 
                 if (!isUndefined(data.siteContent)) {
@@ -1702,7 +1641,7 @@ VaccineDashboardController.resolve = {
                 }
 
             });
-            HelpContentByKey.get({content_key: 'Wastage Dashboard'}, function (data) {
+            HelpContentByKey.get({content_key: 'Wastage Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1714,7 +1653,7 @@ VaccineDashboardController.resolve = {
 
                 }
             });
-            HelpContentByKey.get({content_key: 'Sessions Dashboard'}, function (data) {
+            HelpContentByKey.get({content_key: 'Sessions Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1726,7 +1665,7 @@ VaccineDashboardController.resolve = {
 
                 }
             });
-            HelpContentByKey.get({content_key: 'Dropout Dashboard'}, function (data) {
+            HelpContentByKey.get({content_key: 'Dropout Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1738,7 +1677,7 @@ VaccineDashboardController.resolve = {
 
                 }
             });
-            HelpContentByKey.get({content_key: 'Stockhelp'}, function (data) {
+            HelpContentByKey.get({content_key: 'My Stock Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1750,7 +1689,7 @@ VaccineDashboardController.resolve = {
 
                 }
             });
-            HelpContentByKey.get({content_key: 'StockStatushelp'}, function (data) {
+            HelpContentByKey.get({content_key: 'Facility Stock Help'}, function (data) {
 
                 if (!isUndefined(data.siteContent)) {
 
@@ -1768,6 +1707,7 @@ VaccineDashboardController.resolve = {
         }, 100);
         return deferred.promise;
     },
+
     settingValues: function ($q, $timeout, SettingsByKey) {
         var deferred = $q.defer();
         var settings = {};
@@ -1789,9 +1729,9 @@ VaccineDashboardController.resolve = {
                     settings.monthsRange = 6;
                 }
 
-              });
+            });
 
-           deferred.resolve(settings);
+            deferred.resolve(settings);
         }, 100);
         return deferred.promise;
     },
@@ -1921,15 +1861,15 @@ VaccineDashboardController.resolve = {
         return deferred.promise;
 
     },
-    homeFacility: function ($q, $timeout,UserFacilityList) {
-           var deferred = $q.defer();
-           var homeFacility={};
+    homeFacility: function ($q, $timeout, UserFacilityList) {
+        var deferred = $q.defer();
+        var homeFacility = {};
 
-           $timeout(function () {
-             UserFacilityList.get({}, function (data) {
-                  homeFacility = data.facilityList[0];
-                    deferred.resolve(homeFacility);
-             });
+        $timeout(function () {
+            UserFacilityList.get({}, function (data) {
+                homeFacility = data.facilityList[0];
+                deferred.resolve(homeFacility);
+            });
 
            }, 100);
                 return deferred.promise;

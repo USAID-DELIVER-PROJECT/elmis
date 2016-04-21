@@ -1,3 +1,13 @@
+/*
+* Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+*
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI)/MoHCDGEC Tanzania.
+*
+* This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
+*/
+
 function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequisitionStatus, SaveDistributionList, $filter, $location, $window, $routeParams, StockEvent) {
     $scope.inputClass = false;
 
@@ -51,12 +61,6 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
     };
 
-    var print = function (distributionList) {
-
-        var url = '/vaccine/orderRequisition/consolidate/print/' + distributionList;
-        $window.open(url, '_blank');
-    };
-
 
     $scope.cancel = function () {
         $location.path('/');
@@ -64,7 +68,7 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
     $scope.highlightRequired = function (value) {
 
-        if ($scope.inputClass && (isUndefined(value)) || (value === 0) ) {
+        if ($scope.inputClass && (isUndefined(value))) {
             return "required-error";
         }
         return null;
@@ -102,9 +106,10 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
 
         var events = [];
+        var adjustmentEvents = [];
 
         var distributionLineItemList = [];
-
+        var printWindow;
         angular.forEach($scope.consolidatedOrders, function (facility) {
 
             var distribution = {};
@@ -119,12 +124,26 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
             distribution.programId = $routeParams.program;
             distribution.lineItems = [];
 
+
             angular.forEach(facility, function (product) {
 
                 var lineItem = {};
 
 
                 if (product.quantityRequested > 0) {
+
+                    if(product.originalTotalQuantity !== product.quantityTotalOnHand ){
+                        var adjustmentEvent = {};
+                        var q = product.quantityTotalOnHand - product.originalTotalQuantity;
+                        adjustmentEvent.type = "ADJUSTMENT";
+                        adjustmentEvent.productCode = product.productCode;
+                        adjustmentEvent.quantity = Math.abs(q);
+                        adjustmentEvent.reasonName=(q<0)?"TRANSFER_OUT":"TRANSFER_IN";
+                        adjustmentEvent.customProps = {"occurred": $scope.date};
+                        adjustmentEvents.push(adjustmentEvent);
+
+
+                    }
                     var event = {};
                     event.type = "ISSUE";
                     event.facilityId = product.facilityId;
@@ -149,29 +168,37 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
         });
 
+        StockEvent.save({facilityId: $routeParams.homeFacility},adjustmentEvents, function(d){
+            if(d.success) {
+                StockEvent.save({facilityId: $routeParams.homeFacility}, events, function (data) {
+                    if (data.success) {
+                        SaveDistributionList.save(distributionLineItemList, function (distribution) {
 
-        StockEvent.save({facilityId: $routeParams.homeFacility}, events, function (data) {
+                            var printList = [];
 
-            SaveDistributionList.save(distributionLineItemList, function (distribution) {
+                            angular.forEach(distribution.distributionIds, function (distributionId) {
 
-                var printList = [];
-
-                angular.forEach(distribution.distributionIds, function (distributionId) {
-
-                    UpdateOrderRequisitionStatus.update({orderId: distributionId.orderId}, function () {
-                        $scope.message = "label.form.Submitted.Successfully";
+                                UpdateOrderRequisitionStatus.update({orderId: distributionId.orderId}, function () {
+                                    $scope.message = "label.form.Submitted.Successfully";
 
 
-                    });
-                    printList.push(parseInt(distributionId.id, 10));
+                                });
+                                printList.push(parseInt(distributionId.id, 10));
 
+                            });
+
+                            var url = '/vaccine/orderRequisition/consolidate/print/' + printList;
+
+                            printWindow.location.href = url;
+
+                            $scope.cancel();
+
+                        });
+                    }
                 });
-                print(printList);
-                $scope.cancel();
-
-            });
-
+            }
         });
+        printWindow = $window.open('about:blank', '_blank');
     };
 
 

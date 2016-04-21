@@ -47,50 +47,50 @@ public class VaccineReportRepository {
     return mapper.getCumFacilityDiseaseSurveillance(reportId, facilityId,userId);
   }
 public Map<String, DiseaseLineItem> getCumDiseaseSurveillanceAggregateReport(Long periodId, Long zoneId,Long userId){
-  return mapper.getCumDiseaseSurveillanceAggregateByGeoZone(periodId, zoneId,userId);
+  return mapper.getCumDiseaseSurveillanceAggregateByGeoZone(periodId, zoneId, userId);
 }
   public List<ColdChainLineItem> getColdChain(Long reportId,Long userId){
-    return mapper.getColdChain(reportId,userId);
+    return mapper.getColdChain(reportId, userId);
   }
 
   public List<ColdChainLineItem> getColdChainAggregateReport(Long periodId, Long zoneId,Long userId){
-    return mapper.getColdChainAggregateReport(periodId, zoneId,userId);
+    return mapper.getColdChainAggregateReport(periodId, zoneId, userId);
   }
 
   public List<AdverseEffectLineItem> getAdverseEffectReport(Long reportId,Long userId){
-    return mapper.getAdverseEffectReport(reportId,userId);
+    return mapper.getAdverseEffectReport(reportId, userId);
   }
 
   public List<AdverseEffectLineItem> getAdverseEffectAggregateReport(Long periodId, Long zoneId,Long userId){
-    return mapper.getAdverseEffectAggregateReport(periodId, zoneId,userId);
+    return mapper.getAdverseEffectAggregateReport(periodId, zoneId, userId);
   }
 
   public List<HashMap<String, Object>> getVaccineCoverageReport(Long reportId,Long userId){
-    return mapper.getVaccineCoverageReport(reportId,userId);
+    return mapper.getVaccineCoverageReport(reportId, userId);
   }
 
   public List<HashMap<String , Object>> getVaccineCoverageAggregateReport(Long periodId, Long zoneId,Long userId){
-    return mapper.getVaccineCoverageAggregateReportByGeoZone(periodId, zoneId,userId);
+    return mapper.getVaccineCoverageAggregateReportByGeoZone(periodId, zoneId, userId);
   }
 public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacility( Long reportId, Long facilityId,Long userId){
-  return mapper.calculateVaccineCoverageReport(reportId, facilityId,userId);
+  return mapper.calculateVaccineCoverageReport(reportId, facilityId, userId);
 }
   public Map<String, VaccineCoverageReport> calculateVaccineCoverageReport( Long periodId, Long zoneId,Long userId){
-    return mapper.calculateAggeregatedVaccineCoverageReport(periodId, zoneId,userId);
+    return mapper.calculateAggeregatedVaccineCoverageReport(periodId, zoneId, userId);
   }
   public List<VaccineReport> getImmunizationSession(Long reportId){
     return mapper.getImmunizationSession(reportId);
   }
 
   public List<VaccineReport> getImmunizationSessionAggregate(Long periodId, Long zoneId,Long userId){
-    return mapper.getImmunizationSessionAggregate(periodId, zoneId,userId);
+    return mapper.getImmunizationSessionAggregate(periodId, zoneId, userId);
   }
 
   public List<HashMap<String, Object>> getVaccinationReport(String productCategoryCode, Long reportId,Long userId){
-    return mapper.getVaccinationReport(productCategoryCode, reportId,userId);
+    return mapper.getVaccinationReport(productCategoryCode, reportId, userId);
   }
   public List<HashMap<String, Object>> getVaccinationAggregateByGeoZoneReport(String productCategoryCode, Long periodId, Long zoneId,Long userId){
-    return mapper.getVaccinationAggregateByGeoZoneReport(productCategoryCode, periodId, zoneId,userId);
+    return mapper.getVaccinationAggregateByGeoZoneReport(productCategoryCode, periodId, zoneId, userId);
   }
 
   public List<HashMap<String, Object>> getTargetPopulation(Long facilityId, Long periodId){
@@ -98,29 +98,29 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
   }
 
   public List<HashMap<String, Object>> getTargetPopulationAggregateByGeoZone(Long periodId, Long zoneId,Long userId){
-    return mapper.getTargetPopulationAggregateByGeoZone(periodId, zoneId,userId);
+    return mapper.getTargetPopulationAggregateByGeoZone(periodId, zoneId, userId);
   }
   public List<VitaminSupplementationLineItem> getVitaminSupplementationReport(Long reportId){
     return mapper.getVitaminSupplementationReport(reportId);
   }
 
   public List<VitaminSupplementationLineItem> getVitaminSupplementationAggregateReport(Long periodId, Long zoneId,Long userId){
-    return mapper.getVitaminSupplementationAggregateReport(periodId, zoneId,userId);
+    return mapper.getVitaminSupplementationAggregateReport(periodId, zoneId, userId);
   }
 
-  public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode){
-    return mapper.vaccineUsageTrend(facilityCode, productCode);
+  public List<HashMap<String, Object>> vaccineUsageTrend(String facilityCode, String productCode, Long userId){
+    return mapper.vaccineUsageTrend(facilityCode, productCode, userId);
   }
-  public List<HashMap<String, Object>> vaccineUsageTrendByGeographicZone(Long periodId, Long zoneId, String productCode){
-    return mapper.vaccineUsageTrendByGeographicZone(periodId, zoneId, productCode);
+  public List<HashMap<String, Object>> vaccineUsageTrendByGeographicZone(Long periodId, Long zoneId, String productCode, Long userId){
+    return mapper.vaccineUsageTrendByGeographicZone(periodId, zoneId, productCode, userId);
   }
 
   public List<HashMap<String, Object>> getAggregateDropOuts(Long periodId, Long zoneId,Long userId){
-    return mapper.getAggregateDropOuts(periodId, zoneId,userId);
+    return mapper.getAggregateDropOuts(periodId, zoneId, userId);
   }
 
   public List<HashMap<String, Object>> getDropOuts(Long reportId,Long userId){
-    return mapper.getDropOuts(reportId,userId);
+    return mapper.getDropOuts(reportId, userId);
   }
 
   public GeographicZone getNationalZone() {
@@ -192,16 +192,27 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
     return mapper.getCategorizationVaccineUtilizationPerformanceForRegion(startDate, endDate, zoneId, productId);
   }
   public List<Map<String,Object>> getClassficationVaccinePopulationForFacility(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassficationVaccinePopulationForFacility(startDate, endDate, zoneId, productId);
+    return mapper.getClassficationVaccinePopulationForFacility(startDate, endDate, zoneId, productId,0L);
   }
   public List<Map<String,Object>> getClassficationVaccinePopulationForDistrict(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassficationVaccinePopulationForDistrict(startDate, endDate, zoneId, productId);
+    return mapper.getClassficationVaccinePopulationForDistrict(startDate, endDate, zoneId, productId,0L);
   }
 
   public List<Map<String,Object>> getClassficationVaccinePopulationForRegion(Date startDate, Date endDate, Long zoneId, Long productId) {
-    return mapper.getClassficationVaccinePopulationForRegion(startDate, endDate, zoneId, productId);
+    return mapper.getClassficationVaccinePopulationForRegion(startDate, endDate, zoneId, productId,0L);
   }
     public List<Map<String,Object>> loadYearList(){
         return mapper.getDistincitYearList();
     }
+    public List<Map<String,Object>> getClassficationVaccinePopulationForFacility(Date startDate, Date endDate, Long zoneId, Long productId,Long doseId) {
+        return mapper.getClassficationVaccinePopulationForFacility(startDate, endDate, zoneId, productId,doseId);
+    }
+    public List<Map<String,Object>> getClassficationVaccinePopulationForDistrict(Date startDate, Date endDate, Long zoneId, Long productId,Long doseId) {
+        return mapper.getClassficationVaccinePopulationForDistrict(startDate, endDate, zoneId, productId,doseId);
+    }
+
+    public List<Map<String,Object>> getClassficationVaccinePopulationForRegion(Date startDate, Date endDate, Long zoneId, Long productId,Long doseId) {
+        return mapper.getClassficationVaccinePopulationForRegion(startDate, endDate, zoneId, productId,doseId);
+    }
+
 }

@@ -326,10 +326,10 @@ public interface VaccineReportMapper {
     List<VitaminSupplementationLineItem> getVitaminSupplementationAggregateReport(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
     @Select("select COALESCE(fr.quantity_issued, 0) quantity_issued, COALESCE(fr.closing_balance, 0) closing_balance, pp.name period_name \n" +
-            "from fn_vaccine_facility_n_rnrs('Vaccine',#{facilityCode}, #{productCode},4) fr \n" +
+            "from fn_vaccine_facility_n_rnrs('Vaccine',#{facilityCode}, #{productCode},4, #{userId}::integer) fr \n" +
             "JOIN processing_periods pp ON pp.id = fr.period_id\n" +
             " order by pp.id asc;")
-    List<HashMap<String, Object>> vaccineUsageTrend(@Param("facilityCode") String facilityCode, @Param("productCode") String productCode);
+    List<HashMap<String, Object>> vaccineUsageTrend(@Param("facilityCode") String facilityCode, @Param("productCode") String productCode, @Param("userId") Long userId);
 
     @Select("SELECT product_code,\n" +
             "MAX(display_order) display_order," +
@@ -382,10 +382,10 @@ public interface VaccineReportMapper {
     List<HashMap<String, Object>> getVaccinationAggregateByGeoZoneReport(@Param("productCategoryCode") String categoryCode, @Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("userId") Long userId);
 
     @Select("select COALESCE(fr.quantity_issued, 0) quantity_issued, COALESCE(fr.closing_balance, 0) closing_balance, pp.name period_name \n" +
-            "from fn_vaccine_geozone_n_rnrs('Vaccine', #{periodId}::integer ,#{zoneId}::integer, #{productCode},4) fr\n" +
+            "from fn_vaccine_geozone_n_rnrs('Vaccine', #{periodId}::integer ,#{zoneId}::integer, #{productCode},4,#{userId}::integer) fr\n" +
             "JOIN processing_periods pp ON pp.id = fr.period_id\n" +
             " order by pp.id asc")
-    List<HashMap<String, Object>> vaccineUsageTrendByGeographicZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("productCode") String productCode);
+    List<HashMap<String, Object>> vaccineUsageTrendByGeographicZone(@Param("periodId") Long periodId, @Param("zoneId") Long zoneId, @Param("productCode") String productCode, @Param("userId") Long userId);
 
     @Select("select\n" +
             "product_code, \n" +
@@ -541,20 +541,23 @@ public interface VaccineReportMapper {
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
-            @Param("productId") Long productId);
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
     @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getDistrictPopulationInformation")
     public  List<Map<String,Object>> getClassficationVaccinePopulationForDistrict(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
-            @Param("productId") Long productId);
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
 
     @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getRegionPopulationInformation")
     public  List<Map<String,Object>> getClassficationVaccinePopulationForRegion(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("zoneId") Long zoneId,
-            @Param("productId") Long productId);
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
     @SelectProvider(type=ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getYearQuery")
     public List<Map<String,Object>> getDistincitYearList();
 }

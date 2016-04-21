@@ -64,7 +64,8 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "          )" +
                 "                select  \n" +
                 "                vd .region_name, \n" +
-                "                vd.district_name, \n" +
+                "                vd.district_name," +
+                "                t.facility_name, \n" +
                 "                rn.period_name, \n" +
                 "                extract(month from rn.period_start_date) period_month,  \n" +
                 "                extract(year from rn.period_start_date) period_year,\n" +
