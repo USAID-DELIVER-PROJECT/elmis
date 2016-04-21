@@ -49,4 +49,12 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
           otherwise({redirectTo:'/adjustment-summary'});
     }]).config(function(angularCombineConfigProvider) {
     angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');
-  });
+  }).filter('positive', function() {
+      return function(input) {
+        if (!input) {
+          return 0;
+        }
+
+        return Math.abs(input);
+      };
+    });
