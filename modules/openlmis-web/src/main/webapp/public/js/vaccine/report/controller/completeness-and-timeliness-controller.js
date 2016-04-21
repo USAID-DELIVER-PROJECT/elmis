@@ -92,16 +92,16 @@ function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimel
                 }
             }
         });
-        $scope.bgColorCode = function (value) {
 
-            if ( value.reporting_status !== 'REPORTING') {
-                return $scope.color_non_reporting;
-            }else{
-                return "white";
-            }
-
-        }
     }
 
+    $scope.bgColorCode = function (value) {
 
+        if ( value.reporting_status !== 'REPORTING') {
+            return $scope.color_non_reporting;
+        }else{
+            return "white";
+        }
+
+    };
 }
