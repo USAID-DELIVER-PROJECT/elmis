@@ -305,7 +305,7 @@ public class VaccineOrderRequisitionController extends BaseController {
 
         String separator = System.getProperty("file.separator");
         map.put("image_dir", imgResource.getFile().getAbsolutePath() + separator);
-        map.put("FACILITY_ID", getCommaSeparatedIds(facilityId));
+        map.put("DISTRIBUTION_ID", getCommaSeparatedIds(facilityId));
 
         return new ModelAndView(jasperView, map);
     }
