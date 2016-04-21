@@ -231,4 +231,14 @@ public interface VaccineInventoryDistributionMapper {
                     one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
     List<VaccineDistribution> getDistributionsByDate(@Param("facilityId") Long facilityId, @Param("date") String date);
 
+    @Select("SELECT *" +
+            " FROM vaccine_distributions " +
+            "WHERE tofacilityid=#{facilityId} AND vouchernumber=#{voucherNumber} LIMIT 1")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "fromFacility", column = "fromFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    VaccineDistribution getDistributionByVoucherNumberIfExist(@Param("facilityId") Long facilityId, @Param("voucherNumber") String voucherNumber);
+
 }

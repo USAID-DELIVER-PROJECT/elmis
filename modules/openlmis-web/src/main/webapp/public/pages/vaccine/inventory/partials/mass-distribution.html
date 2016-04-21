@@ -226,34 +226,31 @@
             <div ng-if="distributionsByDate.length == 0 && dateChange && enableSearch && searchDate !== undefined">
                 <span openlmis-message="message.vaccine.distribution.not.found"></span>
             </div>
-            <div class="rnr-table" ng-if="distributionsByDate.length > 0 && stockCards.length >0">
 
-                <a style="float:right" id="pdf-button"
-                   class="btn-small btn-info"
-                   ng-click="printAll(distributionsByDate)" href title="Print distribution summary">
-                    <span>PDF</span>
-                </a>
+
+            <div class="rnr-table" ng-if="distributionsByDate.length > 0 && stockCards.length >0">
+                <div>
+                    <a style="float:right" id="pdf-button"
+                       class="btn-small btn-info"
+                       ng-click="printAll(distributionsByDate)" href title="Print distribution summary">
+                        <span>PDF</span>
+                    </a>
+                </div>
+                <div class="clear-both"></div>
+                <div class="float-left left-table parent">
                 <table class="table table-bordered " fixed-table-header>
                     <thead>
                     <tr>
                         <th class="header" colspan="3">
                             <span openlmis-message="label.vaccine.issue.date"></span>:<b> {{searchDate |
                             date:'dd-MM-yyyy'}}</b></th>
-                        <th class="header" colspan="{{stockCards.length}}">
-                            <span openlmis-message="label.products"></span>
-
-                        </th>
                     </tr>
                     <tr>
                         <th class="header" colspan="1"><span openlmis-message="label.facility"></span></th>
-                        <th style="max-width:50px !important"><span openlmis-message="label.select"></span></th>
+                        <th style="max-width:50px !important"><br/><span openlmis-message="label.select"></span></th>
                         <th style="max-width:60px !important"><span
                                 openlmis-message="label.vaccine.stock.issue.voucher"></span></th>
                         <!--<th style="max-width:80px !important"><span openlmis-message="header.issue.type"></span></th>-->
-                        <th style="min-width:80px !important; max-width:80px !important;width:80px !important; text-align:left"
-                            class="header p-column" ng-repeat="stockCard in stockCards">
-                            {{stockCard.product.primaryName}}<br/>({{stockCard.product.dosageUnit.code}})
-                        </th>
                     </tr>
 
                     </thead>
@@ -265,7 +262,7 @@
                             <input type="checkbox" ng-init="distribution.isSelected=true"
                                    ng-model="distribution.isSelected">
                         </td>
-                        <td>
+                        <td style="height:24px !important;max-height:24px !important">
                             <a ng-show="distribution.isSelected === true" style="float:right" id="pdf-button"
                                class="btn-small btn-info"
                                ng-click="print(distribution.id)" href title="Print Issue Voucher">
@@ -277,20 +274,47 @@
                         <!--ng-bind="distribution.distributionType"></span>-->
                         <!--</td>-->
 
-                        <td class="col-facility" ng-repeat="stockCard in stockCards">
-                            <span ng-show="distribution.isSelected === true">
-                                {{getQuantityDistributionForProduct(distribution,stockCard)}}
-                            </span>
-                        </td>
                     </tr>
                     <tr>
                         <th colspan="3" class="header" openlmis-message="label.total"></th>
-                        <th class="header" style="text-align:left" class="p-column" ng-repeat="stockCard in stockCards">
-                            <b>{{getTotalDistributionForProduct(stockCard)}}</b>
-                        </th>
                     </tr>
                 </table>
+                </div>
+                <div class="float-left right-table parent" custom-horizontal-scroll>
+                    <table class="table table-bordered " fixed-table-header>
+                        <thead>
+                        <tr>
+                            <th class="header" colspan="{{stockCards.length}}">
+                                <span openlmis-message="label.products"></span>
 
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="min-width:80px !important; max-width:80px !important;width:80px !important; text-align:left"
+                                class="header p-column" ng-repeat="stockCard in stockCards">
+                                {{stockCard.product.primaryName}}<br/>({{stockCard.product.dosageUnit.code}})
+                            </th>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="distribution in distributionsByDate"
+                            ng-class="{'unchecked':distribution.isSelected === false}">
+                            <td style="height:24px !important;max-height:24px !important" class="col-facility"
+                                ng-repeat="stockCard in stockCards">
+                            <span ng-show="distribution.isSelected === true">
+                                {{getQuantityDistributionForProduct(distribution,stockCard)}}
+                            </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="header" style="text-align:left" class="p-column"
+                                ng-repeat="stockCard in stockCards">
+                                <b>{{getTotalDistributionForProduct(stockCard)}}</b>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
             </div>
 
 

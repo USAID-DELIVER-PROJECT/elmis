@@ -165,3 +165,31 @@ function DashboardHelpModalInstanceCtrl($scope, $modalInstance,items) {
     };
 
 }
+
+function DashboardStockInventoryStatusModalInstanceCtrl($scope, $modalInstance,items) {
+
+    $scope.stockByCategory=items;
+    $scope.getBackGroundColor = function (_index) {
+            var bgColor = '';
+            var fColor='#a6a6a6';
+    /*
+            if (_index % 2 === 0) {
+                bgColor = 'lightblue';
+                fColor='white';
+            } else {
+                bgColor = 'white';
+            }
+
+    */
+            return {fColor:fColor, bgColor:bgColor};
+    };
+
+    $scope.ok = function () {
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+}

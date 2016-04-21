@@ -1,0 +1,44 @@
+<div class="modal-header modal-header">
+    <button class="close" ng-click="ok()">X</button>
+    <h2><i class="flaticon-bar"></i>Stock Status</h2>
+</div>
+<div class="modal-body">
+    <div style="font-weight: bold" ng-hide="stockByCategory.length > 0"
+         openlmis-message="label.report.no.data.to.show"></div>
+    <table id="repairingTable" ng-show="stockByCategory.length > 0"
+           class="rnr-table table-bordered table"
+           ng-table="tableParams">
+        <thead>
+        <tr>
+            <th style="  width: 40px">
+                <span openlmis-message="label.product">	 </span>
+            </th>
+            <th style="  width: 40px">
+                <span openlmis-message="label.unit.of.measure">	 </span>
+            </th>
+            <th style="width: 20px">
+                <span openlmis-message="label.months.of.stock"></span>
+            </th>
+            <th style="width: 20px">
+                <span openlmis-message="label.stock.onhand"></span>
+            </th>
+        </tr>
+
+        </thead>
+        <tbody ng-repeat="category in stockByCategory">
+        <tr>
+            <td colspan="4" style="background:#006dcc">{{category.productCategory}}</td>
+        </tr>
+        <tr ng-style="{'background-color': getBackGroundColor($index)}"
+            ng-repeat="p in category.dataPoints">
+            <td>{{p.product}}</td>
+            <td ng-bind="p.unity_of_measure"></td>
+            <td ng-bind="p.mos"></td>
+            <td>{{p.soh | number}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary modal-ok-btn" ng-click="ok()">OK</button>
+</div>

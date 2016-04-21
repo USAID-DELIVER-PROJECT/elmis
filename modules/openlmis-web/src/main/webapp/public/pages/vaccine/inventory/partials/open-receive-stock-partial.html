@@ -1,14 +1,24 @@
 <div class="alert alert-info" ng-show="!hasStock || hasPermission('INITIALIZE_STOCK')"
      openlmis-message="message.stock.initialize"></div>
+<div class="alert alert-danger" ng-show="(openReceiveForm.$dirty && openReceiveForm.$invalid) ||
+                                          (batchToAddForm.$error.divisibleByPresentationValidator.length >0) ||
+                                          (productToAddForm.$error.divisibleByPresentationValidator.length >0)"
+        >
+    <ul ng-show="openReceiveForm.$error.divisibleByPresentationValidator.length >0 ||
+                  openReceiveForm.$error.required.length >0 ||
+                  batchToAddForm.$error.divisibleByPresentationValidator.length >0 ||
+                  productToAddForm.$error.divisibleByPresentationValidator.length >0
 
-<div class="alert alert-danger" ng-show="openReceiveForm.$dirty && openReceiveForm.$invalid">
-    <ul ng-show="openReceiveForm.$error.divisibleByPresentationValidator.length >0 || openReceiveForm.$error.required.length >0 ">
+                   ">
         <li ng-repeat="error in openReceiveForm.$error.divisibleByPresentationValidator">
             {{error.$name}} <span openlmis-message="error.message.quantity.not.multiple.of.presentation"></span>
         </li>
-        <!--<li ng-repeat="error in openReceiveForm.$error.required">-->
-        <!--{{error.$name}} <span openlmis-message="error.message.quantity.required"></span>-->
-        <!--</li>-->
+        <li ng-repeat="error in batchToAddForm.$error.divisibleByPresentationValidator">
+            {{error.$name}} <span openlmis-message="error.message.quantity.not.multiple.of.presentation"></span>
+        </li>
+        <li ng-repeat="error in productToAddForm.$error.divisibleByPresentationValidator">
+            {{error.$name}} <span openlmis-message="error.message.quantity.not.multiple.of.presentation"></span>
+        </li>
 
     </ul>
 </div>
@@ -29,11 +39,11 @@
     </tr>
     </thead>
     <tbody>
-    <tr style="border-bottom:2px solid #333" ng-form="productToAddForm">
+    <tr style="border-bottom:2px solid #333" ng-form="$parent.productToAddForm">
         <td rowspan="{{productToAdd.lots.length +2 }}" class="col-product cell-input row-add ">
             <select style="width:90% !important;" ui-select2
                     ng-change="loadProductLots(productToAdd.programProduct.product)"
-                    ng-disabled="productToAdd.lots.length >0"
+                    ng-disabled="productToAdd.lots.length >0 || lotToAdd.quantity !== undefined || lotToAdd.lotId !== undefined || lotToAdd.vvmStatus"
                     ng-model="productToAdd.programProduct"
                     ng-options="obj.programProduct  as obj.programProduct.product.primaryName group by obj.programProduct.productCategory.name for obj in productsToDisplay">
                 <option value="" openlmis-message="placeholder.select.product"></option>
@@ -97,12 +107,12 @@
     </tr>
 
     <!--Add new Row-->
-    <tr ng-if="productToAdd.programProduct.product !==undefined && productToAdd.programProduct.product !==null"
-        ng-form="BatchToAdd">
+    <tr ng-form="$parent.batchToAddForm"
+        ng-if="productToAdd.programProduct.product !==undefined && productToAdd.programProduct.product !==null">
         <td  class="col-lot  cell-input cell-text last-row row-add-batch ">
             <div class="row-fluid" ng-if="productToAdd.batchTracked===true">
                 <div ng-show="hasPermission('CREATE_LOT')" style="width:20%; float:left;margin-top:1px">
-                    <input type="button" ng-disabled="lotToAdd.lot !== undefined "
+                    <input type="button" ng-disabled="lotToAdd.lotId !== undefined "
                            class="btn btn-primary btn-small"
                            href ng-click="showNewLotModal(productToAdd)"
                            openlmis-message="button.create"/>
@@ -110,9 +120,11 @@
                 <div style="width:80%; float:left">
                     <select ng-show="productToAdd.batchTracked" name="lotToAdd" ui-select2
                             ng-required="productToAdd.batchTracked===true" style="min-width:200px !important"
-                            ng-model="lotToAdd.lot"
-                            ng-options="lot as lot.lotCode for lot in lotsToDisplay track by lot.lotCode">
+                            ng-model="lotToAdd.lotId">
                         <option value="" openlmis-message="placeholder.select.batch"></option>
+                        <option ng-repeat="lot in lotsToDisplay" value="{{lot.id}}"
+                                ng-selected="lotToAdd.lotId == lot.id">{{lot.lotCode}}
+                        </option>
                     </select>
                 </div>
 
@@ -132,7 +144,7 @@
 
         <td class="col-count cell-input col-general last-row row-add-batch">
             <input ng-if="productToAdd.batchTracked===true"
-                   ng-required="lotToAdd.lot !== undefined"
+                   ng-required="lotToAdd.lotId !== undefined"
                    name="{{productToAdd.programProduct.product.primaryName}} Batch {{lotToAdd.lot.lotCode}}"
                    ng-model="lotToAdd.quantity"
                    maxlength="10"
@@ -151,7 +163,7 @@
 
         <td ng-show="productToAdd.batchTracked===true" class="last-row row-add-batch-last">
             <input type="submit" ng-show="productToAdd.batchTracked===true"
-                   ng-disabled="BatchToAdd.$invalid" class="btn btn-primary"
+                   ng-disabled="batchToAddForm.$invalid" class="btn btn-primary"
                    ng-click="addLot(lotToAdd)" value="Add Batch"/>
         </td>
         <td ng-show="productToAdd.batchTracked === false" class="row-add "></td>

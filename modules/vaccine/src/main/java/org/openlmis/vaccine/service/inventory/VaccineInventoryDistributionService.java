@@ -267,4 +267,10 @@ public class VaccineInventoryDistributionService {
         return repository.getDistributionsByDate(facilityId, date);
     }
 
+    public VaccineDistribution getDistributionByVoucherNumberIfExist(Long userId, String voucherNumber) {
+        Facility homeFacility = facilityService.getHomeFacility(userId);
+        Long facilityId = homeFacility.getId();
+        return repository.getDistributionByVoucherNumberIfExist(facilityId, voucherNumber);
+    }
+
 }

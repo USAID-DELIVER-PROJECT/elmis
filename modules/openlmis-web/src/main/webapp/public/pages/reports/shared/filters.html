@@ -650,3 +650,15 @@
 
     </div>
 </script>
+
+<script type="text/ng-template" id="filter-custom-legend-template">
+    <div>
+        <div style="position:relative;margin:1px auto;width:70%;text-align:center">
+        <span ng-repeat="item in data" style="margin-left:4px;">
+            <span style="background:{{item.color}};display: inline-block;width: 10px;height: 10px;"></span>
+            <span style="margin-right:5px;font-size:70%;vertical-align:middle">{{item.label}}</span>
+        </span>
+        </div>
+
+    </div>
+</script>

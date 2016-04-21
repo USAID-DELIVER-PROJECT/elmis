@@ -46,7 +46,9 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardFacilityInventoryStockStatus, homeFacility,
                                     VaccineDashboardSupervisedFacilityInventoryStockStatus,
                                     EquipmentNonFunctional,
-                                    VaccinePendingRequisitions) {
+                                    VaccinePendingRequisitions,
+                                    daysNotReceive
+                                    ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
@@ -70,7 +72,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.defaultMonthlyPeriod = defaultMonthlyPeriod;
     $scope.label = {zone: messageService.get('label.zone'), period: messageService.get('label.period')};
     $scope.userPreferences = userPreferences;
-
+    $scope.daysForUnreceivedNotification=daysNotReceive;
     /////////////////////////////////////////////////////////////////////////
     // coverage - Monthly, District, Facility
     //////////////////////////////////////////////////////////////////////////
@@ -861,149 +863,161 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     //My Stock
     //////////////
 
-    $scope.myStockVaccine = {
-        dataPoints: [],
-        dataColumns: [{
-            "id": "mos", "name": messageService.get('label.mos'), "type": "bar"
-        }
-        ],
-        dataX: {"id": "product"},
-        productCategory: ""
-    };
+$scope.myStockVaccine = {
+         dataPoints:[],
+         dataColumns: [
+                      {"id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
+         ],
+         dataX: {"id": "product"},
+         productCategory:"Vaccines",
+         legend:[{"label":"< buffer","color":colors.red_color},
+                 {"label":"< re-order","color":colors.yellow_color},
+                 {"label":"> re-order","color":colors.green_color},
+                 {"label":"> max","color":colors.blue_color}]
+ };
 
-    $scope.myStockSupplies = {
-        dataPoints: [],
-        dataColumns: [{
-            "id": "mos", "name": messageService.get('label.mos'), "type": "bar"
-        }
-        ],
-        dataX: {"id": "product"},
-        productCategory: ""
-    };
+ $scope.myStockSupplies = {
+         dataPoints:[],
+         dataColumns: [{
+             "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
+         ],
+         dataX: {"id": "product"},
+         productCategory:"Supplies",
+         legend:[{"label":"< buffer","color":colors.red_color},
+                          {"label":"< re-order","color":colors.yellow_color},
+                          {"label":"> re-order","color":colors.green_color},
+                          {"label":"> max","color":colors.blue_color}]
+ };
 
-    $scope.mySupervisedFacilityStock = {
-        dataPoints: [],
-        dataColumns: [{
-            "id": "mos", "name": messageService.get('label.mos'), "type": "bar"
-        }
-        ],
-        dataX: {"id": "facility_name"},
-        productCategory: ""
-    };
+ $scope.mySupervisedFacilityStock = {
+          dataPoints:[],
+          dataColumns: [{
+              "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
+          ],
+          dataX: {"id": "facility_name"},
+          productCategory:messageService.get('label.facilities'),
+          legend:[{"label":"< buffer","color":colors.red_color},
+                           {"label":"< re-order","color":colors.yellow_color},
+                           {"label":"> re-order","color":colors.green_color},
+                           {"label":"> max","color":colors.blue_color}]
+  };
 
-    $scope.supplyingPendingOrdersDetailCallback = function () {
-        VaccinePendingRequisitions.get({facilityId: parseInt(homeFacility.id, 10)}, function (data) {
-            $scope.supplyingAllPendingOrders = data.pendingRequest;
-            if (data.pendingRequest !== undefined)
-                $scope.supplying.orders = data.pendingRequest.length;
-            else
-                $scope.supplying.orders = 0;
-        });
-    };
-    $scope.equipmentActionBarCallback = function () {
-        EquipmentNonFunctional.get({}, function (data) {
-            $scope.nonFunctionalEquipments = data.Alerts;
-            if (!isUndefined(data.Alerts)) {
-                $scope.totalNonFunctionalEquipments = $scope.nonFunctionalEquipments.length;
+  $scope.supplyingPendingOrdersDetailCallback=function(){
+          VaccinePendingRequisitions.get({facilityId:parseInt(homeFacility.id,10)},function(data){
+             $scope.supplyingPendingReceive={};
+             console.log(data);
+             $scope.supplyingAllPendingOrders=data.pendingRequest;
+             $scope.supplyingPendingReceive.supplyingPendingToReceive=data.pendingToReceive;
+             $scope.supplyingPendingReceive.supplyingPendingToReceiveLowerLevel=data.pendingToReceiveLowerLevel;
+             if(data.pendingRequest !== undefined)
+               $scope.supplying.orders=data.pendingRequest.length;
+               else{$scope.supplying.orders=0;}
+          });
+  };
+  $scope.equipmentActionBarCallback=function(){
+    EquipmentNonFunctional.get({},function(data){
+        $scope.nonFunctionalEquipments=data.Alerts;
+        if(!isUndefined(data.Alerts))
+        {
+           $scope.totalNonFunctionalEquipments=$scope.nonFunctionalEquipments.length;
 
-                var byStatus = _.groupBy($scope.nonFunctionalEquipments, function (e) {
-                    return e.status;
-                });
-                $scope.allNonFunctionalEquipmentsByStatus = $.map(byStatus, function (value, index) {
-                    return [{"status": index, "data": value}];
-                });
-                console.log(JSON.stringify($scope.allNonFunctionalEquipmentsByStatus));
-            }
-        });
-    };
-
-    $scope.supplyingPendingOrdersDetailCallback();
-    $scope.equipmentActionBarCallback();
-    $scope.facilityInventoryStockStatusCallback = function (myStock) {
-        if (!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate)) {
-            VaccineDashboardFacilityInventoryStockStatus.get({
-                facilityId: parseInt(homeFacility.id, 10),
-                date: myStock.toDate
-            }, function (data) {
-                if (data.facilityStockStatus !== null) {
-                    var allProducts = data.facilityStockStatus;
-                    var byCategory = _.groupBy(allProducts, function (p) {
-                        return p.product_category;
-                    });
-                    var allDataPointsByCategory = $.map(byCategory, function (value, index) {
-                        return [{"productCategory": index, "dataPoints": value}];
-                    });
-                    $scope.myStockVaccine.dataPoints = allDataPointsByCategory[0].dataPoints;
-                    $scope.myStockVaccine.productCategory = allDataPointsByCategory[0].productCategory;
-
-                    $scope.myStockSupplies.dataPoints = allDataPointsByCategory[1].dataPoints;
-                    $scope.myStockSupplies.productCategory = allDataPointsByCategory[1].productCategory;
-
-
-                }
+            var byStatus=_.groupBy($scope.nonFunctionalEquipments,function(e){
+                   return e.status;
+             });
+            $scope.allNonFunctionalEquipmentsByStatus = $.map(byStatus, function(value, index) {
+                  return [{"status":index,"data":value}];
             });
         }
-    };
+    });
+  };
 
-    $scope.mySupervisedFacilityFilterSize = 5;
-    $scope.mySupervisedFacilitiesCallback = function (filter) {
-        if (!isUndefined(filter.product) && filter.product !== "0" && !isUndefined(filter.date) && !isUndefined(filter.level) && filter.level !== "0") {
-            VaccineDashboardSupervisedFacilityInventoryStockStatus.get({
-                    productId: filter.product,
-                    date: filter.date,
-                    level: filter.level
-                },
-                function (data) {
-                    if (!isUndefined(data.facilityStockStatus)) {
-                        $scope.mySupervisedFilterTotal = data.facilityStockStatus.length;
-                        $scope.mySupervisedFacilityStock.data = data.facilityStockStatus;
-                        $scope.mySupervisedFacilityStock.productCategory = data.facilityStockStatus[0].product;
-                        $scope.mySupervisedFacilitiesPagination(0);
-                    }
-                    else {
-                        $scope.mySupervisedFacilityStock.data = [];
-                        $scope.mySupervisedFilterTotal = 0;
-                    }
-                });
-        }
-    };
-    $scope.mySupervisedFacilitiesPagination = function (offset) {
-        var s = parseInt($scope.mySupervisedFacilityFilterSize, 10) + parseInt(offset, 10);
-        if (!isUndefined(offset)) {
-            $scope.mySupervisedFacilityStock.dataPoints = $scope.mySupervisedFacilityStock.data.slice(parseInt(offset, 10), s);
-        }
-    };
+$scope.supplyingPendingOrdersDetailCallback();
+$scope.equipmentActionBarCallback();
+$scope.facilityInventoryStockStatusCallback=function(myStock){
+   if(!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate))
+   {
+        VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(homeFacility.id,10),date:myStock.toDate},function(data){
+              if(data.facilityStockStatus !== null)
+              {
+                    var allProducts=data.facilityStockStatus;
+                    var byCategory=_.groupBy(allProducts,function(p){
+                          return p.product_category;
+                    });
+                    $scope.allStockDataPointsByCategory = $.map(byCategory, function(value, index) {
+                        return [{"productCategory":index,"dataPoints":value}];
+                    });
+                    $scope.myStockVaccine.dataPoints=$scope.allStockDataPointsByCategory[0].dataPoints;
+                    $scope.myStockVaccine.productCategory=$scope.allStockDataPointsByCategory[0].productCategory;
+
+                    $scope.myStockSupplies.dataPoints=$scope.allStockDataPointsByCategory[1].dataPoints;
+                    $scope.myStockSupplies.productCategory=$scope.allStockDataPointsByCategory[1].productCategory;
 
 
-    $scope.getSOHVaccine = function (value, ratio, id, index) {
-        var toolTipValue = value + " | " + $filter('number')($scope.myStockVaccine.dataPoints[index].soh) + " " + $scope.myStockVaccine.dataPoints[index].unity_of_measure;
+              }
+        });
+    }
+};
+
+$scope.mySupervisedFacilityFilterSize=5;
+$scope.mySupervisedFacilitiesCallback=function(filter){
+    if(!isUndefined(filter.product) && filter.product !== "0" && !isUndefined(filter.date) && !isUndefined(filter.level) && filter.level !=="0")
+    {
+           VaccineDashboardSupervisedFacilityInventoryStockStatus.get({
+                                                                       productId:filter.product,
+                                                                       date:filter.date,
+                                                                       level:filter.level},
+                                                                       function(data){
+                        if(!isUndefined(data.facilityStockStatus))
+                        {
+                           $scope.mySupervisedFilterTotal=data.facilityStockStatus.length;
+                           $scope.mySupervisedFacilityStock.data=data.facilityStockStatus;
+                           $scope.mySupervisedFacilityStock.productCategory=data.facilityStockStatus[0].product;
+                           $scope.mySupervisedFacilitiesPagination(0);
+                        }
+                        else{
+                           $scope.mySupervisedFacilityStock.data=[];
+                           $scope.mySupervisedFilterTotal=0;
+                        }
+           });
+     }
+};
+$scope.mySupervisedFacilitiesPagination=function(offset){
+  var s =  parseInt($scope.mySupervisedFacilityFilterSize, 10)+ parseInt(offset, 10);
+          if (!isUndefined(offset)) {
+              $scope.mySupervisedFacilityStock.dataPoints = $scope.mySupervisedFacilityStock.data.slice(parseInt(offset, 10), s);
+          }
+};
+
+
+$scope.getSOHVaccine=function (value, ratio, id, index) {
+        var toolTipValue=value + " | "+$filter('number')($scope.myStockVaccine.dataPoints[index].soh) +" "+ $scope.myStockVaccine.dataPoints[index].unity_of_measure;
         return toolTipValue;
-    };
-    $scope.getColorVaccine = function (color, d) {
-        if (typeof d === 'object') {
-            return $scope.myStockVaccine.dataPoints[d.index].color;
-        }
-    };
+};
+$scope.getColorVaccine=function (color, d) {
+       if(typeof d === 'object') {
+         return $scope.myStockVaccine.dataPoints[d.index].color;
+       }
+};
 
-    $scope.getSOHSupplies = function (value, ratio, id, index) {
-        var toolTipValue = value + " | " + $filter('number')($scope.myStockSupplies.dataPoints[index].soh) + " " + $scope.myStockSupplies.dataPoints[index].unity_of_measure;
+$scope.getSOHSupplies=function (value, ratio, id, index) {
+        var toolTipValue=value + " | "+$filter('number')($scope.myStockSupplies.dataPoints[index].soh) +" "+ $scope.myStockSupplies.dataPoints[index].unity_of_measure;
         return toolTipValue;
-    };
-    $scope.getColorSupplies = function (color, d) {
-        if (typeof d === 'object') {
-            return $scope.myStockSupplies.dataPoints[d.index].color;
-        }
-    };
+};
+$scope.getColorSupplies=function (color, d) {
+       if(typeof d === 'object') {
+         return $scope.myStockSupplies.dataPoints[d.index].color;
+       }
+};
 
-    $scope.getSupervisedSOHTooltip = function (value, ratio, id, index) {
-        var toolTipValue = value + " | " + $filter('number')($scope.mySupervisedFacilityStock.dataPoints[index].soh) + " " + $scope.mySupervisedFacilityStock.dataPoints[index].unity_of_measure;
+$scope.getSupervisedSOHTooltip=function (value, ratio, id, index) {
+        var toolTipValue=value + " | "+$filter('number')($scope.mySupervisedFacilityStock.dataPoints[index].soh) +" "+ $scope.mySupervisedFacilityStock.dataPoints[index].unity_of_measure;
         return toolTipValue;
-    };
-    $scope.getColorSupervised = function (color, d) {
-        if (typeof d === 'object') {
-            return $scope.mySupervisedFacilityStock.dataPoints[d.index].color;
-        }
-    };
+};
+$scope.getColorSupervised=function (color, d) {
+       if(typeof d === 'object') {
+         return $scope.mySupervisedFacilityStock.dataPoints[d.index].color;
+       }
+};
 
     $scope.openMyStockHelp = function () {
         var modalInstance = $modal.open({
@@ -1301,6 +1315,18 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             }
         });
     };
+    $scope.openStockInventoryStatusDetails = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'partials/slide-stock-inventory-status-details-content.html',
+                controller: 'DashboardStockInventoryStatusModalInstanceCtrl',
+                resolve: {
+                    items: function () {
+
+                        return $scope.allStockDataPointsByCategory;
+                    }
+                }
+            });
+        };
 
 
     SettingsByKey.get({key: 'DASHBOARD_SLIDES_TRANSITION_INTERVAL_MILLISECOND'}, function (data) {
@@ -1420,7 +1446,24 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                     return $scope.supplyingAllPendingOrders;
                 }
             }
-        });
+   
+            });
+        };
+
+    $scope.openSupplyingPendingReceiveDetailDialog = function (size) {
+
+                    var modalInstance = $modal.open({
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'supplying-pending-receive.html',
+                        controller: 'ModalInstanceCtrl',
+                        size: 'lg',
+                        windowClass: 'my-modal-popup',
+                        resolve: {
+                            items: function () {
+                                return $scope.supplyingPendingReceive;
+                            }
+                        }
+                    });
     };
     $scope.openRepairingDetailDialog = function (size) {
 
@@ -1562,6 +1605,14 @@ VaccineDashboardController.resolve = {
                     color_values.red_color = data.settings.value;
                 } else {
                     color_values.blue_color = 'red';
+                }
+
+            });
+            SettingsByKey.get({key: 'STOCK_GREATER_THAN_BUFFER_COLOR'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.yellow_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'yellow';
                 }
 
             });
@@ -1820,8 +1871,18 @@ VaccineDashboardController.resolve = {
                 deferred.resolve(homeFacility);
             });
 
-        }, 100);
-        return deferred.promise;
+           }, 100);
+                return deferred.promise;
+     },
+    daysNotReceive: function ($q, $timeout, SettingsByKey) {
+             var deferred = $q.defer();
+             $timeout(function () {
+                 SettingsByKey.get({key:'NUMBER_OF_DAYS_PANDING_TO_RECEIVE_CONSIGNMENT'}, function (data) {
+                     deferred.resolve(data.settings.value);
+                 });
+             }, 100);
+
+            return deferred.promise;
     }
 
 };
