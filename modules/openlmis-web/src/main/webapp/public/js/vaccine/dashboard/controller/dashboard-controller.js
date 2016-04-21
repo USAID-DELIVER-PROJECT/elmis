@@ -46,7 +46,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardFacilityInventoryStockStatus,homeFacility,
                                     VaccineDashboardSupervisedFacilityInventoryStockStatus,
                                     EquipmentNonFunctional,
-                                    VaccinePendingRequisitions
+                                    VaccinePendingRequisitions,
+                                    daysNotReceive
                                     ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
@@ -71,7 +72,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.defaultMonthlyPeriod = defaultMonthlyPeriod;
     $scope.label = {zone: messageService.get('label.zone'), period: messageService.get('label.period')};
     $scope.userPreferences = userPreferences;
-
+    $scope.daysForUnreceivedNotification=daysNotReceive;
     /////////////////////////////////////////////////////////////////////////
     // coverage - Monthly, District, Facility
     //////////////////////////////////////////////////////////////////////////
@@ -861,7 +862,7 @@ $scope.myStockVaccine = {
                       {"id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
          ],
          dataX: {"id": "product"},
-         productCategory:"",
+         productCategory:"Vaccines",
          legend:[{"label":"< buffer","color":colors.red_color},
                  {"label":"< re-order","color":colors.yellow_color},
                  {"label":"> re-order","color":colors.green_color},
@@ -874,7 +875,7 @@ $scope.myStockVaccine = {
              "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
          ],
          dataX: {"id": "product"},
-         productCategory:"",
+         productCategory:"Supplies",
          legend:[{"label":"< buffer","color":colors.red_color},
                           {"label":"< re-order","color":colors.yellow_color},
                           {"label":"> re-order","color":colors.green_color},
@@ -887,7 +888,7 @@ $scope.myStockVaccine = {
               "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
           ],
           dataX: {"id": "facility_name"},
-          productCategory:"",
+          productCategory:messageService.get('label.facilities'),
           legend:[{"label":"< buffer","color":colors.red_color},
                            {"label":"< re-order","color":colors.yellow_color},
                            {"label":"> re-order","color":colors.green_color},
@@ -896,11 +897,14 @@ $scope.myStockVaccine = {
 
   $scope.supplyingPendingOrdersDetailCallback=function(){
           VaccinePendingRequisitions.get({facilityId:parseInt(homeFacility.id,10)},function(data){
+             $scope.supplyingPendingReceive={};
+             console.log(data);
              $scope.supplyingAllPendingOrders=data.pendingRequest;
+             $scope.supplyingPendingReceive.supplyingPendingToReceive=data.pendingToReceive;
+             $scope.supplyingPendingReceive.supplyingPendingToReceiveLowerLevel=data.pendingToReceiveLowerLevel;
              if(data.pendingRequest !== undefined)
                $scope.supplying.orders=data.pendingRequest.length;
-               else
-             $scope.supplying.orders=0;
+               else{$scope.supplying.orders=0;}
           });
   };
   $scope.equipmentActionBarCallback=function(){
@@ -932,14 +936,14 @@ $scope.facilityInventoryStockStatusCallback=function(myStock){
                     var byCategory=_.groupBy(allProducts,function(p){
                           return p.product_category;
                     });
-                    var allDataPointsByCategory = $.map(byCategory, function(value, index) {
+                    $scope.allStockDataPointsByCategory = $.map(byCategory, function(value, index) {
                         return [{"productCategory":index,"dataPoints":value}];
                     });
-                    $scope.myStockVaccine.dataPoints=allDataPointsByCategory[0].dataPoints;
-                    $scope.myStockVaccine.productCategory=allDataPointsByCategory[0].productCategory;
+                    $scope.myStockVaccine.dataPoints=$scope.allStockDataPointsByCategory[0].dataPoints;
+                    $scope.myStockVaccine.productCategory=$scope.allStockDataPointsByCategory[0].productCategory;
 
-                    $scope.myStockSupplies.dataPoints=allDataPointsByCategory[1].dataPoints;
-                    $scope.myStockSupplies.productCategory=allDataPointsByCategory[1].productCategory;
+                    $scope.myStockSupplies.dataPoints=$scope.allStockDataPointsByCategory[1].dataPoints;
+                    $scope.myStockSupplies.productCategory=$scope.allStockDataPointsByCategory[1].productCategory;
 
 
               }
@@ -1373,6 +1377,18 @@ $scope.getColorSupervised=function (color, d) {
             }
         });
     };
+    $scope.openStockInventoryStatusDetails = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'partials/slide-stock-inventory-status-details-content.html',
+                controller: 'DashboardStockInventoryStatusModalInstanceCtrl',
+                resolve: {
+                    items: function () {
+
+                        return $scope.allStockDataPointsByCategory;
+                    }
+                }
+            });
+        };
 
 
     SettingsByKey.get({key: 'DASHBOARD_SLIDES_TRANSITION_INTERVAL_MILLISECOND'}, function (data) {
@@ -1494,6 +1510,22 @@ $scope.getColorSupervised=function (color, d) {
                 }
             });
         };
+
+    $scope.openSupplyingPendingReceiveDetailDialog = function (size) {
+
+                    var modalInstance = $modal.open({
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'supplying-pending-receive.html',
+                        controller: 'ModalInstanceCtrl',
+                        size: 'lg',
+                        windowClass: 'my-modal-popup',
+                        resolve: {
+                            items: function () {
+                                return $scope.supplyingPendingReceive;
+                            }
+                        }
+                    });
+    };
     $scope.openRepairingDetailDialog = function (size) {
 
         var modalInstance = $modal.open({
@@ -1901,6 +1933,16 @@ VaccineDashboardController.resolve = {
 
            }, 100);
                 return deferred.promise;
-     }
+     },
+    daysNotReceive: function ($q, $timeout, SettingsByKey) {
+             var deferred = $q.defer();
+             $timeout(function () {
+                 SettingsByKey.get({key:'NUMBER_OF_DAYS_PANDING_TO_RECEIVE_CONSIGNMENT'}, function (data) {
+                     deferred.resolve(data.settings.value);
+                 });
+             }, 100);
+
+            return deferred.promise;
+    }
 
 };

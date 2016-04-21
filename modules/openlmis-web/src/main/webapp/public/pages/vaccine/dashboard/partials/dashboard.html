@@ -196,6 +196,101 @@
         <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
     </div>
 </script>
+
+<script type="text/ng-template" id="supplying-pending-receive.html">
+    <div class="modal-header">
+        <button class="close" ng-click="ok()">X</button>
+        <h3>Pending orders</h3>
+    </div>
+    <div class="modal-body">
+        <div style="font-weight: bold"
+             ng-hide="items.supplyingPendingToReceiveLowerLevel.length > 0 || items.supplyingPendingToReceive.length >0"
+             openlmis-message="label.report.no.data.to.show"></div>
+
+        <div class="row-fluid dashlet-scroll-table" ng-show="!show_email">
+            <table class="rnr-table table-bordered table"
+                   ng-table="tableParams"
+                   ng-show="items.supplyingPendingToReceive.length > 0">
+                <thead>
+                <tr class="alert alert-warning">
+                    <th style="text-align: left" colspan="7">
+                            <span data-toggle="tooltip"
+                                  title="No functional" class="icon-warning-sign red"></span>&nbsp;&nbsp;
+                        <span style="text-align: center;"> You have pending request that need to be received</span>
+                    </th>
+                </tr>
+                <tr style="text-align:left" class="">
+                    <!--<th style="width: 30px">Ordered Date</th>-->
+                    <th style="width: 30px">Date Issued</th>
+                    <th style="width: 40px">Issued from</th>
+                    <th style="width: 30px">Status</th>
+                    <th style="width: 30px">Action</th>
+
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr ng-style="{'background-color': getBackGroundColor($index)}"
+                    ng-repeat="alert in items.supplyingPendingToReceive">
+                    <!--<td ng-bind="alert.createdDate | date:'dd-MM-yyyy'"></td>-->
+                    <td ng-bind="alert.distributionDate | date:'dd-MM-yyyy'"></td>
+                    <td ng-bind="alert.fromFacilityName"></td>
+                    <td ng-bind="alert.status"></td>
+                    <td>
+                        <a class="btn-small btn-info" href="/public/pages/vaccine/inventory/index.html#/receive"
+                           openlmis-message="label.vaccine.stock.receive"></a>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+            <br/>
+            <table
+                    class="rnr-table table-bordered table"
+                    ng-table="tableParams"
+                    ng-show="items.supplyingPendingToReceiveLowerLevel.length > 0">
+                <thead>
+                <tr class="alert alert-warning">
+                    <th style="text-align: left" colspan="6">
+                            <span data-toggle="tooltip"
+                                  class="icon-warning-sign red"></span>&nbsp;&nbsp;
+                        <span style="text-align: center;">Supervised Facilities not received consignment for more than  <span>{{daysForUnreceivedNotification}}</span> days</span>
+                    </th>
+                </tr>
+                <tr style="text-align:left" class="">
+                    <th style="width: 40px">Store Name</th>
+                    <th style="width: 30px">Date Issued</th>
+                    <th style="width: 40px">Voucher #</th>
+                    <th style="width: 40px">Status</th>
+                    <th style="width: 40px">Phone #</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr ng-style="{'background-color': getBackGroundColor($index)}"
+                    ng-repeat="alert in items.supplyingPendingToReceiveLowerLevel">
+                    <td ng-bind="alert.toFacilityName"></td>
+                    <td ng-bind="alert.distributionDate | date:'dd-MM-yyyy'"></td>
+                    <td ng-bind="alert.voucherNumber"></td>
+                    <td ng-bind="alert.status"></td>
+                    <td ng-bind="alert.cellPhone"></td>
+                </tr>
+                </tbody>
+
+            </table>
+
+            <br/>
+
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button ng-show="show_email" class="btn btn-primary pull-right" type="button"
+                ng-click="sendVaccineFacilityEmail()">Send
+        </button>
+        <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+    </div>
+</script>
 <script type="text/ng-template" id="repairing.html">
     <div class="modal-header">
         <button  class="close" ng-click="ok()">X</button>
@@ -473,8 +568,13 @@
                     <h2><i class="flaticon-bar"></i>Supplying</h2>
                     <span openlmis-message="label.pending.orders"></span>:
                     <span class="box-value"><a ng-click="openSupplyingOrdersDetailDialog()" href="">{{supplying.orders |
-                        number}}</a></span>
-                    <!--<span  openlmis-message="label.fulfilled"></span>: <span class="box-value">{{supplying.fulfilled | number}}4</span>-->
+                        number}}</a></span>&nbsp;
+                    <span openlmis-message="label.pending.receive"></span>:
+                    <span class="box-value">
+                        <a ng-click="openSupplyingPendingReceiveDetailDialog()" href="">
+                            {{(supplyingPendingReceive.supplyingPendingToReceive.length +
+                            supplyingPendingReceive.supplyingPendingToReceiveLowerLevel.length) | number}}</a>
+                    </span>
                 </div>
                 <!-- Equipment-->
                 <div class="box-col3 row-fluid" style="margin-left: 10px;">
@@ -797,7 +897,11 @@
                                 <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a ng-click="stockStatusDetailCallback()" class="btn btn-circle btn-icon-only btn-default" tooltip="Detail Coverage">
+                                <!--<a ng-click="stockStatusDetailCallback()" class="btn btn-circle btn-icon-only btn-default" tooltip="Detail Coverage">-->
+                                <!--<i class="icon-table"></i>-->
+                                <!--</a> -->
+                                <a ng-click="openStockInventoryStatusDetails()"
+                                   class="btn btn-circle btn-icon-only btn-default" tooltip="Detail Stock">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>
@@ -816,7 +920,8 @@
                                 <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <a class="btn btn-circle btn-icon-only btn-default" ng-click="stockStatusDetailCallback()">
+                                <a class="btn btn-circle btn-icon-only btn-default"
+                                   ng-click="openStockInventoryStatusDetails()()">
                                     <i class="icon-table"></i>
                                 </a>
                             </div>

@@ -18,6 +18,7 @@ import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineOrderRequisitionLineItemService;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineOrderRequisitionService;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineOrderRequisitionsColumnService;
+import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -49,6 +50,8 @@ public class VaccineOrderRequisitionController extends BaseController {
     private static final String PRINT_ISSUE_STOCK = "vims_distribution";
     private static final String PRINT_CONSOLIDATED = "Print_Consolidated_list_report";
     private static final String ORDER_REQUISITION_SEARCH = "search";
+    private static final String PENDING_CONSIGNMENT_FOR_LOWER_LEVEL = "pendingToReceiveLowerLevel";
+    private static final String PENDING_CONSIGNMENT = "pendingToReceive";
 
     @Autowired
     VaccineOrderRequisitionService service;
@@ -69,6 +72,8 @@ public class VaccineOrderRequisitionController extends BaseController {
     ConfigurationSettingService settingService;
     @Autowired
     SupervisoryNodeService supervisoryNodeService;
+    @Autowired
+    VaccineInventoryDistributionService inventoryDistributionService;
     @Autowired
     private ProgramProductService programProductService;
     @Autowired
@@ -146,7 +151,10 @@ public class VaccineOrderRequisitionController extends BaseController {
     @RequestMapping(value = "getPendingRequest/{facilityId}", method = RequestMethod.GET, headers = ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getPendingRequest(@PathVariable Long facilityId, HttpServletRequest request) {
 
-        return response("pendingRequest", service.getPendingRequest(loggedInUserId(request), facilityId));
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("pendingRequest", service.getPendingRequest(loggedInUserId(request), facilityId));
+        response.getBody().addData(PENDING_CONSIGNMENT_FOR_LOWER_LEVEL, inventoryDistributionService.getPendingReceivedAlert(facilityId));
+        response.getBody().addData(PENDING_CONSIGNMENT, inventoryDistributionService.getPendingNotificationForLowerLevel(facilityId));
+        return response;
     }
 
     @RequestMapping(value = "getAllBy/{programId}/{periodId}/{facilityId}", method = RequestMethod.GET, headers = ACCEPT_JSON)
