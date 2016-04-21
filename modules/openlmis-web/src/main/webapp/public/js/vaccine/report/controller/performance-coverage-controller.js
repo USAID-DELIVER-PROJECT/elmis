@@ -72,8 +72,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                             formattedDistrictJson = findMonthValue($scope.datarows, 1);
                             $scope.datarows = formattedDistrictJson.reportList;
                             $scope.grayCount = formattedDistrictJson.grayCount;
-
                         }
+
                         populateCumulativeColumns();
 
                         populateCalculatedAggregateValues();
@@ -89,31 +89,13 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                         $scope.regionSubAggregate = aggregateSubTotal($scope.dataRowsRegionAggregate, 3);
                     }
 
-                    // Get a unique periods for the header
-                    var uniquePeriods = _.chain($scope.summary).indexBy("period").values().value();
-                    $scope.sortedPeriods = _.sortBy(uniquePeriods, function (up) {
-                        return up.row;
-                    });
-
-
-                    if ($scope.summary !== null) {
-                        $scope.g1 = pivotResultSet($scope.summary, "G1");
-                        $scope.g2 = pivotResultSet($scope.summary, "G2");
-                        $scope.g3 = pivotResultSet($scope.summary, "G3");
-                        $scope.g4 = pivotResultSet($scope.summary, "G4");
-                    }
-
-                    if ($scope.summaryRegionAggregate !== null) {
-                        $scope.gAll1 = pivotResultSet($scope.summaryRegionAggregate, "G1");
-                        $scope.gAll2 = pivotResultSet($scope.summaryRegionAggregate, "G2");
-                        $scope.gAll3 = pivotResultSet($scope.summaryRegionAggregate, "G3");
-                        $scope.gAll4 = pivotResultSet($scope.summaryRegionAggregate, "G4");
-
-                    }
                 }
 
+                $scope.coverageSummary = getPeriodicSummaryData($scope.datarows);
+                $scope.coverageRegionSummary = getPeriodicSummaryData($scope.dataRowsRegionAggregate);
             });
     };
+
     $scope.calculateVaccinated = function (targetPopulation, vaccinated) {
         return targetPopulation !== null && targetPopulation > 0 ? parseFloat(vaccinated / targetPopulation * 100).toFixed(2) : 0;
     };
@@ -128,18 +110,19 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
         return obj;
     };
+
     $scope.getRegionSubTotalRow = function (dtReport) {
 
         return $scope.regionSubAggregate[getKeyForReport(dtReport, 3)];
-
-
     };
+
     $scope.colors = {
         color_ninty_percent: '',
         color_80_percent: '',
         color_50_percent_above: '',
         color_50_percent_below: ''
     };
+
 
     Settings.get({}, function (data) {
 
@@ -245,48 +228,45 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
         });
     }
 
-    /*function pivotResultSet(summary, sortedUniquePeriods, group){
-
-     var temp = [];
-
-     _.each(sortedUniquePeriods, function(item) {
-
-     for(i=0; i<summary.length; i++)
-     {
-     if(summary[i].group === group && item.period == summary[i].period) {
-     temp.push({row:item.row, period:summary[i].period, group:group, total:summary[i].total});
-     break;
-     }
-     // if no match is found add a dummy object as a place holder
-     else if(i+1 == $scope.summary.length) {
-     temp.push({row:item.row, period: item.period, group:group, total:'-'});
-     }
-     }
-     });
-     return temp;
-     }*/
 
 
-    function pivotResultSet(summary, group) {
+    var coverageGroup = {groupOne: "G1", groupTwo: "G2", groupThree: "G3", groupFour: "G4"};
 
-        var temp = [];
+    function getPeriodicSummaryData(reportData){
 
-        _.each($scope.summaryPeriodLists, function (item, index) {
+        var coverageSummary = {groupOne:[], groupTwo:[], groupThree:[], groupFour: []};
 
-            for (i = 0; i < summary.length; i++) {
+        _.each($scope.summaryPeriodLists, function (period, index) {
 
-                if (summary[i].group === group && item.year == summary[i].year && item.month == summary[i].month) {
-                    temp.push({row: item.row, period: summary[i].period, group: group, total: summary[i].total});
-                    break;
-                }
-                // if no match is found add a dummy object as a place holder
-                else if (i + 1 == summary.length) {
-                    temp.push({row: item.row, period: item.monthString + " " + item.year, group: group, total: '-'});
-                }
-            }
+            coverageSummary.groupOne.push( {total : {month: period.monthString, value: getReportCountByCoverage(reportData, period, coverageGroup.groupOne)}});
+            coverageSummary.groupTwo.push({total : {month: period.monthString, value: getReportCountByCoverage(reportData, period, coverageGroup.groupTwo)}});
+            coverageSummary.groupThree.push({total : {month: period.monthString, value: getReportCountByCoverage(reportData, period, coverageGroup.groupThree)}});
+            coverageSummary.groupFour.push({total : {month: period.monthString, value: getReportCountByCoverage(reportData, period, coverageGroup.groupFour)}});
+
         });
 
-        return temp;
+        return coverageSummary;
+    }
+
+    function getReportCountByCoverage(reportData, period, group){
+
+       return _.filter(reportData, function(data) {
+
+           var coverage = $scope.calculateVaccinated(data.target, data.vaccinated);
+
+           if(angular.equals(group, coverageGroup.groupOne))
+            return (data.month == period.month && data.year == period.year && !data.generated && coverage > 90);
+
+           else if(angular.equals(group, coverageGroup.groupTwo))
+               return (data.month == period.month && data.year == period.year && !data.generated && coverage < 90 && coverage >=80);
+
+           else if(angular.equals(group, coverageGroup.groupThree))
+               return (data.month == period.month && data.year == period.year && !data.generated && coverage < 80);
+
+           else if(angular.equals(group, coverageGroup.groupFour)) // non reported periods
+               return (data.month == period.month && data.year == period.year && data.generated);
+
+       }).length;
     }
 
     function aggregateSubTotal(reportList, type) {

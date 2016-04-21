@@ -181,7 +181,7 @@ public class PerformanceCoverageQueryBuilder {
                  "sum(i.within_outside_total) vaccinated,\n" +
                  "extract(month from i.period_start_date) \"month\",\n" +
                  "extract(year from i.period_start_date) \"year\",\n" +
-                 "round((case when sum(i.within_outside_total) > 0 then (sum(i.within_outside_total) / sum(i.denominator)::numeric) else 0 end) * 100,2) coverage" +
+                 "round((case when sum(i.denominator) > 0 then (sum(i.within_outside_total) / sum(i.denominator)::numeric) else 0 end) * 100,2) coverage" +
                 " FROM\n" +
                 "  vw_vaccine_coverage i\n" +
                 " JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
