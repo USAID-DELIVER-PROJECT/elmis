@@ -12,8 +12,16 @@
  *
  */
 
-function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimeliness) {
+function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimeliness, Settings) {
+    Settings.get({}, function (data) {
 
+        _.each(data.settings.list, function (item) {
+
+           if (item.key === "VCP_NON_REPORTING") {
+                $scope.color_non_reporting = item.value;
+            }
+        });
+    });
        $scope.OnFilterChanged = function () {
 
         // prevent first time loading
@@ -84,6 +92,15 @@ function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimel
                 }
             }
         });
+        $scope.bgColorCode = function (value) {
+
+            if ( value.reporting_status !== 'REPORTING') {
+                return $scope.color_non_reporting;
+            }else{
+                return "white";
+            }
+
+        }
     }
 
 

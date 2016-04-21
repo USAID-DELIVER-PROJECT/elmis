@@ -111,16 +111,16 @@
                              <tr ng-repeat="row in d.data">
                                  <td >{{ d.data[$index-1].region_name == row.region_name  ? '' : row.region_name }}</td>
                                  <td >{{ d.data[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
-                                 <td class="{{row.reporting_status}}_rows" >{{row.period_name}}</td>
-                                 <td class="number {{row.reporting_status}}_rows"  >{{ row.reporting_status === "REPORTING" ? getLocalMessage('label.yes') : getLocalMessage('label.no')  }}</td>
-                                 <td class="number {{row.reporting_status}}_rows" >{{row.expected | number}}</td>
-                                 <td class="number {{row.reporting_status}}_rows" >{{row.reported | number}}</td>
-                                 <td class="number {{row.reporting_status}}_rows" >{{row.late | number}}</td>
-                                 <td class="number {{row.reporting_status}}_rows" >{{row.percent_reported}}%</td>
-                                 <td class="number {{row.reporting_status}}_rows" >{{row.percent_late}}%</td>
-                                 <td class="number {{row.reporting_status}}_rows" >{{row.fixed | number}}</td>
-                                 <td class="number {{row.reporting_status}}_rows" >{{row.outreach | number}}</td>
-                                 <td class="number {{row.reporting_status}}_rows" >{{row.session_total | number}}</td>
+                                 <td class="{{row.reporting_status}}_rows"  style="background-color : {{bgColorCode(row)}}" >{{row.period_name}}</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}"  >{{ row.reporting_status === "REPORTING" ? getLocalMessage('label.yes') : getLocalMessage('label.no')  }}</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}"  >{{row.expected | number}}</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}"  >{{row.reported | number}}</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}" >{{row.late | number}}</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}"  >{{row.percent_reported}}%</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}" >{{row.percent_late}}%</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}" >{{row.fixed | number}}</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}" >{{row.outreach | number}}</td>
+                                 <td class="number {{row.reporting_status}}_rows" style="background-color : {{bgColorCode(row)}}" >{{row.session_total | number}}</td>
                             </tr>
                             <tr  ng-if="d.subtotal" class="aggregate-row">
                                 <td></td>
