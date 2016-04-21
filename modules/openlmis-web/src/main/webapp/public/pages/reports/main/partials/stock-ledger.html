@@ -1,14 +1,13 @@
 <!--
 * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
 *
-* Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI)/MoHCDGEC Tanzania.
 *
 * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-* You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
 
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
+*
+-->
 <div class="row-fluid sortable ui-sortable">
     <div class="box span12">
         <div class="box-header">
@@ -88,11 +87,10 @@
 
                 <div>
                     <div class="pull-left" style="font-size:13px; font-weight: bold;">
-                        <span>Product Name</span> :<Strong> <span
-                            class="report-data">{{datarows[0].product}}</span></strong>
+                        <span openlmis-message="label.product"></span> :<Strong> <span style="width:300px;"
+                                                                                       class="report-data">{{datarows[0].product}}</span></strong>
                     </div>
                 </div>
-
 
             </div>
 
@@ -115,10 +113,11 @@
                                     sortable=" ">{{row.received > 0 && (row.received | number) || '' }}
                                 </td>
                                 <td class="number" data-title="'Issued Quantity'" style="width:30%" sortable=" ">
-                                    {{(row.issued | number) || ''}}
+                                    {{row.issued > 0 && (row.issued | positive) || '' }}
                                 </td>
                                 <td class="number" data-title="'Adjusted Quantity'" style="width:30%"
-                                    sortable="adjustment">{{(row.adjustment | number) || ''}}
+                                    sortable="adjustment">
+                                    {{row.adjustment > 0 && (row.adjustment | positive) || '' }}
                                 </td>
                                 <td data-title="'Batch Affected'" style="width:30%" sortable=" ">{{
                                     row.lotNumber }}
