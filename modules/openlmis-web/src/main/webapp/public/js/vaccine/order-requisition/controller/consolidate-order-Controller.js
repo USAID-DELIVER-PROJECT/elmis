@@ -68,7 +68,7 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
     $scope.highlightRequired = function (value) {
 
-        if ($scope.inputClass && (isUndefined(value)) || (value === 0) ) {
+        if ($scope.inputClass && (isUndefined(value))) {
             return "required-error";
         }
         return null;
@@ -106,6 +106,7 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
 
         var events = [];
+        var adjustmentEvents = [];
 
         var distributionLineItemList = [];
         var printWindow;
@@ -123,12 +124,26 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
             distribution.programId = $routeParams.program;
             distribution.lineItems = [];
 
+
             angular.forEach(facility, function (product) {
 
                 var lineItem = {};
 
 
                 if (product.quantityRequested > 0) {
+
+                    if(product.originalTotalQuantity !== product.quantityTotalOnHand ){
+                        var adjustmentEvent = {};
+                        var q = product.quantityTotalOnHand - product.originalTotalQuantity;
+                        adjustmentEvent.type = "ADJUSTMENT";
+                        adjustmentEvent.productCode = product.productCode;
+                        adjustmentEvent.quantity = Math.abs(q);
+                        adjustmentEvent.reasonName=(q<0)?"TRANSFER_OUT":"TRANSFER_IN";
+                        adjustmentEvent.customProps = {"occurred": $scope.date};
+                        adjustmentEvents.push(adjustmentEvent);
+
+
+                    }
                     var event = {};
                     event.type = "ISSUE";
                     event.facilityId = product.facilityId;
@@ -153,37 +168,37 @@ function ConsolidateOrderController($scope, orders, stockCards, UpdateOrderRequi
 
         });
 
+        StockEvent.save({facilityId: $routeParams.homeFacility},adjustmentEvents, function(d){
+            if(d.success) {
+                StockEvent.save({facilityId: $routeParams.homeFacility}, events, function (data) {
+                    if (data.success) {
+                        SaveDistributionList.save(distributionLineItemList, function (distribution) {
 
-        StockEvent.save({facilityId: $routeParams.homeFacility}, events, function (data) {
-            if(data.success)
-            {
-            SaveDistributionList.save(distributionLineItemList, function (distribution) {
+                            var printList = [];
 
-                var printList = [];
+                            angular.forEach(distribution.distributionIds, function (distributionId) {
 
-                angular.forEach(distribution.distributionIds, function (distributionId) {
-
-                    UpdateOrderRequisitionStatus.update({orderId: distributionId.orderId}, function () {
-                        $scope.message = "label.form.Submitted.Successfully";
+                                UpdateOrderRequisitionStatus.update({orderId: distributionId.orderId}, function () {
+                                    $scope.message = "label.form.Submitted.Successfully";
 
 
-                    });
-                    printList.push(parseInt(distributionId.id, 10));
+                                });
+                                printList.push(parseInt(distributionId.id, 10));
 
+                            });
+
+                            var url = '/vaccine/orderRequisition/consolidate/print/' + printList;
+
+                            printWindow.location.href = url;
+
+                            $scope.cancel();
+
+                        });
+                    }
                 });
-
-
-                var url = '/vaccine/orderRequisition/consolidate/print/' + printList;
-
-               printWindow.location.href = url;
-
-                $scope.cancel();
-
-            });
-        }
+            }
         });
-        printWindow = $window.open('about:blank','_blank');
-
+        printWindow = $window.open('about:blank', '_blank');
     };
 
 

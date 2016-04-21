@@ -1,14 +1,13 @@
 <!--
 * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
 *
-* Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI)/MoHCDGEC Tanzania.
 *
 * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 *
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-*
-* You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
 -->
+
 <!DOCTYPE html>
 
 <style>
@@ -86,7 +85,7 @@
     }*/
 
     th#firstElement {
-        height: 55px !important;
+        height: 67px !important;
     }
 
     th#secondElement {
@@ -142,7 +141,6 @@
         /*
                 border: 2px red solid;
         */
-        border-color: #F84072;
 
     }
 
@@ -218,9 +216,9 @@
                        fixed-table-header
                        ng-table="tableParams">
                     <thead>
-                    <tr>
+                    <tr ng-form="sohForm">
 
-                        <th ng-repeat="product in consolidatedOrders[0]" colspan="1" id="product">
+                        <th ng-repeat="product in consolidatedOrders[0]" colspan="1" id="product" ng-init="product.originalTotalQuantity=getTotalStockOnHand(product)">
                             {{product.productName}} <br> &nbsp; &nbsp;
 
 
@@ -229,9 +227,14 @@
                                 &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
                                 &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
                                 &nbsp;
-                                (SOH: {{getTotalStockOnHand(product)}})
+
+                                  <input ng-init="product.quantityTotalOnHand = getTotalStockOnHand(product)"
+                                         type="number" class="cell-text" ng-model="product.quantityTotalOnHand"
+                                         />
+
                             </span>
-                            <span ng-class="{'red icon-remove pull-right':getTotalStockOnHand(product) <  sumQuantityRequested(product)}"></span>
+                            <span ng-class="{'red icon-remove pull-right':product.quantityTotalOnHand <  sumQuantityRequested(product)}"></span>
+                            <input type="hidden" ng-required="product.quantityTotalOnHand <  sumQuantityRequested(product)" ng-model="product.isValid"/>
                         </th>
                         <th>&nbsp;</th>
                     </tr>
@@ -254,7 +257,7 @@
                                          ng-disabled="product.editable" class="cell-text"
                                          style="margin-left:10px;margin-right: 10px;width: 90%;"
                                          type="number" ng-model="product.quantityRequested" name="quantityRequested"
-                                         ng-class="highlightRequired(product.quantityRequested) || totalQuantityHighlighted(sumQuantityRequested(product), getTotalStockOnHand(product))"
+                                         ng-class="highlightRequired(product.quantityRequested) || totalQuantityHighlighted(sumQuantityRequested(product), product.quantityTotalOnHand)"
                                          numeric-validator="positiveInteger" ng-change="sumQuantityRequested(product)"
                                          ng-required="true"/>&nbsp;
                                     <input type="checkbox" ng-model="product.editable" ng-checked="true"/>
@@ -278,6 +281,7 @@
             <div form-toolbar id="action_buttons" class="action-buttons">
                 <div class="form-cell button-row">
                     <input id="submitButton"
+                           ng-disabled="sohForm.$invalid"
                            type="submit" id="submit-button" class="btn btn-primary save-button"
                            openlmis-message="button.save.and.print" ng-click="submitConsolidated()"/>
                     <input id="cancelButton" type="button" class="btn btn-cancel cancel-button"
