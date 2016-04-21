@@ -169,6 +169,23 @@
                         <tbody>
                         <tr>
                             <td style="background-color : {{colors.color_ninty_percent}}" openlmis-message="coverage.greater.than.or.equal.ninty.percent"></td>
+                            <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="b in coverageSummary.groupOne">{{b.total.value}}</td>
+                        </tr>
+                        <tr>
+                            <td  style="background-color : {{colors.color_80_percent}}" openlmis-message="coverage.greater.than.or.equal.eighty.percent"></td>
+                            <td style="background-color : {{colors.color_80_percent}}" ng-repeat="b in coverageSummary.groupTwo">{{b.total.value}}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
+                            <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="b in coverageSummary.groupThree">{{b.total.value}}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color : {{colors.color_non_reporting}}" openlmis-message="Non Reporting">Non Reporting</td>
+                            <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="b in coverageSummary.groupFour">{{b.total.value}}</td>
+                        </tr>
+
+                       <!-- <tr>
+                            <td style="background-color : {{colors.color_ninty_percent}}" openlmis-message="coverage.greater.than.or.equal.ninty.percent"></td>
                             <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="a in g1">{{a.total}}</td>
                         </tr>
                         <tr>
@@ -184,6 +201,7 @@
                             <td style="background-color : {{colors.color_non_reporting}}" openlmis-message="Non Reporting">Non Reporting</td>
                             <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="a in grayCount">{{grayCount[staticYear+"_"+$index].count}}&nbsp;</td>
                         </tr>
+                        -->
                         </tbody>
                     </table>
                 </div>
@@ -276,21 +294,19 @@
                         <tbody>
                         <tr>
                             <td style="background-color : {{colors.color_ninty_percent}}" openlmis-message="coverage.greater.than.or.equal.ninty.percent"></td>
-                            <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="a in gAll1">{{a.total}}</td>
+                            <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="b in coverageRegionSummary.groupOne">{{b.total.value}}</td>
                         </tr>
                         <tr>
                             <td  style="background-color : {{colors.color_80_percent}}" openlmis-message="coverage.greater.than.or.equal.eighty.percent"></td>
-                            <td   style="background-color : {{colors.color_80_percent}}" ng-repeat="a in gAll2">{{a.total}}</td>
+                            <td style="background-color : {{colors.color_80_percent}}" ng-repeat="b in coverageRegionSummary.groupTwo">{{b.total.value}}</td>
                         </tr>
-
                         <tr>
                             <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
-                            <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="a in gAll4">{{a.total}}</td>
+                            <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="b in coverageRegionSummary.groupThree">{{b.total.value}}</td>
                         </tr>
                         <tr>
                             <td style="background-color : {{colors.color_non_reporting}}" openlmis-message="Non Reporting">Non Reporting</td>
-                            <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="a in regionGrayCount">{{regionGrayCount[staticYear+"_"+$index].count}}</td>
-
+                            <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="b in coverageRegionSummary.groupFour">{{b.total.value}}</td>
                         </tr>
                         </tbody>
                     </table>
