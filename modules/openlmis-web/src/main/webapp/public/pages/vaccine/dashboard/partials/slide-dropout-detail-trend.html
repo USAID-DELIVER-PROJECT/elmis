@@ -23,7 +23,7 @@
         <td ng-show="$first" rowspan="{{facilityDropoutDetails.length}}">{{detail.district}}</td>
         <td ng-show="$index%2 == 0" rowspan="2">{{detail.facilityName}}</td>
         <td>{{detail.indicator}}</td>
-        <td class="number" ng-repeat="value in detail.indicatorValues track by $index">{{value | number:0}}</td>
+        <td class="number" ng-repeat="value in detail.indicatorValues track by $index">{{value | number:2}}</td>
 
     </tr>
     </tbody>

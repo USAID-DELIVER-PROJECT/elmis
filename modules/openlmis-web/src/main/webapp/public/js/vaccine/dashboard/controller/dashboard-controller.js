@@ -418,30 +418,32 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             }, function (data) {
 
                 $scope.coverageDetails = data.facilityCoverageDetails;
+
                 $scope.periodsList = _.uniq(_.pluck(data.facilityCoverageDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck(data.facilityCoverageDetails, 'facility_name'));
-                $scope.addPlaceHolderFornonExistingPeriodData( $scope.coverageDetails, $scope.periodsList,facilities);
+                var facilities = _.uniq(_.pluck(data.facilityCoverageDetails, 'key_val'));
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.coverageDetails, $scope.periodsList, facilities);
+
                 $scope.facilityDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.coverageDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.coverageDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.coverageDetails, {key_val: facility}).facility_name;
                     $scope.facilityDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'target',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'target', $scope.coverageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'target', $scope.coverageDetails)
                     });
                     $scope.facilityDetails.push({
                         district: district,
                         facilityName: facility,
                         indicator: 'actual',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'actual', $scope.coverageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'actual', $scope.coverageDetails)
                     });
                     $scope.facilityDetails.push({
                         district: district,
                         facilityName: facility,
                         indicator: 'coverage',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'coverage', $scope.coverageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'coverage', $scope.coverageDetails)
                     });
 
                 });
@@ -556,23 +558,23 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                 $scope.dropoutDetails = dropoutSelector(data.facilityDropoutDetails, $scope.filter.dropout.product);
 
                 $scope.dropoutPeriodsList = _.uniq(_.pluck($scope.dropoutDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck($scope.dropoutDetails, 'facility_name'));
-                $scope.addPlaceHolderFornonExistingPeriodData( $scope.dropoutDetails, $scope.dropoutPeriodsList,facilities);
+                var facilities = _.uniq(_.pluck($scope.dropoutDetails, 'key_val'));
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.dropoutDetails, $scope.dropoutPeriodsList, facilities);
                 $scope.facilityDropoutDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.dropoutDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.dropoutDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.dropoutDetails, {key_val: facility}).facility_name;
                     $scope.facilityDropoutDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: messageService.get('label.bcg.mr.dropout'),
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'bcg_mr_dropout', $scope.dropoutDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'bcg_mr_dropout', $scope.dropoutDetails)
                     });
                     $scope.facilityDropoutDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: messageService.get('label.dtp.dropout'),
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'dtp1_dtp3_dropout', $scope.dropoutDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'dtp1_dtp3_dropout', $scope.dropoutDetails)
                     });
 
                 });
@@ -682,23 +684,23 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
                 $scope.wastageDetails = data.facilityWastageDetails;
                 $scope.wastagePeriodsList = _.uniq(_.pluck($scope.wastageDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck($scope.wastageDetails, 'facility_name'));
-                $scope.addPlaceHolderFornonExistingPeriodData( $scope.wastageDetails, $scope.wastagePeriodsList,facilities);
+                var facilities = _.uniq(_.pluck($scope.wastageDetails, 'key_val'));
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.wastageDetails, $scope.wastagePeriodsList, facilities);
                 $scope.facilityWastageDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.wastageDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.wastageDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.wastageDetails, {key_val: facility}).facility_name;
                     $scope.facilityWastageDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Wastage Rate',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'wastage_rate', $scope.wastageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'wastage_rate', $scope.wastageDetails)
                     });
                     $scope.facilityWastageDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Usage Rate',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'usage_rate', $scope.wastageDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'usage_rate', $scope.wastageDetails)
                     });
 
                 });
@@ -802,26 +804,26 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
                 $scope.sessionsDetails = data.facilitySessionsDetails;
                 $scope.sessionsPeriodsList = _.uniq(_.pluck($scope.sessionsDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck($scope.sessionsDetails, 'facility_name'));
-                console.log(" period list"+ JSON.stringify(  $scope.sessionsPeriodsList)+ "\n");
-                console.log(" sessionsDetails list"+ JSON.stringify(_.where(  $scope.sessionsDetails,{facility_name: "Chamwino"}))+ "\n");
-                $scope.addPlaceHolderFornonExistingPeriodData( $scope.sessionsDetails, $scope.sessionsPeriodsList,facilities);
-                console.log(" sessionsDetails list"+ JSON.stringify(_.where(  $scope.sessionsDetails,{facility_name: "Chamwino"}))+ "\n");
+                var facilities = _.uniq(_.pluck($scope.sessionsDetails, 'key_val'));
+                console.log(" period list" + JSON.stringify($scope.sessionsPeriodsList) + "\n");
+                console.log(" sessionsDetails list" + JSON.stringify(_.where($scope.sessionsDetails, {facility_name: "Chamwino"})) + "\n");
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.sessionsDetails, $scope.sessionsPeriodsList, facilities);
+                console.log(" sessionsDetails list" + JSON.stringify(_.where($scope.sessionsDetails, {facility_name: "Chamwino"})) + "\n");
                 $scope.facilitySessionsDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.sessionsDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.sessionsDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.sessionsDetails, {key_val: facility}).facility_name;
                     $scope.facilitySessionsDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Fixed Sessions',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'fixed_sessions', $scope.sessionsDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'fixed_sessions', $scope.sessionsDetails)
                     });
                     $scope.facilitySessionsDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Outreach Sessions',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'outreach_sessions', $scope.sessionsDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'outreach_sessions', $scope.sessionsDetails)
                     });
 
                 });
@@ -1070,14 +1072,14 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                         district: district,
                         facilityName: facility,
                         indicator: 'Issued',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'issued', $scope.stockDetail)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'issued', $scope.stockDetail)
                     });
 
                     $scope.facilityStockDetails.push({
                         district: district,
                         facilityName: facility,
                         indicator: 'Closing Balance',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'cb', $scope.stockDetail)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'cb', $scope.stockDetail)
                     });
 
                 });
@@ -1101,23 +1103,23 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
     $scope.getIndicatorValues = function (district, facility, indicator, data) {
 
-        var facilityDetail = _.where(data, {district_name:district,facility_name: facility});
+        var facilityDetail = _.where(data, {key_val: facility});
         var values = _.pluck(facilityDetail, indicator);
         var tot = _.reduce(values, function (res, num) {
-            res=utils.isNullOrUndefined(res)?0:res;
-            num=utils.isNullOrUndefined(num)?0: num;
-            return res+num;
+            res = utils.isNullOrUndefined(res) ? 0 : res;
+            num = utils.isNullOrUndefined(num) ? 0 : num;
+            return res + num;
         }, 0);
         values.push(tot);
         console.log(JSON.stringify(values));
         console.log(_.reduce(values, function (res, num) {
-            res=utils.isNullOrUndefined(res)?0:res;
-            num=utils.isNullOrUndefined(num)?0: num;
-            return res+num;
+            res = utils.isNullOrUndefined(res) ? 0 : res;
+            num = utils.isNullOrUndefined(num) ? 0 : num;
+            return res + num;
         }));
         return values;
     };
-    $scope.addPlaceHolderFornonExistingPeriodData = function (data, periods,facilities) {
+    $scope.addPlaceHolderFornonExistingPeriodData = function (data, periods, facilities) {
         var i;
         var j;
 
@@ -1125,16 +1127,22 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
             var period = periods[i];
             for (j = 0; j < facilities.length; j++) {
                 var facility = facilities[j];
-                var facilityDetail=_.findWhere(data, {facility_name: facility, period_name: period});
+                var facilityObj = _.findWhere(data, {key_val: facility});
+                var facilityDetail = _.findWhere(data, {key_val: facility, period_name: period});
 
                 if (utils.isNullOrUndefined(facilityDetail)) {
-                    data.push({facility_name: facility, period_name: period});
+                    data.push({
+                        facility_name: facilityObj.facility_name,
+                        district_name: facilityObj.district_name,
+                        key_val: facility,
+                        period_name: period
+                    });
                 }
 
 
             }
         }
-        data= _.sortBy(data, 'period_start_date');
+        data = _.sortBy(data, 'period_start_date');
     };
     $scope.getDetail = function (facility, period) {
         return _.findWhere($scope.stockDetail, {facility_name: facility, period_name: period});
@@ -1340,29 +1348,29 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
                 $scope.stockstatusDetails = data.facilityStockStatusDetails;
                 $scope.stockstatusPeriodsList = _.uniq(_.pluck($scope.stockstatusDetails, 'period_name'));
-                var facilities = _.uniq(_.pluck($scope.stockstatusDetails, 'facility_name'));
-                $scope.addPlaceHolderFornonExistingPeriodData( $scope.stockstatusDetails, $scope.stockstatusPeriodsList,facilities);
+                var facilities = _.uniq(_.pluck($scope.stockstatusDetails, 'key_val'));
+                $scope.addPlaceHolderFornonExistingPeriodData($scope.stockstatusDetails, $scope.stockstatusPeriodsList, facilities);
                 $scope.facilityStockStatusDetails = [];
                 angular.forEach(facilities, function (facility) {
-                    var district = _.findWhere($scope.stockstatusDetails, {facility_name: facility}).district_name;
-
+                    var district = _.findWhere($scope.stockstatusDetails, {key_val: facility}).district_name;
+                    var facilityName = _.findWhere($scope.stockstatusDetails, {key_val: facility}).facility_name;
                     $scope.facilityStockStatusDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'Max MOS',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'max', $scope.stockstatusDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'max', $scope.stockstatusDetails)
                     });
                     $scope.facilityStockStatusDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'MIN MOS',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'min', $scope.stockstatusDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'min', $scope.stockstatusDetails)
                     });
                     $scope.facilityStockStatusDetails.push({
                         district: district,
-                        facilityName: facility,
+                        facilityName: facilityName,
                         indicator: 'MOS',
-                        indicatorValues: $scope.getIndicatorValues(district,facility, 'mos', $scope.stockstatusDetails)
+                        indicatorValues: $scope.getIndicatorValues(district, facility, 'mos', $scope.stockstatusDetails)
                     });
 
                 });
