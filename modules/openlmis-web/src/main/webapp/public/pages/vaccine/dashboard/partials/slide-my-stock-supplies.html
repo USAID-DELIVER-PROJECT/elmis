@@ -14,7 +14,7 @@
     </form>
     <br/><br/>
 </div>
-
+<div ng-show="myStockSupplies.dataPoints">
 <c3chart bindto-id="mystock-supplies"
          chart-data="myStockSupplies.dataPoints"
          chart-columns="myStockSupplies.dataColumns"
@@ -33,5 +33,7 @@
         </chart-axis-y>
     </chart-axis>
 </c3chart>
+    <custom-legend data="myStockSupplies.legend"></custom-legend>
+</div>
 <div style="font-weight: bold" ng-hide="myStockSupplies.dataPoints"
      openlmis-message="label.report.no.data.to.show"></div>

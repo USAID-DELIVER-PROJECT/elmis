@@ -1790,3 +1790,22 @@ app.directive('vaccineStockFacilityLevelFilter', ['ReportFacilityLevels', 'Vacci
         };
     }
 ]);
+
+app.directive('customLegend', [
+    function () {
+        return {
+            restrict: 'E',
+            scope: {
+                data: '=data'
+            },
+
+            controller: function ($scope) {
+               console.log($scope.data);
+                $scope.$watch('data', function (newValues, oldValues) {
+
+                });
+            },
+            templateUrl: 'filter-custom-legend-template'
+        };
+    }
+]);

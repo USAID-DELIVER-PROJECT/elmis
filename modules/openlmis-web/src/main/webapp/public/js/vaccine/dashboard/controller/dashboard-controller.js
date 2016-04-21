@@ -857,11 +857,15 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
 
 $scope.myStockVaccine = {
          dataPoints:[],
-         dataColumns: [{
-             "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
+         dataColumns: [
+                      {"id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
          ],
          dataX: {"id": "product"},
-         productCategory:""
+         productCategory:"",
+         legend:[{"label":"< buffer","color":colors.red_color},
+                 {"label":"< re-order","color":colors.yellow_color},
+                 {"label":"> re-order","color":colors.green_color},
+                 {"label":"> max","color":colors.blue_color}]
  };
 
  $scope.myStockSupplies = {
@@ -870,7 +874,11 @@ $scope.myStockVaccine = {
              "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
          ],
          dataX: {"id": "product"},
-         productCategory:""
+         productCategory:"",
+         legend:[{"label":"< buffer","color":colors.red_color},
+                          {"label":"< re-order","color":colors.yellow_color},
+                          {"label":"> re-order","color":colors.green_color},
+                          {"label":"> max","color":colors.blue_color}]
  };
 
  $scope.mySupervisedFacilityStock = {
@@ -879,7 +887,11 @@ $scope.myStockVaccine = {
               "id": "mos", "name": messageService.get('label.mos'), "type": "bar"}
           ],
           dataX: {"id": "facility_name"},
-          productCategory:""
+          productCategory:"",
+          legend:[{"label":"< buffer","color":colors.red_color},
+                           {"label":"< re-order","color":colors.yellow_color},
+                           {"label":"> re-order","color":colors.green_color},
+                           {"label":"> max","color":colors.blue_color}]
   };
 
   $scope.supplyingPendingOrdersDetailCallback=function(){
@@ -904,7 +916,6 @@ $scope.myStockVaccine = {
             $scope.allNonFunctionalEquipmentsByStatus = $.map(byStatus, function(value, index) {
                   return [{"status":index,"data":value}];
             });
-            console.log(JSON.stringify($scope.allNonFunctionalEquipmentsByStatus));
         }
     });
   };
@@ -1623,6 +1634,14 @@ VaccineDashboardController.resolve = {
                     color_values.red_color = data.settings.value;
                 } else {
                     color_values.blue_color = 'red';
+                }
+
+            });
+            SettingsByKey.get({key: 'STOCK_GREATER_THAN_BUFFER_COLOR'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.yellow_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'yellow';
                 }
 
             });
