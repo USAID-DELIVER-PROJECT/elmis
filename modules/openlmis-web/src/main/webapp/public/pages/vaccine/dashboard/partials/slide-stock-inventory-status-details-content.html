@@ -13,6 +13,9 @@
             <th style="  width: 40px">
                 <span openlmis-message="label.product">	 </span>
             </th>
+            <th style="  width: 40px">
+                <span openlmis-message="label.unit.of.measure">	 </span>
+            </th>
             <th style="width: 20px">
                 <span openlmis-message="label.months.of.stock"></span>
             </th>
@@ -29,8 +32,9 @@
         <tr ng-style="{'background-color': getBackGroundColor($index)}"
             ng-repeat="p in category.dataPoints">
             <td>{{p.product}}</td>
+            <td ng-bind="p.unity_of_measure"></td>
             <td ng-bind="p.mos"></td>
-            <td ng-bind="p.soh"/>
+            <td>{{p.soh | number}}</td>
         </tr>
         </tbody>
     </table>
