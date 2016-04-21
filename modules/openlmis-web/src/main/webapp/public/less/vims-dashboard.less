@@ -1,18 +1,22 @@
 // Color variables (appears count calculates by raw css)
-@color0: #ffffff; // Appears 15 times
-@color1: #006dcc; // Appears 8 times
-@color2: #eef1f5; // Appears 6 times
-@color3: #ff5454; // Appears 2 times
+@color0: #ffffff; // Appears 6 times
+@color1: #eef1f5; // Appears 6 times
+@color2: #006dcc; // Appears 3 times
+@color3: #006dcc; // Appears 2 times
 @color4: #aa66cc; // Appears 2 times
-@color5: #45b600; // Appears 2 times
+@color5: #ff5454; // Appears 2 times
 @color6: #aab5bc; // Appears 2 times
-@color7: #bb6622; // Appears 2 times
-@color8: #2f96b4; // Appears 2 times
-@color9: #880000; // Appears 2 times
+@color7: #880000; // Appears 2 times
+@color8: #45b600; // Appears 2 times
+@color9: #bb6622; // Appears 2 times
 
+// Width variables (appears count calculates by raw css)
+@width7: 24%; // Appears 4 times
 
 // Height variables (appears count calculates by raw css)
-@height3: 20px; // Appears 4 times
+@height1: 60px; // Appears 4 times
+@height4: 20px; // Appears 4 times
+@height9: 35%; // Appears 5 times
 
 label {
   display: block;
@@ -23,12 +27,12 @@ label {
   margin-right: -15px;
 }
 .portlet.light {
-  -moz-border-radius-topleft:5px;
-  -moz-border-radius-topright:5px;
-  -webkit-border-top-left-radius:5px;
-  -webkit-border-top-right-radius:5px;
+  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
   background-color: @color0;
-  float:left;
+  float: left;
   margin-left: 1%;
   margin-right: 1%;
   padding: 1px 20px 15px;
@@ -107,33 +111,33 @@ label {
   vertical-align: bottom;
 }
 .accordion-inner {
-  background-color: @color2;
-  border-top: 1px solid @color2;
+  background-color: @color1;
+  border-top: 1px solid @color1;
   padding: 0px 15px;
 }
 .accordion {
   .accordion-body {
-    background: @color2;
+    background: @color1;
     margin: 0 !important;
   }
   .gray-cascade {
     .accordion-heading {
       a {
-        background: none repeat scroll 0% 0% @color2 !important;
+        background: none repeat scroll 0% 0% @color1 !important;
       }
     }
   }
 }
 .accordion-heading {
   a {
-    background-color: @color2 !important;
+    background-color: @color1 !important;
     bottom: 0;
     font-color: @color6 !important;
     text-decoration: none;
   }
 }
 .accordion-title {
-  background-color: @color2 !important;
+  background-color: @color1 !important;
   bottom: 0;
   font-color: @color6 !important;
   text-decoration: none;
@@ -163,8 +167,8 @@ label {
 }
 .select2-container {
   .select2-choice {
-    height: @height3;
-    line-height: @height3;
+    height: @height4;
+    line-height: @height4;
     width: 90px;
     .select2-arrow {
       b {
@@ -180,15 +184,15 @@ label {
   }
 }
 .select2-search {
-  min-height: @height3;
+  min-height: @height4;
   input {
     font-size: 0.5em;
-    min-height: @height3;
+    min-height: @height4;
   }
 }
 .select2-container-multi {
   .select2-choices {
-    min-height: @height3;
+    min-height: @height4;
     .select2-search-field {
       input {
         font-size: 62.5%;
@@ -197,124 +201,118 @@ label {
   }
 }
 .box {
-  background-color:@color0;
-  border:1px solid @color3;
+  background-color: @color0;
+  border: 1px solid @color5;
   float: left;
-  height: 60px;
+  height: @height1;
   margin-bottom: 5px;
   margin-right: 2px;
   margin-top: 0px;
-  width: 24%;
+  width: @width7;
   h2 {
-    background:@color3;
+    background: @color5;
     color: white;
     font-size: 1em;
-    height: 35%;
-    line-height:@height3;
-    padding-left:5px;
+    height: @height9;
+    line-height: @height4;
+    padding-left: 5px;
   }
   p {
-    padding-top:15px;
+    padding-top: 15px;
   }
 }
 .box-value {
   font-size: 1.5em;
 }
 .box-col2 {
-  border:1px solid @color4;
+  border: 1px solid @color4;
   float: left;
-  height: 60px;
+  height: @height1;
   margin-bottom: 5px;
   margin-right: 2px;
   margin-top: 0px;
-  width: 24%;
+  width: @width7;
   h2 {
-    background:@color4;
+    background: @color4;
     color: white;
     font-size: 1em;
-    height: 35%;
-    line-height:@height3;
-    padding-left:5px;
+    height: @height9;
+    line-height: @height4;
+    padding-left: 5px;
   }
   p {
-    padding-top:15px;
+    padding-top: 15px;
   }
 }
 .box-col3 {
-  border:1px solid @color5;
+  border: 1px solid @color8;
   float: left;
-  height: 60px;
+  height: @height1;
   margin-bottom: 5px;
   margin-right: 2px;
   margin-top: 0px;
-  width: 24%;
+  width: @width7;
   h2 {
-    background:@color5;
+    background: @color8;
     color: white;
     font-size: 1em;
-    height: 35%;
-    line-height:@height3;
-    padding-left:5px;
+    height: @height9;
+    line-height: @height4;
+    padding-left: 5px;
   }
   p {
-    padding-top:15px;
+    padding-top: 15px;
   }
 }
 .box-col4 {
-  border:1px solid @color8;
+  border: 1px solid @color2;
   float: left;
-  height: 60px;
+  height: @height1;
   margin-bottom: 5px;
   margin-right: 2px;
   margin-top: 0px;
-  width: 24%;
+  width: @width7;
   h2 {
-    background:@color8;
+    background: @color2;
     color: white;
     font-size: 1em;
-    height: 35%;
-    line-height:@height3;
-    padding-left:5px;
+    height: @height9;
+    line-height: @height4;
+    padding-left: 5px;
   }
   p {
-    padding-top:15px;
+    padding-top: 15px;
   }
 }
 .box-col5 {
-  border:1px solid @color9;
+  border: 1px solid @color7;
   h2 {
-    background:@color9;
+    background: @color7;
   }
 }
 .box-col6 {
-  border:1px solid @color7;
+  border: 1px solid @color9;
   h2 {
-    background:@color7;
+    background: @color9;
     color: white;
     font-size: 1em;
-    height: 35%;
-    line-height: 20px;
+    height: @height9;
+    line-height: @height4;
     padding-left: 5px;
   }
 }
 .box, .box-col2, .box-col3, .box-col4  {
-  -moz-border-radius-topleft:5px;
-  -moz-border-radius-topright:5px;
-  -webkit-border-top-left-radius:5px;
-  -webkit-border-top-right-radius:5px;
+  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
 }
 .modal-header {
-  background-color:@color1;
-  background: -moz-linear-gradient(top, @color0 0%, @color0 24%, @color1 100%);
-  background: -ms-linear-gradient(top, @color0 0%, @color0 24%, @color1 100%);
-  background: -webkit-linear-gradient(top, @color0 0%, @color0 24%, @color1 100%);
-  background: @color1;
-  background: linear-gradient(to bottom, @color0 0%, @color0 24%, @color1 100%);
-  border-bottom: 1px solid @color1;
+  background-color: @color2;
+  border-bottom: 1px solid @color3;
   border-radius: 3px 3px 0 0;
-  border:1px solid @color1;
+  border: 1px solid @color3;
   color: @color0;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@color0', endColorstr='#c5c5c5', GradientType=0);
   font-size: 1.1em;
   height: 40px;
   h2 {
@@ -322,10 +320,13 @@ label {
   }
 }
 .close {
+  color:white;
   display: inline-block;
+  font-size: 1.1em;
   height: 9px;
   margin-right: 0px;
   margin-top: 0px;
+  opacity: 90;
   width: 9px;
 }
 .modal-table-div {

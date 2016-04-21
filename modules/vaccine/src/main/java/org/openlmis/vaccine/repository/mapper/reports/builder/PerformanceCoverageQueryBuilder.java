@@ -173,27 +173,28 @@ public class PerformanceCoverageQueryBuilder {
 
          sql = "SELECT\n" +
                 "d.district_id,\n" +
-                "d.region_name,\n" +
-                "d.district_name,\n" +
-                "i.denominator target,\n" +
-                "i.facility_name,   \n" +
-                "i.period_name,\n" +
-                "i.within_outside_total vaccinated,\n" +
-                "extract(month from i.period_start_date) \"month\",\n" +
-                "extract(year from i.period_start_date) \"year\"," +
-                "round((case when denominator > 0 then (i.within_outside_total / denominator::numeric) else 0 end) * 100,2) coverage\n" +
-                "FROM\n" +
+                 "d.region_name,\n" +
+                 "d.district_name,\n" +
+                 "sum(i.denominator) target,\n" +
+                 "i.facility_name,   \n" +
+                 "i.period_name,\n" +
+                 "sum(i.within_outside_total) vaccinated,\n" +
+                 "extract(month from i.period_start_date) \"month\",\n" +
+                 "extract(year from i.period_start_date) \"year\",\n" +
+                 "round((case when sum(i.within_outside_total) > 0 then (sum(i.within_outside_total) / sum(i.denominator)::numeric) else 0 end) * 100,2) coverage" +
+                " FROM\n" +
                 "  vw_vaccine_coverage i\n" +
-                "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
-                "JOIN vaccine_reports vr ON i.report_id = vr.ID\n" +
-                "JOIN program_products pp ON pp.programid = vr.programid\n" +
-                "AND pp.productid = i.product_id\n" +
-                "JOIN product_categories pg ON pp.productcategoryid = pg.ID\n" +
-                "WHERE\n" +
-                "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
-                "AND "+
+                " JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
+                " JOIN vaccine_reports vr ON i.report_id = vr.ID\n" +
+                " JOIN program_products pp ON pp.programid = vr.programid\n" +
+                " AND pp.productid = i.product_id\n" +
+                " JOIN product_categories pg ON pp.productcategoryid = pg.ID\n" +
+                " WHERE\n" +
+                " i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
+                " AND "+
                 writePredicate(params)
-                +" ORDER BY\n" +
+                +" GROUP BY d.district_id, d.region_name, d.district_name, i.facility_name,i.period_name,\"month\",\"year\",i.period_start_date" +
+                 " ORDER BY\n" +
                 "d.region_name,\n" +
                 "d.district_name, "+
                 "i.facility_name,\n" +

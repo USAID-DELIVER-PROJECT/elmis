@@ -58,6 +58,7 @@ function StatusVaccinationReceiceController($scope, StatuVaccinationSupply, Sett
                     var columnKeysToBeAggregated = ["targetpopulation", "received", "onhand", "issued", "used", "wasted", "administered"];
                     var districtNameKey = "district_name";
                     var facilityNameKey = "facility_name";
+                    var regionNameKey = "region_name";
                     var includeGrandTotal = false;
 
                     $scope.data = data.statusOfVaccinationSupplyReceiveReport.facilityDistrictVaccineStatusList;
@@ -69,6 +70,7 @@ function StatusVaccinationReceiceController($scope, StatuVaccinationSupply, Sett
                         $scope.datarows = utils.getReportDataWithSubAndGrandTotal($scope.data, districtNameKey, columnKeysToBeAggregated, includeGrandTotal,2);
                     }
                     $scope.regionrows = data.statusOfVaccinationSupplyReceiveReport.regionVaccineStatusList;
+                    $scope.regionrows =   utils.getReportDataWithSubAndGrandTotal( $scope.regionrows , regionNameKey, columnKeysToBeAggregated, includeGrandTotal,3);
 
                     $scope.report = data.statusOfVaccinationSupplyReceiveReport;
                 }
