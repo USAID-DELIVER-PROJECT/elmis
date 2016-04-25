@@ -314,7 +314,8 @@
                         </tr>
                         <tr>
                             <td ng-style="{'min-width':'2800px','background-color': nonReporting}" >Non reporting</td>
-                            <td  ng-style="{'background-color': nonReporting}" ng-repeat="column in nonReportingDistrict track by $index" ng-bind="nonReportingDistrict[staticYear + '_' +$index].count"></td>
+                            <td ng-style="{'background-color': nonReporting}" ng-repeat="column in columnVals track by $index" ng-bind="nonReportingDistrict[staticYear + '_' +$index]!=null?nonReportingDistrict[staticYear + '_' +$index].count:0"></td>
+
                         </tr>
                         </tbody>
                     </table>
@@ -550,7 +551,7 @@
                         </tr>
                         <tr>
                             <td ng-style="{'min-width':'2800px','background-color': nonReporting}" >Non reporting</td>
-                            <td  ng-style="{'background-color': nonReporting}" ng-repeat="column in nonReportingDistrict track by $index" ng-bind="nonReportingRegion[staticYear + '_' +$index].count"></td>
+                            <td  ng-style="{'background-color': nonReporting}" ng-repeat="column in columnVals track by $index" ng-bind="nonReportingRegion[staticYear + '_' +$index]!=null?nonReportingRegion[staticYear + '_' +$index].count:0"></td>
                         </tr>
                         </tbody>
                     </table>

@@ -78,14 +78,15 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                         if ($scope.reportType === true) {
                             reportVal = findMonthValue($scope.datarows, 1);
                             $scope.datarows = reportVal.reportList;
-                            $scope.nonReportingDistrict = reportVal.grayCount;
+                            $scope.nonReportingDistrict =!utils.isNullOrUndefined(reportVal)? reportVal.grayCount:null;
+
                             extractPopulationInfo($scope.datarows, $scope.population, 1);
                             $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 1);
 
                         } else {
                             reportVal = findMonthValue($scope.datarows, 2);
                             $scope.datarows = reportVal.reportList;
-                            $scope.nonReportingDistrict = reportVal.grayCount;
+                            $scope.nonReportingDistrict =!utils.isEmpty(reportVal.grayCount)&&!utils.isNullOrUndefined(reportVal.grayCount)? reportVal.grayCount:null;
                             extractPopulationInfo($scope.datarows, $scope.population, 2);
                             $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
 
