@@ -77,8 +77,9 @@ var utils = {
                 monthBack = 1;
             }
 
-            endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
-            startDate = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+            endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack+1, 0);
+            startDate = new Date(currentDate.getFullYear(), currentDate.getMonth()-monthBack, 1);
+
 
  /*            switch (periodRange) {
                 case '1':
