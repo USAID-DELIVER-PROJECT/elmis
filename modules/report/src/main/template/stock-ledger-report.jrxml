@@ -264,14 +264,16 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{adjustment} == null || $F{adjustment} ? " " : $F{adjustment} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{adjustment} == null || $F{adjustment} == 0 ? " " : $F{adjustment} )
+
+]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0" isBlankWhenNull="false">
 				<reportElement style="err_received" x="376" y="0" width="62" height="20" uuid="97048a91-c2fe-40c6-ad1a-7014e5c5fef1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{issued} == null || $F{issued} == 0 ? " " : $F{issued} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{issued} == null || $F{issued} == 0 ? " " : java.lang.Math.abs($F{issued}))]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
