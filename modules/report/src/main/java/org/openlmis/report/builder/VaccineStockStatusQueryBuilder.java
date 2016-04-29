@@ -5,11 +5,6 @@ import org.openlmis.report.model.params.VaccineStockStatusParam;
 
 import java.util.Map;
 
-import static org.apache.ibatis.jdbc.SqlBuilder.*;
-import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.*;
-import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.multiProductFilterBy;
-
-
 public class VaccineStockStatusQueryBuilder {
 
     public String getQuery(Map params) {

@@ -31,7 +31,7 @@
 	<field name="facilityId" class="java.lang.String"/>
 	<field name="district" class="java.lang.String"/>
 	<field name="lastUpdate" class="java.lang.String"/>
-	<field name="mos" class="java.lang.Integer"/>
+	<field name="mos" class="java.lang.Float"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -150,7 +150,7 @@
 				<measure name="sohMeasure" class="java.lang.Double">
 					<measureExpression><![CDATA[$F{soh}]]></measureExpression>
 				</measure>
-				<measure name="mosMeasure" class="java.lang.Integer">
+				<measure name="mosMeasure" class="java.lang.Float">
 					<measureExpression><![CDATA[$F{mos}]]></measureExpression>
 				</measure>
 				<measure name="lastUpdateMeasure" class="java.lang.String">

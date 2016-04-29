@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock-status-report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.2100000000000004"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="425"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
@@ -30,6 +30,7 @@
 	<field name="facilityId" class="java.lang.String"/>
 	<field name="district" class="java.lang.String"/>
 	<field name="lastUpdate" class="java.lang.String"/>
+	<field name="mos" class="java.lang.Float"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -237,7 +238,7 @@
 					<font size="9"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0").format(($F{soh}.doubleValue()==0?0:$F{monthlyStock}.doubleValue()/$F{soh}.doubleValue()))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{mos}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement x="561" y="0" width="129" height="20" uuid="6f2237fb-b282-4f18-9f5e-9241b8bb7059">

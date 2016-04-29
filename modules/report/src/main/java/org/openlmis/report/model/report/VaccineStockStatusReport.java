@@ -40,7 +40,7 @@ public class VaccineStockStatusReport implements ResultRow {
 
     private Long isaValue;
 
-    private Integer mos;
+    private Float mos;
 
     //private JSONPObject products;
 

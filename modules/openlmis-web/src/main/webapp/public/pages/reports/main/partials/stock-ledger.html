@@ -113,11 +113,11 @@
                                     sortable=" ">{{row.received > 0 && (row.received | number) || '' }}
                                 </td>
                                 <td class="number" data-title="'Issued Quantity'" style="width:30%" sortable=" ">
-                                    {{row.issued > 0 && (row.issued | positive) || '' }}
+                                    {{(row.issued | positive) || '' }}
                                 </td>
                                 <td class="number" data-title="'Adjusted Quantity'" style="width:30%"
                                     sortable="adjustment">
-                                    {{row.adjustment > 0 && (row.adjustment | positive) || '' }}
+                                    {{row.adjustment > 0 && (row.adjustment | number) || '' }}
                                 </td>
                                 <td data-title="'Batch Affected'" style="width:30%" sortable=" ">{{
                                     row.lotNumber }}
