@@ -46,13 +46,13 @@
                 </tr>
                 <tr >
                     <td >Annual Target</td>
-                    <td ng-repeat="fdeCols in facilityDemographicEstimateColumns ">
-                        <span ng-repeat="fde in report.facilityDemographicEstimates" ng-if="fdeCols === fde.category.name"> {{fde.value}}</span>
+                    <td class="number" ng-repeat="fdeCols in facilityDemographicEstimateColumns ">
+                        <span ng-repeat="fde in report.facilityDemographicEstimates" ng-if="fdeCols === fde.category.name"> {{fde.value | number}}</span>
                     </td >
                 </tr>
                 <tr >
                     <td >Monthly Target</td>
-                    <td ng-repeat="fdeCols in facilityDemographicEstimateColumns ">
+                    <td class="number" ng-repeat="fdeCols in facilityDemographicEstimateColumns ">
                         <span ng-repeat="fde in report.facilityDemographicEstimates" ng-if="fdeCols === fde.category.name"> {{fde.value/12 | number : 0}}</span>
                     </td >
                 </tr>
@@ -78,9 +78,9 @@
             <tbody>
             <tr ng-repeat="ds in report.diseaseLineItems">
                 <td>{{ds.diseaseName}}</td>
-                <td>{{ds.cases}}</td>
-                <td>{{ds.cumulative}}</td>
-                <td>{{ds.death}}</td>
+                <td class="number">{{ds.cases | number}}</td>
+                <td class="number">{{ds.cumulative  | number}}</td>
+                <td class="number">{{ds.death | number}}</td>
             </tr>
             </tbody>
         </table>
@@ -101,9 +101,9 @@
                     <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.outreach">
                 </tr>
                 <tr>
-                    <td>{{report.fixedImmunizationSessions}}</td>
-                    <td>{{report.outreachImmunizationSessions}}</td>
-                    <td>{{report.outreachImmunizationSessionsCanceled}}</td>
+                    <td class="number">{{report.fixedImmunizationSessions | number}}</td>
+                    <td class="number">{{report.outreachImmunizationSessions | number}}</td>
+                    <td class="number">{{report.outreachImmunizationSessionsCanceled | number}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -154,12 +154,12 @@
                 <tr ng-repeat-start="dose in productGroup">
                     <td ng-if="$index == 0" rowspan="{{productGroup.length * 2}}"><span class="cell-text">{{dose.product.primaryName}}</span></td>
                     <td ><span class="cell-text number">{{dose.displayName}}</span></td>
-                    <td class="right-justified" ><span class="cell-text number">{{dose.regularMale}}</span></td>
-                    <td class="right-justified"><span class="cell-text number">{{dose.regularFemale}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.regularMale | number}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.regularFemale | number}}</span></td>
                     <td class="right-justified" ><span class="cell-text number">{{dose.getTotalRegular() | number : 0}}</span></td>
                     <td class="right-justified"><span class="cell-text number">{{dose.getRegularCoveragePercentage() | number : 2}}%</span></td>
-                    <td class="right-justified" ><span class="cell-text number">{{dose.outreachMale}}</span></td>
-                    <td class="right-justified"><span class="cell-text number">{{dose.outreachFemale}}</span></td>
+                    <td class="right-justified" ><span class="cell-text number">{{dose.outreachMale | number}}</span></td>
+                    <td class="right-justified"><span class="cell-text number">{{dose.outreachFemale | number}}</span></td>
                     <td class="right-justified" ><span class="cell-text number">{{dose.getTotalOutreach() | number : 0}}</span></td>
                     <td class="right-justified"><span class="cell-text number">{{dose.getMonthlyTotal() | number : 0}}</span></td>
                     <td class="right-justified" ><span class="cell-text number"> {{ dose.getMonthlyCoverage() | number : 2 }} %</span></td>
@@ -228,9 +228,9 @@
                     <td rowspan="{{report.vitaminSupplementationLineItems.length}}"
                         ng-show="vt.vitaminName !== report.vitaminSupplementationLineItems[$index-1].vitaminName">{{vt.vitaminName}}</td>
                     <td>{{vt.ageGroup}}</td>
-                    <td>{{vt.maleValue}}</td>
-                    <td>{{vt.femaleValue}}</td>
-                    <td>{{vt.femaleValue + vt.maleValue}}</td>
+                    <td class="number">{{vt.maleValue | number}}</td>
+                    <td class="number">{{vt.femaleValue | number}}</td>
+                    <td class="number">{{(vt.femaleValue + vt.maleValue)}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -280,18 +280,18 @@
                     <td>G</td>
                     <td>H</td>
                 </tr>
-                <tr style="height: 31px" ng-repeat="product in report.logisticsLineItems"">
+                <tr style="height: 31px" ng-repeat="product in report.logisticsLineItems">
                         <td class="right-justified"><span class="cell-text">{{product.productName}}</span></td>
-                        <td class="right-justified"><span class="cell-text number">{{product.openingBalance}}</span></td>
-                        <td class="right-justified"><span class="cell-text number">{{product.quantityReceived}}</span></td>
-                        <td class="right-justified"><span class="cell-text number">{{product.quantityIssued}}</span></td>
-                        <td class="right-justified"><span class="cell-text number">{{product.quantityDiscardedUnopened}}</span></td>
-                        <td class="right-justified"><span class="cell-text">{{getDiscardingReasonName(product.discardingReasonId)}}</span></td>
-                        <td class="right-justified"><span class="cell-text number">{{product.closingBalance}}</span></td>
-                        <td class="right-justified"><span class="cell-text number">{{product.daysStockedOut}}</span></td>
-                        <td>{{product.childrenImmunized}}*</td>
-                        <td>{{product.usageRate}}</td>
-                        <td>{{product.wastageRate}}</td>
+                        <td class="number"><span class="cell-text number">{{product.openingBalance | number}}</span></td>
+                        <td class="number"><span class="cell-text number">{{product.quantityReceived | number}}</span></td>
+                        <td class="number"><span class="cell-text number">{{product.quantityIssued | number}}</span></td>
+                        <td class="number"><span class="cell-text number">{{product.quantityDiscardedUnopened | number}}</span></td>
+                        <td class="number"><span class="cell-text">{{getDiscardingReasonName(product.discardingReasonId)}}</span></td>
+                        <td class="number"><span class="cell-text number">{{product.closingBalance | number}}</span></td>
+                        <td class="number"><span class="cell-text number">{{product.daysStockedOut | number}}</span></td>
+                        <td class="number">{{product.childrenImmunized | number}}*</td>
+                        <td class="number">{{product.usageRate | number}}</td>
+                        <td class="number">{{product.wastageRate | number}}</td>
                 </tr>
                 </tbody>
             </table>
