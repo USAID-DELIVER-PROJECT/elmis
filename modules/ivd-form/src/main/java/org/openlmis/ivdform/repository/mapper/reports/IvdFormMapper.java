@@ -16,6 +16,7 @@ import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.ivdform.domain.reports.DiseaseLineItem;
+import org.openlmis.ivdform.domain.reports.DropOutRate;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
 import org.openlmis.ivdform.dto.RoutineReportDTO;
@@ -64,7 +65,9 @@ public interface IvdFormMapper {
       @Result(property = "period", javaType = ProcessingPeriod.class, column = "periodId",
           many = @Many(select = "org.openlmis.core.repository.mapper.ProcessingPeriodMapper.getById")),
       @Result(property = "facility", javaType = Facility.class, column = "facilityId",
-          many = @Many(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))
+          many = @Many(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById")),
+      @Result(property = "dropOutRate", javaType = DropOutRate.class, column = "id",
+              one = @One(select = "org.openlmis.ivdform.repository.mapper.reports.DropOutRateMapper.getByReportId"))
   })
   VaccineReport getByIdWithFullDetails(@Param("id") Long id);
 
