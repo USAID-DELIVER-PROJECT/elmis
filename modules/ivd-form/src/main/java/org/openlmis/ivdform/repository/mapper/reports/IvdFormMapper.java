@@ -46,6 +46,8 @@ public interface IvdFormMapper {
       @Result(property = "programId", column = "programId"),
       @Result(property = "logisticsLineItems", javaType = List.class, column = "id",
           many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.LogisticsLineItemMapper.getLineItems")),
+      @Result(property = "vaccineProductsLogisticsLineItems", javaType = List.class, column = "id",
+              many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.LogisticsLineItemMapper.getVaccineProductLineItems")),
       @Result(property = "coverageLineItems", javaType = List.class, column = "id",
           many = @Many(select = "org.openlmis.ivdform.repository.mapper.reports.CoverageMapper.getLineItems")),
       @Result(property = "adverseEffectLineItems", javaType = List.class, column = "id",

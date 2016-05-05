@@ -65,6 +65,18 @@ public interface LogisticsLineItemMapper {
   })
   List<LogisticsLineItem> getLineItems(@Param("reportId") Long reportId);
 
+  @Select("select line_item.* from vaccine_report_logistics_line_items line_item\n" +
+          "JOIN program_products pp ON line_item.productid = pp.productid\n" +
+          "join product_categories pc ON pp.productcategoryid = pc.id\n" +
+          "where line_item.reportid = #{reportId} AND pc.code = (select value from configuration_settings where key = 'VACCINE_REPORT_VACCINE_CATEGORY_CODE' limit 1) \n" +
+          "order by line_item.id")
+  @Results(value = {
+          @Result(property = "productId", column = "productId"),
+          @Result(property = "product", column = "productId", javaType = Product.class,
+                  one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getById"))
+  })
+  List<LogisticsLineItem> getVaccineProductLineItems(@Param("reportId") Long reportId);
+
   @Select("SELECT * FROM vaccine_report_logistics_line_items rli " +
     " JOIN vaccine_reports r on r.id = rli.reportId " +
     " JOIN programs p on r.programId = p.id " +
