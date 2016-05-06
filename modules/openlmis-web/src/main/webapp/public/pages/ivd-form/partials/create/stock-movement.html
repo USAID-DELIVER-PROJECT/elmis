@@ -11,6 +11,12 @@
   -->
 
 <div class="rnr-table">
+  <div class="pull-right">
+    <label class="checkbox">
+      <input ng-model="showStockStatusReportColumns" type="checkbox">
+      <span openlmis-message="label.vaccine.ivd.coverage.show.reports"></span>
+    </label>
+  </div>
   <h2>
     <span openlmis-message="label.vaccine.stock.status"></span>
   </h2>
@@ -18,20 +24,22 @@
     <div class="float-left left-table parent">
       <table class="table table-bordered" fixed-table-header>
         <thead>
-          <tr style="height: 55px;">
-            <th>
-              <span openlmis-message="label.vaccine.stock.status.product"></span>
-            </th>
-            <th>
-              <span openlmis-message="label.unit.of.measure"></span>
-            </th>
-            <th class="col-skipped">
-              <span openlmis-message="header.label.skip"></span>
-              <br />
-              <a href="" id="selectAll" ng-click="report.setSkip('logisticsLineItems', true)" openlmis-message="label.select.all"></a>&nbsp;|
-              <a href="" id="selectNone" ng-click="report.setSkip('logisticsLineItems', false)" openlmis-message="label.select.none"></a>
-            </th>
-          </tr>
+        <tr style="height: 55px;">
+          <th>
+            <span openlmis-message="label.vaccine.stock.status.product"></span>
+          </th>
+          <th>
+            <span openlmis-message="label.unit.of.measure"></span>
+          </th>
+          <th class="col-skipped">
+            <span openlmis-message="header.label.skip"></span>
+            <br/>
+            <a href="" id="selectAll" ng-click="report.setSkip('logisticsLineItems', true)"
+               openlmis-message="label.select.all"></a>&nbsp;|
+            <a href="" id="selectNone" ng-click="report.setSkip('logisticsLineItems', false)"
+               openlmis-message="label.select.none"></a>
+          </th>
+        </tr>
         </thead>
         <tbody>
         <tr style="height: 31px;" class="productCategory" ng-repeat-start="product in report.logisticsLineItems"
@@ -62,9 +70,9 @@
           <th class="span1" ng-if="column.name != 'productName' && column.name != 'skipped'" ng-repeat-end="">
             {{column.label}}
           </th>
-          <th openlmis-message="label.children.immunized"></th>
-          <th openlmis-message="label.usage.rate.formula"></th>
-          <th openlmis-message="label.wastage.rate.formula"></th>
+          <th ng-show="showStockStatusReportColumns" openlmis-message="label.children.immunized"></th>
+          <th ng-show="showStockStatusReportColumns" openlmis-message="label.usage.rate.formula"></th>
+          <th ng-show="showStockStatusReportColumns" openlmis-message="label.wastage.rate.formula"></th>
         </tr>
         </thead>
         <tbody>
@@ -76,57 +84,57 @@
           <td ng-if="false" ng-repeat-start="column in report.columnTemplate | filter : {visible:true}"></td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'openingBalance'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-required="true"
-                ng-class="highlightRequired(report.validate, product[column.name], product.skipped)"
-                ng-disabled="!report.editable || product.skipped"
-                maxlength="8"
-                ng-change="product.calculateClosingBalance()"
-                ng-model="product.openingBalance"
-                numeric-validator="positiveInteger"
-                type="text" />
+                  ng-required="true"
+                  ng-class="highlightRequired(report.validate, product[column.name], product.skipped)"
+                  ng-disabled="!report.editable || product.skipped"
+                  maxlength="8"
+                  ng-change="product.calculateClosingBalance()"
+                  ng-model="product.openingBalance"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
             </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityReceived'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-required="true"
-                ng-class="highlightRequired(report.validate, product[column.name], product.skipped)"
-                ng-disabled="!report.editable || product.skipped"
-                ng-change="product.calculateClosingBalance()"
-                maxlength="8"
-                ng-model="product.quantityReceived"
-                numeric-validator="positiveInteger"
-                type="text"/>
+                  ng-required="true"
+                  ng-class="highlightRequired(report.validate, product[column.name], product.skipped)"
+                  ng-disabled="!report.editable || product.skipped"
+                  ng-change="product.calculateClosingBalance()"
+                  maxlength="8"
+                  ng-model="product.quantityReceived"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityIssued'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-required="true"
-                ng-class="highlightRequired(report.validate, product[column.name], product.skipped)"
-                ng-disabled="!report.editable || product.skipped"
-                ng-change="product.calculateClosingBalance()"
-                maxlength="8"
-                ng-model="product.quantityIssued"
-                numeric-validator="positiveInteger"
-                type="text"/>
+                  ng-required="true"
+                  ng-class="highlightRequired(report.validate, product[column.name], product.skipped)"
+                  ng-disabled="!report.editable || product.skipped"
+                  ng-change="product.calculateClosingBalance()"
+                  maxlength="8"
+                  ng-model="product.quantityIssued"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
             </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'closingBalance'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-required="true"
-                class="{{highlightRequired(report.validate, product[column.name], product.skipped)}}"
-                ng-class="{'required-error':  (report.validate && !product.skipped && !product.isClosingBalanceValid()) }"
-                ng-disabled="!report.editable || product.skipped"
-                maxlength="8"
-                ng-model="product.closingBalance"
-                numeric-validator="positiveInteger"
-                type="text" />
+                  ng-required="true"
+                  class="{{highlightRequired(report.validate, product[column.name], product.skipped)}}"
+                  ng-class="{'required-error':  (report.validate && !product.skipped && !product.isClosingBalanceValid()) }"
+                  ng-disabled="!report.editable || product.skipped"
+                  maxlength="8"
+                  ng-model="product.closingBalance"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
               </span>
                <span class="rnr-form-error" ng-show="!product.skipped && !product.isClosingBalanceValid()"
                      style="display:none;" openlmis-message="error.number.only">
@@ -135,92 +143,92 @@
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityVvmAlerted'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-disabled="!report.editable || product.skipped"
-                maxlength="8"
-                ng-model="product.quantityVvmAlerted"
-                numeric-validator="positiveInteger"
-                type="text" />
+                  ng-disabled="!report.editable || product.skipped"
+                  maxlength="8"
+                  ng-model="product.quantityVvmAlerted"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
             </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityFreezed'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-disabled="!report.editable || product.skipped"
-                maxlength="8"
-                ng-model="product.quantityFreezed"
-                numeric-validator="positiveInteger"
-                type="text"/>
+                  ng-disabled="!report.editable || product.skipped"
+                  maxlength="8"
+                  ng-model="product.quantityFreezed"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
             </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityExpired'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-disabled="!report.editable || product.skipped"
-                maxlength="8"
-                ng-model="product.quantityExpired"
-                numeric-validator="positiveInteger"
-                type="text" />
+                  ng-disabled="!report.editable || product.skipped"
+                  maxlength="8"
+                  ng-model="product.quantityExpired"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
             </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityOtherWasted'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-disabled="!report.editable || product.skipped"
-                maxlength="8"
-                ng-model="product.quantityOtherWasted"
-                numeric-validator="positiveInteger"
-                type="text"/>
+                  ng-disabled="!report.editable || product.skipped"
+                  maxlength="8"
+                  ng-model="product.quantityOtherWasted"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
             </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityDiscardedUnopened'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-disabled="!report.editable || product.skipped"
-                ng-change="product.calculateClosingBalance()"
-                maxlength="8"
-                ng-model="product.quantityDiscardedUnopened"
-                numeric-validator="positiveInteger"
-                type="text"/>
+                  ng-disabled="!report.editable || product.skipped"
+                  ng-change="product.calculateClosingBalance()"
+                  maxlength="8"
+                  ng-model="product.quantityDiscardedUnopened"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
             </span>
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'quantityDiscardedOpened'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <input
-                ng-disabled="!report.editable || product.skipped"
-                ng-change="product.calculateClosingBalance()"
-                maxlength="8"
-                ng-model="product.quantityDiscardedOpened"
-                numeric-validator="positiveInteger"
-                type="text"/>
+                  ng-disabled="!report.editable || product.skipped"
+                  ng-change="product.calculateClosingBalance()"
+                  maxlength="8"
+                  ng-model="product.quantityDiscardedOpened"
+                  numeric-validator="positiveInteger"
+                  type="text"/>
             </span>
           </td>
           <td class="cell-input col-general padding2px" ng-if="column.name == 'reasonForDiscardingUnopened'">
             <span
-              class="input-error-parent-cell">
+                class="input-error-parent-cell">
               <select
-                ng-disabled="(!report.editable || product.skipped || product.quantityDiscardedUnopened == 0 || product.quantityDiscardedUnopened == '' || product.quantityDiscardedUnopened == undefined)"
-                ng-model="product.discardingReasonId"
-                ng-show="!rowRequiresExplanation(product);">
+                  ng-disabled="(!report.editable || product.skipped || product.quantityDiscardedUnopened == 0 || product.quantityDiscardedUnopened == '' || product.quantityDiscardedUnopened == undefined)"
+                  ng-model="product.discardingReasonId"
+                  ng-show="!rowRequiresExplanation(product);">
                   <option
-                    ng-repeat="reason in discardingReasons"
-                    value="{{reason.id}}">{{reason.name}}</option>
+                      ng-repeat="reason in discardingReasons"
+                      value="{{reason.id}}">{{reason.name}}</option>
               </select>
             </span>
             <span ng-show="rowRequiresExplanation(product);">
               <span
-                class="input-error-parent-cell">
+                  class="input-error-parent-cell">
                 <input
-                  ng-disabled="!report.editable || product.skipped || product.quantityDiscardedUnopened == 0 || product.quantityDiscardedUnopened == '' || product.quantityDiscardedUnopened == undefined"
-                  ng-model="product.discardingReasonExplanation"
-                  style="width: 80%; text-align: left;"
-                  type="text" />
+                    ng-disabled="!report.editable || product.skipped || product.quantityDiscardedUnopened == 0 || product.quantityDiscardedUnopened == '' || product.quantityDiscardedUnopened == undefined"
+                    ng-model="product.discardingReasonExplanation"
+                    style="width: 80%; text-align: left;"
+                    type="text"/>
                 <a ng-click="product.discardingReasonId = undefined;">
                   <i class="icon-remove-circle"></i>
                 </a>
@@ -229,14 +237,14 @@
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'daysStockedOut'">
             <span
-                    class="input-error-parent-cell">
+                class="input-error-parent-cell">
                 <input
-                  name="daysStockedOut-{{product.id}}"
-                  ng-disabled="!report.editable || product.skipped"
-                  maxlength="3"
-                  ng-model="product.daysStockedOut"
-                  numeric-validator="positiveNumberBetween,0,{{report.period.days}}"
-                  type="text"/>
+                    name="daysStockedOut-{{product.id}}"
+                    ng-disabled="!report.editable || product.skipped"
+                    maxlength="3"
+                    ng-model="product.daysStockedOut"
+                    numeric-validator="positiveNumberBetween,0,{{report.period.days}}"
+                    type="text"/>
                 <span class="rnr-form-error"
                       style="display:none;"
                       id="daysStockedOut-{{product.id}}"
@@ -246,22 +254,22 @@
           </td>
           <td class="cell-input col-beginningBalance" ng-if="column.name == 'remarks'">
             <input
-              ng-disabled="!report.editable || product.skipped"
-              ng-model="product.remarks"
-              type="text"/>
+                ng-disabled="!report.editable || product.skipped"
+                ng-model="product.remarks"
+                type="text"/>
           </td>
           <td ng-if="false" ng-repeat-end=""></td>
-          <td style="background-color:silver;" class="number">
+          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
             <span>
               {{product.childrenImmunized() | number : 0}}
             </span>
           </td>
-          <td style="background-color:silver;" class="number">
+          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
             <span ng-show="product.usageRate() != '-'">
               {{product.usageRate() | number : 2}} %
             </span>
           </td>
-          <td style="background-color:silver;" class="number">
+          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
             <span ng-show="product.usageRate() != '-'">
               {{product.wastageRate() | number : 2}} %
             </span>
@@ -272,6 +280,36 @@
     </div>
   </div>
   <div class="clear-both"></div>
-  <br />
+  <br/>
+  <div class="row">
+    <div class="span4">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th openlmis-message="label.drop.out.rate.dtp"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="number">{{report.dropOutRate.dtp}}%</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="span4">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th openlmis-message="label.drop.out.rate.bcg"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="number">{{report.dropOutRate.bcg}}%</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 

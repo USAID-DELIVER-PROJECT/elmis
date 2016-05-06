@@ -11,7 +11,15 @@
   -->
 
 <div class="rnr-table">
-  <h2><span openlmis-message="label.vaccine.stock.status"></span></h2>
+  <div class="pull-right">
+    <label class="checkbox">
+      <input ng-model="showStockStatusReportColumns" type="checkbox">
+      <span openlmis-message="label.vaccine.ivd.coverage.show.reports"></span>
+    </label>
+  </div>
+  <h2>
+    <span openlmis-message="label.vaccine.stock.status"></span>
+  </h2>
 
   <div adjust-height bottom-offset="180" tab-scroll>
     <div class="float-left left-table parent">
@@ -58,6 +66,9 @@
           <th ng-repeat-end="" class="span1" ng-if="column.name != 'productName' && column.name != 'skipped'">
             {{column.label}}
           </th>
+          <th ng-show="showStockStatusReportColumns" openlmis-message="label.children.immunized"></th>
+          <th ng-show="showStockStatusReportColumns" openlmis-message="label.usage.rate.formula"></th>
+          <th ng-show="showStockStatusReportColumns" openlmis-message="label.wastage.rate.formula"></th>
         </tr>
         </thead>
         <tbody>
@@ -113,11 +124,56 @@
                                                                                               ng-model="product.remarks"
                                                                                               type="text"/></td>
           <td ng-repeat-end="" ng-if="false"></td>
+          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
+            <span>
+              {{product.childrenImmunized() | number : 0}}
+            </span>
+          </td>
+          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
+            <span ng-show="product.usageRate() != '-'">
+              {{product.usageRate() | number : 2}} %
+            </span>
+          </td>
+          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
+            <span ng-show="product.usageRate() != '-'">
+              {{product.wastageRate() | number : 2}} %
+            </span>
+          </td>
         </tr>
         </tbody>
       </table>
     </div>
   </div>
   <div class="clear-both"></div>
-  <br />
+  <br/>
+  <div class="row">
+    <div class="span4">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th openlmis-message="label.drop.out.rate.dtp"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="number">{{report.dropOutRate.dtp}}%</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="span4">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th openlmis-message="label.drop.out.rate.bcg"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="number">{{report.dropOutRate.bcg}}%</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
