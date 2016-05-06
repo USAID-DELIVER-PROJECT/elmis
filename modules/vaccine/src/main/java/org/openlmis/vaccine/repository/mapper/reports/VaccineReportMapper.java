@@ -560,4 +560,10 @@ public interface VaccineReportMapper {
             @Param("doseId") Long doseId);
     @SelectProvider(type=ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getYearQuery")
     public List<Map<String,Object>> getDistincitYearList();
+
+    @Select("select whoratio coverage,  whoratio dropout, wastagefactor wastage \n" +
+            "from program_products pp \n" +
+            "join isa_coefficients c on pp.isacoefficientsid = c.id\n" +
+            "where pp.productid = #{productId}")
+    public Map<String,String> getCoverageAndDropoutCoeffients(  @Param("productId") Long productId);
 }

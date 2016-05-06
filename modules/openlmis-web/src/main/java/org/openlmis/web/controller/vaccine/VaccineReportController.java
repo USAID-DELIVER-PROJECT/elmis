@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/vaccine/report/")
@@ -140,5 +141,9 @@ Long userId= this.loggedInUserId(request);
     public ResponseEntity<OpenLmisResponse> loadYearList() {
         return OpenLmisResponse.response("years",
                 service.loadYearList());
+    }
+    @RequestMapping(value = "/coverageAndDropoutCoefficient", method = RequestMethod.GET)
+      public  ResponseEntity<OpenLmisResponse> getCoverageAndDropoutCoeffients(   @RequestParam("product") Long product){
+        return OpenLmisResponse.response("coefficients", service.getCoverageAndDropoutCoeffients(product));
     }
 }

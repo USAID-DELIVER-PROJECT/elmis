@@ -12,7 +12,11 @@
  *
  */
 
-function CategorizationVaccineUtilizationPerformanceController($scope, CategorizationVaccineUtilizationPerformance) {
+function CategorizationVaccineUtilizationPerformanceController($scope,
+                                                               CategorizationVaccineUtilizationPerformance,
+                                                               colors,
+                                                               CoefficientValues
+) {
 
 
     $scope.perioderror = "";
@@ -30,6 +34,16 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
         var month = startDate.getMonth();
         $scope.year = year;
         $scope.month = month + 1;
+        $scope.colors = colors;
+
+        CoefficientValues.get({
+                product: $scope.filter.product
+            },
+            function (data) {
+
+                $scope.coefficients = data.coefficients;
+
+            });
         CategorizationVaccineUtilizationPerformance.get(
             {
                 periodStart: $scope.periodStartDate,
@@ -222,10 +236,10 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
 
     function getDistrictSummeryReportData(unformattedReport) {
         var vaccineUtilClasses = [
-            {class: '1', displayName: 'Cat_1', description: 'Good Access & Good Utilisation', classColour: '#52C552'},
-            {class: '2', displayName: 'Cat_2', description: 'Good Access & Poor Utilisation', classColour: '#dce6f1'},
-            {class: '3', displayName: 'Cat_3', description: 'Poor Access & Good Utilisation', classColour: '#E4E44A'},
-            {class: '4', displayName: 'Cat_4', description: 'Poor Access & Poor Utilisation', classColour: '#ff0000'}
+            {class: '1', displayName: 'Cat_1', description: 'Good Access & Good Utilisation', classColour: $scope.colors.green_color},
+            {class: '2', displayName: 'Cat_2', description: 'Good Access & Poor Utilisation', classColour: $scope.colors.blue_color},
+            {class: '3', displayName: 'Cat_3', description: 'Poor Access & Good Utilisation', classColour: $scope.colors.yellow_color},
+            {class: '4', displayName: 'Cat_4', description: 'Poor Access & Poor Utilisation', classColour: $scope.colors.red_color}
 
         ], arr = [], tempArr = [], classCount = 0, hideInfo = [];
 
@@ -264,13 +278,13 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
 
     $scope.getCellColor = function (classification) {
         if (classification == '1') {
-            return '#52C552';
+            return $scope.colors.green_color;
         } else if (classification == '2') {
-            return '#dce6f1';
+            return $scope.colors.blue_color;
         } else if (classification == '3') {
-            return '#E4E44A';
+            return $scope.colors.yellow_color;
         } else if (classification == '4'){
-            return '#ff0000';
+            return $scope.colors.red_color;
         }else{
             return '#ffffff';
         }
@@ -369,8 +383,8 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
     }
 
     function determineClass(coverage, dropout) {
-        var minDropout = 10;
-        var minCoverage = 90;
+        var minDropout =  $scope.coefficients.dropout;
+        var minCoverage =  $scope.coefficients.coverage;
         var classfication;
         if (coverage >= minCoverage && dropout <= minDropout) {
             classfication = "1";
@@ -438,4 +452,46 @@ function CategorizationVaccineUtilizationPerformanceController($scope, Categoriz
     }
 
 }
+CategorizationVaccineUtilizationPerformanceController.resolve={
+    colors: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+        var color_values = {};
+        $timeout(function () {
+            SettingsByKey.get({key: 'VCP_GREEN'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.green_color = data.settings.value;
+                } else {
+                    color_values.green_color = 'green';
+                }
 
+            });
+            SettingsByKey.get({key: 'VCP_BLUE'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.blue_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'blue';
+                }
+
+            });
+            SettingsByKey.get({key: 'VCP_RED'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.red_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'red';
+                }
+
+            });
+            SettingsByKey.get({key: 'STOCK_GREATER_THAN_BUFFER_COLOR'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.yellow_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'yellow';
+                }
+
+            });
+            deferred.resolve(color_values);
+        }, 100);
+
+        return deferred.promise;
+    }
+};

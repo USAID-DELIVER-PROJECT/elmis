@@ -43,11 +43,11 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
              }).
             when('/classification-vaccine-utilization-performance', {
                 controller: ClassificationVaccineUtilizationPerformanceController,
-                templateUrl:'partials/view/classification-vaccine-utilization-performance.html'
+                templateUrl:'partials/view/classification-vaccine-utilization-performance.html', resolve: ClassificationVaccineUtilizationPerformanceController.resolve
             }).
             when('/categorization-vaccine-utilization-performance', {
                 controller: CategorizationVaccineUtilizationPerformanceController,
-                templateUrl:'partials/view/categorization-vaccine-utilization-performance.html'
+                templateUrl:'partials/view/categorization-vaccine-utilization-performance.html', resolve: CategorizationVaccineUtilizationPerformanceController.resolve
             }).
             otherwise({redirectTo: '/list'});
     }]).config(function (angularCombineConfigProvider) {

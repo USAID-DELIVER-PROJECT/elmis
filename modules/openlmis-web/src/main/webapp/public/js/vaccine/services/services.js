@@ -572,3 +572,6 @@ services.factory('VaccineTotalPendingRequisitions', function ($resource) {
 services.factory('ExistingDistribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/get-if-exist/', {}, {});
 });
+services.factory('CoefficientValues',function($resource){
+    return $resource('/vaccine/report/coverageAndDropoutCoefficient.json',{},{});
+});
