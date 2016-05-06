@@ -49,4 +49,6 @@ public class VaccineInventoryProductConfiguration extends BaseModel {
 
     private Long denominatorEstimateCategoryId;
 
+    private Double dropOut;
+
 }

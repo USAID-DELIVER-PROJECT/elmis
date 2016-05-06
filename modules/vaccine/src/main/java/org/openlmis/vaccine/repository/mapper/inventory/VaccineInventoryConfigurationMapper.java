@@ -41,16 +41,17 @@ public interface VaccineInventoryConfigurationMapper {
             " administrationMode = #{administrationMode}, " +
             " dilutionSyringe = #{dilutionSyringe}, " +
             " diluentPackedVolumePerDose = #{diluentPackedVolumePerDose}, " +
-            " ordering = #{ordering} " +
+            " ordering = #{ordering}, " +
+            " dropout = #{dropOut}  " +
             "WHERE id=#{id} "
     )
     Integer update(VaccineInventoryProductConfiguration configuration);
 
 
     @Insert("insert into vaccine_inventory_product_configurations  " +
-            " (type, productid, batchtracked, vvmtracked,survivingInfants,denominatorEstimateCategoryId,schedule,coverage,presentation,packedVolumePerDose,administrationMode,dilutionSyringe,diluentPackedVolumePerDose,ordering) " +
+            " (type, productid, batchtracked, vvmtracked,survivingInfants,denominatorEstimateCategoryId,schedule,coverage,presentation,packedVolumePerDose,administrationMode,dilutionSyringe,diluentPackedVolumePerDose,ordering,dropout) " +
             " values " +
-            " (#{type}, #{productId}, #{batchTracked}, #{vvmTracked},#{survivingInfants},#{denominatorEstimateCategoryId},#{schedule},#{coverage},#{presentation},#{packedVolumePerDose},#{administrationMode},#{dilutionSyringe},#{diluentPackedVolumePerDose},#{ordering}) ")
+            " (#{type}, #{productId}, #{batchTracked}, #{vvmTracked},#{survivingInfants},#{denominatorEstimateCategoryId},#{schedule},#{coverage},#{presentation},#{packedVolumePerDose},#{administrationMode},#{dilutionSyringe},#{diluentPackedVolumePerDose},#{ordering},#{dropOut}) ")
     @Options(useGeneratedKeys = true)
     Integer insert(VaccineInventoryProductConfiguration configuration);
 
