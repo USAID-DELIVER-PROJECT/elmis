@@ -40,6 +40,7 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
                             value.schedule  = value.product.programProductIsa.isa.dosesPerYear;
                             value.presentation  = value.product.dosesPerDispensingUnit;
                             value.coverage  = value.product.programProductIsa.isa.whoRatio;
+                            value.dropOut  = value.product.programProductIsa.isa.dropOut;
                             value.denominatorEstimateCategoryId = value.product.programProductIsa.isa.populationSource;
                             value.ordering = order;
                         }else{
@@ -57,7 +58,6 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
                         angular.forEach(configdata.Configurations,function(value1){
                             if(value.product.id === value1.product.id){
                                 if(value.programProductIsa){
-                                    console.log(value.programProductIsa);
                                     value.schedule  = value.programProductIsa.isa.dosesPerYear;
                                     value.coverage  = value.programProductIsa.isa.whoRatio ;
                                     value.denominatorEstimateCategoryId = value.programProductIsa.isa.populationSource;
@@ -79,6 +79,8 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
                                 value.vvmTracked  = value1.vvmTracked;
                                 value.survivingInfants  = value1.survivingInfants;
                                 value.ordering = value1.ordering;
+                                value.dropOut  = value1.dropOut ;
+
                                 //value.denominatorEstimateCategoryId = value1.denominatorEstimateCategoryId;
 
                             }
@@ -112,13 +114,15 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
                 'vvmTracked':(value.vvmTracked)?value.vvmTracked:null,
                 'survivingInfants':(value.survivingInfants)?value.survivingInfants:null,
                 'denominatorEstimateCategoryId':(value.denominatorEstimateCategoryId)?value.denominatorEstimateCategoryId:null,
-                'ordering':(value.ordering)?value.ordering:null
+                'ordering':(value.ordering)?value.ordering:null,
+                'dropOut':(value.dropOut)?value.dropOut:null
+
             };
             $scope.configurations.push(prodObject);
             //console.log(prodObject);
         });
 
-        console.log($scope.configurations);
+        console.log(product);
         $scope.saveConfigurations();
     };
 
@@ -159,7 +163,7 @@ function VaccineInventoryConfigurationController($scope,programs,DemographicEsti
     $scope.addConfiguration=function(configToAdd)
     {
         configToAdd.type='PRODUCT';
-        console.log(JSON.stringify($scope.configurations[0]));
+       // console.log(JSON.stringify($scope.configurations[0]));
         console.log(JSON.stringify(configToAdd));
 
         $scope.configurations.push(configToAdd);
