@@ -12,7 +12,11 @@
  *
  */
 
-function ClassificationVaccineUtilizationPerformanceController($scope, ClassificationVaccineUtilizationPerformance, ReportProductsByProgram) {
+function ClassificationVaccineUtilizationPerformanceController($scope,
+                                                               ClassificationVaccineUtilizationPerformance,
+                                                               ReportProductsByProgram,
+                                                               colors,
+                                                               CoefficientValues) {
 
 
     $scope.perioderror = "";
@@ -29,6 +33,15 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         var month = startDate.getMonth();
         $scope.year = year;
         $scope.month = month + 1;
+        $scope.colors = colors;
+        CoefficientValues.get({
+                product: $scope.filter.product
+            },
+            function (data) {
+
+                $scope.coefficients = data.coefficients;
+
+            });
         ClassificationVaccineUtilizationPerformance.get(
             {
                 periodStart: $scope.periodStartDate,
@@ -41,18 +54,18 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
             function (data) {
 
                 $scope.error = "";
-                $scope.zonereport =data.classificationVaccineUtilizationPerformance.zoneReport;
+                $scope.zonereport = data.classificationVaccineUtilizationPerformance.zoneReport;
                 $scope.facilityReportList = data.classificationVaccineUtilizationPerformance.facilityReport;
                 $scope.regionReportList = data.classificationVaccineUtilizationPerformance.regionReport;
-                $scope.population=data.classificationVaccineUtilizationPerformance.population;
-                $scope.regionPopulation=data.classificationVaccineUtilizationPerformance.regionPopulation;
+                $scope.population = data.classificationVaccineUtilizationPerformance.population;
+                $scope.regionPopulation = data.classificationVaccineUtilizationPerformance.regionPopulation;
 
-                extractPopulationInfo($scope.zonereport,  $scope.population,2);
-                extractPopulationInfo($scope.facilityReportList,  $scope.population,1);
-                extractPopulationInfo($scope.regionReportList, $scope.regionPopulation,3);
+                extractPopulationInfo($scope.zonereport, $scope.population, 2);
+                extractPopulationInfo($scope.facilityReportList, $scope.population, 1);
+                extractPopulationInfo($scope.regionReportList, $scope.regionPopulation, 3);
 
                 $scope.zonereport = cumulateMonthProgressive($scope.zonereport, 2);
-                $scope.facilityReportList = cumulateMonthProgressive( $scope.facilityReportList, 1);
+                $scope.facilityReportList = cumulateMonthProgressive($scope.facilityReportList, 1);
                 $scope.periodlist = data.classificationVaccineUtilizationPerformance.summaryPeriodLists;
                 $scope.regionReportList = cumulateMonthProgressive($scope.regionReportList, 3);
                 $scope.facilityReport = !utils.isEmpty($scope.facilityReportList);
@@ -96,7 +109,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
         var sortedList = periodsWithReport.sort(function (obj1, obj2) {
 
-            var val = ((parseInt(obj1.year_number,10) < parseInt(obj2.year_number,10) ) || ((parseInt(obj1.year_number,10) === parseInt(obj2.year_number,10)) && ( parseInt(obj1.month_number,10) < parseInt(obj2.month_number,10)))) === true ? -11 : 11;
+            var val = ((parseInt(obj1.year_number, 10) < parseInt(obj2.year_number, 10) ) || ((parseInt(obj1.year_number, 10) === parseInt(obj2.year_number, 10)) && ( parseInt(obj1.month_number, 10) < parseInt(obj2.month_number, 10)))) === true ? -11 : 11;
 
             return val;
         });
@@ -123,7 +136,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         var repKey;
         _.each(unformatedReportList, function (dreport) {
             repKey = getKey(dreport, type);
-            if (hasKey(parentReport, repKey)===false) {
+            if (hasKey(parentReport, repKey) === false) {
 
                 parentReport.push({report: dreport, period_class: childReport, repKey: repKey});
             }
@@ -134,7 +147,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
             var _childeren = [];
             for (var jj = 0; jj < columns.length; jj++) {
 
-                _childeren.push(getChild(parentReport[ii].repKey, columns[jj].period_name,unformatedReportList, type, columns[jj].hide));
+                _childeren.push(getChild(parentReport[ii].repKey, columns[jj].period_name, unformatedReportList, type, columns[jj].hide));
             }
             parentReport[ii].period_class = _childeren;
 
@@ -149,9 +162,9 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         var found;
 
         var _index;
-        for ( _index = 0; _index < _rawData.length;_index++) {
+        for (_index = 0; _index < _rawData.length; _index++) {
 
-            if ((_parent ===  getKey(_rawData[_index], _dataType)) && (_rawData[_index].period_name === _periodName)) {
+            if ((_parent === getKey(_rawData[_index], _dataType)) && (_rawData[_index].period_name === _periodName)) {
                 child = {
                     period_name: _rawData[_index].period_name,
                     classification: _rawData[_index].classification,
@@ -184,9 +197,9 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
     function getKey(dreport, type) {
         var repKey = dreport.region_name;
         if (type === 1) {
-            repKey = repKey +  "_" + dreport.geographic_zone_name + "_" + dreport.facility_name;
+            repKey = repKey + "_" + dreport.geographic_zone_name + "_" + dreport.facility_name;
         } else if (type === 2) {
-            repKey = dreport.region_name +  "_" + dreport.geographic_zone_name;
+            repKey = dreport.region_name + "_" + dreport.geographic_zone_name;
         }
         return repKey;
     }
@@ -198,7 +211,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
         var totalPopulation = 0;
         var totalRegionPopulation = 0;
         var districts = _.pluck($scope.facilityReport ? $scope.facilityReportList : $scope.zonereport, 'geographic_zone_name');
-            //facilities = _.pluck($scope.facilityReport ? $scope.facilityReportList : $scope.zonereport, 'facility_count');
+        //facilities = _.pluck($scope.facilityReport ? $scope.facilityReportList : $scope.zonereport, 'facility_count');
 
         totalDistricts = _.uniq(districts).length;
         _.each($scope.zoneMainReport, function (facility) {
@@ -217,10 +230,10 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
     function getDistrictSummeryReportData(unformattedReport) {
         var vaccineUtilClasses = [
-            {class: 'A', displayName: 'Class_A', description: 'Good Access & Good Utilisation', classColour: '#52C552'},
-            {class: 'B', displayName: 'Class_B', description: 'Good Access & Poor Utilisation', classColour: '#dce6f1'},
-            {class: 'C', displayName: 'Class_C', description: 'Poor Access & Good Utilisation', classColour: '#E4E44A'},
-            {class: 'D', displayName: 'Class_D', description: 'Poor Access & Poor Utilisation', classColour: '#ff0000'}
+            {class: 'A', displayName: 'Class_A', description: 'Good Access & Good Utilisation', classColour: $scope.colors.green_color},
+            {class: 'B', displayName: 'Class_B', description: 'Good Access & Poor Utilisation', classColour: $scope.colors.blue_color},
+            {class: 'C', displayName: 'Class_C', description: 'Poor Access & Good Utilisation', classColour: $scope.colors.yellow_color},
+            {class: 'D', displayName: 'Class_D', description: 'Poor Access & Poor Utilisation', classColour: $scope.colors.red_color}
 
         ], arr = [], tempArr = [], classCount = 0, hideInfo = [];
 
@@ -259,14 +272,14 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
 
     $scope.getCellColor = function (classification) {
         if (classification == 'A') {
-            return '#52C552';
+            return $scope.colors.green_color;
         } else if (classification == 'B') {
-            return '#dce6f1';
+            return $scope.colors.blue_color;
         } else if (classification == 'C') {
-            return '#E4E44A';
-        }else if (classification == 'D') {
-            return '#ff0000';
-        }  else {
+            return $scope.colors.yellow_color;
+        } else if (classification == 'D') {
+            return $scope.colors.red_color;
+        } else {
             return '#ffffff';
         }
 
@@ -296,7 +309,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
                     total_used = unformattedReport[i].used;
                 }
                 usage_rate = total_vaccinated / total_used * 100;
-                coverage_rate =total_population!==null && total_population!==0 ? total_vaccinated / (total_population * target * 0.1):0;
+                coverage_rate = total_population !== null && total_population !== 0 ? total_vaccinated / (total_population * target * 0.1) : 0;
                 wastage_rate = 100 - usage_rate;
                 unformattedReport[i].total_population = total_population;
                 unformattedReport[i].total_vaccinated = total_vaccinated;
@@ -316,8 +329,8 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
     }
 
     function determineClass(coverage, wastage) {
-        var minWastage = 70;
-        var minCoverage = 90;
+        var minWastage =  $scope.coefficients.wastage;
+        var minCoverage =  $scope.coefficients.coverage;
         var classfication;
         if (coverage >= minCoverage && wastage <= minWastage) {
             classfication = "A";
@@ -332,9 +345,8 @@ function ClassificationVaccineUtilizationPerformanceController($scope, Classific
     }
 
     function extractPopulationInfo(reportList, popuplationList, type) {
-console.log("report list \n" + type + "\n"+ JSON.stringify(reportList));
-        console.log("population list \n" + type + "\n"+ JSON.stringify(popuplationList));
-        if(utils.isNullOrUndefined(reportList)||  utils.isNullOrUndefined(popuplationList)){
+
+        if (utils.isNullOrUndefined(reportList) || utils.isNullOrUndefined(popuplationList)) {
             return;
         }
         var population = 0;
@@ -347,16 +359,15 @@ console.log("report list \n" + type + "\n"+ JSON.stringify(reportList));
 
         for (i; i < repLen; i++) {
             var j = 0;
-            var repKey = type===1?reportList[i].facility_name: type==2?reportList[i].geographic_zone_name:reportList[i].region_name;
-            repKey=repKey  + "_" + parseInt(reportList[i].year_number, 10);
-                      for (j; j < popuLen; j++) {
+            var repKey = type === 1 ? reportList[i].facility_name : type == 2 ? reportList[i].geographic_zone_name : reportList[i].region_name;
+            repKey = repKey + "_" + parseInt(reportList[i].year_number, 10);
+            for (j; j < popuLen; j++) {
                 population = 0;
                 denominator = 0;
-                var currentKey = getPopulationKey(popuplationList[j], type)+ "_" + parseInt(popuplationList[j].year, 10);
-                          console.log("rep_key\n"+ repKey);
-                          console.log("currentKey\n"+ currentKey);
+                var currentKey = getPopulationKey(popuplationList[j], type) + "_" + parseInt(popuplationList[j].year, 10);
 
-                if (repKey=== currentKey) {
+
+                if (repKey === currentKey) {
                     population = popuplationList[j].population;
                     denominator = popuplationList[j].denominator;
 
@@ -370,19 +381,63 @@ console.log("report list \n" + type + "\n"+ JSON.stringify(reportList));
 
         return population;
     }
+
     function getPopulationKey(dreport, type) {
         var keyValue = '';
         if (type === 1) {
-            keyValue = dreport.facility_name ;
+            keyValue = dreport.facility_name;
         } else if (type === 2) {
-            keyValue = dreport.district_name ;
+            keyValue = dreport.district_name;
 
         }
         else {
-            keyValue = dreport.region_name ;
+            keyValue = dreport.region_name;
         }
 
         return keyValue;
     }
 }
+ClassificationVaccineUtilizationPerformanceController.resolve = {
+    colors: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+        var color_values = {};
+        $timeout(function () {
+            SettingsByKey.get({key: 'VCP_GREEN'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.green_color = data.settings.value;
+                } else {
+                    color_values.green_color = 'green';
+                }
+
+            });
+            SettingsByKey.get({key: 'VCP_BLUE'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.blue_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'blue';
+                }
+
+            });
+            SettingsByKey.get({key: 'VCP_RED'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.red_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'red';
+                }
+
+            });
+            SettingsByKey.get({key: 'STOCK_GREATER_THAN_BUFFER_COLOR'}, function (data) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    color_values.yellow_color = data.settings.value;
+                } else {
+                    color_values.blue_color = 'yellow';
+                }
+
+            });
+            deferred.resolve(color_values);
+        }, 100);
+
+        return deferred.promise;
+    }
+};
 

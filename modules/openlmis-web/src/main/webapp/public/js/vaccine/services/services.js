@@ -573,6 +573,11 @@ services.factory('ExistingDistribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/get-if-exist/', {}, {});
 });
 
+
 services.factory('BatchExpiryNotification', function ($resource) {
     return $resource('/vaccine/inventory/distribution/getBatchExpiryNotification/', {}, {});
+});
+
+services.factory('CoefficientValues',function($resource) {
+    return $resource('/vaccine/report/coverageAndDropoutCoefficient.json', {}, {});
 });
