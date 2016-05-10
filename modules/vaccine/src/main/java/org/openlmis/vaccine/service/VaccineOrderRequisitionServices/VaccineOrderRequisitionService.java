@@ -63,6 +63,9 @@ public class VaccineOrderRequisitionService {
     @Autowired
     ProductService service;
 
+    @Autowired
+    VaccineNotificationService notificationService;
+
 
     public static String  getCommaSeparatedIds(List<Long> idList){
 
@@ -136,6 +139,7 @@ public class VaccineOrderRequisitionService {
         orderRequisitionRepository.Update(orderRequisition);
         VaccineOrderRequisitionStatusChange change = new VaccineOrderRequisitionStatusChange(orderRequisition, VaccineOrderStatus.SUBMITTED, userId);
         statusChangeRepository.insert(change);
+        notificationService.sendOrderRequisitionStatusChangeNotification(orderRequisition,userId);
     }
 
     public VaccineOrderRequisition getLastReport(Long facilityId, Long programId) {

@@ -22,9 +22,11 @@ import org.openlmis.core.service.ProcessingScheduleService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.vaccine.domain.inventory.*;
+import org.openlmis.vaccine.dto.BatchExpirationNotificationDTO;
 import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
 import org.openlmis.vaccine.repository.inventory.VaccineDistributionStatusChangeRepository;
 import org.openlmis.vaccine.repository.inventory.VaccineInventoryDistributionRepository;
+import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +41,8 @@ public class VaccineInventoryDistributionService {
     public static final String cvsRegionCode = "label.vaccine.voucher.number.region.for.cvs";
     public static final String cvsDistrictCode = "label.vaccine.voucher.number.district.for.cvs";
     public static final String rvsDistrictCode = "label.vaccine.voucher.number.district.for.rvs";
+    public static final Boolean consolidate = false;
+
     @Autowired
     VaccineInventoryDistributionRepository repository;
     @Autowired
@@ -54,6 +58,8 @@ public class VaccineInventoryDistributionService {
 
     @Autowired
     private VaccineDistributionStatusChangeRepository statusChangeRepository;
+    @Autowired
+    private VaccineNotificationService notificationService;
 
     public List<Facility> getFacilities(Long userId) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
@@ -222,8 +228,8 @@ public class VaccineInventoryDistributionService {
     public List<VaccineDistribution> saveConsolidatedList(List<VaccineDistribution> distributionList, Long userId) {
 
         for (VaccineDistribution distribute : distributionList) {
-
             save(distribute,userId);
+            notificationService.sendConsolidationNotification(distribute,userId);
 
         }
 
@@ -272,5 +278,7 @@ public class VaccineInventoryDistributionService {
         Long facilityId = homeFacility.getId();
         return repository.getDistributionByVoucherNumberIfExist(facilityId, voucherNumber);
     }
-
+ public List<BatchExpirationNotificationDTO>getBatchExpiryNotifications(Long facilityId){
+     return  repository.getBatchExpiryNotifications(facilityId);
+ }
 }

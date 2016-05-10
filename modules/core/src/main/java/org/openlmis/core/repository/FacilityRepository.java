@@ -269,4 +269,11 @@ public class FacilityRepository {
     }
 
     public List<FacilityGeoTreeDto> getGeoFlatFacilityTree(Long userId) {   return mapper.getGeoTreeFlatFacilities(userId);  }
+
+    public List<FacilitySupervisor> getFacilitySuperVisorBy(Long program,Long facilityId) {  return mapper.getFacilitySuperVisorBy(program,facilityId); }
+
+    public List<FacilitySupervisor> getSuperVisedUserFacility(Long program,Long facilityId) {
+      return mapper.getSuperVisedUserFacility(program,facilityId);
+    }
+
 }

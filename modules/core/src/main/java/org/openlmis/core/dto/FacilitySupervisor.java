@@ -28,4 +28,6 @@ public class FacilitySupervisor {
   private String type;
 
   private String contact;
+
+  private String username;
 }

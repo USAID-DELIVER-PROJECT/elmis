@@ -486,4 +486,27 @@ public interface FacilityMapper {
     @Select("select facilities.id, facilities.name, 1 as facility from facilities inner join \n" +
             "vw_user_facilities ON facilities.id = vw_user_facilities.facility_id AND vw_user_facilities.user_id = #{userId}")
     List<FacilityGeoTreeDto> getGeoTreeFlatFacilities(@Param(value = "userId") Long userId);
+
+    @Select("     SELECT  DISTINCT userid as userId, username,firstName ||' '|| lastName as name, email as contact  " +
+            "     FROM facilities f " +
+            "     JOIN requisition_group_members m ON m.facilityId = f.Id  " +
+            "     JOIN requisition_groups rg ON rg.id = m.requisitionGroupId " +
+            "     JOIN supervisory_nodes sn ON sn.id = rg.supervisoryNodeId " +
+            "     JOIN role_assignments ra ON ra.supervisoryNodeId = sn.id  " +
+            "     JOIN users on users.id = ra.userId AND users.active = true  " +
+            "     WHERE f.Id = #{facilityId}  and ra.programId = #{program} " +
+            "     ORDER BY username ")
+    List<FacilitySupervisor>getFacilitySuperVisorBy(@Param("program") Long program,@Param("facilityId") Long facilityId);
+
+
+    @Select("SELECT  DISTINCT userid as userId, username,firstName ||' '|| lastName as name, email as contact " +
+            " FROM facilities f   " +
+            " JOIN requisition_group_members m ON m.facilityId = f.Id   " +
+            " JOIN requisition_groups rg ON rg.id = m.requisitionGroupId  " +
+            " JOIN supervisory_nodes sn ON sn.id = rg.supervisoryNodeId  " +
+            " JOIN role_assignments ra ON ra.supervisoryNodeId = sn.id  " +
+            " JOIN users on users.id = ra.userId AND users.active = true  " +
+            " WHERE sn.facilityId = #{facilityId} AND programId = #{program}  " +
+            " ORDER BY username  ")
+    List<FacilitySupervisor> getSuperVisedUserFacility(@Param("program") Long programId, @Param("facilityId") Long facilityId);
 }
