@@ -47,7 +47,8 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardSupervisedFacilityInventoryStockStatus,
                                     EquipmentNonFunctional,
                                     VaccinePendingRequisitions,
-                                    daysNotReceive
+                                    daysNotReceive,
+                                    batchToExpireNotification
                                     ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
@@ -931,9 +932,20 @@ $scope.myStockVaccine = {
     });
   };
 
+
+ $scope.batchToExpireNotificationCallBack = function(){
+
+     $scope.batchToExpire = batchToExpireNotification;
+     $scope.totalBatchToExpire = $scope.batchToExpire.length;
+ };
+
+
 $scope.supplyingPendingOrdersDetailCallback();
 $scope.equipmentActionBarCallback();
-$scope.facilityInventoryStockStatusCallback=function(myStock){
+$scope.batchToExpireNotificationCallBack();
+console.log($scope.batchToExpire);
+
+    $scope.facilityInventoryStockStatusCallback=function(myStock){
    if(!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate))
    {
         VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(homeFacility.id,10),date:myStock.toDate},function(data){
@@ -1503,6 +1515,29 @@ $scope.getColorSupervised=function (color, d) {
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
+
+    $scope.openBatchToExpireDialog = function (size) {
+
+        var modalInstance = $modal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'batch-expiry.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'lg',
+            windowClass: 'my-modal-popup',
+            resolve: {
+                items: function () {
+
+                    return batchToExpireNotification;
+                }
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
     $scope.toggleAnimation = function () {
         $scope.animationsEnabled != $scope.animationsEnabled;
     };
@@ -1883,6 +1918,24 @@ VaccineDashboardController.resolve = {
              }, 100);
 
             return deferred.promise;
+    },
+    batchToExpireNotification: function ($q, $timeout, BatchExpiryNotification) {
+        var deferred = $q.defer();
+        $timeout(function () {
+
+            BatchExpiryNotification.get({},function (data) {
+              if(!isUndefined(data.expiries)) {
+                  var expires = data.expiries;
+                  deferred.resolve(expires);
+              }
+
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
     }
 
 };

@@ -572,3 +572,7 @@ services.factory('VaccineTotalPendingRequisitions', function ($resource) {
 services.factory('ExistingDistribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/get-if-exist/', {}, {});
 });
+
+services.factory('BatchExpiryNotification', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/getBatchExpiryNotification/', {}, {});
+});

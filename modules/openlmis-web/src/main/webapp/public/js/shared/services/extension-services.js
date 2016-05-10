@@ -1227,22 +1227,6 @@ services.factory('StaticYears',function($resource){
     return $resource('/vaccine/report/staticYearList.json',{},{});
 });
 
-/*
-services.factory('VaccineStockStatusReport', function ($resource) {
-
-    return $resource(
-        '/reports/reportdata/vaccineStockStatus.json',
-        {},
-        {
-            'get': {
-                method: 'GET',
-                transformResponse: function (data) {
-                    console.log(data);
-
-                    return angular.fromJson(data);
-                },
-                isArray: true//since list property is an array
-            }
-        }
-    );
-});*/
+services.factory('GetFacilitySupervisorsByProgram', function($resource){
+    return $resource('/get-facility-supervisors-by-program.json',{}, {});
+});

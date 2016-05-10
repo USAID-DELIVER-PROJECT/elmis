@@ -9,11 +9,82 @@
  */
 
 
-function CreateVaccineOrderRequisition($scope, $dialog,$routeParams, $window, report, VaccineOrderRequisitionSubmit, $location) {
-
+function CreateVaccineOrderRequisition($scope, $dialog,$routeParams, $window, report,
+                                       VaccineOrderRequisitionSubmit, GetFacilitySupervisorsByProgram,SendMessages,SettingsByKey,$filter) {
 
     $scope.report = new VaccineOrderRequisition(report);
-console.log($scope.report);
+
+   /* SettingsByKey.get({key: 'VACCINE_ORDER_REQUISITION_SUPERVISOR_NOTIFICATION_EMAIL_TEMPLATE'}, function (data) {
+        $scope.email_template_supervisor = data.settings.value;
+    });
+
+
+    var constructMessage = function () {
+        // construct the messages here
+        var messages = [];
+
+        for (var i = 0; i < $scope.contacts.length; i++) {
+            var template =  $scope.email_template_supervisor;
+            var contact = $scope.contacts[i];
+
+            template = template.replace('{approver_name}', contact.name);
+            template = template.replace('{facility_name}', $scope.homeFacility.name);
+            template = template.replace('{period}', $scope.period);
+            template = template.replace('{link}',$scope.emailLink);
+
+            messages.push({
+                type: 'email',
+                facilityId: parseInt($scope.homeFacility.id,10),
+                contact: contact.contact,
+                message: template
+            });
+        }
+        return messages;
+    };
+
+    $scope.showSendEmailSupervisor = function (facility) {
+
+
+        $scope.selected_facility = facility;
+        $scope.homeFacility = facility.facility;
+        $scope.period = facility.period.name;
+        $scope.emailLink = 'http://localhost:9091/public/pages/vaccine/order-requisition/index.html#/view';
+       GetFacilitySupervisorsByProgram.get({
+            programId: parseInt(facility.programId, 10),
+            facilityId: parseInt(facility.facilityId,10)
+        },
+            function (data) {
+            $scope.contacts = data.supervisors;
+
+                var messages = constructMessage();
+                console.log(messages);
+
+                SendMessages.post({messages: messages}, function () {
+                    $scope.sent_confirmation = true;
+                });
+
+
+        });
+
+        $scope.show_email_supervisor = !$scope.show_email_supervisor;
+
+    };
+
+    $scope.sendFacilityEmail = function () {
+
+        var messages = constructMessage();
+
+        SendMessages.post({messages: messages}, function () {
+            $scope.sent_confirmation = true;
+            console.log($scope.sent_confirmation);
+        });
+    };*/
+
+  /*  $scope.doSend = function(){
+        $scope.showSendEmailSupervisor(report);
+       // $scope.sendFacilityEmail();
+        $scope.show_email_supervisor = false;
+    };*/
     $scope.orderModal = false;
 
     $scope.selectedType = 0;
@@ -59,6 +130,7 @@ console.log($scope.report);
                     });
                     printWindow= $window.open('about:blank','_blank');
                     $scope.message = "label.form.Submitted.Successfully";
+
                 }
             };
             var options = {

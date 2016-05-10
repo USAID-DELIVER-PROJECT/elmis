@@ -434,6 +434,73 @@
         <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
     </div>
 </script>
+
+<script type="text/ng-template" id="batch-expiry.html">
+    <div class="modal-header modal-header">
+        <button  class="close" ng-click="ok()">X</button>
+        <h2 ><i class="flaticon-bar"></i>List Of Batches Nearly To Expire</h2>
+
+
+    </div>
+    <div class="modal-body">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
+        <div class="row-fluid dashlet-scroll-table">
+            <table id="batchToExpireTable" ng-show="items.length > 0"
+                   class="rnr-table table-bordered table"
+                   ng-table="tableParams">
+                <thead>
+                <tr>
+
+                    <th style=" text-align: left; vertical-align: middle">
+                        <span openlmis-message="label.vaccine.dashboard.products"></span>
+
+                    </th>
+                    <th style=" text-align: left; vertical-align: middle">
+                        <span openlmis-message="label.vaccine.dashboard.Batch"></span>
+
+                    </th>
+                    <th style=" text-align: left; vertical-align: middle">
+                        <span openlmis-message="label.stock.on.hand"></span>
+                    </th>
+
+
+                    <th style=" text-align: left; vertical-align: middle">
+                        <span openlmis-message="label.expiryDate"></span>
+                    </th>
+                    <th style=" text-align: left; vertical-align: middle">
+                        <span openlmis-message="label.vaccine.adverse.effect.manufacturer"></span>
+                    </th>
+
+                </tr>
+
+
+                </thead>
+                <tbody>
+                <tr ng-style="{'background-color': getBackGroundColor($index)}" ng-repeat="subRow in items">
+
+                    <td ng-bind="subRow.product"></td>
+                    <td ng-bind="subRow.lotNumber"></td>
+                    <td ng-bind="subRow.quantityOnHand"></td>
+                    <td ng-bind="subRow.expirationDate| date:'dd-MMM-yyyy'"/>
+                    <td ng-bind="subRow.manufacturerName"></td>
+
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <div class="modal-footer">
+
+            <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+        </div>
+    </div>
+
+</script>
+
+
+
+
+
 <script type="text/ng-template" id="investigating.html">
     <div class="modal-header modal-header">
         <button  class="close" ng-click="ok()">X</button>
@@ -593,6 +660,12 @@
                     <span openlmis-message="label.aefi"></span>:  <span class="box-value"><a
                         ng-click="openInvestigatingDetailDialog()"
                         href="">{{investigating.count}}</a></span>
+                    &nbsp;&nbsp;
+                   <div class="pull-right" ng-show="batchToExpire.length > 0"> <span>Batch To Expire</span>: <span class="box-value"><a
+                        ng-click="openBatchToExpireDialog()"
+                        href="">{{totalBatchToExpire}}</a></span>
+                   </div>
+
                 </div>
 
             </span>
