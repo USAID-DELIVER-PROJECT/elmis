@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function CreateEquipmentInventoryController($scope, $location, $routeParams,GetEquipmentByDesignation, EquipmentInventory,ColdChainDesignations, Donors, EquipmentsByType, SaveEquipmentInventory, UserFacilityList, EquipmentOperationalStatus, messageService, EquipmentType, EquipmentInventoryFacilities, EquipmentEnergyTypes) {
+function CreateEquipmentInventoryController($scope, $location, $routeParams,GetEquipmentByDesignation, EquipmentInventory,ColdChainDesignations, Donors, EquipmentsByType, SaveEquipmentInventory, UserFacilityList, EquipmentOperationalStatus, messageService, EquipmentType, EquipmentInventoryFacilities, EquipmentEnergyTypes,equipmentStatusHelp) {
 
   $scope.$parent.message = $scope.$parent.error = '';
-
+  $scope.equipmentStatusHelp=equipmentStatusHelp;
   $scope.max_year = new Date().getFullYear();
   $scope.submitted = false;
   $scope.showError = false;
@@ -205,4 +205,72 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
     $location.path('/' + $routeParams.from + '/' + $routeParams.program + '/' + $routeParams.equipmentType + '/' +
         $routeParams.page);
   };
+  $scope.openStatusHelpDialog = function () {
+       $scope.operationalStatusModal=true;
+  };
+  $scope.closeStatusHelpDialog = function () {
+       $scope.operationalStatusModal=false;
+  };
+
 }
+
+CreateEquipmentInventoryController.resolve = {
+    equipmentStatusHelp: function ($q, $timeout, SettingsByKey) {
+        var deferred = $q.defer();
+        var status_values = {};
+        $timeout(function () {
+            SettingsByKey.get({key: 'FUNCTIONAL_EQUIPMENT_STATUS_HELP_TEXT'}, function (data) {
+                if (data.settings.value !== null) {
+                    status_values.functional = data.settings.value;
+                } else {
+                    status_values.functional = '';
+                }
+
+            });
+            SettingsByKey.get({key: 'FUNCTIONAL_BUT_NOT_INSTALLED_EQUIPMENT_STATUS_HELP_TEXT'}, function (data) {
+                if (data.settings.value !== null) {
+                    status_values.functionalNotInstalled = data.settings.value;
+                } else {
+                    status_values.functionalNotInstalled = '';
+                }
+
+            });
+            SettingsByKey.get({key: 'NON_FUNCTIONAL_EQUIPMENT_STATUS_HELP_TEXT'}, function (data) {
+               if (data.settings.value !== null) {
+                     status_values.nonFunctional = data.settings.value;
+               } else {
+                   status_values.nonFunctional = '';
+               }
+
+            });
+            SettingsByKey.get({key: 'WAITING_FOR_REPAIR_EQUIPMENT_STATUS_HELP_TEXT'}, function (data) {
+               if (data.settings.value !== null) {
+                     status_values.waitingForRepair = data.settings.value;
+               } else {
+                   status_values.waitingForRepair = '';
+               }
+
+            });
+            SettingsByKey.get({key: 'OBSOLETE_EQUIPMENT_STATUS_HELP_TEXT'}, function (data) {
+               if (data.settings.value !== null) {
+                     status_values.obsolete = data.settings.value;
+               } else {
+                   status_values.obsolete = '';
+               }
+
+            });
+            SettingsByKey.get({key: 'WAITING_FOR_SPARE_PARTS_EQUIPMENT_STATUS_HELP_TEXT'}, function (data) {
+               if (data.settings.value !== null) {
+                     status_values.waitingForSpareParts = data.settings.value;
+               } else {
+                   status_values.waitingForSpareParts = '';
+               }
+
+            });
+
+            deferred.resolve(status_values);
+        }, 100);
+
+        return deferred.promise;
+    }
+};

@@ -281,4 +281,8 @@ public class VaccineInventoryDistributionService {
  public List<BatchExpirationNotificationDTO>getBatchExpiryNotifications(Long facilityId){
      return  repository.getBatchExpiryNotifications(facilityId);
  }
+
+    public VaccineDistribution getDistributionById(Long id) {
+        return repository.getDistributionById(id);
+    }
 }

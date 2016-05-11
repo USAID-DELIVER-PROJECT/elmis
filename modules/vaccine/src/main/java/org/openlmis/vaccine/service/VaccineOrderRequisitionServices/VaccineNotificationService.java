@@ -40,25 +40,19 @@ public class VaccineNotificationService {
 
     @Autowired
     ProgramService programService;
-
+    SimpleMailMessage message;
     @Autowired
     private EmailService emailService;
     @Autowired
     private FacilityService facilityService;
-
     @Autowired
     private ConfigurationSettingService configService;
-
     @Autowired
     private ProcessingPeriodService processingPeriodService;
     @Autowired
     private UserService userService;
-
     @Autowired
     private VaccineOrderRequisitionService requisitionService;
-
-
-    SimpleMailMessage message;
 
     public void sendOrderRequisitionStatusChangeNotification(VaccineOrderRequisition report, Long userId) {
 
@@ -142,7 +136,10 @@ public class VaccineNotificationService {
     public void sendIssuingEmail(VaccineDistribution distribution) {
 
             List<FacilitySupervisor> userList = new ArrayList<>();
-            userList = facilityService.getSuperVisedUserFacility(distribution.getProgramId(), distribution.getToFacilityId());
+        List<Program> programs = programService.getAllIvdPrograms();
+        Program program = (programs != null && programs.size() > 0) ? programs.get(0) : null;
+        Long programId = (program != null) ? program.getId() : null;
+        userList = facilityService.getSuperVisedUserFacility(programId, distribution.getToFacilityId());
 
             for (FacilitySupervisor supervisor : userList) {
 
@@ -151,11 +148,16 @@ public class VaccineNotificationService {
                 String emailMessage = configService.getByKey(ConfigurationSettingKey.EMAIL_TEMPLATE_FOR_ISSUE_VOUCHER).getValue();
 
                 Facility facility = facilityService.getById(distribution.getFromFacilityId());
-                VaccineOrderRequisition orderRequisition = requisitionService.getById(distribution.getOrderId());
+
+                VaccineOrderRequisition orderRequisition = (distribution.getOrderId() != null) ? requisitionService.getById(distribution.getOrderId()) : null;
                 emailMessage = emailMessage.replaceAll("\\{user_name\\}", supervisor.getName());
                 emailMessage = emailMessage.replaceAll("\\{from_facility_name\\}", facility.getName());
-                emailMessage = emailMessage.replaceAll("\\{date_submitted\\}", orderRequisition.getOrderDate());
-                emailMessage = emailMessage.replaceAll("\\{period\\}", orderRequisition.getPeriod().getName());
+
+                String orderDate = (orderRequisition != null) ? orderRequisition.getOrderDate() : "-";
+                String period = (orderRequisition != null) ? orderRequisition.getPeriod().getName() : "-";
+                emailMessage = emailMessage.replaceAll("\\{date_submitted\\}", orderDate);
+                emailMessage = emailMessage.replaceAll("\\{period\\}", period);
+
                 message.setText(emailMessage);
                 message.setSubject(configService.getByKey(ConfigurationSettingKey.EMAIL_SUBJECT_FOR_ISSUE_VOUCHER).getValue());
                 message.setTo(supervisor.getContact());

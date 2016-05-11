@@ -116,6 +116,7 @@ public interface EquipmentInventoryMapper {
             " i.equipmentInventoryId = #{equipmentInventoryId} order by i.id")
     List<ColdChainEquipmentTemperatureStatusDTO> getLineItemsByEquipmentInventory(@Param("equipmentInventoryId") Long equipmentInventoryId);
 
-
+    @Select("SELECT DISTINCT f.* FROM alert_equipment_nonfunctional a left join facilities f on f.id=a.facilityid")
+    List<Facility> getFacilitiesWithNonFunctionalEquipments();
 
 }

@@ -124,4 +124,7 @@ public class VaccineInventoryDistributionRepository {
         return mapper.getBatchExpiryNotifications(facilityId);
     }
 
+    public VaccineDistribution getDistributionById(Long id) {
+        return mapper.getDistributionById(id);
+    }
 }
