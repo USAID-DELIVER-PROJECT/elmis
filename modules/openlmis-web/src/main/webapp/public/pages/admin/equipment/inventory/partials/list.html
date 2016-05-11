@@ -119,14 +119,23 @@
                     <td>{{item.facility.name}}</td>
                     <td>{{item.equipment.designation.name}}</td>
                     <td>
-                        <a ng-href="#/edit/{{selectedType}}/{{item.programId}}/{{selectedEquipmentType.id}}/{{item.id}}/{{currentPage}}">{{item.equipment.manufacturer}}
-                            / {{item.equipment.model}}</a></td>
+                        <a ng-if="selectedType ==='0' || hasPermission('MANAGE_SUPERVISED_EQUIPMENTS')"
+                           ng-href="#/edit/{{selectedType}}/{{item.programId}}/{{selectedEquipmentType.id}}/{{item.id}}/{{currentPage}}">
+                            {{item.equipment.manufacturer}}
+                            / {{item.equipment.model}}
+                        </a>
+                        <span ng-if="selectedType ==='1' && !hasPermission('MANAGE_SUPERVISED_EQUIPMENTS')">
+                             {{item.equipment.manufacturer}}
+                            / {{item.equipment.model}}
+                        </span>
+                    </td>
                     <td>{{item.equipment.refrigeratorCapacity ? item.equipment.refrigeratorCapacity : 0}} /
                         {{item.equipment.freezerCapacity ? item.equipment.freezerCapacity : 0}}
                         {{item.equipment.capacity ? item.equipment.capacity : null}}
                     </td>
                     <td>
-                        <select ui-select2 ng-model="item.operationalStatusId" ng-change="updateStatus(item)">
+                        <select ng-disabled="selectedType ==='1' && !hasPermission('MANAGE_SUPERVISED_EQUIPMENTS')"
+                                ui-select2 ng-model="item.operationalStatusId" ng-change="updateStatus(item)">
                             <option value="{{status.id}}"
                                     ng-repeat="status in operationalStatusList | orderBy: 'displayOrder'"
                                     ng-selected="status.id == item.operationalStatusId">{{status.name}}
