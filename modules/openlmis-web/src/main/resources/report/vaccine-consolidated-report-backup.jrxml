@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-distribution-summary" language="groovy" printOrder="Horizontal" pageWidth="1190" pageHeight="842" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="1170" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="0.75"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="69"/>
 	<style name="Crosstab Data Text" hAlign="Center"/>
 	<subDataset name="dataset1" uuid="091a1376-c476-4867-9ced-423695e8c98e"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -28,8 +28,9 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[     SELECT pc.displayOrder,
+		<![CDATA[SELECT pc.displayOrder,
              p.id as productId,
+            pc.name as category,
             toFacilityId facilityId,
             vd.distributionDate::DATE,
             (SELECT name from facilities where id = vd.toFacilityId) facilityName,
@@ -43,8 +44,7 @@
               LEFT JOIN dosage_units du on du.id=p.dosageunitid
 
  WHERE  vd.status = 'PENDING' AND  vd.id = ANY($P{DISTRIBUTION_ID}::int[])
- order by  pc.displayOrder, p.id
-]]>
+ order by  pc.displayOrder, p.id]]>
 	</queryString>
 	<field name="facilityid" class="java.lang.Integer"/>
 	<field name="facilityname" class="java.lang.String"/>
@@ -53,6 +53,7 @@
 	<field name="distributiondate" class="java.util.Date"/>
 	<field name="productid" class="java.lang.String"/>
 	<field name="displayorder" class="java.lang.String"/>
+	<field name="category" class="java.lang.String"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -185,6 +186,22 @@
 						</cellContents>
 					</crosstabTotalRowHeader>
 				</rowGroup>
+				<columnGroup name="category" height="30">
+					<bucket order="Descending" class="java.lang.String">
+						<bucketExpression><![CDATA[$F{category}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents>
+							<textField isBlankWhenNull="true">
+								<reportElement style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="84" height="30" forecolor="#FFFFFF" uuid="2108abdf-b8ba-4c33-b69f-a5ec8cee2bc2"/>
+								<textFieldExpression><![CDATA[$V{category}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
 				<columnGroup name="productname" height="30">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{productname}]]></bucketExpression>
@@ -303,6 +320,12 @@
 							<textFieldExpression><![CDATA[$V{quantityissuedMeasure}]]></textFieldExpression>
 						</textField>
 					</cellContents>
+				</crosstabCell>
+				<crosstabCell columnTotalGroup="category">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityname" columnTotalGroup="category">
+					<cellContents/>
 				</crosstabCell>
 			</crosstab>
 			<line>
