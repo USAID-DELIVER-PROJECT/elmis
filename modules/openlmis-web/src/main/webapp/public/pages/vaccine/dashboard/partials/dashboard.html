@@ -964,15 +964,12 @@
                     <div class="portlet light">
                         <div class="caption">
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
-                            <span class="caption-helper">My Vaccine stock</span>
+                            <span class="caption-helper">{{homeFacility.name}} Vaccine stock</span>
 
                             <div class="actions">
                                 <a class="btn btn-circle btn-icon-only btn-default" ng-click="openMyStockHelp()">
                                     <i class="icon-info"></i>
                                 </a>
-                                <!--<a ng-click="stockStatusDetailCallback()" class="btn btn-circle btn-icon-only btn-default" tooltip="Detail Coverage">-->
-                                <!--<i class="icon-table"></i>-->
-                                <!--</a> -->
                                 <a ng-click="openStockInventoryStatusDetails()"
                                    class="btn btn-circle btn-icon-only btn-default" tooltip="Detail Stock">
                                     <i class="icon-table"></i>
@@ -988,7 +985,7 @@
                     <div class="portlet light">
                         <div class="caption">
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
-                            <span class="caption-helper">My Supplies stock</span>
+                            <span class="caption-helper">{{homeFacility.name}} Supplies stock</span>
                             <div class="actions">
                                 <a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">
                                     <i class="icon-info"></i>
@@ -1009,14 +1006,6 @@
                         <div class="caption">
                             <span class="caption-subject bold uppercase font-dark" openlmis-message="title.stock.status"></span>
                             <span class="caption-helper">My supervised facilities stock</span>
-                            <!--<div class="actions">-->
-                            <!--<a class="btn btn-circle btn-icon-only btn-default" ng-click="openStockStatusHelp()">-->
-                            <!--<i class="icon-info"></i>-->
-                            <!--</a>-->
-                            <!--<a class="btn btn-circle btn-icon-only btn-default" ng-click="stockStatusDetailCallback()">-->
-                            <!--<i class="icon-table"></i>-->
-                            <!--</a>-->
-                            <!--</div>-->
 
                         </div>
                         <ng-include

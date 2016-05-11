@@ -53,6 +53,7 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
+    $scope.homeFacility=homeFacility;
     $scope.sessions = {
         openPanel: true
     };
