@@ -581,3 +581,7 @@ services.factory('BatchExpiryNotification', function ($resource) {
 services.factory('CoefficientValues',function($resource) {
     return $resource('/vaccine/report/coverageAndDropoutCoefficient.json', {}, {});
 });
+
+services.factory('SendIssueNotification',function($resource) {
+    return $resource('/vaccine/orderRequisition/sendNotification/:distributionId.json', {distributionId:'@distributionId'}, {});
+});

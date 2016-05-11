@@ -255,4 +255,18 @@ public interface VaccineInventoryDistributionMapper {
            "           order by expirationdate,lotnumber asc ")
     List<BatchExpirationNotificationDTO> getBatchExpiryNotifications(@Param("facilityId") Long facilityId);
 
+    @Select("SELECT *" +
+            " FROM vaccine_distributions " +
+            "WHERE id=#{id} LIMIT 1")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "fromFacilityId", column = "fromFacilityId"),
+            @Result(property = "toFacilityId", column = "toFacilityId"),
+            @Result(property = "fromFacility", column = "fromFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById")),
+            @Result(property = "toFacility", column = "toFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))
+    })
+    VaccineDistribution getDistributionById(@Param("id") Long id);
 }
