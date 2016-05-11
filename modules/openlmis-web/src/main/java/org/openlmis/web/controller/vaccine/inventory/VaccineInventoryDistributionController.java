@@ -100,9 +100,6 @@ public class VaccineInventoryDistributionController extends BaseController {
     public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineDistribution distribution, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
         Long distributionId = service.save(distribution,userId);
-         if(!(distributionId == null)) {
-             notificationService.sendIssuingEmail(distribution);
-         }
         return OpenLmisResponse.response("distributionId", distributionId);
     }
 
