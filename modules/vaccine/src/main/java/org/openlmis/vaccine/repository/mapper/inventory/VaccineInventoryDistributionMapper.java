@@ -10,6 +10,7 @@ import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItem;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItemLot;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
+import org.openlmis.vaccine.dto.BatchExpirationNotificationDTO;
 import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
 import org.springframework.stereotype.Repository;
 
@@ -240,5 +241,18 @@ public interface VaccineInventoryDistributionMapper {
             @Result(property = "fromFacility", column = "fromFacilityId", javaType = Facility.class,
                     one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
     VaccineDistribution getDistributionByVoucherNumberIfExist(@Param("facilityId") Long facilityId, @Param("voucherNumber") String voucherNumber);
+
+   @Select("  SELECT  p.primaryName product, l.lotNumber,expirationDate,manufacturerName,loh.quantityOnHand  " +
+           "           FROM lots_on_hand loh  " +
+           "           INNER JOIN lots l on loh.lotid = l.id  " +
+           "           INNER JOIN stock_cards s on loh.stockcardId = s.id  " +
+           "           LEFT JOIN products p ON s.productId = p.id and l.productId = p.Id  " +
+           "           WHERE  facilityId = #{facilityId} AND p.active = true AND loh.quantityOnHand > 0 AND  " +
+           "           expirationDate::date <= (SELECT current_date + (  " +
+           "          (( SELECT configuration_settings.value::integer AS value  " +
+           "           FROM configuration_settings  " +
+           "           WHERE configuration_settings.key::text = 'NUMBER_OF_MONTH_FOR_BATCH_TO_EXPIRE'::text))::text || ' month')::interval)::date  " +
+           "           order by expirationdate,lotnumber asc ")
+    List<BatchExpirationNotificationDTO> getBatchExpiryNotifications(@Param("facilityId") Long facilityId);
 
 }

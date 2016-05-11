@@ -53,6 +53,7 @@ public class VaccineReport extends BaseModel {
   private Long plannedOutreachImmunizationSessions;
   private Long outreachImmunizationSessions;
   private Long outreachImmunizationSessionsCanceled;
+  private DropOutRate dropOutRate;
 
   @JsonDeserialize(using = DateDeserializer.class)
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -61,6 +62,7 @@ public class VaccineReport extends BaseModel {
   private List<VaccineIvdTabVisibility> tabVisibilitySettings;
 
   private List<LogisticsLineItem> logisticsLineItems;
+  private List<LogisticsLineItem> vaccineProductsLogisticsLineItems;
   private List<AdverseEffectLineItem> adverseEffectLineItems;
   private List<CampaignLineItem> campaignLineItems;
 

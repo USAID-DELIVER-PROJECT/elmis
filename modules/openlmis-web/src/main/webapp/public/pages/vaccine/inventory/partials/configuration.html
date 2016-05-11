@@ -48,7 +48,7 @@
                             <th>Diluent Packed Volume<br> per Dose(cm3)</th>
                             <th>Track Batch</th>
                             <th>Track VVM</th>
-                            <th>Surviving Infants</th>
+                            <th>Dropout(%)</th>
                             <th style="width: 70px">Actions</th>
                         </tr>
                         </thead>
@@ -70,6 +70,7 @@
                                 <span  ng-if="!product.editing">{{  product.programProductIsa.isa.whoRatio }}</span>
                                 <input ng-if="product.editing" type="text" ng-model="product.coverage"  style="width: 50px">
                             </td>
+
                             <td>
                                 <span  ng-if="!product.editing">{{ product.presentation }}</span>
                                 <input ng-if="product.editing" type="text" ng-model="product.presentation"  style="width: 50px">
@@ -103,10 +104,12 @@
                                 <input type="checkbox" ng-model="product.vvmTracked" disabled ng-if="!product.editing"/>
                                 <input type="checkbox" ng-model="product.vvmTracked" ng-if="product.editing"/>
                             </td>
-                            <td class="col-available">
-                                <input type="checkbox" ng-model="product.survivingInfants" disabled ng-if="!product.editing"/>
-                                <input type="checkbox" ng-model="product.survivingInfants" ng-if="product.editing"/>
+                            <td>
+                                <span  ng-if="!product.editing">{{  product.dropOut }}</span>
+                                <input ng-if="product.editing" type="text" ng-model="product.dropOut"
+                                       numeric-validator="positiveNumericValue,3,3"  style="width: 50px">
                             </td>
+
                             <td>
                                 <a href="" ng-click="enableEditing(product)" ng-if="!product.editing"  title="update"><img src="/public/images/edit-icon.png"></a>
                                 <a href="" ng-click="disableEditing(product)" ng-if="product.editing"  title="save"><img src="/public/images/all-functioning-marker.png" style="height: 20px;width: 20px"></a>

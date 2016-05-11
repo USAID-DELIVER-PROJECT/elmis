@@ -10,24 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.core.dto;
+package org.openlmis.ivdform.domain.reports;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.openlmis.core.domain.BaseModel;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class FacilitySupervisor {
+@AllArgsConstructor
+public class DropOutRate  extends BaseModel {
 
-  private Long userId;
-
-  private String name;
-
-  private String type;
-
-  private String contact;
-
-  private String username;
+    Long bcg;
+    Long dtp;
 }
