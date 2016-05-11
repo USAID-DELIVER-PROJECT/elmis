@@ -17,6 +17,7 @@ import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.equipment.domain.EquipmentInventory;
+import org.openlmis.equipment.service.EquipmentInventoryNotificationService;
 import org.openlmis.equipment.service.EquipmentInventoryService;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.core.web.OpenLmisResponse;
@@ -55,6 +56,9 @@ public class EquipmentInventoryController extends BaseController {
 
   @Autowired
   private ProgramService programService;
+
+  @Autowired
+  private EquipmentInventoryNotificationService notificationService;
 
   @RequestMapping(value="list", method = RequestMethod.GET)
   public ResponseEntity<OpenLmisResponse> getInventory(@RequestParam("typeId") Long typeId,
@@ -125,6 +129,12 @@ public class EquipmentInventoryController extends BaseController {
     response = OpenLmisResponse.success(messageService.message("message.equipment.inventory.saved"));
     response.getBody().addData(INVENTORY, inventory);
     return response;
+  }
+
+  @RequestMapping(value = "/sendEmails", method = RequestMethod.GET)
+  public ResponseEntity<OpenLmisResponse> sendEmails() {
+    notificationService.sendEmailNotificationsForNonFunctional();
+    return OpenLmisResponse.response("Emails", "Sent");
   }
 
 }

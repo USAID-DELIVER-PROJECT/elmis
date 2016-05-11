@@ -13,6 +13,7 @@
 package org.openlmis.equipment.repository;
 
 import org.apache.log4j.Logger;
+import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.Pagination;
 import org.openlmis.equipment.domain.*;
 import org.openlmis.equipment.dto.ColdChainEquipmentTemperatureStatusDTO;
@@ -145,5 +146,9 @@ public class EquipmentInventoryRepository {
 
   public List<ColdChainEquipmentTemperatureStatusDTO>getAll(Long equipmentId){
     return mapper.getLineItemsByEquipmentInventory(equipmentId);
+  }
+
+  public List<Facility> getFacilitiesWithNonFunctionalEquipments() {
+    return mapper.getFacilitiesWithNonFunctionalEquipments();
   }
 }
