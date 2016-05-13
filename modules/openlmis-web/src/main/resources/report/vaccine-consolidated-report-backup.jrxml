@@ -122,11 +122,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.date}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="132" y="99" width="130" height="20" uuid="8e63b72b-a4ac-42d1-9f7a-86f4b00840b1"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format($F{distributiondate})]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement x="1" y="121" width="1165" height="1" forecolor="#3D9297" backcolor="#3D9297" uuid="d11a274d-34bb-462f-80ee-7abeea60d07c"/>
 			</line>
@@ -142,6 +137,9 @@
 			</textField>
 			<line>
 				<reportElement x="133" y="94" width="212" height="1" uuid="458030bc-85ec-4418-9196-afd82924f0a0"/>
+			</line>
+			<line>
+				<reportElement x="133" y="118" width="212" height="1" uuid="a2b42089-6ddb-46b6-96c0-a608083d427a"/>
 			</line>
 		</band>
 	</columnHeader>
