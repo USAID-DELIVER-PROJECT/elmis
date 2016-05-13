@@ -944,9 +944,8 @@ $scope.myStockVaccine = {
 $scope.supplyingPendingOrdersDetailCallback();
 $scope.equipmentActionBarCallback();
 $scope.batchToExpireNotificationCallBack();
-console.log($scope.batchToExpire);
 
-    $scope.facilityInventoryStockStatusCallback=function(myStock){
+   $scope.facilityInventoryStockStatusCallback=function(myStock){
    if(!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate))
    {
         VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(homeFacility.id,10),date:myStock.toDate},function(data){
@@ -1947,12 +1946,13 @@ VaccineDashboardController.resolve = {
     batchToExpireNotification: function ($q, $timeout, BatchExpiryNotification) {
         var deferred = $q.defer();
         $timeout(function () {
-
             BatchExpiryNotification.get({},function (data) {
-              if(!isUndefined(data.expiries)) {
-                  var expires = data.expiries;
-                  deferred.resolve(expires);
-              }
+            var expires=[];
+                if(!isUndefined(data.expiries)) {
+                  expires = data.expiries;
+
+                }
+                deferred.resolve(expires);
 
 
             });
