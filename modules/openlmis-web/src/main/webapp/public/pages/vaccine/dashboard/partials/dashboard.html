@@ -135,7 +135,7 @@
 <script type="text/ng-template" id="supplying.html">
     <div class="modal-header">
         <button class="close" ng-click="ok()">X</button>
-        <h3>Pending orders</h3>
+        <h2><i class="flaticon-bar"></i> Pending orders</h2>
     </div>
     <div class="modal-body">
         <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
@@ -198,9 +198,9 @@
 </script>
 
 <script type="text/ng-template" id="supplying-pending-receive.html">
-    <div class="modal-header">
+    <div class="modal-header modal-header">
         <button class="close" ng-click="ok()">X</button>
-        <h3>Pending orders</h3>
+        <h2><i class="flaticon-bar"></i>Pending orders</h2>
     </div>
     <div class="modal-body">
         <div style="font-weight: bold"
@@ -294,7 +294,7 @@
 <script type="text/ng-template" id="repairing.html">
     <div class="modal-header">
         <button  class="close" ng-click="ok()">X</button>
-        <h3 ng-show="!show_email">Repairing</h3>
+        <h2 ng-show="!show_email"><i class="flaticon-bar"></i>Repairing</h2>
 
         <h3 ng-show="show_email">Email Notification</h3>
     </div>
