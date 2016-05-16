@@ -27,6 +27,7 @@ import org.openlmis.reporting.service.JasperReportsViewFactory;
 import org.openlmis.reporting.service.TemplateService;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.service.StockRequirementsService;
+import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineNotificationService;
 import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -86,6 +87,8 @@ public class VaccineInventoryDistributionController extends BaseController {
     ConfigurationSettingService settingService;
     @Autowired
     private JasperReportsViewFactory jasperReportsViewFactory;
+    @Autowired
+    private VaccineNotificationService notificationService;
 
     public static String getCommaSeparatedIds(List<Long> idList) {
         return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
@@ -96,7 +99,8 @@ public class VaccineInventoryDistributionController extends BaseController {
     @Transactional
     public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineDistribution distribution, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
-        return OpenLmisResponse.response("distributionId", service.save(distribution, userId));
+        Long distributionId = service.save(distribution,userId);
+        return OpenLmisResponse.response("distributionId", distributionId);
     }
 
     @RequestMapping(value = "get-distributed/{facilityId}/{programId}", method = GET, headers = ACCEPT_JSON)
@@ -248,7 +252,11 @@ public class VaccineInventoryDistributionController extends BaseController {
         return OpenLmisResponse.response("distribution", service.getDistributionByVoucherNumberIfExist(userId, voucherNumber));
     }
 
-
+    @RequestMapping(value = "getBatchExpiryNotification", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getBatchExpiryNotifications(HttpServletRequest request) {
+        Facility f = facilityService.getHomeFacility(loggedInUserId(request));
+        return OpenLmisResponse.response("expiries", service.getBatchExpiryNotifications(f.getId()));
+    }
 
 
 }

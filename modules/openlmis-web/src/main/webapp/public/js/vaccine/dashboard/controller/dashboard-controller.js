@@ -47,11 +47,13 @@ function VaccineDashboardController($scope, VaccineDashboardSummary, $filter, Va
                                     VaccineDashboardSupervisedFacilityInventoryStockStatus,
                                     EquipmentNonFunctional,
                                     VaccinePendingRequisitions,
-                                    daysNotReceive
+                                    daysNotReceive,
+                                    batchToExpireNotification
                                     ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: true};
     $scope.stockStatus = {openPanel: true};
+    $scope.homeFacility=homeFacility;
     $scope.sessions = {
         openPanel: true
     };
@@ -870,10 +872,10 @@ $scope.myStockVaccine = {
          ],
          dataX: {"id": "product"},
          productCategory:"Vaccines",
-         legend:[{"label":"< buffer","color":colors.red_color},
-                 {"label":"< re-order","color":colors.yellow_color},
-                 {"label":"> re-order","color":colors.green_color},
-                 {"label":"> max","color":colors.blue_color}]
+         legend:[{"label":"insufficient stock","color":colors.insufficient_color},
+                 {"label":"re-order level","color":colors.reorder_color},
+                 {"label":"sufficient stock","color":colors.sufficient_color},
+                 {"label":"over stock","color":colors.overstock_color}]
  };
 
  $scope.myStockSupplies = {
@@ -883,10 +885,10 @@ $scope.myStockVaccine = {
          ],
          dataX: {"id": "product"},
          productCategory:"Supplies",
-         legend:[{"label":"< buffer","color":colors.red_color},
-                          {"label":"< re-order","color":colors.yellow_color},
-                          {"label":"> re-order","color":colors.green_color},
-                          {"label":"> max","color":colors.blue_color}]
+         legend:[{"label":"insufficient stock","color":colors.insufficient_color},
+                                 {"label":"re-order level","color":colors.reorder_color},
+                                 {"label":"sufficient stock","color":colors.sufficient_color},
+                                 {"label":"over stock","color":colors.overstock_color}]
  };
 
  $scope.mySupervisedFacilityStock = {
@@ -896,10 +898,10 @@ $scope.myStockVaccine = {
           ],
           dataX: {"id": "facility_name"},
           productCategory:messageService.get('label.facilities'),
-          legend:[{"label":"< buffer","color":colors.red_color},
-                           {"label":"< re-order","color":colors.yellow_color},
-                           {"label":"> re-order","color":colors.green_color},
-                           {"label":"> max","color":colors.blue_color}]
+          legend:[{"label":"insufficient stock","color":colors.insufficient_color},
+                                  {"label":"re-order level","color":colors.reorder_color},
+                                  {"label":"sufficient stock","color":colors.sufficient_color},
+                                  {"label":"over stock","color":colors.overstock_color}]
   };
 
   $scope.supplyingPendingOrdersDetailCallback=function(){
@@ -931,9 +933,19 @@ $scope.myStockVaccine = {
     });
   };
 
+
+ $scope.batchToExpireNotificationCallBack = function(){
+
+     $scope.batchToExpire = batchToExpireNotification;
+     $scope.totalBatchToExpire = $scope.batchToExpire.length;
+ };
+
+
 $scope.supplyingPendingOrdersDetailCallback();
 $scope.equipmentActionBarCallback();
-$scope.facilityInventoryStockStatusCallback=function(myStock){
+$scope.batchToExpireNotificationCallBack();
+
+   $scope.facilityInventoryStockStatusCallback=function(myStock){
    if(!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate))
    {
         VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(homeFacility.id,10),date:myStock.toDate},function(data){
@@ -1503,6 +1515,29 @@ $scope.getColorSupervised=function (color, d) {
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
+
+    $scope.openBatchToExpireDialog = function (size) {
+
+        var modalInstance = $modal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'batch-expiry.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'lg',
+            windowClass: 'my-modal-popup',
+            resolve: {
+                items: function () {
+
+                    return batchToExpireNotification;
+                }
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
     $scope.toggleAnimation = function () {
         $scope.animationsEnabled != $scope.animationsEnabled;
     };
@@ -1608,14 +1643,38 @@ VaccineDashboardController.resolve = {
                 }
 
             });
-            SettingsByKey.get({key: 'STOCK_GREATER_THAN_BUFFER_COLOR'}, function (data) {
+            SettingsByKey.get({key: 'STOCK_LESS_THAN_BUFFER_COLOR'}, function (data) {
                 if (!utils.isNullOrUndefined(data.settings.value)) {
-                    color_values.yellow_color = data.settings.value;
+                    color_values.insufficient_color = data.settings.value;
                 } else {
-                    color_values.blue_color = 'yellow';
+                    color_values.insufficient_color = 'red';
                 }
 
             });
+            SettingsByKey.get({key: 'STOCK_GREATER_THAN_BUFFER_COLOR'}, function (data) {
+                            if (!utils.isNullOrUndefined(data.settings.value)) {
+                                color_values.reorder_color = data.settings.value;
+                            } else {
+                                color_values.reorder_color = 'yellow';
+                            }
+
+                        });
+            SettingsByKey.get({key: 'STOCK_GREATER_THAN_REORDER_LEVEL_COLOR'}, function (data) {
+                            if (!utils.isNullOrUndefined(data.settings.value)) {
+                                color_values.sufficient_color = data.settings.value;
+                            } else {
+                                color_values.sufficient_color = 'green';
+                            }
+
+                        });
+            SettingsByKey.get({key: 'STOCK_GREATER_THAN_MAXIMUM_COLOR'}, function (data) {
+                            if (!utils.isNullOrUndefined(data.settings.value)) {
+                                color_values.overstock_color = data.settings.value;
+                            } else {
+                                color_values.overstock_color = 'blue';
+                            }
+
+                        });
             deferred.resolve(color_values);
         }, 100);
 
@@ -1883,6 +1942,25 @@ VaccineDashboardController.resolve = {
              }, 100);
 
             return deferred.promise;
+    },
+    batchToExpireNotification: function ($q, $timeout, BatchExpiryNotification) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            BatchExpiryNotification.get({},function (data) {
+            var expires=[];
+                if(!isUndefined(data.expiries)) {
+                  expires = data.expiries;
+
+                }
+                deferred.resolve(expires);
+
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
     }
 
 };

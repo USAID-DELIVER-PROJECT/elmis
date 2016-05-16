@@ -283,4 +283,9 @@ public class FacilityController extends BaseController {
             facilityService.getForUserAndRights(loggedInUserId(request), VIEW_STOCK_LEDGER_REPORT));
   }
 
+
+  @RequestMapping(value = "/get-facility-supervisors-by-program", method = GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getFacilitySupervisors(@RequestParam("programId") Long program,@RequestParam("facilityId") Long facilityId) {
+    return OpenLmisResponse.response("supervisors",facilityService.getFacilitySuperVisorBy(program,facilityId));
+  }
 }

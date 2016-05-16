@@ -13,8 +13,10 @@ import org.openlmis.reporting.model.Template;
 import org.openlmis.reporting.service.JasperReportsViewFactory;
 import org.openlmis.reporting.service.TemplateService;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderStatus;
+import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
+import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineNotificationService;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineOrderRequisitionLineItemService;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineOrderRequisitionService;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineOrderRequisitionsColumnService;
@@ -75,9 +77,13 @@ public class VaccineOrderRequisitionController extends BaseController {
     @Autowired
     VaccineInventoryDistributionService inventoryDistributionService;
     @Autowired
+    VaccineInventoryDistributionService distributionService;
+    @Autowired
     private ProgramProductService programProductService;
     @Autowired
     private JasperReportsViewFactory jasperReportsViewFactory;
+    @Autowired
+    private VaccineNotificationService notificationService;
 
     public static String getCommaSeparatedIds(List<Long> idList) {
         return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
@@ -255,7 +261,6 @@ public class VaccineOrderRequisitionController extends BaseController {
         String separator = System.getProperty("file.separator");
         map.put("image_dir", imgResource.getFile().getAbsolutePath() + separator);
         map.put("ISSUE_ID", id.intValue());
-
         return new ModelAndView(jasperView, map);
     }
 
@@ -347,6 +352,16 @@ public class VaccineOrderRequisitionController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getTotalPendingRequest(@PathVariable Long facilityId, HttpServletRequest request) {
 
         return response("totalPendingRequest", service.getTotalPendingRequest(loggedInUserId(request), facilityId));
+    }
+
+    @RequestMapping(value = "sendNotification/{distributionId}", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> sendNotification(@PathVariable Long distributionId, HttpServletRequest request) {
+        VaccineDistribution distribution = null;
+        if (!(distributionId == null)) {
+            distribution = distributionService.getDistributionById(distributionId);
+            notificationService.sendIssuingEmail(distribution);
+        }
+        return response("message", distribution);
     }
 
 

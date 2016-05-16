@@ -572,6 +572,16 @@ services.factory('VaccineTotalPendingRequisitions', function ($resource) {
 services.factory('ExistingDistribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/get-if-exist/', {}, {});
 });
-services.factory('CoefficientValues',function($resource){
-    return $resource('/vaccine/report/coverageAndDropoutCoefficient.json',{},{});
+
+
+services.factory('BatchExpiryNotification', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/getBatchExpiryNotification/', {}, {});
+});
+
+services.factory('CoefficientValues',function($resource) {
+    return $resource('/vaccine/report/coverageAndDropoutCoefficient.json', {}, {});
+});
+
+services.factory('SendIssueNotification',function($resource) {
+    return $resource('/vaccine/orderRequisition/sendNotification/:distributionId.json', {distributionId:'@distributionId'}, {});
 });

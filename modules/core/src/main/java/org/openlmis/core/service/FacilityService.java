@@ -311,4 +311,12 @@ public class FacilityService {
     facility.setSupportedPrograms(programSupportedService.getAllByFacilityId(id));
     return facility;
   }
+
+  public List<FacilitySupervisor> getFacilitySuperVisorBy(Long program,Long facilityId) {
+    return facilityRepository.getFacilitySuperVisorBy(program,facilityId); }
+
+  public List<FacilitySupervisor> getSuperVisedUserFacility(Long program,Long facilityId) {
+    return facilityRepository.getSuperVisedUserFacility(program,facilityId);
+  }
+
 }

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-distribution-summary" language="groovy" printOrder="Horizontal" pageWidth="1190" pageHeight="842" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="1170" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="0.75"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="69"/>
 	<style name="Crosstab Data Text" hAlign="Center"/>
 	<subDataset name="dataset1" uuid="091a1376-c476-4867-9ced-423695e8c98e"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -28,8 +28,9 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[     SELECT pc.displayOrder,
+		<![CDATA[SELECT pc.displayOrder,
              p.id as productId,
+            pc.name as category,
             toFacilityId facilityId,
             vd.distributionDate::DATE,
             (SELECT name from facilities where id = vd.toFacilityId) facilityName,
@@ -43,8 +44,7 @@
               LEFT JOIN dosage_units du on du.id=p.dosageunitid
 
  WHERE  vd.status = 'PENDING' AND  vd.id = ANY($P{DISTRIBUTION_ID}::int[])
- order by  pc.displayOrder, p.id
-]]>
+ order by  pc.displayOrder, p.id]]>
 	</queryString>
 	<field name="facilityid" class="java.lang.Integer"/>
 	<field name="facilityname" class="java.lang.String"/>
@@ -53,6 +53,7 @@
 	<field name="distributiondate" class="java.util.Date"/>
 	<field name="productid" class="java.lang.String"/>
 	<field name="displayorder" class="java.lang.String"/>
+	<field name="category" class="java.lang.String"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -121,11 +122,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.date}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="132" y="99" width="130" height="20" uuid="8e63b72b-a4ac-42d1-9f7a-86f4b00840b1"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format($F{distributiondate})]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement x="1" y="121" width="1165" height="1" forecolor="#3D9297" backcolor="#3D9297" uuid="d11a274d-34bb-462f-80ee-7abeea60d07c"/>
 			</line>
@@ -141,6 +137,9 @@
 			</textField>
 			<line>
 				<reportElement x="133" y="94" width="212" height="1" uuid="458030bc-85ec-4418-9196-afd82924f0a0"/>
+			</line>
+			<line>
+				<reportElement x="133" y="118" width="212" height="1" uuid="a2b42089-6ddb-46b6-96c0-a608083d427a"/>
 			</line>
 		</band>
 	</columnHeader>
@@ -185,6 +184,22 @@
 						</cellContents>
 					</crosstabTotalRowHeader>
 				</rowGroup>
+				<columnGroup name="category" height="30">
+					<bucket order="Descending" class="java.lang.String">
+						<bucketExpression><![CDATA[$F{category}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents>
+							<textField isBlankWhenNull="true">
+								<reportElement style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="84" height="30" forecolor="#FFFFFF" uuid="2108abdf-b8ba-4c33-b69f-a5ec8cee2bc2"/>
+								<textFieldExpression><![CDATA[$V{category}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
 				<columnGroup name="productname" height="30">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{productname}]]></bucketExpression>
@@ -303,6 +318,12 @@
 							<textFieldExpression><![CDATA[$V{quantityissuedMeasure}]]></textFieldExpression>
 						</textField>
 					</cellContents>
+				</crosstabCell>
+				<crosstabCell columnTotalGroup="category">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityname" columnTotalGroup="category">
+					<cellContents/>
 				</crosstabCell>
 			</crosstab>
 			<line>

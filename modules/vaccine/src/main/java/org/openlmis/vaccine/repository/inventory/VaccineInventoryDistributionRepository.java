@@ -9,6 +9,7 @@ import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItem;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItemLot;
 import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
+import org.openlmis.vaccine.dto.BatchExpirationNotificationDTO;
 import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
 import org.openlmis.vaccine.repository.mapper.inventory.VaccineInventoryDistributionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,4 +120,11 @@ public class VaccineInventoryDistributionRepository {
         return mapper.getDistributionByVoucherNumberIfExist(facilityId, voucherNumber);
     }
 
+    public List<BatchExpirationNotificationDTO> getBatchExpiryNotifications(Long facilityId){
+        return mapper.getBatchExpiryNotifications(facilityId);
+    }
+
+    public VaccineDistribution getDistributionById(Long id) {
+        return mapper.getDistributionById(id);
+    }
 }

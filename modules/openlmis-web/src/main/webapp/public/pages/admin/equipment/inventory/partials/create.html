@@ -26,7 +26,7 @@
           <div class="form-cell">
             <label for="facility">
               <span openlmis-message="label.equipment.facility"></span>
-              <span class="label-required">*</span>
+                <span ng-hide="from == 0" class="label-required">*</span>
             </label>
 
             <div class="form-field" ng-if="from == 0">
@@ -198,6 +198,10 @@
                           ng-selected="status.id == inventory.operationalStatusId">{{status.name}}
                   </option>
                 </select>
+                  <a style="border-radius: 25px!important;padding: 1px 4px;"
+                     class="btn btn-circle btn-icon-only btn-default" ng-click="openStatusHelpDialog()">
+                      <i class="icon-info"></i>
+                  </a>
               <span class="field-error" ng-show="inventoryForm.operationalStatus.$error.required && showError"
                     openlmis-message="missing.value"></span>
               </div>
@@ -314,6 +318,7 @@
                         ng-selected="status.id == inventory.operationalStatusId">{{status.name}}
                 </option>
               </select>
+
               <span class="field-error" ng-show="inventoryForm.operationalStatus.$error.required && showError"
                     openlmis-message="missing.value"></span>
             </div>
@@ -420,4 +425,48 @@
       </div>
     </div>
   </form>
+</div>
+
+
+<div id="fullSupply" modal="operationalStatusModal" style="width:60% !important;margin-left:-30% !important;"
+     options="{'backdrop':'static', 'escape':false}">
+    <div class="modal-header">
+        <h3>
+            <span openlmis-message="label.equipment.operational.status.help"></span>
+        </h3>
+    </div>
+    <div class="modal-body" style="max-height:400px">
+        <h3>Functional</h3>
+
+        <div><span ng-bind="equipmentStatusHelp.functional"></span></div>
+        <hr/>
+        <h3>Functional But Not Installed</h3>
+
+        <div><span ng-bind="equipmentStatusHelp.functionalNotInstalled"></span></div>
+        <hr/>
+        <h3>Not Functional</h3>
+
+        <div><span ng-bind="equipmentStatusHelp.nonFunctional"></span></div>
+        <hr/>
+        <h3>Waiting for Repair</h3>
+
+        <div><span ng-bind="equipmentStatusHelp.waitingForRepair"></span></div>
+        <hr/>
+        <h3>Waiting for Spare Parts</h3>
+
+        <div><span ng-bind="equipmentStatusHelp.waitingForSpareParts"></span></div>
+        <hr/>
+        <h3>Obsolete</h3>
+
+        <div><span ng-bind="equipmentStatusHelp.obsolete"></span></div>
+        <hr/>
+
+    </div>
+
+    <div class="modal-footer">
+        <input type="button" ng-click="operationalStatusModal=false;" class="btn btn-cancel"
+               openlmis-message="button.cancel"/>
+    </div>
+
+
 </div>
