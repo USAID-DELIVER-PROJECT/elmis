@@ -1445,16 +1445,16 @@ app.directive('rangePagination', ['SettingsByKey', function (SettingsByKey) {
             });
 
         } else {
-        for (var i = 1; i <= loops; i++) {
-            offset = (i - 1) * range;
-            extremeVal = total > i * range ? i * range : total;
-            if (offset >= total) break;
-            pages.push({
-                offset: offset,
-                range: range,
-                value: (offset + 1).toString().concat('-').concat(extremeVal.toString())
-            });
-        }
+            for (var i = 1; i <= loops; i++) {
+                offset = (i - 1) * range;
+                extremeVal = total > i * range ? i * range : total;
+                if (offset >= total) break;
+                pages.push({
+                    offset: offset,
+                    range: range,
+                    value: (offset + 1).toString().concat('-').concat(extremeVal.toString())
+                });
+            }
 
         }
 
@@ -1610,6 +1610,7 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
             staticYear: '=year',
             periodStartdate: '=startdate',
             periodEnddate: '=enddate',
+            perioderror: '=perioderror',
             onChange: '&'
         },
 
@@ -1636,7 +1637,7 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
 
 
             $scope.$watch('staticYear', function (newValues, oldValues) {
-                if (!utils.isNullOrUndefined($scope.staticYear)&&$scope.staticYear>=0) {
+                if (!utils.isNullOrUndefined($scope.staticYear) && $scope.staticYear >= 0) {
                     periods = utils.getYearStartAndEnd($scope.staticYear, $scope.periodStartdate, $scope.periodEnddate, $scope.cutoffdate);
 
 
@@ -1653,17 +1654,47 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
             $scope.$watchCollection('[periodStartdate,periodEnddate]', function (newValues, oldValues) {
                 if (utils.isEmpty($scope.periodStartdate) || utils.isEmpty($scope.periodEnddate))
                     return;
-                $scope.$parent.OnFilterChanged();
+                var datediff = differenceInDays();
+                var yearDif = yearDifference();
+
+                if (datediff < 0) {
+                    $scope.perioderror = 'Period start date must be before or equal to end date';
+                }
+                else if (yearDif !== 0) {
+                    $scope.perioderror = 'Start and End date should be in same year';
+                }
+                else
+                    $scope.perioderror="";
+                    $scope.$parent.OnFilterChanged();
 
             });
+            var differenceInDays = function () {
 
+                var one = new Date($scope.periodStartdate),
+                    two = new Date($scope.periodEnddate);
+
+                var millisecondsPerDay = 1000 * 60 * 60 * 24;
+                var millisBetween = two.getTime() - one.getTime();
+                var days = millisBetween / millisecondsPerDay;
+
+                return Math.floor(days);
+            };
+            var yearDifference = function () {
+                var one = new Date($scope.periodStartdate),
+                    two = new Date($scope.periodEnddate);
+                var startyear = one.getFullYear(),
+                    endYear = two.getFullYear();
+                var dif = startyear - endYear;
+                return Math.floor(dif);
+
+            };
         },
         templateUrl: 'filter-static-year'
     };
 }]);
 
 app.directive('vaccineProductDosesFilter', ['VaccineProductDoseList', 'messageService', 'VaccineSupervisedIvdPrograms',
-        function (VaccineProductDoseList, messageService, VaccineSupervisedIvdPrograms) {
+    function (VaccineProductDoseList, messageService, VaccineSupervisedIvdPrograms) {
 
         return {
             restrict: 'E',
@@ -1680,21 +1711,22 @@ app.directive('vaccineProductDosesFilter', ['VaccineProductDoseList', 'messageSe
                     VaccineSupervisedIvdPrograms.get({}, function (data) {
 
                         VaccineProductDoseList.get(
-                            {  programId: data.programs[0].id,
+                            {
+                                programId: data.programs[0].id,
                                 productId: $scope.product
                             },
 
-                            function(result){
+                            function (result) {
                                 $scope.doses = !utils.isNullOrUndefined(result.doses) ? result.doses : null;
                                 !utils.isNullOrUndefined(result.doses) ? $scope.doses.unshift({displayName: selectAllDoses}) :
-                                        $scope.doses.push({displayName: selectAllDoses});
+                                    $scope.doses.push({displayName: selectAllDoses});
                             });
                     });
                 });
 
-                $scope.filterChanged = function(){
+                $scope.filterChanged = function () {
                     $scope.$parent.filter.dose = $scope.filter.dose;
-                  $scope.$parent.OnFilterChanged();
+                    $scope.$parent.OnFilterChanged();
                 };
 
             },
@@ -1721,15 +1753,15 @@ app.directive('vaccineStockDateFilter', [
                 if (!isUndefined($scope.default)) {
                     $scope.filterToDate = $scope.default;
                 } else {
-                      var d = new Date();
-                      month = '' + (d.getMonth() + 1);
-                      day = '' + d.getDate();
-                      year = d.getFullYear();
+                    var d = new Date();
+                    month = '' + (d.getMonth() + 1);
+                    day = '' + d.getDate();
+                    year = d.getFullYear();
 
-                      if (month.length < 2) month = '0' + month;
-                      if (day.length < 2) day = '0' + day;
+                    if (month.length < 2) month = '0' + month;
+                    if (day.length < 2) day = '0' + day;
 
-                     $scope.filterToDate =[year, month, day].join('-');
+                    $scope.filterToDate = [year, month, day].join('-');
                 }
 
                 $scope.$watch('filterToDate', function (newValues, oldValues) {
@@ -1756,27 +1788,27 @@ app.directive('vaccineStockFacilityLevelFilter', ['ReportFacilityLevels', 'Vacci
             },
             controller: function ($scope) {
 
-                VaccineSupervisedIvdPrograms.get({},function(data){
-                    ReportFacilityLevels.get({program:data.programs[0].id},function(data2){
-                         var facilityLevels=[];
-                         var hasRVS=_.where(data2.facilityLevels,{code:'rvs'});
-                         var hasCVS=_.where(data2.facilityLevels,{code:'cvs'});
-                         var isUpperThanDvs=(hasRVS.length >0)?true:false;
-                         var isUpperThanRVS=(hasCVS.length >0)?true:false;
+                VaccineSupervisedIvdPrograms.get({}, function (data) {
+                    ReportFacilityLevels.get({program: data.programs[0].id}, function (data2) {
+                        var facilityLevels = [];
+                        var hasRVS = _.where(data2.facilityLevels, {code: 'rvs'});
+                        var hasCVS = _.where(data2.facilityLevels, {code: 'cvs'});
+                        var isUpperThanDvs = (hasRVS.length > 0) ? true : false;
+                        var isUpperThanRVS = (hasCVS.length > 0) ? true : false;
 
-                         data2.facilityLevels.forEach(function(level){
-                              if(level.code === 'rvs' && isUpperThanRVS){
-                                     facilityLevels.push(level);
-                              }
-                              if(level.code === 'dvs' && isUpperThanDvs){
-                                     facilityLevels.push(level);
-                              }
+                        data2.facilityLevels.forEach(function (level) {
+                            if (level.code === 'rvs' && isUpperThanRVS) {
+                                facilityLevels.push(level);
+                            }
+                            if (level.code === 'dvs' && isUpperThanDvs) {
+                                facilityLevels.push(level);
+                            }
 
-                         });
-                         $scope.facilityLevels=facilityLevels.sort(function(a,b){
-                             return (a.displayOrder > b.displayOrder) ? 1 : ((b.displayOrder > a.displayOrder) ? -1 : 0);
-                         });
-                         $scope.filterFacilityLevel = $scope.facilityLevels[0].code;
+                        });
+                        $scope.facilityLevels = facilityLevels.sort(function (a, b) {
+                            return (a.displayOrder > b.displayOrder) ? 1 : ((b.displayOrder > a.displayOrder) ? -1 : 0);
+                        });
+                        $scope.filterFacilityLevel = $scope.facilityLevels[0].code;
                     });
 
                 });
@@ -1807,7 +1839,7 @@ app.directive('customLegend', [
             },
 
             controller: function ($scope) {
-               console.log($scope.data);
+                console.log($scope.data);
                 $scope.$watch('data', function (newValues, oldValues) {
 
                 });
