@@ -593,7 +593,19 @@
                 </select>
             </div>
         </div>
+        <div class="horizontalFilters form-cell" >
+            <label for="periodStartdate" class="labels" ><span openlmis-message="label.start.date"></span></label>
+            <div>
+                <input id="periodStartdate" ng-model="periodStartdate" ui-date-format="yy-mm-dd" ui-date/>
+            </div>
+        </div>
 
+        <div class="horizontalFilters form-cell" >
+            <label for="periodEnddate" class="labels" ><span openlmis-message="label.end.date"></span></label>
+            <div>
+                <input id="periodEnddate" ng-model="periodEnddate" ui-date-format="yy-mm-dd" ui-date/>
+            </div>
+        </div>
 
     </div>
 </script>

@@ -1629,15 +1629,15 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
                 data.years.forEach(function (value) {
                     $scope.years.push(value);
                 });
-
+                $scope.years.push({id: '-1', year_value: 'Custom Period'});
                 $scope.staticYear = $scope.years[0].id;
 
             });
 
 
             $scope.$watch('staticYear', function (newValues, oldValues) {
-                if (!utils.isNullOrUndefined($scope.staticYear)) {
-                    periods = utils.getYearStartAndEnd($scope.staticYear, $scope.cutoffdate);
+                if (!utils.isNullOrUndefined($scope.staticYear)&&$scope.staticYear>=0) {
+                    periods = utils.getYearStartAndEnd($scope.staticYear, $scope.periodStartdate, $scope.periodEnddate, $scope.cutoffdate);
 
 
                     $scope.periodStartdate = periods.startdate;
@@ -1648,6 +1648,13 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
                         $scope.$parent.OnFilterChanged();
                     }, 10);
                 }
+            });
+
+            $scope.$watchCollection('[periodStartdate,periodEnddate]', function (newValues, oldValues) {
+                if (utils.isEmpty($scope.periodStartdate) || utils.isEmpty($scope.periodEnddate))
+                    return;
+                $scope.$parent.OnFilterChanged();
+
             });
 
         },
