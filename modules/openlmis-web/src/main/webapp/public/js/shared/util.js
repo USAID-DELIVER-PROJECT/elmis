@@ -69,7 +69,7 @@ var utils = {
                 return {startdate: null, enddate: null};
 
             else if (periodRange !== 0 && utils.isEmpty(_cutoffDate)) {
-                console.log("Vaccine period Late reporting date is not defined");
+
                 return {startdate: null, enddate: null};
             }
 

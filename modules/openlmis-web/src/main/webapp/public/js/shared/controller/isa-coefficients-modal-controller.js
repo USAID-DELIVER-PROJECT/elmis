@@ -93,10 +93,9 @@ function ISACoefficientsModalController($scope, $rootScope, $timeout)
 
   $scope.populationSourceChanged = function()
   {
-    console.log($scope.origPopulationSource);
-    console.log($scope.currentPopulationSource);
+
     $scope.isaToEdit.populationSource = $scope.currentPopulationSource.id;
-    console.log($scope.isaToEdit.populationSource );
+
   };
 
   $scope.clearAndCloseProgramProductISAModal = function()

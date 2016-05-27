@@ -1245,7 +1245,7 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodFlat', '
                 onChange: '&'
             },
             controller: function ($scope) {
-
+                $scope.$evalAsync(function () {
                 $scope.period_placeholder = messageService.get('label.select.period');
                 SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data, er) {
                     $scope.cutoffdate = data.settings.value;
@@ -1254,22 +1254,23 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodFlat', '
                     if (!utils.isNullOrUndefined(data) && !utils.isNullOrUndefined(data).vaccineCurrentPeriod) {
                         var defaultPeriodId = data.vaccineCurrentPeriod.current_period;
                         $scope.filter = {defaultPeriodId: defaultPeriodId};
+                        GetVaccineReportPeriodFlat.get({}, function (data) {
+                            $scope.periods = data.vaccinePeriods.periods;
+                            if (!angular.isUndefined($scope.periods)) {
+                                if ($scope.periods.length === 0)
+                                    $scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
+                            }
+
+                            $scope.period = $scope.filter.defaultPeriodId;
+
+                        });
 
                     }
 
                 });
-                $scope.$evalAsync(function () {
+
                     //Load period tree
-                    GetVaccineReportPeriodFlat.get({}, function (data) {
-                        $scope.periods = data.vaccinePeriods.periods;
-                        if (!angular.isUndefined($scope.periods)) {
-                            if ($scope.periods.length === 0)
-                                $scope.period_placeholder = messageService.get('report.filter.period.no.vaccine.record');
-                        }
 
-                        $scope.period = $scope.filter.defaultPeriodId;
-
-                    });
                 });
                 //if(!isUndefined($scope.default)){
                 //    $scope.period = $scope.default;
@@ -1839,7 +1840,7 @@ app.directive('customLegend', [
             },
 
             controller: function ($scope) {
-                console.log($scope.data);
+
                 $scope.$watch('data', function (newValues, oldValues) {
 
                 });

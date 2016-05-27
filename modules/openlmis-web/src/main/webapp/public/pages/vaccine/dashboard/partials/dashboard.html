@@ -27,7 +27,7 @@
 
 </style>
 <script type="text/ng-template" id="myModalContent.html">
-    <div class="modal-header modal-header">
+    <div style="width: 800px;" class="modal-header modal-header">
         <button  class="close" ng-click="ok()">X</button>
         <h2 ng-show="!show_email"><i class="flaticon-bar"></i>Reporting Detail</h2>
 
@@ -594,7 +594,11 @@
         </div>
     </div>
 </script>
-
+<div style="height: 20px">
+    <div style="padding-top: -2px" class="pull-right">
+ <a ng-click="expandAllTabs(true)">Expand All</a>|<a ng-click="expandAllTabs(false)">Collapse All</a>
+    </div>
+</div>
 <div>
 
     <accordion>
@@ -671,16 +675,17 @@
             </span>
         </accordion-group>
     </accordion>
-
-    <accordion>
-        <accordion-group class="gray-cascade" is-open="performance.openPanel">
+<!--session tab-->
+    <accordion close-others="false">
+        <accordion-group class="gray-cascade" is-open="sessions.openPanel">
             <accordion-heading>
                  <div class="accordion-title">
+
                     <div class="caption"><i class="flaticon-filter"></i>
-                            <span class="caption-subject bold uppercase font-dark" openlmis-message="label.performance"></span>
+                            <span  ng-click="sessionsTabCliced()" class="caption-subject bold uppercase font-dark" openlmis-message="label.dashboard.sessions"></span>
                     </div>
                     <div class="tools">
-                        <i ng-class="{'icon-minus-sign': performance.openPanel, 'icon-plus-sign': !performance.openPanel}"></i>
+                        <i ng-class="{'icon-minus-sign': sessions.openPanel, 'icon-plus-sign': !sessions.openPanel}"></i>
                     </div>
                 </div>
 
@@ -747,9 +752,26 @@
                     </div>
                 </div>
             </div>
+        </accordion-group>
+
+    <!-- coverage tab-->
+
+        <accordion-group class="gray-cascade" is-open="coverage.openPanel">
+            <accordion-heading>
+
+                <div class="accordion-title">
+                    <div class="caption"><i class="flaticon-filter"></i>
+                        <span  ng-click="coverageTabCliced()" class="caption-subject bold uppercase font-dark" openlmis-message="label.dashboard.coverage"></span>
+                    </div>
+                    <div class="tools">
+                        <i ng-class="{'icon-minus-sign': coverage.openPanel, 'icon-plus-sign': !coverage.openPanel}"></i>
+                    </div>
+                </div>
+
+            </accordion-heading>
             <!-- end row -->
 <!-- coverage -->
-            <div class="clearfix" >&nbsp;</div>
+
             <!-- begin row -->
             <div class="row">
                 <div class="col-md-6 col-sm-6">
@@ -813,6 +835,23 @@
             </div>
             <!-- end row -->
             <!-- drop out-->
+        </accordion-group>
+
+    <!-- dropout tab-->
+
+        <accordion-group class="gray-cascade" is-open="dropout.openPanel">
+            <accordion-heading>
+
+                <div class="accordion-title">
+                    <div class="caption"><i class="flaticon-filter"></i>
+                        <span ng-click="dropoutTabCliced()" class="caption-subject bold uppercase font-dark" openlmis-message="label.dashboard.dropout"></span>
+                    </div>
+                    <div class="tools">
+                        <i ng-class="{'icon-minus-sign': dropout.openPanel, 'icon-plus-sign': !dropout.openPanel}"></i>
+                    </div>
+                </div>
+
+            </accordion-heading>
             <div class="clearfix" >&nbsp;</div>
             <!-- begin row -->
             <div class="row">
@@ -876,10 +915,29 @@
                 </div>
             </div>
             <!-- end row -->
+        </accordion-group>
+
+    <!-- wastage tab-->
+
+        <accordion-group class="gray-cascade" is-open="wastage.openPanel">
+            <accordion-heading>
+
+                <div class="accordion-title">
+                    <div class="caption"><i class="flaticon-filter"></i>
+                        <span ng-click="wastageTabCliced()" class="caption-subject bold uppercase font-dark" openlmis-message="label.dashboard.wastagerate"></span>
+                    </div>
+                    <div class="tools">
+                        <i ng-class="{'icon-minus-sign': wastage.openPanel, 'icon-plus-sign': !wastage.openPanel}"></i>
+                    </div>
+                </div>
+
+            </accordion-heading>
             <!-- wastage -->
-            <div class="clearfix" >&nbsp;</div>
+
             <!-- begin row -->
             <div class="row">
+
+
                 <div class="col-md-6 col-sm-6">
                     <div class="portlet light">
                         <div class="caption">
@@ -898,6 +956,7 @@
                         <ng-include
                                 src="'/public/pages/vaccine/dashboard/partials/slide-wastage-monthly-trend.html'"></ng-include>
                     </div>
+
                 </div>
 
                 <div class="col-md-6 col-sm-6">
@@ -937,6 +996,7 @@
                                 src="'/public/pages/vaccine/dashboard/partials/slide-wastage-facility-trend.html'"></ng-include>
                     </div>
                 </div>
+
             </div>
             <!-- end row -->
             <div class="clearfix" ></div>
@@ -1019,14 +1079,14 @@
 
 <!-- Stock Status By Facility -->
     <accordion>
-        <accordion-group class="gray-cascade" is-open="stockStatus.openPanel">
+        <accordion-group class="gray-cascade" is-open="stockFacilityStatus.openPanel">
             <accordion-heading>
                 <div class="accordion-title">
                     <div class="caption"><i class="flaticon-filter"></i>
-                        <span class="caption-subject bold uppercase font-dark" openlmis-message="label.stock.status.by.facility"></span>
+                        <span ng-click="stockFacilityStatusTabCliced()" class="caption-subject bold uppercase font-dark" openlmis-message="label.stock.status.by.facility"></span>
                     </div>
                     <div class="tools">
-                        <i ng-class="{'icon-minus-sign': performance.openPanel, 'icon-plus-sign': !performance.openPanel}"></i>
+                        <i ng-class="{'icon-minus-sign': stockFacilityStatus.openPanel, 'icon-plus-sign': !stockFacilityStatus.openPanel}"></i>
                     </div>
                 </div>
             </accordion-heading>

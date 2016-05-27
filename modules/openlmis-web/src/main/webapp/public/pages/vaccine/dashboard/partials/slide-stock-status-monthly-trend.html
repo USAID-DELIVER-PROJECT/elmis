@@ -1,6 +1,6 @@
 <div class="app-form vaccine-form-filter">
   <form  novalidate>
-    <div  class="clearfix filter-place-holder">
+    <div  class="clearfix ">
       <!--<span class="form-cell horizontalFilters header-section-title" openlmis-message="title.coverage"></span> -->
       <vaccine-product-filter  class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.stockstatus.product" on-change="stockStatusCallBack()"></vaccine-product-filter>
       <vaccine-monthly-period-tree-filter default="defaultMonthlyPeriod" cm-model="filter.stockstatus.period"  class="form-cell horizontalFilters" on-change="stockStatusCallBack()"></vaccine-monthly-period-tree-filter>
@@ -13,10 +13,10 @@
     <!--<range-pagination field-label="label.facility"  class="form-cell horizontalFilters" total="totalFacility" range="filter.facilityRange" offset="filter.facilityOffset" label-all="all facility" on-change="monthlyCoverageFacilityPagination()"></range-pagination>-->
 
 
-</div>
+
 </form>
 </div>
-<div style="margin-top: -15px;">
+<div style="margin-top: -8px;">
   <c3chart   bindto-id="monthly_stock_chart" chart-data="monthlyStockstatus.dataPoints" chart-columns="monthlyStockstatus.dataColumns" chart-x="monthlyStockstatus.dataX" ng-show="monthlyStockstatus.dataPoints">
 
     <chart-axis>
