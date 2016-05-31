@@ -1005,13 +1005,14 @@
     </accordion>
     <accordion>
         <accordion-group class="gray-cascade" is-open="stockStatus.openPanel">
-        <accordion-heading>
-            <div class="accordion-title">
+            <accordion-heading>
+                <div class="accordion-title" ng-click="stockStatusTabClicked()">
                 <div class="caption"><i class="flaticon-filter"></i>
-                    <span class="caption-subject bold uppercase font-dark" openlmis-message="label.stock.status.bar"></span>
+                    <span class="caption-subject bold uppercase font-dark"
+                          openlmis-message="label.stock.status.bar"></span>
                 </div>
                 <div class="tools">
-                    <i ng-class="{'icon-minus-sign': performance.openPanel, 'icon-plus-sign': !performance.openPanel}"></i>
+                    <i ng-class="{'icon-minus-sign': stockStatus.openPanel, 'icon-plus-sign': !stockStatus.openPanel}"></i>
                 </div>
             </div>
 
