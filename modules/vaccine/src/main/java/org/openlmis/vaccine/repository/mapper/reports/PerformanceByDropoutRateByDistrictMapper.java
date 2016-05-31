@@ -49,7 +49,7 @@ public interface PerformanceByDropoutRateByDistrictMapper {
             " where gl.code='dist' and  gz.id= #{zoneId}")
     public int isDistrictLevel(@Param("zoneId")Long goegraphicZoneId);
     @Select("select " +
-            "   case when code = 'V001' then 'BCG - MR' else 'DTP-HepB-Hib1/DTP-HepB-Hib3' end dropout , id " +
+            "   case when code = 'V001' then 'BCG - MR1' else 'DTP-HepB-Hib1/DTP-HepB-Hib3' end dropout , id " +
             "    from products where code in ('V001','V010')")
     public List<DropoutProduct> loadDropoutProductList();
 }
