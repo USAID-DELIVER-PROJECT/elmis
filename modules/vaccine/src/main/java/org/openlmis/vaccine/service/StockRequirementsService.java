@@ -149,7 +149,7 @@ public class StockRequirementsService
     private void save(StockRequirements requirements)
     {
         StockRequirementsDTO existingRequirement = repository.getByProductId(requirements.getProgramId(), requirements.getFacilityId(), requirements.getProductId(), requirements.getYear());
-        if(requirements.getIsaValue() >0 && existingRequirement==null) {
+        if (requirements.getIsaValue() >= 0 && existingRequirement == null) {
             repository.save(requirements);
         }
 
@@ -287,6 +287,7 @@ public class StockRequirementsService
                     }
                 }
                 else{
+                    if (newSupplyRequirements.getIsaValue() != null)
                     save(newSupplyRequirements);
                 }
                 setSafetyBox(programProductsByProgram, newSupplyRequirements);
@@ -321,7 +322,8 @@ public class StockRequirementsService
                             }
                         }
                         newSafetyBoxRequirements.setIsa(isa);
-                        Double safetyBoxIsaValue=((supplyRequirements.getAnnualNeed()/100)*isa.getWastageFactor())/12;
+                        Double supplyAnnualNeed = (supplyRequirements.getAnnualNeed() != null) ? supplyRequirements.getAnnualNeed() : 0.0;
+                        Double safetyBoxIsaValue = ((supplyAnnualNeed / 100) * isa.getWastageFactor()) / 12;
                         safetyBoxIsaValue = (safetyBoxIsaValue < 1) ? 1 : safetyBoxIsaValue;
                         newSafetyBoxRequirements.setIsaValue(safetyBoxIsaValue.intValue());
 
