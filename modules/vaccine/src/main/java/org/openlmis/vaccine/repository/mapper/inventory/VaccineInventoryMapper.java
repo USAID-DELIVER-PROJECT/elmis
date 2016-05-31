@@ -48,6 +48,9 @@ public interface VaccineInventoryMapper {
 
     @Delete("DELETE FROM lots")
     Integer deleteLots();
+
+    @Delete("DELETE FROM vaccine_distribution_status_changes")
+    void deleteDistributionStatus();
     //TODO End To delete this code on production
 
 
