@@ -69,7 +69,7 @@ var utils = {
                 return {startdate: null, enddate: null};
 
             else if (periodRange !== 0 && utils.isEmpty(_cutoffDate)) {
-                console.log("Vaccine period Late reporting date is not defined");
+
                 return {startdate: null, enddate: null};
             }
 
@@ -77,28 +77,28 @@ var utils = {
                 monthBack = 1;
             }
 
-            endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack+1, 0);
-            startDate = new Date(currentDate.getFullYear(), currentDate.getMonth()-monthBack, 1);
+            endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack + 1, 0);
+            startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 1);
 
 
- /*            switch (periodRange) {
-                case '1':
-                    months = startDate.getMonth();
-                    break;
-                case '2':
-                    months = startDate.getMonth() - 3;
-                    break;
-                case '3':
-                    months = startDate.getMonth() - 6;
-                    break;
-                case '4':
-                    months = startDate.getMonth() - 12;
-                    break;
-                default :
-                    months = 0;
-            }
-            //startDate.setMonth(months);
-*/
+            /*            switch (periodRange) {
+             case '1':
+             months = startDate.getMonth();
+             break;
+             case '2':
+             months = startDate.getMonth() - 3;
+             break;
+             case '3':
+             months = startDate.getMonth() - 6;
+             break;
+             case '4':
+             months = startDate.getMonth() - 12;
+             break;
+             default :
+             months = 0;
+             }
+             //startDate.setMonth(months);
+             */
             return {
                 startdate: utils.formatDate(startDate),
                 enddate: utils.formatDate(endDate)
@@ -110,22 +110,28 @@ var utils = {
 
     },
 
-    getYearStartAndEnd: function (year, _cuttofdate) {
+    getYearStartAndEnd: function (year,_startDate,_endDate, _cuttofdate) {
 
         var periodValues = [];
         var endDate;
         var startDate;
-        if (year === '0') {
-            periodValues = utils.getVaccineCustomDateRange(1, null, null, _cuttofdate);
+        if (year !== '-1') {
+            if (year === '0') {
+                periodValues = utils.getVaccineCustomDateRange(1, null, null, _cuttofdate);
 
-        } else {
-            periodValues = {
-                enddate: utils.formatDate(new Date(year, 12, 0)),
-                startdate: utils.formatDate(new Date(year, 0, 1))
-            };
+            } else {
+                periodValues = {
+                    enddate: utils.formatDate(new Date(year, 12, 0)),
+                    startdate: utils.formatDate(new Date(year, 0, 1))
+                };
+            }
+        }else{
+
+            periodValues= {startdate: _startDate, enddate: _endDate};
+            return periodValues;
         }
-
         return periodValues;
+
     },
     getVaccineMonthlyDefaultPeriod: function (periods, cuttoffDate) {
         var monthBack = 0;
@@ -206,16 +212,16 @@ var utils = {
 
     },
 
-    getDistrictBasedReportDataWithSubAndGrandTotal : function(reportData, districtNameKey,
-                                                              columnKeys, includeGrandTotal){
-        if(reportData.length === 0)
+    getDistrictBasedReportDataWithSubAndGrandTotal: function (reportData, districtNameKey,
+                                                              columnKeys, includeGrandTotal) {
+        if (reportData.length === 0)
             return;
 
         var uniqueDistrictName = _.uniq(_.pluck(reportData, districtNameKey));
         var reportDataWithAggregates = [];
         var grandTotal = {};
 
-        _.each(uniqueDistrictName, function(districtName) {
+        _.each(uniqueDistrictName, function (districtName) {
 
             var district_total = {};
             var districtData = _.where(reportData, {district_name: districtName});
@@ -234,7 +240,7 @@ var utils = {
         });
 
         // Calculate grand Total
-        if(includeGrandTotal) {
+        if (includeGrandTotal) {
 
             _.each(columnKeys, function (columnKey) {
                 grandTotal[columnKey] = utils.getGrandTotal(reportData, columnKey);
@@ -245,9 +251,9 @@ var utils = {
 
         return reportDataWithAggregates;
     },
-    getReportDataWithSubAndGrandTotal : function(reportData, nameKey,
-                                                              columnKeys, includeGrandTotal,type){
-        if(utils.isNullOrUndefined(reportData)||utils.isEmpty(reportData)||reportData.length === 0)
+    getReportDataWithSubAndGrandTotal: function (reportData, nameKey,
+                                                 columnKeys, includeGrandTotal, type) {
+        if (utils.isNullOrUndefined(reportData) || utils.isEmpty(reportData) || reportData.length === 0)
             return;
 
         var uniqueName = _.uniq(_.pluck(reportData, nameKey));
@@ -255,15 +261,15 @@ var utils = {
         var reportDataWithAggregates = [];
         var grandTotal = {};
 
-        _.each(uniqueName, function(districtName) {
+        _.each(uniqueName, function (districtName) {
 
             var district_total = {};
             var districtData;
-            if(type===1){
+            if (type === 1) {
                 districtData = _.where(reportData, {facility_name: districtName});
-            }else if(type===2) {
+            } else if (type === 2) {
                 districtData = _.where(reportData, {district_name: districtName});
-            }else{
+            } else {
                 districtData = _.where(reportData, {region_name: districtName});
             }
 
@@ -272,7 +278,7 @@ var utils = {
             if (districtData.length > 1) {
 
                 _.each(columnKeys, function (columnKey) {
-                    district_total[columnKey] = utils.getReportColumnSubTotal(reportData, districtName, columnKey,type);
+                    district_total[columnKey] = utils.getReportColumnSubTotal(reportData, districtName, columnKey, type);
                 });
 
                 reportDataWithAggregates.push({subtotal: district_total});
@@ -281,7 +287,7 @@ var utils = {
         });
 
         // Calculate grand Total
-        if(includeGrandTotal) {
+        if (includeGrandTotal) {
 
             _.each(columnKeys, function (columnKey) {
                 grandTotal[columnKey] = utils.getGrandTotal(reportData, columnKey);
@@ -293,20 +299,30 @@ var utils = {
         return reportDataWithAggregates;
     },
 
-    getColumnSubTotal: function(reportData, districtName, columnToBeAgregated){
-        return _.chain(reportData).where({district_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
+    getColumnSubTotal: function (reportData, districtName, columnToBeAgregated) {
+        return _.chain(reportData).where({district_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+            return memo + num;
+        }, 0).value();
     },
-    getReportColumnSubTotal: function(reportData, districtName, columnToBeAgregated,type){
+    getReportColumnSubTotal: function (reportData, districtName, columnToBeAgregated, type) {
 
-        if(type===1){
-            return _.chain(reportData).where({facility_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
-        }else if(type===3){
-            return _.chain(reportData).where({region_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
+        if (type === 1) {
+            return _.chain(reportData).where({facility_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+                return memo + num;
+            }, 0).value();
+        } else if (type === 3) {
+            return _.chain(reportData).where({region_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+                return memo + num;
+            }, 0).value();
         }
-        return _.chain(reportData).where({district_name:  districtName}).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
+        return _.chain(reportData).where({district_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+            return memo + num;
+        }, 0).value();
     },
-    getGrandTotal: function(reportData, columnToBeAgregated){
-        return _.chain(reportData).pluck(columnToBeAgregated).reduce(function(memo, num){ return memo + num; }, 0).value();
+    getGrandTotal: function (reportData, columnToBeAgregated) {
+        return _.chain(reportData).pluck(columnToBeAgregated).reduce(function (memo, num) {
+            return memo + num;
+        }, 0).value();
     }
 
 };

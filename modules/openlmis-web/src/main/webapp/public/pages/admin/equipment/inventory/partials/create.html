@@ -240,7 +240,7 @@
               </label>
               <div class="form-field">
                 <input ng-model="inventory.dateDecommissionedString" ng-disabled="inventory.isActive"
-                       name="dateDecommissioned" ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                       name="dateDecommissioned" ui-date="{dateFormat: 'dd/mm/yy', changeYear: true,maxDate:'today'}"
                        ui-date-format="yy-mm-dd" id="dateDecommissioned">
                 <span class="field-error" ng-show="inventoryForm.dateDecommissionedString.$error.required && showError"
                       openlmis-message="missing.value"></span>

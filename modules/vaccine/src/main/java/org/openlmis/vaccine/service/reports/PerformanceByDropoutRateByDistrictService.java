@@ -140,20 +140,16 @@ public class PerformanceByDropoutRateByDistrictService {
             }
             float value = performanceByDropoutRateByDistrict.getBcg_mr_dropout();
 
-            if (value > 20) {
+            if (value > 10) {
 
                 Long highVal = columnRangeValues.get(HIGHER).get(columngName) + 1L;
                 columnRangeValues.get(HIGHER).put(columngName, highVal);
-            } else if (value > 10) {
+            } else if (value > 5) {
 
                 Long highVal = columnRangeValues.get(AVERAGE).get(columngName) + 1L;
                 columnRangeValues.get(AVERAGE).put(columngName, highVal);
 
-            } else if (value > 5) {
-
-                Long highVal = columnRangeValues.get(MIN).get(columngName) + 1L;
-                columnRangeValues.get(MIN).put(columngName, highVal);
-            } else {
+            }  else {
 
                 Long highVal = columnRangeValues.get(BELOW_MIN).get(columngName) + 1L;
                 columnRangeValues.get(BELOW_MIN).put(columngName, highVal);
@@ -227,12 +223,12 @@ public class PerformanceByDropoutRateByDistrictService {
         Map<String, Map<Date, Long>> columnRangeValues = new HashMap<>();
         columnRangeValues.put(HIGHER, new HashMap<Date, Long>());
         columnRangeValues.put(AVERAGE, new HashMap<Date, Long>());
-        columnRangeValues.put(MIN, new HashMap<Date, Long>());
+
         columnRangeValues.put(BELOW_MIN, new HashMap<Date, Long>());
         for (int i = 0; i < columnNameList.size(); i++) {
             columnRangeValues.get(HIGHER).put(columnNameList.get(i), 0L);
             columnRangeValues.get(AVERAGE).put(columnNameList.get(i), 0L);
-            columnRangeValues.get(MIN).put(columnNameList.get(i), 0L);
+
             columnRangeValues.get(BELOW_MIN).put(columnNameList.get(i), 0L);
         }
         return columnRangeValues;
