@@ -36,6 +36,8 @@ public class ReportStatusChange extends BaseModel {
 
   private String lastName;
 
+  private String comment;
+
   private Date date;
 
   public ReportStatusChange(VaccineReport report, ReportStatus statusToSave, Long userId) {
@@ -43,5 +45,13 @@ public class ReportStatusChange extends BaseModel {
     status = statusToSave;
     createdBy = userId;
     modifiedBy = userId;
+  }
+
+  public ReportStatusChange(VaccineReport report, ReportStatus statusToSave, Long userId, String comment) {
+    reportId = report.getId();
+    status = statusToSave;
+    createdBy = userId;
+    modifiedBy = userId;
+    this.comment = comment;
   }
 }
