@@ -82,31 +82,45 @@
           <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.planned"></th>
           <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.conducted"></th>
           <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.outreach"></th>
-          <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.percentage"></th>
+          <th class="span2" openlmis-message="vaccine.immunization.sessions.conducted.percentage"></th>
         </tr>
         </thead>
         <tbody>
         <tr>
           <td class="cell-input col-general">
+            <span
+                class="input-error-parent-cell">
             <input disabled maxlength="8" ng-model="report.fixedImmunizationSessions"
                    numeric-validator="positiveInteger" type="text">
+              </span>
           </td>
           <td class="cell-input col-general">
+            <span
+                class="input-error-parent-cell">
             <input disabled maxlength="8" ng-model="report.plannedOutreachImmunizationSessions"
                    numeric-validator="positiveInteger" type="text">
+              </span>
           </td>
           <td class="cell-input col-general">
+            <span
+                class="input-error-parent-cell">
             <input disabled maxlength="8" ng-model="report.outreachImmunizationSessions"
                    numeric-validator="positiveInteger" type="text">
+              </span>
           </td>
           <td class="cell-input col-general">
-            <input disabled maxlength="8" ng-model="report.outreachImmunizationSessionsCanceled"
-                   numeric-validator="positiveInteger" type="text">
+               <span
+                   class="input-error-parent-cell">
+                <input disabled readonly type="text"
+                       value="{{report.plannedOutreachImmunizationSessions - report.outreachImmunizationSessions }}">
+                  </span>
           </td>
-          <td class="col-general number">
-            <span ng-show="report.plannedOutreachImmunizationSessions > 0">
-              {{ ((report.plannedOutreachImmunizationSessions != 0)? (report.outreachImmunizationSessionsCanceled * 100 / report.plannedOutreachImmunizationSessions) : 0) | number : '2' }}
-            </span>
+          <td class="cell-input col-general number">
+            <span
+                class="input-error-parent-cell">
+                <input disabled readonly type="text"
+                       value="{{ ((report.plannedOutreachImmunizationSessions != 0)? ((report.outreachImmunizationSessions) * 100 / report.plannedOutreachImmunizationSessions) : 0) | number : '2' }}%"/>
+              </span>
           </td>
         </tr>
         </tbody>
