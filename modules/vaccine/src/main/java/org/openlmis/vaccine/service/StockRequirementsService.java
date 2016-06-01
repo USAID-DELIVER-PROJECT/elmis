@@ -112,7 +112,7 @@ public class StockRequirementsService
                     requirements.setIsa(isa);
                     requirements.setProductId(productId);
                     requirements.setProductName(facilityProgramProduct.getProduct().getPrimaryName());
-
+                    requirements.setCurrentPrice(facilityProgramProduct.getCurrentPrice());
                     //Set population
                     Long populationSource = (isa != null) ? isa.getPopulationSource() : null;
                     requirements.setPopulation(populationService.getPopulation(facility, facilityProgramProduct.getProgram(), populationSource));
@@ -185,7 +185,7 @@ public class StockRequirementsService
                 newSupplyRequirements.setFacilityCode(vaccineRequirements.getFacilityCode());
                 newSupplyRequirements.setYear(year);
                 newSupplyRequirements.setPopulation(vaccineRequirements.getPopulation());
-
+                newSupplyRequirements.setCurrentPrice(vaccineRequirements.getCurrentPrice());
                 //ISA
                 ISA isa = facilityProgramProduct.getOverriddenIsa();
                 if (isa == null) {
@@ -249,6 +249,7 @@ public class StockRequirementsService
                 newSupplyRequirements.setProductId(supplyProductId);
                 newSupplyRequirements.setFacilityCode(vaccineRequirements.getFacilityCode());
                 newSupplyRequirements.setYear(year);
+                newSupplyRequirements.setCurrentPrice(vaccineRequirements.getCurrentPrice());
 
                 Integer vaccineAnnualNeed=vaccineRequirements.getAnnualNeed();
                 Integer vaccinePresentation=vaccineRequirements.getPresentation();
@@ -313,7 +314,7 @@ public class StockRequirementsService
                         newSafetyBoxRequirements.setFacilityId(supplyRequirements.getFacilityId());
                         newSafetyBoxRequirements.setProductId(safetyBox.getId());
                         newSafetyBoxRequirements.setYear(supplyRequirements.getYear());
-
+                        newSafetyBoxRequirements.setCurrentPrice(supplyRequirements.getCurrentPrice());
                         ISA isa = facilityProgramProduct.getOverriddenIsa();
                         if (isa == null) {
                             if (facilityProgramProduct.getProgramProductIsa() != null) {
