@@ -30,22 +30,21 @@
 </style>
 
 
+<h2 id="podPageTitle"><span openlmis-message="label.title.vaccine.forecasting"></span><Strong> <span style="padding-left:300px !important">{{homeFacility.name}}</span></Strong>
 
-<h2 id="podPageTitle"><span openlmis-message="label.title.vaccine.forecasting"></span>
-   <Strong> <span style="padding-left:300px !important">{{homeFacility.name}}</span></Strong>
-<span class="pull-right print-button">
-    <a id="printButton" class="btn btn-primary" ng-href="/vaccine/inventory/demand-forecasting/print" openlmis-message="button.print"
-       target="_blank"></a>
-  </span>
+<span class="pull-right print-button" ng-show="pageLineItems.length > 0">
+      <a id="pdf-button" ng-show="orderRequisitionForm.$valid" href="" ng-click="exportCSV('pdf')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+      <a id="xls-button" ng-show="orderRequisitionForm.$valid" href="" ng-click="exportCSV('xls')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+</span>
 
 </h2>
-
-
-
+<div>
+    <span><input type="checkbox" ng-model="checked"/></span><span style="text-align: center;">Show Price</span>
+</div>
 
 <form name="orderRequisitionForm">
 
-    <div ng-hide="pageLineItems.length"  class="alert alert-info" openlmis-message="label.no.products"></div>
+    <div ng-hide="pageLineItems.length" class="alert alert-info" openlmis-message="label.no.products"></div>
 
 
     <div id="pod" class="rnr-table" ng-show="pageLineItems.length > 0">
@@ -53,10 +52,16 @@
             <thead>
             <tr>
                 <th class="col-product "><span openlmis-message="header.routine.vaccine"></span></th>
-                <th id="unitOfMeasure" style="width: 100px;" class="col-unit-measure" openlmis-message="header.unit.of.measure"></th>
+                <th id="unitOfMeasure" style="width: 100px;" class="col-unit-measure"
+                    openlmis-message="header.unit.of.measure"></th>
                 <th class="col-maximumStock "><span openlmis-message="header.annual.needs"></span></th>
+                <th class="col-maximumStock " ng-show="checked"><span>Annual Price</span></th>
                 <th class="col-quarterlyNeeds"><span openlmis-message="header.quaterly.needs"></span></th>
+                <th class="col-maximumStock " ng-show="checked"><span>Quarterly Price</span></th>
+
                 <th class="col-quarterlyNeeds"><span openlmis-message="header.monthly.needs"></span></th>
+                <th class="col-maximumStock " ng-show="checked"><span>Monthly Price</span></th>
+
                 <th class="col-reOrderLevel"><span openlmis-message="header.reOrder.level"></span></th>
                 <th class="col-bufferStock"><span openlmis-message="header.buffer.stock"></span></th>
                 <th class="col-maximumStock"><span openlmis-message="header.maximum.stock"></span></th>
@@ -67,47 +72,64 @@
             <tbody>
 
 
-            <tr ng-repeat-start = "category in pageLineItems">
-                <td class="productCategory" id="productCategoryName{{$index}}" colspan="8"   ng-show="$index == 0 || ( $index > 0 && category.productCategory != pageLineItems[$index - 1].productCategory)"
-                 ng-bind="category.productCategory" >
+            <tr ng-repeat-start="category in pageLineItems">
+                <td class="productCategory" id="productCategoryName{{$index}}" colspan="11"
+                    ng-show="$index == 0 || ( $index > 0 && category.productCategory != pageLineItems[$index - 1].productCategory)"
+                    ng-bind="category.productCategory">
                 </td>
             </tr>
 
-            <tr  ng-repeat-end ng-repeat=" item in category.stockRequirements">
+            <tr ng-repeat-end ng-repeat=" item in category.stockRequirements">
 
                 <td class="cell-input col-product">
                     <span ng-bind="item.productName" id="productName{{$index}}" class="cell-text"></span>
                 </td>
-                <td class="cell-input col-unit-measure"  style="text-align: left; !important;">
+                <td class="cell-input col-unit-measure" style="text-align: left; !important;">
                     <span ng-bind="item.dosageUnit" id="item.dosageUnit{{$index}}" class="cell-text"></span>
                 </td>
 
-                <td class="cell-input col-maximumStock">
+                <td class="cell-input col-maximumStock"  style="text-align: right; !important;">
                         <span ng-bind="item.annualNeed | number" id="item.annualNeed{{$index}}"
                               class="cell-text"></span>
                 </td>
-                <td class="cell-input">
-                        <span ng-bind="item.supplyPeriodNeed | number"  id="item.supplyPeriodNeed{{$index}}"
+                <td class="cell-input col-maximumStock" ng-show="checked"  style="text-align: right; !important;">
+                        <span ng-bind="item.currentPrice * item.annualNeed | number" id="item.currentPrice{{$index}}"
                               class="cell-text"></span>
                 </td>
-                <td class="cell-input">
-                        <span ng-bind="item.isaValue | number"  id="item.isaValue{{$index}}"
+                <td class="cell-input"  style="text-align: right; !important;">
+                        <span ng-bind="item.supplyPeriodNeed | number" id="item.supplyPeriodNeed{{$index}}"
                               class="cell-text"></span>
                 </td>
 
-                <td class="cell-input">
+                <td class="cell-input col-maximumStock" ng-show="checked"  style="text-align: right; !important;">
+                        <span ng-bind=" item.currentPrice * item.supplyPeriodNeed  | number"
+                              id="item.currentPrice{{$index}}"
+                              class="cell-text"></span>
+                </td>
+
+                <td class="cell-input"  style="text-align: right; !important;">
+                        <span ng-bind="item.isaValue | number" id="item.isaValue{{$index}}"
+                              class="cell-text"></span>
+                </td>
+
+                <td class="cell-input col-maximumStock" ng-show="checked"  style="text-align: right; !important;">
+                        <span ng-bind="item.currentPrice * item.isaValue  | number" id="item.currentPrice{{$index}}"
+                              class="cell-text"></span>
+                </td>
+
+                <td class="cell-input"  style="text-align: right; !important;">
                         <span ng-bind="item.reorderLevel | number" id="item.reorderLevel{{$index}}"
 
                               class="cell-text"></span>
                 </td>
 
-                <td class="cell-input col-bufferStock">
+                <td class="cell-input col-bufferStock"  style="text-align: right; !important;">
 
                         <span ng-bind="item.bufferStock| number" id="bufferStock{{$index}}"
                               class="cell-text"></span>
                 </td>
 
-                <td class="cell-input col-maximumStock">
+                <td class="cell-input col-maximumStock"  style="text-align: right; !important;">
                         <span ng-bind="item.maximumStock | number" id="maximumStock{{$index}}"
                               class="cell-text"></span>
                 </td>
