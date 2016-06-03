@@ -66,14 +66,14 @@
           <th style="min-width:25px;width: 25px;"></th>
           <th colspan="2">
             <span class=""
-                  ng-class="{'bad': !districtSummary.isValid(facility.parentId) }">{{facility.parentName}}</span>
+                  ng-class="{'bad-demographic-sum': !districtSummary.isValid(facility.parentId) }">{{facility.parentName}}</span>
           </th>
           <th ng-repeat="category in categories">
             <span style="text-align: left; color: steelblue;">
               {{districtSummary.getDistrictEntry(facility.parentId, category, year) | number: 0}}
             </span>
             <span class="number pull-right"
-                  ng-class="{'bad': (districtSummary.getDistrictEntry(facility.parentId, category, year) != districtSummary.getSummary(facility.parentId, category, year)) }">
+                  ng-class="{'bad-demographic-sum': (districtSummary.getDistrictEntry(facility.parentId, category, year) != districtSummary.getSummary(facility.parentId, category, year)) }">
               {{districtSummary.getSummary(facility.parentId, category, year) | number : 0}}
             </span>
           </th>
