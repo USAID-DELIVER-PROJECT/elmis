@@ -176,16 +176,14 @@
                                     <td data-title="'Expiration Date'" style="width:30%" sortable=" ">
                                         {{row.expirationDate | date:'dd-MM-yyyy'}}
                                     </td>
-                                 <!--   <td class="number" data-title="'Manufacturer'" style="width:30%"
-                                        sortable=" ">{{row.received > 0 && (row.received | number) || '' }}
-                                    </td>-->
+
 
                                     <td data-title="'VVM Status'" style="width:30%" sortable="vvmStatus">
                                         {{
                                         row.vvmStatus
                                         }}
                                     </td>
-                                    <td class="number" data-title="'Lot On Hand'" style="width:30%" sortable=" ">{{
+                                    <td class="number" data-title="'SOH per Batch'" style="width:30%" sortable=" ">{{
                                         row.loh > 0 && (row.loh | number) || '' }}
                                     </td>
 
