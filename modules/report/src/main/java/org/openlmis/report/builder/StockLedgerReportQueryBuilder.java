@@ -25,7 +25,7 @@ public class StockLedgerReportQueryBuilder {
 
         StockLedgerReportParam filter = (StockLedgerReportParam) params.get("filterCriteria");
 
-        return ("Select primaryname product,id,date , facility storeName, received, issued, adjustment,total,lotnumber,expirationdate,vvm vvmStatus, (SUM(total) over(partition by lotnumber order by id))  as loh,(SUM(total) over(order by id))  as soh\n" +
+        return ("Select primaryname product,id,date , facility storeName, received, issued, adjustment,total,lotnumber,manufacturerName,expirationdate,vvm vvmStatus, (SUM(total) over(partition by lotnumber order by id))  as loh,(SUM(total) over(order by id))  as soh\n" +
                 "FROM  " +
                 "(WITH Q AS (  " +
                 "select MAX(p.primaryname) primaryname  , 0 as id, MAX(#{filterCriteria.startDate})::timestamp with time zone as date,  " +
@@ -33,7 +33,8 @@ public class StockLedgerReportQueryBuilder {
                 "0::INTEGER as received,  " +
                 "0::INTEGER as issued,   " +
                 "0::INTEGER as adjustment, " +
-                "l.lotnumber,  " +
+                "l.lotnumber, " +
+                "MAX(l.manufacturerName) as manufacturerName , " +
                 "MAX(l.expirationdate::DATE) as expirationdate, " +
                 "MAX(skvvvm.valuecolumn) as vvm,  " +
                 "SUM(se.quantity)::integer as total  " +
@@ -53,7 +54,7 @@ public class StockLedgerReportQueryBuilder {
                 "case when se.type ='CREDIT' then se.quantity else 0 end as received,  " +
                 "case when se.type ='DEBIT' then se.quantity else 0 end as issued,  " +
                 "case when se.type ='ADJUSTMENT' then quantity else 0 end as adjustment,  " +
-                "l.lotnumber,  " +
+                "l.lotnumber, l.manufacturerName, " +
                 "l.expirationdate::DATE,  " +
                 "skvvvm.valuecolumn as vvm,  " +
                 "se.quantity::integer as total  " +

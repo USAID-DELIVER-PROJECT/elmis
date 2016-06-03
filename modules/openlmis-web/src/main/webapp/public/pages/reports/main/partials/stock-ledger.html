@@ -8,6 +8,39 @@
 * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
 *
 -->
+<style>
+    th {
+
+        padding-top: 0px !important;
+        width: 2% !important;
+    }
+
+    a {
+        position: relative;
+    }
+
+    .popover {
+        text-decoration: none;
+        color: black;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        display: block;
+        padding: 0 40px;
+        max-width: 150px;
+    }
+
+    .popover span {
+        display: block;
+        font-weight: 700;
+    }
+    h4 {
+        text-decoration: underline;
+    }
+
+</style>
+
+
 
 <div class="container-fluid">
     <div class="box row-fluid">
@@ -110,36 +143,45 @@
                                 </tr>
                             </table>
 
-
-                            <table ng-show="datarows.length > 0" class="table-bordered table table-striped" id="podTable"
-                                   ng-table="tableParams">
+                            <table ng-show="datarows.length > 0" class="table-bordered table table-striped scrollable" id="podTable"
+                                   ng-table="tableParams" >
                                 <tbody>
                                 <tr ng-repeat="row in datarows">
-                                    <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
-                                    <td data-title="getLocalMessage('label.date')" style="width:40%">{{
+                                    <td data-title="'#'" class="number" style="width:2% !important; text-align: left !important;">{{ row.no }}</td>
+                                    <td data-title="getLocalMessage('label.date')" style="width:40%" >{{
                                         row.date | date:'dd-MM-yyyy' }}
                                     </td>
                                     <td data-title="'Store Name (To/From)'" style="width:30%" sortable="">{{
                                         row.storeName }}
                                     </td>
-                                    <td class="number" data-title="'Received Quantity'" style="width:30%"
+                                    <td class="number" data-title="'Received Quantity'" style="width:20% !important;"
                                         sortable=" ">{{row.received > 0 && (row.received | number) || '' }}
                                     </td>
-                                    <td class="number" data-title="'Issued Quantity'" style="width:30%" sortable=" ">
+                                    <td class="number" data-title="'Issued Quantity'" style="width:20% !important;" sortable=" ">
                                         {{ row.issued != 0 && (row.issued | positive) || '' }}
                                     </td>
-                                    <td class="number" data-title="'Adjusted Quantity'" style="width:30%"
+                                    <td class="number" data-title="'Adjusted Quantity'" style="width:20% !important;"
                                         sortable="adjustment">
                                         {{ row.adjustment != 0 && (row.adjustment | positive) || '' }}
                                     </td>
-                                    <td data-title="'Batch Number'" style="width:30%" sortable=" ">{{
-                                        row.lotNumber }}
-                                    </td>
-                                    <td data-title="'Expiration Date'" style="width:30%" sortable=" ">{{
-                                        row.expirationDate | date:'dd-MM-yyyy'}}
+                                    <td data-title="'Batch Number'" style="width:20%" sortable=" ">
+                                        <a href="" ng-mouseover="showPopover=true;" ng-mouseleave="showPopover=false;">{{row.lotNumber}}
+                                            <div class="popover" ng-show="showPopover">
+                                                 <h4>{{ popover.title }}</h4>
+                                                {{ row.manufacturerName }}
+                                            </div>
+                                        </a>
                                     </td>
 
-                                    <td data-title="'VVM Status'" style="width:30%" sortable="vvmStatus">{{
+                                    <td data-title="'Expiration Date'" style="width:30%" sortable=" ">
+                                        {{row.expirationDate | date:'dd-MM-yyyy'}}
+                                    </td>
+                                 <!--   <td class="number" data-title="'Manufacturer'" style="width:30%"
+                                        sortable=" ">{{row.received > 0 && (row.received | number) || '' }}
+                                    </td>-->
+
+                                    <td data-title="'VVM Status'" style="width:30%" sortable="vvmStatus">
+                                        {{
                                         row.vvmStatus
                                         }}
                                     </td>
