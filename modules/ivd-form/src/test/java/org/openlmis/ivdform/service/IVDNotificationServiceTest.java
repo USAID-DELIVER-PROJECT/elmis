@@ -82,6 +82,9 @@ public class IVDNotificationServiceTest {
         userList = new ArrayList<>();
         user = new User();
         user.setId(1L);
+        user.setVerified(true);
+        user.setReceiveSupervisoryNotifications(true);
+        user.setActive(true);
         user.setEmail("email@rmail");
         userList.add(user);
         user.setUserName("username");

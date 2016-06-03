@@ -87,7 +87,7 @@
           <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.planned"></th>
           <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.conducted"></th>
           <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.outreach"></th>
-          <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.percentage"></th>
+          <th class="span2" openlmis-message="vaccine.immunization.sessions.conducted.percentage"></th>
         </tr>
         </thead>
         <tbody>
@@ -142,7 +142,7 @@
               <span
                   class="input-error-parent-cell">
                 <input disabled readonly type="text"
-                       value="{{ ((report.plannedOutreachImmunizationSessions != 0)? ((report.plannedOutreachImmunizationSessions - report.outreachImmunizationSessions) * 100 / report.plannedOutreachImmunizationSessions) : 0) | number : '2' }}%"/>
+                       value="{{ ((report.plannedOutreachImmunizationSessions != 0)? ((report.outreachImmunizationSessions) * 100 / report.plannedOutreachImmunizationSessions) : 0) | number : '2' }}%"/>
               </span>
           </td>
         </tr>
