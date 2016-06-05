@@ -220,7 +220,7 @@ public class UserService {
     CollectionUtils.filter(users, new Predicate() {
       @Override
       public boolean evaluate(Object o) {
-        return ((User) o).getActive();
+        return o != null && ((User) o).getActive();
       }
     });
     return new ArrayList<>(users);

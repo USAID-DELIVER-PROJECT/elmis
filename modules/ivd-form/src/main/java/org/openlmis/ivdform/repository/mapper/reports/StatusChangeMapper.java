@@ -25,16 +25,16 @@ import java.util.List;
 @Repository
 public interface StatusChangeMapper {
 
-  @Insert("INSERT into vaccine_report_status_changes (reportId, status, createdBy, createdDate, modifiedBy, modifiedDate) " +
+  @Insert("INSERT into vaccine_report_status_changes (reportId, status, comment, createdBy, createdDate, modifiedBy, modifiedDate) " +
       " values " +
-      " (#{reportId}, #{status}, #{createdBy}, NOW(), #{modifiedBy}, NOW())")
+      " (#{reportId}, #{status}, #{comment}, #{createdBy}, NOW(), #{modifiedBy}, NOW())")
   @Options(useGeneratedKeys = true)
   Integer insert(ReportStatusChange change);
 
-  @Select("SELECT sc.status, sc.reportId, sc.createdDate as date,  u.username, u.firstName, u.lastName  from vaccine_report_status_changes sc join users u on u.id = sc.createdBy where reportId = #{reportId}")
+  @Select("SELECT sc.status, sc.reportId, sc.createdDate as date,  u.username, u.firstName, u.lastName, sc.comment  from vaccine_report_status_changes sc join users u on u.id = sc.createdBy where reportId = #{reportId}")
   List<ReportStatusChange> getChangeLogByReportId(@Param("reportId") Long reportId);
 
-  @Select("SELECT sc.status, sc.reportId, sc.createdDate as date, u.username, u.firstName, u.lastName " +
+  @Select("SELECT sc.status, sc.reportId, sc.createdDate as date, u.username, u.firstName, u.lastName, sc.comment " +
       "from vaccine_report_status_changes sc join users u on u.id = sc.createdBy " +
       "where reportId = #{reportId} and status = #{operation} " +
       "order by sc.createdDate desc limit 1")

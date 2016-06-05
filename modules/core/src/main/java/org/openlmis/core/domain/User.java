@@ -90,6 +90,8 @@ public class User extends BaseModel implements Importable {
 
   private Boolean active;
 
+  private Boolean receiveSupervisoryNotifications = false;
+
   private Boolean isMobileUser = false;
 
   public User(Long id, String userName) {

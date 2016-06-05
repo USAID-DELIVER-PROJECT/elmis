@@ -1000,8 +1000,22 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
     $scope.equipmentActionBarCallback();
     $scope.batchToExpireNotificationCallBack();
 
+    $scope.stockStatusTabClicked=function(){
+       console.log('called');
+       $scope.stockStatus.loadData = !$scope.stockStatus.loadData;
+       $scope.stockCallbacks();
+    };
+
+    $scope.stockCallbacks=function(){
+        if($scope.stockStatus.loadData){
+           $scope.facilityInventoryStockStatusCallback($scope.myStockFilter);
+           $scope.mySupervisedFacilitiesCallback($scope.mySupervisedFilter);
+        }
+    };
     $scope.facilityInventoryStockStatusCallback = function (myStock) {
-        if (!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate)) {
+         $scope.myStockFilter=myStock;
+
+        if (!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate) && $scope.stockStatus.loadData) {
             VaccineDashboardFacilityInventoryStockStatus.get({
                 facilityId: parseInt(homeFacility.id, 10),
                 date: myStock.toDate
@@ -1028,7 +1042,8 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
 
     $scope.mySupervisedFacilityFilterSize = 5;
     $scope.mySupervisedFacilitiesCallback = function (filter) {
-        if (!isUndefined(filter.product) && filter.product !== "0" && !isUndefined(filter.date) && !isUndefined(filter.level) && filter.level !== "0") {
+        $scope.mySupervisedFilter=filter;
+        if ($scope.stockStatus.loadData && !isUndefined(filter.product) && filter.product !== "0" && !isUndefined(filter.date) && !isUndefined(filter.level) && filter.level !== "0") {
             VaccineDashboardSupervisedFacilityInventoryStockStatus.get({
                     productId: filter.product,
                     date: filter.date,

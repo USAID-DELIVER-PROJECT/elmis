@@ -42,4 +42,11 @@ function VaccineStockLedgerReportController($scope, $filter, $window, StockLedge
     };
 
 
+    $scope.showPopover=false;
+
+    $scope.popover = {
+        title: 'Manufacturer Name',
+        message: 'Message'
+    };
+
 }

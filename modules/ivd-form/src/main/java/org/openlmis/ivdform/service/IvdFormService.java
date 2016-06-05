@@ -266,7 +266,7 @@ public class IvdFormService {
     report.setStatus(ReportStatus.REJECTED);
     Long reportSubmitterUserId = getReportSubmitterUserId(report.getId());
     repository.update(report, userId);
-    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.REJECTED, userId);
+    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.REJECTED, userId, report.rejectionComment);
     reportStatusChangeRepository.insert(change);
     ivdNotificationService.sendIVDStatusChangeNotification(report, reportSubmitterUserId);
   }
@@ -316,8 +316,8 @@ public class IvdFormService {
   }
 
     private Long getReportSubmitterUserId(Long vaccineReportId){
-        VaccineReport previousReport =  repository.getById(vaccineReportId);
-        return previousReport != null ? previousReport.getModifiedBy() : null;
+     ReportStatusChange change = reportStatusChangeRepository.getOperation(vaccineReportId, ReportStatus.SUBMITTED);
+      return (change != null) ? change.getCreatedBy(): null;
     }
 
   private static Long calculateAMC(List<LogisticsLineItem> previousThree) {

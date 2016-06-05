@@ -48,7 +48,7 @@ public class DiseaseController extends BaseController {
     return OpenLmisResponse.response("diseases", service.getAll());
   }
 
-  @RequestMapping(value = "save", headers = ACCEPT_JSON, method = RequestMethod.POST)
+  @RequestMapping(value = "save", headers = ACCEPT_JSON, method = RequestMethod.PUT)
   @Transactional
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_VACCINE_DISEASE_LIST')")
   public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineDisease disease) {

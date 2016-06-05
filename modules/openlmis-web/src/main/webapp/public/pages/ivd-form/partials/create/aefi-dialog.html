@@ -7,7 +7,7 @@
   </div>
   <div class="modal-body app-form">
     <div>
-      <form id="adverseEffectForm1" name="adverseEffectForm" >
+      <form id="adverseEffectForm" name="adverseEffectForm" >
         <div class="row-fluid">
           <div class="span6">
             <label for="date">
@@ -49,6 +49,7 @@
               </th>
               <th>
                 <span openlmis-message="label.vaccine.adverse.effect.batch"></span>
+                <span class="label-required">*</span>
               </th>
               <th>
                 <span openlmis-message="label.vaccine.adverse.effect.expiry.date"></span>
@@ -75,6 +76,8 @@
               </td>
               <td class="cell-input">
                 <input
+                    required
+                    ng-required="true"
                     ng-disabled="!report.editable"
                     id="batch"
                     ng-model="currentEffect.batch"
@@ -107,6 +110,8 @@
               </td>
               <td class="cell-input">
                 <input
+                    required
+                    ng-required="true"
                     ng-disabled="!report.editable"
                     id="batch{{$index}}"
                     ng-model="prd.batch"
@@ -159,6 +164,9 @@
           </div>
         </div>
       </form>
+    </div>
+    <div>
+      All fields with asterisk (<span style="padding-left: 0px;" class="label-required">*</span>) are the mandatory.
     </div>
   </div>
   <div class="modal-footer">

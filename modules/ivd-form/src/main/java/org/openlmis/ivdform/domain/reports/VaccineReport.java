@@ -77,6 +77,8 @@ public class VaccineReport extends BaseModel {
   private List<ColdChainLineItem> coldChainLineItems;
   private List<ReportStatusChange> reportStatusChanges;
 
+  public String rejectionComment;
+
 
   public void initializeLogisticsLineItems(List<ProgramProduct> programProducts, VaccineReport previousReport, Boolean defaultFieldsToZero) {
     logisticsLineItems = new ArrayList<>();

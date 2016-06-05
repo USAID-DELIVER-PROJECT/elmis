@@ -8,7 +8,7 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
  */
 
-function VaccineForecastingController($scope,$routeParams,$location,programs,homeFacility,StockRequirementsData){
+function VaccineForecastingController($scope,$window,$routeParams,$location,programs,homeFacility,StockRequirementsData){
 
     $scope.pageLineItems1 = [];
     $scope.pageLineItems = [];
@@ -24,6 +24,12 @@ function VaccineForecastingController($scope,$routeParams,$location,programs,hom
 
     }
 
+    $scope.exportCSV = function(param) {
+        var url = '/vaccine/inventory/demandForecasting/print/'+param;
+        $window.open(url, '_blank');
+    };
+
+
  var refreshPageLineItems = function(){
 
     StockRequirementsData.get(parseInt(program,10), parseInt(homeFacility.id,10)).then(function (data) {
@@ -31,7 +37,7 @@ function VaccineForecastingController($scope,$routeParams,$location,programs,hom
         $scope.numberOfPages = Math.ceil(dataToDisplay.length / $scope.pageSize) || 1;
         $scope.currentPage = (utils.isValidPage($routeParams.page, $scope.numberOfPages)) ? parseInt($routeParams.page, 10) : 1;
         $scope.pageLineItems = dataToDisplay.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * $scope.currentPage);
-
+        console.log($scope.pageLineItems);
     });
  };
     refreshPageLineItems();

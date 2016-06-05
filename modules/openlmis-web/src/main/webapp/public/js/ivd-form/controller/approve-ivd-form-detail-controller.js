@@ -74,21 +74,14 @@ function ApproveIvdFormDetailController($scope, $dialog, $location, report, disc
 
 
   $scope.reject = function () {
-    var callBack = function (result) {
-      if (result) {
-        VaccineReportReject.update($scope.report, function () {
-          $scope.message = "msg.ivd.rejected.successfully";
-          $location.path('/approve');
-        });
-      }
+      VaccineReportReject.update($scope.report, function () {
+        $scope.message = "msg.ivd.rejected.successfully";
+        // close the dialog box. 
+        $scope.rejectDialog = false;
+        $location.path('/approve');
+      });
     };
-    var options = {
-      id: "confirmDialog",
-      header: "label.confirm.reject.action",
-      body: "msg.question.reject.ivd.confirmation"
-    };
-    OpenLmisDialog.newDialog(options, callBack, $dialog);
-  };
+
 
 }
 
