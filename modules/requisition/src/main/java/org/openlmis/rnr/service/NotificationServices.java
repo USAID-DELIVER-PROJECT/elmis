@@ -89,7 +89,7 @@ public class NotificationServices {
       }
 
       for (User user : users) {
-        if (user.isMobileUser()) {
+        if (user.isMobileUser() || user.getActive() != Boolean.TRUE || user.getVerified() != Boolean.TRUE || !user.getReceiveSupervisoryNotifications()) {
           continue;
         }
 

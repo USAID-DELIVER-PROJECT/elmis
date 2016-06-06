@@ -244,6 +244,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/users/{userId}/preferences", method = PUT, headers = ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> updateUserPreferences(@PathVariable(value = "userId") Long userId, @RequestParam("programId") Long programId,
                                                                   @RequestParam("facilityId") Long facilityId, @RequestParam("products") List<Long> productListId,
+                                                                  @RequestParam("geographicZoneId") Long geographicZoneId,
                                                                   @RequestBody User user,
                                                                   HttpServletRequest request) {
       Long currentUser = loggedInUserId(request);
@@ -251,7 +252,7 @@ public class UserController extends BaseController {
         user.setModifiedBy(currentUser);
         user.setId(userId);
         try {
-          userService.updateUserPreferences(userId, user, programId, facilityId, productListId);
+          userService.updateUserPreferences(userId, user, programId, facilityId, productListId,geographicZoneId);
         } catch (DataException e) {
           return error(e, BAD_REQUEST);
         }

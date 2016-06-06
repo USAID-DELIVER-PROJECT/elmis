@@ -90,8 +90,8 @@ function CreateIvdFormController($scope, $location, operationalStatuses, $dialog
     $scope.adverseEffectModal = true;
   };
 
-  $scope.applyAdverseEffect = function () {
-    if($scope.adverseEffectForm.$valid){
+  $scope.applyAdverseEffect = function (adverseEffectForm) {
+    if(adverseEffectForm.$valid){
       var product = _.findWhere($scope.report.products, {'id': utils.parseIntWithBaseTen($scope.currentEffect.productId)});
       $scope.currentEffect.productName = product.primaryName;
       if (!$scope.currentEffectMode) {

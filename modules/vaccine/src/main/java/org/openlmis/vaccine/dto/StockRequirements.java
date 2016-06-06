@@ -20,6 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.BaseModel;
 import org.openlmis.core.domain.ISA;
+import org.openlmis.core.domain.Money;
 import org.openlmis.core.dto.IsaDTO;
 
 import java.util.List;
@@ -35,15 +36,15 @@ import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StockRequirements extends BaseModel
 {
-    Long programId;
-    Long facilityId;
+  Long programId;
+  Long facilityId;
   String facilityCode;
   Long productId;
   String productCategory;
   String productName;
   Integer year;
 
-    Integer presentation;
+  Integer presentation;
 
   ISA isa;
 
@@ -69,6 +70,7 @@ public class StockRequirements extends BaseModel
 
   Integer bufferStock;
 
+  Money currentPrice;
     //If anyone likes this pattern that this method is intended to support, the method should be generalized and moved elsewhere
     public static String getJSONArray(List<StockRequirements> items) {
         StringBuilder builder = new StringBuilder("[");

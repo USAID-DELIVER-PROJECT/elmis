@@ -200,6 +200,8 @@ public interface VaccineDashboardMapper {
                 "JOIN vaccine_reports vr ON i.report_id = vr.ID\n" +
                 "JOIN program_products pp ON pp.programid = vr.programid\n" +
                 "AND pp.productid = i.product_id\n" +
+                "  and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "  or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
                 "WHERE\n" +
                 "i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1) \n" +
                 "AND i.period_id = #{period}\n" +
@@ -207,7 +209,7 @@ public interface VaccineDashboardMapper {
                 "group by 1\n" +
                 "ORDER BY\n" +
                 "d.district_name\n")
-        List<HashMap<String, Object>> getDistrictCoverage(@Param("period") Long period, @Param("product") Long product);
+        List<HashMap<String, Object>> getDistrictCoverage(@Param("period") Long period, @Param("product") Long product,@Param("user") Long user);
 
         @Select("SELECT\n" +
                 "d.district_name, \n" +
@@ -305,9 +307,11 @@ public interface VaccineDashboardMapper {
                 "i.program_id = ( SELECT id FROM programs p WHERE p.enableivdform = TRUE )\n" +
                 "AND i.period_id = #{period}\n" +
                 "and i.product_id = #{product} \n" +
+                " and (d.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "              or d.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
                 "group by 1,2\n" +
                 "order by 2")
-        List<HashMap<String, Object>> getDistrictDropout(@Param("period") Long period, @Param("product") Long productId);
+        List<HashMap<String, Object>> getDistrictDropout(@Param("period") Long period, @Param("product") Long productId,@Param("user") Long user);
 
         /* */
         @Select("\n" +
@@ -398,14 +402,17 @@ public interface VaccineDashboardMapper {
                 "else 0\n" +
                 "END wastage_rate\n" +
                 "from vw_vaccine_stock_status vss\n" +
+                "  left join vw_districts vd on  vss.geographic_zone_id=vd.district_id \n" +
                 "where vss.period_id = #{period}\n" +
                 "and product_id = #{product}\n" +
                 "and vss.product_category_code = 'Vaccine'\n" +
+                " and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "              or vd.region_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
                 "group by 1 )\n" +
                 "select t.geographic_zone_name, wastage_rate, t.vaccinated, t.usage_denominator\n" +
                 "from temp t\n" +
                 "where wastage_rate > 0\n")
-        List<HashMap<String, Object>> getWastageByDistrict(@Param("period") Long period, @Param("product") Long product);
+        List<HashMap<String, Object>> getWastageByDistrict(@Param("period") Long period, @Param("product") Long product, @Param("user") Long user);
 
         /* */
         @Select("SELECT \n" +
@@ -486,7 +493,10 @@ public interface VaccineDashboardMapper {
                 "COALESCE(outreach_sessions,0) outreach_sessions,\n" +
                 "COALESCE(fixed_sessions,0) + COALESCE(outreach_sessions,0) total_sessions\n" +
                 "from vw_vaccine_sessions\n" +
+                " left join vw_districts vd on  geographic_zone_id=vd.district_id \n" +
                 "where period_id = #{period}\n" +
+                "  and (vd.district_id = (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int \n" +
+                "              or vd.region_id = (select value from user_preferences up where up.userid =  #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int) \n" +
                 ")\n" +
                 "select \n" +
                 "t.geographic_zone_name,\n" +
@@ -498,7 +508,7 @@ public interface VaccineDashboardMapper {
                 "group by 1\n" +
                 "order by total_sessions desc\n" +
                 "limit 5\n")
-        List<HashMap<String, Object>> getDistrictSessions(@Param("period") Long period);
+        List<HashMap<String, Object>> getDistrictSessions(@Param("period") Long period,@Param("user") Long user);
 
         /* */
         @Select("SELECT \n" +

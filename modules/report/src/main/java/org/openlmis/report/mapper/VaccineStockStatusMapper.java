@@ -21,7 +21,8 @@ public interface VaccineStockStatusMapper {
     @SelectProvider(type = VaccineStockStatusQueryBuilder.class, method = "getQuery")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
     public List<VaccineStockStatusReport> getReport(@Param("filterCriteria") VaccineStockStatusParam params,
-                                                    @Param("RowBounds") RowBounds rowBounds);
+                                                    @Param("RowBounds") RowBounds rowBounds
+                                                    );
 
 
 }

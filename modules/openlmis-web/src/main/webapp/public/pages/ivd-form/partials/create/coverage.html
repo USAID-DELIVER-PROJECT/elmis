@@ -30,7 +30,7 @@
         </tr>
         <tr>
           <th colspan="2">&nbsp;</th>
-          <th rowspan="2" class="col-skipped">
+          <th ng-show="showVaccinationSkip" rowspan="2" class="col-skipped">
             <span openlmis-message="header.label.skip"></span>
             <br/>
             <a href="" id="selectAll" ng-click="report.setSkip('coverageLineItems', true)"
@@ -53,7 +53,7 @@
           <td class="cell-input">
             <span class="cell-text number" style="min-height: 31px;">{{dose.displayName}}</span>
           </td>
-          <td class="cell-input center col-skipped" style="text-align:center;">
+          <td ng-show="showVaccinationSkip" class="cell-input center col-skipped" style="text-align:center;">
             <span>
               <input type="checkbox" ng-model="dose.skipped"/>
             </span>
@@ -87,7 +87,7 @@
           <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.planned"></th>
           <th class="span2" openlmis-message="vaccine.immunization.sessions.outreach.conducted"></th>
           <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.outreach"></th>
-          <th class="span2" openlmis-message="vaccine.immunization.sessions.canceled.percentage"></th>
+          <th class="span2" openlmis-message="vaccine.immunization.sessions.conducted.percentage"></th>
         </tr>
         </thead>
         <tbody>
@@ -142,7 +142,7 @@
               <span
                   class="input-error-parent-cell">
                 <input disabled readonly type="text"
-                       value="{{ ((report.plannedOutreachImmunizationSessions != 0)? ((report.plannedOutreachImmunizationSessions - report.outreachImmunizationSessions) * 100 / report.plannedOutreachImmunizationSessions) : 0) | number : '2' }}%"/>
+                       value="{{ ((report.plannedOutreachImmunizationSessions != 0)? ((report.outreachImmunizationSessions) * 100 / report.plannedOutreachImmunizationSessions) : 0) | number : '2' }}%"/>
               </span>
           </td>
         </tr>

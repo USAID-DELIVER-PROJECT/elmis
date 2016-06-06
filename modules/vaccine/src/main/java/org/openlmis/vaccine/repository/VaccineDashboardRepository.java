@@ -11,7 +11,6 @@
  */
 package org.openlmis.vaccine.repository;
 
-import org.apache.ibatis.annotations.Param;
 import org.openlmis.vaccine.repository.mapper.VaccineDashboardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -55,8 +54,8 @@ public class VaccineDashboardRepository {
         return mapper.getMonthlyCoverage(startDate, endDate, userId, product);
     }
 
-    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product) {
-        return mapper.getDistrictCoverage(period, product);
+    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product, Long user) {
+        return mapper.getDistrictCoverage(period, product,user);
     }
 
     public List<HashMap<String, Object>> getFacilityCoverage(Long period, Long product, Long userId) {
@@ -95,8 +94,8 @@ public class VaccineDashboardRepository {
         return mapper.getMonthlyWastage(startDate, endDate, productId);
     }
 
-    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product) {
-        return mapper.getWastageByDistrict(period, product);
+    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product,Long user) {
+        return mapper.getWastageByDistrict(period, product,user);
     }
 
     public List<HashMap<String, Object>> getMonthlySessions(Date startDate, Date endDate) {
@@ -104,9 +103,9 @@ public class VaccineDashboardRepository {
         return mapper.getMonthlySessions(startDate, endDate);
     }
 
-    public List<HashMap<String, Object>> getDistrictSessions(Long period) {
+    public List<HashMap<String, Object>> getDistrictSessions(Long period,Long user) {
 
-        return mapper.getDistrictSessions(period);
+        return mapper.getDistrictSessions(period,user);
     }
 
 
@@ -121,8 +120,8 @@ public class VaccineDashboardRepository {
         return mapper.getMonthlyDropout(startDate, endDate, product);
     }
 
-    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product) {
-        return mapper.getDistrictDropout(period, product);
+    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product,Long user) {
+        return mapper.getDistrictDropout(period, product,user);
     }
 
     public List<HashMap<String, Object>> getMonthlyStock(Date startDate, Date endDate, Long product) {

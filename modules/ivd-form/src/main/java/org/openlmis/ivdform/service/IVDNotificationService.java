@@ -101,7 +101,7 @@ public class IVDNotificationService {
     public void sendEmailForIVDSubmittersApprovers(VaccineReport report, List<User> users, String messageKey, String emailSubjectKey, User modifiedByUser){
 
         for (User user : users) {
-            if (user.isMobileUser()) {
+            if (user.isMobileUser() || user.getActive() != Boolean.TRUE || user.getVerified() != Boolean.TRUE || !user.getReceiveSupervisoryNotifications()) {
                 continue;
             }
 

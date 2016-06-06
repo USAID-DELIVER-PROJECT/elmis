@@ -32,16 +32,16 @@ public interface UserMapper {
 
   @Insert({"INSERT INTO users",
     "(userName, facilityId, firstName, lastName, employeeId, restrictLogin, jobTitle,",
-          "primaryNotificationMethod, officePhone, cellPhone, email, supervisorId, createdBy, modifiedBy, modifiedDate,createdDate, verified, ismobileuser)",
+          "primaryNotificationMethod, officePhone, cellPhone, email, supervisorId, createdBy, modifiedBy, modifiedDate,createdDate, verified, ismobileuser,receiveSupervisoryNotifications)",
     "VALUES",
     "(#{userName}, #{facilityId}, #{firstName}, #{lastName}, #{employeeId}, COALESCE(#{restrictLogin}, FALSE), #{jobTitle},",
     "#{primaryNotificationMethod}, #{officePhone}, #{cellPhone}, #{email}, #{supervisor.id}, ",
-          "#{createdBy}, #{modifiedBy}, COALESCE(#{modifiedDate}, NOW()),COALESCE(#{modifiedDate}, NOW()), #{verified}, #{isMobileUser})"})
+          "#{createdBy}, #{modifiedBy}, COALESCE(#{modifiedDate}, NOW()),COALESCE(#{modifiedDate}, NOW()), #{verified}, #{isMobileUser}, #{receiveSupervisoryNotifications})"})
   @Options(useGeneratedKeys = true)
   Integer insert(User user);
 
   @Select(value = {"SELECT id, userName, facilityId, firstName, lastName, employeeId, restrictLogin, jobTitle, ",
-          "primaryNotificationMethod, officePhone, cellPhone, email, supervisorId, verified, active, modifiedDate, ismobileuser",
+          "primaryNotificationMethod, officePhone, cellPhone, email, supervisorId, verified, active, modifiedDate, ismobileuser, receiveSupervisoryNotifications",
     " FROM users where LOWER(userName) = LOWER(#{userName}) AND active = TRUE"})
   @Results(
     @Result(property = "supervisor.id", column = "supervisorId")
@@ -53,7 +53,7 @@ public interface UserMapper {
   User getByEmail(String email);
 
   @Select({"SELECT id, userName, facilityId, firstName, lastName, employeeId, restrictLogin, jobTitle, primaryNotificationMethod, ",
-          "officePhone, cellPhone, email, supervisorId ,verified, active, ismobileuser " +
+          "officePhone, cellPhone, email, supervisorId ,verified, active, ismobileuser, receiveSupervisoryNotifications  " +
       "FROM users U INNER JOIN role_assignments RA ON U.id = RA.userId INNER JOIN role_rights RR ON RA.roleId = RR.roleId ",
     "WHERE RA.programId = #{program.id} AND COALESCE(RA.supervisoryNodeId, -1) = COALESCE(#{supervisoryNode.id}, -1) AND RR.rightName = #{right}"})
   @Results(@Result(property = "supervisor.id", column = "supervisorId"))
@@ -64,12 +64,12 @@ public interface UserMapper {
     "employeeId = #{employeeId},restrictLogin = #{restrictLogin}, facilityId=#{facilityId}, jobTitle = #{jobTitle}, " +
     "primaryNotificationMethod = #{primaryNotificationMethod}, officePhone = #{officePhone}, cellPhone = #{cellPhone}, " +
     "email = #{email}, active = #{active}, " +
-          "verified = #{verified}, ismobileuser = #{isMobileUser}, " +
+          "verified = #{verified}, ismobileuser = #{isMobileUser}, receiveSupervisoryNotifications = #{receiveSupervisoryNotifications}, " +
     "modifiedBy = #{modifiedBy}, modifiedDate = (COALESCE(#{modifiedDate}, NOW())) WHERE id=#{id}")
   void update(User user);
 
   @Select("SELECT id, userName, firstName, lastName, employeeId, restrictLogin, facilityId, jobTitle, officePhone, " +
-          "primaryNotificationMethod, cellPhone, email, verified, active, ismobileuser FROM users WHERE id=#{id}")
+          "primaryNotificationMethod, cellPhone, email, verified, active, ismobileuser, receiveSupervisoryNotifications FROM users WHERE id=#{id}")
   User getById(Long id);
 
   @Insert("INSERT INTO user_password_reset_tokens (userId, token) VALUES (#{user.id}, #{token})")
@@ -96,7 +96,7 @@ public interface UserMapper {
   void disable(@Param(value = "userId") Long userId, @Param(value = "modifiedBy") Long modifiedBy);
 
   @Select({"SELECT id, userName, facilityId, firstName, lastName, employeeId, restrictLogin, jobTitle, primaryNotificationMethod,",
-    "officePhone, cellPhone, email, supervisorId, verified, active from users inner join role_assignments on users.id = role_assignments.userId ",
+    "officePhone, cellPhone, email, supervisorId, verified, active, receiveSupervisoryNotifications from users inner join role_assignments on users.id = role_assignments.userId ",
     "INNER JOIN role_rights ON role_rights.roleId = role_assignments.roleId ",
     "where supervisoryNodeId IN (WITH RECURSIVE supervisoryNodesRec(id, parentId) ",
     "AS (SELECT sn.id, sn.parentId FROM supervisory_nodes AS sn WHERE sn.id = #{nodeId}",
@@ -107,7 +107,7 @@ public interface UserMapper {
   List<User> getUsersWithRightInHierarchyUsingBaseNode(@Param(value = "nodeId") Long nodeId, @Param(value = "programId") Long programId, @Param(value = "rightName") String right);
 
   @Select({"SELECT id, userName, u.facilityId, firstName, lastName, employeeId, restrictLogin, jobTitle, primaryNotificationMethod," +
-    "officePhone, cellPhone, email, supervisorId, verified, active FROM users u INNER JOIN fulfillment_role_assignments f ON u.id = f.userId " +
+    "officePhone, cellPhone, email, supervisorId, verified, active, receiveSupervisoryNotifications FROM users u INNER JOIN fulfillment_role_assignments f ON u.id = f.userId " +
     "INNER JOIN role_rights rr ON f.roleId = rr.roleId",
     "WHERE f.facilityId = #{facilityId} AND rr.rightName = #{rightName}"})
   List<User> getUsersWithRightOnWarehouse(@Param("facilityId") Long facilityId, @Param("rightName") String rightName);
@@ -134,8 +134,9 @@ public interface UserMapper {
   List<LinkedHashMap> getPreferences(@Param(value = "userId") Long userId);
 
 
-  @Select("select * from fn_save_user_preference(#{userId}::int,#{programId}::int,#{facilityId}::int,#{products})")
-  String updateUserPreferences(@Param(value = "userId") Long userId, @Param("programId") Long programId, @Param("facilityId") Long facilityId, @Param(value = "products") String products);
+  @Select("select * from fn_save_user_preference(#{userId}::int,#{programId}::int,#{facilityId}::int, #{geographicZoneId}::int,#{products})")
+  String updateUserPreferences(@Param(value = "userId") Long userId, @Param("programId") Long programId,
+                               @Param("facilityId") Long facilityId,@Param("geographicZoneId") Long geographicZoneId, @Param(value = "products") String products);
 
   @Select("select distinct rr.rightName " +
     "from  rights r join role_rights rr on r.name = rr.rightName " +

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demandForecasting" pageWidth="846" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="846" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="a0a4e861-0726-422f-b3d5-54b1aefe96ce">
 	<property name="ireport.zoom" value="1.3636363636363638"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="55"/>
+	<property name="ireport.y" value="104"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -81,7 +81,7 @@ JOIN products p ON sr.productId = p.id
 JOIN program_products pp ON p.id = pp.productId
 JOIN product_categories pc ON pp.productcategoryId = PC.ID
 WHERE facilityId = $P{FACILITY_ID}
-ORDER BY pc.displayOrder]]>
+ORDER BY pc.displayOrder,p.id]]>
 	</queryString>
 	<field name="product" class="java.lang.String"/>
 	<field name="annualneed" class="java.lang.Long"/>
@@ -113,7 +113,7 @@ ORDER BY pc.displayOrder]]>
 		<groupHeader>
 			<band height="20">
 				<textField isBlankWhenNull="true">
-					<reportElement isPrintRepeatedValues="false" mode="Opaque" x="12" y="0" width="816" height="20" forecolor="#FFFFFF" backcolor="#3D9297" uuid="eb4ed775-2761-43d1-9492-ba8733df2a1e"/>
+					<reportElement isPrintRepeatedValues="false" mode="Opaque" x="12" y="0" width="834" height="20" forecolor="#FFFFFF" backcolor="#3D9297" uuid="eb4ed775-2761-43d1-9492-ba8733df2a1e"/>
 					<box topPadding="5" leftPadding="5" bottomPadding="5" rightPadding="5">
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -170,7 +170,7 @@ ORDER BY pc.displayOrder]]>
 	<columnHeader>
 		<band height="40">
 			<staticText>
-				<reportElement mode="Opaque" x="12" y="20" width="816" height="20" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="424bfe2a-ed04-4613-8bcb-2b288460cec0">
+				<reportElement mode="Opaque" x="12" y="20" width="834" height="20" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="424bfe2a-ed04-4613-8bcb-2b288460cec0">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 				</reportElement>
 				<text><![CDATA[]]></text>
@@ -192,7 +192,7 @@ ORDER BY pc.displayOrder]]>
 				<textFieldExpression><![CDATA[$R{header.monthly.needs}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="292" y="20" width="123" height="19" forecolor="#000000" backcolor="#333333" uuid="967e5de0-b7f4-41af-a264-ef23b0f410d9"/>
+				<reportElement mode="Transparent" x="294" y="20" width="121" height="19" forecolor="#000000" backcolor="#333333" uuid="967e5de0-b7f4-41af-a264-ef23b0f410d9"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -200,7 +200,7 @@ ORDER BY pc.displayOrder]]>
 				<textFieldExpression><![CDATA[$R{header.quaterly.needs}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="169" y="21" width="123" height="19" forecolor="#000000" backcolor="#333333" uuid="f339fff1-96f2-45be-8623-ed452732b0d5"/>
+				<reportElement mode="Transparent" x="169" y="21" width="122" height="19" forecolor="#000000" backcolor="#333333" uuid="f339fff1-96f2-45be-8623-ed452732b0d5"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -231,7 +231,7 @@ ORDER BY pc.displayOrder]]>
 				<textFieldExpression><![CDATA[$R{header.buffer.stock}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="741" y="20" width="87" height="19" forecolor="#000000" backcolor="#333333" uuid="54c7348a-f7a2-4d50-b77c-324f60a384d7"/>
+				<reportElement mode="Transparent" x="741" y="20" width="105" height="19" forecolor="#000000" backcolor="#333333" uuid="54c7348a-f7a2-4d50-b77c-324f60a384d7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -239,14 +239,14 @@ ORDER BY pc.displayOrder]]>
 				<textFieldExpression><![CDATA[$R{header.maximum.stock}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="13" y="0" width="281" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="1a86780b-f312-4ec0-9790-174d99a095b1"/>
+				<reportElement x="13" y="0" width="278" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="1a86780b-f312-4ec0-9790-174d99a095b1"/>
 				<textElement verticalAlignment="Bottom">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.title.vaccine.forecasting}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="294" y="1" width="265" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="7eb76047-e697-4b0b-898b-929721a8e2bc"/>
+				<reportElement x="294" y="0" width="244" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="7eb76047-e697-4b0b-898b-929721a8e2bc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -257,7 +257,7 @@ ORDER BY pc.displayOrder]]>
 	<detail>
 		<band height="19">
 			<staticText>
-				<reportElement mode="Opaque" x="11" y="1" width="817" height="16" backcolor="#F4F4F4" uuid="0b32f974-31ce-4dd1-b3d9-0ea0f9d2f879">
+				<reportElement mode="Opaque" x="11" y="1" width="835" height="16" backcolor="#F4F4F4" uuid="0b32f974-31ce-4dd1-b3d9-0ea0f9d2f879">
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
@@ -275,8 +275,8 @@ ORDER BY pc.displayOrder]]>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0">
-				<reportElement x="169" y="0" width="123" height="17" uuid="a295cc26-fddc-4b69-8156-4241daa02c6c"/>
+			<textField pattern="#,##0" isBlankWhenNull="false">
+				<reportElement x="169" y="0" width="122" height="17" uuid="a295cc26-fddc-4b69-8156-4241daa02c6c"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{annualneed}]]></textFieldExpression>
 			</textField>
@@ -309,7 +309,7 @@ ORDER BY pc.displayOrder]]>
 				<textFieldExpression><![CDATA[$F{bufferstock}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement x="737" y="0" width="91" height="17" uuid="c6b0646a-fd49-43c7-b9bb-7fc5dea0a7bc"/>
+				<reportElement x="737" y="0" width="109" height="17" uuid="c6b0646a-fd49-43c7-b9bb-7fc5dea0a7bc"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{maximumstock}]]></textFieldExpression>
 			</textField>

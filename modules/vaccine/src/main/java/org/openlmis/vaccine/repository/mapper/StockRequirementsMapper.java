@@ -38,9 +38,10 @@ public interface StockRequirementsMapper {
             " isavalue = #{isaValue}," +
             " reorderlevel = #{reorderLevel}, " +
             " bufferstock = #{bufferStock}, " +
-            " maximumstock = #{maximumStock}," +
-            " modifieddate= NOW() "+
-            "WHERE id=#{id} "
+            " maximumstock = #{maximumStock}, " +
+            " modifieddate= NOW(), " +
+            " currentPrice = #{currentPrice} "+
+            " WHERE id=#{id} "
     )
     Integer update(StockRequirements requirements);
 
@@ -48,10 +49,10 @@ public interface StockRequirementsMapper {
 
     @Insert("insert into stock_requirements  " +
             " (programid, facilityid, productid,productcategory,year, annualneed, supplyperiodneed, isavalue,reorderlevel,bufferstock," +
-            "  maximumstock,createdby,createddate,modifiedby,modifieddate) " +
+            "  maximumstock,createdby,createddate,modifiedby,modifieddate,currentPrice) " +
             " values " +
             " (#{programId}, #{facilityId},#{productId},#{productCategory},#{year}, #{annualNeed}, #{supplyPeriodNeed},#{isaValue},#{reorderLevel},#{bufferStock},#{maximumStock}," +
-            " #{createdBy},NOW(),#{modifiedBy},NOW()) ")
+            " #{createdBy},NOW(),#{modifiedBy},NOW(), #{currentPrice}) ")
     @Options(useGeneratedKeys = true)
     Integer save(StockRequirements stockRequirements);
 
@@ -67,7 +68,8 @@ public interface StockRequirementsMapper {
             " reorderlevel = 0, " +
             " bufferstock = 0, " +
             " maximumstock = 0," +
-            " modifieddate= NOW() " +
+            " modifieddate= NOW()," +
+            " currentPrice = 0 " +
             "where programid=#{programId} and facilityid=#{facilityId} and year=#{year}")
     Integer resetFacilityStockRequirements(@Param("programId") Long programId, @Param("facilityId") Long facilityId, @Param("year") int year);
 
@@ -79,7 +81,8 @@ public interface StockRequirementsMapper {
             " reorderlevel = #{reorderLevel}, " +
             " bufferstock = #{bufferStock}, " +
             " maximumstock = #{maximumStock}," +
-            " modifieddate= NOW() " +
+            " modifieddate= NOW()," +
+            " currentPrice = #{currentPrice} " +
             "WHERE facilityid=#{facilityId} AND productid=#{productId} AND year=#{year}  "
     )
     Integer updateBundling(StockRequirementsDTO requirements);
