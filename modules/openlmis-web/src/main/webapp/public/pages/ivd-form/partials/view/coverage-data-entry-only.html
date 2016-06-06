@@ -16,7 +16,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat-start="(productId, productGroup) in report.coverageLineItemViews"></tr>
+    <tr ng-repeat-start="(productId, productGroup) in report.coverageLineItemViews track by $index"></tr>
     <tr ng-repeat-start="dose in productGroup">
       <td class="cell-input">
         <input
