@@ -337,7 +337,7 @@
                         <strong for="facilityLabel" openlmis-message="label.vaccine.stock.distributed.to"></strong>
                         <span id='facility2' ng-bind="facilityToIssue.name"></span>
                     </div>
-                    <div class="span4">
+                    <div class="span5">
                         <strong id="received-date-label" openlmis-message="label.vaccine.issue.date"> </strong>
                         <span class="label-required">*</span>:&nbsp;
                         <input ng-required="true"
@@ -349,7 +349,7 @@
                                ng-model="facilityToIssue.issueDate"
                                ui-date-format="yy-mm-dd"/>
                     </div>
-                    <div class="span4">
+                    <div class="span3">
                         <strong id='issueTypeLabel' openlmis-message="label.type"> </strong>:&nbsp;
                         <span id='issueType' ng-bind="facilityToIssue.type"></span>
                     </div>
@@ -402,10 +402,12 @@
                     </tr>
                     <tr ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
                         ng-repeat-start="product in category.productsToIssue">
-                        <td class="cell-input disabled last-row" rowspan="{{product.lots.length}}">
+                        <td class="cell-input disabled last-row"
+                            rowspan="{{(product.lots.length===0)?1:product.lots.length}}">
                         <span class="cell-text"  ng-bind="product.name"></span>
                     </td>
-                        <td class="cell-input disabled last-row" rowspan="{{product.lots.length}}">
+                        <td class="cell-input disabled last-row"
+                            rowspan="{{(product.lots.length===0)?1:product.lots.length}}">
                             <span class="cell-text" ng-bind="product.dosageUnit"></span>
                         </td>
                         <td class="cell-input disabled"
