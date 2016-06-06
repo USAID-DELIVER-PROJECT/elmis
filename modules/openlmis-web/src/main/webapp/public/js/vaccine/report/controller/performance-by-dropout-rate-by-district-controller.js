@@ -126,13 +126,12 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
             return  $scope.nonReporting;
         }
-        if (value.bcg_mr_dropout > 20) {
+        if (value.bcg_mr_dropout > 10) {
             bgColor = $scope.maxTemp;
-        } else if (value.bcg_mr_dropout > 10) {
-            bgColor = $scope.average;
         } else if (value.bcg_mr_dropout > 5) {
-            bgColor = $scope.belowAverage;
-        } else {
+            bgColor = $scope.average;
+        }
+        else {
             bgColor = $scope.minTemp;
         }
         return bgColor;
