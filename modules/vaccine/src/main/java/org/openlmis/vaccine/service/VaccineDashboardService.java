@@ -19,19 +19,15 @@ import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.report.util.StringHelper;
 import org.openlmis.vaccine.repository.VaccineDashboardRepository;
-import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
 
 @Service
 @NoArgsConstructor
@@ -234,12 +230,12 @@ public class VaccineDashboardService {
         return repairingDetailList;
     }
 
-    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product) {
+    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product,Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
 
-            repairingDetailList = repository.getDistrictCoverage(period, product);
+            repairingDetailList = repository.getDistrictCoverage(period, product,user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -274,12 +270,12 @@ public class VaccineDashboardService {
         return repairingDetailList;
     }
 
-    public List<HashMap<String, Object>> getDistrictSessions(Long period) {
+    public List<HashMap<String, Object>> getDistrictSessions(Long period,Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
 
-            repairingDetailList =repository.getDistrictSessions(period);
+            repairingDetailList =repository.getDistrictSessions(period,user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -301,12 +297,12 @@ public class VaccineDashboardService {
     }
 
 
-    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product) {
+    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product,Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
 
-            repairingDetailList =repository.getWastageByDistrict(period, product);
+            repairingDetailList =repository.getWastageByDistrict(period, product,user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -327,12 +323,12 @@ public class VaccineDashboardService {
         return repairingDetailList;
     }
 
-    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product) {
+    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product,Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
 
-            repairingDetailList = repository.getDistrictDropout(period, product);
+            repairingDetailList = repository.getDistrictDropout(period, product,user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }

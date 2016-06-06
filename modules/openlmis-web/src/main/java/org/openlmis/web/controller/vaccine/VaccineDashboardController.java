@@ -131,8 +131,9 @@ public class VaccineDashboardController  extends BaseController {
         return OpenLmisResponse.response("facilityDropoutDetails", service.getFacilityDropoutDetails(startDate, endDate, product, userId));
     }
     @RequestMapping(value = "district-coverage.json", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> getDistrictCoverage(@RequestParam("period") Long period, @RequestParam("product") Long product){
-        return OpenLmisResponse.response("districtCoverage", service.getDistrictCoverage(period, product));
+    public ResponseEntity<OpenLmisResponse> getDistrictCoverage(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
+        Long userId = this.loggedInUserId(request);
+        return OpenLmisResponse.response("districtCoverage", service.getDistrictCoverage(period, product,userId));
     }
     @RequestMapping(value = "monthly-wastage.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getWastageByMonthly(@RequestParam("startDate")String startDate, @RequestParam("endDate") String endDate, @RequestParam("product") Long product){
@@ -141,9 +142,9 @@ public class VaccineDashboardController  extends BaseController {
     }
 
     @RequestMapping(value = "district-wastage.json", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> getWastageByDistrict(@RequestParam("period") Long period, @RequestParam("product") Long product){
-
-        return OpenLmisResponse.response("districtWastage", service.getWastageByDistrict(period, product));
+    public ResponseEntity<OpenLmisResponse> getWastageByDistrict(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
+Long userId= this.loggedInUserId(request);
+        return OpenLmisResponse.response("districtWastage", service.getWastageByDistrict(period, product,userId));
     }
 
 
@@ -155,10 +156,10 @@ public class VaccineDashboardController  extends BaseController {
     }
 
     @RequestMapping(value = "district-sessions.json", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> getDistrictSessions(@RequestParam("period")Long period){
+    public ResponseEntity<OpenLmisResponse> getDistrictSessions(@RequestParam("period")Long period, HttpServletRequest request){
+Long userId = this.loggedInUserId(request);
 
-
-        return OpenLmisResponse.response("districtSessions", service.getDistrictSessions(period));
+        return OpenLmisResponse.response("districtSessions", service.getDistrictSessions(period,userId));
     }
 
     @RequestMapping(value = "monthly-dropout.json", method = RequestMethod.GET)
@@ -167,8 +168,9 @@ public class VaccineDashboardController  extends BaseController {
     }
 
     @RequestMapping(value = "district-dropout.json", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> getDistrictDropout(@RequestParam("period") Long period, @RequestParam("product") Long product){
-        return OpenLmisResponse.response("districtDropout", service.getDistrictDropout(period, product));
+    public ResponseEntity<OpenLmisResponse> getDistrictDropout(@RequestParam("period") Long period, @RequestParam("product") Long product, HttpServletRequest request){
+       Long user =this.loggedInUserId(request);
+        return OpenLmisResponse.response("districtDropout", service.getDistrictDropout(period, product,user));
     }
 
 
