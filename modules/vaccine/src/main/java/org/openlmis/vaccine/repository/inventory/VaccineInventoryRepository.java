@@ -29,6 +29,7 @@ public class VaccineInventoryRepository {
 
     }
     public Integer deleteDistributions(){
+        mapper.deleteDistributionStatus();
         if(mapper.deleteDistributionLots() >0)
         {
             if(mapper.deleteDistributionLineItems() >0)

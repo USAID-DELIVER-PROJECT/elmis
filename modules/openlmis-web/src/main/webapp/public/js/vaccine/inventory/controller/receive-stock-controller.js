@@ -284,10 +284,21 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
 
     $scope.removeProduct=function(product)
     {
-         var index = $scope.receivedProducts.indexOf(product);
-         $scope.receivedProducts.splice(index, 1);
-         categorise($scope.receivedProducts);
-         updateProductToDisplay($scope.receivedProducts);
+         var callBack=function(results){
+            if(results){
+             var index = $scope.receivedProducts.indexOf(product);
+             $scope.receivedProducts.splice(index, 1);
+             categorise($scope.receivedProducts);
+             updateProductToDisplay($scope.receivedProducts);
+             }
+         };
+         var options = {
+                                     id: "confirmDialog",
+                                     header: "label.confirm.remove.product.action",
+                                     body: "msg.question.remove.product.confirmation"
+                                 };
+                         OpenLmisDialog.newDialog(options, callBack, $dialog);
+
     };
 
     $scope.addProduct=function(productToAdd){
@@ -317,23 +328,44 @@ function ReceiveStockController($scope,$filter, Lot,StockCards,manufacturers,Upd
     };
 
     $scope.removeProductLot=function(lot){
-            var index = $scope.productToAdd.lots.indexOf(lot);
-            $scope.productToAdd.lots.splice(index, 1);
-            updateLotsToDisplay($scope.productToAdd.lots);
+           var callBack=function(results){
+               if(results){
+                    var index = $scope.productToAdd.lots.indexOf(lot);
+                    $scope.productToAdd.lots.splice(index, 1);
+                    updateLotsToDisplay($scope.productToAdd.lots);
+                }
+           };
+           var options = {
+               id: "confirmDialog",
+               header: "label.confirm.remove.lot.action",
+               body: "msg.question.remove.lot.confirmation"
+           };
+           OpenLmisDialog.newDialog(options, callBack, $dialog);
     };
 
 
     $scope.removeReceivedLot=function(product,lot)
     {
-            if(product.lots.length ===1)
-            {
-                $scope.removeProduct(product);
+         var callBack=function(results){
+           if(results){
+                if(product.lots.length ===1)
+                {
+                    $scope.removeProduct(product);
+                }
+                else{
+                     var productIndex = $scope.receivedProducts.indexOf(product);
+                     var lotIndex = $scope.receivedProducts[productIndex].lots.indexOf(lot);
+                     $scope.receivedProducts[productIndex].lots.splice(lotIndex, 1);
+                }
             }
-            else{
-                 var productIndex = $scope.receivedProducts.indexOf(product);
-                 var lotIndex = $scope.receivedProducts[productIndex].lots.indexOf(lot);
-                 $scope.receivedProducts[productIndex].lots.splice(lotIndex, 1);
-            }
+         };
+
+         var options = {
+                        id: "confirmDialog",
+                        header: "label.confirm.remove.lot.action",
+                        body: "msg.question.remove.lot.confirmation"
+                    };
+         OpenLmisDialog.newDialog(options, callBack, $dialog);
      };
 
 
