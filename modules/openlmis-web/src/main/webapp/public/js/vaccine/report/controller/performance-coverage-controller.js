@@ -12,7 +12,7 @@
  *
  */
 
-function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, Settings, ReportProductsByProgram, TreeGeographicZoneList, messageService, GetUserUnassignedSupervisoryNode) {
+function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, SettingsByKey, ReportProductsByProgram, TreeGeographicZoneList, messageService, GetUserUnassignedSupervisoryNode) {
 
     $scope.perioderror = "";
     $scope.grayCount = {};
@@ -124,27 +124,25 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
     };
 
 
-    Settings.get({}, function (data) {
 
-        _.each(data.settings.list, function (item) {
 
-            if (item.key === "VCP_GREEN")
-                $scope.colors.color_ninty_percent = item.value;
-            //else if (item.key === "VCP_BLUE")
-            //    $scope.colors.color_80_percent = item.value;
-            else if (item.key === "VCP_ORANGE")
-                $scope.colors.color_80_percent = item.value;
-            else if (item.key === "VCP_RED") {
-                $scope.colors.color_50_percent_below = item.value;
-                $scope.colors.color_50_percent_above = item.value;
-            }
-            else if (item.key === "VCP_NON_REPORTING") {
-                $scope.colors.color_non_reporting = item.value;
-            }
-        });
+    SettingsByKey.get({key: 'VCP_GREEN'}, function (data) {
+
+        $scope.colors.color_ninty_percent =data.settings.value;
     });
+    SettingsByKey.get({key: 'VCP_ORANGE'}, function (data) {
 
+        $scope.colors.color_80_percent =data.settings.value;
+    });
+    SettingsByKey.get({key: 'VCP_RED'}, function (data) {
 
+        $scope.colors.color_50_percent_below = data.settings.value;
+        $scope.colors.color_50_percent_above = data.settings.value;
+    });
+    SettingsByKey.get({key: 'VCP_NON_REPORTING'}, function (data) {
+
+        $scope.colors.color_non_reporting = data.settings.value;
+    });
     $scope.bgColorCode = function (value) {
         var percentageCoverage = $scope.calculateVaccinated(value.target, value.vaccinated);// value.coverage;
 

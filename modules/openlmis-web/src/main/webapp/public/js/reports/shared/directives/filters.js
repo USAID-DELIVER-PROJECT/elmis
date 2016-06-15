@@ -1694,7 +1694,7 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
     };
 }]);
 
-app.directive('vaccineProductDosesFilter', ['VaccineProductDoseList', 'messageService', 'VaccineSupervisedIvdPrograms',
+app.directive('vaccineProductDosesFilter', ['VaccineProductDoseList', 'messageService', 'VimsVaccineSupervisedIvdPrograms',
     function (VaccineProductDoseList, messageService, VaccineSupervisedIvdPrograms) {
 
         return {

@@ -66,7 +66,10 @@ public class IvdFormProgramController extends BaseController {
   public ResponseEntity<OpenLmisResponse> getProgramForIvdFormSupervisedFacilities(HttpServletRequest request) {
     return OpenLmisResponse.response(PROGRAMS, programService.getIvdProgramForSupervisedFacilities(loggedInUserId(request), RightName.CREATE_IVD, RightName.APPROVE_IVD, RightName.VIEW_IVD));
   }
-
+  @RequestMapping(value = "/vaccine/report/ivd-form/vims-supervised-programs")
+  public ResponseEntity<OpenLmisResponse> getProgramssForIvdFormSupervisedFacilities(HttpServletRequest request) {
+    return OpenLmisResponse.response(PROGRAMS, programService.getIvdProgramForSupervisedFacilities(loggedInUserId(request), RightName.CREATE_IVD, RightName.APPROVE_IVD, RightName.VIEW_IVD));
+  }
   @RequestMapping(value = "/vaccine/report/ivd-form/facilities/{programId}.json", method = RequestMethod.GET)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD, APPROVE_IVD, VIEW_IVD')")
   public ResponseEntity<OpenLmisResponse> getFacilities(@PathVariable Long programId, HttpServletRequest request) {

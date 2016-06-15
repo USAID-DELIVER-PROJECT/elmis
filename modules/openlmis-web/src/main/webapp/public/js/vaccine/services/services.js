@@ -47,7 +47,9 @@ services.factory('VaccineReportConfigurablePrograms', function ($resource) {
 services.factory('VaccineSupervisedIvdPrograms', function ($resource) {
   return $resource('/vaccine/report/ivd-form/supervised-programs.json', {}, {});
 });
-
+services.factory('VimsVaccineSupervisedIvdPrograms', function ($resource) {
+    return $resource('/vaccine/report/ivd-form/vims-supervised-programs.json', {}, {});
+});
 services.factory('VaccineHomeFacilityIvdPrograms', function ($resource) {
   return $resource('/vaccine/report/ivd-form/programs.json', {}, {});
 });
