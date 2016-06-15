@@ -465,7 +465,7 @@
     <div>
         <div>
             <select id="vaccinePeriodTree"
-                    ui-select2 class="input-large" ng-change="notifyFilterChanged('period-tree-changed');" ng-model="period">
+                    ui-select2  ng-change="notifyFilterChanged('period-tree-changed');" ng-model="period" class="input-large" style="width: 100px">
                 <!--<option ng-selected="period == 0" ng-value="0">{{period_placeholder}}</option>
 -->
                 <option ng-value="0" ng-selected="period ==undefined ||period == 0">{{period_placeholder}}</option>

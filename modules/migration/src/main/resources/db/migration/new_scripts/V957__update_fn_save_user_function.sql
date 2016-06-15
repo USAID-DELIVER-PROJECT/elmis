@@ -1,8 +1,7 @@
 -- Function: fn_save_user_preference(integer, integer, integer, character varying)
 
--- DROP FUNCTION fn_save_user_preference(integer, integer, integer, character varying);
 
-CREATE OR REPLACE FUNCTION fn_save_user_preference(in_userid integer, in_programid integer, in_facilityid integer, in_productid character varying, in_zone_id integer)
+CREATE OR REPLACE FUNCTION fn_save_user_preference(in_userid integer, in_programid integer, in_facilityid integer, in_zone_id integer, in_productid character varying)
   RETURNS character varying AS
 $BODY$
 DECLARE msg character varying(2000);

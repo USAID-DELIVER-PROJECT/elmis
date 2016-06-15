@@ -1,14 +1,13 @@
 // Color variables (appears count calculates by raw css)
 @color0: #ffffff; // Appears 6 times
 @color1: #eef1f5; // Appears 6 times
-@color2: #006dcc; // Appears 3 times
-@color3: #006dcc; // Appears 2 times
-@color4: #aa66cc; // Appears 2 times
-@color5: #ff5454; // Appears 2 times
+@color2: #006dcc; // Appears 5 times
+@color3: #45b600; // Appears 2 times
+@color4: #ff5454; // Appears 2 times
+@color5: #bb6622; // Appears 2 times
 @color6: #aab5bc; // Appears 2 times
-@color7: #880000; // Appears 2 times
-@color8: #45b600; // Appears 2 times
-@color9: #bb6622; // Appears 2 times
+@color7: #aa66cc; // Appears 2 times
+@color8: #880000; // Appears 2 times
 
 // Width variables (appears count calculates by raw css)
 @width7: 24%; // Appears 4 times
@@ -169,7 +168,6 @@ label {
   .select2-choice {
     height: @height4;
     line-height: @height4;
-    width: 90px;
     .select2-arrow {
       b {
         display: block;
@@ -190,6 +188,11 @@ label {
     min-height: @height4;
   }
 }
+.select2-drop {
+  .select2-results {
+    font-size: .7em;
+  }
+}
 .select2-container-multi {
   .select2-choices {
     min-height: @height4;
@@ -202,29 +205,6 @@ label {
 }
 .box {
   background-color: @color0;
-  border: 1px solid @color5;
-  float: left;
-  height: @height1;
-  margin-bottom: 5px;
-  margin-right: 2px;
-  margin-top: 0px;
-  width: @width7;
-  h2 {
-    background: @color5;
-    color: white;
-    font-size: 1em;
-    height: @height9;
-    line-height: @height4;
-    padding-left: 5px;
-  }
-  p {
-    padding-top: 15px;
-  }
-}
-.box-value {
-  font-size: 1.5em;
-}
-.box-col2 {
   border: 1px solid @color4;
   float: left;
   height: @height1;
@@ -244,8 +224,11 @@ label {
     padding-top: 15px;
   }
 }
-.box-col3 {
-  border: 1px solid @color8;
+.box-value {
+  font-size: 1.5em;
+}
+.box-col2 {
+  border: 1px solid @color7;
   float: left;
   height: @height1;
   margin-bottom: 5px;
@@ -253,7 +236,7 @@ label {
   margin-top: 0px;
   width: @width7;
   h2 {
-    background: @color8;
+    background: @color7;
     color: white;
     font-size: 1em;
     height: @height9;
@@ -263,6 +246,30 @@ label {
   p {
     padding-top: 15px;
   }
+}
+.box-col3 {
+  border: 1px solid @color3;
+  float: left;
+  height: @height1;
+  margin-bottom: 5px;
+  margin-right: 2px;
+  margin-top: 0px;
+  width: @width7;
+  h2 {
+    background: @color3;
+    color: white;
+    font-size: 1em;
+    height: @height9;
+    line-height: @height4;
+    padding-left: 5px;
+  }
+  p {
+    padding-top: 15px;
+  }
+}
+.horizontalFilters {
+  float: left;
+  margin-left: 5px;
 }
 .box-col4 {
   border: 1px solid @color2;
@@ -285,15 +292,15 @@ label {
   }
 }
 .box-col5 {
-  border: 1px solid @color7;
+  border: 1px solid @color8;
   h2 {
-    background: @color7;
+    background: @color8;
   }
 }
 .box-col6 {
-  border: 1px solid @color9;
+  border: 1px solid @color5;
   h2 {
-    background: @color9;
+    background: @color5;
     color: white;
     font-size: 1em;
     height: @height9;
@@ -309,9 +316,9 @@ label {
 }
 .modal-header {
   background-color: @color2;
-  border-bottom: 1px solid @color3;
+  border-bottom: 1px solid @color2;
   border-radius: 3px 3px 0 0;
-  border: 1px solid @color3;
+  border: 1px solid @color2;
   color: @color0;
   font-size: 1.1em;
   height: 40px;
@@ -320,7 +327,7 @@ label {
   }
 }
 .close {
-  color:white;
+  color: white;
   display: inline-block;
   font-size: 1.1em;
   height: 9px;
