@@ -13,7 +13,7 @@ angular.module('help', ['openlmis','ui.bootstrap.modal', 'ui.bootstrap.dialog', 
     config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.
-
+        when('/viewhelp/:id', {controller: HelpFileContentController, templateUrl: 'partials/helpDetail.html'}).
         when('/viewDashboard',{controller: HelpTreeViewController, templateUrl: 'partials/helpView.html'}).
         otherwise({redirectTo: '/viewDashboard'});
 
