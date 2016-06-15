@@ -29,7 +29,17 @@ var VaccineReport = function (report) {
     this.mainProducts = _.where(this.products, {fullSupply: true});
     this.coverageLineItems = getCoverageLineItems(this.coverageLineItems, this);
     this.logisticsLineItems = getLogisticsLineItems(this.logisticsLineItems, this);
-    this.coverageLineItemViews = _.groupBy(this.coverageLineItems, 'productId');
+    this.coverageLineItemViews = [];
+    var coverages = _.groupBy(this.coverageLineItems, 'productId');
+    //insert these groups in the order of products
+    for(var i = 0; i < this.logisticsLineItems.length; i++){
+      var product = this.logisticsLineItems[i];
+      var coverageGroup = coverages[product.productId];
+      if(coverageGroup !== undefined){
+        this.coverageLineItemViews.push(coverageGroup);
+      }
+    }
+
     this.editable = (this.status === 'DRAFT' || this.status === 'REJECTED');
     this.ready = true;
   };

@@ -73,10 +73,11 @@
             </tr>
             <tr ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
                 ng-repeat-start="c in stock.stockCards" style="border-bottom:2px solid #333">
-                <td rowspan="{{c.lotsOnHand.length}}" class="col-product cell-input last-row disabled">
+                <td rowspan="{{(c.lotsOnHand.length ===0)?1:c.lotsOnHand.length}}"
+                    class="col-product cell-input last-row disabled">
                     <span class="cell-text" ng-bind="c.product.primaryName"></span>
                 </td>
-                <td rowspan="{{c.lotsOnHand.length}}" class="cell-input last-row disabled">
+                <td rowspan="{{(c.lotsOnHand.length ===0)?1:c.lotsOnHand.length}}" class="cell-input last-row disabled">
                     <span class="cell-text" ng-bind="c.product.dosageUnit.code"></span>
                 </td>
                 <td class="col-lot cell-input  disabled"

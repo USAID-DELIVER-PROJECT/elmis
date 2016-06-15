@@ -19,7 +19,7 @@ function MassDistributionController($scope,$location, $document,$window,configur
      $scope.distributionType='ROUTINE';
      $scope.UnScheduledFacility=undefined;
      $scope.toDay=new Date();
-     $scope.maxModalBodyHeight='max-height:'+parseInt($document.height() * 0.45,10)+'px !important;height:'+parseInt($document.height() * 0.39,10)+'px !important';
+     $scope.maxModalBodyHeight='max-height:'+parseInt($document.height() * 0.35,10)+'px !important;height:'+parseInt($document.height() * 0.35,10)+'px !important';
      $scope.loadSupervisedFacilities=function(programId){
            OneLevelSupervisedFacilities.get({programId:programId},function(data){
                 $scope.supervisedFacilities=data.facilities;

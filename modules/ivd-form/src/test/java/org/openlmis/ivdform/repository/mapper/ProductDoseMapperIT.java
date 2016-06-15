@@ -110,16 +110,6 @@ public class ProductDoseMapperIT {
   }
 
   @Test
-  public void shouldGetProgramProductDoses() throws Exception {
-    VaccineProductDose dose = getVaccineProductDose();
-
-    mapper.insert(dose);
-    List<VaccineProductDose> doses = mapper.getProgramProductDoses(program.getId());
-    assertThat(doses.size(), is(1));
-    assertThat(doses.get(0).getId(), is(dose.getId()));
-  }
-
-  @Test
   public void shouldGetAllPossibleDoses() throws Exception {
     List<VaccineDose> doses = mapper.getAllDoses();
     assertThat(doses.size(), is(6));

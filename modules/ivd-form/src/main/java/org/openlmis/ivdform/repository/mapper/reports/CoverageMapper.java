@@ -58,7 +58,11 @@ public interface CoverageMapper {
   @Select("SELECT * from vaccine_report_coverage_line_items WHERE id = #{id}")
   VaccineCoverageItem getById(@Param("id") Long id);
 
-  @Select("SELECT * from vaccine_report_coverage_line_items WHERE reportId = #{reportId} and productId = #{productId} and doseId = #{doseId} order by displayOrder")
+  @Select("SELECT * from vaccine_report_coverage_line_items " +
+      "WHERE reportId = #{reportId} " +
+      "   and productId = #{productId} " +
+      "   and doseId = #{doseId} " +
+      "order by id")
   @Results(value = {
       @Result(property = "productId", column = "productId"),
       @Result(property = "product", javaType = Product.class, column = "productId",
@@ -69,7 +73,8 @@ public interface CoverageMapper {
   @Select("select d.* from vaccine_reports r " +
       " join vaccine_report_coverage_line_items cli on cli.reportId = r.id " +
       " join vaccine_product_doses d on d.doseId = cli.doseId and cli.productId = d.productId and d.programId = r.programId" +
-      " where cli.id = #{id}")
+      " where cli.id = #{id} " +
+      " order by cli.id")
   VaccineProductDose getVaccineDoseDetail(@Param("id") Long id);
 
   @Select("SELECT " +
@@ -81,7 +86,7 @@ public interface CoverageMapper {
       "     join processing_periods pps on pps.id = r.periodId " +
       "WHERE " +
       "     reportId = #{reportId} " +
-      "order by displayOrder")
+      "order by li.id ASC")
   @Results(value = {
       @Result(property = "id", column = "id"),
       @Result(property = "productId", column = "productId"),

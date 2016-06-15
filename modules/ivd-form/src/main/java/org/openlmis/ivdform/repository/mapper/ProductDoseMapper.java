@@ -48,7 +48,10 @@ public interface ProductDoseMapper {
       " where id = #{id}")
   Integer update(VaccineProductDose dose);
 
-  @Select("select d.* from vaccine_product_doses d  where programId = #{programId}")
+  @Select("select d.* from vaccine_product_doses d " +
+      " join program_products pp on pp.productId = d.productId and d.programId = pp.programId and pp.programId = #{programId} " +
+      "where d.programId = #{programId} " +
+      " order by pp.displayOrder ASC, d.displayOrder ASC" )
   List<VaccineProductDose> getProgramProductDoses(@Param("programId") Long programId);
 
   @Select("select * from vaccine_doses order by displayOrder")
