@@ -1695,7 +1695,7 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
 }]);
 
 app.directive('vaccineProductDosesFilter', ['VaccineProductDoseList', 'messageService', 'VimsVaccineSupervisedIvdPrograms',
-    function (VaccineProductDoseList, messageService, VaccineSupervisedIvdPrograms) {
+    function (VaccineProductDoseList, messageService, VimsVaccineSupervisedIvdPrograms) {
 
         return {
             restrict: 'E',
@@ -1709,7 +1709,7 @@ app.directive('vaccineProductDosesFilter', ['VaccineProductDoseList', 'messageSe
 
                 $scope.$watch('product', function (newValues, oldValues) {
 
-                    VaccineSupervisedIvdPrograms.get({}, function (data) {
+                    VimsVaccineSupervisedIvdPrograms.get({}, function (data) {
 
                         VaccineProductDoseList.get(
                             {
