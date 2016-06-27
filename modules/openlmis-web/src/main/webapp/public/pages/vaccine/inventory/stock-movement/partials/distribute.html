@@ -28,6 +28,14 @@
     .orange{
         color:orange;
     }
+    td.lot-expired span{
+    color:#f00;
+    }
+
+    td.cross span{
+    text-decoration:line-through;
+    }
+
 
 </style>
 <div>
@@ -120,18 +128,23 @@
                     <span class="cell-text" ng-bind="c.product.primaryName"></span>
                 </td>
                 <td class="col-lot cell-input  disabled number" style="text-align: left;!important;"
-                    ng-class="{'last-row':c.lotsOnHand.length===1,'skip':c.lotsOnHand.length===0}">
+                    ng-init="c.lotsOnHand[0].hasExpired=lotHasExpired(c.lotsOnHand[0].lot.expirationDate)"
+                    ng-class="{'last-row':c.lotsOnHand.length===1,'skip':c.lotsOnHand.length===0,'lot-expired':c.lotsOnHand[0].hasExpired} ">
                     <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.lotCode"></span>
+                    <span class="cell-text" ng-show="c.lotsOnHand[0].hasExpired">&nbsp;(Expired)</span>
+
                 </td>
-                <td class="col-available cell-input number disabled" ng-class="{'last-row':c.lotsOnHand.length===1}">
+                <td class="col-available cell-input number disabled"
+                    ng-class="{'last-row':c.lotsOnHand.length===1,'lot-expired':c.lotsOnHand[0].hasExpired}">
                     <span class="cell-text" ng-bind="c.lotsOnHand[0].customProps.vvmstatus "></span>
                 </td>
-                <td class="col-lot cell-input  disabled number" ng-class="{'last-row':c.lotsOnHand.length===1}">
+                <td class="col-lot cell-input  disabled number"
+                    ng-class="{'last-row':c.lotsOnHand.length===1,'lot-expired':c.lotsOnHand[0].hasExpired}">
                     <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.expirationDate | date:'MMM-yyyy'"></span>
                 </td>
 
                 <td class="col-available cell-input number disabled"
-                    ng-class="{'last-row':c.lotsOnHand.length===1, 'max-error':(c.lotsOnHand[0].quantityOnHand < c.lotsOnHand[0].quantity)}">
+                    ng-class="{'last-row':c.lotsOnHand.length===1, 'max-error':(c.lotsOnHand[0].quantityOnHand < c.lotsOnHand[0].quantity),'lot-expired':c.lotsOnHand[0].hasExpired,'cross':c.lotsOnHand[0].hasExpired}">
                     <span ng-if="c.lotsOnHand.length > 0" class="cell-text" ng-bind="c.lotsOnHand[0].quantityOnHand | number "></span>
                     <span ng-if="c.lotsOnHand.length === 0" class="cell-text" ng-bind="c.totalQuantityOnHand | number "></span>
                 </td>
@@ -147,7 +160,7 @@
                            type="text"
                            maximum="{{c.lotsOnHand[0].quantityOnHand}}"
                            divisible-by-presentation="{{c.presentation}}"
-                           ng-disabled="c.lotsOnHand.length > 1 && c.lotsOnHand[1].quantity >0"/>
+                           ng-disabled="(c.lotsOnHand.length > 1 && !c.lotsOnHand[1].hasExpired && c.lotsOnHand[1].quantity >0) || c.lotsOnHand[0].hasExpired"/>
                     <input ng-show="c.lotsOnHand.length ===0"
                            name="{{c.product.primaryName}}"
                            numeric-validator="positiveInteger"
@@ -176,20 +189,25 @@
             </tr>
             <tr ng-repeat-end ng-repeat="lot in c.lotsOnHand" ng-show="!$first" ng-class="color">
                 <td class="col-lot  cell-input disabled cell-text number" style="text-align: left;!important;"
-                    ng-class="{'last-row':$last}">
+                    ng-init="lot.hasExpired=lotHasExpired(lot.lot.expirationDate)"
+                    ng-class="{'last-row':$last,'lot-expired':lot.hasExpired}">
                     <span class="cell-text" ng-bind="lot.lot.lotCode"></span>
+                    <span class="cell-text" ng-show="lot.hasExpired">&nbsp;(Expired)</span>
+
                 </td>
-                <td class="col-available cell-input col-general number disabled" ng-class="{'last-row':$last}">
+                <td class="col-available cell-input col-general number disabled"
+                    ng-class="{'last-row':$last,'lot-expired':lot.hasExpired}">
                     <span class="cell-text" ng-bind="lot.customProps.vvmstatus"></span>
                 </td>
 
-                <td class="col-available cell-input col-general disabled number" ng-class="{'last-row':$last}">
+                <td class="col-available cell-input col-general disabled number"
+                    ng-class="{'last-row':$last,'lot-expired':lot.hasExpired}">
                     <span class="cell-text" ng-bind="lot.lot.expirationDate | date:'MMM-yyyy'"></span>
                 </td>
 
 
                 <td class="col-available cell-input col-general number disabled"
-                    ng-class="{'last-row':$last, 'max-error':lot.quantityOnHand < lot.quantity}">
+                    ng-class="{'last-row':$last, 'max-error':lot.quantityOnHand < lot.quantity,'lot-expired':lot.hasExpired,'cross':lot.hasExpired}">
                     <span   class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
                 </td>
 
@@ -202,8 +220,8 @@
                             maximum="{{lot.quantityOnHand}}"
                             divisible-by-presentation="{{c.presentation}}"
                             ng-model="lot.quantity" ng-change="sumLots(c)"
-                            ng-disabled="c.lotsOnHand[$index-1].quantity ===undefined || c.lotsOnHand[$index-1].quantity != c.lotsOnHand[$index-1].quantityOnHand ||
-                                        c.lotsOnHand[$index +1].quantity >0"
+                            ng-disabled="((!c.lotsOnHand[$index-1].hasExpired &&(c.lotsOnHand[$index-1].quantity ===undefined || c.lotsOnHand[$index-1].quantity != c.lotsOnHand[$index-1].quantityOnHand)) ||
+                                        c.lotsOnHand[$index +1].quantity >0) || lot.hasExpired"
                             type="text"/>
 
                 </td>
