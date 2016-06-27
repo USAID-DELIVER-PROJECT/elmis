@@ -8,6 +8,11 @@
 ~ You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
 -->
 <!DOCTYPE html>
+<style>
+    td.lot-expired span{
+    color:#d58512;
+    }
+</style>
 <div>
     <h2><span openlmis-message="label.vaccine.stock.adjustment"></span></h2>
     <div class="info-box padding2px">
@@ -40,10 +45,13 @@
                    openlmis-message="stock.initialize.stock"></a></strong>
     </div>
     <div class="alert alert-danger"
-         ng-show="adjustmentForm.$dirty && adjustmentForm.$error.divisibleByPresentationValidator.length >0 ">
-        <ul ng-show="adjustmentForm.$error.divisibleByPresentationValidator.length >0 ">
+         ng-show="adjustmentForm.$dirty && (adjustmentForm.$error.divisibleByPresentationValidator.length >0 || adjustmentForm.$error.maximumValidator.length >0) ">
+        <ul ng-show="adjustmentForm.$error.divisibleByPresentationValidator.length >0 || adjustmentForm.$error.maximumValidator.length  ">
             <li ng-repeat="error in adjustmentForm.$error.divisibleByPresentationValidator">
                 {{error.$name}} <span openlmis-message="error.message.quantity.not.multiple.of.presentation"></span>
+            </li>
+            <li ng-repeat="error in adjustmentForm.$error.maximumValidator">
+                {{error.$name}} <span openlmis-message="error.message.batch.expired.physical.count.zero"></span>
             </li>
         </ul>
     </div>
@@ -80,12 +88,14 @@
                 <td rowspan="{{(c.lotsOnHand.length ===0)?1:c.lotsOnHand.length}}" class="cell-input last-row disabled">
                     <span class="cell-text" ng-bind="c.product.dosageUnit.code"></span>
                 </td>
-                <td class="col-lot cell-input  disabled"
+                <td class="col-lot cell-input  disabled" ng-class="{'lot-expired':c.lotsOnHand[0].hasExpired}"
                     ng-class="{'last-row':c.lotsOnHand.length===1}">
-                    <span ng-if="c.lotsOnHand.length >0" class="cell-text" ng-bind="c.lotsOnHand[0].lot.lotCode"></span>
+                    <span ng-show="c.lotsOnHand.length >0" class="cell-text"
+                          ng-bind="c.lotsOnHand[0].lot.lotCode"></span>
+                    <span ng-show="c.lotsOnHand.length >0 && c.lotsOnHand[0].hasExpired" class="cell-text">&nbsp;(Expired)</span>
                 </td>
                 <td class="col-available cell-input number disabled"
-                    ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    ng-class="{'last-row':c.lotsOnHand.length===1,'lot-expired':c.lotsOnHand[0].hasExpired}">
                     <span ng-if="c.lotsOnHand.length >0" class="cell-text"
                           ng-bind="c.lotsOnHand[0].quantityOnHand | number"></span>
                     <span ng-if="c.lotsOnHand.length === 0" class="cell-text"
@@ -100,6 +110,8 @@
                            ng-model="c.lotsOnHand[0].quantity"
                            numeric-validator="positiveInteger"
                            maxlength="10"
+                           ng-init="max=(c.lotsOnHand[0].hasExpired)?0:''"
+                           maximum="{{max}}"
                            type="text"
                            divisible-by-presentation="{{c.presentation}}"/>
                     <input ng-if="c.lotsOnHand.length ===0"
@@ -188,18 +200,22 @@
                 </td>
             </tr>
             <tr ng-repeat-end ng-repeat="lot in c.lotsOnHand" ng-show="!$first" ng-class="color">
-                <td class="col-lot  cell-input disabled" ng-class="{'last-row':$last}">
+                <td class="col-lot  cell-input disabled" ng-class="{'last-row':$last,'lot-expired':lot.hasExpired}">
                     <span class="cell-text" ng-bind="lot.lot.lotCode"></span>
+                    <span ng-show="lot.hasExpired" class="cell-text">&nbsp;(Expired)</span>
                 </td>
-                <td class="col-available cell-input col-general number disabled" ng-class="{'last-row':$last}">
+                <td class="col-available cell-input col-general number disabled"
+                    ng-class="{'last-row':$last,'lot-expired':lot.hasExpired}">
                     <span class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
                 </td>
                 <td ng-class="{'last-row':$last,'disabled':lot.isSkipped}" class="col-count cell-input col-general ">
-                    <input name="{{c.product.primaryName}} batch # {{lot.lot.lotCode}}"
+                    <input name="{{c.product.primaryName}} batch {{lot.lot.lotCode}}"
                            ng-required="lot.isSkipped ===false"
                            ng-disabled="lot.isSkipped"
                            ng-model="lot.quantity"
                            maxlength="5" type="text"
+                           ng-init="max=(lot.hasExpired)?0:''"
+                           maximum="{{max}}"
                            numeric-validator="positiveInteger"
                            divisible-by-presentation="{{c.presentation}}"/>
                 </td>

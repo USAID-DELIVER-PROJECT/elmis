@@ -44,7 +44,7 @@
     }
 
     td.lot-expired span{
-    color:#f00;
+    color:#d58512;
     }
 
     td.cross span{
@@ -421,6 +421,7 @@
                         <td class="cell-input disabled"
                             ng-class="{'skip':product.lots === undefined,'last-row':product.lots.length==1,'lot-expired':product.lots[0].hasExpired}">
                         <span class="cell-text" ng-bind="product.lots[0].lotCode"></span>
+                            <span ng-show="product.lots[0].hasExpired" class="cell-text">&nbsp;(Expired)</span>
                     </td>
                         <td class="cell-input disabled"
                             ng-class="{'skip':product.lots === undefined,'last-row':product.lots.length==1,'lot-expired':product.lots[0].hasExpired}">
