@@ -240,7 +240,7 @@ function StockMovementViewController($scope,verifyDistribution, $window,$timeout
         var toDayTime=new Date().getTime();
         var hasExpired=(lotExpirationTime <=toDayTime)?true:false;
         return hasExpired;
-    }
+    };
 
 
 }
