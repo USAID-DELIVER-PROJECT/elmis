@@ -658,4 +658,23 @@ public class InteractiveReportController extends BaseController {
         return new Pages(page, max, reportData);
     }
 
+    @RequestMapping(value = "/reportdata/performanceCoverage", method = GET, headers = BaseController.ACCEPT_JSON)
+    public Pages getPerformanceCoverageReportData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                      @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                      HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("performance_coverage");
+
+        PerformanceCoverageDataProvider dataProvider = (PerformanceCoverageDataProvider)report.getReportDataProvider();
+
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+
+        List<PerformanceCoverageReport> reportData = (List<PerformanceCoverageReport>)dataProvider.getReportBody(request.getParameterMap(),
+                request.getParameterMap(), page, max);
+
+        return new Pages(page, max, reportData);
+    }
+
+
 }

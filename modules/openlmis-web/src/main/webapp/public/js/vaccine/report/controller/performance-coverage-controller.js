@@ -12,26 +12,30 @@
  *
  */
 
-function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, SettingsByKey, ReportProductsByProgram, TreeGeographicZoneList, messageService, GetUserUnassignedSupervisoryNode) {
+function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, SettingsByKey, ReportProductsByProgram,  messageService ) {
 
     $scope.perioderror = "";
     $scope.grayCount = {};
     $scope.regionGrayCount = {};
+    $scope.coverageReportParams ={};
     $scope.OnFilterChanged = function () {
 
-        // prevent first time loading
+        $scope.coverageReportParams =  {
+            periodStart: $scope.periodStartDate,
+            periodEnd: $scope.periodEnddate,
+            range: $scope.range,
+            district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
+            product: $scope.filter.product,
+            doseId : utils.isEmpty($scope.filter.dose) ? 0 : $scope.filter.dose
+        };
+
+         // prevent first time loading
         if (utils.isEmpty($scope.filter.product) || $scope.filter.product === "0" || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
         PerformanceCoverage.get(
-            {
-                periodStart: $scope.periodStartDate,
-                periodEnd: $scope.periodEnddate,
-                range: $scope.range,
-                district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
-                product: $scope.filter.product,
-                doseId : utils.isEmpty($scope.filter.dose) ? 0 : $scope.filter.dose
-            },
+
+            $scope.coverageReportParams,
 
             function (data) {
                 var formattedDistrictJson = [];
@@ -94,6 +98,13 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                 $scope.coverageSummary = getPeriodicSummaryData($scope.datarows);
                 $scope.coverageRegionSummary = getPeriodicSummaryData($scope.dataRowsRegionAggregate);
             });
+    };
+
+    $scope.exportReport   = function (type){
+        $scope.filter.pdformat = 1;
+        var params = jQuery.param($scope.coverageReportParams);
+        var url = '/reports/download/performance_coverage/' + type +'?' + params;
+        window.open(url);
     };
 
     $scope.calculateVaccinated = function (targetPopulation, vaccinated) {
