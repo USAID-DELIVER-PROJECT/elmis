@@ -16,6 +16,7 @@ import org.openlmis.report.model.params.AdjustmentSummaryReportParam;
 import java.util.Map;
 
 import static org.apache.ibatis.jdbc.SqlBuilder.*;
+import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.*;
 
 
 public class AdjustmentSummaryQueryBuilder {
