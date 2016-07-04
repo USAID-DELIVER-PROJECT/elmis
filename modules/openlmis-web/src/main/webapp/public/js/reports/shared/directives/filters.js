@@ -99,7 +99,7 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
 
 
             $scope.$on('filter-changed', $scope.filterChanged);
-            $scope.filterChanged();
+           // $scope.filterChanged();
         },
         link: function (scope) {
             angular.extend(scope, {
