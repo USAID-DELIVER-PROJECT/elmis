@@ -35,7 +35,6 @@ public class SupplyStatusReportParam
 
   private Long facilityType;
 
-  @RequiredParam
   private Long facility;
 
   private Long zone;
