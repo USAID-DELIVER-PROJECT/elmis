@@ -16,7 +16,6 @@ import org.openlmis.report.model.params.AdjustmentSummaryReportParam;
 import java.util.Map;
 
 import static org.apache.ibatis.jdbc.SqlBuilder.*;
-import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.*;
 
 
 public class AdjustmentSummaryQueryBuilder {
@@ -28,7 +27,12 @@ public class AdjustmentSummaryQueryBuilder {
     SELECT("processing_periods_name as period");
     SELECT(" product productDescription");
     SELECT("product_category_name category");
-    SELECT("facility_type_name facilityType,facility_name facilityName, adjustment_type, t.description as adjustmentType, adjutment_qty adjustment, adjutment_qty * case when adjustment_additive  = 't' then 1 else -1 end AS signedadjustment, supplying_facility_name supplyingFacility");
+    SELECT("facility_type_name facilityType,facility_name facilityName," +
+            " adjustment_type ," +
+            " t.description || case when adjustment_additive  = 't' then '(+)' else '(-)' end AS  adjustmentType," +
+            " adjutment_qty adjustment, " +
+            "adjutment_qty * case when adjustment_additive  = 't' then 1 else -1 end AS signedadjustment," +
+            " supplying_facility_name supplyingFacility ");
     FROM("vw_requisition_adjustment ");
       JOIN(" facilities f on f.id = vw_requisition_adjustment.facility_id ");
       JOIN(" vw_districts d on f.geographicZoneId = d.district_id ");
