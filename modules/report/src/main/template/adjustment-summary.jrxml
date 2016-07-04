@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
-  ~
-  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-07-29T17:06:39 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Adjustment Summary" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.1586575189467514"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="34"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -161,7 +147,7 @@ order by product, adjustment_type]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Transparent" x="0" y="0" width="30" height="29" forecolor="#000000" backcolor="#333333" uuid="d88f2f3e-d888-4b17-a67a-a356382163fc">
+				<reportElement mode="Transparent" x="-19" y="0" width="30" height="29" forecolor="#000000" backcolor="#333333" uuid="d88f2f3e-d888-4b17-a67a-a356382163fc">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
@@ -171,52 +157,52 @@ order by product, adjustment_type]]>
 				<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="30" y="0" width="90" height="29" uuid="1cf0200b-7b1d-4404-a71f-173f6645c714">
+				<reportElement x="11" y="0" width="90" height="29" uuid="1cf0200b-7b1d-4404-a71f-173f6645c714">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.product}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="0" width="190" height="29" uuid="29fc3718-48d6-49e9-8503-37630f384177"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="101" y="0" width="190" height="29" uuid="29fc3718-48d6-49e9-8503-37630f384177"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.facility}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="310" y="0" width="110" height="29" uuid="2381e1a7-b735-42bd-a5ea-4ea5b5769cde"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="291" y="0" width="110" height="29" uuid="2381e1a7-b735-42bd-a5ea-4ea5b5769cde"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="420" y="0" width="120" height="29" uuid="70122a19-b07d-4fca-8928-e9c494bf17cf"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="401" y="0" width="120" height="29" uuid="70122a19-b07d-4fca-8928-e9c494bf17cf"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.supplying.facility}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="540" y="0" width="100" height="29" uuid="274507f8-d767-4754-8c27-fd73679f35a5"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="521" y="0" width="100" height="29" uuid="274507f8-d767-4754-8c27-fd73679f35a5"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.adjustment.type}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="640" y="0" width="60" height="29" uuid="9a4ab410-af8b-41e9-8445-b9f8ad70d01c"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="621" y="0" width="60" height="29" uuid="9a4ab410-af8b-41e9-8445-b9f8ad70d01c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.period}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="700" y="0" width="101" height="29" uuid="4eccc201-e54b-4586-af56-702ff457a4a4"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isStrikeThrough="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$R{label.adjustment.quantity}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="70" y="0" width="175" height="29" uuid="67cbd071-371e-4962-888d-954353fdf6a0">
+				<reportElement x="51" y="0" width="175" height="29" uuid="67cbd071-371e-4962-888d-954353fdf6a0">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "XLS"]]></printWhenExpression>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.product}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="681" y="0" width="101" height="29" uuid="4eccc201-e54b-4586-af56-702ff457a4a4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.adjustment.quantity}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -262,7 +248,7 @@ order by product, adjustment_type]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="420" y="0" width="120" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="5085c676-46bf-4d74-91f7-0dfe3c6ab1b5"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>

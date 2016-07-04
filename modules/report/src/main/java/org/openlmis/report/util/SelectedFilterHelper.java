@@ -39,6 +39,12 @@ public class SelectedFilterHelper {
   public static final String USER_ID = "userId";
   public static final String FACILITY = "facility";
   public static final String PRODUCT = "product";
+  public static final String ADJUSTMENET_TYPE="adjustmentType";
+  public static final String PROGRAM_AREA="";
+  public static final String DATE_FROM="";
+  public static final String DATE_TO="";
+  public static final String DISTRICT="";
+
   @Autowired
   private ProcessingPeriodRepository periodService;
 
@@ -64,6 +70,12 @@ public class SelectedFilterHelper {
     String period = StringHelper.getValue(params, PERIOD);
     String zone = StringHelper.getValue(params, ZONE);
     String userId = StringHelper.getValue(params, USER_ID);
+    String programArea= StringHelper.getValue(params, PROGRAM);
+    String adjustmentType= StringHelper.getValue(params, ADJUSTMENET_TYPE);
+    String dateFrome = StringHelper.getValue(params, PROGRAM);
+    String dateTo= StringHelper.getValue(params, PROGRAM);
+    String district = StringHelper.getValue(params, PROGRAM);
+
 
     ProcessingPeriod periodObject = (period != null) ? periodService.getById(Long.parseLong(period)) : null;
     GeographicZone zoneObject = (zone != null) ? geoZoneRepsotory.getById(Long.parseLong(zone)) : null;
@@ -89,7 +101,9 @@ public class SelectedFilterHelper {
     } else if (zoneObject != null) {
       filterSummary += "\nGeographic Zone: " + zoneObject.getName();
     }
-
+    if(adjustmentType!=null){
+      filterSummary += "\nAdjustment Type: " + adjustmentType;
+    }
     return filterSummary;
   }
 
