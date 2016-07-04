@@ -25,6 +25,11 @@
         min-height: 40px;
     }
 
+    tr.lot-expired td span,
+    tr.lot-expired td {
+    color:#d58512;
+    }
+
 </style>
 <script type="text/ng-template" id="myModalContent.html">
     <div style="width: 800px;" class="modal-header modal-header">
@@ -473,14 +478,19 @@
 
                 </tr>
 
-
                 </thead>
                 <tbody>
-                <tr ng-style="{'background-color': getBackGroundColor($index)}" ng-repeat="subRow in items">
+                <tr ng-style="{'background-color': getBackGroundColor($index)}"
+                    ng-repeat="subRow in items"
+                    ng-init="subRow.hasExpired=$parent.lotHasExpired(subRow.expirationDate)"
+                    ng-class="{'lot-expired':subRow.hasExpired}">
 
                     <td ng-bind="subRow.product"></td>
-                    <td ng-bind="subRow.lotNumber"></td>
-                    <td ng-bind="subRow.quantityOnHand"></td>
+                    <td>
+                        <span ng-bind="subRow.lotNumber"></span>
+                        <span ng-show="subRow.hasExpired">&nbsp;(Expired)</span>
+                    </td>
+                    <td ng-bind="subRow.quantityOnHand | number"></td>
                     <td ng-bind="subRow.expirationDate| date:'dd-MMM-yyyy'"/>
                     <td ng-bind="subRow.manufacturerName"></td>
 

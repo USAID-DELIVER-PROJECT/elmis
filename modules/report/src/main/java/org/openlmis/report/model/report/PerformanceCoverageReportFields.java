@@ -10,33 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.report.model.params;
+package org.openlmis.report.model.report;
 
-import lombok.*;
-import org.openlmis.report.annotations.RequiredParam;
-import org.openlmis.report.model.ReportParameter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.openlmis.report.model.ResultRow;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SupplyStatusReportParam
-  extends BaseParam implements ReportParameter {
+public class PerformanceCoverageReportFields implements ResultRow {
 
-  @RequiredParam
-  private Long program;
-
-  @RequiredParam
-  private Long period;
-
-  private Long productCategory;
-
-  private Long product;
-
-  private Long facilityType;
-
-  private Long facility;
-
-  private Long zone;
+    String region_name;
+    String district_name;
+    String period_name;
+    String reported;
+    Double target;
+    Double vaccinated;
+    Double coverage;
+    Double cum_vaccinated;
+    Double cum_coverage;
+    Integer month;
+    Integer year;
 
 }

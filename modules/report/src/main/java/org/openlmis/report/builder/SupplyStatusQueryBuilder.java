@@ -36,13 +36,16 @@ public class SupplyStatusQueryBuilder {
       "  li_calculatedorderquantity reorderAmount, " +
       "  supplyingfacility supplyingFacility," +
       "  fp_maxmonthsofstock MaxMOS," +
-      "  fp_minmonthsofstock  minMOS   \n ");
+      "  fp_minmonthsofstock  minMOS,   " +
+      "   li_fullsupply  supplied \n ");
     FROM(" vw_supply_status join vw_districts d on d.district_id = f_zoneid ");
     WHERE(rnrStatusFilteredBy("r_status", filterCriteria.getAcceptedRnrStatuses()));
     WHERE(userHasPermissionOnFacilityBy("f_id"));
     WHERE(periodIsFilteredBy("pp_id"));
     WHERE(programIsFilteredBy("pg_id"));
-    WHERE(facilityIsFilteredBy("f_id"));
+    if(filterCriteria.getFacility() != 0) {
+      WHERE(facilityIsFilteredBy("f_id"));
+    }
     if (filterCriteria.getZone() != 0) {
       WHERE(geoZoneIsFilteredBy("d"));
     }
