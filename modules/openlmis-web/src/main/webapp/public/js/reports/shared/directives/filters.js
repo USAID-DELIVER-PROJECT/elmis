@@ -1849,3 +1849,16 @@ app.directive('customLegend', [
         };
     }
 ]);
+
+
+app.directive('datepickerPopup', function ($filter){
+    return {
+        restrict: 'EAC',
+        require: 'ngModel',
+        link: function(scope, elem, attrs, ngModel) {
+            ngModel.$parsers.push(function toModel(date) {
+                return $filter('date')(date, "yyyy-MM-dd");//date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+            });
+        }
+    };
+});
