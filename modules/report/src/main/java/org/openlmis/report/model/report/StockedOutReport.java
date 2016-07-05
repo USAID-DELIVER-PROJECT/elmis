@@ -30,4 +30,7 @@ public class StockedOutReport implements ResultRow {
     private String supplyingFacility;
     private String processing_period_name;
     private int stockoutdays;
+    private int year;
+    private String month;
+    private String program;
 }

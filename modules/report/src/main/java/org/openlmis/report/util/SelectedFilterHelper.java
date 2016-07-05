@@ -45,6 +45,10 @@ public class SelectedFilterHelper {
   public static final String DATE_TO="";
   public static final String DISTRICT="";
 
+  public static final String STARTDATE = "startDate";
+  public static final String ENDDATE = "endDate";
+
+
   @Autowired
   private ProcessingPeriodRepository periodService;
 
@@ -156,6 +160,39 @@ public class SelectedFilterHelper {
       }
     }
     return "";
+  }
+
+  public String getSelectedDateRange(Map<String, String[]> params){
+    String startDate = StringHelper.getValue(params, STARTDATE);
+    String endDate = StringHelper.getValue(params, ENDDATE);
+
+    if (!(startDate == null || startDate.isEmpty() || "0".equals(startDate))
+            && !(endDate == null || endDate.isEmpty() || "0".equals(endDate)))
+    {
+      return "\nDate Range: "+startDate+" - "+endDate;
+    }
+    return "";
+  }
+
+  public String getFacilityFilterString(Map<String, String[]> params){
+    String facility = StringHelper.getValue(params, FACILITY);
+
+    if(facility != null){
+      Facility facilityObject = facilityRepository.getById(Long.parseLong(facility));
+      return (facilityObject == null ? "\nFacility: All Facilities" : String.format("%nFacility: %s", facilityObject.getName()));
+    }
+    return "";
+  }
+
+  public String getReportCombinedFilterString(String... filterStrings){
+
+    StringBuilder sb = new StringBuilder();
+
+    for(String filter : filterStrings){
+      sb.append(filter);
+    }
+
+    return sb.toString();
   }
 
 
