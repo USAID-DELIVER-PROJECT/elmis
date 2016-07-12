@@ -52,7 +52,7 @@ public class SupplyStatusReport implements ResultRow {
     private Double minMOS;
     @Column(name = "li_maxmonthsofstock")
     private Double maxMOS;
-    @Column(name = "li_fullsupply")
-    private Boolean supplied;
+    @Column(name = "quantityshipped")
+    private Double supplied;
 
 }
