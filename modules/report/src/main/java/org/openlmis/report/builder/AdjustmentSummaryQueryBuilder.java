@@ -19,6 +19,7 @@ import static org.apache.ibatis.jdbc.SqlBuilder.*;
 import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.*;
 
 
+
 public class AdjustmentSummaryQueryBuilder {
 
   public static String getQuery(Map params) {
@@ -30,7 +31,7 @@ public class AdjustmentSummaryQueryBuilder {
     SELECT("product_category_name category");
     SELECT("facility_type_name facilityType,facility_name facilityName," +
             " adjustment_type ," +
-            " t.description || case when adjustment_additive  = 't' then '(+)' else '(-)' end AS  adjustmentType," +
+            " t.description  AS  adjustmentType," +
             " adjutment_qty adjustment, " +
             "adjutment_qty * case when adjustment_additive  = 't' then 1 else -1 end AS signedadjustment," +
             " supplying_facility_name supplyingFacility ");
@@ -67,7 +68,9 @@ public class AdjustmentSummaryQueryBuilder {
       WHERE("adjustment_type = #{filterCriteria.adjustmentType}");
     }
     ORDER_BY(QueryHelpers.getSortOrder(params, " product, adjustment_type, facility_type_name,facility_name, supplying_facility_name, product_category_name "));
-    return SQL();
+      String query= SQL();
+      System.out.println(query);
+    return query;
   }
 
 }
