@@ -54,9 +54,11 @@ public class StockedOutReportDataProvider extends ReportDataProvider {
 
   @Override
   public String getFilterSummary(Map<String, String[]> params) {
-    return selectedFilterHelper.getProgramPeriodGeoZone(params);
+    return selectedFilterHelper.getReportCombinedFilterString(
+            selectedFilterHelper.getProgramPeriodGeoZone(params),
+            selectedFilterHelper.getFacilityFilterString(params),
+            selectedFilterHelper.getSelectedDateRange(params));
   }
-
 
 
 }

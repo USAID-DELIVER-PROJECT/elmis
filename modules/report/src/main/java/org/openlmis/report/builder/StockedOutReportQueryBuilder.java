@@ -27,8 +27,9 @@ public class StockedOutReportQueryBuilder {
   public static String getQuery(Map params) {
     StockedOutReportParam filter = (StockedOutReportParam) params.get("filterCriteria");
     BEGIN();
-    SELECT("DISTINCT supplyingfacility, facilitycode, productCode, facility, product, facilitytypename, location, processing_period_name,stockoutdays");
-      FROM("vw_stock_status join vw_districts d on gz_id = d.district_id");
+    SELECT("DISTINCT supplyingfacility, facilitycode, productCode, facility, product, facilitytypename, location, processing_period_name,stockoutdays, " +
+            "to_char(startdate, 'mon') \"month\", extract(year from startdate)::int \"year\", p.code as program ");
+      FROM("vw_stock_status join vw_districts d on gz_id = d.district_id join programs p on p.id = vw_stock_status.programid");
     WHERE("status = 'SO'");
     WHERE("reported_figures > 0");
     WHERE(programIsFilteredBy("programId"));
@@ -36,8 +37,18 @@ public class StockedOutReportQueryBuilder {
     WHERE(userHasPermissionOnFacilityBy("facility_id"));
     WHERE(rnrStatusFilteredBy("req_status", filter.getAcceptedRnrStatuses()));
 
+    if(filter.getStartDate() != null && filter.getEndDate() != null)
+    {
+      WHERE(startDateFilteredBy("startdate", filter.getStartDate()));
+      WHERE(endDateFilteredBy("enddate", filter.getEndDate()));
+    }
+
     if (filter.getProductCategory() != 0) {
       WHERE(productCategoryIsFilteredBy("categoryId"));
+    }
+
+    if(filter.getFacility() != 0){
+      WHERE(facilityIsFilteredBy("facility_id"));
     }
 
     if (filter.getFacilityType() != 0) {

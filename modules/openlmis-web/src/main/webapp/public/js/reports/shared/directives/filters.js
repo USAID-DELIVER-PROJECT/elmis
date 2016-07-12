@@ -99,7 +99,7 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
 
 
             $scope.$on('filter-changed', $scope.filterChanged);
-           // $scope.filterChanged();
+            $scope.filterChanged();
         },
         link: function (scope) {
             angular.extend(scope, {
@@ -469,10 +469,22 @@ app.directive('productCategoryFilter', ['ProductCategoriesByProgram', '$routePar
 app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
     function (FacilitiesByProgramParams, $routeParams) {
 
-        var onPgCascadedVarsChanged = function ($scope) {
+        var onPgCascadedVarsChanged = function ($scope, required) {
+
+            var filter_caption = '';
+
+            if(!isUndefined(required) && angular.equals(required, 'true') ){
+                filter_caption =  'report.filter.select.facility';
+            }
+            else {
+                filter_caption = 'report.filter.all.facilities';
+            }
 
             if (!$routeParams.program) {
-                $scope.facilities = $scope.unshift([], 'report.filter.all.facilities');
+                if(isUndefined(required))
+                    $scope.facilities = $scope.unshift([], filter_caption);
+                else
+                    $scope.facilities = $scope.unshift([], filter_caption);
             }
 
             if (isUndefined($scope.filter.program) || $scope.filter.program === 0) {
@@ -492,7 +504,7 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 requisitionGroup: requisitionGroup,
                 zone: zone
             }, function (data) {
-                $scope.facilities = $scope.unshift(data.facilities, 'report.filter.all.facilities');
+                    $scope.facilities = $scope.unshift(data.facilities, filter_caption);
             });
         };
 
@@ -503,7 +515,7 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 scope.registerRequired('facility', attr);
 
                 var onChange = function () {
-                    onPgCascadedVarsChanged(scope);
+                    onPgCascadedVarsChanged(scope, attr.required);
                 };
 
                 scope.subscribeOnChanged('facility', 'requisition-group', onChange, false);
@@ -1849,3 +1861,16 @@ app.directive('customLegend', [
         };
     }
 ]);
+
+
+app.directive('datepickerPopup', function ($filter){
+    return {
+        restrict: 'EAC',
+        require: 'ngModel',
+        link: function(scope, elem, attrs, ngModel) {
+            ngModel.$parsers.push(function toModel(date) {
+                return $filter('date')(date, "yyyy-MM-dd");//date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+            });
+        }
+    };
+});
