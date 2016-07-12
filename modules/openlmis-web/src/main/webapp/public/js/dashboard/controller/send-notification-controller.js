@@ -191,7 +191,10 @@ function SendNotificationController($scope,$timeout,$filter,userPreferredFilters
 
         return true;
     };
+    $scope.$watch('formFilter.programId',function(){
+        $scope.filterProductsByProgram();
 
+    });
     $scope.$watch('formFilter.facilityId', function (selection) {
         $scope.filterObject.facilityId = $scope.formFilter.facilityId;
     });
@@ -259,6 +262,7 @@ function SendNotificationController($scope,$timeout,$filter,userPreferredFilters
 
     };
     $scope.processZoneFilter = function(){
+
         $scope.filterObject.zoneId = $scope.formFilter.zoneId;
         $scope.loadFacilities();
     };
