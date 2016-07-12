@@ -37,12 +37,6 @@ public class StockedOutReportQueryBuilder {
     WHERE(userHasPermissionOnFacilityBy("facility_id"));
     WHERE(rnrStatusFilteredBy("req_status", filter.getAcceptedRnrStatuses()));
 
-    if(filter.getStartDate() != null && filter.getEndDate() != null)
-    {
-      WHERE(startDateFilteredBy("startdate", filter.getStartDate()));
-      WHERE(endDateFilteredBy("enddate", filter.getEndDate()));
-    }
-
     if (filter.getProductCategory() != 0) {
       WHERE(productCategoryIsFilteredBy("categoryId"));
     }
