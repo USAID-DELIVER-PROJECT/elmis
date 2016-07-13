@@ -109,7 +109,7 @@ public class DashboardLookupService {
                 for(User receiver: notification.getReceivers()){
                     if(receiver.getPrimaryNotificationMethod() == null || receiver.getPrimaryNotificationMethod().equalsIgnoreCase(Constants.USER_PRIMARY_NOTIFICATION_METHOD_EMAIL)){
                         if (receiver.getEmail() != null && !receiver.getEmail().isEmpty()){
-                            dashboardMapper.saveEmailNotification(receiver.getEmail(),notification.getEmailMessage());
+                            dashboardMapper.saveEmailNotification(receiver.getEmail(),notification.getSubject(),notification.getEmailMessage());
                         }
                     }
                 }

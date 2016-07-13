@@ -25,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Notification {
+  private String subject;
   private String emailMessage;
   private String smsMessage;
   private List<User> receivers;

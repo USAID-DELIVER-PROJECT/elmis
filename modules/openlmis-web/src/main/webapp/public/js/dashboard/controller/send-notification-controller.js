@@ -86,6 +86,7 @@ function SendNotificationController($scope,$timeout,$filter,userPreferredFilters
             });
 
             var notification = {
+                subject:messageService.get("label.alertType."+$scope.formFilter.selectedAlert.alertType),
                 emailMessage:  $scope.emailTemplate,
                 smsMessage : $scope.smsTemplate,
                 receivers : receivers,
