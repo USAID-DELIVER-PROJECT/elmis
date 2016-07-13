@@ -16,7 +16,7 @@
 
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stocked-out" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="359"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -41,7 +41,8 @@
 		<defaultValueExpression><![CDATA["N"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT DISTINCT supplyingfacility, product, productCode, facilitycode, facility,  facilitytypename,  location, processing_period_name
+		<![CDATA[SELECT DISTINCT supplyingfacility, product, productCode, facilitycode,
+facility,  facilitytypename,  location, processing_period_name, 1 as "year", 'ed' as "month", 2 stockoutdays, 1 as program
 FROM
  vw_stock_status
 WHERE
@@ -86,7 +87,7 @@ WHERE
 					<textFieldExpression><![CDATA[$R{label.facility.code}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="130" y="0" width="160" height="20" uuid="75d15a8b-70cb-49b9-ae5a-023d9afc262b"/>
+					<reportElement x="110" y="0" width="180" height="20" uuid="75d15a8b-70cb-49b9-ae5a-023d9afc262b"/>
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{supplyingFacility}]]></textFieldExpression>
 				</textField>
@@ -99,7 +100,7 @@ WHERE
 					<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="0" y="0" width="130" height="20" forecolor="#000000" backcolor="#333333" uuid="f8f048d4-4d87-4c65-91e7-121d0ea26dae"/>
+					<reportElement mode="Transparent" x="0" y="0" width="110" height="20" forecolor="#000000" backcolor="#333333" uuid="f8f048d4-4d87-4c65-91e7-121d0ea26dae"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
@@ -259,11 +260,13 @@ WHERE
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="80">
+		<band height="81">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="1" width="780" height="79" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e"/>
+				<reportElement x="0" y="1" width="780" height="79" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
+				</reportElement>
 				<subreportParameter name="PAGE_NO">
 					<subreportParameterExpression><![CDATA[$V{PAGE_NUMBER}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -288,6 +291,15 @@ WHERE
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression><![CDATA["openlmis-report-header-landscape.jasper"]]></subreportExpression>
 			</subreport>
+			<textField>
+				<reportElement x="200" y="39" width="353" height="41" uuid="d1e9a172-459d-4612-a94e-bdbcafdf92e2">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF" && $V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>

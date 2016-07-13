@@ -41,10 +41,4 @@ public class StockedOutReportParam
 
   private Long zone;
 
-  private String startDate;
-
-  private String endDate;
-
-
-
 }
