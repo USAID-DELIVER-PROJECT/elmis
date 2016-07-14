@@ -36,6 +36,4 @@ public class StockImbalanceReport implements ResultRow {
     private Integer orderQuantity;
     private String status;
     private String supplyingFacility;
-    @Column(name = "stockedasplanned")
-    private String stockedAsPlanned;
 }
