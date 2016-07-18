@@ -23,6 +23,8 @@ import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.repository.ProductRepository;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.SupervisoryNodeService;
+import org.openlmis.report.model.dto.AdjustmentType;
+import org.openlmis.report.service.lookup.ReportLookupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -67,6 +69,9 @@ public class SelectedFilterHelper {
   @Autowired
   private SupervisoryNodeService supervisoryNodeService;
 
+  @Autowired
+  private ReportLookupService reportLookupService;
+
   public String getProgramPeriodGeoZone(Map<String, String[]> params) {
     String filterSummary = "";
 
@@ -74,12 +79,7 @@ public class SelectedFilterHelper {
     String period = StringHelper.getValue(params, PERIOD);
     String zone = StringHelper.getValue(params, ZONE);
     String userId = StringHelper.getValue(params, USER_ID);
-    String programArea= StringHelper.getValue(params, PROGRAM);
     String adjustmentType= StringHelper.getValue(params, ADJUSTMENET_TYPE);
-    String dateFrome = StringHelper.getValue(params, PROGRAM);
-    String dateTo= StringHelper.getValue(params, PROGRAM);
-    String district = StringHelper.getValue(params, PROGRAM);
-
 
     ProcessingPeriod periodObject = (period != null) ? periodService.getById(Long.parseLong(period)) : null;
     GeographicZone zoneObject = (zone != null) ? geoZoneRepsotory.getById(Long.parseLong(zone)) : null;
@@ -106,7 +106,8 @@ public class SelectedFilterHelper {
       filterSummary += "\nGeographic Zone: " + zoneObject.getName();
     }
     if(adjustmentType!=null){
-      filterSummary += "\nAdjustment Type: " + adjustmentType;
+      AdjustmentType type = reportLookupService.getAdjustmentByName(adjustmentType);
+      filterSummary += "\nAdjustment Type: " + type.getDescription();
     }
     return filterSummary;
   }
@@ -183,6 +184,8 @@ public class SelectedFilterHelper {
     }
     return "";
   }
+
+
 
   public String getReportCombinedFilterString(String... filterStrings){
 

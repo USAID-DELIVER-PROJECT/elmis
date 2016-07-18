@@ -30,6 +30,13 @@ public class AdjustmentSummaryReport implements ResultRow {
     private String period;
     private int adjustment;
     private int signedadjustment;
+    private String facilityCode;
+    private String province;
+    private String district;
+    private String program;
+    private String productCode;
+    private int year;
+    private String month;
 
 
 
