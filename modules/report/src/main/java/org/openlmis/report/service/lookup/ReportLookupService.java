@@ -733,4 +733,8 @@ public class ReportLookupService {
     }
     return productMapper.getProductsForProgramWithoutDescriptions(programId);
   }
+
+  public AdjustmentType getAdjustmentByName(String name){
+    return adjustmentTypeReportMapper.getAdjustmentByName(name);
+  }
 }

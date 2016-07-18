@@ -12,18 +12,13 @@
 
 package org.openlmis.report.mapper.lookup;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.openlmis.report.model.dto.AdjustmentType;
-import org.openlmis.report.model.dto.ProductCategory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * User: Wolde
- * Date: 5/15/13
- * Time: 2:37 PM
- */
 @Repository
 public interface AdjustmentTypeReportMapper {
     @Select("SELECT name, description" +
@@ -33,4 +28,11 @@ public interface AdjustmentTypeReportMapper {
             " WHERE isdefault = TRUE" +
             " order by name")
     List<AdjustmentType> getAll();
+
+    @Select("SELECT name, description" +
+            " , additive , displayorder " +
+            "   FROM " +
+            "       losses_adjustments_types" +
+            " WHERE isdefault = TRUE AND name = #{name} ")
+    AdjustmentType getAdjustmentByName(@Param("name") String name);
 }
