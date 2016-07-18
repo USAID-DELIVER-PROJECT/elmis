@@ -27,7 +27,7 @@ public class StockedOutReportQueryBuilder {
   public static String getQuery(Map params) {
     StockedOutReportParam filter = (StockedOutReportParam) params.get("filterCriteria");
     BEGIN();
-    SELECT("DISTINCT supplyingfacility, facilitycode, productCode, facility, product, facilitytypename, location, processing_period_name,stockoutdays, " +
+    SELECT("DISTINCT supplyingfacility, facilitycode, productCode, facility, product, facilitytypename, location,region_name, processing_period_name,stockoutdays, " +
             "to_char(startdate, 'mon') \"month\", extract(year from startdate)::int \"year\", p.code as program ");
       FROM("vw_stock_status join vw_districts d on gz_id = d.district_id join programs p on p.id = vw_stock_status.programid");
     WHERE("status = 'SO'");
