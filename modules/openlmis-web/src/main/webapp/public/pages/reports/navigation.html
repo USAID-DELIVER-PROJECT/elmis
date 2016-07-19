@@ -14,37 +14,37 @@
 
 <div id="report-submenu" class="submenu" ui-nav>
   <ul>
-    <li class="has-children">
+    <li ng-show="hasPermission('VIEW_VACCINE_REPORT')" class="has-children">
       <a href="" openlmis-message="menu.report.routine.immunization"></a>
       <div class="submenu">
         <ul>
-          <li>
+          <li ng-show="hasPermission('VIEW_VACCINE_REPORT')">
             <a href="/public/pages/vaccine/report/index.html#/performance-coverage"
                openlmis-message="link.vaccine.report.performance.by.coverage"></a>
           </li>
-          <li >
+          <li ng-show="hasPermission('VIEW_VACCINE_REPORT')">
             <a id='performanceByDropout'
                href="/public/pages/vaccine/report/index.html#/performance-by-dropout-rate-by-district"
                openlmis-message="link.vaccine.report.performance.dropout"   ></a>
           </li>
-          <li>
+          <li ng-show="hasPermission('VIEW_VACCINE_REPORT')">
             <a href="/public/pages/vaccine/report/index.html#/status-vaccination-supply-receive"
                openlmis-message="link.vaccine.report.status.vaccination.supply.receive"></a>
           </li>
 
-          <li>
+          <li ng-show="hasPermission('VIEW_VACCINE_REPORT')">
             <a href="/public/pages/vaccine/index.html#/vaccine-report"
                openlmis-message="link.vaccine.report"></a>
           </li>
-          <li>
+          <li ng-show="hasPermission('VIEW_VACCINE_REPORT')">
             <a href="/public/pages/vaccine/report/index.html#/classification-vaccine-utilization-performance"
                openlmis-message="link.vaccine.report.classification.vaccine.utilization.performance"></a>
           </li>
-          <li>
+          <li ng-show="hasPermission('VIEW_VACCINE_REPORT')">
             <a href="/public/pages/vaccine/report/index.html#/categorization-vaccine-utilization-performance"
                openlmis-message="link.vaccine.report.categorization.vaccine.utilization.performance"></a>
           </li>
-          <li >
+          <li ng-show="hasPermission('VIEW_VACCINE_REPORT')">
             <a id='reportingPeformance'
                href="/public/pages/vaccine/report/index.html#/completeness-and-timeliness"
                openlmis-message="report.completeness.and.timeliness.by.district.report"   ></a>
@@ -89,7 +89,7 @@
             <a ng-href="/public/pages/reports/main/index.html#cce-storage-capacity"
                openlmis-message="menu.report.cce.storage.capacity"></a>
           </li>
-          <li>
+          <li ng-show="hasPermission('VIEW_VACCINE_REPORT')">
             <a id='trendMinMaxColdRange'
                href="/public/pages/vaccine/report/index.html#/trend-min-max-cold-range"
                openlmis-message="link.vaccine.report.trend.min.max.cold.range" ></a>
