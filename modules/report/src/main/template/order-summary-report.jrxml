@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order-summary-report" language="groovy" pageWidth="595" pageHeight="842" columnWidth="545" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="51"/>
-	<property name="ireport.y" value="16"/>
+	<property name="ireport.y" value="120"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
@@ -287,6 +287,22 @@
 				<textField>
 					<reportElement x="497" y="0" width="58" height="15" forecolor="#FF0000" uuid="12e78268-3032-468b-bfe5-5f0f70802691"/>
 					<textFieldExpression><![CDATA[$P{TYPE}.equals("Regular")? "":$P{TYPE}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="311" y="56" width="99" height="14" uuid="49094f72-7ba0-4f8b-ba75-1568b5ecfd81"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.order.type}+':']]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="415" y="56" width="131" height="14" uuid="33e31ce9-1644-4d08-8fb6-a9317f08e1d0">
+						<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{TYPE}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
