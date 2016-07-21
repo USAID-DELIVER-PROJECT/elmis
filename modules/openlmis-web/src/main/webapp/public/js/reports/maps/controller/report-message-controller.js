@@ -84,6 +84,25 @@ function ReportMessageController($scope, SendMessagesReportAttachment, GetFacili
     $scope.show_sms = !$scope.show_sms;
   };
 
+  $scope.sendSms = function(){
+
+    // construct the messages that go out
+    var messages  = [];
+    for(var i = 0; i < $scope.contacts.length; i++){
+      var template = $scope.sms_template;
+      var contact = $scope.contacts[i];
+
+      template = template.replace( '{name}' , contact.name);
+      template = template.replace( '{facility_name}', $scope.selected_facility.name );
+      messages.push({type: 'sms', facility_id: $scope.selected_facility.id, contact: contact.contact, message: template });
+    }
+
+    SendMessages.post({messages: messages}, function(data){
+      $scope.sent_confirmation = true;
+    });
+
+  };
+
   $scope.doSend = function () {
 
     if ($scope.show_sms) {
@@ -98,7 +117,6 @@ function ReportMessageController($scope, SendMessagesReportAttachment, GetFacili
       $scope.sendFacilityEmail();
       $scope.show_email = false;
     }
-
     $scope.selected_facility.sent = true;
 
   };

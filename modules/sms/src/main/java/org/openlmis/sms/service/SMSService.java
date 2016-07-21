@@ -14,6 +14,7 @@ package org.openlmis.sms.service;
 
 
 import lombok.NoArgsConstructor;
+import org.openlmis.sms.Repository.mapper.ConfigMapper;
 import org.openlmis.sms.domain.SMS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -31,9 +33,15 @@ import java.util.concurrent.Future;
 @NoArgsConstructor
 public class SMSService {
 
+
+  //TDOO: remove sms gateway URL
+  // and the corresponding configuration from file.
   private String smsGatewayUrl;
   /* If this is false, we're disallowing the system from sending sms messages */
   private Boolean smsSendingFlag;
+
+  @Autowired
+  ConfigMapper configMapper;
 
   @Autowired
   public SMSService(@Value("${sms.gateway.url}") String smsGatewayUrl, @Value("${sms.sending.flag}") Boolean smsSendingFlag) {
@@ -51,7 +59,7 @@ public class SMSService {
 
   @Async
   public Future<Boolean> sendAsync(SMS sms) {
-    if (!smsSendingFlag || sms.getSent()) {
+    if (!smsSendingFlag || sms.getSent() == Boolean.TRUE ) {
       return new AsyncResult<>(true);
     }
 
@@ -69,8 +77,13 @@ public class SMSService {
   }
 
   public Boolean SendSMSMessage(SMS sms) {
-    String relayUrl = String.format("%s?message=%s&phone_number=%s", this.smsGatewayUrl, sms.getMessage().replaceAll(" ", "%20"), sms.getPhoneNumber());
-    try {
+    //TDOO: Please clean this up. why the try catch?
+    //TOFIX: How could this be?
+    try{
+      String relayUrl = configMapper.getValueByKey("KANNEL_SETTINGS");
+      relayUrl = relayUrl.replaceAll("TO_PHONE", sms.getPhoneNumber());
+      relayUrl = relayUrl.replaceAll("MESSAGE_CONTENT", URLEncoder.encode(sms.getMessage(), "UTF-8"));
+      System.out.println(relayUrl);
       URL url = new URL(relayUrl);
       url.getContent();
       return true;
