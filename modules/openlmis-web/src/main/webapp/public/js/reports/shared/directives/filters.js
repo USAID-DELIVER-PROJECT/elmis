@@ -491,18 +491,21 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 return;
             }
 
-            var program = (angular.isDefined($scope.filter.program)) ? $scope.filter.program : 0;
-            var schedule = (angular.isDefined($scope.filter.schedule)) ? $scope.filter.schedule : 0;
-            var facilityType = (angular.isDefined($scope.filter.facilityType)) ? $scope.filter.facilityType : 0;
-            var requisitionGroup = (angular.isDefined($scope.filter.requisitionGroup)) ? $scope.filter.requisitionGroup : 0;
-            var zone = (angular.isDefined($scope.filter.zone)) ? $scope.filter.zone : 0;
+            var program = (!utils.isEmpty($scope.filter.program)) ? $scope.filter.program : 0;
+            var schedule = (!utils.isEmpty($scope.filter.schedule)) ? $scope.filter.schedule : 0;
+            var facilityType = (!utils.isEmpty($scope.filter.facilityType)) ? $scope.filter.facilityType : 0;
+            var requisitionGroup = (!utils.isEmpty($scope.filter.requisitionGroup)) ? $scope.filter.requisitionGroup : 0;
+            var zone = (!utils.isEmpty($scope.filter.zone)) ? $scope.filter.zone : 0;
+            var facilityOperator = (!utils.isEmpty($scope.filter.facilityOperator)) ? $scope.filter.facilityOperator : 0;
+
             // load facilities
             FacilitiesByProgramParams.get({
                 program: program,
                 schedule: schedule,
                 type: facilityType,
                 requisitionGroup: requisitionGroup,
-                zone: zone
+                zone: zone,
+                facilityOperator: facilityOperator
             }, function (data) {
                     $scope.facilities = $scope.unshift(data.facilities, filter_caption);
             });
@@ -523,6 +526,7 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 scope.subscribeOnChanged('facility', 'schedule', onChange, false);
                 scope.subscribeOnChanged('facility', 'facility-type', onChange, false);
                 scope.subscribeOnChanged('facility', 'program', onChange, true);
+                scope.subscribeOnChanged('facility', 'facility-operator', onChange, true);
             },
             templateUrl: 'filter-facility-template'
         };
@@ -1862,15 +1866,36 @@ app.directive('customLegend', [
     }
 ]);
 
-
 app.directive('datepickerPopup', function ($filter){
     return {
         restrict: 'EAC',
         require: 'ngModel',
         link: function(scope, elem, attrs, ngModel) {
             ngModel.$parsers.push(function toModel(date) {
-                return $filter('date')(date, "yyyy-MM-dd");//date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                return $filter('date')(date, "yyyy-MM-dd");
             });
         }
     };
 });
+
+app.directive('facilityOperatorFilter', ['GetAllFacilityOperators', '$routeParams', 'messageService',
+    function (GetAllFacilityOperators, $routeParams, messageService) {
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+
+                scope.registerRequired('facilityOperator', attr);
+                GetAllFacilityOperators.get({},
+                    function (data) {
+                       scope.facilityOperators = data.facilityOperators;
+                        scope.facilityOperators.unshift({
+                            'text': messageService.get('report.filter.all.facility.operators')
+                        });
+                    });
+            },
+            templateUrl: 'filter-facility-operator-template'
+        };
+    }
+]);
