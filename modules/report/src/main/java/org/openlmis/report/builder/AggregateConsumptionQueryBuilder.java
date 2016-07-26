@@ -26,7 +26,7 @@ public class AggregateConsumptionQueryBuilder {
 
     BEGIN();
     SELECT("p.code");
-    SELECT("p.primaryName || ' (' || coalesce(p.dispensingunit, '-') || ')' as product");
+    SELECT("p.primaryName || ' '|| coalesce(p.strength,'') ||' '|| coalesce(ds.code,'') || ' (' || coalesce(p.dispensingunit, '-') || ')' as product");
     SELECT("sum(li.quantityDispensed) dispensed");
     SELECT("sum(li.normalizedConsumption) consumption");
     SELECT("ceil(sum(li.quantityDispensed) / (sum(li.packsize)/count(li.productCode))::float) consumptionInPacks");
@@ -39,6 +39,7 @@ public class AggregateConsumptionQueryBuilder {
     INNER_JOIN("processing_periods pp on pp.id = r.periodId");
     INNER_JOIN("products p on p.code::text = li.productCode::text");
     INNER_JOIN("program_products ppg on ppg.programId = r.programId and ppg.productId = p.id");
+    INNER_JOIN("dosage_units ds ON ds.id = p.dosageunitid");
 
 
     WHERE(programIsFilteredBy("r.programId"));
@@ -58,7 +59,7 @@ public class AggregateConsumptionQueryBuilder {
       WHERE( geoZoneIsFilteredBy("d") );
     }
 
-    GROUP_BY("p.code, p.primaryName, p.dispensingUnit");
+    GROUP_BY("p.code, p.primaryName, p.dispensingUnit, p.strength, ds.code");
     ORDER_BY("p.primaryName");
     return SQL();
   }

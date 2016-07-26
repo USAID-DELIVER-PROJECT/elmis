@@ -28,7 +28,7 @@ public class AdjustmentSummaryQueryBuilder {
     BEGIN();
     SELECT("facility_code as facilityCode, facility_name facilityName, facility_type_name facilityType, d.zone_name as province");
     SELECT("d.district_name as district, program_name as program, productcode, product productDescription, supplying_facility_name supplyingFacility");
-    SELECT("t.description  AS  adjustmentType, extract(year from processing_periods_start_date) as year, to_char(processing_periods_start_date, 'mon') as month");
+    SELECT("t.description  AS  adjustmentType, extract(year from processing_periods_start_date) as year, initcap(to_char(processing_periods_start_date, 'mon')) as month");
     SELECT("adjutment_qty adjustment, processing_periods_name as period, product_category_name category, adjustment_type");
     SELECT("adjutment_qty * case when adjustment_additive  = 't' then 1 else -1 end AS signedadjustment");
     FROM("vw_requisition_adjustment ");

@@ -377,16 +377,16 @@ public interface FacilityMapper {
     }
   }
 
-  @Select({"SELECT id as userId, username as name, cellphone as contact ",
-      "FROM users ",
+  @Select({"SELECT u.id as userId, u.firstName || ' ' || u.lastName as name, u.cellphone as contact, f.name as facilityName ",
+      "FROM users u join facilities f on f.id = u.facilityId ",
       "WHERE ",
-      " active = true and facilityId = #{facilityId}"})
+      " u.active = true and u.facilityId = #{facilityId}"})
   List<FacilityContact> getSmsContacts(Long facilityId);
 
-  @Select({"SELECT id as userId, username as name, email as contact ",
-      "FROM users ",
+  @Select({"SELECT id as userId, u.firstName || ' ' || u.lastName as name, email as contact, f.name as facilityName ",
+      "FROM users u join facilities f on f.id = u.facilityId ",
       "WHERE ",
-      " active = true and facilityId = #{facilityId}"})
+      " u.active = true and u.facilityId = #{facilityId}"})
   List<FacilityContact> getEmailContacts(Long facilityId);
 
     @Select("SELECT DISTINCT userid as userId, username as name, email as contact   \n" +

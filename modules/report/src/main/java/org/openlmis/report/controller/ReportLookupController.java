@@ -81,6 +81,7 @@ public class ReportLookupController extends BaseController {
   private static final String REPORTING_DATES = "reportingDates";
   private static final String LAST_PERIODS = "lastPeriods";
   private static final String VACCINE_CUSTOM_PERIODS = "vaccineCustomPeriods";
+  private static final String FACILITY_OPERATORS = "facilityOperators";
 
   @Autowired
   private ReportLookupService reportLookupService;
@@ -291,15 +292,12 @@ public class ReportLookupController extends BaseController {
     @RequestParam(value = "type", defaultValue = "0", required = false) Long type,
     @RequestParam(value = "requisitionGroup", defaultValue = "0", required = false) Long requisitionGroup,
     @RequestParam(value = ZONE, defaultValue = "0", required = false) Long zone,
+    @RequestParam(value = "facilityOperator", defaultValue = "0", required = false) Long facilityOperator,
     HttpServletRequest request
 
   ) {
-    // set default for optional parameters
-    // turns out spring's optional parameter and default config is not cutting it.
-    type = (type != null) ? type : 0L;
-    requisitionGroup = (requisitionGroup != null) ? requisitionGroup : 0L;
 
-    return OpenLmisResponse.response(FACILITIES, reportLookupService.getFacilities(program, schedule, type, requisitionGroup, zone, loggedInUserId(request)));
+    return OpenLmisResponse.response(FACILITIES, reportLookupService.getFacilities(program, schedule, type, requisitionGroup, zone, facilityOperator, loggedInUserId(request)));
   }
 
   @RequestMapping(value = "/facilitiesByType/{facilityTypeId}.json", method = GET, headers = BaseController.ACCEPT_JSON)
@@ -577,8 +575,14 @@ public class ReportLookupController extends BaseController {
   public List<Product> getProgramProductsWithoutDescriptions(@PathVariable("programId") Long programId) {
     return this.reportLookupService.getProductsActiveUnderProgramWithoutDescriptions(programId);
   }
+
   @RequestMapping(value="/roles/getList",method= RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getRoleList(HttpServletRequest request){
     return OpenLmisResponse.response("roles", roleRightsService.getAllRoles());
+  }
+
+  @RequestMapping(value="/allFacilityOperators",method= RequestMethod.GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getFacilityOperators(HttpServletRequest request){
+    return OpenLmisResponse.response(FACILITY_OPERATORS, reportLookupService.getAllFacilityOperators());
   }
 }

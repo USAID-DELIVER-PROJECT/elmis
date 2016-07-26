@@ -32,7 +32,7 @@
   </int:channel>
 
   <int-jdbc:inbound-channel-adapter channel="smsInputChannel"
-                                    data-source="dataSource"
+                                    data-source="openlmisDataSource"
                                     query="SELECT * FROM sms WHERE direction='O' and sent = false"
                                     row-mapper="SMSRowMapper"
                                     max-rows-per-poll="${sms.notification.rows.per.poll}"

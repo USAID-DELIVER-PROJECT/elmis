@@ -1230,3 +1230,8 @@ services.factory('StaticYears',function($resource){
 services.factory('GetFacilitySupervisorsByProgram', function($resource){
     return $resource('/get-facility-supervisors-by-program.json',{}, {});
 });
+
+services.factory('GetAllFacilityOperators', function($resource){
+    return $resource('/reports/allFacilityOperators.json', {}, {});
+});
+
