@@ -265,8 +265,8 @@ WHERE
 					</textElement>
 					<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
 				</textField>
-				<textField pattern="" isBlankWhenNull="true">
-					<reportElement mode="Transparent" x="289" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="249d8cde-4ac4-4b21-8f0b-fd75f44e62e5">
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="289" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="249d8cde-4ac4-4b21-8f0b-fd75f44e62e5">
 						<property name="local_mesure_unitx" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -275,7 +275,7 @@ WHERE
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{region_name}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{supplyingFacility}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -449,8 +449,8 @@ WHERE
 				<reportElement x="462" y="0" width="42" height="20" uuid="99644edc-3c23-44a8-a685-7795772aae0e"/>
 				<textFieldExpression><![CDATA[$F{program}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="290" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="88ece8b2-8161-4b2b-be77-2f6e4c312713">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="290" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="88ece8b2-8161-4b2b-be77-2f6e4c312713">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -460,7 +460,7 @@ WHERE
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{region_name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{supplyingFacility}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="762" y="0" width="39" height="20" uuid="a4f984ad-805f-49d8-afc4-90b7da8113af">
