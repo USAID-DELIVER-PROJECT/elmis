@@ -267,7 +267,7 @@ union all
 			<staticText>
 				<reportElement x="653" y="1" width="148" height="20" uuid="d62ae7bc-59b5-4935-88d0-f3c2e5576e91"/>
 				<textElement textAlignment="Center"/>
-				<text><![CDATA[Monthly]]></text>
+				<text><![CDATA[label.cumulative]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="363" y="39" width="114" height="14" uuid="47fbeac1-a7e8-4500-a34c-9a0d2ec25e9a"/>

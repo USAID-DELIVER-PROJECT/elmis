@@ -102,7 +102,7 @@
 				</graphicElement>
 			</line>
 			<subreport>
-				<reportElement x="0" y="58" width="772" height="74" uuid="180c8f6f-80b6-45e8-ad43-50a139e2b408"/>
+				<reportElement x="0" y="58" width="791" height="74" uuid="180c8f6f-80b6-45e8-ad43-50a139e2b408"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="REPORT_NAME"/>
 				<subreportParameter name="REPORT_TITLE"/>
@@ -121,7 +121,7 @@
 				<subreportExpression><![CDATA["performance-coverage-district.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="0" y="25" width="239" height="20" uuid="012eb814-c3e7-4183-b2ec-eacdf722fd61"/>
+				<reportElement x="0" y="26" width="791" height="20" uuid="012eb814-c3e7-4183-b2ec-eacdf722fd61"/>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="false"/>
 				</textElement>
@@ -160,7 +160,7 @@
 				</reportElement>
 			</line>
 			<staticText>
-				<reportElement x="0" y="76" width="239" height="20" uuid="21cc6a03-5ab5-4927-8b76-a2fc12e4cc42">
+				<reportElement x="0" y="76" width="791" height="20" uuid="21cc6a03-5ab5-4927-8b76-a2fc12e4cc42">
 					<printWhenExpression><![CDATA[$F{sub}!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement>

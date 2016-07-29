@@ -277,7 +277,7 @@ union all
 			<staticText>
 				<reportElement x="665" y="1" width="136" height="20" uuid="d62ae7bc-59b5-4935-88d0-f3c2e5576e91"/>
 				<textElement textAlignment="Center"/>
-				<text><![CDATA[Monthly]]></text>
+				<text><![CDATA[Cumulative]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="413" y="39" width="100" height="14" uuid="47fbeac1-a7e8-4500-a34c-9a0d2ec25e9a"/>
@@ -323,7 +323,7 @@ union all
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="3" y="19" width="110" height="19" uuid="01d7137d-907b-4ce7-a8ef-32de2511de39"/>
+				<reportElement x="0" y="19" width="113" height="19" uuid="01d7137d-907b-4ce7-a8ef-32de2511de39"/>
 				<box leftPadding="3" bottomPadding="5" rightPadding="0"/>
 				<textElement verticalAlignment="Bottom"/>
 				<text><![CDATA[Region]]></text>
