@@ -218,6 +218,10 @@
             </div>
         </div>
         <div class="span3">
+            <zone-filter ></zone-filter>
+        </div>
+
+        <div class="span3">
             <label class="labels" openlmis-message="label.product"> <span ng-show="requiredFilters.product" class="label-required">*</span></label>
             <div>
                 <select ui-select2 class="input-large" ng-model="filter.product" ng-change="filterChanged();">
@@ -231,7 +235,7 @@
                 </select>
             </div>
         </div>
-        <div class="span4">
+        <div class="span3">
             <label class="labels" openlmis-message="label.period"> <span ng-show="requiredFilters.period" class="label-required">*</span></label><div>
             <div>
             <select ui-select2 class="input-large" ng-change="filterChanged();" ng-model="filter.period">

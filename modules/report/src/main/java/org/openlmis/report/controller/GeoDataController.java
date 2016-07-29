@@ -88,12 +88,13 @@ public class GeoDataController extends BaseController {
         return OpenLmisResponse.response(FACILITIES, this.geographicZoneReportMapper.getNonReportingFacilities(program, geoZoneId, period,schedule, userId));
     }
 
-
     @RequestMapping(value = "/stock-status-facilities", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getStockStatusSummaryFacilityReport(@RequestParam(value = "program", required = true, defaultValue = "0") Long program,
                                                                                 @RequestParam(value = "period", required = true, defaultValue = "0") Long period,
-                                                                                @RequestParam(value = "product", required = true, defaultValue = "0") Long product) {
-        return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoStockStatusFacilitySummary(program, period, product));
+                                                                                @RequestParam(value = "product", required = true, defaultValue = "0") Long product,
+                                                                                @RequestParam(value = "zone", required = false, defaultValue = "0") Long zone
+                                                                                ) {
+         return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoStockStatusFacilitySummary(program, period, product, zone));
     }
 
 
@@ -132,6 +133,7 @@ public class GeoDataController extends BaseController {
     ) {
         return OpenLmisResponse.response(FACILITIES, this.geographicZoneReportMapper.getAdequatelyStockedFacilities(program, geoZoneId, period, product));
     }
+
 
     @RequestMapping(value = "/stock-status-products", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getStockStatusProductReport(@RequestParam(value = "program", required = true, defaultValue = "0") Long program,

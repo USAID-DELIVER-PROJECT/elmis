@@ -908,8 +908,8 @@ app.directive('equipmentTypeFilter', ['ReportEquipmentTypes', function (ReportEq
     };
 }]);
 
-app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCategoryProductByProgramTree', 'GetYearSchedulePeriodTree',
-    function (ReportUserPrograms, GetProductCategoryProductByProgramTree, GetYearSchedulePeriodTree) {
+app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCategoryProductByProgramTree', 'GetYearSchedulePeriodTree', 'SettingsByKey',
+    function (ReportUserPrograms, GetProductCategoryProductByProgramTree, GetYearSchedulePeriodTree, SettingsByKey) {
 
         // When a program filter changes
         var onProgramChanged = function ($scope) {
@@ -936,6 +936,10 @@ app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCa
 
                 GetYearSchedulePeriodTree.get({}, function (data) {
                     scope.periods = data.yearSchedulePeriod;
+                });
+
+                SettingsByKey.get({key: 'SYSTEM_DEPLOYMENT_INSTANCE'}, function (data){
+                    scope.zambiaInstance = data.settings.value == 'ZAMBIA';//) console.log('asdfasdf');
                 });
 
                 var onParentChanged = function () {
