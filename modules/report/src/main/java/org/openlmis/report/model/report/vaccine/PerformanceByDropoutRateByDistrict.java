@@ -12,33 +12,34 @@
  *
  */
 
-package org.openlmis.vaccine.domain.reports;
-
+package org.openlmis.report.model.report.vaccine;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.openlmis.core.domain.BaseModel;
 
-import java.util.List;
+import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatusOfVaccinationSuppliesReceivedReport extends BaseModel {
-    private boolean facilityReport;
-    private boolean disrictReport;
-    private boolean regionReport;
-    private float totalReceived;
-    private float totalOnHand;
-    private float totalIssued;
-    private float totalUsed;
-    private float totalWasted;
-    private float totalAdminstered;
-    private Long totalPopulation;
-    private List<StatusOfVaccinationSuppliesRecievedDetail> facilityDistrictVaccineStatusList;
-    private List<StatusOfVaccinationSuppliesRecievedDetail> regionVaccineStatusList;
+public class PerformanceByDropoutRateByDistrict {
+
+
+    private String region_name;
+    private String district_name;
+    private Long target;
+    private String facility_name;
+    private Long facility_id;
+    private Date period_name;
+    private Long bcg_vaccinated;
+    private Long dtp1_vaccinated;
+    private Long mr_vaccinated;
+    private Long dtp3_vaccinated;
+    private float bcg_mr_dropout;
+    private float dtp1_dtp3_dropout;
+
 
 }

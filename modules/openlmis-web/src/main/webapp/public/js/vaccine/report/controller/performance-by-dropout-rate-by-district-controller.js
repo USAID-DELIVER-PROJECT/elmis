@@ -12,7 +12,7 @@
  *
  */
 
-function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey, PerformanceByDropoutRateByDistrict,messageService, VaccineSupervisedIvdPrograms, $routeParams) {
+function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey, PerformanceByDropoutRateByDistrict,messageService, VaccineSupervisedIvdPrograms, $routeParams,  $window) {
 
     $scope.customPeriod;
     $scope.products;
@@ -401,4 +401,11 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
         return subAggregateTotal;
     }
+    $scope.exportReport = function(type) {
+        $scope.filter.pdformat = 1;
+        var params = jQuery.param($scope.filter);
+
+        var url = '/reports/download/performance_dropout/' + type + '?' + params;
+        $window.open(url, '_blank');
+    };
 }

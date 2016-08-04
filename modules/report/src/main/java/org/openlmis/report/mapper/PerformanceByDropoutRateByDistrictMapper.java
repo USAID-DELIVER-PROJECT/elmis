@@ -12,21 +12,24 @@
  *
  */
 
-package org.openlmis.vaccine.repository.mapper.reports;
+package org.openlmis.report.mapper;
 
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
-import org.openlmis.core.domain.Product;
-import org.openlmis.vaccine.domain.reports.DropoutProduct;
-import org.openlmis.vaccine.domain.reports.PerformanceByDropoutRateByDistrict;
-import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
-import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceByDropoutRateQueryBuilder;
+import org.openlmis.report.builder.ClassificationVaccineUtilizationPerformanceQueryBuilder;
+import org.openlmis.report.builder.PerformanceByDropoutRateQueryBuilder;
+import org.openlmis.report.model.params.PerformanceByDropoutRateParam;
+import org.openlmis.report.model.report.vaccine.DropoutProduct;
+import org.openlmis.report.model.report.vaccine.PerformanceByDropoutRateByDistrict;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 @Repository
 public interface PerformanceByDropoutRateByDistrictMapper {
     @SelectProvider(type=PerformanceByDropoutRateQueryBuilder.class, method="getByDistrictQuery")
@@ -52,4 +55,27 @@ public interface PerformanceByDropoutRateByDistrictMapper {
             "   case when code = 'V001' then 'BCG - MR1' else 'DTP-HepB-Hib1/DTP-HepB-Hib3' end dropout , id " +
             "    from products where code in ('V001','V010')")
     public List<DropoutProduct> loadDropoutProductList();
+
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getFacilityPopulationInformation")
+    public  List<Map<String,Object>> getClassficationVaccinePopulationForFacility(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getDistrictPopulationInformation")
+    public  List<Map<String,Object>> getClassficationVaccinePopulationForDistrict(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
+
+    @SelectProvider(type = ClassificationVaccineUtilizationPerformanceQueryBuilder.class, method = "getRegionPopulationInformation")
+    public  List<Map<String,Object>> getClassficationVaccinePopulationForRegion(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("zoneId") Long zoneId,
+            @Param("productId") Long productId,
+            @Param("doseId") Long doseId);
 }

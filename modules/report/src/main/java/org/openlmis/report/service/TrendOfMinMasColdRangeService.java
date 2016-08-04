@@ -10,13 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.vaccine.service.reports;
+package org.openlmis.report.service;
 
-import org.openlmis.vaccine.domain.reports.*;
-import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
-
-import org.openlmis.vaccine.repository.reports.PerformanceByDropoutRateByDistrictRepository;
-import org.openlmis.vaccine.repository.reports.TrendMinMaxColdRangeRepository;
+import org.openlmis.report.model.params.PerformanceByDropoutRateParam;
+import org.openlmis.report.model.report.vaccine.TrendMinMaxColdChainColumnRangeValues;
+import org.openlmis.report.model.report.vaccine.TrendOfMinMaxColdChainTempratureDetail;
+import org.openlmis.report.model.report.vaccine.TrendOfMinMaxColdChainTempratureReport;
+import org.openlmis.report.model.report.vaccine.TrendOfMinMaxColdRangeColumn;
+import org.openlmis.report.repository.PerformanceByDropoutRateByDistrictRepository;
+import org.openlmis.report.repository.TrendMinMaxColdRangeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

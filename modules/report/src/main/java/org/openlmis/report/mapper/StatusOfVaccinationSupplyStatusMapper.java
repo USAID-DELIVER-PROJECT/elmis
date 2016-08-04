@@ -12,13 +12,17 @@
  *
  */
 
-package org.openlmis.vaccine.repository.mapper.reports;
+package org.openlmis.report.mapper;
 
-import org.apache.ibatis.annotations.*;
-import org.openlmis.vaccine.domain.reports.StatusOfVaccinationSuppliesRecievedDetail;
-import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
-import org.openlmis.vaccine.repository.mapper.reports.builder.StatusOfVaccinationSuppliesQueryBuilder;
+import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultType;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.openlmis.report.builder.StatusOfVaccinationSuppliesQueryBuilder;
+import org.openlmis.report.model.params.PerformanceByDropoutRateParam;
+import org.openlmis.report.model.report.vaccine.StatusOfVaccinationSuppliesRecievedDetail;
 import org.springframework.stereotype.Repository;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

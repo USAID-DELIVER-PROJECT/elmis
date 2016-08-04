@@ -10,19 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.vaccine.repository.mapper.reports;
+package org.openlmis.report.mapper;
 
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
-import org.openlmis.vaccine.domain.reports.TrendOfMinMaxColdChainTempratureDetail;
-import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
-import org.openlmis.vaccine.repository.mapper.reports.builder.PerformanceByDropoutRateQueryBuilder;
-import org.openlmis.vaccine.repository.mapper.reports.builder.TrendOfMinMaxColdRangeBuilder;
+import org.openlmis.report.builder.TrendOfMinMaxColdRangeBuilder;
+import org.openlmis.report.model.params.PerformanceByDropoutRateParam;
+import org.openlmis.report.model.report.vaccine.TrendOfMinMaxColdChainTempratureDetail;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+;
 
 @Repository
 public interface TrendOfMinMaxColdChainRangeMapper {

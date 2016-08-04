@@ -14,9 +14,9 @@ package org.openlmis.web.controller.vaccine;
 
 import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
-import org.openlmis.vaccine.domain.reports.DropoutProduct;
-import org.openlmis.vaccine.domain.reports.PerformanceByDisrictReport;
-import org.openlmis.vaccine.service.reports.PerformanceByDropoutRateByDistrictService;
+import org.openlmis.report.model.report.vaccine.DropoutProduct;
+import org.openlmis.report.model.report.vaccine.PerformanceByDisrictReport;
+import org.openlmis.report.service.PerformanceByDropoutRateByDistrictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

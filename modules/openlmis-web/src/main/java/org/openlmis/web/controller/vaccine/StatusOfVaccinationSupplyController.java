@@ -16,8 +16,8 @@ package org.openlmis.web.controller.vaccine;
 
 import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
-import org.openlmis.vaccine.domain.reports.StatusOfVaccinationSuppliesReceivedReport;
-import org.openlmis.vaccine.service.reports.StatusOfVaccinationSupplyService;
+import org.openlmis.report.model.report.vaccine.StatusOfVaccinationSuppliesReceivedReport;
+import org.openlmis.report.service.StatusOfVaccinationSupplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

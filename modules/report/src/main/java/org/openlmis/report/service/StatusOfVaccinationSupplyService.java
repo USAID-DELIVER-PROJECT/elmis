@@ -10,13 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.vaccine.service.reports;
+package org.openlmis.report.service;
 
-import org.openlmis.vaccine.domain.reports.StatusOfVaccinationSuppliesReceivedReport;
-import org.openlmis.vaccine.domain.reports.StatusOfVaccinationSuppliesRecievedDetail;
-import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
-import org.openlmis.vaccine.repository.reports.PerformanceByDropoutRateByDistrictRepository;
-import org.openlmis.vaccine.repository.reports.StatusOfVaccinationSuppliesRepository;
+import org.openlmis.report.model.params.PerformanceByDropoutRateParam;
+import org.openlmis.report.model.report.vaccine.StatusOfVaccinationSuppliesReceivedReport;
+import org.openlmis.report.model.report.vaccine.StatusOfVaccinationSuppliesRecievedDetail;
+import org.openlmis.report.repository.PerformanceByDropoutRateByDistrictRepository;
+import org.openlmis.report.repository.StatusOfVaccinationSuppliesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

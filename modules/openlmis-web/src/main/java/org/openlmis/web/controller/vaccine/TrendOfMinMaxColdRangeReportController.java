@@ -24,8 +24,8 @@ package org.openlmis.web.controller.vaccine;/*
 
 import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
-import org.openlmis.vaccine.domain.reports.TrendOfMinMaxColdChainTempratureReport;
-import org.openlmis.vaccine.service.reports.TrendOfMinMasColdRangeService;
+import org.openlmis.report.model.report.vaccine.TrendOfMinMaxColdChainTempratureReport;
+import org.openlmis.report.service.TrendOfMinMasColdRangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

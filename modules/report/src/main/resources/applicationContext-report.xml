@@ -422,7 +422,15 @@
                     <property name="title" value="report.title.performance.coverage"/>
                     <property name="version" value="1.0"/>
                 </bean>
-
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="performance_dropout"/>
+                    <property name="template" value="vaccine-dropout.jasper"/>
+                    <property name="reportDataProvider" ref="performanceDropoutDataProvider"/>
+                    <property name="id" value="Performance Dropout"/>
+                    <property name="name" value="Performance By Dropout Report"/>
+                    <property name="title" value="report.performance.by.dropout.rate.by.district.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

@@ -10,18 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.vaccine.service.reports;
+package org.openlmis.report.service;
 
 import org.apache.commons.lang.StringUtils;
-import org.openlmis.vaccine.domain.reports.*;
-import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
-import org.openlmis.vaccine.repository.reports.PerformanceByDropoutRateByDistrictRepository;
-import org.openlmis.vaccine.repository.reports.VaccineReportRepository;
+import org.openlmis.report.model.params.PerformanceByDropoutRateParam;
+import org.openlmis.report.model.report.vaccine.*;
+import org.openlmis.report.repository.PerformanceByDropoutRateByDistrictRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,8 +28,8 @@ import java.util.*;
 
 @Component
 public class PerformanceByDropoutRateByDistrictService {
-    @Autowired
-    private VaccineReportRepository vaccineReportRepository;
+//    @Autowired
+//    private VaccineReportRepository vaccineReportRepository;
     @Autowired
     private PerformanceByDropoutRateByDistrictRepository repository;
     public static final String BELOW_MIN = "1_dropoutGreaterThanHigh";
@@ -74,14 +72,14 @@ public class PerformanceByDropoutRateByDistrictService {
         isFailityReport = repository.isDistrictLevel(filterParam.getGeographic_zone_id());
         if (!isFailityReport) {
             performanceByDropoutRateByDistrictList = repository.loadPerformanceByDropoutRateDistrictReports(filterParam);
-            population = vaccineReportRepository.getClassficationVaccinePopulationForDistrict(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
+            population = repository.getClassficationVaccinePopulationForDistrict(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
             if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
                 performanceByDropoutRateByDistrictList = this.transposeDptVAlueToBg(performanceByDropoutRateByDistrictList);
             }
 
             if (isRegionReport) {
                 performanceByDropoutRateByRegionList = repository.loadPerformanceByDropoutRateRegionReports(filterParam);
-                regionPpulation = vaccineReportRepository.getClassficationVaccinePopulationForRegion(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
+                regionPpulation = repository.getClassficationVaccinePopulationForRegion(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
                 if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
                     performanceByDropoutRateByRegionList = this.transposeDptVAlueToBg(performanceByDropoutRateByRegionList);
                 }
@@ -93,7 +91,7 @@ public class PerformanceByDropoutRateByDistrictService {
         } else {
 
             performanceByDropoutRateByDistrictList = repository.loadPerformanceByDropoutRateFacillityReports(filterParam);
-            population = vaccineReportRepository.getClassficationVaccinePopulationForFacility(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
+            population = repository.getClassficationVaccinePopulationForFacility(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
             if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
                 performanceByDropoutRateByDistrictList = this.transposeDptVAlueToBg(performanceByDropoutRateByDistrictList);
             }

@@ -1,6 +1,7 @@
-package org.openlmis.vaccine.service.reports;
+package org.openlmis.report.service;
+
 import org.apache.commons.lang.StringUtils;
-import org.openlmis.vaccine.domain.reports.params.PerformanceByDropoutRateParam;
+import org.openlmis.report.model.params.PerformanceByDropoutRateParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
