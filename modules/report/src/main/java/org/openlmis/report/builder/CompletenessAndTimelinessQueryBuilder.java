@@ -10,7 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.vaccine.repository.mapper.reports.builder;
+package org.openlmis.report.builder;
+
+import org.openlmis.report.model.params.CompletenessAndTimelinessReportParam;
+import org.openlmis.report.model.params.PerformanceCoverageReportParam;
 
 import java.util.Date;
 import java.util.Map;
@@ -19,10 +22,8 @@ import java.util.Map;
 public class CompletenessAndTimelinessQueryBuilder {
 
 
-    public static String  selectCompletenessAndTimelinessMainReportDataByDistrict(Map params){
-        Long zone        = (Long) params.get("districtId");
-        Date startDate   = (Date) params.get("startDate");
-        Date endDate     = (Date) params.get("endDate");
+    public static String  selectCompletenessAndTimelinessMainReportDataByDistrict(Map param){
+        CompletenessAndTimelinessReportParam params  = getParamsValues(param);
 
         String sql = "with completeness_with_reporting_periods as (select  \n" +
                 "  a.region_name,  \n" +
@@ -71,7 +72,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                join facilities f on f.id = ps.facilityId    \n" +
                 "                join geographic_zones z on z.id = f.geographicZoneId   \n" +
                 "                where ps.programId = (select id from programs where enableivdform = 't' limit 1)  \n" +
-                "                   and pp.startdate::date >= '"+startDate+"' and pp.enddate::date <= '"+endDate+"'  order by geographiczoneid, pp.startdate\n" +
+                "                   and pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"'  order by geographiczoneid, pp.startdate\n" +
                 "                )    \n" +
                 "                select                                               \n" +
                 "                vd.region_name,  \n" +
@@ -92,7 +93,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                sum(case when reporting_status = 'T' then 1 else 0 end) ontime,   \n" +
                 "                sum(case when reporting_status = 'L' then 1 else 0 end) late \n" +
                 "        from temp t  \n" +
-                "            join vw_districts vd on vd.district_id = t.geographiczoneid  \n"  + writeDistrictPredicate(zone)  +
+                "            join vw_districts vd on vd.district_id = t.geographiczoneid  \n"  + writeDistrictPredicate(params.getDistrict())  +
                 "        group by 1, 2, 3, 4,5 ,6 \n" +
                 " \n" +
                 ") a  \n" +
@@ -110,7 +111,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "        from \n" +
                 "         (\n" +
                 "              select id, name period_name, startdate period_start_date from processing_periods pp \n" +
-                "                where pp.startdate::date >= '"+startDate+"' and pp.enddate::date <= '"+endDate+"' \n"+
+                "                where pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"' \n"+
                 "              AND pp.numberofmonths = 1 order by 3\n" +
                 "          ) periods , \n" +
                 "          (\n" +
@@ -121,22 +122,22 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "    )\n" +
                 "" +
                 " SELECT         \n" +
-                "    vd.region_name,  \n" +
-                "    vd.district_name, \n" +
-                "    nonreporting.period_name, \n" +
-                "    nonreporting.period_start_date, \n" +
-                "    nonreporting.geographiczoneid,  \n" +
-                "    COALESCE(c.fixed,0) fixed,  \n" +
-                "    COALESCE(c.outreach,0) outreach,  \n" +
-                "    COALESCE(c.session_total,0) session_total,  \n" +
-                "    CASE WHEN c.target is null then z.catchmentpopulation ELSE c.target end target, \n" +
-                "    nonreporting.expected expected, \n" +
-                "    COALESCE(c.reported,0) reported,  \n" +
-                "    COALESCE(c.ontime,0) ontime,   \n" +
+                "    vd.region_name as regionName,  \n" +
+                "    vd.district_name as districtName, \n" +
+                "    nonreporting.period_name as periodName, \n" +
+                "    nonreporting.period_start_date as periodStartDate, \n" +
+                "    nonreporting.geographiczoneid as geographicZoneId,  \n" +
+                "    COALESCE(c.fixed,0) as fixed,  \n" +
+                "    COALESCE(c.outreach,0) as outreach,  \n" +
+                "    COALESCE(c.session_total,0) as sessionTotal,  \n" +
+                "    CASE WHEN c.target is null then z.catchmentpopulation ELSE c.target end as target, \n" +
+                "    nonreporting.expected as expected, \n" +
+                "    COALESCE(c.reported,0) as reported,  \n" +
+                "    COALESCE(c.ontime,0) as ontime,   \n" +
                 "    COALESCE(c.late,0) late, \n" +
-                "    COALESCE(c.percent_reported,0) percent_reported, \n" +
-                "    COALESCE(c.percent_late,0) percent_late,\n" +
-                "    CASE WHEN c.geographiczoneid is null then 'NONREPORTING' else 'REPORTING' end reporting_status\n" +
+                "    COALESCE(c.percent_reported,0) percentReported, \n" +
+                "    COALESCE(c.percent_late,0) percentLate,\n" +
+                "    CASE WHEN c.geographiczoneid is null then 'NONREPORTING' else 'REPORTING' end as reportingStatus\n" +
                 "FROM completness_with_nonreporting_periods nonreporting \n" +
                 "    join geographic_zones z on z.id = nonreporting.geographiczoneid  \n" +
                 "    join vw_districts vd on vd.district_id = nonreporting.geographiczoneid\n" +
@@ -147,10 +148,24 @@ public class CompletenessAndTimelinessQueryBuilder {
 
         return sql;
     }
-    public static String  selectCompletenessAndTimelinessSummaryReportDataByDistrict(Map params){
-        Long zone = (Long) params.get("districtId");
-        Date startDate   = (Date) params.get("startDate");
-        Date endDate     = (Date) params.get("endDate");
+
+    public static CompletenessAndTimelinessReportParam getParamsValues(Map param){
+        CompletenessAndTimelinessReportParam params = new CompletenessAndTimelinessReportParam();
+
+        if(param.containsKey("filterCriteria"))
+            params = (CompletenessAndTimelinessReportParam)param.get("filterCriteria");
+        else {
+            params.setDistrict((Long) param.get("districtId"));
+            params.setPeriodStart(param.get("startDate").toString());
+            params.setPeriodEnd(param.get("endDate").toString());
+        }
+        return params;
+    }
+
+    public static String  selectCompletenessAndTimelinessSummaryReportDataByDistrict(Map param){
+
+
+        CompletenessAndTimelinessReportParam params  = getParamsValues(param);
 
         String sql = "with completeness_with_reporting_periods as (\n" +
                 "  select    \n" +
@@ -192,7 +207,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "      join facilities f on f.id = ps.facilityId     \n" +
                 "      join geographic_zones z on z.id = f.geographicZoneId    \n" +
                 "      where ps.programId = (select id from programs where enableivdform = 't' limit 1)   \n" +
-                "         and pp.startdate::date >= '"+startDate+"' and pp.enddate::date <= '"+endDate+"'  order by geographiczoneid, pp.startdate \n" +
+                "         and pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"'  order by geographiczoneid, pp.startdate \n" +
                 "      )     \n" +
 
                 "      select    " +
@@ -214,7 +229,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "      sum(case when reporting_status = 'T' then 1 else 0 end) ontime,    \n" +
                 "      sum(case when reporting_status = 'L' then 1 else 0 end) late  \n" +
                 "    from temp t   \n" +
-                "        join vw_districts vd on vd.district_id = t.geographiczoneid "+writeDistrictPredicate(zone)
+                "        join vw_districts vd on vd.district_id = t.geographiczoneid "+writeDistrictPredicate(params.getDistrict())
                 +"    group by 1, 2, 3, 4,5 ,6  \n" +
                 "  ) a   \n" +
                 "  order by 1,2,5 \n" +
@@ -231,7 +246,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                        from  \n" +
                 "                         ( \n" +
                 "                              select id, name period_name, startdate period_start_date from processing_periods pp  \n" +
-                "                                where pp.startdate::date >= '"+startDate+"' and pp.enddate::date <= '"+endDate+"' \n" +
+                "                                where pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"' \n" +
                 "                              AND pp.numberofmonths = 1 order by 3 \n" +
                 "                          ) periods ,  \n" +
                 "                          ( \n" +

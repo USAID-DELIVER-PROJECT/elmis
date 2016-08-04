@@ -15,6 +15,7 @@ package org.openlmis.vaccine.repository.mapper.reports;
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.ivdform.domain.reports.*;
+import org.openlmis.report.builder.CompletenessAndTimelinessQueryBuilder;
 import org.openlmis.report.builder.CategorizationVaccineUtilizationPerformanceQueryBuilder;
 import org.openlmis.report.builder.ClassificationVaccineUtilizationPerformanceQueryBuilder;
 import org.openlmis.report.builder.PerformanceCoverageQueryBuilder;

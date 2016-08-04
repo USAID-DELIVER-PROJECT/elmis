@@ -71,12 +71,12 @@
         <div class="content-body">
             <div style="font-weight: normal" ng-show="datarows == undefined || datarows.length == 0" openlmis-message="label.report.no.data.to.show"></div>
             <div id="parent" ng-show="datarows.length > 0">
+                <h2 ng-show="!regionSelected">District Level</h2>
+                <h2 ng-show="regionSelected">Region Level</h2>
                 <div class="box-icon" style="float:right;">
                     <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
                     <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
                 </div>
-                <h2 ng-show="!regionSelected">District Level</h2>
-                <h2 ng-show="regionSelected">Region Level</h2>
                 <table id="vbfixTable" class="rnr-table table-bordered table">
                     <thead>
                     <tr>

@@ -220,11 +220,14 @@ var utils = {
         var uniqueDistrictName = _.uniq(_.pluck(reportData, districtNameKey));
         var reportDataWithAggregates = [];
         var grandTotal = {};
+        var districtFilter = {};
 
         _.each(uniqueDistrictName, function (districtName) {
 
+            districtFilter[districtNameKey] = districtName;
+
             var district_total = {};
-            var districtData = _.where(reportData, {district_name: districtName});
+            var districtData = _.where(reportData, districtFilter);
 
             reportDataWithAggregates.push({data: districtData});
 
@@ -300,22 +303,22 @@ var utils = {
     },
 
     getColumnSubTotal: function (reportData, districtName, columnToBeAgregated) {
-        return _.chain(reportData).where({district_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+        return _.chain(reportData).where({districtname: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
             return memo + num;
         }, 0).value();
     },
     getReportColumnSubTotal: function (reportData, districtName, columnToBeAgregated, type) {
 
         if (type === 1) {
-            return _.chain(reportData).where({facility_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+            return _.chain(reportData).where({facilityname: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
                 return memo + num;
             }, 0).value();
         } else if (type === 3) {
-            return _.chain(reportData).where({region_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+            return _.chain(reportData).where({regionname: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
                 return memo + num;
             }, 0).value();
         }
-        return _.chain(reportData).where({district_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+        return _.chain(reportData).where({districtname: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
             return memo + num;
         }, 0).value();
     },

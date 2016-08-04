@@ -22,26 +22,38 @@ function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimel
             }
         });
     });
-       $scope.OnFilterChanged = function () {
+
+    $scope.exportReport   = function (type){
+        $scope.filter.pdformat = 1;
+        var params = jQuery.param($scope.timelinessReportParams);
+        var url = '/reports/download/completeness_and_timelness/' + type +'?' + params;
+        window.open(url);
+    };
+
+    $scope.timelinessReportParams ={};
+
+
+
+    $scope.OnFilterChanged = function () {
 
         // prevent first time loading
         if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
+           $scope.timelinessReportParams =  {
+               periodStart: $scope.periodStartDate,
+               periodEnd:   $scope.periodEnddate,
+               range:       $scope.range,
+               district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone
+           };
 
          CompletenessAndTimeliness.get(
-            {
-
-                periodStart: $scope.periodStartDate,
-                periodEnd:   $scope.periodEnddate,
-                range:       $scope.range,
-                district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
-            },
+             $scope.timelinessReportParams ,
 
             function (data) {
 
-                    var columnKeysToBeAggregated = ["target", "expected", "reported", "late", "fixed", "outreach", "session_total"];
-                    var districtNameKey = "district_name";
+                    var columnKeysToBeAggregated = ["target", "expected", "reported", "late", "fixed", "outreach", "sessiontotal"];
+                    var districtNameKey = "districtname";
                     var includeGrandTotal = true;
 
                      $scope.error = "";
@@ -97,7 +109,7 @@ function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimel
 
     $scope.bgColorCode = function (value) {
 
-        if ( value.reporting_status !== 'REPORTING') {
+        if ( value.reportingstatus !== 'REPORTING') {
             return $scope.color_non_reporting;
         }else{
             return "white";
