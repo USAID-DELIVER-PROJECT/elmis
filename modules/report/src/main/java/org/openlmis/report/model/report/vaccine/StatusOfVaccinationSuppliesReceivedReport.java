@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
+import org.openlmis.report.model.ResultRow;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatusOfVaccinationSuppliesReceivedReport extends BaseModel {
+public class StatusOfVaccinationSuppliesReceivedReport extends BaseModel implements ResultRow {
     private boolean facilityReport;
     private boolean disrictReport;
     private boolean regionReport;

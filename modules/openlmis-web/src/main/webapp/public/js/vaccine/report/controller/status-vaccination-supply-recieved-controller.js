@@ -12,7 +12,7 @@
  *
  */
 
-function StatusVaccinationReceiceController($scope, StatuVaccinationSupply, SettingsByKey){
+function StatusVaccinationReceiceController($window,$scope, StatuVaccinationSupply, SettingsByKey){
     $scope.minTemp;
     $scope.maxTemp;
     $scope.minEpisode;
@@ -126,5 +126,12 @@ function StatusVaccinationReceiceController($scope, StatuVaccinationSupply, Sett
             bgColor=$scope.maxColorCode;
         }
         return bgColor;
+    };
+    $scope.exportReport = function(type) {
+        $scope.filter.pdformat = 1;
+        var params = jQuery.param($scope.filter);
+
+        var url = '/reports/download/vaccine_supply_status/' + type + '?' + params;
+        $window.open(url, '_blank');
     };
 }

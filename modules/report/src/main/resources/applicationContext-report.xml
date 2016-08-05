@@ -441,6 +441,15 @@
                     <property name="title" value="report.title.completeness.and.timeliness"/>
                     <property name="version" value="1.0"/>
                 </bean>
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="vaccine_supply_status"/>
+                    <property name="template" value="vaccine-supply-status.jasper"/>
+                    <property name="reportDataProvider" ref="statusOfVaccinationSupplyProvider"/>
+                    <property name="id" value="Vaccine Utilization"/>
+                    <property name="name" value="Vaccine Utilization Report"/>
+                    <property name="title" value="report.status.vaccination.received.permonth.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>
