@@ -391,7 +391,7 @@
                 <td>{{ row.stockinhand }}</td>
                 <td>{{ row.mos }}</td>
                 <td><a ng-href="/public/pages/logistics/rnr/indexpop.html#/requisition/{{ row.rnrid }}/1?page=1&supplyType=fullSupply" onclick="popUp(this.href); return false;" target="newWin" openlmis-message="button.view.rnr"></a></td>
-                <td><a ng-href="/public/pages/reports/stock-imbalance/index.html#/list?max=10000&page=1&schedule=2&zone={{ filter.zone }}&facilityType=0&facility=0&productCategory=0&product={{ filter.product }}&year={{ filter.year }}&period={{ filter.period }}&program={{ filter.program }}" onclick="popUp(this.href); return false;" target="newWin" openlmis-message="button.view.stock.imbalance.report"></a></td>
+                <td><a ng-href="/public/pages/reports/main/index.html#/stock-imbalance?max=10000&page=1&schedule=2&zone={{ filter.zone }}&facilityType=0&facility=0&productCategory=0&product={{ filter.product }}&year={{ filter.year }}&period={{ filter.period }}&program={{ filter.program }}" onclick="popUp(this.href); return false;" target="newWin" openlmis-message="button.view.stock.imbalance.report"></a></td>
 
             </tr>
             </tbody>
