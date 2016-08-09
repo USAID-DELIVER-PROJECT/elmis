@@ -49,8 +49,8 @@ public class StockImbalanceQueryBuilder {
       WHERE(productCategoryIsFilteredBy("categoryId"));
     }
 
-    if (multiProductFilterBy(filter.getProducts(), "productId", "tracer") != null) {
-      WHERE(multiProductFilterBy(filter.getProducts(), "productId", "tracer"));
+    if (multiProductFilterBy(filter.getProducts(), "vw_stock_status.productId", "tracer") != null) {
+      WHERE(multiProductFilterBy(filter.getProducts(), "vw_stock_status.productId", "tracer"));
     }
 
     if (filter.getZone() != 0) {
