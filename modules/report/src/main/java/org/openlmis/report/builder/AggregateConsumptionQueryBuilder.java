@@ -26,7 +26,7 @@ public class AggregateConsumptionQueryBuilder {
 
     BEGIN();
     SELECT("p.code");
-    SELECT("p.fullname as product");
+    SELECT("p.primaryName || ' '|| coalesce(p.strength,'') ||' '|| coalesce(ds.code,'') || ' (' || coalesce(p.dispensingunit, '-') || ')' as product");
     SELECT("sum(li.quantityDispensed) dispensed");
     SELECT("sum(li.normalizedConsumption) consumption");
     SELECT("ceil(sum(li.quantityDispensed) / (sum(li.packsize)/count(li.productCode))::float) consumptionInPacks");
@@ -59,7 +59,7 @@ public class AggregateConsumptionQueryBuilder {
       WHERE( geoZoneIsFilteredBy("d") );
     }
 
-    GROUP_BY("p.code,p.fullname, p.primaryName, p.dispensingUnit, p.strength, ds.code");
+    GROUP_BY("p.code, p.primaryName, p.dispensingUnit, p.strength, ds.code");
     ORDER_BY("p.primaryName");
     return SQL();
   }

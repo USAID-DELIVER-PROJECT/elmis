@@ -31,7 +31,7 @@ public class StockedOutReportQueryBuilder {
         " f.code as facilitycode,  " +
         " li.productcode,  " +
         " f.name as facility,  " +
-        " p.primaryname as product,  " +
+        " li.product as product,  " +
         " ft.name facilitytypename,  " +
         " gz.district_name as location,  " +
         " pp.name as processing_period_name,  " +
