@@ -580,5 +580,10 @@ function StockStatusController( $scope, leafletData, StockStatusProductConsumpti
         });
 
     };
-
+    $scope.exportReport = function(type) {
+        $scope.filter.pdformat = 1;
+        var params = jQuery.param($scope.filter);
+        var url = '/reports/download/stock_status/' + type + '?' + params;
+        $window.open(url, '_blank');
+    };
 }

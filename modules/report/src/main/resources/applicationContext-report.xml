@@ -450,6 +450,15 @@
                     <property name="title" value="report.status.vaccination.received.permonth.report"/>
                     <property name="version" value="1.0"/>
                 </bean>
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="stock_status"/>
+                    <property name="template" value="stock-status.jasper"/>
+                    <property name="reportDataProvider" ref="stockStatusDataProvider"/>
+                    <property name="id" value="Stock Status"/>
+                    <property name="name" value="Stock Status Report"/>
+                    <property name="title" value="report.title.stock.status"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

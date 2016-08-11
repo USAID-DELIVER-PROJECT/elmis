@@ -32,6 +32,12 @@
     <div class="box span12">
         <div class="box-header">
             <h2 openlmis-message="report.title.stock.status"></h2>
+            <div class="box-icon">
+                <a id="pdf-button"  href="" ng-click="exportReport('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button"  href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
         </div>
 
         <div class="clearfix"><br /></div>
@@ -44,20 +50,20 @@
 
     <div class="clear-both"></div>
     &nbsp;
-    <div class="row">
-        <div id="geomap" class="span6">
+    <div style="">
+        <div id="geomap" >
             <div style="padding-left: 30px;">
                 <leaflet  width="100%" height="600px" legend="legend" geojson="geojson" layers="layers"></leaflet>
             </div>
         </div>
 
-        <div class="span6" style="border: 1px;">
+        <div  style="border: 1px;">
             <div style="" ng-show="features && (features | filter:expectedFilter).length > 0">
-                <p class="grey pull-left">
+                <p class="grey ">
                     You can click on the chart to see list of facilities
                 </p><br/>
-                <table class="pull-left table table-bordered"><tr><td bgcolor="#dd514c">Stocked Out</td><td bgcolor="#faa732">Under Stocked</td><td bgcolor="#4bb1cf">Over Stocked</td><td bgcolor="#5eb95e">Adequately Stocked</td></tr></table>
-                <table class="table table-striped table-scrollable scroll" >
+                <table class=" table table-bordered"><tr><td bgcolor="#dd514c">Stocked Out</td><td bgcolor="#faa732">Under Stocked</td><td bgcolor="#4bb1cf">Over Stocked</td><td bgcolor="#5eb95e">Adequately Stocked</td></tr></table>
+                <table class="table table-striped " >
                     <thead>
                     <tr>
                         <th style="width:111px !important;"  openlmis-message="label.district"></th>
@@ -93,7 +99,7 @@
 <div class="row-fluid">
 
 
-    <div class="span7" >
+    <div >
         <div style="" ng-show="products && (products).length > 0">
             <b>You are viewing data for: {{ district_title }}</b>
             <div class="clearfix"><br /></div>
@@ -102,7 +108,7 @@
                 You can click on the chart to see list of facilities
             </p><br/>
 
-            <table class="table table-striped table-scrollable scroll" >
+            <table class="table table-striped " >
                 <thead>
                 <tr>
                     <th style="width:170px !important;">Product</th>
@@ -132,9 +138,9 @@
         </div>
     </div>
     <br><br>
-    <div id="chart" class="span5">
+    <div id="chart">
         <p style="font-weight: bold">Note: The graph will show zero values when no report was found for a period</p>
-        <p style="font-weight: bold; text-align: center">Aggregated Data for {{ district_title }}</p>
+        <p style="font-weight: bold; text-align: left">Aggregated Data for {{ district_title }}</p>
         <br>
         <div ng-repeat="productStock in productstocks">
             <a-float  af-option="productStock.options" af-data="productStock.dataSeries" class="chart"> </a-float>
