@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stocked-out" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="71"/>
+	<property name="ireport.x" value="682"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -76,7 +76,22 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 		<variableExpression><![CDATA[$V{bcg_vaccinated_sum}!=0?100*($V{bcg_vaccinated_sum}-$V{dtp_vaccinated_sum})/$V{bcg_vaccinated_sum}:0]]></variableExpression>
 	</variable>
 	<variable name="drop_out" class="java.math.BigDecimal" resetType="None">
-		<variableExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})*100/($F{bcg_vaccinated})):0]]></variableExpression>
+		<variableExpression><![CDATA[($V{bcg_vaccinated_sum}!=0)?(($V{bcg_vaccinated_sum}-$V{dtp_vaccinated_sum})*100/($V{bcg_vaccinated_sum})):0]]></variableExpression>
+	</variable>
+	<variable name="grand_total_popiulation" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{target}]]></variableExpression>
+	</variable>
+	<variable name="grand_bcg_vaccinated_sum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bcg_vaccinated}]]></variableExpression>
+	</variable>
+	<variable name="grand_dtp_vaccinated_sum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{mr_vaccinated}]]></variableExpression>
+	</variable>
+	<variable name="grand_dropout_percentage" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{grand_bcg_vaccinated_sum}!=0?100*($V{grand_bcg_vaccinated_sum}-$V{grand_dtp_vaccinated_sum})/$V{grand_bcg_vaccinated_sum}:0]]></variableExpression>
+	</variable>
+	<variable name="grand_drop_out" class="java.math.BigDecimal" resetType="None">
+		<variableExpression><![CDATA[($V{grand_bcg_vaccinated_sum}!=0)?(($V{grand_bcg_vaccinated_sum}-$V{grand_dtp_vaccinated_sum})*100/($V{grand_bcg_vaccinated_sum})):0]]></variableExpression>
 	</variable>
 	<group name="GroupByFacility" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{district_name}]]></groupExpression>
@@ -417,19 +432,19 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			</staticText>
 			<textField>
 				<reportElement x="339" y="0" width="73" height="18" uuid="fe43277a-c530-4259-bcc8-b78ccf1dcdfb"/>
-				<textFieldExpression><![CDATA[$V{total_popiulation}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_total_popiulation}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="668" y="0" width="133" height="18" uuid="739b3bf9-1e70-47a7-848e-441b4dcedacc"/>
-				<textFieldExpression><![CDATA[$V{dropout_percentage}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="553" y="0" width="115" height="18" uuid="f2395587-20a0-4a42-8766-fad471dd5375"/>
-				<textFieldExpression><![CDATA[$V{dtp_vaccinated_sum}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_dtp_vaccinated_sum}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="412" y="0" width="141" height="18" uuid="5610a98a-cb80-45e3-a965-9896ef096f4f"/>
-				<textFieldExpression><![CDATA[$V{bcg_vaccinated_sum}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_bcg_vaccinated_sum}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="212" y="0" width="126" height="18" uuid="eddc012d-e5fd-4e80-b77e-773ecb09ef69"/>
