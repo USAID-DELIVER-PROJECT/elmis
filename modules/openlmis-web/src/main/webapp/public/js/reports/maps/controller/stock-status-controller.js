@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function StockStatusController( $scope, leafletData, StockStatusProductConsumptionGraph, StockStatusProductList, StockedOutFacilityByProductList, UnderStockedFacilityByProductList, OverStockedFacilityByProductList, AdequatelyStockedFacilityByProductList, StockedOutFacilityList, UnderStockedFacilityList, OverStockedFacilityList, AdequatelyStockedFacilityList, SettingsByKey, ContactList, SendMessages, $filter, $dialog, messageService) {
+function StockStatusController( $window, $scope, leafletData, StockStatusProductConsumptionGraph, StockStatusProductList, StockedOutFacilityByProductList, UnderStockedFacilityByProductList, OverStockedFacilityByProductList, AdequatelyStockedFacilityByProductList, StockedOutFacilityList, UnderStockedFacilityList, OverStockedFacilityList, AdequatelyStockedFacilityList, SettingsByKey, ContactList, SendMessages, $filter, $dialog, messageService) {
 
     $scope.default_indicator = "stocked_out";
     $scope.district_title = "All Geographic Zones";
