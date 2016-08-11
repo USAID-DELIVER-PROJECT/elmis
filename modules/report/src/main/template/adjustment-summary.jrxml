@@ -12,9 +12,9 @@
   -->
 
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Adjustment Summary" language="groovy" pageWidth="1000" pageHeight="595" orientation="Landscape" columnWidth="960" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="0.957568197476655"/>
-	<property name="ireport.x" value="12"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="1.6963904734899418"/>
+	<property name="ireport.x" value="930"/>
+	<property name="ireport.y" value="55"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
@@ -174,7 +174,7 @@ order by product, adjustment_type]]>
 				<subreportExpression><![CDATA["openlmis-report-header-landscape.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement x="303" y="24" width="306" height="55" uuid="7e171395-df3e-45d2-875e-2366d212e855">
+				<reportElement x="293" y="24" width="299" height="55" uuid="7e171395-df3e-45d2-875e-2366d212e855">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF" && $V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
@@ -183,7 +183,7 @@ order by product, adjustment_type]]>
 				<textFieldExpression><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="24" width="303" height="55" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" uuid="00e8ff1f-4772-4b85-a102-399d957875c0">
+				<reportElement x="0" y="24" width="293" height="55" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" uuid="00e8ff1f-4772-4b85-a102-399d957875c0">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF" && $V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
@@ -196,6 +196,7 @@ order by product, adjustment_type]]>
 	</pageHeader>
 	<columnHeader>
 		<band height="30">
+			<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF" ]]></printWhenExpression>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="959" height="29" forecolor="#FFFFFF" backcolor="#3D9297" uuid="e587f413-b748-4b6c-8a34-93bb08817a0b">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
@@ -211,11 +212,6 @@ order by product, adjustment_type]]>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="251" y="0" width="141" height="29" uuid="2381e1a7-b735-42bd-a5ea-4ea5b5769cde"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="691" y="0" width="110" height="29" uuid="70122a19-b07d-4fca-8928-e9c494bf17cf"/>
@@ -257,33 +253,8 @@ order by product, adjustment_type]]>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.facility.code}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report">
-				<reportElement x="0" y="0" width="146" height="29" printWhenGroupChanges="xls column header" uuid="67cbd071-371e-4962-888d-954353fdf6a0">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
-				</reportElement>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$R{label.product}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Page">
-				<reportElement x="146" y="1" width="64" height="29" printWhenGroupChanges="xls column header" uuid="359ef978-e9c9-46e1-bd76-6b679a7e4c84">
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
-				</reportElement>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$R{label.report.product.code}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Column">
-				<reportElement x="210" y="0" width="93" height="29" printWhenGroupChanges="xls column header" uuid="29fc3718-48d6-49e9-8503-37630f384177">
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
-				</reportElement>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$R{label.facility}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Group" evaluationGroup="GroupByAdjustmentType">
-				<reportElement x="303" y="0" width="89" height="29" printWhenGroupChanges="xls column header" uuid="0e75d443-0ee4-4ec4-92e4-4d0fb326128d">
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
-				</reportElement>
+			<textField>
+				<reportElement x="251" y="1" width="141" height="29" uuid="2381e1a7-b735-42bd-a5ea-4ea5b5769cde"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
 			</textField>
@@ -372,23 +343,133 @@ order by product, adjustment_type]]>
 				<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
 			</textField>
 		</band>
+		<band height="30">
+			<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "XLS" && $V{REPORT_COUNT} == 1]]></printWhenExpression>
+			<textField evaluationTime="Report">
+				<reportElement x="592" y="0" width="146" height="29" printWhenGroupChanges="xls column header" uuid="67cbd071-371e-4962-888d-954353fdf6a0">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.product}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Column">
+				<reportElement x="0" y="0" width="94" height="29" printWhenGroupChanges="xls column header" uuid="29fc3718-48d6-49e9-8503-37630f384177">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.facility}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Page">
+				<reportElement x="738" y="0" width="64" height="29" printWhenGroupChanges="xls column header" uuid="359ef978-e9c9-46e1-bd76-6b679a7e4c84">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.report.product.code}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Group" evaluationGroup="GroupByAdjustmentType">
+				<reportElement x="94" y="0" width="89" height="29" printWhenGroupChanges="xls column header" uuid="0e75d443-0ee4-4ec4-92e4-4d0fb326128d">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="183" y="0" width="110" height="29" uuid="c3f3c4a6-70a6-4051-8051-67e499dc259b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.facility.code}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="293" y="0" width="108" height="29" uuid="ea0a9bc6-2481-4ffb-9eb2-780036e3d904"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.province}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="112" height="29" uuid="2c904bf0-f4c6-43a0-85e8-dea906d83fc6"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.supplying.facility}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="802" y="0" width="86" height="29" uuid="019a8ee5-0f36-42ae-837d-1290421136e0"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.adjustment.type}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="888" y="0" width="71" height="29" uuid="5e093cf2-dd8e-458a-a88d-843a4f1643f3"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.adjustment.quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="401" y="0" width="79" height="29" uuid="85df10aa-64e4-401d-a591-ec46f9c71d0e"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$R{label.district}]]></textFieldExpression>
+			</textField>
+		</band>
 		<band height="50">
 			<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "XLS"]]></printWhenExpression>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="480" y="0" width="112" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="07c087cb-bd83-43f7-94a0-8c0fd85e5ece"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{supplyingFacility}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="94" y="0" width="89" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="ec94d7a1-76ed-463c-acf7-a8422a339f8f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="401" y="0" width="79" height="50" uuid="4975b6ca-0fb2-407e-b2ec-ffab02adbd4b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{district}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="293" y="0" width="108" height="50" uuid="02162999-f519-473b-846f-7ee9e4717cd9"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{province}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="183" y="0" width="110" height="50" uuid="9b4767ca-cb05-4b0c-aee0-b1664d8d26f9"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{facilityCode}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="94" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="25ffc689-f864-4ec6-8baa-7ea9da09f367"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single" leftIndent="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{facilityName}]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false">
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="146" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="ffe868db-db96-42d6-b121-374c5bdfea83"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="592" y="0" width="146" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="ffe868db-db96-42d6-b121-374c5bdfea83"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{productDescription}=="NULL"?" ":$F{productDescription})]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="738" y="0" width="64" height="50" uuid="62b3485e-4823-491c-abb8-aa0eaab14874"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{productCode}]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="691" y="0" width="110" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="07c087cb-bd83-43f7-94a0-8c0fd85e5ece"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="802" y="0" width="86" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="8f800f93-0833-4af2-aa06-5f28099ce778"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{supplyingFacility}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{adjustmentType}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="888" y="0" width="71" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="4deca65b-37eb-4648-9c18-de761b2458ef"/>
@@ -398,50 +479,6 @@ order by product, adjustment_type]]>
 					<paragraph lineSpacing="Single" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{signedadjustment} != null)? new java.text.DecimalFormat("#,##0").format($F{signedadjustment}) : ""]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="303" y="0" width="89" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="ec94d7a1-76ed-463c-acf7-a8422a339f8f"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="609" y="0" width="82" height="50" uuid="4975b6ca-0fb2-407e-b2ec-ffab02adbd4b"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{district}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="502" y="0" width="107" height="50" uuid="02162999-f519-473b-846f-7ee9e4717cd9"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{province}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="392" y="0" width="110" height="50" uuid="9b4767ca-cb05-4b0c-aee0-b1664d8d26f9"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{facilityCode}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="210" y="0" width="93" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="25ffc689-f864-4ec6-8baa-7ea9da09f367"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single" leftIndent="15"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{facilityName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="146" y="0" width="64" height="50" uuid="62b3485e-4823-491c-abb8-aa0eaab14874"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{productCode}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="801" y="0" width="87" height="50" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="8f800f93-0833-4af2-aa06-5f28099ce778"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{adjustmentType}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
