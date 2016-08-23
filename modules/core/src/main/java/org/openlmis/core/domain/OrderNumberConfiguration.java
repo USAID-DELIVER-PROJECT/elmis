@@ -48,7 +48,7 @@ public class OrderNumberConfiguration {
   }
 
   private String getSequenceAppendedOrderId(Long orderId) {
-    return String.format("%08d", orderId);
+    return String.format("%06d", orderId);
   }
 
   private String getTruncatedProgramCode(String code) {
