@@ -3,7 +3,24 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<style name="coverage-report-style" forecolor="#000000" backcolor="#FF0000"/>
+	<style name="coverage-report-style" mode="Opaque" forecolor="#000000" backcolor="#FF0000">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{coverage} >=90]]></conditionExpression>
+			<style mode="Opaque" backcolor="#52C552"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{coverage} < 80 && $F{reported} == "Yes"]]></conditionExpression>
+			<style mode="Opaque" backcolor="#FF0000" fill="Solid"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{coverage} >=80 && $F{coverage} < 90]]></conditionExpression>
+			<style mode="Opaque" backcolor="#E4E44A"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{reported} == "No"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#E4E4E4"/>
+		</conditionalStyle>
+	</style>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
 	</parameter>
@@ -36,7 +53,7 @@ union all
  select 'Arusha' region_name,
      'Arushae 1www' district_name,
     'Jan' period_name,
-   'YES'  reported,
+   'No'  reported,
     0 target,
     10 vaccinated,
    74.23  coverage,
@@ -49,10 +66,10 @@ union all
  select 'Arusha' region_name,
      'Arushae oww' district_name,
     'Jan' period_name,
-   'YES'  reported,
+   'No'  reported,
     130 target,
     4120 vaccinated,
-   23.55  coverage,
+   93.55  coverage,
     333 cum_vaccinated,
    233  cum_coverage,
     1 "month",
@@ -63,10 +80,10 @@ union all
 	<field name="period_name" class="java.lang.String"/>
 	<field name="reported" class="java.lang.String"/>
 	<field name="target" class="java.math.BigDecimal"/>
-	<field name="vaccinated" class="java.math.BigDecimal"/>
+	<field name="vaccinated" class="java.lang.Integer"/>
 	<field name="coverage" class="java.math.BigDecimal"/>
-	<field name="cum_vaccinated" class="java.math.BigDecimal"/>
-	<field name="cum_coverage" class="java.math.BigDecimal"/>
+	<field name="cum_vaccinated" class="java.lang.Integer"/>
+	<field name="cum_coverage" class="java.lang.Integer"/>
 	<field name="month" class="java.lang.Integer"/>
 	<field name="year" class="java.lang.Integer"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
@@ -342,13 +359,11 @@ union all
 				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="801" height="20" backcolor="#CCCCCC" uuid="9a174af8-d2cb-46c8-b19f-0b17e1be585b">
-					<printWhenExpression><![CDATA[$F{reported}.toString().equals("No")]]></printWhenExpression>
-				</reportElement>
+				<reportElement style="coverage-report-style" mode="Transparent" x="0" y="0" width="801" height="20" backcolor="#FFFFFF" uuid="9a174af8-d2cb-46c8-b19f-0b17e1be585b"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="802" height="20" backcolor="#FF0000" uuid="99bb2d3f-f291-4b4e-8b96-2475bd5b7695">
+				<reportElement style="coverage-report-style" mode="Transparent" x="0" y="0" width="802" height="20" backcolor="#FF0000" uuid="99bb2d3f-f291-4b4e-8b96-2475bd5b7695">
 					<printWhenExpression><![CDATA[$F{reported}.toString().equals("Yes")]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
@@ -360,44 +375,44 @@ union all
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement x="113" y="0" width="100" height="20" uuid="3d36fd32-acbc-4076-aff9-7be2e5253f94"/>
+				<reportElement style="coverage-report-style" x="113" y="0" width="100" height="20" uuid="3d36fd32-acbc-4076-aff9-7be2e5253f94"/>
 				<textFieldExpression><![CDATA[$F{district_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="213" y="0" width="100" height="20" uuid="f8f67f6f-56b7-4786-ae44-8ccf54289864"/>
+				<reportElement style="coverage-report-style" x="213" y="0" width="100" height="20" uuid="f8f67f6f-56b7-4786-ae44-8ccf54289864"/>
 				<textFieldExpression><![CDATA[$F{period_name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement x="413" y="0" width="100" height="20" uuid="454b2568-1ad7-450c-a675-5e51bc12c70e"/>
+				<reportElement style="coverage-report-style" x="413" y="0" width="100" height="20" uuid="454b2568-1ad7-450c-a675-5e51bc12c70e"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{target}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="313" y="0" width="100" height="20" uuid="ba21907f-ae61-4fc4-8147-7cb574e798fa"/>
+				<reportElement style="coverage-report-style" x="313" y="0" width="100" height="20" uuid="ba21907f-ae61-4fc4-8147-7cb574e798fa"/>
 				<textFieldExpression><![CDATA[$F{reported}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement x="513" y="0" width="80" height="20" uuid="86457e30-b87d-4383-915c-4b80de11de71"/>
+				<reportElement style="coverage-report-style" x="513" y="0" width="80" height="20" uuid="86457e30-b87d-4383-915c-4b80de11de71"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{vaccinated}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00 %">
-				<reportElement x="593" y="0" width="72" height="20" uuid="fb46cca7-7b15-4683-bca6-45270f40b7a5"/>
+				<reportElement style="coverage-report-style" x="593" y="0" width="72" height="20" uuid="fb46cca7-7b15-4683-bca6-45270f40b7a5"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[($F{coverage}/100)]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement x="665" y="0" width="67" height="20" uuid="feefd4a2-c4f1-4cc6-9e0f-677defa25a72"/>
+				<reportElement style="coverage-report-style" x="665" y="0" width="67" height="20" uuid="feefd4a2-c4f1-4cc6-9e0f-677defa25a72"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{cum_vaccinated}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00 %">
-				<reportElement x="732" y="0" width="69" height="20" uuid="5e22bf86-dd85-44fe-89b4-a671eeca33de"/>
+				<reportElement style="coverage-report-style" x="732" y="0" width="69" height="20" uuid="5e22bf86-dd85-44fe-89b4-a671eeca33de"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{cum_coverage}/100]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="3" y="0" width="110" height="20" printWhenGroupChanges="district" uuid="1f05dad1-4290-47bd-adaf-34c71b82c08f"/>
+				<reportElement style="coverage-report-style" mode="Opaque" x="0" y="0" width="113" height="20" printWhenGroupChanges="district" uuid="1f05dad1-4290-47bd-adaf-34c71b82c08f"/>
 				<textFieldExpression><![CDATA[$F{region_name}]]></textFieldExpression>
 			</textField>
 		</band>

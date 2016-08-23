@@ -19,6 +19,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.PerformanceCoverageReportQueryBuilder;
 import org.openlmis.report.model.params.PerformanceCoverageReportParam;
 import org.openlmis.report.model.report.PerformanceCoverageReportFields;
+import org.openlmis.report.model.report.PerformanceCoverageReportSummaryFields;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
@@ -29,16 +30,29 @@ public interface PerformanceCoverageReportMapper {
 
     @SelectProvider(type = PerformanceCoverageReportQueryBuilder.class, method = "getDistrictReport")
     @Options(timeout = 0, useCache = true, flushCache = true)
-    public List<PerformanceCoverageReportFields> getMainReport(@Param("filterCriteria") PerformanceCoverageReportParam filterCriteria,
+    public List<PerformanceCoverageReportFields> getDistrictReport(@Param("filterCriteria") PerformanceCoverageReportParam filterCriteria,
                                                                @Param("SortCriteria") Map<String, String[]> sortCriteria ,
                                                                @Param("RowBounds")RowBounds rowBounds,
                                                                @Param("userId") Long userId );
 
     @SelectProvider(type = PerformanceCoverageReportQueryBuilder.class, method = "getRegionReport")
     @Options(timeout = 0, useCache = true, flushCache = true)
-    public List<PerformanceCoverageReportFields> getSubReport(@Param("filterCriteria") PerformanceCoverageReportParam filterCriteria,
+    public List<PerformanceCoverageReportFields> getRegionReport(@Param("filterCriteria") PerformanceCoverageReportParam filterCriteria,
                                                               @Param("SortCriteria") Map<String, String[]> sortCriteria ,
                                                               @Param("RowBounds")RowBounds rowBounds,
                                                               @Param("userId") Long userId );
 
+    @SelectProvider(type = PerformanceCoverageReportQueryBuilder.class, method = "getDistrictReportSummary")
+    @Options(timeout = 0, useCache = true, flushCache = true)
+    public List<PerformanceCoverageReportSummaryFields> getDistrictReportSummary(@Param("filterCriteria") PerformanceCoverageReportParam filterCriteria,
+                                                                                 @Param("SortCriteria") Map<String, String[]> sortCriteria ,
+                                                                                 @Param("RowBounds")RowBounds rowBounds,
+                                                                                 @Param("userId") Long userId );
+
+    @SelectProvider(type = PerformanceCoverageReportQueryBuilder.class, method = "getRegionReportSummary")
+    @Options(timeout = 0, useCache = true, flushCache = true)
+    public List<PerformanceCoverageReportSummaryFields> getRegionReportSummary(@Param("filterCriteria") PerformanceCoverageReportParam filterCriteria,
+                                                                          @Param("SortCriteria") Map<String, String[]> sortCriteria ,
+                                                                          @Param("RowBounds")RowBounds rowBounds,
+                                                                          @Param("userId") Long userId );
 }
