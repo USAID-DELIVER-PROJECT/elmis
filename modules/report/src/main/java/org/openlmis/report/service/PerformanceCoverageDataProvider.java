@@ -49,10 +49,13 @@ public class PerformanceCoverageDataProvider extends ReportDataProvider {
         PerformanceCoverageReportParam params = getParameter(filterCriteria);
 
         PerformanceCoverageReport performanceCoverageReport = new PerformanceCoverageReport();
-        performanceCoverageReport.setMain(reportMapper.getMainReport(params, sortCriteria, rowBounds, this.getUserId()));
 
-        if(params.getDistrict() == 0)
-        performanceCoverageReport.setSub(reportMapper.getSubReport(params, sortCriteria, rowBounds, this.getUserId()));
+        performanceCoverageReport.setDistrictReport(reportMapper.getDistrictReport(params, sortCriteria, rowBounds, this.getUserId()));
+        performanceCoverageReport.setDistrictReportSummary(reportMapper.getDistrictReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
+        if(params.getDistrict() == 0) {
+            performanceCoverageReport.setRegionReport(reportMapper.getRegionReport(params, sortCriteria, rowBounds, this.getUserId()));
+            performanceCoverageReport.setRegionReportSummary(reportMapper.getRegionReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
+        }
 
         List<PerformanceCoverageReport> list = new ArrayList<PerformanceCoverageReport>();
         list.add(performanceCoverageReport);

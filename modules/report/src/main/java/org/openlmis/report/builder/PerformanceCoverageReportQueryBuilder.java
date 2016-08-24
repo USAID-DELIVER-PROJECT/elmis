@@ -68,11 +68,10 @@ public class PerformanceCoverageReportQueryBuilder {
                         "                FROM \n" +
                         "                  vw_vaccine_coverage i\n" +
                         "          JOIN vw_districts d ON i.geographic_zone_id = d.district_id \n" +
-                        "                WHERE    \n" +
-                        "             i.program_id = fn_get_vaccine_program_id() \n" +
-                        "                     AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
-                        "             AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
-                        "             AND i.product_id = "+ params.getProduct()+"\n" +
+                        "          WHERE   i.program_id = fn_get_vaccine_program_id() \n" +
+                        "                   AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
+                        "                   AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
+                        "                   AND i.product_id = "+ params.getProduct()+"\n" +
                         "                 group by d.region_name,d.region_id, d.district_name, d.district_id, i.period_name, i.period_id, i.period_start_date\n" +
                         "                 order by d.region_name, i.period_start_date\n" +
                         ") \n" +
@@ -185,5 +184,190 @@ public class PerformanceCoverageReportQueryBuilder {
         return sql;
     }
 
+    public static String getDistrictReportSummary(Map map) {
+
+        PerformanceCoverageReportParam params = (PerformanceCoverageReportParam) map.get("filterCriteria");
+
+        String sql = "\n-- Get population target   \n " +
+                "with ppl_demographics as (    " +
+                "    select \"year\", vd.region_name, vd.region_id, vd.district_name, vd.district_id, productid, coalesce(sum(denominator),0) target, coalesce(sum(population),0) population    " +
+                "    from vw_vaccine_population_denominator vd    " +
+                "   join vw_districts d ON vd.district_id = d.district_id    " +
+                "    where programid = fn_get_vaccine_program_id() \n" +
+                "      and (productid = "+ params.getProduct()+") \n" +
+                "      and year = extract(year from '"+ params.getPeriodStart()+"'::date)\n" +
+                "      and (doseid = " + params.getDoseId() +" or " + params.getDoseId() +" = 0) " +
+                "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
+                +params.getDistrict()+" or d.parent = "+params.getDistrict()+") "+
+                "      group by 1,2,3,4,5,6 " +
+                "    order by 2,1    " +
+                ")    " +
+                "\n-- Generate for each target a 12 month row for later use   \n " +
+                ", region_period AS (    " +
+                "    select pp.id period_id, pp.startdate, pp.name period_name, dr.*    " +
+                "       from processing_periods pp, (select * from ppl_demographics) dr    " +
+                "          where    " +
+                "        pp.startdate::date >= '"+ params.getPeriodStart()+"'::date " +
+                "        and pp.enddate::date <= '"+ params.getPeriodEnd()+"'::date " +
+                "        and pp.numberofmonths = 1    " +
+                "        order by region_name, district_name, startdate    " +
+                ")    " +
+                "\n-- Get coverage   \n " +
+                ", coverage as (    " +
+                "    SELECT    d.region_name,    " +
+                "                  d.region_id,    " +
+                "                  d.district_id ,    " +
+                "                  d.district_name,    " +
+                "                  i.period_name,    " +
+                "                  i.period_id,    " +
+                "                  sum(i.within_outside_total) vaccinated,    " +
+                "                  period_start_date,    " +
+                "                extract(month from i.period_start_date) \"month\",    " +
+                "                  extract(year from i.period_start_date) \"year\"    " +
+                "                FROM    " +
+                "                  vw_vaccine_coverage i    " +
+                "          JOIN vw_districts d ON i.geographic_zone_id = d.district_id    " +
+                "          WHERE   i.program_id = fn_get_vaccine_program_id() \n" +
+                "                   AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
+                "                   AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
+                "                   AND i.product_id = "+ params.getProduct()+"\n" +
+                "                 group by d.region_name,d.region_id, d.district_name, d.district_id, i.period_name, i.period_id, i.period_start_date    " +
+                "                 order by d.region_name, i.period_start_date    " +
+                ")    " +
+                "\n--  get cumulative coverages   \n " +
+                ", periodic_coverage as (    " +
+                "    select r.*, c.vaccinated, round((case when r.target > 0 then (c.vaccinated /r.target::numeric) else 0 end) * 100,2) coverage    " +
+                "    " +
+                "    from region_period r    " +
+                "        left outer JOIN coverage c on r.region_id = c.region_id AND r.district_id = c.district_id AND r.period_id = c.period_id    " +
+                "        where r.district_id in (select distinct district_id from coverage)    " +
+                ")    " +
+
+                "    " +
+                "   select    " +
+                "        period_name,    " +
+                "        'Non Reporting' status_name,    " +
+                "       case when vaccinated is null then 1 else 0 end status,    " +
+                "       startdate    " +
+                "   from  periodic_coverage    " +
+                "    " +
+                "union all    " +
+                "    " +
+                "   select    " +
+                "        period_name,    " +
+                "        'Coverage < 80%' status_name,    " +
+                "       case when vaccinated is not null and coverage < 80 then 1 else 0 end status,    " +
+                "       startdate    " +
+                "   from  periodic_coverage    " +
+                "    " +
+                "union all    " +
+                "    " +
+                "   select    " +
+                "        period_name,    " +
+                "        'Coverage >= 90' status_name,    " +
+                "       case when coverage >=90 then 1 else 0 end status,    " +
+                "       startdate    " +
+                "   from  periodic_coverage    " +
+                "    " +
+                "union all    " +
+                "   select    " +
+                "        period_name,    " +
+                "        '80% <= coverage < 90%' status_name,    " +
+                "       case when coverage < 90 and coverage >=80 then 1 else 0 end status,    " +
+                "       startdate    " +
+                "   from  periodic_coverage";
+        return sql;
+    }
+
+    public static String getRegionReportSummary(Map map) {
+
+        PerformanceCoverageReportParam params = (PerformanceCoverageReportParam) map.get("filterCriteria");
+
+        String sql = "\n-- Get population target  \n" +
+                "with ppl_demographics as (  " +
+                "    select \"year\", vd.region_name, vd.region_id, productid, coalesce(sum(denominator),0) target, coalesce(sum(population),0) population  " +
+                "    from vw_vaccine_population_denominator vd  " +
+                "   join vw_districts d ON vd.district_id = d.district_id  " +
+                "      and (productid = "+ params.getProduct()+") \n" +
+                "      and year = extract(year from '"+ params.getPeriodStart()+"'::date)\n" +
+                "      and (doseid = " + params.getDoseId() +" or " + params.getDoseId() +" = 0) "+
+                "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
+                + params.getDistrict()+" or d.parent = "+params.getDistrict()+") "+
+                "      group by 1,2,3,4  " +
+                "    order by 2,1  " +
+                ")  " +
+                "\n-- Generate for each target a 12 month row for later use \n " +
+                ", region_period AS (  " +
+                "    select pp.id period_id, pp.startdate, pp.name period_name, dr.*  " +
+                "       from processing_periods pp, (select * from ppl_demographics) dr  " +
+                "          where  " +
+                "        pp.startdate::date >= '"+ params.getPeriodStart()+"'::date  \n" +
+                "        and pp.enddate::date <= '"+ params.getPeriodEnd()+"'::date   \n" +
+                "        and pp.numberofmonths = 1  " +
+                "        order by region_name, startdate  " +
+                ")  " +
+                "\n-- Get coverage  \n" +
+                ", coverage as (  " +
+                "    SELECT    d.region_name,  " +
+                "                  d.region_id,  " +
+                "                  i.period_name,  " +
+                "                  i.period_id,  " +
+                "                  sum(i.within_outside_total) vaccinated,  " +
+                "                  period_start_date,  " +
+                "                extract(month from i.period_start_date) \"month\",  " +
+                "                  extract(year from i.period_start_date) \"year\"  " +
+                "                FROM  " +
+                "                  vw_vaccine_coverage i  " +
+                "          JOIN vw_districts d ON i.geographic_zone_id = d.district_id  " +
+                "                WHERE  " +
+                "             i.program_id = fn_get_vaccine_program_id()  " +
+                "             AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
+                "             AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
+                "             AND i.product_id = "+ params.getProduct() +
+                "                 group by d.region_name,d.region_id, i.period_name, i.period_id, i.period_start_date  " +
+                "                 order by d.region_name, i.period_start_date  " +
+                ")  " +
+                "\n--  get cumulative coverages  \n" +
+                ", periodic_coverage as (  " +
+                "    select r.*, c.vaccinated, round((case when r.target > 0 then (c.vaccinated /r.target::numeric) else 0 end) * 100,2) coverage  " +
+                "  " +
+                "    from region_period r  " +
+                "        left outer JOIN coverage c on r.region_id = c.region_id AND r.period_id = c.period_id  " +
+                "       where r.region_id in (select distinct region_id from coverage)  " +
+                ")  " +
+                "select  " +
+                "        period_name,  " +
+                "        'Non Reporting' status_name,  " +
+                "       case when vaccinated is null then 1 else 0 end status,  " +
+                "       startdate  " +
+                "   from  periodic_coverage  " +
+                "  " +
+                "union all  " +
+                "  " +
+                "   select  " +
+                "        period_name,  " +
+                "        'Coverage < 80%' status_name,  " +
+                "       case when vaccinated is not null and coverage < 80 then 1 else 0 end status,  " +
+                "       startdate  " +
+                "   from  periodic_coverage  " +
+                "  " +
+                "union all  " +
+                "  " +
+                "   select  " +
+                "        period_name,  " +
+                "        'Coverage >= 90' status_name,  " +
+                "       case when coverage >=90 then 1 else 0 end status,  " +
+                "       startdate  " +
+                "   from  periodic_coverage  " +
+                "  " +
+                "union all  " +
+                "   select  " +
+                "        period_name,  " +
+                "        '80% <= coverage < 90%' status_name,  " +
+                "       case when coverage < 90 and coverage >=80 then 1 else 0 end status,  " +
+                "       startdate  " +
+                "   from  periodic_coverage";
+        return sql;
+    }
 
 }

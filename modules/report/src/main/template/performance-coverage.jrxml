@@ -47,8 +47,10 @@
 	<queryString>
 		<![CDATA[select id, name, manufacturer, model from equipments]]>
 	</queryString>
-	<field name="main" class="java.util.List"/>
-	<field name="sub" class="java.util.List"/>
+	<field name="districtReport" class="java.util.List"/>
+	<field name="regionReport" class="java.util.List"/>
+	<field name="districtReportSummary" class="java.util.List"/>
+	<field name="regionReportSummary" class="java.util.List"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -94,7 +96,7 @@
 		<band height="4" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="132" splitType="Stretch">
+		<band height="133" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="19" width="801" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7"/>
 				<graphicElement>
@@ -102,7 +104,7 @@
 				</graphicElement>
 			</line>
 			<subreport>
-				<reportElement x="0" y="58" width="791" height="74" uuid="180c8f6f-80b6-45e8-ad43-50a139e2b408"/>
+				<reportElement x="0" y="58" width="791" height="62" uuid="180c8f6f-80b6-45e8-ad43-50a139e2b408"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="REPORT_NAME"/>
 				<subreportParameter name="REPORT_TITLE"/>
@@ -117,7 +119,7 @@
 				<subreportParameter name="REPORT_FILTER_PARAM_VALUES"/>
 				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
 				<subreportParameter name="OPERATOR_NAME"/>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{main})]]></dataSourceExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{districtReport})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["performance-coverage-district.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
@@ -131,11 +133,33 @@
 				<reportElement x="0" y="46" width="791" height="1" uuid="a7899017-6920-4d38-8802-743c585f6d75"/>
 			</line>
 		</band>
-		<band height="279">
+		<band height="70">
 			<subreport>
-				<reportElement x="0" y="107" width="791" height="55" uuid="eee795b7-f78f-4665-8519-6e8ba8d6c296">
-					<printWhenExpression><![CDATA[$F{sub}!=null]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="0" y="0" width="791" height="62" uuid="28906dc1-c9be-494c-8b7b-acdfc8944cfb"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="REPORT_NAME"/>
+				<subreportParameter name="REPORT_TITLE"/>
+				<subreportParameter name="COUNTRY_NAME"/>
+				<subreportParameter name="GENERATED_BY"/>
+				<subreportParameter name="REPORT_VERSION"/>
+				<subreportParameter name="REPORT_ID"/>
+				<subreportParameter name="LOGO"/>
+				<subreportParameter name="REPORT_OUTPUT_OPTION"/>
+				<subreportParameter name="OPERATOR_LOGO"/>
+				<subreportParameter name="REPORT_SUB_TITLE"/>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES"/>
+				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
+				<subreportParameter name="OPERATOR_NAME"/>
+				<subreportParameter name="image_dir"/>
+				<subreportParameter name="FACILITY_ID"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{districtReportSummary})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["performance-coverage-district-summary.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="102">
+			<printWhenExpression><![CDATA[$F{regionReport}!=null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="31" width="791" height="62" uuid="eee795b7-f78f-4665-8519-6e8ba8d6c296"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="REPORT_NAME"/>
 				<subreportParameter name="REPORT_TITLE"/>
@@ -151,23 +175,43 @@
 				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
 				<subreportParameter name="OPERATOR_NAME"/>
 				<subreportParameter name="REGIONAL_COVERAGE"/>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{sub})]]></dataSourceExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{regionReport})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["performance-coverage-region.jasper"]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement x="0" y="96" width="791" height="1" uuid="ce97b201-b202-4642-be35-5dd51d8e2694">
-					<printWhenExpression><![CDATA[$F{sub}!=null]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="0" y="20" width="791" height="1" uuid="ce97b201-b202-4642-be35-5dd51d8e2694"/>
 			</line>
 			<staticText>
-				<reportElement x="0" y="76" width="791" height="20" uuid="21cc6a03-5ab5-4927-8b76-a2fc12e4cc42">
-					<printWhenExpression><![CDATA[$F{sub}!=null]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="0" y="0" width="791" height="20" uuid="21cc6a03-5ab5-4927-8b76-a2fc12e4cc42"/>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="false"/>
 				</textElement>
 				<text><![CDATA[Regional Report]]></text>
 			</staticText>
+		</band>
+		<band height="69">
+			<printWhenExpression><![CDATA[$F{regionReport}!=null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="4" y="0" width="791" height="62" uuid="a2f408c7-e026-437e-bf2e-adfbd27bfc0e"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="REPORT_NAME"/>
+				<subreportParameter name="REPORT_TITLE"/>
+				<subreportParameter name="COUNTRY_NAME"/>
+				<subreportParameter name="GENERATED_BY"/>
+				<subreportParameter name="REPORT_VERSION"/>
+				<subreportParameter name="REPORT_ID"/>
+				<subreportParameter name="LOGO"/>
+				<subreportParameter name="REPORT_OUTPUT_OPTION"/>
+				<subreportParameter name="OPERATOR_LOGO"/>
+				<subreportParameter name="REPORT_SUB_TITLE"/>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES"/>
+				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
+				<subreportParameter name="OPERATOR_NAME"/>
+				<subreportParameter name="image_dir"/>
+				<subreportParameter name="FACILITY_ID"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{regionReportSummary})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["performance-coverage-region-summary.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 </jasperReport>

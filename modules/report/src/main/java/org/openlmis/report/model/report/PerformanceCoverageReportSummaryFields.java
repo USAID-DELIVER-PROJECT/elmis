@@ -18,16 +18,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.report.model.ResultRow;
 
-import java.util.List;
+import java.util.Date;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PerformanceCoverageReport implements ResultRow {
+public class PerformanceCoverageReportSummaryFields implements ResultRow {
 
-    List<PerformanceCoverageReportFields> districtReport;
-    List<PerformanceCoverageReportFields> regionReport;
-    List<PerformanceCoverageReportSummaryFields> districtReportSummary;
-    List<PerformanceCoverageReportSummaryFields> regionReportSummary;
+    String period_name;
+    String status_name;
+    Long status;
+    Date startdate;
 }
