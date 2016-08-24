@@ -10,21 +10,38 @@ package org.openlmis.report.service;/*
 
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.report.vaccine.PerformanceByDisrictReport;
+import org.openlmis.report.model.report.vaccine.PerformanceByDropoutColumn;
+import org.openlmis.report.model.report.vaccine.PerformanceByDropoutRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 @Component
 public class PerformanceDropoutDataProvider extends ReportDataProvider {
     @Autowired
     private PerformanceByDropoutRateByDistrictService dropoutRateByDistrictService;
+
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filter, Map<String, String[]> sorter, int page, int pageSize) {
-        List<PerformanceByDisrictReport> performanceByDisrictReports=new ArrayList<>();
-        PerformanceByDisrictReport performanceByDisrictReport=this.dropoutRateByDistrictService.loadPerformanceByDropoutRateDistrictReports(filter);
+        List<PerformanceByDisrictReport> performanceByDisrictReports = new ArrayList<>();
+        PerformanceByDisrictReport performanceByDisrictReport = this.dropoutRateByDistrictService.loadPerformanceByDropoutRateDistrictReports(filter);
+        performanceByDisrictReport.setDistrictFlatList(this.convertToFlatList(performanceByDisrictReport.getColumnsValueList()));
+        performanceByDisrictReport.setRegionFlatList(this.convertToFlatList(performanceByDisrictReport.getRegionColumnsValueList()));
         performanceByDisrictReports.add(performanceByDisrictReport);
         return performanceByDisrictReports;
+    }
+
+    private List<PerformanceByDropoutColumn> convertToFlatList(List<PerformanceByDropoutRange> columnsValueList) {
+        List<PerformanceByDropoutColumn> flatList = new ArrayList<>();
+        if (columnsValueList != null) {
+            for (PerformanceByDropoutRange dropoutRange : columnsValueList) {
+                flatList.addAll(dropoutRange.getColumns());
+            }
+        }
+        else return  null;
+        return flatList;
     }
 }

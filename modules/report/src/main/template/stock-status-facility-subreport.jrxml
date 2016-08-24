@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock-status-facility-subreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="394"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -129,11 +129,12 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="20">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<printWhenExpression><![CDATA[$F{period}>0&& $F{stockedout}>=0&&$F{understocked}>0&&$F{overstocked}>=0]]></printWhenExpression>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="801" height="20" backcolor="#F4F4F4" uuid="02df148d-9dc0-49e9-b8cb-0ad28657078b">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="786" height="20" backcolor="#F4F4F4" uuid="02df148d-9dc0-49e9-b8cb-0ad28657078b">
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 1]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
@@ -181,19 +182,6 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="413" y="0" width="284" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="7126df37-f217-42aa-93db-489cf4cc9b14">
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
-			</textField>
 			<textField pattern="#,##0.00 %" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="697" y="0" width="89" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="894e3e22-c590-4751-8ecd-1413ac944d84">
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -205,7 +193,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{period}-($F{stockedout}+$F{understocked}+$F{overstocked}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{stockedout}!=0?($F{stockedout}/$F{period}):0]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="177" y="0" width="125" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="d79ffd28-0990-463b-a904-286f4a314582">
@@ -220,6 +208,47 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<textFieldExpression><![CDATA[$F{expected}]]></textFieldExpression>
 			</textField>
+			<stackedBarChart>
+				<chart isShowLegend="true">
+					<reportElement x="413" y="0" width="284" height="20" uuid="6bc436e9-cf8f-44aa-91e3-e4f6ea02f6a8"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="None"/>
+					<categorySeries>
+						<seriesExpression><![CDATA["n"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{name}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{stockedout}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[""]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{name}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{understocked}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[""]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{name}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{overstocked}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot isShowLabels="true" isShowTickLabels="false" isShowTickMarks="false">
+					<plot orientation="Horizontal">
+						<seriesColor seriesOrder="0" color="#0000FF"/>
+						<seriesColor seriesOrder="1" color="#CC0033"/>
+						<seriesColor seriesOrder="2" color="#FFFF00"/>
+						<seriesColor seriesOrder="3" color="#00CC00"/>
+					</plot>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat verticalTickLabels="false"/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat verticalTickLabels="false"/>
+					</valueAxisFormat>
+				</barPlot>
+			</stackedBarChart>
 		</band>
 	</detail>
 	<lastPageFooter>

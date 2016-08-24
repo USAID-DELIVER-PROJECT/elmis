@@ -17,12 +17,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PerformanceByDropoutColumn {
+    private String rangeName;
     private String columnName;
+    private Date periodDate;
     private long value;
     private long dropOutLessthanMin;
     private long dropOutBetweenMidAndMin;

@@ -138,6 +138,34 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<subreportExpression><![CDATA["stock-status-facility-subreport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
-		<band height="102"/>
+		<band height="102">
+			<subreport>
+				<reportElement x="0" y="2" width="800" height="100" uuid="ff24469f-5f92-4a01-9702-53f06fdcb566"/>
+				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
+				<subreportParameter name="TOTAL_STOCKEDOUT"/>
+				<subreportParameter name="REPORT_TITLE"/>
+				<subreportParameter name="REPORT_SUB_TITLE"/>
+				<subreportParameter name="SHOW_SUMMARY"/>
+				<subreportParameter name="REPORT_NAME"/>
+				<subreportParameter name="REPORT_VERSION"/>
+				<subreportParameter name="OPERATOR_NAME"/>
+				<subreportParameter name="GENERATED_BY"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="SHOW_STOCKEDOUT"/>
+				<subreportParameter name="PERCENTAGE_STOCKEDOUT"/>
+				<subreportParameter name="LOGO"/>
+				<subreportParameter name="IS_DTP_PRODUCT"/>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES"/>
+				<subreportParameter name="REPORT_OUTPUT_OPTION"/>
+				<subreportParameter name="TOTAL_FACILITIES"/>
+				<subreportParameter name="COUNTRY_NAME"/>
+				<subreportParameter name="REPORT_RESOURCE_BUNDLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_RESOURCE_BUNDLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_ID"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{stockStatusProductList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[ "stock-status-product-subreport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
 	</detail>
 </jasperReport>

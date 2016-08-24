@@ -290,7 +290,9 @@ public class PerformanceByDropoutRateByDistrictService {
                 Long value = colRangeVal.get(colName);
                 PerformanceByDropoutColumn performanceByDropoutColumn1 = new PerformanceByDropoutColumn();
                 performanceByDropoutColumn1.setColumnName(colName.toString());
+                performanceByDropoutColumn1.setPeriodDate(colName);
                 performanceByDropoutColumn1.setValue(value);
+                performanceByDropoutColumn1.setRangeName(keyVal);
                 performanceByDropoutColumn.add(performanceByDropoutColumn1);
             }
             performanceByDropoutRange.setColumns(performanceByDropoutColumn);

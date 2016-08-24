@@ -34,6 +34,8 @@ public class PerformanceByDisrictReport implements ResultRow {
     private List<PerformanceByDropoutRateByDistrict> detailPerformanceByDropoutRateByDistrictList;
     private  List<PerformanceByDropoutRange> columnsValueList;
     private  List<PerformanceByDropoutRange> regionColumnsValueList;
+    List<PerformanceByDropoutColumn> districtFlatList;
+    List<PerformanceByDropoutColumn> regionFlatList;
     private Long total_target;
     private Long total_bcg_vaccinated;
     private Long total_dtp1_vaccinated;

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stocked-out" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="194"/>
+	<property name="ireport.y" value="405"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
@@ -61,6 +61,8 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 	<field name="facillityReport" class="java.lang.Boolean"/>
 	<field name="regionReport" class="java.lang.Boolean"/>
 	<field name="dtpProduct" class="java.lang.Boolean"/>
+	<field name="districtFlatList" class="java.util.Collection"/>
+	<field name="regionFlatList" class="java.util.Collection"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -181,12 +183,19 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</subreportParameter>
 				<subreportParameter name="REPORT_ID"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{performanceByDropOutDistrictsList})]]></dataSourceExpression>
-				<subreportExpression><![CDATA[ "vaccine-dropout-district-subreport.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["vaccine-dropout-district-subreport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="102">
 			<subreport>
-				<reportElement x="1" y="40" width="801" height="62" uuid="f4571274-1dc4-476d-89ad-86c3449befaf">
+				<reportElement x="1" y="2" width="800" height="100" uuid="f7791017-56aa-45a0-8ab6-af8894596f0d"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{districtFlatList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["performance_dropout_district_summary.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="94">
+			<subreport>
+				<reportElement x="2" y="30" width="801" height="62" uuid="f4571274-1dc4-476d-89ad-86c3449befaf">
 					<printWhenExpression><![CDATA[$F{regionReport}==true]]></printWhenExpression>
 				</reportElement>
 				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
@@ -217,7 +226,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<subreportExpression><![CDATA["vaccine-dropout-region-subreport.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="0" y="10" width="200" height="20" uuid="68db1c18-0076-4ca1-80ee-973b931df2d6">
+				<reportElement x="1" y="0" width="200" height="20" uuid="68db1c18-0076-4ca1-80ee-973b931df2d6">
 					<printWhenExpression><![CDATA[$F{regionReport}==true]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -225,6 +234,15 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<text><![CDATA[Region Level]]></text>
 			</staticText>
+		</band>
+		<band height="103">
+			<subreport>
+				<reportElement x="0" y="0" width="802" height="103" uuid="4d414838-b869-49d0-b605-e266ec1033f5">
+					<printWhenExpression><![CDATA[$F{regionReport}==true]]></printWhenExpression>
+				</reportElement>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{regionFlatList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["performance_dropout_region_summary.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 </jasperReport>
