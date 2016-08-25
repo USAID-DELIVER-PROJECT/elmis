@@ -27,11 +27,11 @@ public class OrderNumberConfigurationTest {
     program.setCode("MALARIA");
     String orderNumber = orderNumberConfiguration.getOrderNumberFor(1L, program, false);
 
-    assertThat(orderNumber, is("OrdMALARIA00000001R"));
+    assertThat(orderNumber, is("OrdMALARIA000001R"));
 
     orderNumberConfiguration = new OrderNumberConfiguration("Ord", true, false, true, true);
     orderNumber = orderNumberConfiguration.getOrderNumberFor(1L, program, false);
 
-    assertThat(orderNumber, is("Ord00000001R"));
+    assertThat(orderNumber, is("Ord000001R"));
   }
 }
