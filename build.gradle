@@ -13,8 +13,7 @@
 apply plugin: 'idea'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'properties'
-apply plugin: 'sonar-runner'
-
+apply plugin: "org.sonarqube"
 
 idea.project.languageLevel = '1.7'
 idea.project.jdkName = '1.7'
@@ -26,18 +25,22 @@ buildscript {
   repositories {
     mavenCentral()
     jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
   }
   dependencies {
-    classpath "net.saliman:gradle-cobertura-plugin:2.2.7"
+    classpath "net.saliman:gradle-cobertura-plugin:2.3.2"
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.8'
     classpath "net.saliman:gradle-properties-plugin:1.4.2"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.1-rc2"
   }
 }
-sonarRunner {
-    sonarProperties {
-	  property "sonar.host.url", "$sonarServer"
-	  property "sonar.jdbc.url", "$sonarJdbc"
-	  property "sonar.projectName", "$sonarProject"
+sonarqube {
+    properties {
+      property "sonar.host.url", "$sonarServer"
+      property "sonar.jdbc.url", "$sonarJdbc"
+      property "sonar.projectName", "$sonarProject"
       property "sonar.projectVersion", "$sonarProjectVersion"
     }
 }
@@ -52,11 +55,11 @@ subprojects {
     }
   }
 
-  sonarRunner {
-    sonarProperties {
-	  property "sonar.junit.reportsPath", "$buildDir/test-results/"
-	  property "sonar.java.coveragePlugin", "cobertura"
-	  property "sonar.cobertura.reportPath", "$buildDir/reports/cobertura/coverage.xml"
+  sonarqube {
+    properties {
+      property "sonar.junit.reportsPath", "$buildDir/test-results/"
+      property "sonar.java.coveragePlugin", "cobertura"
+      property "sonar.cobertura.reportPath", "$buildDir/reports/cobertura/coverage.xml"
     }
   }
 
@@ -89,10 +92,10 @@ subprojects {
         'org.springframework.security:spring-security-web:3.2.6.RELEASE',
         'org.springframework.security:spring-security-config:3.2.6.RELEASE',
 
-        'org.springframework.integration:spring-integration-core:4.1.2.RELEASE',
-        'org.springframework.integration:spring-integration-jdbc:4.1.2.RELEASE',
-        'org.springframework.integration:spring-integration-ftp:4.1.2.RELEASE',
-        'org.springframework.integration:spring-integration-file:4.1.2.RELEASE',
+        'org.springframework.integration:spring-integration-core:4.1.5.RELEASE',
+        'org.springframework.integration:spring-integration-jdbc:4.1.5.RELEASE',
+        'org.springframework.integration:spring-integration-ftp:4.1.5.RELEASE',
+        'org.springframework.integration:spring-integration-file:4.1.5.RELEASE',
         'org.springframework.integration:spring-integration-java-dsl:1.0.2.RELEASE',
 
 
