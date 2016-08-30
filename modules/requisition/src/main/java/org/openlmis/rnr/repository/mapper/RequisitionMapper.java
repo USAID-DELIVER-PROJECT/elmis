@@ -226,8 +226,8 @@ public interface RequisitionMapper {
   @Select({"SELECT facilityId FROM requisitions WHERE id = #{id}"})
   Long getFacilityId(Long id);
 
-  @Select({"SELECT * FROM requisitions WHERE facilityId = #{facility.id} AND programId = #{program.id} AND emergency = false",
-      "ORDER BY createdDate DESC LIMIT 1"})
+  @Select({"SELECT r.* FROM requisitions r join processing_periods pr on pr.id = r.periodId WHERE r.facilityId = #{facility.id} AND r.programId = #{program.id} AND r.emergency = false",
+      "ORDER BY pr.startDate DESC LIMIT 1"})
   @Results(value = {
       @Result(property = "facility.id", column = "facilityId"),
       @Result(property = "program.id", column = "programId"),
