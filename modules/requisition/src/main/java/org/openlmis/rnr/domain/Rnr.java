@@ -68,6 +68,7 @@ public class Rnr extends BaseModel {
   private Date submittedDate;
   private Date clientSubmittedTime;
   private String clientSubmittedNotes;
+  private String sourceApplication = "WEB_UI";
   private List<Comment> comments = new ArrayList<>();
 
   private List<Signature> rnrSignatures;

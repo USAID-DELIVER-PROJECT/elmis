@@ -54,7 +54,11 @@ import static org.openlmis.restapi.domain.ReplenishmentDTO.prepareForREST;
 public class RestRequisitionService {
 
   public static final boolean EMERGENCY = false;
+  private static final String SOURCE_APPLICATION_ELMIS_FE = "ELMIS_FE";
+  private static final String SOURCE_APPLICATION_OTHER = "OTHER";
+
   private static final Logger logger = Logger.getLogger(RestRequisitionService.class);
+
   @Autowired
   private RequisitionService requisitionService;
   @Autowired
@@ -85,7 +89,7 @@ public class RestRequisitionService {
 
     restRequisitionCalculator.validatePeriod(reportingFacility, reportingProgram);
 
-    Rnr rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, EMERGENCY, null);
+    Rnr rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, EMERGENCY, null, SOURCE_APPLICATION_OTHER);
 
     restRequisitionCalculator.validateProducts(report.getProducts(), rnr);
 
@@ -147,7 +151,7 @@ public class RestRequisitionService {
       rnr = requisitionService.getFullRequisitionById( rnrs.get(0).getId() );
 
     }else{
-      rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, report.getEmergency(), period);
+      rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, report.getEmergency(), period, SOURCE_APPLICATION_ELMIS_FE);
     }
 
     List<RnrLineItem> fullSupplyProducts = new ArrayList<>();
