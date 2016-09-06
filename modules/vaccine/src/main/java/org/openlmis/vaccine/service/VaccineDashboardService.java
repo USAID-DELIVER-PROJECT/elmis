@@ -446,8 +446,8 @@ public class VaccineDashboardService {
 public Map<String, Object> getVaccineCurrentReportingPeriod(){
     return repository.getVaccineCurrentPeriod();
 }
-    public Map<String, Object> getUserZoneInformation() {
-        return repository.getUserZoneInformation();
+    public Map<String, Object> getUserZoneInformation(Long userId) {
+        return repository.getUserZoneInformation(userId);
     }
 
     public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId, String date) {

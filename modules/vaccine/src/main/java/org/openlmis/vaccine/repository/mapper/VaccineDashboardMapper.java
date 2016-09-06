@@ -815,9 +815,9 @@ public interface VaccineDashboardMapper {
                 "geographic_zones  d\n" +
                 "inner join geographic_levels l on d.levelid=l.id\n" +
                 " where d.id = \n" +
-                "(select value from user_preferences up where up.userid = 2 \n" +
+                "(select value from user_preferences up where up.userid = #{userId} \n" +
                 "and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int limit 1")
-        Map<String,Object> getUserZoneInformation();
+        Map<String,Object> getUserZoneInformation(@Param("userId") Long userId);
 
 //        @Select("select * from vw_vaccine_inventory_stock_status st where facility_id=#{facilityId}")
 //        List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId);

@@ -248,8 +248,8 @@ Long userId = this.loggedInUserId(request);
         return OpenLmisResponse.response("vaccineCurrentPeriod", service.getVaccineCurrentReportingPeriod());
     }
     @RequestMapping(value = "user-geographic-zone-preference.json", method = RequestMethod.GET)
-    public  ResponseEntity<OpenLmisResponse> getUserZoneInformation() {
-          return OpenLmisResponse.response("UserGeographicZonePreference", service.getUserZoneInformation());
+    public  ResponseEntity<OpenLmisResponse> getUserZoneInformation(HttpServletRequest request) {
+          return OpenLmisResponse.response("UserGeographicZonePreference", service.getUserZoneInformation(loggedInUserId(request)));
     }
 
     @RequestMapping(value = "facility-inventory-stock-status.json", method = RequestMethod.GET)
