@@ -42,6 +42,13 @@ public class VaccineStockStatusReport implements ResultRow {
 
     private Float mos;
 
+    private String color;
+
+    private Integer adequacy;
+
+    private String region;
+
+
     //private JSONPObject products;
 
     public String getLastUpdate(){
