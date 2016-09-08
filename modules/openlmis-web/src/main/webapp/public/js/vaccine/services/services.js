@@ -587,3 +587,15 @@ services.factory('CoefficientValues',function($resource) {
 services.factory('SendIssueNotification',function($resource) {
     return $resource('/vaccine/orderRequisition/sendNotification/:distributionId.json', {distributionId:'@distributionId'}, {});
 });
+
+services.factory('VaccineDistributionCompletenessReport', function ($resource) {
+    return $resource('/vaccine/inventory/report/distributionCompleteness.json', {}, {});
+});
+
+services.factory('VaccineDistributedFacilitiesReport', function ($resource) {
+    return $resource('/vaccine/inventory/report/getDistributedFacilities.json', {}, {});
+});
+
+services.factory('VaccineDistributionProgramProduct', function ($resource) {
+    return $resource('/vaccine/orderRequisition/:programId.json', {programId: '@programId'}, {});
+});
