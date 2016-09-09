@@ -151,8 +151,8 @@
                                     <td data-title="getLocalMessage('label.date')" style="width:40%" >{{
                                         row.date | date:'dd-MM-yyyy' }}
                                     </td>
-                                    <td data-title="'Store Name (To/From)'" style="width:30%" sortable="">{{
-                                        row.storeName }}
+                                    <td data-title="'Store Name (To/From)'" style="width:30%" sortable="">
+                                        <span ng-bind="($index==0)?'B/F':row.storeName"></span>
                                     </td>
                                     <td class="number" data-title="'Received Quantity'" style="width:20% !important;"
                                         sortable=" ">{{row.received > 0 && (row.received | number) || '' }}
