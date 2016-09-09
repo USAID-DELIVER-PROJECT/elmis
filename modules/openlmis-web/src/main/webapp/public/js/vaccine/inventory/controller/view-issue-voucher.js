@@ -53,8 +53,7 @@ function ViewIssueVoucherController($scope,homeFacility,programs,DistributionByV
             {field: 'voucherNumber', displayName: messageService.get("label.voucherNumber") },
             {field: 'distributionDate', displayName: messageService.get("label.vaccine.issue.date"), cellFilter: 'date:\'dd-MM-yyyy\''},
             {field: 'distributionType', displayName: messageService.get("header.issue.type")},
-            {field: 'status', displayName: messageService.get("label.status")}
-            ,
+            {field: 'status', displayName: messageService.get("label.status")},
             {field:' ',
                 cellTemplate: '<div align="center"><button style="width:80px; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); background-image: linear-gradient(to bottom, #42a7ad, #356b6f);background-repeat: repeat-x;border-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);  background-color: #356b6f;"  type="button" class="btn btn-primary btn-small" ng-click="viewDistribution(row.entity)" >View</button>' +
                 '</div> '

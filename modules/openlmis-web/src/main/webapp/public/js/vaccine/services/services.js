@@ -600,9 +600,6 @@ services.factory('DistributionByVoucherNumber', function ($resource) {
     return $resource('/vaccine/inventory/distribution/get-all-by-voucher-number/', {}, {});
 });
 
-
-});
-
 services.factory('VaccineDistributionCompletenessReport', function ($resource) {
     return $resource('/vaccine/inventory/report/distributionCompleteness.json', {}, {});
 });

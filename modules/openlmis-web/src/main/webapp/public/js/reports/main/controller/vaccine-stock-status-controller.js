@@ -52,7 +52,7 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
                 total += product[i].adequacy;
             }
             return (total / product.length) * 100;
-        }
+        };
 
     };
 
