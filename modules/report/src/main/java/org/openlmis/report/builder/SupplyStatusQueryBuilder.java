@@ -36,13 +36,19 @@ public class SupplyStatusQueryBuilder {
       "  li_calculatedorderquantity reorderAmount, " +
       "  supplyingfacility supplyingFacility," +
       "  fp_maxmonthsofstock MaxMOS," +
-      "  fp_minmonthsofstock  minMOS   \n ");
-    FROM(" vw_supply_status join vw_districts d on d.district_id = f_zoneid ");
+      "  fp_minmonthsofstock  minMOS," +
+      "  coalesce(pl.quantityshipped,0) supplied");
+    FROM(" vw_supply_status vw join vw_districts d on d.district_id = f_zoneid " +
+            " join requisition_line_items rli on vw.li_rnrid = rli.rnrid and vw.li_productcode =   rli.productcode \n" +
+            " left outer join orders o on o.id = vw.li_rnrid \n" +
+            " left outer join pod p on p.orderid = o.id\n" +
+            " left outer join pod_line_items pl on pl.podid = p.id  and pl.productcode = vw.li_productcode");
     WHERE(rnrStatusFilteredBy("r_status", filterCriteria.getAcceptedRnrStatuses()));
     WHERE(userHasPermissionOnFacilityBy("f_id"));
     WHERE(periodIsFilteredBy("pp_id"));
     WHERE(programIsFilteredBy("pg_id"));
     WHERE(facilityIsFilteredBy("f_id"));
+
     if (filterCriteria.getZone() != 0) {
       WHERE(geoZoneIsFilteredBy("d"));
     }

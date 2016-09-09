@@ -13,9 +13,11 @@ package org.openlmis.web.controller;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.ConfigurationSettingKey;
 import org.openlmis.core.domain.Pagination;
+import org.openlmis.core.domain.RightName;
 import org.openlmis.core.domain.User;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.service.ConfigurationSettingService;
+import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.RoleRightsService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
@@ -68,6 +70,8 @@ public class UserController extends BaseController {
   private UserService userService;
   @Autowired
   private SessionRegistry sessionRegistry;
+  @Autowired
+  private FacilityService facilityService;
   @Autowired
   private ConfigurationSettingService settingService;
 
@@ -265,7 +269,7 @@ public class UserController extends BaseController {
   @RequestMapping(value = "/preference/users/{id}", method = GET)
   public User getUser(@PathVariable(value = "id") Long id, HttpServletRequest request) {
     Long userId = loggedInUserId(request);
-    if (id == userId || roleRightService.getRights(userId).contains(MANAGE_USER)){
+    if (id.equals(userId) || roleRightService.getRights(userId).contains(MANAGE_USER)){
       return userService.getUserWithRolesById(id);
     }
     return null;
@@ -274,5 +278,11 @@ public class UserController extends BaseController {
   @RequestMapping(value = "/users/supervisory/rights.json", method= GET)
   public ResponseEntity<OpenLmisResponse> getRights(HttpServletRequest request){
     return response("rights", userService.getSupervisoryRights(loggedInUserId(request)));
+  }
+
+  @RequestMapping(value = "/users/program/supervised/facilities.json")
+  public ResponseEntity<OpenLmisResponse> getSupervisedFacilities(@RequestParam Long programId, HttpServletRequest request){
+    return response("facilities", facilityService.getUserSupervisedFacilities(loggedInUserId(request), programId,
+        RightName.CREATE_IVD, RightName.VIEW_IVD, RightName.APPROVE_IVD, RightName.CREATE_REQUISITION, RightName.VIEW_REQUISITION, RightName.APPROVE_REQUISITION ));
   }
 }

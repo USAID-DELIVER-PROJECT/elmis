@@ -157,7 +157,7 @@ public class CalculationService {
       List<Integer> nNormalizedConsumptions = (List<Integer>) collect(previousLineItems, new Transformer() {
         @Override
         public Object transform(Object o) {
-          return ((RnrLineItem) o).getNormalizedConsumption();
+          return (o == null)? 0: ((RnrLineItem) o).getNormalizedConsumption();
         }
       });
       lineItem.setPreviousNormalizedConsumptions(nNormalizedConsumptions);

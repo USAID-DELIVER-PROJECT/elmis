@@ -15,9 +15,11 @@ package org.openlmis.report.service.lookup;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.openlmis.core.domain.FacilityOperator;
 import org.openlmis.core.domain.ProductGroup;
 import org.openlmis.core.domain.SupervisoryNode;
 import org.openlmis.core.repository.helper.CommaSeparator;
+import org.openlmis.core.repository.mapper.FacilityMapper;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.RequisitionGroupService;
@@ -265,33 +267,33 @@ public class ReportLookupService {
   }
 
 
-  public List<Facility> getFacilities(Long program, Long schedule, Long type, Long requisitionGroup, Long zone, Long userId) {
+  public List<Facility> getFacilities(Long program, Long schedule, Long type, Long requisitionGroup, Long zone, Long facilityOperator, Long userId) {
     // this method does not work if no program is specified
     if (program == 0L) {
       return null;
     }
 
     if (schedule == 0 && type == 0) {
-      return facilityReportMapper.getFacilitiesByProgram(program, zone, userId);
+      return facilityReportMapper.getFacilitiesByProgram(program, zone, facilityOperator, userId);
     }
 
     if (type == 0 && requisitionGroup == 0) {
-      return facilityReportMapper.getFacilitiesByProgramSchedule(program, schedule, zone, userId);
+      return facilityReportMapper.getFacilitiesByProgramSchedule(program, schedule, zone, facilityOperator, userId);
     }
 
     if (type == 0 && requisitionGroup != 0) {
-      return facilityReportMapper.getFacilitiesByProgramScheduleAndRG(program, schedule, requisitionGroup, zone, userId);
+      return facilityReportMapper.getFacilitiesByProgramScheduleAndRG(program, schedule, requisitionGroup, zone, facilityOperator, userId);
     }
 
     if (requisitionGroup == 0 && type != 0) {
-      return facilityReportMapper.getFacilitiesByProgramZoneFacilityType(program, zone, userId, type);
+      return facilityReportMapper.getFacilitiesByProgramZoneFacilityType(program, zone, facilityOperator, userId, type);
     }
 
     if (requisitionGroup == 0) {
-      return facilityReportMapper.getFacilitiesByPrgraomScheduleType(program, schedule, type, zone, userId);
+      return facilityReportMapper.getFacilitiesByPrgraomScheduleType(program, schedule, type, zone, facilityOperator, userId);
     }
 
-    return facilityReportMapper.getFacilitiesByPrgraomScheduleTypeAndRG(program, schedule, type, requisitionGroup, zone);
+    return facilityReportMapper.getFacilitiesByPrgraomScheduleTypeAndRG(program, schedule, type, requisitionGroup, zone, facilityOperator);
   }
 
 
@@ -533,13 +535,13 @@ public class ReportLookupService {
 //        (@Param("program") Long program, @Param("zone") Long zone, @Param("userId") Long userId, @Param("type") Long type);
     long program = 0;
     long zone;
-
     long type;
+    long facilityOperator = 0;
     program = StringUtils.isBlank(filterCriteria.get("programId")[0]) ? 0 : Long.parseLong(filterCriteria.get("programId")[0]);
     zone = StringUtils.isBlank(filterCriteria.get("zoneId")[0]) ? 0 : Long.parseLong(filterCriteria.get("zoneId")[0]);
     type = StringUtils.isBlank(filterCriteria.get("facilityTypeId")[0]) ? 0 : Long.parseLong(filterCriteria.get("facilityTypeId")[0]);
 
-    facilitiesList = this.facilityReportMapper.getFacilitiesByProgramZoneFacilityType(program, zone, userId, type);
+    facilitiesList = this.facilityReportMapper.getFacilitiesByProgramZoneFacilityType(program, zone, facilityOperator, userId, type);
 
     return facilitiesList;
   }
@@ -732,5 +734,13 @@ public class ReportLookupService {
       return productMapper.getProductsForProgramPickCategoryFromProgramProductWDescriptions(programId);
     }
     return productMapper.getProductsForProgramWithoutDescriptions(programId);
+  }
+
+  public AdjustmentType getAdjustmentByName(String name){
+    return adjustmentTypeReportMapper.getAdjustmentByName(name);
+  }
+
+  public List<FacilityOperator> getAllFacilityOperators(){
+    return facilityService.getAllOperators();
   }
 }

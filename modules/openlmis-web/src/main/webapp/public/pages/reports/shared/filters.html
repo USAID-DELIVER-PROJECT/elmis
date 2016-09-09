@@ -218,6 +218,10 @@
             </div>
         </div>
         <div class="span3">
+            <zone-filter ></zone-filter>
+        </div>
+
+        <div class="span3">
             <label class="labels" openlmis-message="label.product"> <span ng-show="requiredFilters.product" class="label-required">*</span></label>
             <div>
                 <select ui-select2 class="input-large" ng-model="filter.product" ng-change="filterChanged();">
@@ -231,7 +235,7 @@
                 </select>
             </div>
         </div>
-        <div class="span4">
+        <div class="span3">
             <label class="labels" openlmis-message="label.period"> <span ng-show="requiredFilters.period" class="label-required">*</span></label><div>
             <div>
             <select ui-select2 class="input-large" ng-change="filterChanged();" ng-model="filter.period">
@@ -672,5 +676,15 @@
         </span>
         </div>
 
+    </div>
+</script>
+
+<script type="text/ng-template" id="filter-facility-operator-template">
+    <div>
+        <label for="facilityOperator" class="labels" openlmis-message="label.facility.operator"><span ng-show="requiredFilters.facilityOperator" class="label-required">*</span></label><div>
+        <select id="facilityOperator" ui-select2 class="input-large" ng-model="filter.facilityOperator" ng-change="notifyFilterChanged('facility-operator-changed');">
+            <option ng-repeat="facilityOperator in facilityOperators" value="{{ facilityOperator.id }}" ng-selected="facilityOperator.id == filter.facilityOperator">{{facilityOperator.text}}</option>
+        </select>
+    </div>
     </div>
 </script>

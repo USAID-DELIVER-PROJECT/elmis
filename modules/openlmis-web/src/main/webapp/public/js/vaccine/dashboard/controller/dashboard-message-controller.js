@@ -93,4 +93,11 @@ function ModalInstanceCtrl($scope, $modalInstance, items, ContactList,SettingsBy
         }
         return messages;
     };
+
+    $scope.lotHasExpired=function(expirationDate){
+                var lotExpirationTime=expirationDate;
+                var toDayTime=new Date().getTime();
+                var hasExpired=(lotExpirationTime <=toDayTime)?true:false;
+                return hasExpired;
+    };
 }

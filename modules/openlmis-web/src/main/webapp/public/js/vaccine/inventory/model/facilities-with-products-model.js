@@ -87,6 +87,11 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                            lotOnHand.lineItemLotId=(distributedLot === undefined)?null:distributedLot.id;
                            lotOnHand.vvmStatus=(lot.customProps !== undefined && lot.customProps !== null && lot.customProps.vvmstatus !== undefined)?lot.customProps.vvmstatus:null;
                            lotOnHand.expirationDate=lot.lot.expirationDate;
+
+                           var lotExpirationTime=new Date(lot.lot.expirationDate).getTime();
+                           var toDayTime=new Date().getTime();
+                           lotOnHand.hasExpired=(lotExpirationTime <=toDayTime)?true:false;
+
                             product.lots.push(lotOnHand);
                        });
 
@@ -97,7 +102,16 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
                             return (a.vvmStatus > b.vvmStatus) ? -1 : ((b.vvmStatus > a.vvmStatus) ? 1 : 0);
                        });
 
-                       product.lots=lotsDescVvmStatus;
+                       var lotsHasExpired=lotsDescVvmStatus.sort(function(a,b){
+                            var lotAExpirationTime=new Date(a.expirationDate).getTime();
+                            var lotBExpirationTime=new Date(b.expirationDate).getTime();
+                            var toDayTime=new Date().getTime();
+                                a.hasExpired=(lotAExpirationTime <=toDayTime)?true:false;
+                                b.hasExpired=(lotBExpirationTime <=toDayTime)?true:false;
+                                return (a.hasExpired && !b.hasExpired) ? -1 : ((b.hasExpired && !a.hasExpired) ? 1 : 0);
+                            });
+
+                       product.lots=lotsHasExpired;
                   }
                   //Add lot object for POD to make sure zero lotOnHand appear during POD
                   if(facilityDistribution !== undefined && facilityDistribution.status ==="PENDING" && distributedProduct !== undefined && distributedProduct.lots.length >0){

@@ -235,6 +235,13 @@ function StockMovementViewController($scope,verifyDistribution, $window,$timeout
         $window.location = '/public/pages/vaccine/order-requisition/index.html#/view';
     };
 
+    $scope.lotHasExpired=function(date){
+        var lotExpirationTime=new Date(date).getTime();
+        var toDayTime=new Date().getTime();
+        var hasExpired=(lotExpirationTime <=toDayTime)?true:false;
+        return hasExpired;
+    };
+
 
 }
 

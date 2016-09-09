@@ -20,17 +20,14 @@ import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
 import org.openlmis.ivdform.domain.reports.*;
-import org.openlmis.report.model.dto.Product;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
-import org.openlmis.vaccine.repository.mapper.reports.PerformanceByDropoutRateByDistrictMapper;
+import org.openlmis.report.mapper.PerformanceByDropoutRateByDistrictMapper;
 import org.openlmis.vaccine.repository.reports.VaccineReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 

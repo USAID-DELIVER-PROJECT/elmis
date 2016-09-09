@@ -17,7 +17,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
 import org.apache.log4j.Logger;
-import org.apache.lucene.util.CollectionUtil;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.service.FacilityApprovedProductService;
@@ -37,9 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.collections.CollectionUtils.find;
@@ -54,7 +54,11 @@ import static org.openlmis.restapi.domain.ReplenishmentDTO.prepareForREST;
 public class RestRequisitionService {
 
   public static final boolean EMERGENCY = false;
+  private static final String SOURCE_APPLICATION_ELMIS_FE = "ELMIS_FE";
+  private static final String SOURCE_APPLICATION_OTHER = "OTHER";
+
   private static final Logger logger = Logger.getLogger(RestRequisitionService.class);
+
   @Autowired
   private RequisitionService requisitionService;
   @Autowired
@@ -71,7 +75,10 @@ public class RestRequisitionService {
   private ProcessingPeriodService processingPeriodService;
   @Autowired
   private FacilityApprovedProductService facilityApprovedProductService;
-  private List<FacilityTypeApprovedProduct> nonFullSupplyFacilityApprovedProductByFacilityAndProgram;
+
+  private List<FacilityTypeApprovedProduct> fullSupplyFacilityTypeApprovedProducts;
+
+  private List<FacilityTypeApprovedProduct> nonFullSupplyFacilityApprovedProducts;
 
   @Transactional
   public Rnr submitReport(Report report, Long userId) {
@@ -82,7 +89,7 @@ public class RestRequisitionService {
 
     restRequisitionCalculator.validatePeriod(reportingFacility, reportingProgram);
 
-    Rnr rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, EMERGENCY, null);
+    Rnr rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, EMERGENCY, null, SOURCE_APPLICATION_OTHER);
 
     restRequisitionCalculator.validateProducts(report.getProducts(), rnr);
 
@@ -144,27 +151,33 @@ public class RestRequisitionService {
       rnr = requisitionService.getFullRequisitionById( rnrs.get(0).getId() );
 
     }else{
-      rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, report.getEmergency(), period);
+      rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, report.getEmergency(), period, SOURCE_APPLICATION_ELMIS_FE);
     }
 
     List<RnrLineItem> fullSupplyProducts = new ArrayList<>();
     List<RnrLineItem> nonFullSupplyProducts = new ArrayList<>();
-    Iterator<RnrLineItem> iterator = report.getProducts().iterator();
-    nonFullSupplyFacilityApprovedProductByFacilityAndProgram = facilityApprovedProductService.getNonFullSupplyFacilityApprovedProductByFacilityAndProgram( reportingFacility.getId(), reportingProgram.getId() );
 
-    // differentiate between full supply and non full supply products
-    while(iterator.hasNext()){
-      final RnrLineItem lineItem = iterator.next();
-      if(lineItem.getFullSupply()){
-        fullSupplyProducts.add(lineItem);
-      }else{
+    fullSupplyFacilityTypeApprovedProducts = facilityApprovedProductService.getFullSupplyFacilityApprovedProductByFacilityAndProgram( reportingFacility.getId(), reportingProgram.getId() );
+    nonFullSupplyFacilityApprovedProducts = facilityApprovedProductService.getNonFullSupplyFacilityApprovedProductByFacilityAndProgram( reportingFacility.getId(), reportingProgram.getId() );
 
-        setNonFullSupplyCreatorFields(lineItem);
-        nonFullSupplyProducts.add(lineItem);
-      }
+    Collection<String> fullSupplyProductCodes = ( Collection<String> ) CollectionUtils.collect(fullSupplyFacilityTypeApprovedProducts, input -> ((FacilityTypeApprovedProduct) input).getProgramProduct().getProduct().getCode());
+    Collection<String> nonFullSupplyProductCodes = ( Collection<String> ) CollectionUtils.collect(nonFullSupplyFacilityApprovedProducts, input -> ((FacilityTypeApprovedProduct) input).getProgramProduct().getProduct().getCode());
+
+    fullSupplyProducts = report.getProducts().stream()
+                                                .filter(p-> fullSupplyProductCodes.contains(p.getProductCode()) )
+                                                .collect(Collectors.toList());
+
+    nonFullSupplyProducts = report.getProducts().stream()
+                                                  .filter(p-> nonFullSupplyProductCodes.contains(p.getProductCode()) )
+                                                  .collect(Collectors.toList());
+
+    for(RnrLineItem li : nonFullSupplyProducts){
+      setNonFullSupplyCreatorFields(li);
     }
+
     report.setProducts(fullSupplyProducts);
     report.setNonFullSupplyProducts(nonFullSupplyProducts);
+
     restRequisitionCalculator.validateProducts(report.getProducts(), rnr);
 
     markSkippedLineItems(rnr, report);
@@ -181,23 +194,17 @@ public class RestRequisitionService {
 
   private void setNonFullSupplyCreatorFields(final RnrLineItem lineItem) {
 
-    FacilityTypeApprovedProduct p = (FacilityTypeApprovedProduct) find(nonFullSupplyFacilityApprovedProductByFacilityAndProgram, new Predicate() {
+    FacilityTypeApprovedProduct facilityTypeApprovedProduct = (FacilityTypeApprovedProduct) find(nonFullSupplyFacilityApprovedProducts, new Predicate() {
       @Override
       public boolean evaluate(Object product) {
         return ((FacilityTypeApprovedProduct) product).getProgramProduct().getProduct().getCode().equals(lineItem.getProductCode());
       }
     });
-    if(p == null){
+    if(facilityTypeApprovedProduct == null){
       return;
     }
-    lineItem.setDispensingUnit(p.getProgramProduct().getProduct().getDispensingUnit());
-    lineItem.setMaxMonthsOfStock(p.getMaxMonthsOfStock());
-    lineItem.setDosesPerMonth(p.getProgramProduct().getDosesPerMonth());
-    lineItem.setDosesPerDispensingUnit(p.getProgramProduct().getProduct().getDosesPerDispensingUnit());
-    lineItem.setPackSize(p.getProgramProduct().getProduct().getPackSize());
-    lineItem.setRoundToZero(p.getProgramProduct().getProduct().getRoundToZero());
-    lineItem.setPackRoundingThreshold(p.getProgramProduct().getProduct().getPackRoundingThreshold());
-    lineItem.setPrice(p.getProgramProduct().getCurrentPrice());
+    lineItem.populateFromProduct(facilityTypeApprovedProduct.getProgramProduct());
+    lineItem.setMaxMonthsOfStock(facilityTypeApprovedProduct.getMaxMonthsOfStock());
   }
 
 

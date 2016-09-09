@@ -19,17 +19,19 @@ import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.StockedOutReportParam;
 import org.openlmis.report.util.ParameterAdaptor;
 import org.openlmis.report.util.SelectedFilterHelper;
+import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
 @NoArgsConstructor
 public class StockedOutReportDataProvider extends ReportDataProvider {
-
+  public static final String SHOW_STOCKOUT_COLUMN = "SHOW_STOCKEDOUT";
 
   @Value("${report.status.considered.accepted}")
   private String configuredAcceptedRnrStatuses;
@@ -51,12 +53,21 @@ public class StockedOutReportDataProvider extends ReportDataProvider {
     param.setAcceptedRnrStatuses(configuredAcceptedRnrStatuses);
     return param;
   }
+  @Override
+  public HashMap<String, String> getExtendedHeader(Map params) {
+    HashMap<String, String> result = new HashMap<String, String>();
+    String showStockedOut = StringHelper.getValue(params, "showStockeout");
+    result.put(SHOW_STOCKOUT_COLUMN, showStockedOut);
+    return result;
+  }
 
   @Override
   public String getFilterSummary(Map<String, String[]> params) {
-    return selectedFilterHelper.getProgramPeriodGeoZone(params);
+    return selectedFilterHelper.getReportCombinedFilterString(
+            selectedFilterHelper.getProgramPeriodGeoZone(params),
+            selectedFilterHelper.getFacilityFilterString(params),
+            selectedFilterHelper.getSelectedDateRange(params));
   }
-
 
 
 }

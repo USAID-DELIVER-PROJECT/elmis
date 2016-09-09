@@ -601,3 +601,16 @@ services.factory('DistributionByVoucherNumber', function ($resource) {
 });
 
 
+});
+
+services.factory('VaccineDistributionCompletenessReport', function ($resource) {
+    return $resource('/vaccine/inventory/report/distributionCompleteness.json', {}, {});
+});
+
+services.factory('VaccineDistributedFacilitiesReport', function ($resource) {
+    return $resource('/vaccine/inventory/report/getDistributedFacilities.json', {}, {});
+});
+
+services.factory('VaccineDistributionProgramProduct', function ($resource) {
+    return $resource('/vaccine/orderRequisition/:programId.json', {programId: '@programId'}, {});
+});

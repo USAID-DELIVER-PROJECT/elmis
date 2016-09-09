@@ -27,29 +27,56 @@ public class StockedOutReportQueryBuilder {
   public static String getQuery(Map params) {
     StockedOutReportParam filter = (StockedOutReportParam) params.get("filterCriteria");
     BEGIN();
-    SELECT("DISTINCT supplyingfacility, facilitycode, productCode, facility, product, facilitytypename, location, processing_period_name,stockoutdays");
-      FROM("vw_stock_status join vw_districts d on gz_id = d.district_id");
-    WHERE("status = 'SO'");
-    WHERE("reported_figures > 0");
-    WHERE(programIsFilteredBy("programId"));
-    WHERE(periodIsFilteredBy("periodId"));
-    WHERE(userHasPermissionOnFacilityBy("facility_id"));
-    WHERE(rnrStatusFilteredBy("req_status", filter.getAcceptedRnrStatuses()));
+    SELECT_DISTINCT( " gz.region_name as supplyingfacility,  " +
+        " f.code as facilitycode,  " +
+        " li.productcode,  " +
+        " f.name as facility,  " +
+        " li.product as product,  " +
+        " ft.name facilitytypename,  " +
+        " gz.district_name as location,  " +
+        " pp.name as processing_period_name,  " +
+        " li.stockoutdays stockoutdays,   " +
+        " to_char(pp.startdate, 'Mon') as month,  " +
+        " extract(year from pp.startdate) as year,   " +
+        " pg.code as program  " +
+        "   ");
+
+      FROM(
+         " processing_periods pp  " +
+        "JOIN requisitions r ON pp. ID = r.periodid  " +
+        "JOIN requisition_line_items li ON li.rnrid = r. ID  " +
+        "JOIN facilities f on f.id = r.facilityId  " +
+        "JOIN facility_types ft on ft.id = f.typeid  " +
+        "JOIN products p on p.code = li.productcode  " +
+        "JOIN vw_districts gz on gz.district_id = f.geographiczoneid  " +
+        "JOIN programs pg on pg.id = r.programid  " );
+
+
+    WHERE("li.stockinhand = 0 AND li.skipped = false ");
+    WHERE("(li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0)");
+    WHERE(programIsFilteredBy("r.programId"));
+    WHERE(periodIsFilteredBy("r.periodId"));
+    WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
+    WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
 
     if (filter.getProductCategory() != 0) {
-      WHERE(productCategoryIsFilteredBy("categoryId"));
+      WHERE(productCategoryIsFilteredBy("p.categoryId"));
+    }
+
+    if(filter.getFacility() != 0){
+      WHERE(facilityIsFilteredBy("r.facilityId"));
     }
 
     if (filter.getFacilityType() != 0) {
-      WHERE(facilityTypeIsFilteredBy("facilityTypeId"));
+      WHERE(facilityTypeIsFilteredBy("f.typeid"));
     }
 
-    if (multiProductFilterBy(filter.getProducts(), "productId", "indicator_product") != null) {
-      WHERE(multiProductFilterBy(filter.getProducts(), "productId", "indicator_product"));
+    if (multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer") != null) {
+      WHERE(multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer"));
     }
 
     if (filter.getZone() != 0) {
-      WHERE(geoZoneIsFilteredBy("d"));
+      WHERE(geoZoneIsFilteredBy("gz"));
     }
     ORDER_BY("supplyingFacility asc, facility asc, product asc");
     // copy the sql over to a variable, this makes the debugging much more possible.

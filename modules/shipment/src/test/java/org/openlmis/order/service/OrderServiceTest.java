@@ -42,10 +42,12 @@ import org.openlmis.shipment.domain.ShipmentFileInfo;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static java.util.Arrays.asList;
@@ -55,7 +57,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.openlmis.core.builder.FacilityBuilder.*;
 import static org.openlmis.core.builder.ProgramBuilder.defaultProgram;
-import static org.openlmis.core.builder.ProgramBuilder.programId;
 import static org.openlmis.core.builder.SupplyLineBuilder.defaultSupplyLine;
 import static org.openlmis.core.domain.RightName.*;
 import static org.openlmis.order.domain.DateFormat.*;
@@ -144,7 +145,7 @@ public class OrderServiceTest {
 
     order.setStatus(OrderStatus.IN_ROUTE);
     order.setSupplyLine(supplyLine);
-    order.setOrderNumber("OrderHIV00000001R");
+    order.setOrderNumber("OrderHIV000001R");
     verify(orderRepository).save(order);
     verify(supplyLineService).getSupplyLineBy(supervisoryNode, program);
     verify(requisitionService).getLWById(rnr.getId());
@@ -190,7 +191,7 @@ public class OrderServiceTest {
     Order order = new Order(rnr);
     order.setStatus(OrderStatus.READY_TO_PACK);
     order.setSupplyLine(supplyLine);
-    order.setOrderNumber("OrderHIV00000001R");
+    order.setOrderNumber("OrderHIV000001R");
     verify(orderRepository).save(order);
     verify(supplyLineService).getSupplyLineBy(supervisoryNode, program);
     verify(requisitionService).getLWById(rnr.getId());
@@ -301,9 +302,9 @@ public class OrderServiceTest {
   @Test
   public void shouldSetReleasedForAllOrdersIfErrorInShipment() throws Exception {
     Order order1 = new Order(make(a(defaultRequisition, with(id, 123L))));
-    order1.setOrderNumber("OYELL_FVR00000123R");
+    order1.setOrderNumber("OYELL_FVR000123R");
     Order order2 = new Order(make(a(defaultRequisition, with(id, 456L), with(RequisitionBuilder.facility, make(a(defaultFacility, with(code, "F3333")))))));
-    order1.setOrderNumber("OYELL_FVR00000456R");
+    order1.setOrderNumber("OYELL_FVR000456R");
     order1.setStatus(RELEASED);
     order2.setStatus(RELEASED);
 
@@ -345,9 +346,9 @@ public class OrderServiceTest {
   @Test
   public void shouldSetPackedStatusForAllOrdersIfNoErrorInShipment() throws Exception {
     Order order1 = new Order(make(a(defaultRequisition, with(id, 123L))));
-    order1.setOrderNumber("OYELL_FVR00000123R");
+    order1.setOrderNumber("OYELL_FVR000123R");
     Order order2 = new Order(make(a(defaultRequisition, with(id, 456L), with(RequisitionBuilder.facility, make(a(defaultFacility, with(code, "F3333")))))));
-    order1.setOrderNumber("OYELL_FVR00000456R");
+    order1.setOrderNumber("OYELL_FVR000456R");
 
     Set<String> orderNumbers = new LinkedHashSet<>();
     orderNumbers.add(order1.getOrderNumber());
@@ -461,7 +462,7 @@ public class OrderServiceTest {
 
   @Test
   public void shouldReturnTrueIfOrderIsReleased() throws Exception {
-    String orderNumber = "OYELL_FVR00000123R";
+    String orderNumber = "OYELL_FVR000123R";
     when(orderRepository.getStatus(orderNumber)).thenReturn(RELEASED);
 
     assertThat(orderService.isShippable(orderNumber), is(true));
@@ -471,7 +472,7 @@ public class OrderServiceTest {
 
   @Test
   public void shouldReturnTrueIfOrderInOneOfTheStatuses() throws Exception {
-    String orderNumber = "OYELL_FVR00000123R";
+    String orderNumber = "OYELL_FVR000123R";
 
     when(orderRepository.getStatus(orderNumber)).thenReturn(RELEASED);
 
@@ -480,7 +481,7 @@ public class OrderServiceTest {
 
   @Test
   public void shouldReturnFalseIfOrderInOneOfTheStatuses() throws Exception {
-    String orderNumber = "OYELL_FVR00000123R";
+    String orderNumber = "OYELL_FVR000123R";
     when(orderRepository.getStatus(orderNumber)).thenReturn(RELEASED);
 
     assertFalse(orderService.hasStatus(orderNumber, PACKED, TRANSFER_FAILED));
@@ -497,7 +498,7 @@ public class OrderServiceTest {
 
   @Test
   public void shouldReturnTrueIfOrderIsNotShippable() throws Exception {
-    String orderNumber = "OYELL_FVR00000123R";
+    String orderNumber = "OYELL_FVR000123R";
     when(orderRepository.getStatus(orderNumber))
       .thenReturn(IN_ROUTE)
       .thenReturn(PACKED)

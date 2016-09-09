@@ -41,7 +41,12 @@
     <div class="box span12">
         <div class="box-header">
             <h2 openlmis-message="report.status.vaccination.received.permonth.report"><i class="icon-edit"></i><span class="break"></span></h2>
-            <div class="box-icon"></div>
+            <div class="box-icon">
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
         </div>
         <div>
             <div class="app-form " style="padding: 5px;">

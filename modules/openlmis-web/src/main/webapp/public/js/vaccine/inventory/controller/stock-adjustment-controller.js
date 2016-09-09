@@ -118,7 +118,7 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,$dialog
                     st.stockCards.forEach(function(s){
                         if(s.lotsOnHand !==undefined && s.lotsOnHand.length>0){
                             s.lotsOnHand.forEach(function(l){
-                                if(l.quantity !== undefined)
+                                if(l.quantity !== undefined && (l.quantity - l.quantityOnHand) !== 0)
                                 {
                                         l.adjustmentReasons.forEach(function(reason){
                                             var event={};
@@ -172,6 +172,19 @@ function StockAdjustmentController($scope, $timeout,$window,$routeParams,$dialog
      };
      $scope.cancel=function(){
         $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
+     };
+
+     $scope.reasonChange=function(){
+            var reasonName=$scope.adjustmentReason.type.name;
+            var lotExpirationTime=new Date($scope.currentStockLot.lot.expirationDate).getTime();
+            var toDayTime=new Date().getTime();
+            if(reasonName === "EXPIRED_VIMS" && (lotExpirationTime - toDayTime) >0 )
+            {
+                $scope.expirationInvalid=true;
+            }
+            else{
+                $scope.expirationInvalid=false;
+            }
      };
 
 

@@ -103,6 +103,7 @@ public class ReportingRateNotificationController extends BaseController {
         sms.setPhoneNumber(dto.getContact());
         sms.setDateSaved(new Date());
         sms.setDirection(DIRECTION_OUT);
+        sms.setSent(false);
         smsService.sendAsync(sms);
     }
 

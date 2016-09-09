@@ -24,10 +24,11 @@ package org.openlmis.web.controller.vaccine;/*
 
 import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
-import org.openlmis.vaccine.domain.reports.TrendOfMinMaxColdChainTempratureReport;
-import org.openlmis.vaccine.service.reports.TrendOfMinMasColdRangeService;
+import org.openlmis.report.model.report.vaccine.TrendOfMinMaxColdChainTempratureReport;
+import org.openlmis.report.service.TrendOfMinMasColdRangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,6 +44,7 @@ public class TrendOfMinMaxColdRangeReportController {
     private TrendOfMinMasColdRangeService service;
 
     @RequestMapping(value = "trendOfMinMaxColdRange", method = RequestMethod.GET, headers = "Accept=application/json")
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> getTrendColdRangeReportList(
                                                                         HttpServletRequest request) {
         TrendOfMinMaxColdChainTempratureReport trendOfMinMaxColdChainTempratureReport = null;

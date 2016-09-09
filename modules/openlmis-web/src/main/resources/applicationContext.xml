@@ -14,16 +14,24 @@
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
        xmlns="http://www.springframework.org/schema/beans"
+       xmlns:int="http://www.springframework.org/schema/integration"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-4.1.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-4.1.xsd
+        http://www.springframework.org/schema/integration
+        http://www.springframework.org/schema/integration/spring-integration.xsd
+        http://www.springframework.org/schema/integration/jdbc
+        http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc.xsd
         http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
-      ">
+        http://www.springframework.org/schema/aop/spring-aop-4.1.xsd">
 
     <context:annotation-config  />
     <mvc:annotation-driven  />
@@ -344,5 +352,81 @@
             </map>
         </constructor-arg>
     </bean>
+
+    <!--
+        Email Notification Configuration
+        Reads from email_notifications and tries to send them.
+    -->
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.sender.host}"/>
+        <property name="port" value="${mail.sender.port}"/>
+        <property name="username" value="${mail.sender.username}"/>
+        <property name="password" value="${mail.sender.password}"/>
+        <property name="protocol" value="${mail.sender.protocol}"/>
+        <property name="javaMailProperties" ref="mailProperties"/>
+    </bean>
+
+    <int:channel id="inputChannel" >
+        <int:dispatcher task-executor="emailMessageDispatcher"></int:dispatcher>
+    </int:channel>
+
+    <int-jdbc:inbound-channel-adapter channel="inputChannel"
+                                      data-source="openlmisDataSource"
+                                      query="SELECT * FROM email_notifications WHERE sent = false"
+                                      row-mapper="emailMessageRowMapper"
+                                      max-rows-per-poll="${email.notification.rows.per.poll}"
+                                      update="UPDATE email_notifications SET sent = true WHERE id IN (:id)"
+                                      update-per-row="true">
+        <int:poller fixed-rate="600000">
+            <int:transactional/>
+        </int:poller>
+    </int-jdbc:inbound-channel-adapter>
+
+    <bean id="emailMessageDispatcher" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" >
+        <property name="corePoolSize" value="1"/>
+        <property name="maxPoolSize" value="1"/>
+        <property name="queueCapacity" value="-1"/>
+    </bean>
+
+    <int:service-activator input-channel="inputChannel" ref="emailService" method="processEmails" />
+
+    <util:properties id="mailProperties">
+        <prop key="mail.smtp.from">${mail.sender.from}</prop>
+        <prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+        <prop key="mail.smtp.debug">${mail.smtp.debug}</prop>
+        <prop key="mail.smtp.starttls.enable">${mail.smtp.starttls.enable}</prop>
+        <prop key="mail.smtp.quitwait">${mail.smtp.quitwait}</prop>
+    </util:properties>
+    <!-- End of email configuration -->
+
+    <!-- Start SMS polling configuration -->
+
+        <int:channel id="smsInputChannel">
+            <int:dispatcher task-executor="smsDispatcher"></int:dispatcher>
+        </int:channel>
+
+        <int-jdbc:inbound-channel-adapter channel="smsInputChannel"
+                                          data-source="openlmisDataSource"
+                                          query="SELECT * FROM sms WHERE direction='O' and sent = false"
+                                          row-mapper="SMSRowMapper"
+                                          max-rows-per-poll="${sms.notification.rows.per.poll}"
+                                          update="UPDATE sms SET sent = true WHERE id IN (:id)"
+                                          update-per-row="true">
+            <int:poller fixed-rate="${sms.notification.polling.rate}">
+                <int:transactional/>
+            </int:poller>
+        </int-jdbc:inbound-channel-adapter>
+
+        <bean id="smsDispatcher" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+            <property name="corePoolSize" value="1"/>
+            <property name="maxPoolSize" value="1"/>
+            <property name="queueCapacity" value="-1"/>
+        </bean>
+
+    <int:service-activator input-channel="smsInputChannel" ref="SMSService" method="ProcessSMS"/>
+
+    <!-- End of SMS -->
+
 
 </beans>

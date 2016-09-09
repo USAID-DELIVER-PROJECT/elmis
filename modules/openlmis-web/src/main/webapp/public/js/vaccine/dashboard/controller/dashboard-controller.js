@@ -1001,7 +1001,6 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
     $scope.batchToExpireNotificationCallBack();
 
     $scope.stockStatusTabClicked=function(){
-       console.log('called');
        $scope.stockStatus.loadData = !$scope.stockStatus.loadData;
        $scope.stockCallbacks();
     };

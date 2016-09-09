@@ -35,6 +35,18 @@ services.factory('StockCardsByCategory', function($resource,StockCards,$q, $time
                                                 var lotsDescVvmStatus=lotsAscExpiration.sort(function(a,b){
                                                     return (a.customProps.vvmstatus > b.customProps.vvmstatus) ? -1 : ((b.customProps.vvmstatus > a.customProps.vvmstatus) ? 1 : 0);
                                                 });
+
+                                                var lotsHasExpired=lotsDescVvmStatus.sort(function(a,b){
+                                                    var lotAExpirationTime=new Date(a.lot.expirationDate).getTime();
+                                                    var lotBExpirationTime=new Date(b.lot.expirationDate).getTime();
+                                                    var toDayTime=new Date().getTime();
+                                                    a.hasExpired=(lotAExpirationTime <=toDayTime)?true:false;
+                                                    b.hasExpired=(lotBExpirationTime <=toDayTime)?true:false;
+                                                    return (a.hasExpired && !b.hasExpired) ? -1 : ((b.hasExpired && !a.hasExpired) ? 1 : 0);
+                                                });
+
+
+
                                                 s.lotsOnHand=lotsDescVvmStatus;
                                         });
                                         stockCards=_.sortBy(stockCards,'displayOrder');
@@ -340,7 +352,16 @@ services.factory('StockCardsForProgramByCategory', function ($resource,StockCard
                                         return (a.customProps.vvmstatus > b.customProps.vvmstatus) ? -1 : ((b.customProps.vvmstatus > a.customProps.vvmstatus) ? 1 : 0);
                                     });
 
-                                    s.lotsOnHand=lotsDescVvmStatus;
+                                    var lotsHasExpired=lotsDescVvmStatus.sort(function(a,b){
+                                        var lotAExpirationTime=new Date(a.lot.expirationDate).getTime();
+                                        var lotBExpirationTime=new Date(b.lot.expirationDate).getTime();
+                                        var toDayTime=new Date().getTime();
+                                        a.hasExpired=(lotAExpirationTime <=toDayTime)?true:false;
+                                        b.hasExpired=(lotBExpirationTime <=toDayTime)?true:false;
+                                        return (a.hasExpired && !b.hasExpired) ? -1 : ((b.hasExpired && !a.hasExpired) ? 1 : 0);
+                                    });
+
+                                    s.lotsOnHand=lotsHasExpired;
 
                                     if (s.product.id !== undefined && quantityRequested !==undefined) {
 

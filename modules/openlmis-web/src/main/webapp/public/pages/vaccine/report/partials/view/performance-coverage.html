@@ -36,6 +36,7 @@
             <h2 openlmis-message="report.title.performance.coverage"><i class="icon-edit"></i><span class="break"></span></h2>
             <div class="box-icon">
             </div>
+
         </div>
         <div class="app-form">
             <form ng-submit="filterGrid()" name="filterForm" novalidate>
@@ -72,6 +73,10 @@
             <div id="parent" ng-show="datarows.length > 0">
                 <h2 ng-show="!regionSelected">District Level</h2>
                 <h2 ng-show="regionSelected">Region Level</h2>
+                <div class="box-icon" style="float:right;">
+                    <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                    <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+                </div>
                 <table id="vbfixTable" class="rnr-table table-bordered table">
                     <thead>
                     <tr>

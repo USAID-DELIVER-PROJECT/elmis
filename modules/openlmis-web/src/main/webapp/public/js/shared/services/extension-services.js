@@ -611,7 +611,7 @@ services.factory("SendMessagesReportAttachment",function($resource){
     return $resource('/reports/users/:userId/programs.json', {}, {});
 });
 services.factory('UserFacilitiesForProgram', function ($resource) {
-    return $resource('/users/:userId/supervised/:programId/facilities.json', {}, {});
+    return $resource('/users/program/supervised/facilities.json', {}, {});
 });
 
 services.factory('UserPreferences', function ($resource) {
@@ -1230,3 +1230,8 @@ services.factory('StaticYears',function($resource){
 services.factory('GetFacilitySupervisorsByProgram', function($resource){
     return $resource('/get-facility-supervisors-by-program.json',{}, {});
 });
+
+services.factory('GetAllFacilityOperators', function($resource){
+    return $resource('/reports/allFacilityOperators.json', {}, {});
+});
+

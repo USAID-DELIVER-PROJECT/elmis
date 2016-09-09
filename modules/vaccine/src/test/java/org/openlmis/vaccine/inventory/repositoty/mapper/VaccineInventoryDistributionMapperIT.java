@@ -10,7 +10,6 @@
 
 package org.openlmis.vaccine.inventory.repositoty.mapper;
 
-import org.apache.lucene.search.similarities.Distribution;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

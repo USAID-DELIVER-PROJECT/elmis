@@ -27,17 +27,21 @@ public class StockImbalanceQueryBuilder {
     StockImbalanceReportParam filter = (StockImbalanceReportParam) params.get("filterCriteria");
     Map sortCriteria = (Map) params.get("SortCriteria");
     BEGIN();
-    SELECT("distinct supplyingfacility, ft.name facilityType,  facility, d.district_name districtName, d.zone_name zoneName, product,  stockInHand physicalCount,  amc,  mos months,  required orderQuantity, CASE WHEN status = 'SO' THEN  'Stocked Out' WHEN status ='US' then  'Below Minimum' WHEN status ='OS' then  'Over Stocked' END AS status ");
-    FROM("vw_stock_status join facilities f on f.id = facility_id join vw_districts d on d.district_id = f.geographicZoneId join facility_types ft on f.typeid=ft.id ");
+    SELECT("distinct supplyingfacility, ft.name facilityType,  facility, d.district_name districtName, d.zone_name zoneName, product,  stockInHand physicalCount,  amc,  mos months,  required orderQuantity, " +
+            "CASE WHEN mos <= maxmonthsofstock and mos >= minmonthsofstock then 'Adequately stocked' WHEN status = 'SO' THEN  'Stocked Out' WHEN status ='US' then  'Below Minimum' WHEN status ='OS' then  'Over Stocked' END AS status");
+    FROM("vw_stock_status join facilities f on f.id = facility_id join vw_districts d on d.district_id = f.geographicZoneId join facility_types ft on f.typeid=ft.id " +
+            "left outer JOIN program_products on program_products.programid = vw_stock_status.programid and program_products.productid = vw_stock_status.productid\n" +
+            "left outer join facility_approved_products fp on fp.programproductid = program_products.id");
     WHERE("status <> 'SP'");
     WHERE(rnrStatusFilteredBy("req_status", filter.getAcceptedRnrStatuses()));
     WHERE("(amc != 0 or stockInHand != 0 )");
     WHERE(periodIsFilteredBy("periodId"));
-    WHERE(programIsFilteredBy("programId"));
+    WHERE(programIsFilteredBy("vw_stock_status.programId"));
     WHERE(userHasPermissionOnFacilityBy("facility_id"));
     if (filter.getFacilityType() != 0) {
       WHERE(facilityTypeIsFilteredBy("facilitytypeid"));
     }
+
     if (filter.getFacility() != 0) {
       WHERE(facilityIsFilteredBy("facility_id"));
     }
@@ -45,8 +49,8 @@ public class StockImbalanceQueryBuilder {
       WHERE(productCategoryIsFilteredBy("categoryId"));
     }
 
-    if (multiProductFilterBy(filter.getProducts(), "productId", "tracer") != null) {
-      WHERE(multiProductFilterBy(filter.getProducts(), "productId", "tracer"));
+    if (multiProductFilterBy(filter.getProducts(), "vw_stock_status.productId", "tracer") != null) {
+      WHERE(multiProductFilterBy(filter.getProducts(), "vw_stock_status.productId", "tracer"));
     }
 
     if (filter.getZone() != 0) {

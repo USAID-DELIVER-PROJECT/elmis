@@ -33,8 +33,8 @@ public class GeographicReportProvider  {
     return geoMapper.getGeoReportingRate(userId,programId,schedule, processingPeriodId);
   }
 
-    public List<GeoStockStatusFacilitySummary> getStockStatusFacilitySummaryReport(Long programId, Long processingPeriodId, Long productId){
-        return geoMapper.getGeoStockStatusFacilitySummary(programId, processingPeriodId,productId);
+    public List<GeoStockStatusFacilitySummary> getStockStatusFacilitySummaryReport(Long programId, Long processingPeriodId, Long productId, Long zone){
+        return geoMapper.getGeoStockStatusFacilitySummary(programId, processingPeriodId,productId, zone);
     }
 
     public List<GeoStockStatusProductSummary> getStockStatusProductSummaryReport(Long programId, Long geographicZoneId, Long processingPeriodId){

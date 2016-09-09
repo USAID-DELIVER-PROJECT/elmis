@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock-status" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="1.366026910730141"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String"/>
+	<parameter name="COUNTRY_NAME" class="java.lang.String"/>
+	<parameter name="GENERATED_BY" class="java.lang.String"/>
+	<parameter name="REPORT_VERSION" class="java.lang.String"/>
+	<parameter name="REPORT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_OUTPUT_OPTION" class="java.lang.String"/>
+	<parameter name="REPORT_SUB_TITLE" class="java.lang.String"/>
+	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
+	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
+	<parameter name="TOTAL_FACILITIES" class="java.lang.String"/>
+	<parameter name="TOTAL_STOCKEDOUT" class="java.lang.String"/>
+	<parameter name="PERCENTAGE_STOCKEDOUT" class="java.lang.String"/>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="SHOW_SUMMARY" class="java.lang.String">
+		<defaultValueExpression><![CDATA["N"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SHOW_STOCKEDOUT" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Y"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IS_REGION_REPORT" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IS_FACILITY_REPORT" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     i."bcg_1" AS bcg_vaccinated,
+     i."mr_1" AS mr_vaccinated,
+     i."dtp_1" AS bcg_mr_dropout,
+     i."dtp_3" AS dtp3_vaccinated,
+     i."denominator" AS target,
+     i."period_name" AS period_name,
+     i."facility_name" AS facility_name,
+     i."geographic_zone_name" AS district_name,
+     d."district_name" AS district_name,
+     d."region_name" AS region_name,
+     pp."id" AS program_products_id
+
+
+FROM
+"public"."vw_vaccine_dropout" i
+inner join "public"."vw_districts" d ON i.geographic_zone_id = d.district_id
+inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
+	 INNER JOIN "public"."program_products" pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id
+     inner join "public"."product_categories" pg  ON pp.productcategoryid = pg.ID]]>
+	</queryString>
+	<field name="stockStatusFacilityList" class="java.util.Collection"/>
+	<field name="stockStatusProductList" class="java.util.Collection"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="80">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="0" y="1" width="801" height="79" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="PAGE_NO">
+					<subreportParameterExpression><![CDATA[$V{PAGE_NUMBER}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_TITLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_NAME">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOGO">
+					<subreportParameterExpression><![CDATA[$P{LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_NAME">
+					<subreportParameterExpression><![CDATA[$P{REPORT_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES">
+					<subreportParameterExpression><![CDATA[$P{REPORT_FILTER_PARAM_VALUES}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_SUB_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_SUB_TITLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA["openlmis-report-header-landscape.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement x="200" y="39" width="353" height="41" uuid="d1e9a172-459d-4612-a94e-bdbcafdf92e2">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF" && $V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="106" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<subreport>
+				<reportElement x="0" y="17" width="800" height="89" uuid="0f4d68f2-f9ee-4f05-84da-a5b204cc35f0"/>
+				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
+				<subreportParameter name="TOTAL_STOCKEDOUT"/>
+				<subreportParameter name="REPORT_TITLE"/>
+				<subreportParameter name="REPORT_SUB_TITLE"/>
+				<subreportParameter name="SHOW_SUMMARY"/>
+				<subreportParameter name="REPORT_NAME"/>
+				<subreportParameter name="REPORT_VERSION"/>
+				<subreportParameter name="OPERATOR_NAME"/>
+				<subreportParameter name="GENERATED_BY"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="SHOW_STOCKEDOUT"/>
+				<subreportParameter name="PERCENTAGE_STOCKEDOUT"/>
+				<subreportParameter name="LOGO"/>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES"/>
+				<subreportParameter name="REPORT_OUTPUT_OPTION"/>
+				<subreportParameter name="TOTAL_FACILITIES"/>
+				<subreportParameter name="COUNTRY_NAME"/>
+				<subreportParameter name="REPORT_RESOURCE_BUNDLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_RESOURCE_BUNDLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_ID"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{stockStatusFacilityList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["stock-status-facility-subreport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="102">
+			<subreport>
+				<reportElement x="0" y="2" width="800" height="100" uuid="ff24469f-5f92-4a01-9702-53f06fdcb566"/>
+				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
+				<subreportParameter name="TOTAL_STOCKEDOUT"/>
+				<subreportParameter name="REPORT_TITLE"/>
+				<subreportParameter name="REPORT_SUB_TITLE"/>
+				<subreportParameter name="SHOW_SUMMARY"/>
+				<subreportParameter name="REPORT_NAME"/>
+				<subreportParameter name="REPORT_VERSION"/>
+				<subreportParameter name="OPERATOR_NAME"/>
+				<subreportParameter name="GENERATED_BY"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="SHOW_STOCKEDOUT"/>
+				<subreportParameter name="PERCENTAGE_STOCKEDOUT"/>
+				<subreportParameter name="LOGO"/>
+				<subreportParameter name="IS_DTP_PRODUCT"/>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES"/>
+				<subreportParameter name="REPORT_OUTPUT_OPTION"/>
+				<subreportParameter name="TOTAL_FACILITIES"/>
+				<subreportParameter name="COUNTRY_NAME"/>
+				<subreportParameter name="REPORT_RESOURCE_BUNDLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_RESOURCE_BUNDLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_ID"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{stockStatusProductList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[ "stock-status-product-subreport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

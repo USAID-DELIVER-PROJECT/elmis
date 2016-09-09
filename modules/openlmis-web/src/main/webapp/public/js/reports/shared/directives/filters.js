@@ -469,30 +469,45 @@ app.directive('productCategoryFilter', ['ProductCategoriesByProgram', '$routePar
 app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
     function (FacilitiesByProgramParams, $routeParams) {
 
-        var onPgCascadedVarsChanged = function ($scope) {
+        var onPgCascadedVarsChanged = function ($scope, required) {
+
+            var filter_caption = '';
+
+            if(!isUndefined(required) && angular.equals(required, 'true') ){
+                filter_caption =  'report.filter.select.facility';
+            }
+            else {
+                filter_caption = 'report.filter.all.facilities';
+            }
 
             if (!$routeParams.program) {
-                $scope.facilities = $scope.unshift([], 'report.filter.all.facilities');
+                if(isUndefined(required))
+                    $scope.facilities = $scope.unshift([], filter_caption);
+                else
+                    $scope.facilities = $scope.unshift([], filter_caption);
             }
 
             if (isUndefined($scope.filter.program) || $scope.filter.program === 0) {
                 return;
             }
 
-            var program = (angular.isDefined($scope.filter.program)) ? $scope.filter.program : 0;
-            var schedule = (angular.isDefined($scope.filter.schedule)) ? $scope.filter.schedule : 0;
-            var facilityType = (angular.isDefined($scope.filter.facilityType)) ? $scope.filter.facilityType : 0;
-            var requisitionGroup = (angular.isDefined($scope.filter.requisitionGroup)) ? $scope.filter.requisitionGroup : 0;
-            var zone = (angular.isDefined($scope.filter.zone)) ? $scope.filter.zone : 0;
+            var program = (!utils.isEmpty($scope.filter.program)) ? $scope.filter.program : 0;
+            var schedule = (!utils.isEmpty($scope.filter.schedule)) ? $scope.filter.schedule : 0;
+            var facilityType = (!utils.isEmpty($scope.filter.facilityType)) ? $scope.filter.facilityType : 0;
+            var requisitionGroup = (!utils.isEmpty($scope.filter.requisitionGroup)) ? $scope.filter.requisitionGroup : 0;
+            var zone = (!utils.isEmpty($scope.filter.zone)) ? $scope.filter.zone : 0;
+            var facilityOperator = (!utils.isEmpty($scope.filter.facilityOperator)) ? $scope.filter.facilityOperator : 0;
+
             // load facilities
             FacilitiesByProgramParams.get({
                 program: program,
                 schedule: schedule,
                 type: facilityType,
                 requisitionGroup: requisitionGroup,
-                zone: zone
+                zone: zone,
+                facilityOperator: facilityOperator
             }, function (data) {
-                $scope.facilities = $scope.unshift(data.facilities, 'report.filter.all.facilities');
+                    $scope.facilities = $scope.unshift(data.facilities, filter_caption);
             });
         };
 
@@ -503,7 +518,7 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 scope.registerRequired('facility', attr);
 
                 var onChange = function () {
-                    onPgCascadedVarsChanged(scope);
+                    onPgCascadedVarsChanged(scope, attr.required);
                 };
 
                 scope.subscribeOnChanged('facility', 'requisition-group', onChange, false);
@@ -511,6 +526,7 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 scope.subscribeOnChanged('facility', 'schedule', onChange, false);
                 scope.subscribeOnChanged('facility', 'facility-type', onChange, false);
                 scope.subscribeOnChanged('facility', 'program', onChange, true);
+                scope.subscribeOnChanged('facility', 'facility-operator', onChange, true);
             },
             templateUrl: 'filter-facility-template'
         };
@@ -892,8 +908,8 @@ app.directive('equipmentTypeFilter', ['ReportEquipmentTypes', function (ReportEq
     };
 }]);
 
-app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCategoryProductByProgramTree', 'GetYearSchedulePeriodTree',
-    function (ReportUserPrograms, GetProductCategoryProductByProgramTree, GetYearSchedulePeriodTree) {
+app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCategoryProductByProgramTree', 'GetYearSchedulePeriodTree', 'SettingsByKey',
+    function (ReportUserPrograms, GetProductCategoryProductByProgramTree, GetYearSchedulePeriodTree, SettingsByKey) {
 
         // When a program filter changes
         var onProgramChanged = function ($scope) {
@@ -920,6 +936,10 @@ app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCa
 
                 GetYearSchedulePeriodTree.get({}, function (data) {
                     scope.periods = data.yearSchedulePeriod;
+                });
+
+                SettingsByKey.get({key: 'SYSTEM_DEPLOYMENT_INSTANCE'}, function (data){
+                    scope.zambiaInstance = data.settings.value == 'ZAMBIA';//) console.log('asdfasdf');
                 });
 
                 var onParentChanged = function () {
@@ -1846,6 +1866,40 @@ app.directive('customLegend', [
                 });
             },
             templateUrl: 'filter-custom-legend-template'
+        };
+    }
+]);
+
+app.directive('datepickerPopup', function ($filter){
+    return {
+        restrict: 'EAC',
+        require: 'ngModel',
+        link: function(scope, elem, attrs, ngModel) {
+            ngModel.$parsers.push(function toModel(date) {
+                return $filter('date')(date, "yyyy-MM-dd");
+            });
+        }
+    };
+});
+
+app.directive('facilityOperatorFilter', ['GetAllFacilityOperators', '$routeParams', 'messageService',
+    function (GetAllFacilityOperators, $routeParams, messageService) {
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+
+                scope.registerRequired('facilityOperator', attr);
+                GetAllFacilityOperators.get({},
+                    function (data) {
+                       scope.facilityOperators = data.facilityOperators;
+                        scope.facilityOperators.unshift({
+                            'text': messageService.get('report.filter.all.facility.operators')
+                        });
+                    });
+            },
+            templateUrl: 'filter-facility-operator-template'
         };
     }
 ]);

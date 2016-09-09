@@ -137,8 +137,8 @@ public interface DashboardMapper {
     @Select("select * from fn_populate_dw_orders(1)")
     void startDashboardDataBatchUpdate();
 
-    @Insert("insert into email_notifications(receiver,content,subject,sent) values(#{receiver},#{content},NULL,false);")
-    void saveEmailNotification(@Param("receiver")String receiver, @Param("content") String content);
+    @Insert("insert into email_notifications(receiver,content,subject,sent) values(#{receiver},#{content},#{subject},false);")
+    void saveEmailNotification(@Param("receiver")String receiver,@Param("subject") String subject, @Param("content") String content);
 
 
     @Insert("insert into sms(message,phonenumber,direction,sent) values(#{message},#{phonenumber},#{direction},false);")

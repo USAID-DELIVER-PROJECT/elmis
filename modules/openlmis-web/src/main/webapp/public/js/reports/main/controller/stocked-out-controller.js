@@ -15,6 +15,7 @@ function StockedOutController($scope, $window, StockedOutReport) {
         // clear old data if there was any
         $scope.data = $scope.datarows = [];
         $scope.filter.max = 10000;
+        $scope.filter.showStockeout='N';
         StockedOutReport.get($scope.getSanitizedParameter(), function(data) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
                 $scope.data = data.pages.rows;

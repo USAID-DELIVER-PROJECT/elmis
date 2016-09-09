@@ -179,7 +179,10 @@ public interface GeographicZoneReportMapper {
             "WHERE gz.parentId = #{parentId} order by gz.name\n")
     List<GeoZoneTree> getUserGeographicZoneChildren(@Param("programId") Long programId, @Param("parentId") int parentId, @Param("userId") Long userId);
 
-    @Select("   SELECT  " +
+    @Select(" WITH filterd_geozones as (\n" +
+            "select * from vw_districts where (district_id = #{zone} or region_id =#{zone} or zone_id = #{zone}  or parent = #{zone} or #{zone}=0)\n" +
+            ")\n" +
+            "  SELECT  " +
             "   	gzz. ID,  " +
             "   	gzz. NAME,  " +
             "       fn_get_parent_geographiczone(gzz.ID,1) georegion, " +
@@ -199,6 +202,7 @@ public interface GeographicZoneReportMapper {
             "   	COALESCE (adequatelystockedprev. COUNT,	0) AS adequatelystockedprev  " +
             "   FROM  " +
             "   	geographic_zones gzz  " +
+            "   LEFT JOIN vw_districts gz on (gz.district_id = gzz.id) " +
             "   LEFT JOIN geographic_zone_geojson gjson ON gzz. ID = gjson.zoneId  " +
             "   LEFT JOIN (  " +
             "   	SELECT  " +
@@ -249,6 +253,7 @@ public interface GeographicZoneReportMapper {
             "   		facilities  " +
             "   	JOIN programs_supported ps ON ps.facilityId = facilities. ID  " +
             "   	JOIN geographic_zones gz ON gz. ID = facilities.geographicZoneId  " +
+            "       JOIN filterd_geozones z ON z.district_id = facilities.geographicZoneId " +
             "   	WHERE  " +
             "   		ps.programid = #{programId}  " +
             "   	AND facilities. ID IN (  " +
@@ -269,6 +274,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "           JOIN facilities f on f.id =  vw_stock_status_2.facility_id\n" +
+            "           JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		periodId = #{processingPeriodId}  " +
             "   	AND programid = #{programId}  " +
@@ -284,6 +291,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "          JOIN facilities f on f.id =  vw_stock_status_2.facility_id" +
+            "          JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		programid = #{programId}  " +
             "   	AND productId = #{productId}  " +
@@ -298,6 +307,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "          JOIN facilities f on f.id =  vw_stock_status_2.facility_id" +
+            "          JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		periodId = #{processingPeriodId}  " +
             "   	AND programid = #{programId}  " +
@@ -313,6 +324,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "          JOIN facilities f on f.id =  vw_stock_status_2.facility_id" +
+            "          JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		periodId = #{processingPeriodId}  " +
             "   	AND programid = #{programId}  " +
@@ -328,6 +341,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "          JOIN facilities f on f.id =  vw_stock_status_2.facility_id" +
+            "          JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		periodId = #{processingPeriodId}  " +
             "   	AND programid = #{programId}  " +
@@ -343,6 +358,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "          JOIN facilities f on f.id =  vw_stock_status_2.facility_id" +
+            "          JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		periodId = (  " +
             "   			SELECT  " +
@@ -366,6 +383,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "          JOIN facilities f on f.id =  vw_stock_status_2.facility_id" +
+            "          JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		periodId = (  " +
             "   			SELECT  " +
@@ -389,6 +408,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "          JOIN facilities f on f.id =  vw_stock_status_2.facility_id" +
+            "          JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		periodId = (  " +
             "   			SELECT  " +
@@ -412,6 +433,8 @@ public interface GeographicZoneReportMapper {
             "   		COUNT (*)  " +
             "   	FROM  " +
             "   		vw_stock_status_2  " +
+            "          JOIN facilities f on f.id =  vw_stock_status_2.facility_id" +
+            "          JOIN filterd_geozones z ON z.district_id = f.geographicZoneId" +
             "   	WHERE  " +
             "   		periodId = (  " +
             "   			SELECT  " +
@@ -431,7 +454,8 @@ public interface GeographicZoneReportMapper {
             "   ) adequatelystockedprev ON gzz. ID = adequatelystockedprev.geographicZoneId  " +
             "   ORDER BY  " +
             "   	gzz. NAME  ")
-    List<GeoStockStatusFacilitySummary> getGeoStockStatusFacilitySummary(@Param("programId") Long programId, @Param("processingPeriodId") Long processingPeriodId, @Param("productId") Long productId);
+    List<GeoStockStatusFacilitySummary> getGeoStockStatusFacilitySummary(@Param("programId") Long programId, @Param("processingPeriodId") Long processingPeriodId, @Param("productId") Long productId, @Param("zone") Long zone);
+
 
 
     @Select("SELECT ss.rnrid, f.id, f.name, f.mainPhone, f.longitude, f.latitude, true stockedout, " +

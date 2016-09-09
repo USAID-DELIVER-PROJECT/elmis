@@ -25,6 +25,8 @@ public class FacilityContact {
 
   private String name;
 
+  private String facilityName;
+
   private String type;
 
   private String contact;

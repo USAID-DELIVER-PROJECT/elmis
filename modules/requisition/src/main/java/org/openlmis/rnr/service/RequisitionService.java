@@ -108,7 +108,7 @@ public class RequisitionService {
   }
 
   @Transactional
-  public Rnr initiate(Facility facility, Program program, Long modifiedBy, Boolean emergency, ProcessingPeriod proposedPeriod) {
+  public Rnr initiate(Facility facility, Program program, Long modifiedBy, Boolean emergency, ProcessingPeriod proposedPeriod, String sourceApplication) {
 
     if (!requisitionPermissionService.hasPermission(modifiedBy, facility, program, CREATE_REQUISITION)) {
       throw new DataException(RNR_OPERATION_UNAUTHORIZED);
@@ -156,7 +156,7 @@ public class RequisitionService {
     if(program.getIsEquipmentConfigured()){
        populateEquipments(requisition);
     }
-
+    requisition.setSourceApplication(sourceApplication);
     insert(requisition);
     requisition = requisitionRepository.getById(requisition.getId());
 

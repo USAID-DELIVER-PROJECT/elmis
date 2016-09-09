@@ -146,6 +146,7 @@ public interface RnrLineItemMapper {
     "INNER JOIN requisition_status_changes",
     "RSC ON RSC.rnrId = R.id",
     "AND RLI.skipped = false",
+    "AND RLI.normalizedConsumption is not null",
     "AND RSC.status = 'AUTHORIZED'",
     "AND R.emergency = false",
     "AND RSC.createdDate >= #{startDate}",

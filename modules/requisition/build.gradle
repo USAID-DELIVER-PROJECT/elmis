@@ -18,7 +18,6 @@ dependencies {
             project(':modules:core'),
             project(':modules:equipment'),
             project(':modules:upload'),
-            project(':modules:email'),
             project(':modules:export')
 
     testCompile  project(path : ':modules:core', configuration: 'testFixtures')

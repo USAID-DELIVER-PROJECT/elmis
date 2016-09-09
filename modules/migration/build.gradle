@@ -12,8 +12,8 @@ dependencies {
             project(':modules:db')
 
     flyway 'com.googlecode.flyway:flyway-ant:1.7',
-            'org.postgresql:postgresql:9.2-1002-jdbc4'
-    classpath 'org.postgresql:postgresql:9.2-1002-jdbc4'
+            'org.postgresql:postgresql:9.4.1209'
+    classpath 'org.postgresql:postgresql:9.4.1209'
 
     configurations {
         testFixtures {

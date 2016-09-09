@@ -23,6 +23,8 @@ import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.repository.ProductRepository;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.SupervisoryNodeService;
+import org.openlmis.report.model.dto.AdjustmentType;
+import org.openlmis.report.service.lookup.ReportLookupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +41,16 @@ public class SelectedFilterHelper {
   public static final String USER_ID = "userId";
   public static final String FACILITY = "facility";
   public static final String PRODUCT = "product";
+  public static final String ADJUSTMENET_TYPE="adjustmentType";
+  public static final String PROGRAM_AREA="";
+  public static final String DATE_FROM="";
+  public static final String DATE_TO="";
+  public static final String DISTRICT="";
+
+  public static final String STARTDATE = "startDate";
+  public static final String ENDDATE = "endDate";
+
+
   @Autowired
   private ProcessingPeriodRepository periodService;
 
@@ -57,6 +69,9 @@ public class SelectedFilterHelper {
   @Autowired
   private SupervisoryNodeService supervisoryNodeService;
 
+  @Autowired
+  private ReportLookupService reportLookupService;
+
   public String getProgramPeriodGeoZone(Map<String, String[]> params) {
     String filterSummary = "";
 
@@ -64,6 +79,7 @@ public class SelectedFilterHelper {
     String period = StringHelper.getValue(params, PERIOD);
     String zone = StringHelper.getValue(params, ZONE);
     String userId = StringHelper.getValue(params, USER_ID);
+    String adjustmentType= StringHelper.getValue(params, ADJUSTMENET_TYPE);
 
     ProcessingPeriod periodObject = (period != null) ? periodService.getById(Long.parseLong(period)) : null;
     GeographicZone zoneObject = (zone != null) ? geoZoneRepsotory.getById(Long.parseLong(zone)) : null;
@@ -89,7 +105,10 @@ public class SelectedFilterHelper {
     } else if (zoneObject != null) {
       filterSummary += "\nGeographic Zone: " + zoneObject.getName();
     }
-
+    if(adjustmentType!=null){
+      AdjustmentType type = reportLookupService.getAdjustmentByName(adjustmentType);
+      filterSummary += "\nAdjustment Type: " + type.getDescription();
+    }
     return filterSummary;
   }
 
@@ -142,6 +161,41 @@ public class SelectedFilterHelper {
       }
     }
     return "";
+  }
+
+  public String getSelectedDateRange(Map<String, String[]> params){
+    String startDate = StringHelper.getValue(params, STARTDATE);
+    String endDate = StringHelper.getValue(params, ENDDATE);
+
+    if (!(startDate == null || startDate.isEmpty() || "0".equals(startDate))
+            && !(endDate == null || endDate.isEmpty() || "0".equals(endDate)))
+    {
+      return "\nDate Range: "+startDate+" - "+endDate;
+    }
+    return "";
+  }
+
+  public String getFacilityFilterString(Map<String, String[]> params){
+    String facility = StringHelper.getValue(params, FACILITY);
+
+    if(facility != null){
+      Facility facilityObject = facilityRepository.getById(Long.parseLong(facility));
+      return (facilityObject == null ? "\nFacility: All Facilities" : String.format("%nFacility: %s", facilityObject.getName()));
+    }
+    return "";
+  }
+
+
+
+  public String getReportCombinedFilterString(String... filterStrings){
+
+    StringBuilder sb = new StringBuilder();
+
+    for(String filter : filterStrings){
+      sb.append(filter);
+    }
+
+    return sb.toString();
   }
 
 

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="performance_dropout_district_summary" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6ad3cd22-b18e-42a4-8887-ba355538aa7b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="paqua">
+		<box rightPadding="0"/>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{rangeName}=="4_dropoutGreaterThanHigh"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FF0000">
+				<box>
+					<topPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{rangeName} == "3_droOputBetweenMidAndHigh"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#E4E44A">
+				<box>
+					<topPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{rangeName} == "1_dropoutGreaterThanHigh"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#52C552">
+				<box>
+					<topPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
+				</box>
+			</style>
+		</conditionalStyle>
+	</style>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<field name="rangeName" class="java.lang.String"/>
+	<field name="columnName" class="java.lang.String"/>
+	<field name="value" class="java.math.BigDecimal"/>
+	<field name="periodDate" class="java.util.Date"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="143" splitType="Stretch">
+			<crosstab>
+				<reportElement style="Crosstab Data Text" stretchType="RelativeToTallestObject" x="0" y="0" width="802" height="143" backcolor="#FFFFFF" uuid="b06d1386-df2d-4d5b-bdc3-334c3ad40728"/>
+				<rowGroup name="rangeName" width="140">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{rangeName}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="paqua" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="25" uuid="ad1d2d7f-f211-4eb9-9a51-c2c9f1729794"/>
+								<textFieldExpression><![CDATA[$V{rangeName}=="4_dropoutGreaterThanHigh" ?"DO >10%":
+ $V{rangeName}=="3_droOputBetweenMidAndHigh"? "5% < DO <=10%":"DO <=5"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="periodDate" height="30">
+					<bucket class="java.util.Date">
+						<bucketExpression><![CDATA[$F{periodDate}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<textField pattern="MMM-yy">
+								<reportElement style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="50" height="30" backcolor="#E4E4E4" uuid="319c78b2-afc6-43be-9aec-4f9511061c3f"/>
+								<textFieldExpression><![CDATA[$V{periodDate}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="valueMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{value}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="25">
+					<cellContents mode="Opaque" style="paqua">
+						<textField>
+							<reportElement x="0" y="0" width="50" height="25" uuid="12b1a803-4a74-447c-a6fa-5012d36c1536"/>
+							<textFieldExpression><![CDATA[$V{valueMeasure}==0?"-":$V{valueMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="rangeName">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="d1508aff-7911-4ee0-bb03-376263a4bb26"/>
+							<textFieldExpression><![CDATA[$V{valueMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="periodDate">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="6384adf3-4859-4180-a962-2283d7240494"/>
+							<textFieldExpression><![CDATA[$V{valueMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="rangeName" columnTotalGroup="periodDate">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="bd2c4fa9-107d-4836-bbfd-b1547b968448"/>
+							<textFieldExpression><![CDATA[$V{valueMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

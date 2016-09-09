@@ -16,7 +16,6 @@ import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
-
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.service.reports.VaccineReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/vaccine/report/")
@@ -62,12 +60,14 @@ public class VaccineReportController extends BaseController {
     }
 
     @RequestMapping(value = "vaccine-usage-trend")
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> vaccineUsageTrend( HttpServletRequest request,@RequestParam("facilityCode") String facilityCode, @RequestParam("productCode") String productCode, @RequestParam("period") Long periodId, @RequestParam("zone") Long zoneId) {
 Long userId= this.loggedInUserId(request);
         return OpenLmisResponse.response("vaccineUsageTrend", service.vaccineUsageTrend(facilityCode, productCode, periodId, zoneId,userId));
     }
 
     @RequestMapping(value = "/orderRequisition/downloadPDF", method = RequestMethod.GET)
+
     public ModelAndView downloadPDF() {
 
         List<OrderRequisitionDTO> listOrders = new ArrayList<OrderRequisitionDTO>();
@@ -76,6 +76,7 @@ Long userId= this.loggedInUserId(request);
     }
 
   @RequestMapping(value = "/performanceCoverage", method = RequestMethod.GET)
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
   public ResponseEntity<OpenLmisResponse> performanceCoverage(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                               @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                               @RequestParam("district") Long districtId,
@@ -89,6 +90,7 @@ Long userId= this.loggedInUserId(request);
 
 
     @RequestMapping(value = "/completenessAndTimeliness", method = RequestMethod.GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> completenessAndTimeliness(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                                       @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                                       @RequestParam("district") Long districtId) {
@@ -99,6 +101,7 @@ Long userId= this.loggedInUserId(request);
     }
 
     @RequestMapping(value = "/adequaceyLevel", method = RequestMethod.GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> adequacyLevelOfSupply(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                                   @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                                   @RequestParam("district") Long districtId,
@@ -110,12 +113,14 @@ Long userId= this.loggedInUserId(request);
     }
 
     @RequestMapping(value = "/vaccine_products", method = RequestMethod.GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> getVaccineProductsList() {
         return OpenLmisResponse.response("products", this.service.getVaccineProductsList());
 
     }
 
     @RequestMapping(value = "/classificationVaccineUtilizationPerformance", method = RequestMethod.GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> classificationVaccineUtilizationPerformance(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                                                         @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                                                         @RequestParam("zone") Long zone,
@@ -127,6 +132,7 @@ Long userId= this.loggedInUserId(request);
     }
 
     @RequestMapping(value = "/categorizationVaccineUtilizationPerformance", method = RequestMethod.GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> categorizationVaccineUtilizationPerformance(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                                                         @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                                                         @RequestParam("zone") Long zone,

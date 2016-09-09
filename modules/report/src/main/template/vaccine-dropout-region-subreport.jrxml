@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-dropout-region-subreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="1.366026910730141"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String"/>
+	<parameter name="COUNTRY_NAME" class="java.lang.String"/>
+	<parameter name="GENERATED_BY" class="java.lang.String"/>
+	<parameter name="REPORT_VERSION" class="java.lang.String"/>
+	<parameter name="REPORT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_OUTPUT_OPTION" class="java.lang.String"/>
+	<parameter name="REPORT_SUB_TITLE" class="java.lang.String"/>
+	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
+	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
+	<parameter name="TOTAL_FACILITIES" class="java.lang.String"/>
+	<parameter name="TOTAL_STOCKEDOUT" class="java.lang.String"/>
+	<parameter name="PERCENTAGE_STOCKEDOUT" class="java.lang.String"/>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="SHOW_SUMMARY" class="java.lang.String">
+		<defaultValueExpression><![CDATA["N"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SHOW_STOCKEDOUT" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Y"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IS_DTP_PRODUCT" class="java.lang.Boolean"/>
+	<queryString>
+		<![CDATA[SELECT
+     i."bcg_1" AS bcg_vaccinated,
+     i."mr_1" AS mr_vaccinated,
+     i."dtp_1" AS bcg_mr_dropout,
+     i."dtp_3" AS dtp3_vaccinated,
+     i."denominator" AS target,
+     i."period_name" AS period_name,
+     i."facility_name" AS facility_name,
+     i."geographic_zone_name" AS district_name,
+     d."district_name" AS district_name,
+     d."region_name" AS region_name,
+     pp."id" AS program_products_id
+
+
+FROM
+"public"."vw_vaccine_dropout" i
+inner join "public"."vw_districts" d ON i.geographic_zone_id = d.district_id
+inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
+	 INNER JOIN "public"."program_products" pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id
+     inner join "public"."product_categories" pg  ON pp.productcategoryid = pg.ID]]>
+	</queryString>
+	<field name="bcg_vaccinated" class="java.math.BigDecimal"/>
+	<field name="mr_vaccinated" class="java.math.BigDecimal"/>
+	<field name="bcg_mr_dropout" class="java.math.BigDecimal"/>
+	<field name="dtp3_vaccinated" class="java.math.BigDecimal"/>
+	<field name="target" class="java.lang.Integer"/>
+	<field name="period_name" class="java.util.Date"/>
+	<field name="facility_name" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="region_name" class="java.lang.String"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<variable name="total_popiulation" class="java.math.BigDecimal" resetType="Group" resetGroup="GroupByFacility" calculation="Sum">
+		<variableExpression><![CDATA[$F{target}]]></variableExpression>
+	</variable>
+	<variable name="bcg_vaccinated_sum" class="java.math.BigDecimal" resetType="Group" resetGroup="GroupByFacility" calculation="Sum">
+		<variableExpression><![CDATA[$F{bcg_vaccinated}]]></variableExpression>
+	</variable>
+	<variable name="dtp_vaccinated_sum" class="java.math.BigDecimal" resetType="Group" resetGroup="GroupByFacility" calculation="Sum">
+		<variableExpression><![CDATA[$F{mr_vaccinated}]]></variableExpression>
+	</variable>
+	<variable name="dropout_percentage" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{bcg_vaccinated_sum}!=0?100*($V{bcg_vaccinated_sum}-$V{dtp_vaccinated_sum})/$V{bcg_vaccinated_sum}:0]]></variableExpression>
+	</variable>
+	<variable name="drop_out" class="java.math.BigDecimal" resetType="None">
+		<variableExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})*100/($F{bcg_vaccinated})):0]]></variableExpression>
+	</variable>
+	<variable name="grand_total_popiulation" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{target}]]></variableExpression>
+	</variable>
+	<variable name="grand_bcg_vaccinated_sum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bcg_vaccinated}]]></variableExpression>
+	</variable>
+	<variable name="grand_dtp_vaccinated_sum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{mr_vaccinated}]]></variableExpression>
+	</variable>
+	<variable name="grand_dropout_percentage" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{grand_bcg_vaccinated_sum}!=0?100*($V{grand_bcg_vaccinated_sum}-$V{grand_dtp_vaccinated_sum})/$V{grand_bcg_vaccinated_sum}:0]]></variableExpression>
+	</variable>
+	<variable name="grand_drop_out" class="java.math.BigDecimal" resetType="None">
+		<variableExpression><![CDATA[($V{grand_bcg_vaccinated_sum}!=0)?(($V{grand_bcg_vaccinated_sum}-$V{grand_dtp_vaccinated_sum})*100/($V{grand_bcg_vaccinated_sum})):0]]></variableExpression>
+	</variable>
+	<group name="GroupByFacility" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{region_name}]]></groupExpression>
+		<groupHeader>
+			<band height="79">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="412" y="20" width="389" height="25" forecolor="#FFFFFF" backcolor="#3D9297" uuid="60040ca1-6639-4cf0-adfc-15606e1c1a5c">
+						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					</reportElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="412" y="45" width="389" height="19" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="7054bf0f-ba55-4a5a-bed2-8b811399a1ce">
+						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					</reportElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="20" width="412" height="44" forecolor="#FFFFFF" backcolor="#3D9297" uuid="d28eb1aa-5ce3-4073-8f47-4d16cb4774c8">
+						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					</reportElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="40" y="20" width="250" height="44" forecolor="#000000" backcolor="#003333" uuid="3df9e74b-e89d-4c9c-ab6e-732f1169ad99"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.region}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="0" y="20" width="40" height="44" forecolor="#000000" backcolor="#003333" uuid="19084a12-8739-40c9-9fe7-0ea6c1393a6e"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="340" y="20" width="72" height="44" forecolor="#000000" backcolor="#003333" uuid="bc8bf970-2845-4af7-a852-2bab4066d61b">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.target.population}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="412" y="20" width="389" height="25" uuid="49232288-ece7-4e2b-8804-fb73d04987ed">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					<textFieldExpression><![CDATA[$R{label.monthly.dropout}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="290" y="20" width="49" height="44" forecolor="#000000" backcolor="#003333" uuid="75d267fa-ac4b-4a62-b61c-3f72e799a091">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.period}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="553" y="45" width="115" height="19" forecolor="#000000" backcolor="#003333" uuid="99b4261c-6699-4e64-9e22-060810f58a75">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{IS_DTP_PRODUCT}==true ?$R{label.dropout.dtp3}:$R{label.dropout.mr}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="668" y="45" width="133" height="19" uuid="10bb77fe-a196-4b27-9b3d-9dc1ea01cd49">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle" markup="none"/>
+					<textFieldExpression><![CDATA[$R{label.percent}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="412" y="45" width="141" height="19" forecolor="#000000" backcolor="#003333" uuid="3d028657-6392-4c6a-99f9-bd8c016914d3">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{IS_DTP_PRODUCT}==true ?$R{label.dropout.dtp1}:$R{label.dropout.bcg}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="64" width="801" height="15" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="beb4e4da-3c03-41dd-8ef5-124f42aaeac8">
+						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					</reportElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="39" y="64" width="251" height="15" forecolor="#000000" backcolor="#003333" uuid="0ed30901-0cb0-4c93-9a58-ecc491dcd253">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.A}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="553" y="64" width="115" height="15" forecolor="#000000" backcolor="#003333" uuid="6589a0ab-efe9-469a-b7b5-29c88386ced8">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.F}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="668" y="64" width="133" height="15" forecolor="#000000" backcolor="#003333" uuid="5726b4f0-8f57-4ca9-8f1b-cfe8d5cf5459">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.G.G}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="412" y="64" width="141" height="15" forecolor="#000000" backcolor="#003333" uuid="6260e9e3-a48d-4739-a163-b8d56fae51d1">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.E.E}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="339" y="64" width="73" height="15" forecolor="#000000" backcolor="#003333" uuid="c77d17b7-6b30-46f5-8399-7a3fbfec0de1">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.D}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="339" y="0" width="73" height="20" uuid="63adf9a9-4ba9-40c3-9092-d4c3ee4e7ea6"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{total_popiulation}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="412" y="0" width="141" height="20" uuid="4dcb62f9-9d28-4f77-840f-b39a747bd652"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{bcg_vaccinated_sum}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="553" y="0" width="115" height="20" uuid="11e7e770-ee23-4f11-9366-0bbe771a1ebd"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{dtp_vaccinated_sum}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00 %">
+					<reportElement x="668" y="0" width="133" height="20" uuid="e0d9363d-de2e-4146-bb7d-57aa3a0ba38b"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{dropout_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="214" y="0" width="126" height="20" uuid="f2c6e526-387b-4114-83b9-7b6396ee70d6"/>
+					<text><![CDATA[Sub Total]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="801" height="20" backcolor="#F4F4F4" uuid="02df148d-9dc0-49e9-b8cb-0ad28657078b">
+					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 1]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="339" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="18d0356c-7742-4110-8f64-158866ba6186">
+					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					<printWhenExpression><![CDATA[$V{drop_out}<=5]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="340" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="617bdb98-4d1d-46ea-af46-d63dec2abcd3">
+					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					<printWhenExpression><![CDATA[$V{drop_out}>10]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="339" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="60598021-4bd7-46e9-90ff-d83c51f26edc">
+					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					<printWhenExpression><![CDATA[$V{drop_out}<=10 && $V{drop_out}>5]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="39" y="0" width="762" height="20" forecolor="#006666" uuid="962b58e8-595f-4b19-aa3e-63710daa586b">
+					<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="553" y="0" width="115" height="20" uuid="bfa22c05-f847-44a8-a6e4-31d9919f9316"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{mr_vaccinated}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="0" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="36021c4c-af04-40b0-baae-c43482d57726"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="412" y="0" width="141" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="536fd8ef-54ee-4113-9e3d-2d55f9f8da48">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bcg_vaccinated}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 %" isBlankWhenNull="true">
+				<reportElement x="668" y="0" width="133" height="20" uuid="edb18e79-900a-46a0-8f18-369e44bff292"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})*100/($F{bcg_vaccinated})):0]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Transparent" x="39" y="0" width="251" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="75af9441-a29d-4f9d-9496-f5297e49e66e">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{region_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMM-yy" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="290" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="894e3e22-c590-4751-8ecd-1413ac944d84">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{period_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="339" y="0" width="73" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="6ff9ab62-05a1-4038-9ea0-26d9f34f46c7">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{target}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="18">
+			<staticText>
+				<reportElement mode="Opaque" x="-1" y="0" width="802" height="18" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="7a8fc6b0-ea25-47e6-9c33-eac0d328057e">
+					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="339" y="0" width="73" height="18" uuid="fe43277a-c530-4259-bcc8-b78ccf1dcdfb"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{grand_total_popiulation}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 %">
+				<reportElement x="668" y="0" width="133" height="18" uuid="739b3bf9-1e70-47a7-848e-441b4dcedacc"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="553" y="0" width="115" height="18" uuid="f2395587-20a0-4a42-8766-fad471dd5375"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{grand_dtp_vaccinated_sum}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="412" y="0" width="141" height="18" uuid="5610a98a-cb80-45e3-a965-9896ef096f4f"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{grand_bcg_vaccinated_sum}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="212" y="0" width="126" height="18" uuid="eddc012d-e5fd-4e80-b77e-773ecb09ef69"/>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+</jasperReport>

@@ -105,14 +105,7 @@ public class RnrLineItem extends LineItem {
                      Long createdBy) {
     this.rnrId = rnrId;
     this.maxMonthsOfStock = facilityTypeApprovedProduct.getMaxMonthsOfStock();
-    ProgramProduct programProduct = facilityTypeApprovedProduct.getProgramProduct();
-    this.price = programProduct.getCurrentPrice();
-    ProductCategory category = programProduct.getProductCategory();
-    this.productCategory = category.getName();
-    this.productCategoryDisplayOrder = category.getDisplayOrder();
-    this.populateFromProduct(programProduct);
-    this.dosesPerMonth = programProduct.getDosesPerMonth();
-
+    this.populateFromProduct(facilityTypeApprovedProduct.getProgramProduct());
     this.modifiedBy = modifiedBy;
     this.createdBy = createdBy;
   }
@@ -434,8 +427,12 @@ public class RnrLineItem extends LineItem {
       this.totalLossesAndAdjustments = item.totalLossesAndAdjustments;
   }
 
-  private void populateFromProduct(ProgramProduct programProduct) {
+  public void populateFromProduct(ProgramProduct programProduct) {
     Product product = programProduct.getProduct();
+    ProductCategory category = programProduct.getProductCategory();
+
+    this.price = programProduct.getCurrentPrice();
+    this.dosesPerMonth = programProduct.getDosesPerMonth();
     this.productCode = product.getCode();
     this.dispensingUnit = product.getDispensingUnit();
     this.dosesPerDispensingUnit = product.getDosesPerDispensingUnit();
@@ -443,9 +440,11 @@ public class RnrLineItem extends LineItem {
     this.roundToZero = product.getRoundToZero();
     this.packRoundingThreshold = product.getPackRoundingThreshold();
     this.product = product.getName();
-    // use the program product setting instead of the one on the product table.
     this.fullSupply = programProduct.isFullSupply();
     this.productDisplayOrder = programProduct.getDisplayOrder();
+
+    this.productCategory = category.getName();
+    this.productCategoryDisplayOrder = category.getDisplayOrder();
   }
 
   private void requestedQuantityConditionalValidation(ProgramRnrTemplate template) {
