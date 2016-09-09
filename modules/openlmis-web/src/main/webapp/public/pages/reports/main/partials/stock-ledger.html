@@ -160,10 +160,15 @@
                                     <td class="number" data-title="'Issued Quantity'" style="width:20% !important;" sortable=" ">
                                         {{ row.issued != 0 && (row.issued | positive) || '' }}
                                     </td>
-                                    <td class="number" data-title="'Adjusted Quantity'" style="width:20% !important;"
+                                    <td class="number" data-title="'Adjusted Quantity'" style="width:10% !important;"
                                         sortable="adjustment">
                                         {{ row.adjustment != 0 && (row.adjustment | positive) || '' }}
                                     </td>
+
+                                   <!-- <td data-title="'voucherNumber'" style="width:10% !important;"
+                                        sortable="adjustment">
+                                        <span>{{ row.voucherNumber  }}</span>
+                                    </td>-->
                                     <td data-title="'Batch Number'" style="width:20%" sortable=" ">
                                         <a href="" ng-mouseover="showPopover=true;" ng-mouseleave="showPopover=false;">{{row.lotNumber}}
                                             <div class="popover" ng-show="showPopover">
