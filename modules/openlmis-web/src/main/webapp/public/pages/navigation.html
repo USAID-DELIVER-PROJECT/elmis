@@ -179,6 +179,13 @@
             <a href="/public/pages/vaccine/inventory/index.html#/receive"
                openlmis-message="link.vaccine.receive"></a>
           </li>
+
+            <li ng-show="hasPermission('MANAGE_STOCK') ">
+                <a href="/public/pages/vaccine/inventory/index.html#/view-issue-voucher"
+                   >Previous Issue Voucher</a>
+            </li>
+
+
           <li ng-show="hasPermission('MASS_DISTRIBUTION')">
             <a href="/public/pages/vaccine/inventory/index.html#/mass-distribution"
                openlmis-message="link.vaccine.distribute"></a>
@@ -294,7 +301,7 @@
                 </li>
                 <li ng-show="hasPermission('MANAGE_ROLE')">
                   <a id='rolesMenu' href="/public/pages/admin/role/index.html"
-                     openlmis-message="menu.header.roles"></a>
+                    `></a>
                 </li>
                 <li ng-show="hasPermission('MANAGE_SCHEDULE')">
                   <a id='schedulesMenu' href="/public/pages/admin/schedule/index.html"
