@@ -40,10 +40,9 @@
               ng-required="true"
               ng-class="highlightRequired(report.validate, dose.regularMale, dose.skipped)"
               class="right-justified"
-              ng-disabled="!report.editable || dose.skipped"
+              ng-disabled="!report.editable || dose.skipped || !dose.trackMale"
               numeric-validator="positiveInteger"
               maxlength="8"
-              ng-disabled="!dose.trackMale"
               ng-model="dose.regularMale"
               type="text"/>
         </span>
@@ -55,10 +54,9 @@
               ng-required="true"
               ng-class="highlightRequired(report.validate, dose.regularFemale, dose.skipped)"
               class="right-justified"
-              ng-disabled="!report.editable || dose.skipped"
+              ng-disabled="!report.editable || dose.skipped || !dose.trackFemale"
               numeric-validator="positiveInteger"
               maxlength="8"
-              ng-disabled="!dose.trackFemale"
               ng-model="dose.regularFemale"
               type="text"/>
         </span>
@@ -82,9 +80,9 @@
               ng-required="true"
               ng-class="highlightRequired(report.validate, dose.outreachMale, dose.skipped)"
               class="right-justified"
-              ng-disabled="!report.editable || dose.skipped"
+              ng-disabled="!report.editable || dose.skipped || !dose.trackMale"
               numeric-validator="positiveInteger"
-              maxlength="8" ng-disabled="!dose.trackMale"
+              maxlength="8"
               ng-model="dose.outreachMale"
               type="text"/>
         </span>
@@ -96,10 +94,9 @@
               ng-required="true"
               ng-class="highlightRequired(report.validate, dose.outreachFemale, dose.skipped)"
               class="right-justified"
-              ng-disabled="!report.editable || dose.skipped"
+              ng-disabled="!report.editable || dose.skipped || !dose.trackFemale"
               numeric-validator="positiveInteger"
               maxlength="8"
-              ng-disabled="!dose.trackFemale"
               ng-model="dose.outreachFemale"
               type="text"/>
         </span>
