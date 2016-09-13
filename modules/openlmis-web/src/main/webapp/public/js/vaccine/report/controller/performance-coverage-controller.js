@@ -365,6 +365,8 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
 
     function findMonthValue(reportList, type) {
         var formattedData = [];
+        var date= new Date($scope.periodEnddate);
+        var indexValue=date.getMonth()+1;
         var grayCount = {};
         if (utils.isEmpty(reportList)) {
             return reportList;
@@ -382,7 +384,7 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
                 }
             });
             for (var key in distrctList) {
-                for (var i = 0; i < 12; i++) {
+                for (var i = 0; i < indexValue; i++) {
                     var hasValue = false;
                     for (var j = 0; j < len; j++) {
                         if (angular.equals(getPopulationKey(reportList[j], type), key) && reportList[j].month === i + 1) {
