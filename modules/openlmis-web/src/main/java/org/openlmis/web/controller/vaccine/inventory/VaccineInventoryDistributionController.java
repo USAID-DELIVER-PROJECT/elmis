@@ -15,7 +15,10 @@ package org.openlmis.web.controller.vaccine.inventory;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import org.apache.ibatis.annotations.Param;
-import org.openlmis.core.domain.*;
+import org.openlmis.core.domain.ConfigurationSetting;
+import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.Program;
+import org.openlmis.core.domain.RightName;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramProductService;
@@ -44,13 +47,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static java.lang.Integer.parseInt;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -123,6 +124,14 @@ public class VaccineInventoryDistributionController extends BaseController {
                                                                            HttpServletRequest request) {
         Long userId = loggedInUserId(request);
         return OpenLmisResponse.response("distribution", service.getDistributionByVoucherNumber(userId, voucherNumber));
+    }
+
+    @RequestMapping(value = "get-all-by-voucher-number", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getAllDistributionsByVoucherNumber(@Param("voucherNumber") String voucherNumber,
+                                                                           HttpServletRequest request) {
+        Long userId = loggedInUserId(request);
+        return OpenLmisResponse.response("distribution", service.getAllDistributionsByVoucherNumber(userId, voucherNumber));
     }
 
     @RequestMapping(value = "saveConsolidatedDistributionList", method = POST, headers = ACCEPT_JSON)
@@ -258,5 +267,18 @@ public class VaccineInventoryDistributionController extends BaseController {
         return OpenLmisResponse.response("expiries", service.getBatchExpiryNotifications(f.getId()));
     }
 
+    @RequestMapping(value = "getOneLevelSuperVisedFacility", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getOneLevelSupervisedFacilities(HttpServletRequest request) {
+
+        return OpenLmisResponse.response("facilities", service.getFacilities(loggedInUserId(request)));
+    }
+
+    @RequestMapping(value = "getDistributionsByDateRangeAndFacility", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getDistributionsByDateRangeAndFacility(HttpServletRequest request,
+            @Param("facilityId") Long facilityId,@Param("startDate") String startDate,@Param("endDate") String endDate) {
+        return OpenLmisResponse.response("distributions", service.getDistributionsByDateRangeAndFacility(facilityId,startDate,endDate));
+    }
 
 }

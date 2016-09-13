@@ -65,6 +65,10 @@
             <a href="/public/pages/reports/main/index.html#vaccine-stock-status"
                openlmis-message="menu.report.vaccine.stock.status"></a>
           </li>
+          <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
+            <a href="/public/pages/reports/main/index.html#distribution-completeness"
+               openlmis-message="menu.report.vaccine.distribution.completeness"></a>
+          </li>
 
         </ul>
       </div>

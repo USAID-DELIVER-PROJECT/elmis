@@ -145,7 +145,7 @@ task cleanWorkspace(type: Delete) {
 }
 
 build.doLast {
-//    karmaRun.execute()
+    karmaRun.execute()
     jsHint.execute()
     cleanWorkspace.execute()
 }
@@ -184,8 +184,8 @@ dependencies {
             project(path: ':modules:reporting', configuration: 'testFixtures')
 }
 
-sonarqube {
-    properties {
+sonarRunner {
+    sonarProperties {
         properties["sonar.sources"] += 'src/main/webapp/public/js'
         properties["sonar.sources"] += 'src/main/webapp/public/pages'
         properties["sonar.sources"] += 'src/main/webapp/public/less'

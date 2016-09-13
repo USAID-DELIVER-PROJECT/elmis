@@ -1,0 +1,38 @@
+
+<div>
+   <h2><span openlmis-message="label.vaccine.distribution"></span>
+   </h2>
+
+</div>
+
+<div class="info-box padding2px">
+    <div class="requisition-head-block">
+        <div class="row-fluid">
+            <div class="span12" style="padding: 10px;">
+                <div class="row-fluid">
+
+                    <div class="span4">
+                            <strong for='facilityLabel' openlmis-message="label.vaccine.stock.distributed.to"> </strong>
+                        &nbsp;<span
+                                    id='facilityLabel' ng-model="toFacilityName" ng-bind="all.toFacility.name"></span>
+                    </div>
+
+
+                    <div class="span6">
+                        <span id="visitDateContainer">
+                            <strong for="issueDate2" openlmis-message="label.vaccine.issue.date"></strong>
+                             &nbsp;<span
+                                id='issueDate2'  ng-bind="all.distributionDate"></span>
+                            </span>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

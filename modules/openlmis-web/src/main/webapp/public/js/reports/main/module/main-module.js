@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle'])
+angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle','ui.bootstrap.pagination'])
     .config(['$routeProvider', function ($routeProvider) {
       $routeProvider.
         when('/adjustment-summary', {controller: AdjustmentSummaryReportController, templateUrl:'partials/adjustment-summary.html',reloadOnSearch:false}).
@@ -46,6 +46,7 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
         when('/vaccine-stock-status', {controller: VaccineStockStatusReportController, templateUrl:'partials/vaccine-stock-status.html',reloadOnSearch:false}).
         when('/stock-ledger-report', {controller: VaccineStockLedgerReportController, templateUrl:'partials/stock-ledger.html',reloadOnSearch:false}).
         when('/cold-chain-temperature', {controller: ColdChainTemperatureController, templateUrl:'partials/cold-chain-temperature.html',reloadOnSearch:false}).
+        when('/distribution-completeness', {controller: VaccineDistributionCompletenessReportController, templateUrl:'partials/vaccine-distribution-completeness-report.html',reloadOnSearch:false}).
           otherwise({redirectTo:'/adjustment-summary'});
     }]).config(function(angularCombineConfigProvider) {
     angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');

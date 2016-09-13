@@ -156,7 +156,8 @@ public class AnnualFacilityDemographicEstimateService {
       List<EstimateCategory> categories = estimateCategoryService.getAll();
       estimates = createDefaultEstimateEntries(categories, facility.getId(), programId, year, true);
       for (AnnualFacilityEstimateEntry estimate : estimates) {
-        estimate.calculateAndSetValue(facility.getCatchmentPopulation());
+        Long population = facility.getCatchmentPopulation() != null? facility.getCatchmentPopulation(): 0L;
+        estimate.calculateAndSetValue(population);
       }
     }
     return estimates;

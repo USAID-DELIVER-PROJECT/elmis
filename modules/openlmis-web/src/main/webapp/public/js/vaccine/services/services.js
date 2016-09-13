@@ -587,3 +587,27 @@ services.factory('CoefficientValues',function($resource) {
 services.factory('SendIssueNotification',function($resource) {
     return $resource('/vaccine/orderRequisition/sendNotification/:distributionId.json', {distributionId:'@distributionId'}, {});
 });
+
+services.factory('GetAllOneLevelFacilities', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/getOneLevelSuperVisedFacility.json', {}, {});
+});
+
+services.factory('GetDistributionsByDateRangeAndFacility', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/getDistributionsByDateRangeAndFacility.json', {}, {});
+});
+
+services.factory('DistributionByVoucherNumber', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/get-all-by-voucher-number/', {}, {});
+});
+
+services.factory('VaccineDistributionCompletenessReport', function ($resource) {
+    return $resource('/vaccine/inventory/report/distributionCompleteness.json', {}, {});
+});
+
+services.factory('VaccineDistributedFacilitiesReport', function ($resource) {
+    return $resource('/vaccine/inventory/report/getDistributedFacilities.json', {}, {});
+});
+
+services.factory('VaccineDistributionProgramProduct', function ($resource) {
+    return $resource('/vaccine/orderRequisition/:programId.json', {programId: '@programId'}, {});
+});

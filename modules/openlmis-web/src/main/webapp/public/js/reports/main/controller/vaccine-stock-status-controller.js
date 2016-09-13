@@ -44,6 +44,16 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
             }
         });
 
+        $scope.getTotal = function(product){
+
+            var total = 0;
+
+            for(var i = 0; i <product.length; i++){
+                total += product[i].adequacy;
+            }
+            return (total / product.length) * 100;
+        };
+
     };
 
     $scope.formatNumber = function (value) {

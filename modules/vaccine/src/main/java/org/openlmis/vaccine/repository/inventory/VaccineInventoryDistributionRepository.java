@@ -2,7 +2,6 @@ package org.openlmis.vaccine.repository.inventory;
 
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
-import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
@@ -75,6 +74,9 @@ public class VaccineInventoryDistributionRepository {
     public VaccineDistribution getDistributionByVoucherNumber(Long facilityId,String voucherNumber){
         return mapper.getDistributionByVoucherNumber(facilityId,voucherNumber);
     }
+    public VaccineDistribution getAllDistributionsByVoucherNumber(Long facilityId,String voucherNumber){
+        return mapper.getAllDistributionsByVoucherNumber(facilityId,voucherNumber);
+    }
 
     public String getLastVoucherNumber()
     {
@@ -126,5 +128,9 @@ public class VaccineInventoryDistributionRepository {
 
     public VaccineDistribution getDistributionById(Long id) {
         return mapper.getDistributionById(id);
+    }
+
+    public List<VaccineDistribution> getDistributionsByDateRangeAndFacility(Long facilityId, String startDate, String endDate) {
+        return mapper.getDistributionsByDateRangeAndFacility(facilityId, startDate,endDate);
     }
 }
