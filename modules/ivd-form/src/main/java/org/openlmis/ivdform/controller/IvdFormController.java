@@ -11,6 +11,8 @@
  */
 package org.openlmis.ivdform.controller;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.UserService;
@@ -28,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Controller
-@RequestMapping(value = "/vaccine/report/")
+@Api("IVD Rest APIs")
 public class IvdFormController extends BaseController {
 
   private static final String PERIODS = "periods";
@@ -48,19 +50,22 @@ public class IvdFormController extends BaseController {
   FacilityService facilityService;
 
 
-  @RequestMapping(value = "periods/{facilityId}/{programId}", method = RequestMethod.GET)
+  @RequestMapping(value = {"/vaccine/report/periods/{facilityId}/{programId}", "/rest-api/ivd/periods/{facilityId}/{programId}"}, method = RequestMethod.GET)
+  @ApiOperation(position = 2, value = "Get Open IVD Periods for Facility")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> getPeriods(@PathVariable Long facilityId, @PathVariable Long programId) {
     return OpenLmisResponse.response(PERIODS, service.getPeriodsFor(facilityId, programId, new Date()));
   }
 
-  @RequestMapping(value = "view-periods/{facilityId}/{programId}", method = RequestMethod.GET)
+  @RequestMapping(value = {"/vaccine/report/view-periods/{facilityId}/{programId}", "/rest-api/ivd/view-periods/{facilityId}/{programId}"} , method = RequestMethod.GET)
+  @ApiOperation(position = 3, value = "Get Periods for Which facility has IVD Submissions")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_IVD')")
   public ResponseEntity<OpenLmisResponse> getViewPeriods(@PathVariable Long facilityId, @PathVariable Long programId) {
     return OpenLmisResponse.response(PERIODS, service.getReportedPeriodsFor(facilityId, programId));
   }
 
-  @RequestMapping(value = "initialize/{facilityId}/{programId}/{periodId}")
+  @RequestMapping(value = {"/vaccine/report/initialize/{facilityId}/{programId}/{periodId}", "rest-api/ivd/initialize/{facilityId}/{programId}/{periodId}"}, method = RequestMethod.GET)
+  @ApiOperation(position = 4, value = "Initiate and IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> initialize(
       @PathVariable Long facilityId,
@@ -71,40 +76,45 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(REPORT, service.initialize(facilityId, programId, periodId, loggedInUserId(request)));
   }
 
-  @RequestMapping(value = "get/{id}.json", method = RequestMethod.GET)
+  @RequestMapping(value = {"/vaccine/report/get/{id}.json", "/rest-api/ivd/get/{id}.json"}, method = RequestMethod.GET)
+  @ApiOperation(position = 9, value = "Get IVD form ")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD, VIEW_IVD, APPROVE_IVD')")
   public ResponseEntity<OpenLmisResponse> getReport(@PathVariable Long id) {
     return OpenLmisResponse.response(REPORT, service.getById(id));
   }
 
-  @RequestMapping(value = "save")
+  @RequestMapping(value = {"/vaccine/report/save", "/rest-api/ivd/save"}, method = RequestMethod.PUT)
+  @ApiOperation(position = 5, value = "Save IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineReport report, HttpServletRequest request) {
     service.save(report, loggedInUserId(request));
     return OpenLmisResponse.response(REPORT, report);
   }
 
-  @RequestMapping(value = "submit")
+  @RequestMapping(value = {"/vaccine/report/submit", "/rest-api/ivd/submit"} , method = RequestMethod.PUT)
+  @ApiOperation(position = 6, value = "Submit IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> submit(@RequestBody VaccineReport report, HttpServletRequest request) {
     service.submit(report, loggedInUserId(request));
     return OpenLmisResponse.response(REPORT, report);
   }
 
-  @RequestMapping(value = "approval-pending")
+  @RequestMapping(value = "/vaccine/report/approval-pending")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
   public ResponseEntity<OpenLmisResponse> getPendingFormsForApproval(@RequestParam("program") Long programId, HttpServletRequest request){
     return OpenLmisResponse.response(PENDING_SUBMISSIONS, service.getApprovalPendingForms(this.loggedInUserId(request), programId));
   }
 
-  @RequestMapping(value = "approve")
+  @RequestMapping(value = {"/vaccine/report/approve", "/rest-api/ivd/approve"}, method = RequestMethod.PUT)
+  @ApiOperation(position = 7, value = "Approve IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
   public ResponseEntity<OpenLmisResponse> approve(@RequestBody VaccineReport report, HttpServletRequest request) {
     service.approve(report, loggedInUserId(request));
     return OpenLmisResponse.response(REPORT, report);
   }
 
-  @RequestMapping(value = "reject")
+  @RequestMapping(value = {"/vaccine/report/reject", "/rest-api/ivd/reject"}, method = RequestMethod.PUT)
+  @ApiOperation(position = 8, value = "Reject IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
   public ResponseEntity<OpenLmisResponse> reject(@RequestBody VaccineReport report, HttpServletRequest request) {
     service.reject(report, loggedInUserId(request));
