@@ -23,6 +23,7 @@ import org.openlmis.core.domain.BaseModel;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.ProgramProduct;
+import org.openlmis.core.exception.DataException;
 import org.openlmis.core.serializer.DateDeserializer;
 import org.openlmis.demographics.domain.AnnualFacilityEstimateEntry;
 import org.openlmis.ivdform.domain.VaccineDisease;
@@ -203,4 +204,9 @@ public class VaccineReport extends BaseModel {
     }
   }
 
+  public void validateBasicHeaders(){
+    if(this.getPeriodId() == null || this.getFacilityId() == null || this.getProgramId() == null){
+      throw new DataException("error.ivd.form.submitted.misses.required.fields");
+    }
+  }
 }

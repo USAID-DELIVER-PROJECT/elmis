@@ -113,8 +113,7 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(REPORT, report);
   }
 
-  @RequestMapping(value = {"/vaccine/report/reject", "/rest-api/ivd/reject"}, method = RequestMethod.PUT)
-  @ApiOperation(position = 8, value = "Reject IVD form")
+  @RequestMapping(value = {"/vaccine/report/reject"}, method = RequestMethod.PUT)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
   public ResponseEntity<OpenLmisResponse> reject(@RequestBody VaccineReport report, HttpServletRequest request) {
     service.reject(report, loggedInUserId(request));

@@ -102,4 +102,8 @@ public class IvdFormRepository {
   public List<VaccineReport> getRejectedReports(Long facilityId, Long programId) {
     return mapper.getRejectedReports(facilityId, programId);
   }
+
+  public VaccineReport getDraftReport(Long facilityId, Long programId) {
+    return mapper.getDraftLastReport(facilityId, programId);
+  }
 }

@@ -15,6 +15,7 @@ package org.openlmis.ivdform.service;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 import org.openlmis.core.domain.*;
+import org.openlmis.core.exception.DataException;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.service.*;
@@ -119,11 +120,23 @@ public class IvdFormService {
     if (report != null) {
       return report;
     }
+    validateInitiate(facilityId, programId, periodId);
     report = createNewVaccineReport(facilityId, programId, periodId);
     repository.insert(report);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.DRAFT, userId);
     reportStatusChangeRepository.insert(change);
     return report;
+  }
+
+  private void validateInitiate(Long facilityId, Long programId, Long periodId) {
+    VaccineReport draftReport = repository.getDraftReport(facilityId, programId);
+    if(draftReport != null){
+      throw new DataException("error.facility.has.pending.draft");
+    }
+    List<ReportStatusDTO> openPeriods = this.getPeriodsFor(facilityId, programId, new Date());
+    if(openPeriods == null || openPeriods.size() == 0|| !periodId.equals(openPeriods.get(0).getPeriodId())){
+      throw new DataException("error.ivd.form.out.of.order.ivd.not.supported");
+    }
   }
 
   @Transactional
