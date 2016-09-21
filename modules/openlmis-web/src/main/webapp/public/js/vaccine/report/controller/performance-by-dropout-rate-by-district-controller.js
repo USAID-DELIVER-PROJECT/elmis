@@ -325,9 +325,9 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 for (var i = 0; i < indexValue; i++) {
                     var hasValue = false;
                     for (var j = 0; j < len; j++) {
-                        var date=new Date(reportList[j].period_name);
+                        var dateValue=new Date(reportList[j].period_name);
 
-                       var reportMonth=periodList[date.getMonth()];
+                       var reportMonth=periodList[dateValue.getMonth()];
                         if (angular.equals(getPopulationKey(reportList[j], type), key) &&reportMonth ===periodList[i]) {
                             formattedData.push(reportList[j]);
                             hasValue = true;
