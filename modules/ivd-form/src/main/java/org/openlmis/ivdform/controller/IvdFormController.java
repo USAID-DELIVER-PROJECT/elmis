@@ -83,7 +83,7 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(REPORT, service.getById(id));
   }
 
-  @RequestMapping(value = {"/vaccine/report/save", "/rest-api/ivd/save"}, method = RequestMethod.PUT)
+  @RequestMapping(value = {"/vaccine/report/save", "/rest-api/ivd/save"}, method = {RequestMethod.PUT, RequestMethod.POST})
   @ApiOperation(position = 5, value = "Save IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineReport report, HttpServletRequest request) {
@@ -91,7 +91,7 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(REPORT, report);
   }
 
-  @RequestMapping(value = {"/vaccine/report/submit", "/rest-api/ivd/submit"} , method = RequestMethod.PUT)
+  @RequestMapping(value = {"/vaccine/report/submit", "/rest-api/ivd/submit"} , method = {RequestMethod.PUT, RequestMethod.POST})
   @ApiOperation(position = 6, value = "Submit IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> submit(@RequestBody VaccineReport report, HttpServletRequest request) {
