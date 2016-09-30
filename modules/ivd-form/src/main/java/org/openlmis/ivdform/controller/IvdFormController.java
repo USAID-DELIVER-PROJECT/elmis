@@ -11,6 +11,7 @@
  */
 package org.openlmis.ivdform.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.openlmis.core.service.FacilityService;
@@ -21,12 +22,19 @@ import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.service.IvdFormService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.Date;
 
 @Controller
@@ -83,13 +91,30 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(REPORT, service.getById(id));
   }
 
-  @RequestMapping(value = {"/vaccine/report/save", "/rest-api/ivd/save"}, method = {RequestMethod.PUT, RequestMethod.POST})
+  @RequestMapping(value = {"/vaccine/report/save"}, method = {RequestMethod.PUT})
   @ApiOperation(position = 5, value = "Save IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineReport report, HttpServletRequest request) {
     service.save(report, loggedInUserId(request));
     return OpenLmisResponse.response(REPORT, report);
   }
+
+  @RequestMapping(value = {"/rest-api/ivd-from-pdf/save"}, method = { RequestMethod.POST}, consumes = MediaType.ALL_VALUE)
+  @ApiOperation(position = 5, value = "Save IVD form")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
+  public ResponseEntity<OpenLmisResponse> saveFromPDF(HttpServletRequest request) throws ParserConfigurationException, IOException, SAXException {
+
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(request.getInputStream());
+
+    ObjectMapper mapper = new ObjectMapper();
+    VaccineReport report = mapper.readValue(doc.getDocumentElement().getTextContent().toString(), VaccineReport.class);
+
+    service.save(report, loggedInUserId(request));
+    return OpenLmisResponse.response(REPORT, report);
+  }
+
 
   @RequestMapping(value = {"/vaccine/report/submit", "/rest-api/ivd/submit"} , method = {RequestMethod.PUT, RequestMethod.POST})
   @ApiOperation(position = 6, value = "Submit IVD form")
