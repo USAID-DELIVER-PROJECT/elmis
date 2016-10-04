@@ -184,8 +184,8 @@ dependencies {
             project(path: ':modules:reporting', configuration: 'testFixtures')
 }
 
-sonarRunner {
-    sonarProperties {
+sonarqube {
+    properties {
         properties["sonar.sources"] += 'src/main/webapp/public/js'
         properties["sonar.sources"] += 'src/main/webapp/public/pages'
         properties["sonar.sources"] += 'src/main/webapp/public/less'
@@ -198,6 +198,7 @@ jettyRun {
     daemon = true;
     jettyRun.scanIntervalSeconds = 1
     System.properties.get('defaultLocale', 'en')
+    System.properties.get('jetty.host', '0.0.0.0')
 }
 
 def configureHttps(keystore, password) {
