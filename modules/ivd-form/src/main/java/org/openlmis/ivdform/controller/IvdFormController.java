@@ -14,6 +14,7 @@ package org.openlmis.ivdform.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.apache.commons.io.IOUtils;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.UserService;
@@ -22,6 +23,10 @@ import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.service.IvdFormService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +40,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 @Controller
@@ -102,7 +108,7 @@ public class IvdFormController extends BaseController {
   @RequestMapping(value = {"/rest-api/ivd-from-pdf/save"}, method = { RequestMethod.POST}, consumes = MediaType.ALL_VALUE)
   @ApiOperation(position = 5, value = "Save IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
-  public ResponseEntity<OpenLmisResponse> saveFromPDF(HttpServletRequest request) throws ParserConfigurationException, IOException, SAXException {
+  public ResponseEntity<byte[]> saveFromPDF(HttpServletRequest request) throws ParserConfigurationException, IOException, SAXException {
 
     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -112,7 +118,14 @@ public class IvdFormController extends BaseController {
     VaccineReport report = mapper.readValue(doc.getDocumentElement().getTextContent().toString(), VaccineReport.class);
 
     service.save(report, loggedInUserId(request));
-    return OpenLmisResponse.response(REPORT, report);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.parseMediaType("application/pdf"));
+    Resource resource = new ClassPathResource("ivd-success.pdf");
+    InputStream stream = resource.getInputStream();
+    byte[] pdf =  IOUtils.toByteArray(stream);
+
+    ResponseEntity<byte[]> response =  new ResponseEntity<byte[]>(pdf, headers, HttpStatus.OK);
+    return response;
   }
 
 
