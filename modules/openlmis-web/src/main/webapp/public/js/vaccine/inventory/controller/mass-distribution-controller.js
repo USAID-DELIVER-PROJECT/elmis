@@ -54,10 +54,8 @@ function MassDistributionController($scope,$location, $document,$window,configur
      };
 
      $scope.getMinDate=function(period){
-      // console.log(period.startDate);
        var max=new Date(period.startDate);
-      max.setDate(max.getDate() -30);
-       console.log(max);
+       max.setDate(max.getDate() -30);
        return max;
      };
 
