@@ -252,14 +252,14 @@ function EquipmentInventoryController($scope,NumberOfYears,DeleteEquipmentInvent
                  $scope.loadInventory();
            });
          }
-       }
+       };
         var options = {
                            id: "confirmDialog",
                            header: "label.confirm.delete.equipment.inventory",
                            body: "msg.question.delete.equipment.inventory.confirmation"
                        };
       OpenLmisDialog.newDialog(options, callBack, $dialog);
-  }
+  };
 
   $scope.loadRights = function () {
         $scope.rights = localStorageService.get(localStorageKeys.RIGHT);
