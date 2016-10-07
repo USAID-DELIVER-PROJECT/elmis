@@ -103,6 +103,9 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
     EquipmentInventory.get({
       id: $routeParams.id
     }, function (data) {
+//       $scope.selected.designation=data.inventory.equipment.designation.id;
+//      $scope.updateManufacturer();
+
       $scope.inventory = data.inventory;
 
       if ($routeParams.from === "0") {

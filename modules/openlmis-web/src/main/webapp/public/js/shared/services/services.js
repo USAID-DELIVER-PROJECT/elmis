@@ -468,3 +468,9 @@ services.factory('VaccineOrderRequisitionsForViewing', function ($resource) {
 services.factory('UserFacilityWithViewStockLedgerReport', function ($resource) {
   return $resource('/user/facilities/view-ledger-report-facilities.json', {}, {});
 });
+
+services.factory('DeleteEquipmentInventory', function ($resource) {
+  return $resource('/equipment/inventory/delete', {}, {});
+});
+
+

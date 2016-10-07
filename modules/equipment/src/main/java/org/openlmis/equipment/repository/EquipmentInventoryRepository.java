@@ -151,4 +151,11 @@ public class EquipmentInventoryRepository {
   public List<Facility> getFacilitiesWithNonFunctionalEquipments() {
     return mapper.getFacilitiesWithNonFunctionalEquipments();
   }
+
+  public void deleteEquipmentInventory(Long inventoryId){
+    mapper.deleteEquipmentInventoryStatuses(inventoryId);
+    mapper.deleteEquipmentFromIDVReport(inventoryId);
+    mapper.deleteEquipmentInventory(inventoryId);
+  }
+
 }

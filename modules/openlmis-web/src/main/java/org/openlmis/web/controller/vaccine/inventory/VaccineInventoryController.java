@@ -12,16 +12,17 @@
 package org.openlmis.web.controller.vaccine.inventory;
 
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
-import org.openlmis.core.domain.*;
+import org.openlmis.core.domain.ConfigurationSetting;
+import org.openlmis.core.domain.FacilityTypeApprovedProduct;
+import org.openlmis.core.domain.Program;
+import org.openlmis.core.domain.ProgramProduct;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramProductService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
-
 import org.openlmis.report.util.Constants;
 import org.openlmis.reporting.model.Template;
 import org.openlmis.reporting.service.JasperReportsViewFactory;
@@ -35,15 +36,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.jasperreports.AbstractJasperReportsSingleFormatView;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static org.openlmis.core.web.OpenLmisResponse.response;
@@ -114,25 +113,25 @@ public class VaccineInventoryController extends BaseController {
     }
 
     //TODO To delete this code on production
-    @RequestMapping(value = "delete-requisitions", method = GET, headers = ACCEPT_JSON)
-    public ResponseEntity deleteRequisitions(){
-        return OpenLmisResponse.response("deleteRequisitions", service.deleteRequisitions());
-    }
-
-    @RequestMapping(value = "delete-distributions", method = GET, headers = ACCEPT_JSON)
-    public ResponseEntity deleteDistributions(){
-        return OpenLmisResponse.response("deleteDistributions", service.deleteDistributions());
-    }
-
-    @RequestMapping(value = "delete-stock-cards", method = GET, headers = ACCEPT_JSON)
-    public ResponseEntity deleteStockCards() {
-        return OpenLmisResponse.response("deleteStockCards", service.deleteStockCards());
-    }
-
-    @RequestMapping(value = "delete-lots", method = GET, headers = ACCEPT_JSON)
-    public ResponseEntity deleteLots() {
-        return OpenLmisResponse.response("deleteLots", service.deleteLots());
-    }
+//    @RequestMapping(value = "delete-requisitions", method = GET, headers = ACCEPT_JSON)
+//    public ResponseEntity deleteRequisitions(){
+//        return OpenLmisResponse.response("deleteRequisitions", service.deleteRequisitions());
+//    }
+//
+//    @RequestMapping(value = "delete-distributions", method = GET, headers = ACCEPT_JSON)
+//    public ResponseEntity deleteDistributions(){
+//        return OpenLmisResponse.response("deleteDistributions", service.deleteDistributions());
+//    }
+//
+//    @RequestMapping(value = "delete-stock-cards", method = GET, headers = ACCEPT_JSON)
+//    public ResponseEntity deleteStockCards() {
+//        return OpenLmisResponse.response("deleteStockCards", service.deleteStockCards());
+//    }
+//
+//    @RequestMapping(value = "delete-lots", method = GET, headers = ACCEPT_JSON)
+//    public ResponseEntity deleteLots() {
+//        return OpenLmisResponse.response("deleteLots", service.deleteLots());
+//    }
     //TODO  End To delete this code on production
 
     public static String  getCommaSeparatedIds(List<Long> idList){
