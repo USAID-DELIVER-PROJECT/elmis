@@ -10,50 +10,34 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.openlmis.rnr.repository;
 
-package org.openlmis.report.model.report;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.openlmis.core.utils.DateUtil;
-import org.openlmis.report.model.ResultRow;
+import org.openlmis.rnr.domain.DailyStockStatus;
+import org.openlmis.rnr.domain.DailyStockStatusLineItem;
+import org.openlmis.rnr.repository.mapper.DailyStockStatusMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class VaccineStockStatusReport implements ResultRow {
+@Repository
+public class DailyStockStatusRepository {
 
-    private String product;
-    private String district;
-    private Integer soh;
-    private Date lastUpdate;
-    private String facilityName;
-    private Double monthlyStock;
-    private String facilityType;
-    private int facilityId;
-    private int productId;
-
-    private Long isaValue;
-
-    private Float mos;
-
-    private String color;
-
-    private Integer adequacy;
-
-    private String region;
+  @Autowired
+  private DailyStockStatusMapper mapper;
 
 
-    //private JSONPObject products;
-
-    public String getLastUpdate(){
-        return DateUtil.getFormattedDate(this.lastUpdate, "dd-MM-yyyy");
+  public void insert(DailyStockStatus stockStatus){
+    mapper.insert(stockStatus);
+    for(DailyStockStatusLineItem lineItem: stockStatus.getLineItems()){
+      lineItem.setStockStatusSubmissionId(stockStatus.getId());
+      lineItem.setCreatedBy(stockStatus.getCreatedBy());
+      mapper.insertLineItem(lineItem);
     }
+  }
 
+  public void clearStatusForFacilityProgramDate(Long facilityId, Long programId, Date date){
+    mapper.clearStatusForFacilityDate(facilityId, programId, date);
+  }
 
 }

@@ -198,6 +198,7 @@ jettyRun {
     daemon = true;
     jettyRun.scanIntervalSeconds = 1
     System.properties.get('defaultLocale', 'en')
+    System.properties.get('jetty.host', '0.0.0.0')
 }
 
 def configureHttps(keystore, password) {

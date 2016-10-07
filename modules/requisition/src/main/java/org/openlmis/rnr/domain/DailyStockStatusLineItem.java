@@ -10,50 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.openlmis.rnr.domain;
 
-package org.openlmis.report.model.report;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.openlmis.core.utils.DateUtil;
-import org.openlmis.report.model.ResultRow;
+import org.openlmis.core.domain.BaseModel;
 
 import java.util.Date;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class VaccineStockStatusReport implements ResultRow {
+public class DailyStockStatusLineItem extends BaseModel {
 
-    private String product;
-    private String district;
-    private Integer soh;
-    private Date lastUpdate;
-    private String facilityName;
-    private Double monthlyStock;
-    private String facilityType;
-    private int facilityId;
-    private int productId;
+  @Getter @Setter
+  private Long stockStatusSubmissionId;
 
-    private Long isaValue;
+  @Getter @Setter
+  private Long productId;
 
-    private Float mos;
+  @Getter @Setter
+  private Long stockOnHand;
 
-    private String color;
-
-    private Integer adequacy;
-
-    private String region;
-
-
-    //private JSONPObject products;
-
-    public String getLastUpdate(){
-        return DateUtil.getFormattedDate(this.lastUpdate, "dd-MM-yyyy");
-    }
-
-
+  @Getter @Setter
+  private Date lastTransactionDate;
 }

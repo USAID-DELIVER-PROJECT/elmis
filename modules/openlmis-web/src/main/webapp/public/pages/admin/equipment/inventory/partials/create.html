@@ -252,6 +252,7 @@
             <div class="form-cell">
               <label for="year">
                 <span openlmis-message="label.equipment.year.of.installation"></span>
+                  <span class="label-required">*</span>
               </label>
               <div class="form-field">
                 <input ng-model="inventory.yearOfInstallation" name="year" id="year" type="number" min="1950"
@@ -260,6 +261,9 @@
                     openlmis-message="missing.value"></span>
               <span class="field-error"
                     ng-show="(inventoryForm.year.$error.min || inventoryForm.year.$error.max) && showError">Enter a valid Year</span>
+
+                <span class="field-error" ng-show="inventoryForm.year.$error.required && showError"
+                      openlmis-message="missing.value"></span>
               </div>
             </div>
 

@@ -10,50 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.openlmis.rnr.service;
 
-package org.openlmis.report.model.report;
+import org.openlmis.rnr.domain.DailyStockStatus;
+import org.openlmis.rnr.repository.DailyStockStatusRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.openlmis.core.utils.DateUtil;
-import org.openlmis.report.model.ResultRow;
+import java.sql.SQLException;
 
-import java.util.Date;
+@Component
+public class DailyStockStatusSubmissionService {
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class VaccineStockStatusReport implements ResultRow {
+  @Autowired
+  private DailyStockStatusRepository repository;
 
-    private String product;
-    private String district;
-    private Integer soh;
-    private Date lastUpdate;
-    private String facilityName;
-    private Double monthlyStock;
-    private String facilityType;
-    private int facilityId;
-    private int productId;
-
-    private Long isaValue;
-
-    private Float mos;
-
-    private String color;
-
-    private Integer adequacy;
-
-    private String region;
-
-
-    //private JSONPObject products;
-
-    public String getLastUpdate(){
-        return DateUtil.getFormattedDate(this.lastUpdate, "dd-MM-yyyy");
-    }
-
-
+  public void save(DailyStockStatus dailyStockStatus) throws SQLException {
+    repository.clearStatusForFacilityProgramDate(dailyStockStatus.getFacilityId(), dailyStockStatus.getProgramId(), dailyStockStatus.getDate());
+    repository.insert(dailyStockStatus);
+  }
 }

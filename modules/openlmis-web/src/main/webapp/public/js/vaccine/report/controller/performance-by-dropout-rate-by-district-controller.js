@@ -302,6 +302,8 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
     function findMonthValue(reportList, type) {
         var formattedData = [];
+        var date= new Date($scope.filter.periodEnd);
+        var indexValue=date.getMonth()+1;
         var grayCount = {};
         if (utils.isEmpty(reportList)) {
             return reportList;
@@ -320,12 +322,12 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 }
             });
             for (var key in distrctList) {
-                for (var i = 0; i < 12; i++) {
+                for (var i = 0; i < indexValue; i++) {
                     var hasValue = false;
                     for (var j = 0; j < len; j++) {
-                        var date=new Date(reportList[j].period_name);
+                        var dateValue=new Date(reportList[j].period_name);
 
-                       var reportMonth=periodList[date.getMonth()];
+                       var reportMonth=periodList[dateValue.getMonth()];
                         if (angular.equals(getPopulationKey(reportList[j], type), key) &&reportMonth ===periodList[i]) {
                             formattedData.push(reportList[j]);
                             hasValue = true;

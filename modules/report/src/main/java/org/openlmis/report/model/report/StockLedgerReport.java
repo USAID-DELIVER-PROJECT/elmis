@@ -44,4 +44,5 @@ public class StockLedgerReport implements ResultRow {
     private String product;
     private Long id;
     private String manufacturerName;
+    private String voucherNumber;
 }

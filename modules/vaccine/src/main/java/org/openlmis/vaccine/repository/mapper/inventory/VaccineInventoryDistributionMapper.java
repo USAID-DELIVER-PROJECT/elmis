@@ -1,14 +1,13 @@
 package org.openlmis.vaccine.repository.mapper.inventory;
 
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.Product;
 import org.openlmis.stockmanagement.domain.Lot;
+import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItem;
 import org.openlmis.vaccine.domain.inventory.VaccineDistributionLineItemLot;
-import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
 import org.openlmis.vaccine.dto.BatchExpirationNotificationDTO;
 import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
@@ -269,4 +268,40 @@ public interface VaccineInventoryDistributionMapper {
                     one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))
     })
     VaccineDistribution getDistributionById(@Param("id") Long id);
+
+
+    @Select("SELECT *" +
+            " FROM vaccine_distributions " +
+            " WHERE tofacilityid=#{facilityId} AND  " +
+            " distributiondate::DATE >= #{startDate}::DATE  and " +
+            " distributiondate::DATE <= #{endDate}::DATE  " +
+            " order by createddate DESC")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "toFacilityId", column = "toFacilityId"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "toFacility", column = "toFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    List<VaccineDistribution> getDistributionsByDateRangeAndFacility(@Param("facilityId") Long facilityId,
+                                                                     @Param("startDate") String startDate,
+                                                                     @Param("endDate") String endDate);
+
+
+    @Select("SELECT *" +
+            " FROM vaccine_distributions " +
+            "WHERE fromfacilityid=#{facilityId} AND vouchernumber=#{voucherNumber}")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "fromFacility", column = "fromFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById")),
+            @Result(property = "toFacility", column = "toFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    VaccineDistribution getAllDistributionsByVoucherNumber(@Param("facilityId") Long facilityId,@Param("voucherNumber") String voucherNumber);
+
+
+
+
+
+
 }

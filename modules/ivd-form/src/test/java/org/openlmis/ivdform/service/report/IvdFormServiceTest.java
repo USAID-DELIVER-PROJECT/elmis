@@ -17,11 +17,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.core.builder.ProcessingPeriodBuilder;
-import org.openlmis.core.domain.ConfigurationSettingKey;
 import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.domain.ProgramProduct;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
@@ -42,8 +40,8 @@ import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
 import org.openlmis.ivdform.repository.VitaminRepository;
 import org.openlmis.ivdform.repository.VitaminSupplementationAgeGroupRepository;
-import org.openlmis.ivdform.repository.reports.IvdFormRepository;
 import org.openlmis.ivdform.repository.reports.ColdChainLineItemRepository;
+import org.openlmis.ivdform.repository.reports.IvdFormRepository;
 import org.openlmis.ivdform.repository.reports.StatusChangeRepository;
 import org.openlmis.ivdform.service.*;
 
@@ -139,25 +137,6 @@ public class IvdFormServiceTest {
     assertThat(result, is(report));
   }
 
-  @Test
-  public void shouldInitializeWhenRecordIsNotFound() throws Exception {
-    VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
-
-    when(repository.getByProgramPeriod(1L, 1L, 1L)).thenReturn(null);
-    when(configService.getBoolValue(ConfigurationSettingKey.DEFAULT_ZERO))
-        .thenReturn(Boolean.FALSE);
-
-    doNothing().when(repository).insert(report);
-
-    VaccineReport result = service.initialize(1L, 1L, 1L, 1L);
-
-    verify(repository).insert(Matchers.any(VaccineReport.class));
-  }
-
-  @Test
-  public void shouldGetPeriodsFor() throws Exception {
-
-  }
 
   @Test
   public void shouldSave() throws Exception {

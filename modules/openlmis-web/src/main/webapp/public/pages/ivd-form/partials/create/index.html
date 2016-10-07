@@ -127,8 +127,17 @@
         <li ng-show="tabVisibility.CAMPAIGN_TAB" ng-class="{'selected': visibleTab == 'campaign'}">
           <a href="" ng-click="changeTab('campaign')"><span openlmis-message="label.vaccine.tab.campaign"></span></a>
         </li>
-
       </ul>
+
+      <span class="pull-right">
+        <a id="resizeViewButton" full-screen href="" class="btn">
+          <i class="icon-resize-full"></i>
+        </a>
+      </span>
+      <span class="pull-right">
+        <a id="printButton" class="btn btn-primary" ng-href="/public/pages/ivd-form/index.html#/preview/{{report.id}}"
+           openlmis-message="button.print"></a>
+      </span>
 
     </div>
     <span ng-show="visibleTab == 'stockMovement'">

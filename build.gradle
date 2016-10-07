@@ -13,7 +13,8 @@
 apply plugin: 'idea'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'properties'
-apply plugin: "org.sonarqube"
+apply plugin: 'org.sonarqube'
+
 
 idea.project.languageLevel = '1.7'
 idea.project.jdkName = '1.7'
@@ -30,10 +31,10 @@ buildscript {
     }
   }
   dependencies {
-    classpath "net.saliman:gradle-cobertura-plugin:2.3.2"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.1"
+    classpath "net.saliman:gradle-cobertura-plugin:2.2.7"
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.8'
     classpath "net.saliman:gradle-properties-plugin:1.4.2"
-    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.1-rc2"
   }
 }
 sonarqube {
@@ -48,12 +49,6 @@ subprojects {
   apply plugin: 'java'
   apply plugin: 'idea'
   apply plugin: 'properties'
-  idea {
-    project {
-      ext.languageLevel = '1.7'
-      ext.jdkName = '1.7'
-    }
-  }
 
   sonarqube {
     properties {
@@ -92,10 +87,10 @@ subprojects {
         'org.springframework.security:spring-security-web:3.2.6.RELEASE',
         'org.springframework.security:spring-security-config:3.2.6.RELEASE',
 
-        'org.springframework.integration:spring-integration-core:4.1.5.RELEASE',
-        'org.springframework.integration:spring-integration-jdbc:4.1.5.RELEASE',
-        'org.springframework.integration:spring-integration-ftp:4.1.5.RELEASE',
-        'org.springframework.integration:spring-integration-file:4.1.5.RELEASE',
+        'org.springframework.integration:spring-integration-core:4.1.2.RELEASE',
+        'org.springframework.integration:spring-integration-jdbc:4.1.2.RELEASE',
+        'org.springframework.integration:spring-integration-ftp:4.1.2.RELEASE',
+        'org.springframework.integration:spring-integration-file:4.1.2.RELEASE',
         'org.springframework.integration:spring-integration-java-dsl:1.0.2.RELEASE',
 
 
