@@ -1078,8 +1078,8 @@ app.directive('vaccineFacilityLevelFilter', ['FacilitiesByLevel', 'VaccineInvent
         }]
 );
 
-app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographicZoneList', 'TreeGeographicTreeByProgramNoZones', 'GetUserUnassignedSupervisoryNode', 'messageService', 'VaccineSupervisedIvdPrograms',
-    function (FacilitiesByGeographicZone, TreeGeographicZoneList, TreeGeographicTreeByProgramNoZones, GetUserUnassignedSupervisoryNode, messageService, VaccineSupervisedIvdPrograms) {
+app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographicZoneList', 'TreeGeographicTreeByProgramNoZones', 'GetUserUnassignedSupervisoryNode', 'messageService', 'VimsVaccineSupervisedIvdPrograms',
+    function (FacilitiesByGeographicZone, TreeGeographicZoneList, TreeGeographicTreeByProgramNoZones, GetUserUnassignedSupervisoryNode, messageService, VimsVaccineSupervisedIvdPrograms) {
         var onPgCascadedVarsChanged1 = function ($scope) {
             var zone = ( angular.isDefined($scope.filterZone)) ? $scope.filterZone : 0;
             FacilitiesByGeographicZone.get({
@@ -1098,10 +1098,9 @@ app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographi
         var onCascadedVarsChanged = function ($scope) {
 
 
-            VaccineSupervisedIvdPrograms.get({}, function (data) {
+            VimsVaccineSupervisedIvdPrograms.get({}, function (data) {
 
                 $scope.program = data.programs[0].id;
-
                 TreeGeographicTreeByProgramNoZones.get({
                     program: $scope.program
                 }, function (data) {
