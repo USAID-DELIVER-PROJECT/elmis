@@ -11,6 +11,7 @@
 package org.openlmis.core.web.controller;
 
 import org.openlmis.core.domain.ConfigurationSettingKey;
+import org.openlmis.core.exception.DataException;
 import org.openlmis.core.logging.ApplicationLogger;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.MessageService;
@@ -20,12 +21,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
 
 import static org.openlmis.core.web.OpenLmisResponse.error;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * This controller has responsibility to respond with appropriate error response for an exception. Every controller should extend this class.
@@ -58,6 +62,9 @@ public class BaseController {
     logger.error("something broke with following exception... ", ex);
     if (ex instanceof AccessDeniedException) {
       return error(messageService.message(FORBIDDEN_EXCEPTION), HttpStatus.FORBIDDEN);
+    }
+    if (ex instanceof MissingServletRequestParameterException || ex instanceof HttpMessageNotReadableException || ex instanceof DataException) {
+      return error(ex.getMessage(), BAD_REQUEST);
     }
     return error(messageService.message(UNEXPECTED_EXCEPTION), HttpStatus.INTERNAL_SERVER_ERROR);
   }

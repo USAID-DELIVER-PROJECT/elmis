@@ -15,6 +15,7 @@ package org.openlmis.ivdform.service;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 import org.openlmis.core.domain.*;
+import org.openlmis.core.exception.DataException;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.service.*;
@@ -119,6 +120,7 @@ public class IvdFormService {
     if (report != null) {
       return report;
     }
+    validateInitiate(facilityId, programId, periodId);
     report = createNewVaccineReport(facilityId, programId, periodId);
     repository.insert(report);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.DRAFT, userId);
@@ -126,13 +128,29 @@ public class IvdFormService {
     return report;
   }
 
+  private void validateInitiate(Long facilityId, Long programId, Long periodId) {
+    VaccineReport draftReport = repository.getDraftReport(facilityId, programId);
+    if(draftReport != null){
+      throw new DataException("error.facility.has.pending.draft");
+    }
+    List<ReportStatusDTO> openPeriods = this.getPeriodsFor(facilityId, programId, new Date());
+    if(openPeriods == null || openPeriods.size() == 0|| !periodId.equals(openPeriods.get(0).getPeriodId())){
+      throw new DataException("error.ivd.form.out.of.order.ivd.not.supported");
+    }
+  }
+
   @Transactional
   public void save(VaccineReport report, Long userId) {
+    //TODO: check if this save operation is valid. Only draft can be saved.
+    //TODO: update should stop depending on surrogate keys to find the record that needs to be updated. (this would make it work for both PDF and web form submissions)
     repository.update(report, userId);
   }
 
   @Transactional
   public void submit(VaccineReport report, Long userId) {
+    //TODO: change of status should not be done on the property only.
+    // 1. update method should only be able to change the other data attributes but not the status.
+    // 2. status should be updated after some validations (only 'DRAFT' and 'REJECTED' IVDs can be submitted. Not 'SUBMITTED' and 'APPROVED'
     report.setStatus(ReportStatus.SUBMITTED);
     repository.update(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.SUBMITTED, userId);

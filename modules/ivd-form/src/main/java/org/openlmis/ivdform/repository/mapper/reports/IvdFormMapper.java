@@ -155,5 +155,10 @@ public interface IvdFormMapper {
     "r.status = 'SUBMITTED' " +
     "and facilityId = ANY( #{facilityIds}::INT[] )")
   List<RoutineReportDTO> getApprovalPendingReports(@Param("facilityIds") String facilityIds);
+
+  @Select("SELECT * from vaccine_reports r " +
+      "where " +
+      "r.facilityId = #{facilityId} and r.programId = #{facilityId} limit 1")
+  VaccineReport getDraftLastReport(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
 }
 
