@@ -77,8 +77,11 @@ public class CalculationService {
       return;
     }
 
-    Rnr previousRequisition = requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(),
-      requisition.getProgram(), fivePreviousPeriods.get(0));
+    Rnr previousRequisition = requisitionRepository
+        .getLastRegularRequisitionToEnterThePostSubmitFlow( requisition.getFacility().getId(), requisition.getProgram().getId() );
+
+    previousRequisition = requisitionRepository.getById(previousRequisition.getId());
+
     requisition.setFieldsAccordingToTemplateFrom(previousRequisition, rnrTemplate, regimenTemplate);
 
     Integer numberOfMonths = fivePreviousPeriods.get(0).getNumberOfMonths();
@@ -108,8 +111,11 @@ public class CalculationService {
       return;
     }
 
-    Rnr previousRequisition = requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(),
-      requisition.getProgram(), fivePreviousPeriods.get(0));
+    Rnr previousRequisition = requisitionRepository
+                                .getLastRegularRequisitionToEnterThePostSubmitFlow( requisition.getFacility().getId(), requisition.getProgram().getId() );
+
+    previousRequisition = requisitionRepository.getLWById(previousRequisition.getId());
+
     Map map = new HashMap<String, RnrLineItem>();
 
     if (previousRequisition != null) {
