@@ -131,4 +131,8 @@ public List<ColdChainEquipmentTemperatureStatusDTO>getAllbyId(Long equipmentId){
     return repository.getAll(equipmentId);
   }
 
+  public void deleteEquipmentInventory(Long inventoryId){
+    repository.deleteEquipmentInventory(inventoryId);
+  }
+
 }

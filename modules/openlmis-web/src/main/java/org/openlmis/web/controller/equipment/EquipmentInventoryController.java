@@ -137,4 +137,13 @@ public class EquipmentInventoryController extends BaseController {
     return OpenLmisResponse.response("Emails", "Sent");
   }
 
+  @RequestMapping(value = "/delete", method = RequestMethod.GET)
+  public ResponseEntity<OpenLmisResponse> delete(@RequestParam("inventoryId") Long inventoryId) {
+    if(null != inventoryId)
+    service.deleteEquipmentInventory(inventoryId);
+    return OpenLmisResponse.response("Equipment", "deleted");
+  }
+
+
+
 }

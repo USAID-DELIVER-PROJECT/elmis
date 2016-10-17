@@ -119,4 +119,13 @@ public interface EquipmentInventoryMapper {
     @Select("SELECT DISTINCT f.* FROM alert_equipment_nonfunctional a left join facilities f on f.id=a.facilityid")
     List<Facility> getFacilitiesWithNonFunctionalEquipments();
 
+    @Delete("Delete from vaccine_report_cold_chain_line_items where equipmentinventoryid=#{inventoryId} ")
+    Integer deleteEquipmentFromIDVReport(@Param("inventoryId") Long inventoryId);
+
+    @Delete("Delete from equipment_inventory_statuses where inventoryid=#{inventoryId} ")
+    Integer deleteEquipmentInventoryStatuses(@Param("inventoryId") Long inventoryId);
+
+    @Delete("Delete from equipment_inventories where id=#{inventoryId} ")
+    Integer deleteEquipmentInventory(@Param("inventoryId") Long inventoryId);
+
 }

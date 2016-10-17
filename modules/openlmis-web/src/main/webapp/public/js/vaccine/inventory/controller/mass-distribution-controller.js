@@ -53,6 +53,12 @@ function MassDistributionController($scope,$location, $document,$window,configur
         $scope.loadDistributionsByDate(searchDate);
      };
 
+     $scope.getMinDate=function(period){
+       var max=new Date(period.startDate);
+       max.setDate(max.getDate() -30);
+       return max;
+     };
+
      $scope.enableSearchChange=function(){
 
         if($scope.enableSearch ===false)

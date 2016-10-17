@@ -94,6 +94,7 @@
                                         </button>
 
                                     </div>
+
                                     <div class="span4"
                                          ng-show=" hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !isTransferIn">
                                         <strong id="voucher-number"
@@ -110,7 +111,8 @@
                                         </span>
 
                                     </div>
-                                    <div class="span4"
+                                    <div class="span1"></div>
+                                    <div class="span3"
                                          ng-show="distribution !== undefined && (!hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || isTransferIn)">
                                         <div>
                                             <strong id="received-date-label"
@@ -124,7 +126,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="span4"
+                                    <div class="span3"
                                          ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !isTransferIn">
                                         <div>
                                             <strong id="received-date-label1"

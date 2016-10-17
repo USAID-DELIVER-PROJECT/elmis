@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function EquipmentInventoryController($scope,NumberOfYears, UserFacilityList, EquipmentInventories, ManageEquipmentInventoryProgramList, ManageEquipmentInventoryFacilityProgramList, EquipmentTypesByProgram, EquipmentOperationalStatus, $routeParams, messageService, UpdateEquipmentInventoryStatus, $timeout, SaveEquipmentInventory,localStorageService) {
+function EquipmentInventoryController($scope,NumberOfYears,DeleteEquipmentInventory, UserFacilityList, EquipmentInventories, ManageEquipmentInventoryProgramList, ManageEquipmentInventoryFacilityProgramList, EquipmentTypesByProgram, EquipmentOperationalStatus, $routeParams, messageService, UpdateEquipmentInventoryStatus, $timeout, SaveEquipmentInventory,localStorageService,$dialog) {
 
   $scope.loadPrograms = function (initialLoad) {
     // Get home facility for user
@@ -244,6 +244,22 @@ function EquipmentInventoryController($scope,NumberOfYears, UserFacilityList, Eq
     $scope.operationalStatusList = _.where(data.status, {category: 'CCE'});
     $scope.notFunctionalStatusList = _.where(data.status, {category: 'CCE Not Functional'});
   });
+
+  $scope.deleteInventory=function(id){
+      var callBack=function(result){
+        if(result){
+           DeleteEquipmentInventory.get({inventoryId:id},function(data){
+                 $scope.loadInventory();
+           });
+         }
+       };
+        var options = {
+                           id: "confirmDialog",
+                           header: "label.confirm.delete.equipment.inventory",
+                           body: "msg.question.delete.equipment.inventory.confirmation"
+                       };
+      OpenLmisDialog.newDialog(options, callBack, $dialog);
+  };
 
   $scope.loadRights = function () {
         $scope.rights = localStorageService.get(localStorageKeys.RIGHT);
