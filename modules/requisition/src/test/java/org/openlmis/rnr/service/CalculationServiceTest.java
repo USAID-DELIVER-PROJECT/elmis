@@ -382,7 +382,8 @@ public class CalculationServiceTest {
     Rnr previousRnr = make(a(defaultRequisition, with(period, make(a(defaultProcessingPeriod, with(numberOfMonths, 3))))));
     ProgramRnrTemplate programTemplate = new ProgramRnrTemplate();
     RegimenTemplate regimenTemplate = new RegimenTemplate();
-
+    when(requisitionRepository.getLastRegularRequisitionToEnterThePostSubmitFlow( requisition.getFacility().getId(), requisition.getProgram().getId() )).thenReturn(previousRnr);
+    when(requisitionRepository.getById(previousRnr.getId())).thenReturn(previousRnr);
     when(requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(), requisition.getProgram(), previousPeriod)).thenReturn(previousRnr);
     doNothing().when(requisition).setFieldsAccordingToTemplateFrom(previousRnr, programTemplate, regimenTemplate);
 
@@ -416,7 +417,8 @@ public class CalculationServiceTest {
 
     when(requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(), requisition.getProgram(), previousPeriod)).thenReturn(previousRnr);
     doNothing().when(requisition).setFieldsAccordingToTemplateFrom(previousRnr, programTemplate, regimenTemplate);
-
+    when(requisitionRepository.getLastRegularRequisitionToEnterThePostSubmitFlow( requisition.getFacility().getId(), requisition.getProgram().getId() )).thenReturn(previousRnr);
+    when(requisitionRepository.getById(previousRnr.getId())).thenReturn(previousRnr);
     calculationService.fillFieldsForInitiatedRequisition(requisition, programTemplate, regimenTemplate);
 
     verify(processingScheduleService).getNPreviousPeriodsInDescOrder(requisition.getPeriod(), 5);
@@ -446,7 +448,8 @@ public class CalculationServiceTest {
 
     when(requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(), requisition.getProgram(), previousPeriod)).thenReturn(previousRnr);
     doNothing().when(requisition).setFieldsAccordingToTemplateFrom(previousRnr, programTemplate, regimenTemplate);
-
+    when(requisitionRepository.getLastRegularRequisitionToEnterThePostSubmitFlow( requisition.getFacility().getId(), requisition.getProgram().getId() )).thenReturn(previousRnr);
+    when(requisitionRepository.getById(previousRnr.getId())).thenReturn(previousRnr);
     calculationService.fillFieldsForInitiatedRequisition(requisition, programTemplate, regimenTemplate);
 
     verify(processingScheduleService).getNPreviousPeriodsInDescOrder(requisition.getPeriod(), 5);
@@ -476,6 +479,8 @@ public class CalculationServiceTest {
     ProgramRnrTemplate programTemplate = new ProgramRnrTemplate();
     RegimenTemplate regimenTemplate = new RegimenTemplate();
 
+    when(requisitionRepository.getLastRegularRequisitionToEnterThePostSubmitFlow( requisition.getFacility().getId(), requisition.getProgram().getId() )).thenReturn(previousRnr);
+    when(requisitionRepository.getById(previousRnr.getId())).thenReturn(previousRnr);
     when(requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(), requisition.getProgram(), previousPeriod)).thenReturn(previousRnr);
     doNothing().when(requisition).setFieldsAccordingToTemplateFrom(previousRnr, programTemplate, regimenTemplate);
 
@@ -513,6 +518,8 @@ public class CalculationServiceTest {
     RegimenTemplate regimenTemplate = new RegimenTemplate();
 
     when(requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(), requisition.getProgram(), previousPeriod)).thenReturn(previousRnr);
+    when(requisitionRepository.getLastRegularRequisitionToEnterThePostSubmitFlow( requisition.getFacility().getId(), requisition.getProgram().getId() )).thenReturn(previousRnr);
+    when(requisitionRepository.getById(previousRnr.getId())).thenReturn(previousRnr);
     doNothing().when(requisition).setFieldsAccordingToTemplateFrom(previousRnr, programTemplate, regimenTemplate);
 
     calculationService.fillFieldsForInitiatedRequisition(requisition, programTemplate, regimenTemplate);
@@ -539,6 +546,8 @@ public class CalculationServiceTest {
 
     when(requisitionRepository.getRegularRequisitionWithLineItems(spyRnr.getFacility(), spyRnr.getProgram(), previousPeriod)).thenReturn(previousRnr);
     doNothing().when(spyRnr).setFieldsAccordingToTemplateFrom(previousRnr, programTemplate, regimenTemplate);
+    when(requisitionRepository.getLastRegularRequisitionToEnterThePostSubmitFlow( rnr.getFacility().getId(), rnr.getProgram().getId() )).thenReturn(previousRnr);
+    when(requisitionRepository.getById(previousRnr.getId())).thenReturn(previousRnr);
 
     calculationService.fillFieldsForInitiatedRequisition(spyRnr, programTemplate, regimenTemplate);
 
@@ -569,7 +578,8 @@ public class CalculationServiceTest {
 
     when(requisitionRepository.getRegularRequisitionWithLineItems(spyRnr.getFacility(), spyRnr.getProgram(), previousPeriod)).thenReturn(previousRnr);
     doNothing().when(spyRnr).setFieldsAccordingToTemplateFrom(previousRnr, programTemplate, regimenTemplate);
-
+    when(requisitionRepository.getLastRegularRequisitionToEnterThePostSubmitFlow( rnr.getFacility().getId(), rnr.getProgram().getId() )).thenReturn(previousRnr);
+    when(requisitionRepository.getById(previousRnr.getId())).thenReturn(previousRnr);
     calculationService.fillFieldsForInitiatedRequisition(spyRnr, programTemplate, regimenTemplate);
 
     verify(processingScheduleService).getNPreviousPeriodsInDescOrder(spyRnr.getPeriod(), 5);

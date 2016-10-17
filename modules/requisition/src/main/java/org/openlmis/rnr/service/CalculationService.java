@@ -59,7 +59,7 @@ public class CalculationService {
     if (twoPreviousPeriods.size() != 0) {
       numberOfMonths = twoPreviousPeriods.get(0).getNumberOfMonths();
       startDate = (numberOfMonths < 3 && twoPreviousPeriods.size() != 1) ? twoPreviousPeriods.get(1).getStartDate() :
-        twoPreviousPeriods.get(0).getStartDate();
+          twoPreviousPeriods.get(0).getStartDate();
     }
 
     for (RnrLineItem lineItem : requisition.getNonSkippedLineItems()) {
@@ -71,14 +71,19 @@ public class CalculationService {
   public void fillFieldsForInitiatedRequisition(Rnr requisition, ProgramRnrTemplate rnrTemplate, RegimenTemplate regimenTemplate) {
     List<ProcessingPeriod> fivePreviousPeriods = processingScheduleService.getNPreviousPeriodsInDescOrder(requisition.getPeriod(), MAX_NUMBER_OF_PERIODS_TO_TRACK);
 
-    if (fivePreviousPeriods.size() == 0) {
+
+    Rnr previousRequisition = requisitionRepository
+        .getLastRegularRequisitionToEnterThePostSubmitFlow(requisition.getFacility().getId(), requisition.getProgram().getId());
+
+    if (fivePreviousPeriods.size() == 0 || previousRequisition == null) {
       requisition.setFieldsAccordingToTemplateFrom(null, rnrTemplate, regimenTemplate);
       fillPreviousNCsInLineItems(requisition, requisition.getPeriod().getNumberOfMonths(), requisition.getPeriod().getStartDate());
       return;
     }
 
-    Rnr previousRequisition = requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(),
-      requisition.getProgram(), fivePreviousPeriods.get(0));
+
+    previousRequisition = requisitionRepository.getById(previousRequisition.getId());
+
     requisition.setFieldsAccordingToTemplateFrom(previousRequisition, rnrTemplate, regimenTemplate);
 
     Integer numberOfMonths = fivePreviousPeriods.get(0).getNumberOfMonths();
@@ -99,8 +104,11 @@ public class CalculationService {
   public void copySkippedFieldFromPreviousPeriod(Rnr requisition) {
     List<ProcessingPeriod> fivePreviousPeriods = processingScheduleService.getNPreviousPeriodsInDescOrder(requisition.getPeriod(), 5);
 
-    if (fivePreviousPeriods.size() == 0) {
-      if(requisition.getProgram().getHideSkippedProducts()) {
+    Rnr previousRequisition = requisitionRepository
+        .getLastRegularRequisitionToEnterThePostSubmitFlow(requisition.getFacility().getId(), requisition.getProgram().getId());
+
+    if (fivePreviousPeriods.size() == 0 || previousRequisition == null) {
+      if (requisition.getProgram().getHideSkippedProducts()) {
         for (RnrLineItem lineItem : requisition.getFullSupplyLineItems()) {
           lineItem.setSkipped(true);
         }
@@ -108,8 +116,9 @@ public class CalculationService {
       return;
     }
 
-    Rnr previousRequisition = requisitionRepository.getRegularRequisitionWithLineItems(requisition.getFacility(),
-      requisition.getProgram(), fivePreviousPeriods.get(0));
+
+    previousRequisition = requisitionRepository.getLWById(previousRequisition.getId());
+
     Map map = new HashMap<String, RnrLineItem>();
 
     if (previousRequisition != null) {
@@ -120,7 +129,7 @@ public class CalculationService {
         RnrLineItem previous = (RnrLineItem) map.get(lineItem.getProductCode());
         if (previous != null) {
           lineItem.setSkipped(previous.getSkipped());
-        }else if(requisition.getProgram().getHideSkippedProducts()){
+        } else if (requisition.getProgram().getHideSkippedProducts()) {
           lineItem.setSkipped(true);
         }
       }
@@ -153,11 +162,11 @@ public class CalculationService {
 
     for (RnrLineItem lineItem : requisition.getFullSupplyLineItems()) {
       List<RnrLineItem> previousLineItems = requisitionRepository.getAuthorizedRegularUnSkippedLineItems(lineItem.getProductCode(),
-        requisition, getNumberOfPreviousNCToTrack(numberOfMonths), trackingDate);
+          requisition, getNumberOfPreviousNCToTrack(numberOfMonths), trackingDate);
       List<Integer> nNormalizedConsumptions = (List<Integer>) collect(previousLineItems, new Transformer() {
         @Override
         public Object transform(Object o) {
-          return (o == null)? 0: ((RnrLineItem) o).getNormalizedConsumption();
+          return (o == null) ? 0 : ((RnrLineItem) o).getNormalizedConsumption();
         }
       });
       lineItem.setPreviousNormalizedConsumptions(nNormalizedConsumptions);
@@ -198,10 +207,10 @@ public class CalculationService {
   }
 
   public void skipAllLineItems(Rnr requisition) {
-    for(RnrLineItem lineItem: requisition.getFullSupplyLineItems()){
+    for (RnrLineItem lineItem : requisition.getFullSupplyLineItems()) {
       lineItem.setSkipped(true);
     }
-    for(RegimenLineItem lineItem: requisition.getRegimenLineItems()){
+    for (RegimenLineItem lineItem : requisition.getRegimenLineItems()) {
       lineItem.setSkipped(true);
     }
   }
