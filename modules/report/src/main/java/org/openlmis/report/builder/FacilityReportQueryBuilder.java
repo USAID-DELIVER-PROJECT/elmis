@@ -45,6 +45,9 @@ public class FacilityReportQueryBuilder {
     }
     if (filter.getProgram() != 0) {
       WHERE(programIsFilteredBy("ps.programId"));
+      WHERE("F.id in (select facility_id from vw_user_facilities where user_id = cast( #{userId} as int4) and program_id = cast(#{filterCriteria.program} as int4))");
+      WHERE("F.id in (select m.facilityid from requisition_group_members m where m.requisitionGroupId in (select rpgs.requisitionGroupId from requisition_group_program_schedules rpgs where rpgs.programId = #{filterCriteria.program}) )");
+      WHERE("ps.active = true");
     }
     return SQL();
   }
