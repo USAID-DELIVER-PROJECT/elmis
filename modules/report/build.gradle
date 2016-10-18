@@ -13,11 +13,11 @@
 apply plugin: 'cobertura'
 
 dependencies {
-    compile ('net.sf.jasperreports:jasperreports:6.1.1'){
+    compile ('net.sf.jasperreports:jasperreports:6.3.1'){
         exclude group: 'org.apache.lucene'
         exclude group: 'org.olap4j'
     }
-    compile 'org.codehaus.groovy:groovy-all:2.3.9',
+    compile 'org.codehaus.groovy:groovy-all:2.4.4',
           'org.apache.poi:poi:3.13',
       project(':modules:authentication'),
       project(':modules:stock-management'),
