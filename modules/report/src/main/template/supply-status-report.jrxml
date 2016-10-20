@@ -125,7 +125,9 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,###.#" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="771" y="20" width="31" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="3da376e3-6c8d-48f1-abbe-c21d6f4cc5c8"/>
+				<reportElement mode="Transparent" x="771" y="20" width="31" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="3da376e3-6c8d-48f1-abbe-c21d6f4cc5c8">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single" rightIndent="5"/>
@@ -133,7 +135,9 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[($F{maxMOS} == null ? " - " : $F{maxMOS})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="602" y="20" width="169" height="20" forecolor="#000000" backcolor="#333333" uuid="ee25427d-8d23-42a2-ac8f-f2f17bb7834d"/>
+				<reportElement mode="Transparent" x="602" y="20" width="169" height="20" forecolor="#000000" backcolor="#333333" uuid="ee25427d-8d23-42a2-ac8f-f2f17bb7834d">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -173,7 +177,9 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[$R{label.facility}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,###.#" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="771" y="0" width="31" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="226bb1e2-dd45-4d64-93ba-268b1a5af64d"/>
+				<reportElement mode="Transparent" x="771" y="0" width="31" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="226bb1e2-dd45-4d64-93ba-268b1a5af64d">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single" rightIndent="5"/>
@@ -181,7 +187,9 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[$F{minMOS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="602" y="0" width="169" height="20" forecolor="#000000" backcolor="#333333" uuid="f5870ab1-f927-4261-b3d6-6eb40d773b9b"/>
+				<reportElement mode="Transparent" x="602" y="0" width="169" height="20" forecolor="#000000" backcolor="#333333" uuid="f5870ab1-f927-4261-b3d6-6eb40d773b9b">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>

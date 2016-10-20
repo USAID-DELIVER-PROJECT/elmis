@@ -304,7 +304,7 @@ WHERE
 				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="0" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="29ff9399-7f59-451b-b8df-f1f6240f4a60"/>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="29ff9399-7f59-451b-b8df-f1f6240f4a60"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -312,7 +312,7 @@ WHERE
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="110" y="0" width="106" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="270a3457-08bc-4754-9224-9d03a685426e">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="110" y="0" width="106" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="270a3457-08bc-4754-9224-9d03a685426e">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
@@ -332,12 +332,12 @@ WHERE
 				<box leftPadding="2"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.25" firstLineIndent="0" spacingBefore="0" spacingAfter="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="216" y="0" width="104" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="c52d3b10-4593-4e67-8068-2bc5bd96c3ef">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="216" y="0" width="104" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="c52d3b10-4593-4e67-8068-2bc5bd96c3ef">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -351,7 +351,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{facilitytypename}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="411" y="0" width="126" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="fcc9e3ae-b989-44eb-9c25-83d99883bcee">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="411" y="0" width="126" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="fcc9e3ae-b989-44eb-9c25-83d99883bcee">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -364,7 +364,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="40" y="0" width="70" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="71a43769-f809-4d5c-be97-27a0ce918cee">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="40" y="0" width="70" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="71a43769-f809-4d5c-be97-27a0ce918cee">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
@@ -387,7 +387,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{supplyingFacility}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="725" y="0" width="77" height="20" uuid="a4f984ad-805f-49d8-afc4-90b7da8113af">
+				<reportElement stretchType="RelativeToTallestObject" x="725" y="0" width="77" height="20" uuid="a4f984ad-805f-49d8-afc4-90b7da8113af">
 					<printWhenExpression><![CDATA[$P{SHOW_STOCKEDOUT}=="Y"]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{stockoutdays}]]></textFieldExpression>
