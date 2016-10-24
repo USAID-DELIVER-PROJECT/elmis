@@ -54,4 +54,20 @@ public class LogisticsLineItem extends BaseModel {
   private String discardingReasonExplanation;
 
   private String remarks;
+
+  public void copyValuesFrom(LogisticsLineItem source){
+    this.openingBalance = source.getOpeningBalance();
+    this.quantityReceived = source.getQuantityReceived();
+    this.quantityIssued = source.getQuantityIssued();
+    this.closingBalance = source.getClosingBalance();
+    this.quantityVvmAlerted = source.getQuantityVvmAlerted();
+    this.quantityFreezed = source.getQuantityFreezed();
+    this.quantityExpired = source.getQuantityExpired();
+    this.quantityDiscardedUnopened = source.getQuantityDiscardedUnopened();
+    this.quantityDiscardedOpened = source.getQuantityDiscardedOpened();
+    this.quantityWastedOther = source.getQuantityWastedOther();
+    this.daysStockedOut = source.getDaysStockedOut();
+    this.discardingReasonId  = source.getDiscardingReasonId();
+    this.remarks = source.getRemarks();
+  }
 }

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
@@ -41,24 +42,44 @@ public class LineItemService {
   CampaignLineItemRepository campaignLineItemRepository;
 
   @Autowired
-  ColdChainLineItemRepository coldChainRepository;
+  ColdChainLineItemRepository coldChainLIRepository;
 
   @Autowired
   VitaminSupplementationLineItemRepository vitaminSupplementationLineItemRepository;
 
-  public void saveLogisticsLineItems(List<LogisticsLineItem> lineItems, Long reportId) {
+  public void saveLogisticsLineItems(VaccineReport dbVersion, List<LogisticsLineItem> lineItems, Long reportId, Long userId) {
     for (LogisticsLineItem lineItem : emptyIfNull(lineItems)) {
+      if (null != dbVersion) {
+        Optional<LogisticsLineItem> dbLogisticsLineItem = dbVersion.getLogisticsLineItems()
+            .parallelStream()
+            .filter(t -> t.getProductId().equals(lineItem.getProductId()))
+            .findFirst();
+
+        if (dbLogisticsLineItem.isPresent()) {
+          dbLogisticsLineItem.get().copyValuesFrom(lineItem);
+          dbLogisticsLineItem.get().setModifiedBy(userId);
+          repository.update(dbLogisticsLineItem.get());
+          continue;
+        }
+      }
       if (!lineItem.hasId()) {
         lineItem.setReportId(reportId);
         repository.insert(lineItem);
-      } else {
-        repository.update(lineItem);
       }
     }
   }
 
-  public void saveDiseaseLineItems(List<DiseaseLineItem> lineItems, Long reportId) {
+  public void saveDiseaseLineItems(VaccineReport dbVersion, List<DiseaseLineItem> lineItems, Long reportId) {
     for (DiseaseLineItem lineItem : emptyIfNull(lineItems)) {
+      if (null != dbVersion) {
+        Optional<DiseaseLineItem> dbLineItems = dbVersion.getDiseaseLineItems()
+            .parallelStream()
+            .filter(t -> t.getDiseaseId() == lineItem.getDiseaseId())
+            .findFirst();
+        if (dbLineItems.isPresent()) {
+          lineItem.setId(dbLineItems.get().getId());
+        }
+      }
       if (!lineItem.hasId()) {
         lineItem.setReportId(reportId);
         diseaseLineItemRepository.insert(lineItem);
@@ -68,18 +89,30 @@ public class LineItemService {
     }
   }
 
-  public void saveCoverageLineItems(List<VaccineCoverageItem> lineItems, Long reportId) {
+  public void saveCoverageLineItems(VaccineReport dbVersion, List<VaccineCoverageItem> lineItems, Long reportId, Long userId) {
     for (VaccineCoverageItem lineItem : emptyIfNull(lineItems)) {
+
+      if (null != dbVersion) {
+        Optional<VaccineCoverageItem> dbCoverageLineItem = dbVersion.getCoverageLineItems()
+            .parallelStream()
+            .filter(t -> t.getProductId().equals(lineItem.getProductId()) && t.getDoseId().equals(lineItem.getDoseId()))
+            .findFirst();
+
+        if (dbCoverageLineItem.isPresent()) {
+          dbCoverageLineItem.get().copyValuesFrom(lineItem);
+          dbCoverageLineItem.get().setModifiedBy(userId);
+          coverageItemRepository.update(dbCoverageLineItem.get());
+          continue;
+        }
+      }
       if (!lineItem.hasId()) {
         lineItem.setReportId(reportId);
         coverageItemRepository.insert(lineItem);
-      } else {
-        coverageItemRepository.update(lineItem);
       }
     }
   }
 
-  public void saveAdverseEffectLineItems(List<AdverseEffectLineItem> adverseEffectLineItems, Long reportId) {
+  public void saveAdverseEffectLineItems(VaccineReport dbVersion, List<AdverseEffectLineItem> adverseEffectLineItems, Long reportId, Long userId) {
 
     // delete and recreate the line items here.
     adverseLineItemRepository.deleteLineItems(reportId);
@@ -87,7 +120,7 @@ public class LineItemService {
     for (AdverseEffectLineItem lineItem : emptyIfNull(adverseEffectLineItems)) {
       lineItem.setReportId(reportId);
       adverseLineItemRepository.insert(lineItem);
-      for(AdverseEffectLineItem relatedIssue : emptyIfNull(lineItem.getRelatedLineItems())){
+      for (AdverseEffectLineItem relatedIssue : emptyIfNull(lineItem.getRelatedLineItems())) {
         relatedIssue.setReportId(reportId);
         relatedIssue.setRelatedToLineItemId(lineItem.getId());
         // copy important details from the main aefi
@@ -95,40 +128,70 @@ public class LineItemService {
         relatedIssue.setDate(lineItem.getDate());
         relatedIssue.setIsInvestigated(lineItem.getIsInvestigated());
         relatedIssue.setInvestigationDate(lineItem.getInvestigationDate());
+        relatedIssue.setCreatedBy(userId);
         adverseLineItemRepository.insert(relatedIssue);
       }
     }
   }
 
-  public void saveCampaignLineItems(List<CampaignLineItem> campaignLineItems, Long reportId) {
+  public void saveCampaignLineItems(VaccineReport dbVersion, List<CampaignLineItem> campaignLineItems, Long reportId, Long userId) {
+    campaignLineItemRepository.deleteFor(reportId);
     for (CampaignLineItem lineItem : emptyIfNull(campaignLineItems)) {
       lineItem.setReportId(reportId);
       if (!lineItem.hasId()) {
+        lineItem.setCreatedBy(userId);
         campaignLineItemRepository.insert(lineItem);
       } else {
+        lineItem.setModifiedBy(userId);
         campaignLineItemRepository.update(lineItem);
       }
     }
   }
 
-  public void saveColdChainLIneItems(List<ColdChainLineItem> coldChainLineItems, Long reportId) {
+  public void saveColdChainLIneItems(VaccineReport dbVersion, List<ColdChainLineItem> coldChainLineItems, Long reportId, Long userId) {
+
     for (ColdChainLineItem lineItem : emptyIfNull(coldChainLineItems)) {
+      if (null != dbVersion) {
+        Optional<ColdChainLineItem> dbColdChainLI = dbVersion.getColdChainLineItems()
+            .parallelStream()
+            .filter(t -> t.getEquipmentInventoryId().equals(lineItem.getEquipmentInventoryId()))
+            .findFirst();
+
+        if (dbColdChainLI.isPresent()) {
+          dbColdChainLI.get().copyValuesFrom(lineItem);
+          dbColdChainLI.get().setModifiedBy(userId);
+          coldChainLIRepository.update(dbColdChainLI.get());
+          continue;
+        }
+      }
       lineItem.setReportId(reportId);
       if (!lineItem.hasId()) {
-        coldChainRepository.insert(lineItem);
-      } else {
-        coldChainRepository.update(lineItem);
+        lineItem.setCreatedBy(userId);
+        coldChainLIRepository.insert(lineItem);
       }
     }
   }
 
-  public void saveVitaminLineItems(List<VitaminSupplementationLineItem> vitaminSupplementationLineItems, Long reportId) {
+  public void saveVitaminLineItems(VaccineReport dbVersion, List<VitaminSupplementationLineItem> vitaminSupplementationLineItems, Long reportId, Long userId) {
+
     for (VitaminSupplementationLineItem lineItem : emptyIfNull(vitaminSupplementationLineItems)) {
+      if (null != dbVersion) {
+        Optional<VitaminSupplementationLineItem> dbVitaminSupplementationLI = dbVersion.getVitaminSupplementationLineItems()
+            .parallelStream()
+            .filter(t -> t.getVitaminAgeGroupId().equals(lineItem.getVitaminAgeGroupId()) && t.getVaccineVitaminId().equals(lineItem.getVaccineVitaminId()))
+            .findFirst();
+
+        if (dbVitaminSupplementationLI.isPresent()) {
+          dbVitaminSupplementationLI.get().copyValuesFrom(lineItem);
+          dbVitaminSupplementationLI.get().setModifiedBy(userId);
+          vitaminSupplementationLineItemRepository.update(dbVitaminSupplementationLI.get());
+          continue;
+        }
+      }
       lineItem.setReportId(reportId);
       if (!lineItem.hasId()) {
+        lineItem.setCreatedBy(userId);
         vitaminSupplementationLineItemRepository.insert(lineItem);
-      } else {
-        vitaminSupplementationLineItemRepository.update(lineItem);
       }
     }
   }

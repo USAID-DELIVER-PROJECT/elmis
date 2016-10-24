@@ -91,6 +91,14 @@ public interface IvdFormMapper {
       "where id = #{id}")
   void update(VaccineReport report);
 
+  @Update("UPDATE vaccine_reports" +
+      " set" +
+      " status = #{status}, " +
+      " modifiedBy = #{modifiedBy}, " +
+      " modifiedDate = NOW() " +
+      "where id = #{id}")
+  void setStatus(VaccineReport report);
+
   @Select("select max(s.scheduleId) id from requisition_group_program_schedules s " +
       " join requisition_group_members m " +
       "     on m.requisitionGroupId = s.requisitionGroupId " +

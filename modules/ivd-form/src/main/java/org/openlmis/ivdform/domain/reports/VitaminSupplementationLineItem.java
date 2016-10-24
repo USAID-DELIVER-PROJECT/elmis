@@ -36,4 +36,9 @@ public class VitaminSupplementationLineItem extends BaseModel {
   Long displayOrder;
   Long maleValue;
   Long femaleValue;
+
+  public void copyValuesFrom(VitaminSupplementationLineItem source){
+    this.setMaleValue(source.getMaleValue());
+    this.setFemaleValue(source.getFemaleValue());
+  }
 }

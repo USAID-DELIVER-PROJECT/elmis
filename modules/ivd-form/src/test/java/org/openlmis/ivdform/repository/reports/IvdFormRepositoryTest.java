@@ -12,6 +12,7 @@
 
 package org.openlmis.ivdform.repository.reports;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -19,10 +20,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.db.categories.UnitTests;
+import org.openlmis.ivdform.builders.reports.VaccineReportBuilder;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.repository.mapper.reports.IvdFormMapper;
 import org.openlmis.ivdform.service.LineItemService;
 
+import static com.natpryce.makeiteasy.MakeItEasy.a;
+import static com.natpryce.makeiteasy.MakeItEasy.make;
 import static org.mockito.Mockito.verify;
 
 
@@ -39,17 +43,26 @@ public class IvdFormRepositoryTest {
   @InjectMocks
   IvdFormRepository repository;
 
+  private VaccineReport persistedReport;
+
+  @Before
+  public void setup(){
+    persistedReport =make(a(VaccineReportBuilder.defaultVaccineReport));
+    persistedReport.setModifiedBy(2L);
+    persistedReport.setCreatedBy(2L);
+  }
+
   @Test
   public void shouldInsert() throws Exception {
     VaccineReport report = new VaccineReport();
-    repository.insert(report);
+    repository.insert(report, 2L);
     verify(mapper).insert(report);
   }
 
   @Test
   public void shouldUpdate() throws Exception {
     VaccineReport report = new VaccineReport();
-    repository.update(report, 2L);
+    repository.update(persistedReport, report, 2L);
     verify(mapper).update(report);
   }
 

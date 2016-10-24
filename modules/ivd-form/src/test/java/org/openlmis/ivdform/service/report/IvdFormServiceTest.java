@@ -109,6 +109,8 @@ public class IvdFormServiceTest {
   @InjectMocks
   IvdFormService service;
 
+  VaccineReport persistedReport;
+
   @Before
   public void setup() throws Exception {
     when(programProductService.getActiveByProgram(1L))
@@ -124,6 +126,8 @@ public class IvdFormServiceTest {
     when(ageGroupRepository.getAll())
         .thenReturn(new ArrayList<VitaminSupplementationAgeGroup>());
 
+    persistedReport = make(a(VaccineReportBuilder.defaultVaccineReport));
+
   }
 
 
@@ -135,15 +139,6 @@ public class IvdFormServiceTest {
     VaccineReport result = service.initialize(1L, 1L, 1L, 1L);
     verify(programProductService, never()).getActiveByProgram(1L);
     assertThat(result, is(report));
-  }
-
-
-  @Test
-  public void shouldSave() throws Exception {
-    VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
-    doNothing().when(repository).update(report, 2L);
-    service.save(report, 2L);
-    verify(repository).update(report, 2L);
   }
 
   @Test
@@ -162,9 +157,15 @@ public class IvdFormServiceTest {
   @Test
   public void shouldSubmit() throws Exception {
     VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
-    doNothing().when(repository).update(report, 2L);
+    report.setId(10L);
+    when(repository.getReportIdForFacilityAndPeriod(report.getFacilityId(), report.getPeriodId()))
+        .thenReturn(report.getId());
+    when(repository.getByIdWithFullDetails(report.getId()))
+        .thenReturn(persistedReport);
+    doNothing().when(repository).update(persistedReport, report, 2L);
+    doNothing().when(repository).changeStatus(report, ReportStatus.SUBMITTED, 2L);
     service.submit(report, 2L);
-    verify(repository).update(report, 2L);
+    verify(repository).update(persistedReport, report, 2L);
     assertThat(report.getStatus(), is(ReportStatus.SUBMITTED));
   }
 

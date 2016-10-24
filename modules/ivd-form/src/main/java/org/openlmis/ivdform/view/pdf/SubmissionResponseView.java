@@ -10,28 +10,31 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.ivdform.repository.reports;
+package org.openlmis.ivdform.view.pdf;
 
-import org.openlmis.ivdform.domain.reports.CampaignLineItem;
-import org.openlmis.ivdform.repository.mapper.reports.CampaignLineItemMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.lowagie.text.pdf.PdfDocument;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.view.AbstractView;
 
-@Component
-public class CampaignLineItemRepository {
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.util.Map;
 
-  @Autowired
-  CampaignLineItemMapper mapper;
+@Component("ivdFormResponseView")
+public class SubmissionResponseView extends AbstractView {
 
-  public void insert(CampaignLineItem lineItem) {
-    mapper.insert(lineItem);
+  public SubmissionResponseView(){
+    setContentType("application/pdf");
   }
 
-  public void update(CampaignLineItem lineItem) {
-    mapper.update(lineItem);
-  }
+  @Override
+  public void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    try (ByteArrayOutputStream stream = this.createTemporaryOutputStream()) {
 
-  public void deleteFor(Long reportId) {
-    mapper.deleteLineItems(reportId);
+      SubmissionResponseWriter writer = new SubmissionResponseWriter(new PdfDocument(), stream);
+      writer.buildWith(model);
+      writeToResponse(response, stream);
+    }
   }
 }

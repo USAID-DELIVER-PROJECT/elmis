@@ -10,28 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.ivdform.repository.reports;
+package org.openlmis.ivdform.exceptions;
 
-import org.openlmis.ivdform.domain.reports.CampaignLineItem;
-import org.openlmis.ivdform.repository.mapper.reports.CampaignLineItemMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.Setter;
 
-@Component
-public class CampaignLineItemRepository {
+public class OutOfOrderFormSubmissionException extends RuntimeException {
 
-  @Autowired
-  CampaignLineItemMapper mapper;
+  @Getter @Setter
+  private String expected;
 
-  public void insert(CampaignLineItem lineItem) {
-    mapper.insert(lineItem);
+  @Getter @Setter
+  private String found;
+
+  public OutOfOrderFormSubmissionException(String message, String expected, String found){
+    super(message);
+    this.expected = expected;
+    this.found = found;
   }
 
-  public void update(CampaignLineItem lineItem) {
-    mapper.update(lineItem);
-  }
-
-  public void deleteFor(Long reportId) {
-    mapper.deleteLineItems(reportId);
-  }
 }

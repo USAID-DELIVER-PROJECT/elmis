@@ -10,28 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.ivdform.repository.reports;
+package org.openlmis.ivdform.exceptions;
 
-import org.openlmis.ivdform.domain.reports.CampaignLineItem;
-import org.openlmis.ivdform.repository.mapper.reports.CampaignLineItemMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+public class FormAlreadySubmittedException extends RuntimeException{
 
-@Component
-public class CampaignLineItemRepository {
-
-  @Autowired
-  CampaignLineItemMapper mapper;
-
-  public void insert(CampaignLineItem lineItem) {
-    mapper.insert(lineItem);
+  public FormAlreadySubmittedException(String message) {
+    super(message);
   }
 
-  public void update(CampaignLineItem lineItem) {
-    mapper.update(lineItem);
-  }
-
-  public void deleteFor(Long reportId) {
-    mapper.deleteLineItems(reportId);
-  }
 }

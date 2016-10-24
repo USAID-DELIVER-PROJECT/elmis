@@ -57,16 +57,19 @@ public class LineItemServiceTest {
   @InjectMocks
   LineItemService service;
 
+  VaccineReport dbReport;
+
   @Before
   public void setUp() throws Exception {
-
+    dbReport = new VaccineReport();
+    dbReport.setId(2L);
   }
 
   @Test
   public void shouldInsertLogisticsLineItems() throws Exception {
     LogisticsLineItem lineItem = new LogisticsLineItem();
     lineItem.setReportId(2L);
-    service.saveLogisticsLineItems(asList(lineItem), 2L);
+    service.saveLogisticsLineItems(null, asList(lineItem), 2L, 1L);
     verify(logisticsRepository).insert(lineItem);
   }
 
@@ -75,7 +78,9 @@ public class LineItemServiceTest {
     LogisticsLineItem lineItem = new LogisticsLineItem();
     lineItem.setReportId(2L);
     lineItem.setId(2L);
-    service.saveLogisticsLineItems(asList(lineItem), 2L);
+    lineItem.setProductId(23L);
+    dbReport.setLogisticsLineItems(asList(lineItem));
+    service.saveLogisticsLineItems(dbReport, asList(lineItem), 2L, 1L);
     verify(logisticsRepository).update(lineItem);
   }
 
@@ -83,7 +88,7 @@ public class LineItemServiceTest {
   public void shouldInsertDiseaseLineItems() throws Exception {
     DiseaseLineItem lineItem = new DiseaseLineItem();
     lineItem.setReportId(2L);
-    service.saveDiseaseLineItems(asList(lineItem), 2L);
+    service.saveDiseaseLineItems(null, asList(lineItem), 2L);
     verify(diseaseLineItemRepository).insert(lineItem);
   }
 
@@ -92,7 +97,9 @@ public class LineItemServiceTest {
     DiseaseLineItem lineItem = new DiseaseLineItem();
     lineItem.setId(2L);
     lineItem.setReportId(2L);
-    service.saveDiseaseLineItems(asList(lineItem), 2L);
+    dbReport.setDiseaseLineItems(asList(lineItem));
+
+    service.saveDiseaseLineItems(dbReport, asList(lineItem), 2L);
     verify(diseaseLineItemRepository).update(lineItem);
   }
 
@@ -100,7 +107,7 @@ public class LineItemServiceTest {
   public void shouldInsertCoverageLineItems() throws Exception {
     VaccineCoverageItem lineItem = new VaccineCoverageItem();
     lineItem.setReportId(2L);
-    service.saveCoverageLineItems(asList(lineItem), 2L);
+    service.saveCoverageLineItems(null, asList(lineItem), 2L, 2L);
     verify(coverageItemRepository).insert(lineItem);
   }
 
@@ -109,7 +116,10 @@ public class LineItemServiceTest {
     VaccineCoverageItem lineItem = new VaccineCoverageItem();
     lineItem.setReportId(2L);
     lineItem.setId(2L);
-    service.saveCoverageLineItems(asList(lineItem), 2L);
+    lineItem.setDoseId(2L);
+    lineItem.setProductId(34L);
+    dbReport.setCoverageLineItems(asList(lineItem));
+    service.saveCoverageLineItems(dbReport, asList(lineItem), 2L, 2L);
     verify(coverageItemRepository).update(lineItem);
   }
 
@@ -117,7 +127,7 @@ public class LineItemServiceTest {
   public void shouldSaveAdverseEffectLineItems() throws Exception {
     AdverseEffectLineItem lineItem = new AdverseEffectLineItem();
     lineItem.setReportId(2L);
-    service.saveAdverseEffectLineItems(asList(lineItem), 2L);
+    service.saveAdverseEffectLineItems(dbReport, asList(lineItem), 2L,2L);
     verify(adverseLineItemRepository).insert(lineItem);
   }
 
@@ -126,7 +136,7 @@ public class LineItemServiceTest {
     AdverseEffectLineItem lineItem = new AdverseEffectLineItem();
     lineItem.setReportId(2L);
     lineItem.setId(3L);
-    service.saveAdverseEffectLineItems(asList(lineItem), 2L);
+    service.saveAdverseEffectLineItems(dbReport, asList(lineItem), 2L, 2L);
     verify(adverseLineItemRepository).deleteLineItems(2L);
     verify(adverseLineItemRepository).insert(lineItem);
 
@@ -136,7 +146,7 @@ public class LineItemServiceTest {
   public void shouldInsertCampaignLineItems() throws Exception {
     CampaignLineItem lineItem = new CampaignLineItem();
     lineItem.setReportId(2L);
-    service.saveCampaignLineItems(asList(lineItem), 2L);
+    service.saveCampaignLineItems(null, asList(lineItem), 2L, 2L);
     verify(campaignLineItemRepository).insert(lineItem);
   }
 
@@ -145,7 +155,7 @@ public class LineItemServiceTest {
     CampaignLineItem lineItem = new CampaignLineItem();
     lineItem.setReportId(2L);
     lineItem.setId(2L);
-    service.saveCampaignLineItems(asList(lineItem), 2L);
+    service.saveCampaignLineItems(dbReport, asList(lineItem), 2L, 2L);
     verify(campaignLineItemRepository).update(lineItem);
   }
 
@@ -153,7 +163,7 @@ public class LineItemServiceTest {
   public void shouldSaveColdChainLIneItems() throws Exception {
     ColdChainLineItem lineItem = new ColdChainLineItem();
     lineItem.setReportId(2L);
-    service.saveColdChainLIneItems(asList(lineItem), 2L);
+    service.saveColdChainLIneItems(null, asList(lineItem), 2L,2L);
     verify(coldChainRepository).insert(lineItem);
   }
 
@@ -162,7 +172,9 @@ public class LineItemServiceTest {
     ColdChainLineItem lineItem = new ColdChainLineItem();
     lineItem.setId(3L);
     lineItem.setReportId(2L);
-    service.saveColdChainLIneItems(asList(lineItem), 2L);
+    lineItem.setEquipmentInventoryId(30L);
+    dbReport.setColdChainLineItems(asList(lineItem));
+    service.saveColdChainLIneItems(dbReport, asList(lineItem), 2L, 2L);
     verify(coldChainRepository).update(lineItem);
   }
 
@@ -170,7 +182,7 @@ public class LineItemServiceTest {
   public void shouldInsertVitaminLineItems() throws Exception {
     VitaminSupplementationLineItem lineItem = new VitaminSupplementationLineItem();
     lineItem.setReportId(2L);
-    service.saveVitaminLineItems(asList(lineItem), 2L);
+    service.saveVitaminLineItems(null, asList(lineItem), 2L, 2L);
     verify(vitaminSupplementationLineItemRepository).insert(lineItem);
   }
 
@@ -178,8 +190,11 @@ public class LineItemServiceTest {
   public void shouldUpdateVitaminLineItems() throws Exception {
     VitaminSupplementationLineItem lineItem = new VitaminSupplementationLineItem();
     lineItem.setId(3L);
+    lineItem.setVitaminAgeGroupId(2L);
+    lineItem.setVaccineVitaminId(3L);
     lineItem.setReportId(2L);
-    service.saveVitaminLineItems(asList(lineItem), 2L);
+    dbReport.setVitaminSupplementationLineItems(asList(lineItem));
+    service.saveVitaminLineItems(dbReport, asList(lineItem), 2L, 2L);
     verify(vitaminSupplementationLineItemRepository).update(lineItem);
   }
 }

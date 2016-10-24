@@ -14,10 +14,13 @@ package org.openlmis.ivdform.repository.reports;
 
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.ivdform.domain.reports.DiseaseLineItem;
+import org.openlmis.ivdform.domain.reports.ReportStatus;
+import org.openlmis.ivdform.domain.reports.ReportStatusChange;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
 import org.openlmis.ivdform.dto.RoutineReportDTO;
 import org.openlmis.ivdform.repository.mapper.reports.IvdFormMapper;
+import org.openlmis.ivdform.repository.mapper.reports.StatusChangeMapper;
 import org.openlmis.ivdform.service.LineItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,29 +37,32 @@ public class IvdFormRepository {
   LineItemService lineItemService;
 
   @Autowired
+  StatusChangeMapper statusChangeMapper;
+
+  @Autowired
   GeographicZoneService geographicZoneService;
 
 
-  public void insert(VaccineReport report) {
+  public void insert(VaccineReport report, Long userId) {
     mapper.insert(report);
-    saveDetails(report);
+    saveDetails(null, report, userId);
   }
 
 
-  public void saveDetails(VaccineReport report) {
-    lineItemService.saveLogisticsLineItems(report.getLogisticsLineItems(), report.getId());
-    lineItemService.saveDiseaseLineItems(report.getDiseaseLineItems(), report.getId());
-    lineItemService.saveCoverageLineItems(report.getCoverageLineItems(), report.getId());
-    lineItemService.saveColdChainLIneItems(report.getColdChainLineItems(), report.getId());
-    lineItemService.saveVitaminLineItems(report.getVitaminSupplementationLineItems(), report.getId());
-    lineItemService.saveAdverseEffectLineItems(report.getAdverseEffectLineItems(), report.getId());
-    lineItemService.saveCampaignLineItems(report.getCampaignLineItems(), report.getId());
+  public void saveDetails(VaccineReport dbVersion, VaccineReport report, Long userId) {
+    lineItemService.saveLogisticsLineItems(dbVersion, report.getLogisticsLineItems(), report.getId(), userId);
+    lineItemService.saveDiseaseLineItems(dbVersion, report.getDiseaseLineItems(), report.getId());
+    lineItemService.saveCoverageLineItems(dbVersion, report.getCoverageLineItems(), report.getId(),userId);
+    lineItemService.saveColdChainLIneItems(dbVersion, report.getColdChainLineItems(), report.getId(), userId);
+    lineItemService.saveVitaminLineItems(dbVersion, report.getVitaminSupplementationLineItems(), report.getId(), userId);
+    lineItemService.saveAdverseEffectLineItems(dbVersion, report.getAdverseEffectLineItems(), report.getId(), userId);
+    lineItemService.saveCampaignLineItems(dbVersion, report.getCampaignLineItems(), report.getId(), userId);
   }
 
-  public void update(VaccineReport report, Long userId) {
+  public void update(VaccineReport fromDb, VaccineReport report, Long userId) {
     report.setModifiedBy(userId);
     mapper.update(report);
-    saveDetails(report);
+    saveDetails(fromDb, report, userId);
   }
 
   public VaccineReport getById(Long id) {
@@ -105,5 +111,14 @@ public class IvdFormRepository {
 
   public VaccineReport getDraftReport(Long facilityId, Long programId) {
     return mapper.getDraftLastReport(facilityId, programId);
+  }
+
+  public void changeStatus(VaccineReport report, ReportStatus status, Long userId) {
+    report.setModifiedBy(userId);
+    report.setStatus(status);
+    mapper.setStatus(report);
+
+    ReportStatusChange change = new ReportStatusChange(report, status, userId);
+    statusChangeMapper.insert(change);
   }
 }

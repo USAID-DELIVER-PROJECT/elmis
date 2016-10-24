@@ -10,28 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.ivdform.repository.reports;
+package org.openlmis.ivdform.view.pdf;
 
-import org.openlmis.ivdform.domain.reports.CampaignLineItem;
-import org.openlmis.ivdform.repository.mapper.reports.CampaignLineItemMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Component
-public class CampaignLineItemRepository {
+@AllArgsConstructor
+public class SubmissionResponseModel {
 
-  @Autowired
-  CampaignLineItemMapper mapper;
+  @Getter @Setter
+  private String message;
 
-  public void insert(CampaignLineItem lineItem) {
-    mapper.insert(lineItem);
-  }
+  @Getter @Setter
+  private Boolean isError = false;
 
-  public void update(CampaignLineItem lineItem) {
-    mapper.update(lineItem);
-  }
-
-  public void deleteFor(Long reportId) {
-    mapper.deleteLineItems(reportId);
-  }
 }

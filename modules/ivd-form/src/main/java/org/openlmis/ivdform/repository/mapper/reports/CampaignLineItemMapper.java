@@ -49,4 +49,7 @@ public interface CampaignLineItemMapper {
   @Select("SELECT e.* from vaccine_report_campaign_line_items e where reportId = #{reportId} " +
       " order by id")
   List<CampaignLineItem> getLineItems(@Param("reportId") Long reportId);
+
+  @Delete("delete from vaccine_report_campaign_line_items where reportId = #{reportId} ")
+  void deleteLineItems(@Param("reportId") Long reportId);
 }

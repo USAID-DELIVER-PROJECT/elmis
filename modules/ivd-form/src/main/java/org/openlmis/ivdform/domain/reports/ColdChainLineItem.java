@@ -47,5 +47,14 @@ public class ColdChainLineItem extends BaseModel {
   private String serial;
   private  String location_value;
 
+  public void copyValuesFrom(ColdChainLineItem source){
+    this.setOperationalStatusId(source.getOperationalStatusId());
+    this.setMinTemp(source.getMinTemp());
+    this.setMaxTemp(source.getMaxTemp());
+    this.setMinEpisodeTemp(source.getMinEpisodeTemp());
+    this.setMaxEpisodeTemp(source.getMaxEpisodeTemp());
+    this.setRemarks(source.getRemarks());
+  }
+
 
 }

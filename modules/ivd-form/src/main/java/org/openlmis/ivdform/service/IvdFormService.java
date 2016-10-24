@@ -29,6 +29,9 @@ import org.openlmis.ivdform.dto.FacilityIvdSummary;
 import org.openlmis.ivdform.dto.ReportStatusDTO;
 import org.openlmis.ivdform.dto.RoutineReportDTO;
 import org.openlmis.ivdform.dto.StockStatusSummary;
+import org.openlmis.ivdform.exceptions.FormAlreadySubmittedException;
+import org.openlmis.ivdform.exceptions.OutOfOrderFormSubmissionException;
+import org.openlmis.ivdform.exceptions.ProgramNotSupportedException;
 import org.openlmis.ivdform.repository.VitaminRepository;
 import org.openlmis.ivdform.repository.VitaminSupplementationAgeGroupRepository;
 import org.openlmis.ivdform.repository.reports.ColdChainLineItemRepository;
@@ -86,7 +89,7 @@ public class IvdFormService {
   StatusChangeRepository reportStatusChangeRepository;
 
   @Autowired
-  AnnualFacilityDemographicEstimateService annualFacilityDemographicEstimateService;
+  AnnualFacilityDemographicEstimateService demographicsService;
 
   @Autowired
   LogisticsLineItemRepository logisticsLineItemRepository;
@@ -107,7 +110,7 @@ public class IvdFormService {
   GeographicZoneService geographicZoneService;
 
   @Autowired
-  IVDNotificationService ivdNotificationService;
+  IVDNotificationService notificationService;
 
   @Autowired
   ConfigurationSettingService configService;
@@ -122,7 +125,7 @@ public class IvdFormService {
     }
     validateInitiate(facilityId, programId, periodId);
     report = createNewVaccineReport(facilityId, programId, periodId);
-    repository.insert(report);
+    repository.insert(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.DRAFT, userId);
     reportStatusChangeRepository.insert(change);
     return report;
@@ -130,32 +133,40 @@ public class IvdFormService {
 
   private void validateInitiate(Long facilityId, Long programId, Long periodId) {
     VaccineReport draftReport = repository.getDraftReport(facilityId, programId);
-    if(draftReport != null){
+    if (draftReport != null) {
       throw new DataException("error.facility.has.pending.draft");
     }
     List<ReportStatusDTO> openPeriods = this.getPeriodsFor(facilityId, programId, new Date());
-    if(openPeriods == null || openPeriods.size() == 0|| !periodId.equals(openPeriods.get(0).getPeriodId())){
-      throw new DataException("error.ivd.form.out.of.order.ivd.not.supported");
+    if (openPeriods == null || openPeriods.size() == 0 || !periodId.equals(openPeriods.get(0).getPeriodId())) {
+      ProcessingPeriod period = periodService.getById(periodId);
+      throw new OutOfOrderFormSubmissionException("error.ivd.form.out.of.order.ivd.not.supported"
+          , (openPeriods.size() == 0) ? "No past period " : openPeriods.get(0).getPeriodName()
+          , period.getName());
     }
   }
 
   @Transactional
   public void save(VaccineReport report, Long userId) {
-    //TODO: check if this save operation is valid. Only draft can be saved.
-    //TODO: update should stop depending on surrogate keys to find the record that needs to be updated. (this would make it work for both PDF and web form submissions)
-    repository.update(report, userId);
+    VaccineReport reportFromDb = getVaccineReportFromDbForUpdate(report);
+    repository.update(reportFromDb, report, userId);
   }
 
   @Transactional
   public void submit(VaccineReport report, Long userId) {
-    //TODO: change of status should not be done on the property only.
-    // 1. update method should only be able to change the other data attributes but not the status.
-    // 2. status should be updated after some validations (only 'DRAFT' and 'REJECTED' IVDs can be submitted. Not 'SUBMITTED' and 'APPROVED'
     report.setStatus(ReportStatus.SUBMITTED);
-    repository.update(report, userId);
-    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.SUBMITTED, userId);
-    reportStatusChangeRepository.insert(change);
-    ivdNotificationService.sendIVDStatusChangeNotification(report, userId);
+    VaccineReport reportFromDb = getVaccineReportFromDbForUpdate(report);
+    repository.update(reportFromDb, report, userId);
+    repository.changeStatus(report, ReportStatus.SUBMITTED, userId);
+    notificationService.sendIVDStatusChangeNotification(report, userId);
+  }
+
+  private VaccineReport getVaccineReportFromDbForUpdate(VaccineReport report) {
+    Long id = this.getReportIdForFacilityAndPeriod(report.getFacilityId(), report.getPeriodId());
+    VaccineReport reportFromDb = repository.getByIdWithFullDetails(id);
+    if (ReportStatus.APPROVED.equals(reportFromDb.getStatus()) || ReportStatus.SUBMITTED.equals(reportFromDb.getStatus())) {
+      throw new FormAlreadySubmittedException("ivd.form.exception.form.already.submitted");
+    }
+    return reportFromDb;
   }
 
   private VaccineReport createNewVaccineReport(Long facilityId, Long programId, Long periodId) {
@@ -175,7 +186,7 @@ public class IvdFormService {
     report.setPeriodId(periodId);
     report.setStatus(ReportStatus.DRAFT);
 
-    Boolean defaultFieldsToZero = (configService != null)? configService.getBoolValue(ConfigurationSettingKey.DEFAULT_ZERO) : false;
+    Boolean defaultFieldsToZero = (configService != null) ? configService.getBoolValue(ConfigurationSettingKey.DEFAULT_ZERO) : false;
     // 1. copy the products list and initiate the logistics tab.
     report.initializeLogisticsLineItems(programProducts, previousReport, defaultFieldsToZero);
 
@@ -188,7 +199,7 @@ public class IvdFormService {
     // 4. initialize the cold chain line items.
     report.initializeColdChainLineItems(coldChainLineItems, defaultFieldsToZero);
 
-    report.initializeVitaminLineItems(vitamins, ageGroups,defaultFieldsToZero);
+    report.initializeVitaminLineItems(vitamins, ageGroups, defaultFieldsToZero);
     return report;
   }
 
@@ -202,8 +213,12 @@ public class IvdFormService {
   }
 
   public List<ReportStatusDTO> getPeriodsFor(Long facilityId, Long programId, Date endDate) {
-    Date startDate = programService.getProgramStartDate(facilityId, programId);
-
+    Date startDate;
+    try {
+      startDate = programService.getProgramStartDate(facilityId, programId);
+    } catch (Exception exp) {
+      throw new ProgramNotSupportedException("ivd.form.program.not.supported");
+    }
     // find out which schedule this facility is in?
     Long scheduleId = repository.getScheduleFor(facilityId, programId);
     VaccineReport lastRequest = repository.getLastReport(facilityId, programId);
@@ -258,7 +273,7 @@ public class IvdFormService {
     VaccineReport report = repository.getByIdWithFullDetails(id);
     report.setTabVisibilitySettings(tabVisibilityService.getVisibilityForProgram(report.getProgramId()));
     DateTime periodStartDate = new DateTime(report.getPeriod().getStartDate());
-    report.setFacilityDemographicEstimates(annualFacilityDemographicEstimateService.getEstimateValuesForFacility(report.getFacilityId(), report.getProgramId(), periodStartDate.getYear()));
+    report.setFacilityDemographicEstimates(demographicsService.getEstimateValuesForFacility(report.getFacilityId(), report.getProgramId(), periodStartDate.getYear()));
     return report;
   }
 
@@ -272,21 +287,15 @@ public class IvdFormService {
   }
 
   public void approve(VaccineReport report, Long userId) {
-    report.setStatus(ReportStatus.APPROVED);
     Long reportSubmitterUserId = getReportSubmitterUserId(report.getId());
-    repository.update(report, userId);
-    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.APPROVED, userId);
-    reportStatusChangeRepository.insert(change);
-    ivdNotificationService.sendIVDStatusChangeNotification(report, reportSubmitterUserId);
+    repository.changeStatus(report, ReportStatus.APPROVED, userId);
+    notificationService.sendIVDStatusChangeNotification(report, reportSubmitterUserId);
   }
 
   public void reject(VaccineReport report, Long userId) {
-    report.setStatus(ReportStatus.REJECTED);
     Long reportSubmitterUserId = getReportSubmitterUserId(report.getId());
-    repository.update(report, userId);
-    ReportStatusChange change = new ReportStatusChange(report, ReportStatus.REJECTED, userId, report.rejectionComment);
-    reportStatusChangeRepository.insert(change);
-    ivdNotificationService.sendIVDStatusChangeNotification(report, reportSubmitterUserId);
+    repository.changeStatus(report, ReportStatus.REJECTED, userId);
+    notificationService.sendIVDStatusChangeNotification(report, reportSubmitterUserId);
   }
 
   public FacilityIvdSummary getStockStatusForAllProductsInFacility(String facilityCode, String programCode, Long periodId) {
@@ -333,10 +342,10 @@ public class IvdFormService {
     return response;
   }
 
-    private Long getReportSubmitterUserId(Long vaccineReportId){
-     ReportStatusChange change = reportStatusChangeRepository.getOperation(vaccineReportId, ReportStatus.SUBMITTED);
-      return (change != null) ? change.getCreatedBy(): null;
-    }
+  private Long getReportSubmitterUserId(Long vaccineReportId) {
+    ReportStatusChange change = reportStatusChangeRepository.getOperation(vaccineReportId, ReportStatus.SUBMITTED);
+    return (change != null) ? change.getCreatedBy() : null;
+  }
 
   private static Long calculateAMC(List<LogisticsLineItem> previousThree) {
     Long sum = 0L;
@@ -348,5 +357,16 @@ public class IvdFormService {
       }
     }
     return (count == 0) ? 0L : sum / count;
+  }
+
+  @Transactional
+  public void submitFromOtherApplications(VaccineReport report, Long userId) {
+    report.validateBasicHeaders();
+    Long id = this.getReportIdForFacilityAndPeriod(report.getFacilityId(), report.getPeriodId());
+    if (id == null) {
+      this.initialize(report.getFacilityId(), report.getProgramId(), report.getPeriodId(), userId);
+    }
+    report.setSubmissionDate(new Date());
+    this.submit(report, userId);
   }
 }
