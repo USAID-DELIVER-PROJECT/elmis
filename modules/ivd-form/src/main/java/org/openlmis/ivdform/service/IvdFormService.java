@@ -156,8 +156,8 @@ public class IvdFormService {
     report.setStatus(ReportStatus.SUBMITTED);
     VaccineReport reportFromDb = getVaccineReportFromDbForUpdate(report);
     repository.update(reportFromDb, report, userId);
-    repository.changeStatus(report, ReportStatus.SUBMITTED, userId);
-    notificationService.sendIVDStatusChangeNotification(report, userId);
+    repository.changeStatus(reportFromDb, ReportStatus.SUBMITTED, userId);
+    notificationService.sendIVDStatusChangeNotification(reportFromDb, userId);
   }
 
   private VaccineReport getVaccineReportFromDbForUpdate(VaccineReport report) {

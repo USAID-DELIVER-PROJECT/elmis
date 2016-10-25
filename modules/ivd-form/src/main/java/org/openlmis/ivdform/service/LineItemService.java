@@ -78,13 +78,14 @@ public class LineItemService {
             .findFirst();
         if (dbLineItems.isPresent()) {
           lineItem.setId(dbLineItems.get().getId());
+          lineItem.setReportId(dbLineItems.get().getReportId());
+          diseaseLineItemRepository.update(lineItem);
+          continue;
         }
       }
       if (!lineItem.hasId()) {
         lineItem.setReportId(reportId);
         diseaseLineItemRepository.insert(lineItem);
-      } else {
-        diseaseLineItemRepository.update(lineItem);
       }
     }
   }
