@@ -22,7 +22,25 @@ function CategorizationVaccineUtilizationPerformanceController($scope,
     $scope.perioderror = "";
     $scope.bcgMRDropoutId = '2412';
     $scope.dtpDropoutId = '2421';
+
+
+    $scope.exportReport   = function (type){
+        $scope.filter.pdformat = 1;
+        var params = jQuery.param($scope.reportParam);
+        var url = '/reports/download/categorization_of_vacccine_utilization/' + type +'?' + params;
+        window.open(url);
+    };
+
+
     $scope.OnFilterChanged = function () {
+
+        $scope.reportParam =  {
+                periodStart: $scope.periodStartDate,
+                periodEnd: $scope.periodEnddate,
+                district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
+                product: $scope.filter.product,
+            };
+
         if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 

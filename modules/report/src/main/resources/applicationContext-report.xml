@@ -459,6 +459,15 @@
                     <property name="title" value="report.title.stock.status"/>
                     <property name="version" value="1.0"/>
                 </bean>
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="categorization_of_vacccine_utilization"/>
+                    <property name="template" value="categorization-by-performance.jasper"/>
+                    <property name="reportDataProvider" ref="categorizationByPerformanceDataProvider"/>
+                    <property name="id" value="categorization_of_vacccine_utilization"/>
+                    <property name="name" value="categorization of vacccine utilization Report"/>
+                    <property name="title" value="report.title.categorization.of.vacccine.utilization"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

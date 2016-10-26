@@ -39,9 +39,6 @@
             <h2 openlmis-message="report.title.categorization.vaccine.utilization.performance"><i class="icon-edit"></i><span
                     class="break"></span></h2>
 
-            <div class="box-icon">
-
-            </div>
         </div>
         <div class="app-form">
             <form ng-submit="filterGrid()" name="filterForm" novalidate>
@@ -76,6 +73,10 @@
         <div class="content-body">
             <div style="font-weight: normal" ng-show="zoneMainReport == undefined || zoneMainReport.length == 0" openlmis-message="label.report.no.data.to.show"></div>
                    <div id="parent" ng-show="zoneMainReport.length > 0">
+                       <div class="box-icon" style="float:right;">
+                           <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                           <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+                       </div>
                         <h2 ng-show="!regionSelected">District Level</h2>
 
                         <h2 ng-show="regionSelected">Region Level</h2>
