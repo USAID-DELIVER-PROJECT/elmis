@@ -169,7 +169,7 @@ public class IvdFormService {
     return reportFromDb;
   }
 
-  private VaccineReport createNewVaccineReport(Long facilityId, Long programId, Long periodId) {
+  public VaccineReport createNewVaccineReport(Long facilityId, Long programId, Long periodId) {
     VaccineReport report;
     List<ProgramProduct> programProducts = programProductService.getActiveByProgram(programId);
     List<VaccineDisease> diseases = diseaseService.getAll();

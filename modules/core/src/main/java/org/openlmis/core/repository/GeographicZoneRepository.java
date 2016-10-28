@@ -11,10 +11,12 @@
 package org.openlmis.core.repository;
 
 import lombok.NoArgsConstructor;
+import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.GeographicLevel;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.repository.mapper.GeographicLevelMapper;
 import org.openlmis.core.repository.mapper.GeographicZoneMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class GeographicZoneRepository {
 
   private GeographicZoneMapper mapper;
   private GeographicLevelMapper geographicLevelMapper;
+
+  @Autowired
+  private CommaSeparator<Facility> facilityCommaSeparator;
 
   @Autowired
   public GeographicZoneRepository(GeographicZoneMapper mapper, GeographicLevelMapper geographicLevelMapper) {
@@ -105,5 +110,9 @@ public class GeographicZoneRepository {
 
   public Integer getGeographicZonesCountBy(String searchParam) {
     return mapper.getGeographicZonesCountBy(searchParam);
+  }
+
+  public List<GeographicZone> getDistrictsFor(List<Facility> facilities) {
+    return mapper.getDistrictsForFacilities(facilityCommaSeparator.commaSeparateIds(facilities));
   }
 }

@@ -49,7 +49,7 @@ public class IvdFormRepository {
   }
 
 
-  public void saveDetails(VaccineReport dbVersion, VaccineReport report, Long userId) {
+  private void saveDetails(VaccineReport dbVersion, VaccineReport report, Long userId) {
     lineItemService.saveLogisticsLineItems(dbVersion, report.getLogisticsLineItems(), report.getId(), userId);
     lineItemService.saveDiseaseLineItems(dbVersion, report.getDiseaseLineItems(), report.getId());
     lineItemService.saveCoverageLineItems(dbVersion, report.getCoverageLineItems(), report.getId(),userId);
@@ -60,8 +60,9 @@ public class IvdFormRepository {
   }
 
   public void update(VaccineReport fromDb, VaccineReport report, Long userId) {
-    report.setModifiedBy(userId);
-    mapper.update(report);
+    fromDb.setModifiedBy(userId);
+    fromDb.copyValuesFrom(report);
+    mapper.update(fromDb);
     saveDetails(fromDb, report, userId);
   }
 

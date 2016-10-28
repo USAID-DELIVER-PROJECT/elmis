@@ -48,7 +48,8 @@ public interface ProductDoseMapper {
       " where id = #{id}")
   Integer update(VaccineProductDose dose);
 
-  @Select("select d.* from vaccine_product_doses d " +
+  @Select("select d.*, pr.primaryName as productName from vaccine_product_doses d " +
+      " join products pr on pr.id = d.productId " +
       " join program_products pp on pp.productId = d.productId and d.programId = pp.programId and pp.programId = #{programId} " +
       "where d.programId = #{programId} " +
       " order by pp.displayOrder ASC, d.displayOrder ASC" )

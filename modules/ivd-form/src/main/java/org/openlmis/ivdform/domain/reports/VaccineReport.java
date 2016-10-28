@@ -155,6 +155,7 @@ public class VaccineReport extends BaseModel {
       item.setTrackFemale(dose.getTrackFemale());
       item.setDisplayOrder(dose.getDisplayOrder());
       item.setDisplayName(dose.getDisplayName());
+      item.setProductName(dose.getProductName());
       item.setProductId(dose.getProductId());
       if(defaultFieldsToZero){
         item.setRegularMale(0L);
@@ -192,7 +193,7 @@ public class VaccineReport extends BaseModel {
         item.setDisplayOrder(displayOrder);
         item.setVitaminName(vitamin.getName());
         item.setVaccineVitaminId(vitamin.getId());
-
+        item.setAgeGroup(ageGroup.getName());
         if(defaultFieldsToZero){
           item.setMaleValue(0L);
           item.setFemaleValue(0L);
@@ -208,5 +209,14 @@ public class VaccineReport extends BaseModel {
     if(this.getPeriodId() == null || this.getFacilityId() == null || this.getProgramId() == null){
       throw new DataException("error.ivd.form.submitted.misses.required.fields");
     }
+  }
+
+  public void copyValuesFrom(VaccineReport report) {
+    this.setRejectionComment(report.rejectionComment);
+    this.setFixedImmunizationSessions(report.fixedImmunizationSessions);
+    this.setMajorImmunizationActivities(report.majorImmunizationActivities);
+    this.setOutreachImmunizationSessions(report.outreachImmunizationSessions);
+    this.setOutreachImmunizationSessionsCanceled(report.outreachImmunizationSessionsCanceled);
+    this.setSubmissionDate(report.getSubmissionDate());
   }
 }

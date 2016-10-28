@@ -166,7 +166,7 @@ public class LineItemService {
         }
       }
       lineItem.setReportId(reportId);
-      if (!lineItem.hasId()) {
+      if (!lineItem.hasId() && reportId != null) {
         lineItem.setCreatedBy(userId);
         coldChainLIRepository.insert(lineItem);
       }
