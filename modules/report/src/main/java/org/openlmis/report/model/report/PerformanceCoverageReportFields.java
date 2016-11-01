@@ -35,5 +35,6 @@ public class PerformanceCoverageReportFields implements ResultRow {
     Double cum_coverage;
     Integer month;
     Integer year;
+    String facility_name;
 
 }

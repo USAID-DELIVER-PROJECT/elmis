@@ -28,6 +28,8 @@ public class PerformanceCoverageReport implements ResultRow {
 
     List<PerformanceCoverageReportFields> districtReport;
     List<PerformanceCoverageReportFields> regionReport;
+    List<PerformanceCoverageReportFields> facilityReport;
+    List<PerformanceCoverageReportSummaryFields> facilityReportSummary;
     List<PerformanceCoverageReportSummaryFields> districtReportSummary;
     List<PerformanceCoverageReportSummaryFields> regionReportSummary;
 }

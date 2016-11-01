@@ -14,6 +14,8 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
+import org.openlmis.core.domain.GeographicZone;
+import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.report.mapper.PerformanceCoverageReportMapper;
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.PerformanceCoverageReportParam;
@@ -35,6 +37,9 @@ public class PerformanceCoverageDataProvider extends ReportDataProvider {
     private PerformanceCoverageReportMapper reportMapper;
 
     @Autowired
+    private org.openlmis.core.service.GeographicZoneService GeographicZoneService;
+
+    @Autowired
     private SelectedFilterHelper filterHelper;
 
     private PerformanceCoverageReportParam getParameter(Map params) {
@@ -50,8 +55,17 @@ public class PerformanceCoverageDataProvider extends ReportDataProvider {
 
         PerformanceCoverageReport performanceCoverageReport = new PerformanceCoverageReport();
 
-        performanceCoverageReport.setDistrictReport(reportMapper.getDistrictReport(params, sortCriteria, rowBounds, this.getUserId()));
-        performanceCoverageReport.setDistrictReportSummary(reportMapper.getDistrictReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
+        GeographicZone zone =  GeographicZoneService.getById(params.getDistrict());
+
+        if (zone != null && zone.getLevel().getCode().equals("dist")) {
+            performanceCoverageReport.setFacilityReport(reportMapper.getFacilityReport(params, sortCriteria, rowBounds, this.getUserId()));
+            performanceCoverageReport.setFacilityReportSummary(reportMapper.getFacilityReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
+        }
+        else {
+            performanceCoverageReport.setDistrictReport(reportMapper.getDistrictReport(params, sortCriteria, rowBounds, this.getUserId()));
+            performanceCoverageReport.setDistrictReportSummary(reportMapper.getDistrictReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
+        }
+
         if(params.getDistrict() == 0) {
             performanceCoverageReport.setRegionReport(reportMapper.getRegionReport(params, sortCriteria, rowBounds, this.getUserId()));
             performanceCoverageReport.setRegionReportSummary(reportMapper.getRegionReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
