@@ -16,63 +16,68 @@ import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.service.GeographicZoneService;
-import org.openlmis.report.mapper.PerformanceCoverageReportMapper;
+import org.openlmis.report.mapper.ClassificationVaccineUtilizationByPerformanceReportMapper;
 import org.openlmis.report.model.ResultRow;
-import org.openlmis.report.model.params.PerformanceCoverageReportParam;
-import org.openlmis.report.model.report.PerformanceCoverageReport;
+import org.openlmis.report.model.params.CategorizationVaccineUtilizationPerformanceReportParam;
+import org.openlmis.report.model.params.ClassificationVaccineUtilizationPerformanceReportParam;
+import org.openlmis.report.model.report.CategorizationVaccineUtilizationPerformanceReport;
+import org.openlmis.report.model.report.ClassificationVaccineUtilizationPerformanceReport;
 import org.openlmis.report.util.ParameterAdaptor;
 import org.openlmis.report.util.SelectedFilterHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @NoArgsConstructor
-public class PerformanceCoverageDataProvider extends ReportDataProvider {
+public class ClassificationByPerformanceReportDataProvider extends ReportDataProvider {
 
     @Autowired
-    private PerformanceCoverageReportMapper reportMapper;
+    private ClassificationVaccineUtilizationByPerformanceReportMapper mapper;
 
     @Autowired
-    private org.openlmis.core.service.GeographicZoneService GeographicZoneService;
+    private GeographicZoneService GeographicZoneService;
 
     @Autowired
     private SelectedFilterHelper filterHelper;
 
-    private PerformanceCoverageReportParam getParameter(Map params) {
-        return ParameterAdaptor.parse(params, PerformanceCoverageReportParam.class);
+    private ClassificationVaccineUtilizationPerformanceReportParam getParameter(Map params) {
+        return ParameterAdaptor.parse(params, ClassificationVaccineUtilizationPerformanceReportParam.class);
     }
 
     @Override
-    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria,
+                                                   Map<String, String[]> sortCriteria,
+                                                   int page, int pageSize) {
 
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
 
-        PerformanceCoverageReportParam params = getParameter(filterCriteria);
-
-        PerformanceCoverageReport performanceCoverageReport = new PerformanceCoverageReport();
+        ClassificationVaccineUtilizationPerformanceReportParam params = getParameter(filterCriteria);
 
         GeographicZone zone =  GeographicZoneService.getById(params.getDistrict());
 
+        ClassificationVaccineUtilizationPerformanceReport report =
+                new ClassificationVaccineUtilizationPerformanceReport();
+
         if (zone != null && zone.getLevel().getCode().equals("dist")) {
-            performanceCoverageReport.setFacilityReport(reportMapper.getFacilityReport(params, sortCriteria, rowBounds, this.getUserId()));
-            performanceCoverageReport.setFacilityReportSummary(reportMapper.getFacilityReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
+            report.setFacilityReport(mapper.getFacilityReport(params, sortCriteria, rowBounds, this.getUserId()));
+            report.setFacilityDistrictSummary(report.getFacilityReport());
         }
-        else {
-            performanceCoverageReport.setDistrictReport(reportMapper.getDistrictReport(params, sortCriteria, rowBounds, this.getUserId()));
-            performanceCoverageReport.setDistrictReportSummary(reportMapper.getDistrictReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
+        else{
+                report.setDistrictReport(mapper.getDistrictReport(params, sortCriteria, rowBounds, this.getUserId()));
+                report.setFacilityDistrictSummary(report.getDistrictReport());
         }
 
         if(params.getDistrict() == 0) {
-            performanceCoverageReport.setRegionReport(reportMapper.getRegionReport(params, sortCriteria, rowBounds, this.getUserId()));
-            performanceCoverageReport.setRegionReportSummary(reportMapper.getRegionReportSummary(params, sortCriteria, rowBounds, this.getUserId()));
+            report.setRegionReport(mapper.getRegionReport(params, sortCriteria, rowBounds, this.getUserId()));
         }
 
-        List<PerformanceCoverageReport> list = new ArrayList<PerformanceCoverageReport>();
-        list.add(performanceCoverageReport);
+        List<ClassificationVaccineUtilizationPerformanceReport> list =
+                new ArrayList<ClassificationVaccineUtilizationPerformanceReport>();
+        list.add(report);
         return list;
 
     }

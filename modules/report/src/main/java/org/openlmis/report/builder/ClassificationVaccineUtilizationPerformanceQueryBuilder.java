@@ -15,11 +15,335 @@
 package org.openlmis.report.builder;
 
 
+import org.openlmis.report.model.params.ClassificationVaccineUtilizationPerformanceReportParam;
+
 import java.util.Date;
 import java.util.Map;
 
 public class ClassificationVaccineUtilizationPerformanceQueryBuilder {
 
+
+    public String getDistrictReport(Map map) {
+
+        ClassificationVaccineUtilizationPerformanceReportParam params = (ClassificationVaccineUtilizationPerformanceReportParam) map.get("filterCriteria");
+        String sql =
+                
+                getStockStatus(map) + 
+                        
+                ",  classification_with_facility_count as \n" +
+                        "( \n" +
+                        "         select   vd.region_id, \n" +
+                        "                  vd.district_id, \n" +
+                        "                  region_name, \n" +
+                        "                  district_name, \n" +
+                        "                  period_id, \n" +
+                        "                  period_name , \n" +
+                        "                  month_number, \n" +
+                        "                  year_number, \n" +
+                        "                  demographics.population, \n" +
+                        "                  demographics.denominator, \n" +
+                        "                  facility_count, \n" +
+                        "                  startdate, \n" +
+                        "                  sum(used) used,\n" +
+                        "                  sum(vaccinated) vaccinated \n" +
+                        "         from     stock_status vd \n" +
+                        "         join \n" +
+                        "                  ( \n" +
+                        "                           select   region_name                   rname, \n" +
+                        "                                    district_name                 dname, \n" +
+                        "                                    count(distinct facility_name) facility_count \n" +
+                        "                           from     stock_status \n" +
+                        "                           group by 1, 2 " +
+                        "                   ) as fcount on fcount.dname = vd.district_name \n" +
+                        "         join \n" +
+                        "                  ( \n" +
+                        "                           select   vd.region_id, \n" +
+                        "                                    vd.district_id, \n" +
+                        "                                    coalesce(sum(denominator),0) denominator, \n" +
+                        "                                    coalesce(sum(population),0)  population \n" +
+                        "                           from     vw_vaccine_population_denominator vd \n" +
+                        "                           join     vw_districts d \n" +
+                        "                           on       vd.district_id = d.district_id \n" +
+                        "                           where    programid = fn_get_vaccine_program_id() \n" +
+                        "                           and      (productid = "+params.getProduct()+" ) \n" +
+                        "                           and      year = extract(year from '"+params.getPeriodStart()+"'::date) \n" +
+                        "                           and      ( 0 = "+params.getDistrict()+"  or d.district_id = "+params.getDistrict()+"  or " +
+                        "                                       d.region_id = "+params.getDistrict()+" or d.parent = "+params.getDistrict()+" ) \n" +
+                        "                           group by 1, \n" +
+                        "                                    2 \n" +
+                        "                           order by 2, 1 " +
+                        "                    ) demographics on demographics.district_id = vd.district_id \n" +
+                        "   group by 1,2,3,4,5,6,7,8,9,10,11,12\n" +
+                        "   order by 1,5\n" +
+                        "   )\n" +
+
+                ", classification_with_progresive_total as (\n" +
+                        "  select   *, \n" +
+                        "  case when vaccinated_tot != 0 then vaccinated_tot / used_tot * 100 else 0 end as usage_rate,\n" +
+                        "  case when coalesce(population_tot, 0) != 0 then vaccinated_tot/ population_tot *10 *0.1 else 0 end coverage_rate,\n" +
+                        "  100 - (case when coalesce(population_tot, 0) != 0 then vaccinated_tot/ population_tot *10 *0.1 else 0 end) wastage_rate   \n" +
+                        "  from (\n" +
+                        "    select *,\n" +
+                        "      sum(population) over (partition by district_id order by district_id, month_number) population_tot,\n" +
+                        "      sum(vaccinated) over (partition by district_id order by district_id, month_number) vaccinated_tot,\n" +
+                        "      sum(used)       over (partition by district_id order by district_id, month_number) used_tot\n" +
+                        "    from \n" +
+                        "       classification_with_facility_count\n" +
+                        "    join ( \n" +
+                        "      select coalesce(whoratio, 0)      mincoverage, \n" +
+                        "             coalesce(dropout, 0)       mindropout, \n" +
+                        "             coalesce(wastagefactor, 0) minwastage \n" +
+                        "      from   program_products pp \n" +
+                        "             join isa_coefficients c \n" +
+                        "         on pp.isacoefficientsid = c.id \n" +
+                        "             join vaccine_inventory_product_configurations pc \n" +
+                        "         on pc.productid = pp.productid \n" +
+                        "      where  pp.productid = "+params.getProduct()+"  \n" +
+                        "      limit  1 \n" +
+                        "     ) as isa_coffecients on true\n" +
+                        "     order by region_name, district_name, startdate\n" +
+                        "   ) as running_totals\n" +
+                        ")\n" +
+
+                "select \n" +
+                        "  region_name regionName,\n" +
+                        "  region_id regionId,\n" +
+                        "  district_name districtName,\n" +
+                        "  district_id districtId,\n" +
+                        "  period_name periodName,\n" +
+                        "  facility_count facilityCount,\n" +
+                        "  coalesce(population,0) population,\n" +
+                        "  startdate startDate,\n" +
+                        "  case\n" +
+                        "  when coverage_rate >= mincoverage and wastage_rate <= minwastage then 'A'\n" +
+                        "  when coverage_rate < mincoverage and wastage_rate <= minwastage then 'C'\n" +
+                        "  when coverage_rate >= mincoverage and wastage_rate > minwastage then 'B'\n" +
+                        "  else 'D' end classification\n" +
+                "from classification_with_progresive_total";
+        return sql;
+    }
+
+    public String getRegionReport(Map map) {
+
+        ClassificationVaccineUtilizationPerformanceReportParam params = (ClassificationVaccineUtilizationPerformanceReportParam) map.get("filterCriteria");
+
+        String sql =
+                getStockStatus(map) + 
+            
+             ",  classification_with_facility_count as \n" +
+                     "( \n" +
+                     "         select   vd.region_id,  \n" +
+                     "                  region_name, \n" +
+                     "                  period_id, \n" +
+                     "                  period_name , \n" +
+                     "                  month_number, \n" +
+                     "                  year_number, \n" +
+                     "                  demographics.population, \n" +
+                     "                  demographics.denominator, \n" +
+                     "                  facility_count, \n" +
+                     "                  startdate, \n" +
+                     "                  sum(used) used,\n" +
+                     "                  sum(vaccinated) vaccinated \n" +
+                     "         from     stock_status vd \n" +
+                     "         join \n" +
+                     "                  ( \n" +
+                     "                           select   region_name                   rname, \n" +
+                     "                                    count(distinct facility_name) facility_count \n" +
+                     "                           from     stock_status \n" +
+                     "                           group by 1) as fcount \n" +
+                     "         on       fcount.rname = vd.region_name \n" +
+                     "         join \n" +
+                     "                  ( \n" +
+                     "                           select   vd.region_id, \n" +
+                     "                                    vd.district_id, \n" +
+                     "                                    coalesce(sum(denominator),0) denominator, \n" +
+                     "                                    coalesce(sum(population),0)  population \n" +
+                     "                           from     vw_vaccine_population_denominator vd \n" +
+                     "                           join     vw_districts d \n" +
+                     "                           on       vd.district_id = d.district_id \n" +
+                     "                           and      (productid = "+params.getProduct()+" ) \n" +
+                     "                           and      year = extract(year from '"+params.getPeriodStart()+"'::date) \n" +
+                     "                           and      ( 0 = "+params.getDistrict()+"  or d.district_id = "+params.getDistrict()+"  or " +
+                     "                                       d.region_id = "+params.getDistrict()+" or d.parent = "+params.getDistrict()+" ) \n" +
+                     "                           group by 1, \n" +
+                     "                                    2 \n" +
+                     "                           order by 2, \n" +
+                     "                                    1 ) demographics \n" +
+                     "         on       demographics.district_id = vd.district_id \n" +
+                     "   group by 1,2,3,4,5,6,7,8,9,10\n" +
+                     "   order by 1,5\n" +
+                     "   )\n" +
+
+             ", classification_with_progresive_total as (\n" +
+                     "  select   *, \n" +
+                     "  case when vaccinated_tot != 0 then vaccinated_tot / used_tot * 100 else 0 end as usage_rate,\n" +
+                     "  case when coalesce(population_tot, 0) != 0 then vaccinated_tot/ population_tot *10 *0.1 else 0 end coverage_rate,\n" +
+                     "  100 - (case when coalesce(population_tot, 0) != 0 then vaccinated_tot/ population_tot *10 *0.1 else 0 end) wastage_rate   \n" +
+                     "  from (\n" +
+                     "    select *,\n" +
+                     "      sum(population) over (partition by region_id order by region_id, month_number) population_tot,\n" +
+                     "      sum(vaccinated) over (partition by region_id order by region_id, month_number) vaccinated_tot,\n" +
+                     "      sum(used)       over (partition by region_id order by region_id, month_number) used_tot\n" +
+                     "    from \n" +
+                     "       classification_with_facility_count\n" +
+                     "    join ( \n" +
+                     "      select coalesce(whoratio, 0)      mincoverage, \n" +
+                     "             coalesce(dropout, 0)       mindropout, \n" +
+                     "             coalesce(wastagefactor, 0) minwastage \n" +
+                     "      from   program_products pp \n" +
+                     "             join isa_coefficients c \n" +
+                     "         on pp.isacoefficientsid = c.id \n" +
+                     "             join vaccine_inventory_product_configurations pc \n" +
+                     "         on pc.productid = pp.productid \n" +
+                     "      where  pp.productid = "+params.getProduct()+"  \n" +
+                     "      limit  1 \n" +
+                     "     ) as isa_coffecients on true\n" +
+                     "     order by region_name, startdate\n" +
+                     "   ) as running_totals\n" +
+             ")\n" +
+
+             "select \n" +
+                     "  region_name regionName,\n" +
+                     "  region_id regionId,\n" +
+                     "  period_name periodName,\n" +
+                     "  facility_count facilityCount,\n" +
+                     "  coalesce(population,0) population,\n" +
+                     "  startdate startDate, \n" +
+                     "  case\n" +
+                     "  when coverage_rate >= mincoverage and wastage_rate <= minwastage then 'A'\n" +
+                     "  when coverage_rate < mincoverage and wastage_rate <= minwastage then 'C'\n" +
+                     "  when coverage_rate >= mincoverage and wastage_rate > minwastage then 'B'\n" +
+                     "  else 'D' end classification\n" +
+             "from classification_with_progresive_total";
+        return sql;
+    }
+    public String getFacilityReport(Map map) {
+
+        ClassificationVaccineUtilizationPerformanceReportParam params = (ClassificationVaccineUtilizationPerformanceReportParam) map.get("filterCriteria");
+
+        String sql =
+                getStockStatus(map) +
+
+                ",  classification_with_facility_count as \n" +
+                        "( \n" +
+                        "         select   vd.region_id, \n" +
+                        "                  vd.district_id, \n" +
+                        "                  region_name, \n" +
+                        "                  district_name, \n" +
+                        "                  facility_name,\n" +
+                        "                  facility_id,\n" +
+                        "                  period_id, \n" +
+                        "                  period_name , \n" +
+                        "                  month_number, \n" +
+                        "                  year_number, \n" +
+                        "                  demographics.population, \n" +
+                        "                  demographics.denominator, \n" +
+                        "                  startdate, \n" +
+                        "                  sum(used) used,\n" +
+                        "                  sum(vaccinated) vaccinated \n" +
+                        "        from stock_status vd \n" +
+                        "        join \n" +
+                        "                  ( \n" +
+                        "                           select   vd.facilityid, \n" +
+                        "                                    sum(coalesce(denominator,0)) denominator, \n" +
+                        "                                    sum(coalesce(population,0))  population \n" +
+                        "                           from     vw_vaccine_population_denominator vd \n" +
+                        "                           join     vw_districts d \n" +
+                        "                           on       vd.district_id = d.district_id \n" +
+                        "                           where    programid = fn_get_vaccine_program_id() \n" +
+                        "                           and      (productid = "+params.getProduct()+" ) \n" +
+                        "                           and      year = extract(year from '"+params.getPeriodStart()+"'::date) \n" +
+                        "                           and      ( 0 = "+params.getDistrict()+"  or d.district_id = "+params.getDistrict()+"  or " +
+                        "                                     d.region_id = "+params.getDistrict()+" or d.parent = "+params.getDistrict()+" ) \n" +
+                        "                           group by 1\n" +
+                        "                           order by 2, \n" +
+                        "                                    1 ) demographics  on   demographics.facilityid = vd.facility_id \n" +
+                        "           group by 1,2,3,4,5,6,7,8,9,10,11,12,13\n" +
+                        "           order by 1,5\n" +
+                ")\n" +
+
+                ", classification_with_progresive_total as (\n" +
+                        "  select   *, \n" +
+                        "  case when vaccinated_tot != 0 then vaccinated_tot / used_tot * 100 else 0 end as usage_rate,\n" +
+                        "  case when coalesce(population_tot, 0) != 0 then vaccinated_tot/ population_tot *10 *0.1 else 0 end coverage_rate,\n" +
+                        "  100 - (case when coalesce(population_tot, 0) != 0 then vaccinated_tot/ population_tot *10 *0.1 else 0 end) wastage_rate   \n" +
+                        "  from (\n" +
+                        "    select *,\n" +
+                        "      sum(population) over (partition by facility_id order by facility_id, month_number) population_tot,\n" +
+                        "      sum(vaccinated) over (partition by facility_id order by facility_id, month_number) vaccinated_tot,\n" +
+                        "      sum(used)       over (partition by facility_id order by facility_id, month_number) used_tot\n" +
+                        "    from \n" +
+                        "       classification_with_facility_count\n" +
+                        "    join ( \n" +
+                        "      select coalesce(whoratio, 0)      mincoverage, \n" +
+                        "             coalesce(dropout, 0)       mindropout, \n" +
+                        "             coalesce(wastagefactor, 0) minwastage \n" +
+                        "      from   program_products pp \n" +
+                        "             join isa_coefficients c \n" +
+                        "         on pp.isacoefficientsid = c.id \n" +
+                        "             join vaccine_inventory_product_configurations pc \n" +
+                        "         on pc.productid = pp.productid \n" +
+                        "      where  pp.productid = "+params.getProduct()+"  \n" +
+                        "      limit  1 \n" +
+                        "     ) as isa_coffecients on true\n" +
+                        "     order by region_name, district_name, startdate\n" +
+                        "   ) as running_totals\n" +
+                ")\n" +
+
+                "select \n" +
+                        "  region_name regionName,\n" +
+                        "  region_id regionId,\n" +
+                        "  district_name districtName,\n" +
+                        "  district_id districtId,\n" +
+                        "  facility_name facilityName,\n" +
+                        "  facility_id facilityId,\n" +
+                        "  period_name periodName,\n" +
+                        "  startdate startDate,\n" +
+                        "  coalesce(population,0) population,\n" +
+                        "  case\n" +
+                        "  when coverage_rate >= mincoverage and wastage_rate <= minwastage then 'A'\n" +
+                        "  when coverage_rate < mincoverage and wastage_rate <= minwastage then 'C'\n" +
+                        "  when coverage_rate >= mincoverage and wastage_rate > minwastage then 'B'\n" +
+                        "  else 'D' end classification\n" +
+                "from classification_with_progresive_total";
+        return sql;
+    }
+
+    public String getStockStatus(Map map) {
+
+        ClassificationVaccineUtilizationPerformanceReportParam params = (ClassificationVaccineUtilizationPerformanceReportParam) map.get("filterCriteria");
+        String sql =
+                "with stock_status as\n" +
+                        "  (  select \n" +
+                        "    vd.region_name, \n" +
+                        "    vd.region_id,\n" +
+                        "    vd.district_id, \n" +
+                        "    vd.district_name, \n" +
+                        "    vc.facility_id, \n" +
+                        "    vs.facility_name, \n" +
+                        "    vs.period_start_date startdate, \n" +
+                        "    vs.period_id,\n" +
+                        "    vs.period_name,\n" +
+                        "    coalesce(usage_denominator, 0) :: numeric used,\n" +
+                        "    coalesce(within_outside_total, 0)  :: numeric vaccinated,\n" +
+                        "    extract( month from vs.period_start_date) month_number, \n" +
+                        "    extract( year from vs.period_start_date) year_number\n" +
+                        "   from   vw_vaccine_stock_status vs\n" +
+                        "          inner join vw_districts vd on vd.district_id = geographic_zone_id \n" +
+                        "          inner join vw_vaccine_coverage vc on \n" +
+                        "         vc.facility_id = vs.facility_id \n" +
+                        "         and vc.period_id = vs.period_id \n" +
+                        "         and vc.geographic_zone_id = vs.geographic_zone_id \n" +
+                        "         and vc.product_id = vs.product_id\n" +
+                        "  where  vs.product_id = "+params.getProduct()+" \n" +
+                        "  and vs.period_start_date :: date >= '"+params.getPeriodStart()+"' \n" +
+                        "  and vs.period_end_date :: date <= '"+params.getPeriodEnd()+"' \n" +
+                        "  and ( vd.parent = "+params.getDistrict()+" or vd.district_id = "+params.getDistrict()+" or vd.region_id = "+params.getDistrict()+" or 0 = "+params.getDistrict()+")" +
+                        ")\n";
+            return sql;
+    }
+
+    // the above builder methods are for the v2 implementaion
     public String getVaccineProducts() {
         return "      select p.id, coalesce(p.primaryname,'') as name, p.code, pp.productcategoryid as categoryid,  " +
                 "          CASE WHEN p.tracer = true THEN 'Indicator Product' ELSE 'Regular' END tracer " +

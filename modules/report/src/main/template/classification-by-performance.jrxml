@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="2.1435888100000016"/>
+	<property name="ireport.zoom" value="1.9487171000000014"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="303"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
 	</parameter>
@@ -176,7 +176,7 @@ select
 		<band height="85">
 			<printWhenExpression><![CDATA[$F{facilityReport}!=null]]></printWhenExpression>
 			<staticText>
-				<reportElement x="0" y="11" width="176" height="18" forecolor="#17888F" uuid="10835921-c81d-4148-8480-d7511fcc0fb7"/>
+				<reportElement x="0" y="6" width="176" height="18" forecolor="#17888F" uuid="10835921-c81d-4148-8480-d7511fcc0fb7"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -185,10 +185,10 @@ select
 			<subreport>
 				<reportElement x="2" y="31" width="802" height="52" uuid="b65c767e-d365-4a3a-9542-3f8f75ccfffa"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{facilityReport})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["categorization-by-performance-facility.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["classification-by-performance-facility.jasper"]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement x="0" y="27" width="802" height="1" uuid="4bfd955e-05c4-4645-bb06-ae1e1d8fe2b8"/>
+				<reportElement x="0" y="25" width="802" height="1" uuid="32c89616-efe0-4bb9-8a61-5c5b627013ea"/>
 			</line>
 		</band>
 		<band height="97">
@@ -196,17 +196,17 @@ select
 			<subreport>
 				<reportElement x="0" y="32" width="802" height="65" uuid="5287001d-0ccd-470e-bf66-7f4dc275c3d7"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{districtReport})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["categorization-by-performance-district.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["classification-by-performance-district.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="2" y="13" width="176" height="19" forecolor="#17888F" uuid="c78df28a-e5cb-429d-bf9e-b1f74a644a63"/>
+				<reportElement x="2" y="7" width="176" height="19" forecolor="#17888F" uuid="c78df28a-e5cb-429d-bf9e-b1f74a644a63"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[District Level]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="29" width="802" height="1" uuid="79e64dfa-ba40-4c1e-9962-cb61ea0d4319"/>
+				<reportElement x="0" y="26" width="802" height="1" uuid="6ed0d183-fe64-4ec6-804a-40ce44c3571c"/>
 			</line>
 		</band>
 		<band height="107">
@@ -214,10 +214,10 @@ select
 			<subreport>
 				<reportElement x="0" y="41" width="802" height="66" uuid="0a72e6e8-d845-4f06-a93d-e952706cfddc"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{facilityDistrictSummary})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["categorization-by-performance-summary.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["classification-by-performance-summary.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="0" y="22" width="331" height="19" forecolor="#17888F" uuid="705f9bcb-5800-4735-bb10-9f9d56940000">
+				<reportElement x="2" y="21" width="300" height="16" forecolor="#17888F" uuid="705f9bcb-5800-4735-bb10-9f9d56940000">
 					<printWhenExpression><![CDATA[$F{facilityReport}!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -226,7 +226,7 @@ select
 				<text><![CDATA[Distribution of Facility per Category of Performance]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="22" width="331" height="19" forecolor="#17888F" uuid="566096d7-a444-42d1-bb00-e40420608b84">
+				<reportElement x="2" y="21" width="300" height="19" forecolor="#17888F" uuid="566096d7-a444-42d1-bb00-e40420608b84">
 					<printWhenExpression><![CDATA[$F{districtReport}!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -235,7 +235,7 @@ select
 				<text><![CDATA[Distribution of District per Category of Performance]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="37" width="802" height="1" uuid="dfabf8a1-9b75-4199-b20a-a75eb66c2b1a"/>
+				<reportElement x="2" y="37" width="800" height="1" uuid="69d626b9-851b-4b2d-bd8b-272def614b57"/>
 			</line>
 		</band>
 		<band height="104">
@@ -243,17 +243,17 @@ select
 			<subreport>
 				<reportElement x="0" y="31" width="802" height="73" uuid="d1c4bfd6-74f4-48f6-a2d7-955e7334a58c"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{regionReport})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["categorization-by-performance-region.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["classification-by-performance-region.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="2" y="12" width="331" height="19" forecolor="#17888F" uuid="c934bf89-bfe5-4e7a-9931-2d50d2c31232"/>
+				<reportElement x="2" y="7" width="331" height="19" forecolor="#17888F" uuid="c934bf89-bfe5-4e7a-9931-2d50d2c31232"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Region Level]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="28" width="802" height="1" uuid="e6762897-f0ce-4124-a339-040f707c575b"/>
+				<reportElement x="0" y="26" width="800" height="1" uuid="607d5253-f009-430f-823b-92beb24599bc"/>
 			</line>
 		</band>
 	</detail>
@@ -263,17 +263,17 @@ select
 			<subreport>
 				<reportElement x="0" y="31" width="802" height="76" uuid="49b6e44f-ce36-4eb3-a88f-a56b867bbcd0"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{regionReport})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["categorization-by-performance-summary.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["classification-by-performance-summary.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="2" y="12" width="331" height="19" forecolor="#17888F" uuid="ce9138f1-1fc2-4b0c-bb25-a733c7007b02"/>
+				<reportElement x="2" y="11" width="331" height="16" forecolor="#17888F" uuid="ce9138f1-1fc2-4b0c-bb25-a733c7007b02"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Distribution of Region per Category of Performance]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="28" width="802" height="1" uuid="beedf409-b846-4cb8-a6f8-328cd20b288f"/>
+				<reportElement x="0" y="27" width="800" height="1" uuid="aa6d2818-c459-4277-af4c-5c0df02688f7"/>
 			</line>
 		</band>
 	</summary>

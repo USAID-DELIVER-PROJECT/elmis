@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="coverage-master-report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.771561000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="59"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -51,6 +51,8 @@
 	<field name="regionReport" class="java.util.List"/>
 	<field name="districtReportSummary" class="java.util.List"/>
 	<field name="regionReportSummary" class="java.util.List"/>
+	<field name="facilityReport" class="java.util.List"/>
+	<field name="facilityReportSummary" class="java.util.List"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -96,7 +98,8 @@
 		<band height="4" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="133" splitType="Stretch">
+		<band height="107" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{facilityReport}!=null]]></printWhenExpression>
 			<line>
 				<reportElement x="0" y="19" width="801" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7"/>
 				<graphicElement>
@@ -104,7 +107,63 @@
 				</graphicElement>
 			</line>
 			<subreport>
-				<reportElement x="0" y="58" width="791" height="62" uuid="180c8f6f-80b6-45e8-ad43-50a139e2b408"/>
+				<reportElement x="2" y="20" width="800" height="71" uuid="d0a4a080-240f-4a8f-a01c-d8809173c08d"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="REPORT_NAME"/>
+				<subreportParameter name="REPORT_TITLE"/>
+				<subreportParameter name="COUNTRY_NAME"/>
+				<subreportParameter name="GENERATED_BY"/>
+				<subreportParameter name="REPORT_VERSION"/>
+				<subreportParameter name="REPORT_ID"/>
+				<subreportParameter name="LOGO"/>
+				<subreportParameter name="REPORT_OUTPUT_OPTION"/>
+				<subreportParameter name="OPERATOR_LOGO"/>
+				<subreportParameter name="REPORT_SUB_TITLE"/>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES"/>
+				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
+				<subreportParameter name="OPERATOR_NAME"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{facilityReport})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["performance-coverage-facility.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="1" y="0" width="801" height="20" uuid="24757390-f036-4e1a-8492-427b25cebcc0"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="14" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Facility Report]]></text>
+			</staticText>
+		</band>
+		<band height="94">
+			<printWhenExpression><![CDATA[$F{facilityReport}!=null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="2" y="0" width="799" height="68" uuid="dce0a143-92ae-4dda-bcb2-f5be0bc652ff"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="REPORT_NAME"/>
+				<subreportParameter name="REPORT_TITLE"/>
+				<subreportParameter name="COUNTRY_NAME"/>
+				<subreportParameter name="GENERATED_BY"/>
+				<subreportParameter name="REPORT_VERSION"/>
+				<subreportParameter name="REPORT_ID"/>
+				<subreportParameter name="LOGO"/>
+				<subreportParameter name="REPORT_OUTPUT_OPTION"/>
+				<subreportParameter name="OPERATOR_LOGO"/>
+				<subreportParameter name="REPORT_SUB_TITLE"/>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES"/>
+				<subreportParameter name="REPORT_MESSAGE_WHEN_NO_DATA"/>
+				<subreportParameter name="OPERATOR_NAME"/>
+				<subreportParameter name="image_dir"/>
+				<subreportParameter name="FACILITY_ID"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{facilityReportSummary})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["performance-coverage-district-summary.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="102">
+			<printWhenExpression><![CDATA[$F{districtReport}!=null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="1" y="20" width="801" height="62" uuid="180c8f6f-80b6-45e8-ad43-50a139e2b408"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="REPORT_NAME"/>
 				<subreportParameter name="REPORT_TITLE"/>
@@ -123,19 +182,20 @@
 				<subreportExpression><![CDATA["performance-coverage-district.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="0" y="26" width="791" height="20" uuid="012eb814-c3e7-4183-b2ec-eacdf722fd61"/>
+				<reportElement x="0" y="0" width="801" height="20" uuid="012eb814-c3e7-4183-b2ec-eacdf722fd61"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="false"/>
 				</textElement>
 				<text><![CDATA[District Report]]></text>
 			</staticText>
-			<line>
-				<reportElement x="0" y="46" width="791" height="1" uuid="a7899017-6920-4d38-8802-743c585f6d75"/>
-			</line>
 		</band>
-		<band height="70">
+		<band height="86">
+			<printWhenExpression><![CDATA[$F{districtReport}!=null]]></printWhenExpression>
 			<subreport>
-				<reportElement x="0" y="0" width="791" height="62" uuid="28906dc1-c9be-494c-8b7b-acdfc8944cfb"/>
+				<reportElement x="0" y="0" width="801" height="62" uuid="28906dc1-c9be-494c-8b7b-acdfc8944cfb"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="REPORT_NAME"/>
 				<subreportParameter name="REPORT_TITLE"/>
@@ -156,10 +216,10 @@
 				<subreportExpression><![CDATA["performance-coverage-district-summary.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
-		<band height="102">
+		<band height="99">
 			<printWhenExpression><![CDATA[$F{regionReport}!=null]]></printWhenExpression>
 			<subreport>
-				<reportElement x="0" y="31" width="791" height="62" uuid="eee795b7-f78f-4665-8519-6e8ba8d6c296"/>
+				<reportElement x="0" y="22" width="801" height="62" uuid="eee795b7-f78f-4665-8519-6e8ba8d6c296"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="REPORT_NAME"/>
 				<subreportParameter name="REPORT_TITLE"/>
@@ -178,21 +238,21 @@
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{regionReport})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["performance-coverage-region.jasper"]]></subreportExpression>
 			</subreport>
-			<line>
-				<reportElement x="0" y="20" width="791" height="1" uuid="ce97b201-b202-4642-be35-5dd51d8e2694"/>
-			</line>
 			<staticText>
-				<reportElement x="0" y="0" width="791" height="20" uuid="21cc6a03-5ab5-4927-8b76-a2fc12e4cc42"/>
+				<reportElement x="0" y="0" width="801" height="22" uuid="21cc6a03-5ab5-4927-8b76-a2fc12e4cc42"/>
+				<box bottomPadding="0">
+					<bottomPen lineWidth="1.0"/>
+				</box>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="false"/>
 				</textElement>
 				<text><![CDATA[Regional Report]]></text>
 			</staticText>
 		</band>
-		<band height="69">
+		<band height="72">
 			<printWhenExpression><![CDATA[$F{regionReport}!=null]]></printWhenExpression>
 			<subreport>
-				<reportElement x="4" y="0" width="791" height="62" uuid="a2f408c7-e026-437e-bf2e-adfbd27bfc0e"/>
+				<reportElement x="0" y="0" width="802" height="62" uuid="a2f408c7-e026-437e-bf2e-adfbd27bfc0e"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="REPORT_NAME"/>
 				<subreportParameter name="REPORT_TITLE"/>

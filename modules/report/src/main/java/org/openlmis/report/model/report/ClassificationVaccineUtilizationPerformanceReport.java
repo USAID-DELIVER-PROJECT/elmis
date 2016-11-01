@@ -24,12 +24,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PerformanceCoverageReport implements ResultRow {
+public class ClassificationVaccineUtilizationPerformanceReport implements ResultRow {
 
-    List<PerformanceCoverageReportFields> districtReport;
-    List<PerformanceCoverageReportFields> regionReport;
-    List<PerformanceCoverageReportFields> facilityReport;
-    List<PerformanceCoverageReportSummaryFields> facilityReportSummary;
-    List<PerformanceCoverageReportSummaryFields> districtReportSummary;
-    List<PerformanceCoverageReportSummaryFields> regionReportSummary;
+    List<ClassificationVaccineUtilizationPerformanceReportFields> districtReport;
+    List<ClassificationVaccineUtilizationPerformanceReportFields> regionReport;
+    List<ClassificationVaccineUtilizationPerformanceReportFields> facilityDistrictSummary;
+    List<ClassificationVaccineUtilizationPerformanceReportFields> facilityReport;
+
 }
