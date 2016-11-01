@@ -33,6 +33,7 @@ public class LogisticsLineItem extends BaseModel {
   private String productCode;
   private String productName;
   private String productCategory;
+  private String dosageUnit;
 
   private Product product;
 

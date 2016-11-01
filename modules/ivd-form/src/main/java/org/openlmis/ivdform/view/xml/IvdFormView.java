@@ -45,6 +45,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +86,10 @@ public class IvdFormView extends AbstractView {
     writeManufacturers(report, (List< Manufacturer>) model.get("manufacturers") );
     writeAdjustmentReasons(report, (List<DiscardingReason>) model.get("adjustment_reasons") );
     writeOperationalStatuses(report, (List<EquipmentOperationalStatus>) model.get("operational_status") );
-    writeFacilityDetails(report, (List<VaccineReport>)model.get("facility_details"));
+    //writeFacilityDetails(report, (List<VaccineReport>)model.get("facility_details"));
+    writeDemographicEstimates(report, (List<VaccineReport>)model.get("facility_details"));
+    writeEquipments(report, (List<VaccineReport>)model.get("facility_details"));
+
     data.appendChild(report);
 
     response.setHeader("Content-Transfer-Encoding", "binary");
@@ -96,7 +101,6 @@ public class IvdFormView extends AbstractView {
     Element childElement = doc.createElement(name);
     childElement.setTextContent(value);
     parent.appendChild(childElement);
-   // parent.setAttribute(name, value);
   }
 
   private void writeResponse(HttpServletResponse response, Document doc) throws IOException, TransformerException {
@@ -136,9 +140,10 @@ public class IvdFormView extends AbstractView {
   private void writePeriods(Element report, List<ProcessingPeriod> periods){
 
     Element periodsElement = doc.createElement("periods");
+    Collections.sort(periods, Comparator.comparing(ProcessingPeriod::getStartDate));
     for(ProcessingPeriod period: periods){
       Element processingPeriodElement  = doc.createElement("period");
-
+      
       createElement(processingPeriodElement, "periodId", period.getId().toString());
       createElement(processingPeriodElement, "periodName", period.getName());
 
@@ -173,6 +178,41 @@ public class IvdFormView extends AbstractView {
       periodsElement.appendChild(facilityElement);
     }
     report.appendChild(periodsElement);
+  }
+
+  private void writeEquipments(Element report, List<VaccineReport> reports){
+
+    Element equipmentRoot = doc.createElement("equipments");
+    for(VaccineReport reportT: reports){
+
+      for(ColdChainLineItem li : reportT.getColdChainLineItems()){
+        Element equipment = doc.createElement("equipment");
+        createElement(equipment, "facilityId", reportT.getFacility().getId().toString());
+        createElement(equipment, "equipmentInventoryId", li.getEquipmentInventoryId().toString());
+        createElement(equipment, "energySource", li.getEnergySource());
+        createElement(equipment, "equipmentName", li.getEquipmentName());
+        createElement(equipment, "model", li.getModel());
+        createElement(equipment, "serial", li.getSerial());
+
+        equipmentRoot.appendChild(equipment);
+      }
+    }
+    report.appendChild(equipmentRoot);
+  }
+
+  private void writeDemographicEstimates(Element report, List<VaccineReport> reports){
+
+    Element demographicEstimatesRoot = doc.createElement("demographics");
+    for(VaccineReport reportT: reports){
+      for(AnnualFacilityEstimateEntry entry: reportT.getFacilityDemographicEstimates()){
+        Element estimate = doc.createElement("estimate");
+        createElement(estimate, "facilityId", reportT.getFacility().getId().toString() );
+        createElement(estimate, "name", entry.getCategory().getName());
+        createElement(estimate, "value", entry.getValue().toString());
+        demographicEstimatesRoot.appendChild(estimate);
+      }
+    }
+    report.appendChild(demographicEstimatesRoot);
   }
 
   private void writeFacilityDetails(Element report, List<VaccineReport> reports){
@@ -211,6 +251,8 @@ public class IvdFormView extends AbstractView {
     }
     report.appendChild(periodsElement);
   }
+
+
 
   private void writeProducts(Element report, VaccineReport template) {
     Element productsElement = doc.createElement("products");
@@ -251,8 +293,10 @@ public class IvdFormView extends AbstractView {
 
       createElement(productElement, "productId", li.getProductId().toString());
       createElement(productElement, "productName", li.getProductName());
+      createElement(productElement, "productCode", li.getProductCode());
       createElement(productElement, "productCategory", li.getProductCategory());
       createElement(productElement, "displayOrder", li.getDisplayOrder().toString());
+      createElement(productElement, "unit", li.getDosageUnit());
 
       productsElement.appendChild(productElement);
     }
@@ -264,9 +308,10 @@ public class IvdFormView extends AbstractView {
     Element diseasesElement = doc.createElement("diseases");
 
     for (DiseaseLineItem li : template.getDiseaseLineItems()) {
-      Element diseaseElement = doc.createElement("product");
+      Element diseaseElement = doc.createElement("disease");
       createElement(diseaseElement, "diseaseId", li.getDiseaseId().toString());
       createElement(diseaseElement, "diseaseName", li.getDiseaseName());
+      createElement(diseaseElement, "displayOrder", li.getDisplayOrder().toString());
 
       diseasesElement.appendChild(diseaseElement);
     }
@@ -281,6 +326,7 @@ public class IvdFormView extends AbstractView {
       createElement(supplementElement, "vitaminName", li.getVitaminName());
       createElement(supplementElement, "ageGroupId", li.getVitaminAgeGroupId().toString());
       createElement(supplementElement, "ageGroupName", li.getAgeGroup());
+      createElement(supplementElement, "displayOrder", li.getDisplayOrder().toString());
       supplementsElement.appendChild(supplementElement);
     }
     report.appendChild(supplementsElement);

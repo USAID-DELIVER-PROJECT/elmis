@@ -98,6 +98,7 @@ public class VaccineReport extends BaseModel {
       item.setProductCode(pp.getProduct().getCode());
       item.setProductName(pp.getProduct().getPrimaryName());
       item.setProductCategory(pp.getProductCategory().getName());
+      item.setDosageUnit(pp.getProduct().getDosageUnit().getCode());
       item.setDisplayOrder(pp.getDisplayOrder());
 
       if (previousReport != null) {
