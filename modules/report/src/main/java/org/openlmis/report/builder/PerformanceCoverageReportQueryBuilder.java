@@ -74,6 +74,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "                   AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
                         "                   AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
                         "                   AND i.product_id = "+ params.getProduct()+"\n" +
+                        "                   AND d.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "+
                         "                 group by d.region_name,d.region_id, d.district_name, d.district_id, i.period_name, \n" +
                         "                 i.period_id, i.period_start_date, i.facility_name, i.facility_id\n" +
                         "                 \n" +
@@ -161,7 +162,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "      and year = extract(year from '"+ params.getPeriodStart()+"'::date)\n" +
                         "      and (doseid = " + params.getDoseId() +" or " + params.getDoseId() +" = 0) " +
                         "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
-                        +params.getDistrict()+" or d.parent = "+params.getDistrict()+") "+
+                        +params.getDistrict()+" or d.parent = "+params.getDistrict()+") " +
                         "    group by 1,2,3,4,5,6\n" +
                         "    order by 2,1\n" +
                         ")\n" +
@@ -196,6 +197,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "                   AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
                         "                   AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
                         "                   AND i.product_id = "+ params.getProduct()+"\n" +
+                        "                   AND d.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "+
                         "                 group by d.region_name,d.region_id, d.district_name, d.district_id, i.period_name, i.period_id, i.period_start_date\n" +
                         "                 order by d.region_name, i.period_start_date\n" +
                         ") \n" +
@@ -207,7 +209,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "    from region_period r           \n" +
                         "        left outer JOIN coverage c on r.region_id = c.region_id AND r.district_id = c.district_id AND r.period_id = c.period_id\n" +
                         "        where r.district_id in (select distinct district_id from coverage)\n" +
-                        " )\n" +
+                        ")\n" +
 
                         "   select c.region_name,\n" +
                         "      c.district_name, \n" +
@@ -276,6 +278,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "                     AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
                         "             AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
                         "             AND i.product_id = "+ params.getProduct()+"\n" +
+                        "             AND d.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "+
                         "                 group by d.region_name,d.region_id, i.period_name, i.period_id, i.period_start_date\n" +
                         "                 order by d.region_name, i.period_start_date\n" +
                         ") \n" +
@@ -286,7 +289,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "    (select sum(coalesce(c.vaccinated,0)) from coverage c where c.period_start_date <= startdate and c.region_id = r.region_id) cum_vaccinated \n" +
                         "    from region_period r           \n" +
                         "        left outer JOIN coverage c on r.region_id = c.region_id AND r.period_id = c.period_id\n" +
-                        "       \n" +
+                        "       where r.region_id in (select distinct region_id from coverage) " +
                         " )\n" +
                         "\n" +
                         "   select c.region_name,\n" +
@@ -354,6 +357,7 @@ public class PerformanceCoverageReportQueryBuilder {
                 "                   AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
                 "                   AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
                 "                   AND i.product_id = "+ params.getProduct()+"\n" +
+                "                   AND d.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "+
                 "                 group by d.region_name,d.region_id, d.district_name, d.district_id, i.period_name, i.period_id, i.period_start_date    " +
                 "                 order by d.region_name, i.period_start_date    " +
                 ")    " +
@@ -447,6 +451,7 @@ public class PerformanceCoverageReportQueryBuilder {
                 "             AND i.period_start_date::date >= '"+ params.getPeriodStart()+"'::date \n" +
                 "             AND i.period_end_date::date <= '"+ params.getPeriodEnd()+"'::date \n" +
                 "             AND i.product_id = "+ params.getProduct() +
+                "             AND d.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "+
                 "                 group by d.region_name,d.region_id, i.period_name, i.period_id, i.period_start_date  " +
                 "                 order by d.region_name, i.period_start_date  " +
                 ")  " +

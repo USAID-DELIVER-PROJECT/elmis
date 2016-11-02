@@ -81,11 +81,12 @@ Long userId= this.loggedInUserId(request);
                                                               @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                               @RequestParam("district") Long districtId,
                                                               @RequestParam("product") Long product,
-                                                              @RequestParam("doseId") Long doseId
+                                                              @RequestParam("doseId") Long doseId,  HttpServletRequest request
   ) {
+      Long userId = this.loggedInUserId(request);
 
     return OpenLmisResponse.response("performanceCoverage",
-        service.getPerformanceCoverageReportData(periodStart, periodEnd, districtId, product, doseId));
+        service.getPerformanceCoverageReportData(periodStart, periodEnd, districtId, product, doseId, userId));
   }
 
 

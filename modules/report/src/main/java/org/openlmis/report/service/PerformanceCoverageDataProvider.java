@@ -52,6 +52,7 @@ public class PerformanceCoverageDataProvider extends ReportDataProvider {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
 
         PerformanceCoverageReportParam params = getParameter(filterCriteria);
+        params.setUserId(this.getUserId());
 
         PerformanceCoverageReport performanceCoverageReport = new PerformanceCoverageReport();
 

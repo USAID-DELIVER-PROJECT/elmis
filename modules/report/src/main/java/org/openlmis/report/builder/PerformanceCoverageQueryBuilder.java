@@ -255,10 +255,12 @@ public class PerformanceCoverageQueryBuilder {
         Date endDate     = (Date) params.get("endDate");
         Long productId   = (Long) params.get("productId");
         Long doseId = (Long) params.get("doseId");
+        Long userId = (Long) params.get("userId");
 
         String predicate = "";
-        predicate = " i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n";
-        predicate +=" AND i.product_id = " +productId +" ";
+        predicate = " geographic_zone_id in (select district_id from vw_user_facilities where user_id ="+userId+" and program_id = fn_get_vaccine_program_id())  ";
+        predicate += " AND  i.period_start_date::date >= '"+startDate+"' and i.period_end_date::date <= '"+endDate+"'\n";
+        predicate +=" AND  i.product_id = " +productId +" ";
 
         if (zone != 0 && zone != null) {
             predicate += " AND (district_id = "+zone+" or zone_id = "+zone+" or region_id = "+zone+" or parent = "+zone+")";
