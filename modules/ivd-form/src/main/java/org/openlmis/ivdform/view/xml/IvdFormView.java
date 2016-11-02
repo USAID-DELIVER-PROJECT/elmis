@@ -143,7 +143,7 @@ public class IvdFormView extends AbstractView {
     Collections.sort(periods, Comparator.comparing(ProcessingPeriod::getStartDate));
     for(ProcessingPeriod period: periods){
       Element processingPeriodElement  = doc.createElement("period");
-      
+
       createElement(processingPeriodElement, "periodId", period.getId().toString());
       createElement(processingPeriodElement, "periodName", period.getName());
 
@@ -192,7 +192,7 @@ public class IvdFormView extends AbstractView {
         createElement(equipment, "energySource", li.getEnergySource());
         createElement(equipment, "equipmentName", li.getEquipmentName());
         createElement(equipment, "model", li.getModel());
-        createElement(equipment, "serial", li.getSerial());
+        createElement(equipment, "serial", (li.getSerial() == null) ? "-": li.getSerial());
 
         equipmentRoot.appendChild(equipment);
       }
@@ -207,8 +207,8 @@ public class IvdFormView extends AbstractView {
       for(AnnualFacilityEstimateEntry entry: reportT.getFacilityDemographicEstimates()){
         Element estimate = doc.createElement("estimate");
         createElement(estimate, "facilityId", reportT.getFacility().getId().toString() );
-        createElement(estimate, "name", entry.getCategory().getName());
-        createElement(estimate, "value", entry.getValue().toString());
+        createElement(estimate, "estimateName", entry.getCategory().getName());
+        createElement(estimate, "estimateValue", entry.getValue().toString());
         demographicEstimatesRoot.appendChild(estimate);
       }
     }
@@ -344,7 +344,7 @@ public class IvdFormView extends AbstractView {
   }
 
   private void writeAdjustmentReasons(Element report, List<DiscardingReason> reasons) {
-    Element reasonsElement = doc.createElement("adjustment_reasons");
+    Element reasonsElement = doc.createElement("adjustmentReasons");
     for (DiscardingReason reason : reasons) {
       Element reasonElement = doc.createElement("reason");
       createElement(reasonElement, "reasonId", reason.getId().toString());
@@ -355,7 +355,7 @@ public class IvdFormView extends AbstractView {
   }
 
   private void writeOperationalStatuses(Element report, List<EquipmentOperationalStatus> equipmentOperationalStatuses) {
-    Element reasonsElement = doc.createElement("cold_chain_operational_statuses");
+    Element reasonsElement = doc.createElement("coldChainOperationalStatuses");
     for (EquipmentOperationalStatus status : equipmentOperationalStatuses) {
       Element statusElement = doc.createElement("status");
       createElement(statusElement, "statusId", status.getId().toString());
