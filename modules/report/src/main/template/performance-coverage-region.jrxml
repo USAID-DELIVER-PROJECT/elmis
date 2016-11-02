@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="40" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="146"/>
+	<property name="ireport.zoom" value="1.771561000000001"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<style name="coverage-report-style" mode="Opaque" forecolor="#000000" backcolor="#FFFFFF">
+	<style name="coverage-report-style" mode="Opaque" forecolor="#000000" backcolor="#FF0000">
 		<conditionalStyle>
-			<conditionExpression><![CDATA[$F{reported} == "No"]]></conditionExpression>
-			<style mode="Opaque" backcolor="#E4E4E4"/>
+			<conditionExpression><![CDATA[$F{coverage} >=90]]></conditionExpression>
+			<style mode="Opaque" backcolor="#52C552"/>
 		</conditionalStyle>
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$F{coverage} < 80 && $F{reported} == "Yes"]]></conditionExpression>
 			<style mode="Opaque" backcolor="#FF0000" fill="Solid"/>
 		</conditionalStyle>
 		<conditionalStyle>
-			<conditionExpression><![CDATA[$F{coverage} >=80 && $F{coverage} < 90 && $F{reported} == "Yes"]]></conditionExpression>
+			<conditionExpression><![CDATA[$F{coverage} >=80 && $F{coverage} < 90]]></conditionExpression>
 			<style mode="Opaque" backcolor="#E4E44A"/>
 		</conditionalStyle>
 		<conditionalStyle>
-			<conditionExpression><![CDATA[1 == 1]]></conditionExpression>
-			<style mode="Opaque" forecolor="#000000" backcolor="#52C552"/>
+			<conditionExpression><![CDATA[$F{reported} == "No"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#E4E4E4"/>
 		</conditionalStyle>
 	</style>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -330,7 +330,7 @@ union all
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="3" y="19" width="130" height="19" uuid="01d7137d-907b-4ce7-a8ef-32de2511de39"/>
+				<reportElement x="0" y="1" width="133" height="37" uuid="01d7137d-907b-4ce7-a8ef-32de2511de39"/>
 				<box leftPadding="3" bottomPadding="5" rightPadding="0"/>
 				<textElement verticalAlignment="Bottom"/>
 				<text><![CDATA[Region]]></text>
@@ -355,7 +355,7 @@ union all
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="coverage-report-style" x="0" y="0" width="801" height="20" uuid="0d4b945c-6806-46e3-8606-905b464bff0a"/>
+				<reportElement x="0" y="0" width="801" height="20" uuid="0d4b945c-6806-46e3-8606-905b464bff0a"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<line>
@@ -383,7 +383,7 @@ union all
 				<textFieldExpression><![CDATA[$F{vaccinated}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Column" pattern="#,##0.00 %">
-				<reportElement x="570" y="0" width="83" height="20" uuid="fb46cca7-7b15-4683-bca6-45270f40b7a5"/>
+				<reportElement style="coverage-report-style" mode="Opaque" x="570" y="0" width="83" height="20" uuid="fb46cca7-7b15-4683-bca6-45270f40b7a5"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{coverage}/100]]></textFieldExpression>
 			</textField>
@@ -393,12 +393,12 @@ union all
 				<textFieldExpression><![CDATA[$F{cum_vaccinated}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00 %">
-				<reportElement x="732" y="0" width="69" height="20" uuid="5e22bf86-dd85-44fe-89b4-a671eeca33de"/>
+				<reportElement style="coverage-report-style" mode="Opaque" x="732" y="0" width="69" height="20" uuid="5e22bf86-dd85-44fe-89b4-a671eeca33de"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{cum_coverage}/100]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="29" y="0" width="104" height="20" printWhenGroupChanges="region" uuid="1f05dad1-4290-47bd-adaf-34c71b82c08f"/>
+				<reportElement mode="Transparent" x="0" y="0" width="133" height="20" printWhenGroupChanges="region" uuid="1f05dad1-4290-47bd-adaf-34c71b82c08f"/>
 				<textFieldExpression><![CDATA[$F{region_name}]]></textFieldExpression>
 			</textField>
 		</band>

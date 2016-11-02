@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="40" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="2.5937424601000023"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="257"/>
 	<property name="ireport.y" value="0"/>
 	<style name="coverage-report-style" mode="Opaque" forecolor="#000000" backcolor="#FF0000">
 		<conditionalStyle>
@@ -384,24 +384,24 @@ union all
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement style="coverage-report-style" x="113" y="0" width="100" height="20" uuid="3d36fd32-acbc-4076-aff9-7be2e5253f94"/>
+				<reportElement mode="Transparent" x="113" y="0" width="100" height="20" uuid="3d36fd32-acbc-4076-aff9-7be2e5253f94"/>
 				<textFieldExpression><![CDATA[$F{district_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="coverage-report-style" x="341" y="0" width="55" height="20" uuid="f8f67f6f-56b7-4786-ae44-8ccf54289864"/>
+				<reportElement mode="Transparent" x="341" y="0" width="55" height="20" uuid="f8f67f6f-56b7-4786-ae44-8ccf54289864"/>
 				<textFieldExpression><![CDATA[$F{period_name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement style="coverage-report-style" x="443" y="0" width="70" height="20" uuid="454b2568-1ad7-450c-a675-5e51bc12c70e"/>
+				<reportElement mode="Transparent" x="443" y="0" width="70" height="20" uuid="454b2568-1ad7-450c-a675-5e51bc12c70e"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{target}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="coverage-report-style" x="396" y="0" width="47" height="20" uuid="ba21907f-ae61-4fc4-8147-7cb574e798fa"/>
+				<reportElement mode="Transparent" x="396" y="0" width="47" height="20" uuid="ba21907f-ae61-4fc4-8147-7cb574e798fa"/>
 				<textFieldExpression><![CDATA[$F{reported}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement style="coverage-report-style" x="513" y="0" width="80" height="20" uuid="86457e30-b87d-4383-915c-4b80de11de71"/>
+				<reportElement mode="Transparent" x="513" y="0" width="80" height="20" uuid="86457e30-b87d-4383-915c-4b80de11de71"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{vaccinated}]]></textFieldExpression>
 			</textField>
@@ -411,7 +411,7 @@ union all
 				<textFieldExpression><![CDATA[($F{coverage}/100)]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement style="coverage-report-style" x="665" y="0" width="67" height="20" uuid="feefd4a2-c4f1-4cc6-9e0f-677defa25a72"/>
+				<reportElement mode="Transparent" x="665" y="0" width="67" height="20" uuid="feefd4a2-c4f1-4cc6-9e0f-677defa25a72"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{cum_vaccinated}]]></textFieldExpression>
 			</textField>
@@ -421,11 +421,11 @@ union all
 				<textFieldExpression><![CDATA[$F{cum_coverage}/100]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="coverage-report-style" mode="Opaque" x="0" y="0" width="113" height="20" printWhenGroupChanges="district" uuid="1f05dad1-4290-47bd-adaf-34c71b82c08f"/>
+				<reportElement mode="Transparent" x="0" y="0" width="113" height="20" printWhenGroupChanges="district" uuid="1f05dad1-4290-47bd-adaf-34c71b82c08f"/>
 				<textFieldExpression><![CDATA[$F{region_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="coverage-report-style" mode="Opaque" x="213" y="0" width="128" height="20" uuid="4b9db19e-c82c-44f2-91ac-9204ee4a154e"/>
+				<reportElement mode="Transparent" x="213" y="0" width="128" height="20" uuid="4b9db19e-c82c-44f2-91ac-9204ee4a154e"/>
 				<textFieldExpression><![CDATA[$F{facility_name}]]></textFieldExpression>
 			</textField>
 		</band>

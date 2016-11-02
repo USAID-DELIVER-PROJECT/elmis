@@ -127,12 +127,12 @@
                         <td >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                         <td >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                         <td ng-show="!regionSelected" >{{datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
-                        <td  style="background-color : {{bgColorCode(row)}}">{{row.period_name}}</td>
-                        <td style="background-color : {{bgColorCode(row)}}">{{reporting(row)}} </td>
-                        <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.target | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.vaccinated | number}}</td>
+                        <td>{{row.period_name}}</td>
+                        <td>{{reporting(row)}} </td>
+                        <td class="number">{{row.target | number}}</td>
+                        <td class="number">{{row.vaccinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
-                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeVacinated | number}}</td>
+                        <td class="number">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
                     <tr ng-if="( datarows.length == $index+1) && $index>0 && staticYear>0">
@@ -189,24 +189,7 @@
                             <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="b in coverageSummary.groupFour">{{b.total.value}}</td>
                         </tr>
 
-                       <!-- <tr>
-                            <td style="background-color : {{colors.color_ninty_percent}}" openlmis-message="coverage.greater.than.or.equal.ninty.percent"></td>
-                            <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="a in g1">{{a.total}}</td>
-                        </tr>
-                        <tr>
-                            <td  style="background-color : {{colors.color_80_percent}}" openlmis-message="coverage.greater.than.or.equal.eighty.percent"></td>
-                            <td   style="background-color : {{colors.color_80_percent}}" ng-repeat="a in g2">{{a.total}}</td>
-                        </tr>
 
-                        <tr>
-                            <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
-                            <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="a in g4">{{a.total}}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color : {{colors.color_non_reporting}}" openlmis-message="Non Reporting">Non Reporting</td>
-                            <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="a in grayCount">{{grayCount[staticYear+"_"+$index].count}}&nbsp;</td>
-                        </tr>
-                        -->
                         </tbody>
                     </table>
                 </div>
@@ -252,13 +235,13 @@
 
                     </tr>
                     <tr >
-                        <td >{{ dataRowsRegionAggregate[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
-                        <td  style="background-color : {{bgColorCode(row)}}">{{row.period_name}}</td>
-                        <td style="background-color : {{bgColorCode(row)}}">{{reporting(row)}} </td>
-                        <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.target | number}}</td>
-                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.vaccinated | number}}</td>
+                        <td>{{ dataRowsRegionAggregate[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                        <td>{{row.period_name}}</td>
+                        <td>{{reporting(row)}} </td>
+                        <td class="number">{{row.target | number}}</td>
+                        <td class="number">{{row.vaccinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{calculateVaccinated(row.target,row.vaccinated )}}%</td>
-                        <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeVacinated | number}}</td>
+                        <td class="number">{{row.cumulativeVacinated | number}}</td>
                         <td class="number" style="background-color : {{bgColorCode(row)}}">{{row.cumulativeCoverage}}%</td>
                     </tr>
                     <tr ng-if="(dataRowsRegionAggregate.length==$index+1)&&$index>0 && staticYear>0">
