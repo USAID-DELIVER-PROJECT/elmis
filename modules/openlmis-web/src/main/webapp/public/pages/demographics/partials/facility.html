@@ -43,9 +43,9 @@
     </div>
   </div>
   <div class="clearfix padding2px"></div>
-  <div ng-show="form && form.estimateLineItems.length > 0">
-    <div class="parent">
-      <table class="table table-bordered scrollable">
+  <div ng-show="form && form.estimateLineItems.length > 0" class="rnr-table">
+    <div class="parent ">
+      <table fixed-table-header class="table table-bordered scrollable">
         <thead>
         <tr class="gradient-header">
           <th style="min-width:25px;width: 25px;"></th>
@@ -56,7 +56,7 @@
             <span openlmis-message="label.demographic.facility.name"></span>
           </th>
           <th ng-repeat="category in categories">
-            {{category.name}}
+            <span ng-bind="category.name">{{category.name}}</span>
           </th>
         </tr>
         </thead>

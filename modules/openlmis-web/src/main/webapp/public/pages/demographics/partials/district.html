@@ -55,7 +55,7 @@
 
     <div adjust-height bottom-offset="180" tab-scroll>
       <div class="float-left left-table parent">
-        <table class="table table-bordered scrollable">
+        <table  fixed-table-header class="table table-bordered scrollable">
           <thead>
           <tr style="height: 40px;" class="text-row gradient-header">
             <th style="min-width:25px;width: 25px;"></th>
@@ -93,11 +93,11 @@
 
 
       <div class="float-left right-table parent" custom-horizontal-scroll>
-        <table class="table table-bordered scrollable">
+        <table  fixed-table-header class="table table-bordered scrollable">
           <thead>
           <tr style="height: 40px;" class="text-row gradient-header">
             <th ng-repeat="category in categories" colspan="{{showFacilityAggregate == true ? 2 : 1 }}">
-              {{category.name}}
+              <span ng-bind="category.name">{{category.name}}</span>
             </th>
           </tr>
           </thead>

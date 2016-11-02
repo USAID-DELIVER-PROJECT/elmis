@@ -19,7 +19,7 @@ function BaseDemographicEstimateController($scope, rights, categories, programs 
 
 
   $scope.currentPage = 1;
-  $scope.pageSize = 10;
+  $scope.pageSize = 50;
 
   $scope.categories = categories;
   $scope.rights = rights;
