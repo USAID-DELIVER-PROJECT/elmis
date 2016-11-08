@@ -29,6 +29,7 @@ public class Report {
   // report properties used by report design
   private String title;
   private String subTitle;
+  private String subBranchTitle;
   private String name;
   private String id;
   private String version;
