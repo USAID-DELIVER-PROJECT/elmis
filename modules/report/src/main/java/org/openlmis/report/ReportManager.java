@@ -177,6 +177,7 @@ public class ReportManager {
         params.put(Constants.REPORT_ID, report.getId());
         params.put(Constants.REPORT_TITLE, messageService.message(report.getTitle()));
         params.put(Constants.REPORT_SUB_TITLE, report.getSubTitle());
+        params.put(Constants.REPORT_SUB_BRANCH_TITLE, report.getSubBranchTitle());
         params.put(Constants.REPORT_VERSION, report.getVersion());
         params.put(Constants.REPORT_OUTPUT_OPTION, outputOption);
         ConfigurationSetting configuration =  configurationService.getByKey(Constants.LOGO_FILE_NAME_KEY);
