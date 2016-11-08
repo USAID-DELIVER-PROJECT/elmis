@@ -13,12 +13,12 @@
 package org.openlmis.ivdform.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wordnik.swagger.annotations.ApiOperation;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.RightName;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.core.service.ProcessingScheduleService;
+import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.demographics.service.AnnualFacilityDemographicEstimateService;
 import org.openlmis.equipment.service.EquipmentOperationalStatusService;
@@ -61,6 +61,8 @@ public class FormGeneratorController extends BaseController {
   private static final String OPERATIONAL_STATUS = "operational_status";
   private static final String FACILITY_DETAILS = "facility_details";
   private static final String STATUS = "STATUS";
+  public static final String USER = "user";
+  public static final String YEAR = "year";
 
   @Autowired
   private IvdFormService service;
@@ -89,11 +91,13 @@ public class FormGeneratorController extends BaseController {
   @Autowired
   ColdChainLineItemRepository coldChainRepository;
 
+  @Autowired
+  UserService userService;
+
   @Value("${mail.base.url}")
   public String baseUrl;
 
-  @RequestMapping(value = {"/ivd-from/pdf-submit"}, method = {RequestMethod.POST}, consumes = MediaType.ALL_VALUE)
-  @ApiOperation(position = 5, value = "Save IVD form")
+  @RequestMapping(value = {"/rest-api/ivd-from/pdf-submit"}, method = {RequestMethod.POST}, consumes = MediaType.ALL_VALUE)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ModelAndView saveFromPDF(HttpServletRequest request) throws ParserConfigurationException, IOException, SAXException {
     ModelAndView modelAndView = new ModelAndView("ivdFormResponseView");
@@ -136,6 +140,8 @@ public class FormGeneratorController extends BaseController {
     modelAndView.addObject(MANUFACTURERS, manufacturerService.getAll() );
     modelAndView.addObject(ADJUSTMENT_REASONS, reasonsService.getAllReasons());
     modelAndView.addObject(OPERATIONAL_STATUS, equipmentOperationalStatusService.getAll());
+    modelAndView.addObject(YEAR, year);
+    modelAndView.addObject(USER, userService.getById( loggedInUserId(request)));
 
     List<VaccineReport> reports = new ArrayList<>();
     for(Facility facility: facilities){

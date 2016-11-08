@@ -16,6 +16,7 @@ import org.exolab.castor.types.DateTime;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.domain.ProcessingPeriod;
+import org.openlmis.core.domain.User;
 import org.openlmis.demographics.domain.AnnualFacilityEstimateEntry;
 import org.openlmis.equipment.domain.EquipmentOperationalStatus;
 import org.openlmis.ivdform.domain.DiscardingReason;
@@ -73,7 +74,7 @@ public class IvdFormView extends AbstractView {
 
     Element report = doc.createElement("ivdReport");
 
-    writeDetails(report, (Long)model.get("program_id"), model.get("url").toString());
+    writeDetails(report, (Long)model.get("program_id"), model.get("url").toString(), model.get("year").toString(), (User) model.get("user") );
     VaccineReport vaccineReportTemplate = (VaccineReport) model.get("reportTemplate");
     writePeriods(report, (List<ProcessingPeriod>) model.get(PERIODS));
     writeRegions(report, (List<GeographicZone>) model.get(DISTRICTS));
@@ -125,15 +126,18 @@ public class IvdFormView extends AbstractView {
     return dBuilder.parse(stream);
   }
 
-  private void writeDetails(Element report, Long programId, String url){
+  private void writeDetails(Element report, Long programId, String url, String year, User user){
 
     Element detailsElement = doc.createElement("details");
 
     createElement(detailsElement, "programId", programId.toString());
     createElement(detailsElement, "baseUrl", url);
-    createElement(detailsElement, "url", String.format("%sivd-from/pdf-submit", url));
+    createElement(detailsElement, "url", String.format("%s/rest-api/ivd-from/pdf-submit", url));
     createElement(detailsElement, "generatedDate",  new DateTime().toDate().toString());
-
+    createElement(detailsElement, "year", year);
+    createElement(detailsElement, "username", user.getUserName());
+    createElement(detailsElement, "userFirstName", user.getFirstName());
+    createElement(detailsElement, "userLastName", user.getLastName());
     report.appendChild(detailsElement);
   }
 

@@ -48,7 +48,7 @@ public interface ProductPriceScheduleMapper {
             "INNER JOIN program_products pp ON pp.id = fap.programProductId " +
             "INNER JOIN products p ON p.id = pp.productId " +
             "INNER JOIN programs pgm ON pp.programId = pgm.id " +
-            "LEFT JOIN product_price_schedules ps ON ps.productId = p.id AND f.priceScheduleId = ps.priceScheduleId " +
+            "INNER JOIN product_price_schedules ps ON ps.productId = p.id AND f.priceScheduleId = ps.priceScheduleId " +
             "WHERE " +
             " pp.programId = #{programId} And " +
             " f.id = #{facilityId}  AND " +
