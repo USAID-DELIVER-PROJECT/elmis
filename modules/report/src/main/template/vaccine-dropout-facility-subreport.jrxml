@@ -307,21 +307,21 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="339" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="18d0356c-7742-4110-8f64-158866ba6186">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="389" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="18d0356c-7742-4110-8f64-158866ba6186">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$V{drop_out}<=5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="340" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="617bdb98-4d1d-46ea-af46-d63dec2abcd3">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="390" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="617bdb98-4d1d-46ea-af46-d63dec2abcd3">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$V{drop_out}>10]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="339" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="60598021-4bd7-46e9-90ff-d83c51f26edc">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="389" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="60598021-4bd7-46e9-90ff-d83c51f26edc">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$V{drop_out}<=10 && $V{drop_out}>5]]></printWhenExpression>
 				</reportElement>
