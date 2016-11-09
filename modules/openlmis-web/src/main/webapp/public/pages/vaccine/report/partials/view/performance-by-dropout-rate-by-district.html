@@ -91,10 +91,7 @@
 
                             </th>
                             <th rowspan="2">Reported</th>
-                            <th rowspan="2" style="width: 10px">
-                                <span openlmis-message="label.vaccine.quantification.target.ppln"></span>
 
-                            </th>
                             <th colspan="3 " style=" text-align: center; vertical-align: middle">
                                 <span openlmis-message="label.district.dropout"></span>
 
@@ -139,10 +136,7 @@
                                 <span></span>
 
                             </th>
-                            <th>
-                                <span>D</span>
 
-                            </th>
                             <th>
                                 <span>E</span>
 
@@ -173,10 +167,7 @@
                                     >Sub Total</td>
 
 
-                            <td class="aggregate-row"
-                               >
-                                {{reportType==false? districtSubAggregate[ datarows[$index-1].district_name].target:districtSubAggregate[ datarows[$index-1].facility_name].target}}
-                            </td>
+
 
                             <td class="aggregate-row"
                                     >
@@ -213,8 +204,7 @@
                                 ng-style="{'text-align':'right'}"/>
                             <td style=" text-align:right; background-color : {{getBackGroundColor(row)}}">{{reporting(row)}} </td>
 
-                            <td ng-bind="row.target| number"
-                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
+
 
                             <td ng-bind="row.bcg_vaccinated| number"
                                 ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
@@ -241,10 +231,7 @@
                                     >Sub Total</td>
 
 
-                            <td class="aggregate-row"
-                                    >
-                                {{reportType==false? districtSubAggregate[ datarows[$index].district_name].target:districtSubAggregate[ datarows[$index].facility_name].target}}
-                            </td>
+
 
                             <td class="aggregate-row"
                                     >
@@ -275,7 +262,7 @@
                             <span openlmis-message="label.total"></span>
                         </td>
 
-                        <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="districtSubAggregate['total_row'].target| number"></td>
+
 
                         <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="districtSubAggregate['total_row'].bcg_vaccinated| number"></td>
                         <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="districtSubAggregate['total_row'].mr_vaccinated| number"></td>
@@ -416,10 +403,7 @@
                                     >Sub Total</td>
 
 
-                            <td class="aggregate-row"
-                                    >
-                                {{regionSubAggregate[ regionrows[$index-1].region_name].target}}
-                            </td>
+
 
                             <td class="aggregate-row"
                                     >
@@ -453,8 +437,7 @@
                             <td ng-bind="row.period_name| date:'MMM-yyyy'"
                                 ng-style="{'text-align':'right'}"/>
                             <td style="text-align:right;background-color : {{getBackGroundColor(row)}}">{{reporting(row)}} </td>
-                            <td ng-bind="row.target"
-                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
+
                             <td ng-bind="row.bcg_vaccinated"
                                 ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
 
@@ -477,10 +460,7 @@
                                     >Sub Total</td>
 
 
-                            <td class="aggregate-row"
-                                    >
-                                {{regionSubAggregate[ regionrows[$index].region_name].target|number}}
-                            </td>
+
 
                             <td class="aggregate-row"
                                     >
@@ -511,7 +491,7 @@
                             <span openlmis-message="label.total"></span>
                         </td>
 
-                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="regionSubAggregate['total_row'].target| number"></td>
+
 
                         <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="regionSubAggregate['total_row'].bcg_vaccinated| number"></td>
                         <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="regionSubAggregate['total_row'].mr_vaccinated| number"></td>
