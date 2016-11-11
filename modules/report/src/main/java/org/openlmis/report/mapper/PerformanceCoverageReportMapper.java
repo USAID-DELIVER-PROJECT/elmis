@@ -71,4 +71,10 @@ public interface PerformanceCoverageReportMapper {
                                                                    @Param("SortCriteria") Map<String, String[]> sortCriteria ,
                                                                    @Param("RowBounds")RowBounds rowBounds,
                                                                    @Param("userId") Long userId );
+    @SelectProvider(type = PerformanceCoverageReportQueryBuilder.class, method = "getDenominatorName")
+    @Options(timeout = 0, useCache = true, flushCache = true)
+    public String getDenominatorName(@Param("filterCriteria") PerformanceCoverageReportParam filterCriteria,
+                                                                                 @Param("SortCriteria") Map<String, String[]> sortCriteria ,
+                                                                                 @Param("RowBounds")RowBounds rowBounds,
+                                                                                 @Param("userId") Long userId );
 }

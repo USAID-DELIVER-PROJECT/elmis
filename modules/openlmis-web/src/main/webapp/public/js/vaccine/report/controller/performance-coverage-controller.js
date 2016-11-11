@@ -12,7 +12,7 @@
  *
  */
 
-function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, SettingsByKey, ReportProductsByProgram,  messageService ) {
+function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, SettingsByKey, ReportProductsByProgram,  messageService,DenominatorName ) {
 
     $scope.perioderror = "";
     $scope.grayCount = {};
@@ -32,7 +32,10 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
          // prevent first time loading
         if (utils.isEmpty($scope.filter.product) || $scope.filter.product === "0" || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
-
+        DenominatorName.get(  $scope.coverageReportParams,
+        function(data){
+            $scope.denominatorName=data.denominatorName;
+        });
         PerformanceCoverage.get(
 
             $scope.coverageReportParams,

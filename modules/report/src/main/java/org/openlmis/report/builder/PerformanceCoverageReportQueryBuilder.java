@@ -12,13 +12,9 @@
 
 package org.openlmis.report.builder;
 
-import org.openlmis.report.model.params.MailingLabelReportParam;
 import org.openlmis.report.model.params.PerformanceCoverageReportParam;
 
-import java.util.Date;
 import java.util.Map;
-
-import static org.apache.ibatis.jdbc.SqlBuilder.*;
 
 public class PerformanceCoverageReportQueryBuilder {
 
@@ -497,5 +493,14 @@ public class PerformanceCoverageReportQueryBuilder {
                 "   from  periodic_coverage";
         return sql;
     }
+        public static String getDenominatorName(Map map) {
+
+                PerformanceCoverageReportParam params = (PerformanceCoverageReportParam) map.get("filterCriteria");
+                String sql= " select * from  get_vaccine_coverage_denominator_name(fn_get_vaccine_program_id(), 0,  extract(year from '"+ params.getPeriodStart()+"'::date)::integer," + params.getProduct()+" ,"+params.getDoseId()+")" ;
+
+
+                return sql;
+
+        }
 
 }

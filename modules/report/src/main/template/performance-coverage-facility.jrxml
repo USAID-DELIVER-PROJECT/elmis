@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="40" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="2.5937424601000023"/>
-	<property name="ireport.x" value="257"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="766"/>
+	<property name="ireport.y" value="192"/>
 	<style name="coverage-report-style" mode="Opaque" forecolor="#000000" backcolor="#FF0000">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$F{coverage} >=90]]></conditionExpression>
@@ -37,6 +37,7 @@
 	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="DENOMINATOR_NAME" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select 'Arusha' region_name,
      'Arusha ww' district_name,
@@ -255,12 +256,6 @@ union all
 				<text><![CDATA[Period]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="443" y="1" width="70" height="38" uuid="3eea21e0-19e0-4cc1-aeb2-90cb46d9b568"/>
-				<box leftPadding="3" bottomPadding="5" rightPadding="0"/>
-				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
-				<text><![CDATA[Target Population]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="396" y="1" width="47" height="38" uuid="244492d1-38d1-447c-9fa5-99417fab3e09"/>
 				<box leftPadding="3" bottomPadding="5" rightPadding="0"/>
 				<textElement verticalAlignment="Bottom"/>
@@ -354,6 +349,11 @@ union all
 				<textElement verticalAlignment="Bottom"/>
 				<text><![CDATA[Facility Name]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="443" y="1" width="70" height="38" uuid="156d0a7a-4933-4d8b-8186-afa253df9e15"/>
+				<textElement verticalAlignment="Bottom"/>
+				<textFieldExpression><![CDATA[$P{DENOMINATOR_NAME}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>

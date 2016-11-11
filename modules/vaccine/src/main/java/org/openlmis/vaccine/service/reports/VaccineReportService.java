@@ -20,6 +20,7 @@ import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
 import org.openlmis.ivdform.domain.reports.*;
+import org.openlmis.report.mapper.PerformanceCoverageReportMapper;
 import org.openlmis.vaccine.domain.reports.VaccineCoverageReport;
 import org.openlmis.report.mapper.PerformanceByDropoutRateByDistrictMapper;
 import org.openlmis.vaccine.repository.reports.VaccineReportRepository;
@@ -62,6 +63,8 @@ public class VaccineReportService {
 
     @Autowired
     GeographicZoneService geographicZoneService;
+    @Autowired
+    private PerformanceCoverageReportMapper reportMapper;
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 

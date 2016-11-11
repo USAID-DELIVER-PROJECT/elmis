@@ -32,4 +32,5 @@ public class PerformanceCoverageReport implements ResultRow {
     List<PerformanceCoverageReportSummaryFields> facilityReportSummary;
     List<PerformanceCoverageReportSummaryFields> districtReportSummary;
     List<PerformanceCoverageReportSummaryFields> regionReportSummary;
+    String denominatorName;
 }
