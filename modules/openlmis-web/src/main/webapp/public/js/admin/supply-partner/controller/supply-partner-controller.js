@@ -10,67 +10,39 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function SupplyPartnerController($scope, navigateBackService, SupervisoryNodesPagedSearch, $location) {
+function SupplyPartnerController($scope, programs, supervisoryNodes) {
 
-  $scope.searchOptions = [
-    {value: "node", name: "option.value.supervisory.node"},
-    {value: "parent", name: "option.value.supervisory.node.parent"}
-  ];
+  $scope.supplyPartner = { programProducts:[] };
 
-  $scope.showResults = false;
-  $scope.currentPage = 1;
-  $scope.selectedSearchOption = navigateBackService.selectedSearchOption || $scope.searchOptions[0];
-
-  $scope.selectSearchType = function (searchOption) {
-    $scope.selectedSearchOption = searchOption;
+  $scope.addNewProgramProducts = function(){
+    $scope.supplyPartner.programProducts.push({});
   };
 
-  $scope.$on('$viewContentLoaded', function () {
-    $scope.query = navigateBackService.query;
-  });
+  $scope.supervisoryNodes = supervisoryNodes;
+  $scope.programs = programs;
 
-  $scope.edit = function (id) {
-    var data = {query: $scope.query, selectedSearchOption: $scope.selectedSearchOption};
-    navigateBackService.setData(data);
-    $location.path('edit/' + id);
-  };
-
-  $scope.search = function (page, lastQuery) {
-    if (!($scope.query || lastQuery)) return;
-    lastQuery ? getSupervisoryNodes(page, lastQuery) : getSupervisoryNodes(page, $scope.query);
-  };
-
-  function getSupervisoryNodes(page, query) {
-    query = query.trim();
-    $scope.searchedQuery = query;
-    var searchOption = $scope.selectedSearchOption.value === 'parent';
-
-    SupervisoryNodesPagedSearch.get({page: page, param: $scope.searchedQuery, parent: searchOption}, function (data) {
-      $scope.supervisoryNodeList = data.supervisoryNodes;
-      $scope.pagination = data.pagination;
-      $scope.totalItems = $scope.pagination.totalRecords;
-      $scope.currentPage = $scope.pagination.page;
-      $scope.showResults = true;
-    }, {});
-  }
-
-  $scope.$watch('currentPage', function () {
-    if ($scope.currentPage !== 0) {
-      $scope.search($scope.currentPage, $scope.searchedQuery);
-    }
-  });
-
-  $scope.clearSearch = function () {
-    $scope.query = "";
-    $scope.totalItems = 0;
-    $scope.supervisoryNodeList = [];
-    $scope.showResults = false;
-    angular.element("#searchSupervisoryNode").focus();
-  };
-
-  $scope.triggerSearch = function (event) {
-    if (event.keyCode === 13) {
-      $scope.search(1);
-    }
+  $scope.save = function(){
+    console.log($scope.supplyPartner);
   };
 }
+
+SupplyPartnerController.resolve = {
+  supervisoryNodes: function ($q, $timeout, SupervisoryNodes) {
+    var deferred = $q.defer();
+    $timeout(function () {
+      SupervisoryNodes.get({}, function (data) {
+        deferred.resolve(data.supervisoryNodes);
+      }, {});
+    }, 100);
+    return deferred.promise;
+  },
+  programs: function ($q, $timeout, Programs) {
+    var deferred = $q.defer();
+    $timeout(function () {
+      Programs.get({}, function (data) {
+        deferred.resolve(data.programs);
+      }, {});
+    }, 100);
+    return deferred.promise;
+  }
+};

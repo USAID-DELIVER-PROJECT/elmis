@@ -14,7 +14,8 @@ var supplyPartnerModule = angular.module('supplyPartnerModule', ['openlmis', 'ui
 
 supplyPartnerModule.config(['$routeProvider', function ($routeProvider) {
   $routeProvider.
-      when('/', {controller: SupplyPartnerController, templateUrl: 'partials/search.html', reloadOnSearch: false}).
+      when('/', {controller: SupplyPartnerController, resolve: SupplyPartnerController.resolve , templateUrl: 'partials/search.html', reloadOnSearch: false}).
+      when('/edit', {controller: SupplyPartnerController, resolve: SupplyPartnerController.resolve ,templateUrl: 'partials/create.html', reloadOnSearch: false}).
       otherwise({redirectTo: '/'});
 }]).run(function ($rootScope, AuthorizationService) {
 

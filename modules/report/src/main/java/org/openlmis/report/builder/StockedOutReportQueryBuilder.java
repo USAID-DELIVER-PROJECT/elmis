@@ -67,6 +67,8 @@ public class StockedOutReportQueryBuilder {
       WHERE(facilityIsFilteredBy("r.facilityId"));
     }
 
+    WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
+
     if (filter.getFacilityType() != 0) {
       WHERE(facilityTypeIsFilteredBy("f.typeid"));
     }
