@@ -31,10 +31,10 @@ public class StockImbalanceQueryBuilder {
             "CASE WHEN mos <= maxmonthsofstock and mos >= minmonthsofstock then 'Adequately stocked' WHEN status = 'SO' THEN  'Stocked Out' WHEN status ='US' then  'Below Minimum' WHEN status ='OS' then  'Over Stocked' END AS status");
     FROM("vw_stock_status join facilities f on f.id = facility_id join vw_districts d on d.district_id = f.geographicZoneId join facility_types ft on f.typeid=ft.id " +
             "left outer JOIN program_products on program_products.programid = vw_stock_status.programid and program_products.productid = vw_stock_status.productid\n" +
-            "left outer join facility_approved_products fp on fp.programproductid = program_products.id");
+            "left outer join facility_approved_products fp on fp.programproductid = program_products.id and f.typeId = fp.facilityTypeId");
     WHERE("status <> 'SP'");
     WHERE(rnrStatusFilteredBy("req_status", filter.getAcceptedRnrStatuses()));
-    WHERE("(amc != 0 or stockInHand != 0 )");
+    WHERE("(amc != 0 or stockInHand != 0 or reported_figures > 0)");
     WHERE(periodIsFilteredBy("periodId"));
     WHERE(programIsFilteredBy("vw_stock_status.programId"));
     WHERE(userHasPermissionOnFacilityBy("facility_id"));

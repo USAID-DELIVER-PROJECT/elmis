@@ -53,7 +53,7 @@ public class StockedOutReportQueryBuilder {
 
 
     WHERE("li.stockinhand = 0 AND li.skipped = false ");
-    WHERE("(li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0)");
+    WHERE("(li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or li.amc > 0)");
     WHERE(programIsFilteredBy("r.programId"));
     WHERE(periodIsFilteredBy("r.periodId"));
     WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
