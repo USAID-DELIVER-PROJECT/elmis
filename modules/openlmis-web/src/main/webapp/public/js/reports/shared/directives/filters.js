@@ -71,13 +71,13 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
 
             function isValid() {
                 var all_required_fields_set = true;
-
                 // check if all of the required parameters have been specified
                 if (!angular.isUndefined($scope.requiredFilters)) {
                     var requiredFilters = _.values($scope.requiredFilters);
                     for (var i = 0; i < requiredFilters.length; i++) {
                         var field = requiredFilters[i];
-                        if (isUndefined($scope.filter[field]) || _.isEmpty($scope.filter[field]) || $scope.filter[field] === 0 || $scope.filter[field] === -1) {
+
+                        if (isUndefined($scope.filter[field]) || _.isEmpty($scope.filter[field]) || $scope.filter[field] === '' || $scope.filter[field] === 0 || $scope.filter[field] === -1) {
                             all_required_fields_set = false;
                             break;
                         }
@@ -278,7 +278,10 @@ app.directive('scheduleFilter', ['ReportSchedules', 'ReportProgramSchedules', '$
                     ReportProgramSchedules.get({
                         program: scope.filter.program
                     }, function (data) {
-                        scope.schedules = scope.unshift(data.schedules, 'report.filter.select.group');
+                      if(data.schedules.length === 1){
+                        scope.filter.schedule = data.schedules[0].id;
+                      }
+                      scope.schedules = scope.unshift(data.schedules, 'report.filter.select.group');
                     });
                 };
 
@@ -301,12 +304,17 @@ app.directive('zoneFilter', ['TreeGeographicZoneList', 'TreeGeographicZoneListBy
                 TreeGeographicZoneListByProgram.get({
                     program: $scope.filter.program
                 }, function (data) {
-                    $scope.zones = data.zone;
-
+                    $scope.zones = [data.zone];
+                    if($scope.selectedZone === undefined || $scope.selectedZone === null){
+                      $scope.selectedZone = data.zone;
+                    }
                 });
             } else {
                 TreeGeographicZoneList.get(function (data) {
-                    $scope.zones = data.zone;
+                    $scope.zones = [data.zone];
+                    if($scope.selectedZone === undefined){
+                        $scope.selectedZone = data.zone;
+                    }
                 });
             }
         };
@@ -327,7 +335,21 @@ app.directive('zoneFilter', ['TreeGeographicZoneList', 'TreeGeographicZoneListBy
             restrict: 'E',
             require: '^filterContainer',
             link: function (scope, elm, attr) {
+                scope.$watch('selectedZone', function(){
+                  if(scope.filter !== undefined && scope.selectedZone !== undefined && scope.selectedZone !== null){
+                    scope.filter.zone = scope.selectedZone.id;
+                    scope.filter.zoneName = scope.selectedZone.name.replace(/%20/g, '+');
+                    scope.notifyFilterChanged('zone-filter-changed');
+                  }
+                });
+
                 scope.registerRequired('zone', attr);
+                if(scope.filter !== undefined && scope.filter !== null && scope.filter.zone !== undefined){
+                  scope.selectedZone = {
+                      id: scope.filter.zone,
+                    name: scope.filter.zoneName.replace(/\+/g, ' ')
+                  };
+                }
 
                 if (attr.districtOnly) {
                     scope.showDistrictOnly = true;
@@ -448,9 +470,6 @@ app.directive('productCategoryFilter', ['ProductCategoriesByProgram', '$routePar
             require: '^filterContainer',
             link: function (scope, elm, attr) {
                 scope.registerRequired('productCategory', attr);
-                if (!$routeParams.productCategory) {
-                    scope.productCategories = scope.unshift([], 'report.filter.all.product.categories');
-                }
 
                 var onProgramChanged = function () {
                     ProductCategoriesByProgram.get({
@@ -863,7 +882,7 @@ app.directive('clientSideSortPagination', ['$filter', 'ngTableParams',
                 scope.tableParams = new ngTableParams({
                     page: 1,
                     total: 0,
-                    count: 25
+                    count: 100
                 });
 
                 scope.paramsChanged = function (params) {
