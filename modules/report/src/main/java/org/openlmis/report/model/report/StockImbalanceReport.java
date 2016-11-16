@@ -23,17 +23,30 @@ import javax.persistence.Column;
 @NoArgsConstructor
 public class StockImbalanceReport implements ResultRow {
     private String facilityType;
+
     private String facility;
+
     private String districtName;
+
     private String zoneName;
+
+    private String regionName;
+
     private String product;
+
     @Column(name = "stockinhand")
     private Integer physicalCount;
+
     private Integer amc;
+
     @Column(name = "mos")
     private Float months;
-    @Column(name = "required")
+
+    private Long required;
+
     private Integer orderQuantity;
+
     private String status;
+
     private String supplyingFacility;
 }
