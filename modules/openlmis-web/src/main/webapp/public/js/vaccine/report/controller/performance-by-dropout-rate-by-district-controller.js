@@ -169,14 +169,14 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     $scope.calculateSubTotalPercentage = function (value) {
         var dropOut;
 
-            dropOut= utils.isEmpty(value)|| value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
+            dropOut= utils.isNullOrUndefined(value)||utils.isEmpty(value)|| value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
 
 
         return dropOut;
     };
     $scope.concatPercentage = function (value) {
 
-        return value + '%';
+        return utils.isNullOrUndefined(value)?'0.00%':value + '%';
     };
     $scope.showCategory = function (index) {
         var absIndex = ($scope.pageSize * ($scope.currentPage - 1)) + index;
@@ -375,18 +375,22 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     function aggregateSubTotal(reportList, type) {
         var subAggregateTotal = {};
         var len = reportList.length;
-        var totalObj={target:0,bcg_vaccinated:0,mr_vaccinated:0};
+        var totalObj={target:0,bcg_vaccinated:0,mr_vaccinated:0,cum_bcg_vaccinated:0,cum_mr_vaccinated:0};
         var i = 0;
         for (i; i < len; i++) {
             totalObj.target=totalObj.target+reportList[i].target;
             totalObj.bcg_vaccinated=totalObj.bcg_vaccinated+reportList[i].bcg_vaccinated;
             totalObj.mr_vaccinated=totalObj.mr_vaccinated+reportList[i].mr_vaccinated;
+            totalObj.cum_bcg_vaccinated=totalObj.cum_bcg_vaccinated+reportList[i].cum_bcg_vaccinated;
+            totalObj.cum_mr_vaccinated=totalObj.cum_mr_vaccinated+reportList[i].cum_mr_vaccinated;
             var keyName = getPopulationKey(reportList[i], type);
             if (keyName in subAggregateTotal) {
                 subAggregateTotal[keyName] = {
                     target: subAggregateTotal[keyName].target + reportList[i].target,
                     bcg_vaccinated: subAggregateTotal[keyName].bcg_vaccinated + reportList[i].bcg_vaccinated,
-                    mr_vaccinated: subAggregateTotal[keyName].mr_vaccinated + reportList[i].mr_vaccinated
+                    mr_vaccinated: subAggregateTotal[keyName].mr_vaccinated + reportList[i].mr_vaccinated,
+                    cum_bcg_vaccinated: subAggregateTotal[keyName].cum_bcg_vaccinated + reportList[i].cum_bcg_vaccinated,
+                    cum_mr_vaccinated: subAggregateTotal[keyName].cum_mr_vaccinated + reportList[i].cum_mr_vaccinated
                 };
 
             } else {
@@ -394,7 +398,9 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 var obj = {
                     target: reportList[i].target,
                     bcg_vaccinated: reportList[i].bcg_vaccinated,
-                    mr_vaccinated: reportList[i].mr_vaccinated
+                    mr_vaccinated: reportList[i].mr_vaccinated,
+                    cum_bcg_vaccinated: reportList[i].cum_bcg_vaccinated,
+                    cum_mr_vaccinated: reportList[i].cum_mr_vaccinated
                 };
                 subAggregateTotal[keyName] = obj;
             }

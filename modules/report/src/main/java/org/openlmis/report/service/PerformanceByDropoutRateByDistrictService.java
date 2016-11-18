@@ -164,6 +164,11 @@ public class PerformanceByDropoutRateByDistrictService {
             rateByDistrict.setBcg_vaccinated(rateByDistrict.getDtp1_vaccinated());
             rateByDistrict.setMr_vaccinated(rateByDistrict.getDtp3_vaccinated());
             rateByDistrict.setBcg_mr_dropout(rateByDistrict.getDtp1_dtp3_dropout());
+            /////////////////
+            rateByDistrict.setCum_bcg_mr_dropout(rateByDistrict.getCum_dtp1_dtp3_dropout());
+            rateByDistrict.setCum_bcg_vaccinated(rateByDistrict.getCum_dtp1_vaccinated());
+            rateByDistrict.setCum_mr_vaccinated(rateByDistrict.getCum_dtp3_vaccinated());
+            rateByDistrict.setCum_bcg_mr_dropout(rateByDistrict.getCum_dtp1_dtp3_dropout());
         }
         return performanceByDropoutRateByDistrictList;
     }
@@ -200,7 +205,7 @@ public class PerformanceByDropoutRateByDistrictService {
         Long total_bcg_mr_dropout = 0L;
         for (PerformanceByDropoutRateByDistrict performanceByDropoutRateByDistrict : performanceByDropoutRateByDistrictList) {
 
-            total_target = total_target + performanceByDropoutRateByDistrict.getTarget();
+            total_target =performanceByDropoutRateByDistrict.getTarget()!=null? total_target+performanceByDropoutRateByDistrict.getTarget():total_target;
             total_bcg_vaccinated = total_bcg_vaccinated + performanceByDropoutRateByDistrict.getBcg_vaccinated();
             total_dtp1_vaccinated = total_dtp1_vaccinated + performanceByDropoutRateByDistrict.getDtp1_vaccinated();
             total_mr_vaccinated = total_mr_vaccinated + performanceByDropoutRateByDistrict.getMr_vaccinated();
