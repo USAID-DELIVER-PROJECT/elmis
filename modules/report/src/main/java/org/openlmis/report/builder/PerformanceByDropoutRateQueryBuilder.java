@@ -23,66 +23,76 @@ public class PerformanceByDropoutRateQueryBuilder {
 
     public static final String FACILITY_CRITERIA = "filterCriteria";
 
+    public static String prepareSqlStatement(PerformanceByDropoutRateParam filter) {
+        String query =
+                "-- dropout temp table \n" +
+                        " with dropout as ( SELECT d.region_name, \n" +
+                        "                d.district_name, \n" +
+                        "                i.facility_name, \n" +
+                        "                i.facility_id," +
+                        "                i.geographic_zone_id district_id," +
+                        "                d.region_id, \n" +
+                        "                i.period_id ,                             \n" +
+                        "                i.period_start_date period_start_date,\n" +
+                        "                to_date(to_char(i.period_start_date, 'Mon YYYY'), 'Mon YYYY')    period_name, \n" +
+                        "                sum(i.bcg_1) bcg_vaccinated, \n" +
+                        "                sum(i.dtp_1) dtp1_vaccinated, \n" +
+                        "                sum(i.mr_1) mr_vaccinated,  \n" +
+                        "                sum(i.dtp_3) dtp3_vaccinated,  \n" +
+                        "                case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,  \n" +
+                        "                case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout  \n" +
+                        "                FROM vw_vaccine_dropout i  \n" +
+                        "                JOIN vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
+                        "                JOIN vaccine_reports vr ON i.report_id = vr.ID  \n" +
+                        "                JOIN program_products pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id  \n" +
+                        "                JOIN  product_categories pg  ON pp.productcategoryid = pg.ID \n" +
+                        writePredicates(filter) +
+                        "                group by 1,2,3,4,5,6,7,i.period_start_date \n" +
+                        "                )" +
+                        ",\n" +
+                        " -- period temp table \n" +
+                        "                period AS ( \n" +
+                        "                select pp.id period_id, pp.startdate period_start_date, pp.name period_name \n" +
+                        "                from processing_periods pp \n" +
+                        "                where  \n" +
+                        "                pp.startdate::date >= ' " + filter.getPeriod_start_date() + "'::date   \n" +
+                        "                and pp.enddate::date <= ' " + filter.getPeriod_end_date() + "'::date    \n" +
+                        "                and pp.numberofmonths = 1  \n" +
+                        "                order by  startdate \n" +
+                        "                        )  " +
+                        "               , " +
+                        "--cumulative temp \n" +
+                        "cumulative as ( select  i.facility_id,   \n" +
+                        "                p.period_id ,    " +
+                        "p.period_start_date period_start_date,                         \n" +
+                        "                 sum(i.bcg_vaccinated) cum_bcg_vaccinated, \n" +
+                        "                   sum(i.dtp1_vaccinated) cum_dtp1_vaccinated, \n" +
+                        "                   sum(i.mr_vaccinated) cum_mr_vaccinated,  \n" +
+                        "                  sum(i.dtp3_vaccinated) cum_dtp3_vaccinated,  \n" +
+                        "                 case when sum(i.bcg_vaccinated) > 0 then((sum(i.bcg_vaccinated) - sum(i.mr_vaccinated)) / sum(i.bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,  \n" +
+                        "                   case when sum(i.dtp1_vaccinated) > 0 then((sum(i.dtp1_vaccinated) - sum(i.dtp3_vaccinated)) / sum(i.dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout \n" +
+                        "                 from dropout i, period p where i.period_start_date<=p.period_start_date\n" +
+                        "                 group by 1,2,3\n" +
+                        "                 ),              \n" +
+                        "          mainQuery as(      select d.region_name, d.district_name,  d.facility_name, " +
+                        "     d.facility_id,d.district_id, d.region_id, d.period_id,d.period_start_date, d.period_name,d.bcg_vaccinated,d.dtp1_vaccinated,d.mr_vaccinated,d.dtp3_vaccinated," +
+                        "     d.bcg_mr_dropout,d.dtp1_dtp3_dropout," +
+                        "     c.cum_bcg_vaccinated, c.cum_mr_vaccinated,cum_dtp1_vaccinated, c.cum_dtp3_vaccinated,c.cum_bcg_mr_dropout, c.cum_dtp1_dtp3_dropout  " +
+                        "     from dropout    d   ,cumulative c    " +
+                        "     where d.facility_id= c.facility_id  and d.period_start_date=c.period_start_date\n" +
+                        "                \n" +
+                        "                 )";
+
+        return query;
+    }
+
 
     public String getByFacilityQuery(Map params) {
 
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get(FACILITY_CRITERIA);
         String query =
-                "-- dropout temp table \n" +
-                " with dropout as ( SELECT d.region_name, \n" +
-                "                d.district_name, \n" +
-                "                i.facility_name, \n" +
-                "                i.facility_id, \n" +
-                "                i.period_id ,                             \n" +
-                "                i.period_start_date period_start_date,\n" +
-                "                to_date(to_char(i.period_start_date, 'Mon YYYY'), 'Mon YYYY')    period_name, \n" +
-                "                sum(i.bcg_1) bcg_vaccinated, \n" +
-                "                sum(i.dtp_1) dtp1_vaccinated, \n" +
-                "                sum(i.mr_1) mr_vaccinated,  \n" +
-                "                sum(i.dtp_3) dtp3_vaccinated,  \n" +
-                "                case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,  \n" +
-                "                case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout  \n" +
-                "                FROM vw_vaccine_dropout i  \n" +
-                "                JOIN vw_districts d ON i.geographic_zone_id = d.district_id  \n" +
-                "                JOIN vaccine_reports vr ON i.report_id = vr.ID  \n" +
-                "                JOIN program_products pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id  \n" +
-                "                JOIN  product_categories pg  ON pp.productcategoryid = pg.ID \n" +
-                writePredicates(filter) +
-                "                group by 1,2,3,4,5,i.period_start_date \n" +
-                "                )" +
-                ",\n" +
-                " -- period temp table \n" +
-                "                period AS ( \n" +
-                "                select pp.id period_id, pp.startdate period_start_date, pp.name period_name \n" +
-                "                from processing_periods pp \n" +
-                "                where  \n" +
-                "                pp.startdate::date >= ' " + filter.getPeriod_start_date() + "'::date   \n" +
-                "                and pp.enddate::date <= ' " + filter.getPeriod_end_date() + "'::date    \n" +
-                "                and pp.numberofmonths = 1  \n" +
-                "                order by  startdate \n" +
-                "                        )  " +
-                "               , " +
-                "--cumulative temp \n" +
-                "cumulative as ( select  i.facility_id,   \n" +
-                "                p.period_id ,    " +
-                "p.period_start_date period_start_date,                         \n" +
-                "                 sum(i.bcg_vaccinated) cum_bcg_vaccinated, \n" +
-                "                   sum(i.dtp1_vaccinated) cum_dtp1_vaccinated, \n" +
-                "                   sum(i.mr_vaccinated) cum_mr_vaccinated,  \n" +
-                "                  sum(i.dtp3_vaccinated) cum_dtp3_vaccinated,  \n" +
-                "                 case when sum(i.bcg_vaccinated) > 0 then((sum(i.bcg_vaccinated) - sum(i.mr_vaccinated)) / sum(i.bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,  \n" +
-                "                   case when sum(i.dtp1_vaccinated) > 0 then((sum(i.dtp1_vaccinated) - sum(i.dtp3_vaccinated)) / sum(i.dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout \n" +
-                "                 from dropout i, period p where i.period_start_date<=p.period_start_date\n" +
-                "                 group by 1,2,3\n" +
-                "                 )              \n" +
-                "                select d.region_name, d.district_name,  d.facility_name, " +
-                "     d.facility_id, d.period_id,d.period_start_date, d.period_name,d.bcg_vaccinated,d.dtp1_vaccinated,d.mr_vaccinated,d.mr_vaccinated,d.dtp3_vaccinated," +
-                "     d.bcg_mr_dropout,d.dtp1_dtp3_dropout," +
-                "     c.cum_bcg_vaccinated, c.cum_mr_vaccinated,cum_dtp1_vaccinated, c.cum_dtp3_vaccinated,c.cum_bcg_mr_dropout, c.cum_dtp1_dtp3_dropout  " +
-                "     from dropout    d   ,cumulative c    " +
-                "     where d.facility_id= c.facility_id  and d.period_start_date=c.period_start_date\n" +
-                "                \n" +
-                "                 order by 1,2,4,d.period_start_date";
+                prepareSqlStatement(filter) +
+                        " select * from mainQuery m order by 1,2,3,4,5";
         return query;
     }
 
@@ -106,63 +116,24 @@ public class PerformanceByDropoutRateQueryBuilder {
     public String getByDistrictQuery(Map params) {
 
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get(FACILITY_CRITERIA);
-        String query = "  with  \n" +
-                "                -- dropout temp table \n" +
-                "                dropout as ( SELECT d.region_name,  \n" +
-                "                                d.district_name,  \n" +
-                "                                   d.district_id,  \n" +
-                "                                i.period_id ,                              \n" +
-                "                                   i.period_start_date period_start_date, \n" +
-                "                                to_date(to_char(i.period_start_date, 'Mon YYYY'), 'Mon YYYY')    period_name,  \n" +
-                "                                 sum(i.bcg_1) bcg_vaccinated,  \n" +
-                "                                   sum(i.dtp_1) dtp1_vaccinated,  \n" +
-                "                                   sum(i.mr_1) mr_vaccinated,   \n" +
-                "                                  sum(i.dtp_3) dtp3_vaccinated,   \n" +
-                "                                 case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,   \n" +
-                "                                   case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout   \n" +
-                "                                    FROM vw_vaccine_dropout i   \n" +
-                "                                 JOIN vw_districts d ON i.geographic_zone_id = d.district_id   \n" +
-                "                                  JOIN vaccine_reports vr ON i.report_id = vr.ID   \n" +
-                "                                 JOIN program_products pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id   \n" +
-                "                                     JOIN  product_categories pg  ON pp.productcategoryid = pg.ID  \n" +
-                writePredicatesForDistrict(filter) +
-                "                                group by 1,2,3,4,i.period_start_date  \n" +
-                "                                ) \n" +
-                "                , \n" +
-                "                 -- period temp table  \n" +
-                "                                         period AS (  \n" +
-                "                                            select pp.id period_id, pp.startdate period_start_date, pp.name period_name  \n" +
-                "                                               from processing_periods pp  \n" +
-                "                                                  where   \n" +
-                "                                                pp.startdate::date >= '" + filter.getPeriod_start_date() + "'::date    \n" +
-                "                                                and pp.enddate::date <= '" + filter.getPeriod_end_date() + "'::date     \n" +
-                "                                                and pp.numberofmonths = 1   \n" +
-                "                                                order by  startdate  \n" +
-                "                                        )   \n" +
-                "                               ,  \n" +
-                "                --cumulative temp \n" +
-                "                cumulative as ( select  i.district_id,    \n" +
-                "                                p.period_id ,     \n" +
-                "                p.period_start_date period_start_date,                          \n" +
-                "                                 sum(i.bcg_vaccinated) cum_bcg_vaccinated,  \n" +
-                "                                   sum(i.dtp1_vaccinated) cum_dtp1_vaccinated,  \n" +
-                "                                   sum(i.mr_vaccinated) cum_mr_vaccinated,   \n" +
-                "                                  sum(i.dtp3_vaccinated) cum_dtp3_vaccinated,   \n" +
-                "                                 case when sum(i.bcg_vaccinated) > 0 then((sum(i.bcg_vaccinated) - sum(i.mr_vaccinated)) / sum(i.bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,   \n" +
-                "                                   case when sum(i.dtp1_vaccinated) > 0 then((sum(i.dtp1_vaccinated) - sum(i.dtp3_vaccinated)) / sum(i.dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout  \n" +
-                "                                 from dropout i, period p where i.period_start_date<=p.period_start_date \n" +
-                "                                 group by 1,2,3 \n" +
-                "                                 )  \n" +
-                "\n" +
-                "                                 -----select statement main query             \n" +
-                "                                select d.region_name, d.district_name ,\n" +
-                "                     d.district_id, d.period_id,d.period_start_date, d.period_name,d.bcg_vaccinated,d.dtp1_vaccinated,d.mr_vaccinated,d.mr_vaccinated,d.dtp3_vaccinated, \n" +
-                "                     d.bcg_mr_dropout,d.dtp1_dtp3_dropout, \n" +
-                "                     c.cum_bcg_vaccinated, c.cum_mr_vaccinated,cum_dtp1_vaccinated, c.cum_dtp3_vaccinated,c.cum_bcg_mr_dropout, c.cum_dtp1_dtp3_dropout   \n" +
-                "                     from dropout    d   ,cumulative c     \n" +
-                "                     where d.district_id= c.district_id  and d.period_start_date=c.period_start_date \n" +
-                "                                 \n" +
-                "                                 order by 1,2,4,d.period_start_date";
+        String query = prepareSqlStatement(filter) +
+                "select d.region_name, d.district_name,  " +
+                "d.district_id, d.region_id, d.period_id,d.period_start_date," +
+                " d.period_name, sum(d.bcg_vaccinated) bcg_vaccinated," +
+                "sum(d.dtp1_vaccinated) dtp1_vaccinated," +
+                "sum(d.mr_vaccinated) mr_vaccinated," +
+                "sum(d.dtp3_vaccinated) dtp3_vaccinated," +
+                "case when sum(d.bcg_vaccinated) > 0 then((sum(d.bcg_vaccinated) - sum(d.mr_vaccinated)) / sum(d.bcg_vaccinated)::numeric) * 100 else 0 end bcg_mr_dropout,  \n" +
+                "case when sum(d.dtp1_vaccinated) > 0 then((sum(d.dtp1_vaccinated) - sum(d.dtp3_vaccinated)) / sum(d.dtp1_vaccinated)::numeric) * 100 else 0 end dtp1_dtp3_dropout, \n" +
+                "sum(d.cum_bcg_vaccinated) cum_bcg_vaccinated , " +
+                "sum(d.cum_mr_vaccinated) cum_mr_vaccinated," +
+                "sum(d.cum_dtp1_vaccinated) cum_dtp1_vaccinated," +
+                " sum(d.cum_dtp3_vaccinated) cum_dtp3_vaccinated," +
+                "                 case when sum(d.cum_bcg_vaccinated) > 0 then((sum(d.cum_bcg_mr_dropout) - sum(d.cum_mr_vaccinated)) / sum(d.cum_bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,  \n" +
+                "                   case when sum(d.cum_dtp1_vaccinated) > 0 then((sum(d.cum_dtp1_vaccinated) - sum(d.cum_dtp3_vaccinated)) / sum(d.cum_dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout \n" +
+                "from mainQuery d " +
+                "group by 1,2,3,4,5,6,7" +
+                " order by 1,2,3,4";
 
 
         return query;
@@ -171,66 +142,26 @@ public class PerformanceByDropoutRateQueryBuilder {
     public String getDistrict(Map params) {
 
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get(FACILITY_CRITERIA);
-        String query = "  with  \n" +
-                "                -- dropout temp table \n" +
-                "                dropout as ( SELECT d.region_name,  \n" +
-                "                                d.district_name,  \n" +
-                "                                   d.district_id,  \n" +
-                "                                i.period_id ,                              \n" +
-                "                                   i.period_start_date period_start_date, \n" +
-                "                                to_date(to_char(i.period_start_date, 'Mon YYYY'), 'Mon YYYY')    period_name,  \n" +
-                "                                 sum(i.bcg_1) bcg_vaccinated,  \n" +
-                "                                   sum(i.dtp_1) dtp1_vaccinated,  \n" +
-                "                                   sum(i.mr_1) mr_vaccinated,   \n" +
-                "                                  sum(i.dtp_3) dtp3_vaccinated,   \n" +
-                "                                 case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,   \n" +
-                "                                   case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout   \n" +
-                "                                    FROM vw_vaccine_dropout i   \n" +
-                "                                 JOIN vw_districts d ON i.geographic_zone_id = d.district_id   \n" +
-                "                                  JOIN vaccine_reports vr ON i.report_id = vr.ID   \n" +
-                "                                 JOIN program_products pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id   \n" +
-                "                                     JOIN  product_categories pg  ON pp.productcategoryid = pg.ID  \n" +
-                writePredicatesForDistrict(filter) +
-                "                                group by 1,2,3,4,i.period_start_date  \n" +
-                "                                ) \n" +
-                "                , \n" +
-                "                 -- period temp table  \n" +
-                "                                         period AS (  \n" +
-                "                                            select pp.id period_id, pp.startdate period_start_date, pp.name period_name  \n" +
-                "                                               from processing_periods pp  \n" +
-                "                                                  where   \n" +
-                "                                                pp.startdate::date >= '" + filter.getPeriod_start_date() + "'::date    \n" +
-                "                                                and pp.enddate::date <= '" + filter.getPeriod_end_date() + "'::date     \n" +
-                "                                                and pp.numberofmonths = 1   \n" +
-                "                                                order by  startdate  \n" +
-                "                                        )   \n" +
-                "                               ,  \n" +
-                "                --cumulative temp \n" +
-                "                cumulative as ( select  i.district_id,    \n" +
-                "                                p.period_id ,     \n" +
-                "                p.period_start_date period_start_date,                          \n" +
-                "                                 sum(i.bcg_vaccinated) cum_bcg_vaccinated,  \n" +
-                "                                   sum(i.dtp1_vaccinated) cum_dtp1_vaccinated,  \n" +
-                "                                   sum(i.mr_vaccinated) cum_mr_vaccinated,   \n" +
-                "                                  sum(i.dtp3_vaccinated) cum_dtp3_vaccinated,   \n" +
-                "                                 case when sum(i.bcg_vaccinated) > 0 then((sum(i.bcg_vaccinated) - sum(i.mr_vaccinated)) / sum(i.bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,   \n" +
-                "                                   case when sum(i.dtp1_vaccinated) > 0 then((sum(i.dtp1_vaccinated) - sum(i.dtp3_vaccinated)) / sum(i.dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout  \n" +
-                "                                 from dropout i, period p where i.period_start_date<=p.period_start_date \n" +
-                "                                 group by 1,2,3 \n" +
-                "                                 )  \n" +
-                "\n" +
-                "                                 -----select statement main query             \n" +
-                "                                select d.region_name, d.district_name ,\n" +
-                "                     d.district_id, d.period_id,d.period_start_date, d.period_name,d.bcg_vaccinated,d.dtp1_vaccinated,d.mr_vaccinated,d.mr_vaccinated,d.dtp3_vaccinated, \n" +
-                "                     d.bcg_mr_dropout,d.dtp1_dtp3_dropout, \n" +
-                "                     c.cum_bcg_vaccinated, c.cum_mr_vaccinated,cum_dtp1_vaccinated, c.cum_dtp3_vaccinated,c.cum_bcg_mr_dropout, c.cum_dtp1_dtp3_dropout   \n" +
-                "                     from dropout    d   ,cumulative c     \n" +
-                "                     where d.district_id= c.district_id  and d.period_start_date=c.period_start_date \n" +
-                "                                 \n" +
-                "                                 order by 1,2,4,d.period_start_date";
+            String query = prepareSqlStatement(filter) +
+                    "select d.region_name, d.district_name,  " +
+                    "d.district_id, d.region_id, d.period_id,d.period_start_date," +
+                    " d.period_name, sum(d.bcg_vaccinated) bcg_vaccinated," +
+                    "sum(d.dtp1_vaccinated) dtp1_vaccinated," +
+                    "sum(d.mr_vaccinated) mr_vaccinated," +
+                    "sum(d.dtp3_vaccinated) dtp3_vaccinated," +
+                    "case when sum(d.bcg_vaccinated) > 0 then((sum(d.bcg_vaccinated) - sum(d.mr_vaccinated)) / sum(d.bcg_vaccinated)::numeric) * 100 else 0 end bcg_mr_dropout,  \n" +
+                    "case when sum(d.dtp1_vaccinated) > 0 then((sum(d.dtp1_vaccinated) - sum(d.dtp3_vaccinated)) / sum(d.dtp1_vaccinated)::numeric) * 100 else 0 end dtp1_dtp3_dropout, \n" +
+                    "sum(d.cum_bcg_vaccinated) cum_bcg_vaccinated , " +
+                    "sum(d.cum_mr_vaccinated) cum_mr_vaccinated," +
+                    "sum(d.cum_dtp1_vaccinated) cum_dtp1_vaccinated," +
+                    " sum(d.cum_dtp3_vaccinated) cum_dtp3_vaccinated," +
+                    "                 case when sum(d.cum_bcg_vaccinated) > 0 then((sum(d.cum_bcg_mr_dropout) - sum(d.cum_mr_vaccinated)) / sum(d.cum_bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,  \n" +
+                    "                   case when sum(d.cum_dtp1_vaccinated) > 0 then((sum(d.cum_dtp1_vaccinated) - sum(d.cum_dtp3_vaccinated)) / sum(d.cum_dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout \n" +
+                    "from mainQuery d " +
+                    "group by 1,2,3,4,5,6,7" +
+                    " order by 1,2,3,4";
 
-
-        return query;
+            return query;
 
 
     }
@@ -254,66 +185,27 @@ public class PerformanceByDropoutRateQueryBuilder {
 
     public String getByRegionQuery(Map params) {
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get(FACILITY_CRITERIA);
-        String query = "   with  \n" +
-                "                -- dropout temp table \n" +
-                "                dropout as ( SELECT d.region_name,  \n" +
-                "                               \n" +
+            String query = prepareSqlStatement(filter) +
+                    "select d.region_name,  " +
+                    " d.region_id, d.period_id,d.period_start_date," +
+                    " d.period_name, sum(d.bcg_vaccinated) bcg_vaccinated," +
+                    "sum(d.dtp1_vaccinated) dtp1_vaccinated," +
+                    "sum(d.mr_vaccinated) mr_vaccinated," +
+                    "sum(d.dtp3_vaccinated) dtp3_vaccinated," +
+                    "case when sum(d.bcg_vaccinated) > 0 then((sum(d.bcg_vaccinated) - sum(d.mr_vaccinated)) / sum(d.bcg_vaccinated)::numeric) * 100 else 0 end bcg_mr_dropout,  \n" +
+                    "case when sum(d.dtp1_vaccinated) > 0 then((sum(d.dtp1_vaccinated) - sum(d.dtp3_vaccinated)) / sum(d.dtp1_vaccinated)::numeric) * 100 else 0 end dtp1_dtp3_dropout, \n" +
+                    "sum(d.cum_bcg_vaccinated) cum_bcg_vaccinated , " +
+                    "sum(d.cum_mr_vaccinated) cum_mr_vaccinated," +
+                    "sum(d.cum_dtp1_vaccinated) cum_dtp1_vaccinated," +
+                    " sum(d.cum_dtp3_vaccinated) cum_dtp3_vaccinated," +
+                    "                 case when sum(d.cum_bcg_vaccinated) > 0 then((sum(d.cum_bcg_mr_dropout) - sum(d.cum_mr_vaccinated)) / sum(d.cum_bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,  \n" +
+                    "                   case when sum(d.cum_dtp1_vaccinated) > 0 then((sum(d.cum_dtp1_vaccinated) - sum(d.cum_dtp3_vaccinated)) / sum(d.cum_dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout \n" +
+                    "from mainQuery d " +
+                    "group by 1,2,3,4,5" +
+                    " order by 1,2,3,4";
 
-                "                                   d.region_id,  \n" +
-                "                                i.period_id ,                              \n" +
-                "                                   i.period_start_date period_start_date, \n" +
-                "                                to_date(to_char(i.period_start_date, 'Mon YYYY'), 'Mon YYYY')    period_name,  \n" +
-                "                                 sum(i.bcg_1) bcg_vaccinated,  \n" +
-                "                                   sum(i.dtp_1) dtp1_vaccinated,  \n" +
-                "                                   sum(i.mr_1) mr_vaccinated,   \n" +
-                "                                  sum(i.dtp_3) dtp3_vaccinated,   \n" +
-                "                                 case when sum(i.bcg_1) > 0 then((sum(i.bcg_1) - sum(i.mr_1)) / sum(i.bcg_1)::numeric) * 100 else 0 end bcg_mr_dropout,   \n" +
-                "                                   case when sum(i.dtp_1) > 0 then((sum(i.dtp_1) - sum(i.dtp_3)) / sum(i.dtp_1)::numeric) * 100 else 0 end dtp1_dtp3_dropout   \n" +
-                "                                    FROM vw_vaccine_dropout i   \n" +
-                "                                 JOIN vw_districts d ON i.geographic_zone_id = d.district_id   \n" +
-                "                                  JOIN vaccine_reports vr ON i.report_id = vr.ID   \n" +
-                "                                 JOIN program_products pp  ON pp.programid = vr.programid   AND pp.productid = i.product_id   \n" +
-                "                                     JOIN  product_categories pg  ON pp.productcategoryid = pg.ID  \n" +
-                writePredicatesForRegion(filter) +
-                "                                group by 1,2,3,i.period_start_date  \n" +
-                "                                ) \n" +
-                "                , \n" +
-                "                 -- period temp table  \n" +
-                "                                         period AS (  \n" +
-                "                                            select pp.id period_id, pp.startdate period_start_date, pp.name period_name  \n" +
-                "                                               from processing_periods pp  \n" +
-                "                                                  where   \n" +
-                "                                                pp.startdate::date >= '" + filter.getPeriod_start_date() + "'::date    \n" +
-                "                                                and pp.enddate::date <= '" + filter.getPeriod_end_date() + "'::date     \n" +
-                "                                                and pp.numberofmonths = 1   \n" +
-                "                                                order by  startdate  \n" +
-                "                                        )   \n" +
-                "                               ,  \n" +
-                "                --cumulative temp \n" +
-                "                cumulative as ( select  i.region_id,    \n" +
-                "                                p.period_id ,     \n" +
-                "                p.period_start_date period_start_date,                          \n" +
-                "                                 sum(i.bcg_vaccinated) cum_bcg_vaccinated,  \n" +
-                "                                   sum(i.dtp1_vaccinated) cum_dtp1_vaccinated,  \n" +
-                "                                   sum(i.mr_vaccinated) cum_mr_vaccinated,   \n" +
-                "                                  sum(i.dtp3_vaccinated) cum_dtp3_vaccinated,   \n" +
-                "                                 case when sum(i.bcg_vaccinated) > 0 then((sum(i.bcg_vaccinated) - sum(i.mr_vaccinated)) / sum(i.bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,   \n" +
-                "                                   case when sum(i.dtp1_vaccinated) > 0 then((sum(i.dtp1_vaccinated) - sum(i.dtp3_vaccinated)) / sum(i.dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout  \n" +
-                "                                 from dropout i, period p where i.period_start_date<=p.period_start_date \n" +
-                "                                 group by 1,2,3 \n" +
-                "                                 )  \n" +
-                "\n" +
-                "                                 -----select statement main query             \n" +
-                "                                select d.region_name, d.region_id ,\n" +
-                "                      d.period_id,d.period_start_date, d.period_name,d.bcg_vaccinated,d.dtp1_vaccinated,d.mr_vaccinated,d.mr_vaccinated,d.dtp3_vaccinated, \n" +
-                "                     d.bcg_mr_dropout,d.dtp1_dtp3_dropout, \n" +
-                "                     c.cum_bcg_vaccinated, c.cum_mr_vaccinated,cum_dtp1_vaccinated, c.cum_dtp3_vaccinated,c.cum_bcg_mr_dropout, c.cum_dtp1_dtp3_dropout   \n" +
-                "                     from dropout    d   ,cumulative c     \n" +
-                "                     where d.region_id= c.region_id  and d.period_start_date=c.period_start_date \n" +
-                "                                 \n" +
-                "                                 order by 1,2,4,d.period_start_date;";
 
-        return query;
+            return query;
     }
 
     private static String writePredicatesForRegion(PerformanceByDropoutRateParam param) {
