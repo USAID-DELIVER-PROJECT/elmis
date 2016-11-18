@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-02T19:15:53 -->
+<!-- 2016-11-14T13:27:57 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_imbalance_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.1289478601075549"/>
 	<property name="ireport.x" value="0"/>
@@ -363,13 +363,16 @@
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="55" y="0" width="83" height="29" uuid="52324282-0a32-4fd9-bf1e-f0552c289992">
+					<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="true"/>
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{facility}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="138" y="0" width="115" height="29" uuid="98a51a21-d37b-4449-9da5-3a7df92caf50"/>
+				<reportElement stretchType="RelativeToTallestObject" x="138" y="0" width="115" height="29" uuid="98a51a21-d37b-4449-9da5-3a7df92caf50">
+					<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="true"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
 			</textField>

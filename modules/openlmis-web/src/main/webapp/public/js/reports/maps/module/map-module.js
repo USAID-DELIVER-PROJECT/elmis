@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module('mapModule', ['openlmis', 'angularCombine', 'ngTable', 'ui.bootstrap.modal', 'ui.bootstrap.dialog', 'leaflet-directive', 'ui.bootstrap.dropdownToggle'])
+angular.module('mapModule', ['openlmis', 'angularCombine', 'ngTable', 'ui.bootstrap.modal', 'ui.bootstrap.dialog', 'leaflet-directive', 'ui.bootstrap.dropdownToggle','tree.dropdown'])
     .config(['$routeProvider',
         function($routeProvider) {
             $routeProvider.
