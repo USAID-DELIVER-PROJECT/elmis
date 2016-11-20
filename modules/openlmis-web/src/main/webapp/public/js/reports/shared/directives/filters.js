@@ -70,10 +70,17 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
             };
 
             function isValid() {
-                var all_required_fields_set = true;
+                if($scope.noRequiredParameter){
+                    return true;
+                }
+                var all_required_fields_set = false;
                 // check if all of the required parameters have been specified
                 if (!angular.isUndefined($scope.requiredFilters)) {
+                    all_required_fields_set = true;
                     var requiredFilters = _.values($scope.requiredFilters);
+                    if(requiredFilters.length === 0){
+                      all_required_fields_set = false;
+                    }
                     for (var i = 0; i < requiredFilters.length; i++) {
                         var field = requiredFilters[i];
 
@@ -83,7 +90,6 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
                         }
                     }
                 }
-
                 return all_required_fields_set;
             }
 
@@ -101,7 +107,8 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
             $scope.$on('filter-changed', $scope.filterChanged);
             $scope.filterChanged();
         },
-        link: function (scope) {
+        link: function (scope, elm, attr) {
+            scope.noRequiredParameter = ( "true" === (attr.noRequiredParam) );
             angular.extend(scope, {
                 showMoreFilters: false,
 
@@ -115,7 +122,6 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
                     }
                     return array;
                 },
-
                 toggleMoreFilters: function () {
                     scope.showMoreFilters = !scope.showMoreFilters;
                 }
@@ -280,6 +286,7 @@ app.directive('scheduleFilter', ['ReportSchedules', 'ReportProgramSchedules', '$
                     }, function (data) {
                       if(data.schedules.length === 1){
                         scope.filter.schedule = data.schedules[0].id;
+                        scope.notifyFilterChanged('schedule-changed');
                       }
                       scope.schedules = scope.unshift(data.schedules, 'report.filter.select.group');
                     });
@@ -891,7 +898,12 @@ app.directive('clientSideSortPagination', ['$filter', 'ngTableParams',
                     if (scope.data === undefined) {
                         scope.datarows = [];
                         params.total = 0;
+                        params.page = 1;
                     } else {
+                        if(((params.page - 1) * params.count) > scope.data.length){
+                            // reset the page number to 1.
+                            params.page = 1;
+                        }
                         var data = scope.data;
                         var orderedData = params.filter ? $filter('filter')(data, params.filter) : data;
                         orderedData = params.sorting ? $filter('orderBy')(orderedData, params.orderBy()) : data;

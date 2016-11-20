@@ -49,7 +49,7 @@ public class AdjustmentSummaryQueryBuilder {
       WHERE(geoZoneIsFilteredBy("d"));
     }
     if (filter.getFacility() != 0) {
-      WHERE(facilityIsFilteredBy("f.id"));
+      WHERE(facilityIsFilteredBy("vw_requisition_adjustment.facility_id"));
     }
 
     if (filter.getProductCategory() != 0L ) {
@@ -62,6 +62,9 @@ public class AdjustmentSummaryQueryBuilder {
 
     if (filter.getAdjustmentType() != null && !"0".equals(filter.getAdjustmentType()) && !filter.getAdjustmentType().isEmpty()) {
       WHERE("adjustment_type = #{filterCriteria.adjustmentType}");
+    }
+    if(filter.getFacilityOperator() != 0L){
+      WHERE("f.operatedById = " + filter.getFacilityOperator().toString());
     }
     ORDER_BY(QueryHelpers.getSortOrder(params, " product, adjustment_type, facility_type_name,facility_name, supplying_facility_name, product_category_name "));
       String query= SQL();
