@@ -23,7 +23,7 @@ public class UserSummaryQueryBuilder {
      UserSummaryParams filter = (UserSummaryParams)params.get("filterCriteria");
      Map sortCriteria = (Map)params.get("SortCriteria");
      BEGIN();
-     SELECT("firstname,lastname,email,cellphone,officephone,supervisorynodename,programname,rolename");
+     SELECT("distinct firstname,lastname,email,cellphone,officephone,supervisorynodename,programname,rolename");
      FROM("vw_user_role_assignments");
      writepredicates(filter);
      ORDER_BY(QueryHelpers.getSortOrder(sortCriteria, UserSummaryReport.class,"firstname asc,lastname asc,email asc"));

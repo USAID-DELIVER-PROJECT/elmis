@@ -13,17 +13,14 @@
 package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.RowBounds;
-
 import org.openlmis.core.domain.Role;
 import org.openlmis.core.domain.SupervisoryNode;
-
 import org.openlmis.report.mapper.UserSummaryReportMapper;
 import org.openlmis.report.model.ResultRow;
-
 import org.openlmis.report.model.dto.Program;
 import org.openlmis.report.model.params.UserSummaryParams;
+import org.openlmis.report.util.ParameterAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -51,20 +48,7 @@ public class UserSummaryReportProvider extends ReportDataProvider {
     }
 
     public UserSummaryParams getReportFilterData(Map<String, String[]> filterCriteria) {
-
-        if (filterCriteria != null) {
-            userSummaryParam = new UserSummaryParams();
-            Long userId = StringUtils.isBlank(filterCriteria.get("roleId")[0]) ? 0 : Long.parseLong(filterCriteria.get("roleId")[0]);
-            if (filterCriteria != null) {
-                userSummaryParam = new UserSummaryParams();
-                userSummaryParam.setRoleId(StringUtils.isBlank(filterCriteria.get("roleId")[0]) ? 0 : Long.parseLong(filterCriteria.get("roleId")[0])); //defaults to 0
-                userSummaryParam.setProgramId(StringUtils.isBlank(filterCriteria.get("programId")[0]) ? 0 : Long.parseLong(filterCriteria.get("programId")[0]));
-                userSummaryParam.setSupervisoryNodeId(StringUtils.isBlank(filterCriteria.get("supervisoryNodeId")[0]) ? 0 : Long.parseLong(filterCriteria.get("supervisoryNodeId")[0]));
-            }
-
-        }
-
-        return userSummaryParam;
+        return ParameterAdaptor.parse(filterCriteria, UserSummaryParams.class);
     }
 
     @Override

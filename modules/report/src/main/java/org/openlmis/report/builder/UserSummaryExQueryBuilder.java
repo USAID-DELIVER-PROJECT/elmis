@@ -23,10 +23,10 @@ public class UserSummaryExQueryBuilder {
     public static String getQuery(Map params) {
         UserSummaryParams filter = (UserSummaryParams) params.get("filterCriteria");
         BEGIN();
-        SELECT("rolename,roleid, count(*) totalRoles");
+        SELECT("rolename, roleid, count(distinct email) totalRoles");
         FROM("vw_user_role_assignments");
         writepredicates(filter);
-        GROUP_BY("rolename,roleid");
+        GROUP_BY("rolename, roleid");
         ORDER_BY("rolename");
         String sql = SQL();
         return sql;
@@ -36,7 +36,7 @@ public class UserSummaryExQueryBuilder {
     public static void writepredicates(UserSummaryParams filter) {
         if (filter != null) {
             if (filter.getProgramId() != 0 && filter.getProgramId() != -1) {
-                WHERE("(programid= #{filterCriteria.programId} or programid is null)");
+                WHERE("(programid = #{filterCriteria.programId} or programid is null)");
 
             }
             if (filter.getRoleId() != 0 && filter.getRoleId() != -1) {
