@@ -55,6 +55,10 @@ var VaccineReport = function (report) {
     return this.coverageLineItems.checkIfRequiredFieldsAreValid(['regularMale', 'regularFemale','outreachMale','outreachFemale']);
   };
 
+  VaccineReport.prototype.isReportingDateValid = function(){
+    return !(this.submissionDate === undefined || this.submissionDate === null);
+  };
+
   VaccineReport.prototype.isLogisticsTabValid = function () {
     if(!this.logisticsLineItems.checkIfRequiredFieldsAreValid(['openingBalance', 'quantityReceived', 'quantityIssued','closingBalance'])){
       return false;
@@ -82,6 +86,7 @@ var VaccineReport = function (report) {
   VaccineReport.prototype.isValid = function () {
     this.validate = true;
     this.validations = {
+        submissionDate: this.isReportingDateValid(),
         logisticsTab: this.isLogisticsTabValid(),
         diseaseTab: this.isDiseaseTabValid(),
         coverageTab: this.isCoverageTabValid(),

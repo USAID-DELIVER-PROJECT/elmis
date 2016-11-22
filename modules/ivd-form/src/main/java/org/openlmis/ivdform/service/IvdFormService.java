@@ -225,7 +225,10 @@ public class IvdFormService {
 
     if (lastRequest != null) {
       lastRequest.setPeriod(periodService.getById(lastRequest.getPeriodId()));
-      startDate = lastRequest.getPeriod().getStartDate();
+      Date lastReportStartDate = lastRequest.getPeriod().getStartDate();
+      if(startDate.before(lastReportStartDate)){
+        startDate = lastReportStartDate;
+      }
     }
 
     List<ReportStatusDTO> results = new ArrayList<>();
