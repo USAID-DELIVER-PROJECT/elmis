@@ -38,7 +38,7 @@ public interface UserSummaryReportMapper {
                                              @Param("SortCriteria") Map<String, String[]> sortCriteria ,
                                              @Param("RowBounds")RowBounds rowBounds);
 
-    @Select("select rolename, count(*) count from vw_user_role_assignments group by rolename")
+    @Select("select rolename, count(distinct email) count from vw_user_role_assignments group by rolename")
     public List<HashMap> getUserRoleAssignments();
 
     @Select("select * from programs where id = #{programId}" )

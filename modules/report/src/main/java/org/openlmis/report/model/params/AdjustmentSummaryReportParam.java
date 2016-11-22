@@ -30,6 +30,8 @@ public class AdjustmentSummaryReportParam
 
   private Long facilityType;
 
+  private Long facilityOperator;
+
   private Long zone;
 
   private Long productCategory;

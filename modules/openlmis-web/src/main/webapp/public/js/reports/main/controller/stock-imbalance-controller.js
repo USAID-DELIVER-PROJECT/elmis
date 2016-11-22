@@ -43,7 +43,11 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
         status += "," + key;
       }
     });
-    $scope.filter.status = status;
+    if($scope.filter === undefined){
+      $scope.filter = {status: status};
+    }else{
+      $scope.filter.status = status;
+    }
     $scope.applyUrl();
     $scope.OnFilterChanged();
   };
@@ -52,6 +56,12 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
     $scope.data = $scope.datarows = [];
     $scope.filter.max = 10000;
     $scope.filter.page = 1;
+    if($scope.filter.status === undefined){
+      //By Default, show stocked out
+      $scope.statuses = { 'SO' : true };
+      $scope.filter.status = 'SO';
+      $scope.applyUrl();
+    }
 
     StockImbalanceReport.get($scope.getSanitizedParameter(), function (data) {
       $scope.data = data.pages.rows;
