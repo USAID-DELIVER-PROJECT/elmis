@@ -77,8 +77,12 @@ public class PerformanceCoverageDataProvider extends ReportDataProvider {
 
     @Override
     public String getFilterSummary(Map<String, String[]> params) {
-        return filterHelper.getProgramPeriodGeoZone(params);
+        return  filterHelper.getReportCombinedFilterString(
+                filterHelper.getGeoZoneFilterString(params),
+                filterHelper.getSelectedProductSummary(params.get("product")[0]),
+                filterHelper.getSelectedPeriodRange(params));
     }
+
     public String getDenominatorName(String periodStart, String periodEnd, Long districtId, Long product, Long doseId, Long userId){
         PerformanceCoverageReportParam params= new PerformanceCoverageReportParam();
         params.setPeriodStart(periodStart);

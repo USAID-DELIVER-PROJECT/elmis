@@ -43,12 +43,12 @@ public class SelectedFilterHelper {
   public static final String PRODUCT = "product";
   public static final String ADJUSTMENET_TYPE="adjustmentType";
   public static final String PROGRAM_AREA="";
-  public static final String DATE_FROM="";
-  public static final String DATE_TO="";
-  public static final String DISTRICT="";
+  public static final String PERIODSTART="periodStart";
+  public static final String PERIODEND="periodEnd";
+  public static final String DISTRICT="district";
 
   public static final String STARTDATE = "startDate";
-  public static final String ENDDATE = "endDate";
+  public static final String ENDDATE = "periodEnd";
 
 
   @Autowired
@@ -149,15 +149,15 @@ public class SelectedFilterHelper {
         .toString();
   }
 
-  private String getSelectedProductSummary(String product) {
+  public String getSelectedProductSummary(String product) {
     if (product == null || product.isEmpty() || "0".equals(product)) {
-      return "Product: All Products";
+      return "\nProduct: All Products";
     } else if ("-1".equals(product)) {
-      return "Product: Indicator / Tracer Commodities";
+      return "\nProduct: Indicator / Tracer Commodities";
     } else {
       Product productObject = productService.getById(Long.parseLong(product));
       if (productObject != null) {
-        return "Product: " + productObject.getFullName();
+        return "\nProduct: " + productObject.getPrimaryName();
       }
     }
     return "";
@@ -185,7 +185,27 @@ public class SelectedFilterHelper {
     return "";
   }
 
+  public String getSelectedPeriodRange(Map<String, String[]> params){
+    String startDate = StringHelper.getValue(params, PERIODSTART);
+    String endDate = StringHelper.getValue(params, PERIODEND);
 
+    if (!(startDate == null || startDate.isEmpty() || "0".equals(startDate))
+            && !(endDate == null || endDate.isEmpty() || "0".equals(endDate)))
+    {
+      return "\nPeriod: "+startDate+" - "+endDate;
+    }
+    return "";
+  }
+
+  public String getGeoZoneFilterString(Map<String, String[]> params){
+    String district = StringHelper.getValue(params, DISTRICT);
+
+    if(district != null) {
+      GeographicZone zoneObject = geoZoneRepsotory.getById(Long.parseLong(district));
+      return (zoneObject == null ? "\nGeographic Zone: All Region/Districts" : String.format("%nGeographic Zone: %s", zoneObject.getName()));
+    }
+    return "";
+  }
 
   public String getReportCombinedFilterString(String... filterStrings){
 
