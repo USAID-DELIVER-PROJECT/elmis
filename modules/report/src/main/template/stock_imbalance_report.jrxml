@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-28T11:09:40 -->
+<!-- 2016-11-28T13:11:21 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_imbalance_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.1289478601075549"/>
 	<property name="ireport.x" value="0"/>
@@ -327,7 +327,7 @@
 				<textElement verticalAlignment="Middle">
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[str($F{status})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="458" y="0" width="65" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="c0437e6c-491e-46ed-8439-313cc762e462"/>
