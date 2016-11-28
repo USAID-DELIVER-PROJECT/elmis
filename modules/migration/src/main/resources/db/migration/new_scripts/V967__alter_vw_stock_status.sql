@@ -8,7 +8,7 @@ CREATE OR REPLACE VIEW vw_stock_status AS
     facilities.name                                                                        AS facility,
     requisitions.status                                                                    AS req_status,
     TRIM(TRIM(TRIM(products.primaryname || ' ' || COALESCE(product_forms.code, '')) || ' ' ||
-              COALESCE(products.strength)) || ' ' || CASE WHEN COALESCE(dosage_units.code) = '-' THEN '' ELSE COALESCE(dosage_units.code) END) AS product,
+              COALESCE(products.strength,'')) || ' ' || CASE WHEN COALESCE(dosage_units.code) = '-' THEN '' ELSE COALESCE(dosage_units.code) END) AS product,
     requisition_line_items.stockinhand,
     requisition_line_items.stockinhand + requisition_line_items.beginningbalance +
     requisition_line_items.quantitydispensed + requisition_line_items.quantityreceived +

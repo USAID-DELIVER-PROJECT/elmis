@@ -91,16 +91,24 @@
   color: #8d8d8d;
 }
 .tree-dropdown .level-3 {
-  padding-left: 60px
+  font-size: smaller;
+  padding-left: 60px;
+  color: #8d8d8d;
 }
 .tree-dropdown .level-4 {
-  padding-left: 75px
+  font-size: smaller;
+  color: #8d8d8d;
+  padding-left: 75px;
 }
 .tree-dropdown .level-5 {
-  padding-left: 90px
+  padding-left: 90px;
+  font-size: smaller;
+  color: #8d8d8d;
 }
 .tree-dropdown .level-6 {
-  padding-left: 105px
+  padding-left: 105px;
+  font-size: smaller;
+  color: #8d8d8d;
 }
 .tree-dropdown .level-7 {
   padding-left: 120px
