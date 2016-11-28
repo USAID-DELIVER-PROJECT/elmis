@@ -12,17 +12,21 @@
 
 package org.openlmis.report.model.report;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.report.model.ResultRow;
-
-import javax.persistence.Column;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class StockImbalanceReport implements ResultRow {
+
     private String facilityType;
+
+    private String facilityCode;
 
     private String facility;
 
@@ -34,12 +38,12 @@ public class StockImbalanceReport implements ResultRow {
 
     private String product;
 
-    @Column(name = "stockinhand")
+    private String productCode;
+
     private Integer physicalCount;
 
     private Integer amc;
 
-    @Column(name = "mos")
     private Float months;
 
     private Long required;
