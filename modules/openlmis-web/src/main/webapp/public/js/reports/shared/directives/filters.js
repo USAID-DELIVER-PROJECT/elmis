@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-app.directive('filterContainer', ['$routeParams', '$location', 'messageService', function ($routeParams, $location, messageService) {
+app.directive('filterContainer', ['$routeParams', '$location', '$timeout', 'messageService', function ($routeParams, $location, $timeout, messageService) {
     return {
         restrict: 'EA',
         scope: true,
@@ -83,7 +83,6 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
                     }
                     for (var i = 0; i < requiredFilters.length; i++) {
                         var field = requiredFilters[i];
-
                         if (isUndefined($scope.filter[field]) || _.isEmpty($scope.filter[field]) || $scope.filter[field] === '' || $scope.filter[field] === 0 || $scope.filter[field] === -1) {
                             all_required_fields_set = false;
                             break;
@@ -105,7 +104,7 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
 
 
             $scope.$on('filter-changed', $scope.filterChanged);
-            $scope.filterChanged();
+            $timeout($scope.filterChanged, 100);
         },
         link: function (scope, elm, attr) {
             scope.noRequiredParameter = ( "true" === (attr.noRequiredParam) );
