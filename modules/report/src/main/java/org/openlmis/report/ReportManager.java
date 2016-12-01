@@ -74,14 +74,14 @@ public class ReportManager {
      */
     public void showReport(Integer userId, Report report, Map<String, String[]> params, ReportOutputOption outputOption, HttpServletResponse response){
 
-       if (report == null){
-           throw new ReportException("invalid report");
-       }
+        if (report == null){
+            throw new ReportException("invalid report");
+        }
 
         List<? extends ResultRow> dataSource = report.getReportDataProvider().getResultSet(params);
         Map<String, Object> extraParams = getReportExtraDataSourceParams(userId, params, outputOption, dataSource, report);
 
-       InputStream reportInputStream =  this.getClass().getClassLoader().getResourceAsStream(report.getTemplate()) ;
+        InputStream reportInputStream =  this.getClass().getClassLoader().getResourceAsStream(report.getTemplate()) ;
         reportExporter.exportReport(reportInputStream, extraParams, dataSource, outputOption, response);
     }
 
@@ -157,14 +157,14 @@ public class ReportManager {
     }
 
 
-     /**
+    /**
      * Used to extract extra parameters that are used by report header and footer.
      *
-      *
-      * @param report
-      * @param outputOption
-      * @param filterCriteria
-      * @return
+     *
+     * @param report
+     * @param outputOption
+     * @param filterCriteria
+     * @return
      */
     private Map<String, Object> getReportExtraParams(Report report, String generatedBy, String outputOption, Map<String, String[]> filterCriteria){
 
@@ -194,6 +194,8 @@ public class ReportManager {
         configuration = configurationService.getByKey(Constants.VIMS_LOGO_FILE_NAME_KEY);
         params.put(Constants.VIMS_LOGO,this.getClass().getClassLoader().getResourceAsStream(configuration != null ? configuration.getValue() : "logo.png"));
 
+        String reportCountryTitle=configurationService.getConfigurationStringValue(Constants.REPORT_COUNTRY_TITLE_KEY);
+        params.put(Constants.REPORT_COUNTRY_TITLE,reportCountryTitle);
 
         // populate all the rest of the report parameters as overriden by the report data provider
         Map<String, String> values = report.getReportDataProvider().getExtendedHeader(filterCriteria);
