@@ -110,7 +110,8 @@ public class PerformanceByDropoutRateQueryBuilder {
                 " and i.product_id= " + param.getProduct_id() +
                 "and (d.parent = " + param.getGeographic_zone_id() + "::INT or  d.region_id = " + param.getGeographic_zone_id() + "::INT " +
                 "or  d.district_id = " + param.getGeographic_zone_id() + "::INT " +
-                "  or  0 = " + param.getGeographic_zone_id() + "::INT)";
+                "  or  0 = " + param.getGeographic_zone_id() + "::INT)"+
+        " and  d.district_id in(select district_id from vw_user_facilities where user_id ="+param.getUserId()+" and program_id = fn_get_vaccine_program_id()) ";
 
         if (param.getFacility_id() != null && param.getFacility_id() != 0L) {
             predicate = predicate + "and i.facility_id=" + param.getFacility_id();

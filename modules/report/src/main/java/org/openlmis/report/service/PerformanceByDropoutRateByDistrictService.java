@@ -44,7 +44,7 @@ public class PerformanceByDropoutRateByDistrictService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceByDropoutRateByDistrictService.class);
 
 
-    public PerformanceByDisrictReport loadPerformanceByDropoutRateDistrictReports(Map<String, String[]> filterCriteria) {
+    public PerformanceByDisrictReport loadPerformanceByDropoutRateDistrictReports(Map<String, String[]> filterCriteria,Long userId) {
         boolean isFailityReport;
         boolean isRegionReport;
         PerformanceByDisrictReport performanceByDisrictReport;
@@ -59,6 +59,7 @@ public class PerformanceByDropoutRateByDistrictService {
         Date endDate = null;
         PerformanceByDropoutRateParam filterParam;
         filterParam = prepareParam(filterCriteria);
+        filterParam.setUserId(userId);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
         try {
             startDate = filterParam.getPeriod_start_date() != null ? dateFormat.parse(filterParam.getPeriod_start_date()) : null;

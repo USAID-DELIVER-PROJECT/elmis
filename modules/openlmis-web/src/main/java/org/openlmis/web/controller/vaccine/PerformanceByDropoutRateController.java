@@ -14,6 +14,7 @@ package org.openlmis.web.controller.vaccine;
 
 import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
+import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.report.model.report.vaccine.DropoutProduct;
 import org.openlmis.report.model.report.vaccine.PerformanceByDisrictReport;
 import org.openlmis.report.service.PerformanceByDropoutRateByDistrictService;
@@ -29,7 +30,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/vaccine/report/")
-public class PerformanceByDropoutRateController {
+public class PerformanceByDropoutRateController extends BaseController{
     public static final  String PERFORMANCE_BY_DROPOUT_RATE_LIST="PerformanceByDropoutRateList";
     public static final  String DROPOUT_PRODUCT_LIST="dropoutProductsList";
     private static final Logger LOGGER = Logger.getLogger(PerformanceByDropoutRateController.class);
@@ -39,9 +40,10 @@ public class PerformanceByDropoutRateController {
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> getPerformanceByDropoutRateList( HttpServletRequest request){
         PerformanceByDisrictReport performanceByDropoutRateByDistrictList=null;
+        Long userId=this.loggedInUserId(request);
 
         try {
-            performanceByDropoutRateByDistrictList=service.loadPerformanceByDropoutRateDistrictReports(request.getParameterMap());
+            performanceByDropoutRateByDistrictList=service.loadPerformanceByDropoutRateDistrictReports(request.getParameterMap(),userId);
         }catch (Exception ex){
             LOGGER.warn(" Exception is :" ,ex);
         }

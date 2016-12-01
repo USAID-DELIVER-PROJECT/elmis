@@ -27,7 +27,8 @@ public class PerformanceDropoutDataProvider extends ReportDataProvider {
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filter, Map<String, String[]> sorter, int page, int pageSize) {
         List<PerformanceByDisrictReport> performanceByDisrictReports = new ArrayList<>();
-        PerformanceByDisrictReport performanceByDisrictReport = this.dropoutRateByDistrictService.loadPerformanceByDropoutRateDistrictReports(filter);
+        Long userId=this.getUserId();
+        PerformanceByDisrictReport performanceByDisrictReport = this.dropoutRateByDistrictService.loadPerformanceByDropoutRateDistrictReports(filter,userId);
         performanceByDisrictReport.setDistrictFlatList(this.convertToFlatList(performanceByDisrictReport.getColumnsValueList()));
         performanceByDisrictReport.setRegionFlatList(this.convertToFlatList(performanceByDisrictReport.getRegionColumnsValueList()));
         performanceByDisrictReports.add(performanceByDisrictReport);
