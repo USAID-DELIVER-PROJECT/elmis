@@ -79,7 +79,8 @@ public class PerformanceCoverageDataProvider extends ReportDataProvider {
     public String getFilterSummary(Map<String, String[]> params) {
         return  filterHelper.getReportCombinedFilterString(
                 filterHelper.getGeoZoneFilterString(params),
-                filterHelper.getSelectedProductSummary(params.get("product")[0]),
+                filterHelper.getSelectedProductSummary(params.get("product")[0])+"-"+  params.get("doseId")[0],
+
                 filterHelper.getSelectedPeriodRange(params));
     }
 
