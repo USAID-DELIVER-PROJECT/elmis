@@ -266,7 +266,7 @@ public class PerformanceCoverageQueryBuilder {
             predicate += " AND (district_id = "+zone+" or zone_id = "+zone+" or region_id = "+zone+" or parent = "+zone+")";
         }
 
-        if(doseId > 0)
+
             predicate += " AND dose_id = "+ doseId;
 
         return predicate;

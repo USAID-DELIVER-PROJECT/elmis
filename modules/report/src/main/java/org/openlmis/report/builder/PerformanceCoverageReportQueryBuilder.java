@@ -33,7 +33,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "  where programid = fn_get_vaccine_program_id() \n" +
                         "      and (productid = "+ params.getProduct()+") \n" +
                         "      and year = extract(year from '"+ params.getPeriodStart()+"'::date)\n" +
-                        "      and (doseid = " + params.getDoseId() +" or " + params.getDoseId() +" = 0) " +
+                        "      and doseid = " + params.getDoseId() +
                         "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
                         +params.getDistrict()+" or d.parent = "+params.getDistrict()+") "+
                         "  group by 1,2,3,4,5,6,7,8\n" +
@@ -156,7 +156,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "    where programid = fn_get_vaccine_program_id() \n" +
                         "      and (productid = "+ params.getProduct()+") \n" +
                         "      and year = extract(year from '"+ params.getPeriodStart()+"'::date)\n" +
-                        "      and (doseid = " + params.getDoseId() +" or " + params.getDoseId() +" = 0) " +
+                        "      and doseid = " + params.getDoseId() +
                         "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
                         +params.getDistrict()+" or d.parent = "+params.getDistrict()+") " +
                         "    group by 1,2,3,4,5,6\n" +
@@ -238,7 +238,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "    where programid = fn_get_vaccine_program_id() \n" +
                         "      and (productid = "+ params.getProduct()+") \n" +
                         "      and year = extract(year from '"+ params.getPeriodStart()+"'::date)\n" +
-                        "      and (doseid = " + params.getDoseId() +" or " + params.getDoseId() +" = 0) "+
+                        "      and doseid = " + params.getDoseId() +
                         "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
                         + params.getDistrict()+" or d.parent = "+params.getDistrict()+") "+
                         "      group by 1,2,3,4\n" +
@@ -318,7 +318,7 @@ public class PerformanceCoverageReportQueryBuilder {
                 "    where programid = fn_get_vaccine_program_id() \n" +
                 "      and (productid = "+ params.getProduct()+") \n" +
                 "      and year = extract(year from '"+ params.getPeriodStart()+"'::date)\n" +
-                "      and (doseid = " + params.getDoseId() +" or " + params.getDoseId() +" = 0) " +
+                "      and doseid = " + params.getDoseId() +
                 "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
                 +params.getDistrict()+" or d.parent = "+params.getDistrict()+") "+
                 "      group by 1,2,3,4,5,6 " +
@@ -413,7 +413,7 @@ public class PerformanceCoverageReportQueryBuilder {
                 "   join vw_districts d ON vd.district_id = d.district_id  " +
                 "      and (productid = "+ params.getProduct()+") \n" +
                 "      and year = extract(year from '"+ params.getPeriodStart()+"'::date)\n" +
-                "      and (doseid = " + params.getDoseId() +" or " + params.getDoseId() +" = 0) "+
+                "      and doseid = " + params.getDoseId() +
                 "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
                 + params.getDistrict()+" or d.parent = "+params.getDistrict()+") "+
                 "      group by 1,2,3,4  " +
