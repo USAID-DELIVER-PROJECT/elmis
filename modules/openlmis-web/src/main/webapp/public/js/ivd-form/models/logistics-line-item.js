@@ -13,10 +13,11 @@ var LogisticsLineItem = function(lineItem, report) {
   };
 
   LogisticsLineItem.prototype.childrenImmunized = function(){
-    if(report.coverageLineItemViews === undefined || report.coverageLineItemViews[this.productId] === undefined){
+    var lineItems = _.where(report.coverageLineItems, {productId : this.productId});
+    if(lineItems.length === 0){
       return  '-';
     }
-    return _.reduce(report.coverageLineItemViews[this.productId],
+    return _.reduce(lineItems,
       function(sum, item2){
         return sum + item2.getMonthlyTotal();
       }, 0);

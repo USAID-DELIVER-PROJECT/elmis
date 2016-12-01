@@ -27,7 +27,7 @@ public class StockImbalanceQueryBuilder {
     StockImbalanceReportParam filter = (StockImbalanceReportParam) params.get("filterCriteria");
     Map sortCriteria = (Map) params.get("SortCriteria");
     BEGIN();
-    SELECT("distinct supplyingFacility, facilityTypeName facilityType,  facility, d.district_name districtName, d.region_name as regionName, d.zone_name zoneName, product,  stockInHand physicalCount,  amc,  mos months,  required, ordered as orderQuantity, " +
+    SELECT("distinct supplyingFacility, facilityTypeName facilityType,  facility, facilityCode, d.district_name districtName, d.region_name as regionName, d.zone_name zoneName, product, productCode,  stockInHand as physicalCount,  amc,  mos months,  required, ordered as orderQuantity, " +
             "status");
     FROM("  vw_stock_status " +
         " join facilities f on f.id = facility_id " +
