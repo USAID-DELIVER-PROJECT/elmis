@@ -322,14 +322,17 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 }
             });
             for (var key in distrctList) {
+                var recent=null;
                 for (var i = 0; i < indexValue; i++) {
                     var hasValue = false;
+
                     for (var j = 0; j < len; j++) {
                         var dateValue=new Date(reportList[j].period_name);
 
                        var reportMonth=periodList[dateValue.getMonth()];
                         if (angular.equals(getPopulationKey(reportList[j], type), key) &&reportMonth ===periodList[i]) {
                             formattedData.push(reportList[j]);
+                            recent=reportList[j];
                             hasValue = true;
                             break;
                         }
@@ -347,6 +350,9 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                             bcg_vaccinated: 0,
                             mr_vaccinated:0,
                             bcg_mr_dropout:0,
+                           cum_bcg_vaccinated: utils.isNullOrUndefined(recent)?0:recent.cum_bcg_vaccinated,
+                            cum_mr_vaccinated:utils.isNullOrUndefined(recent)?0:recent.cum_mr_vaccinated,
+                            cum_bcg_mr_dropout:utils.isNullOrUndefined(recent)?0:recent.cum_bcg_mr_dropout,
                             generated: true
 
                         };
