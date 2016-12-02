@@ -126,7 +126,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
             return  $scope.nonReporting;
         }
-        var dropout=cumulative==1?value.cum_bcg_mr_dropout:cumulative==0?value:value.bcg_mr_dropout;
+        var dropout=cumulative===1?value.cum_bcg_mr_dropout:cumulative===0?value:value.bcg_mr_dropout;
         if (dropout > 10) {
             bgColor = $scope.maxTemp;
         } else if (dropout> 5) {
