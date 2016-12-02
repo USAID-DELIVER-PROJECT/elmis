@@ -126,7 +126,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
             return  $scope.nonReporting;
         }
-        var dropout=cumulative==1?value.cum_bcg_mr_dropout:value.bcg_mr_dropout;
+        var dropout=cumulative==1?value.cum_bcg_mr_dropout:cumulative==0?value:value.bcg_mr_dropout;
         if (dropout > 10) {
             bgColor = $scope.maxTemp;
         } else if (dropout> 5) {
@@ -173,7 +173,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
             dropOut= utils.isNullOrUndefined(value)||utils.isEmpty(value)|| value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
 
 
-        return dropOut;
+        return dropOut.toFixed(2);
     };
     $scope.concatPercentage = function (value) {
 
