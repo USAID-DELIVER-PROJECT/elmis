@@ -172,7 +172,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
             dropOut= utils.isNullOrUndefined(value)||utils.isEmpty(value)|| value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
 
 
-        return dropOut.toFixed(2);
+        return dropOut;
     };
     $scope.concatPercentage = function (value) {
 
