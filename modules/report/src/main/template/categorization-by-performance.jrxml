@@ -19,6 +19,8 @@
 	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_COUNTRY_TITLE" class="java.lang.String"/>
+	<parameter name="VIMS_LOGO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[-- Get population target
 with vaccine_dropout as (
@@ -152,9 +154,6 @@ select
 				<subreportParameter name="LOGO">
 					<subreportParameterExpression><![CDATA[$P{LOGO}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="OPERATOR_NAME">
-					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="REPORT_SUB_TITLE">
 					<subreportParameterExpression><![CDATA[$P{REPORT_SUB_TITLE}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -163,6 +162,15 @@ select
 				</subreportParameter>
 				<subreportParameter name="REPORT_FILTER_PARAM_VALUES">
 					<subreportParameterExpression><![CDATA[$P{REPORT_FILTER_PARAM_VALUES}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="VIMS_LOGO">
+					<subreportParameterExpression><![CDATA[$P{VIMS_LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_NAME">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_COUNTRY_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_COUNTRY_TITLE}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="OPERATOR_LOGO">
 					<subreportParameterExpression><![CDATA[$P{OPERATOR_LOGO}]]></subreportParameterExpression>

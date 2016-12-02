@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stocked-out" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="373"/>
+	<property name="ireport.x" value="420"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -328,31 +328,31 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 		</groupHeader>
 		<groupFooter>
 			<band height="20">
-				<textField>
+				<textField pattern="#,##0.00;-#,##0.00">
 					<reportElement x="339" y="0" width="73" height="20" uuid="4dcb62f9-9d28-4f77-840f-b39a747bd652"/>
 					<textFieldExpression><![CDATA[$V{bcg_vaccinated_sum}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField pattern="#,##0.00;-#,##0.00">
 					<reportElement x="412" y="0" width="71" height="20" uuid="11e7e770-ee23-4f11-9366-0bbe771a1ebd"/>
 					<textFieldExpression><![CDATA[$V{dtp_vaccinated_sum}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0.00;-###0.00">
+				<textField pattern="#,##0.00 %">
 					<reportElement x="483" y="0" width="70" height="20" uuid="e0d9363d-de2e-4146-bb7d-57aa3a0ba38b"/>
-					<textFieldExpression><![CDATA[$V{dropout_percentage}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{dropout_percentage}/100]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="214" y="0" width="125" height="20" uuid="f2c6e526-387b-4114-83b9-7b6396ee70d6"/>
 					<text><![CDATA[Sub Total]]></text>
 				</staticText>
-				<textField pattern="###0.00;-###0.00">
+				<textField pattern="#,##0.00 %">
 					<reportElement x="714" y="0" width="76" height="20" uuid="933b596e-f079-4abd-a455-e9400c98ad66"/>
-					<textFieldExpression><![CDATA[$V{dropout_percentage}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{dropout_percentage}/100]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField pattern="#,##0.00;-#,##0.00">
 					<reportElement x="554" y="0" width="90" height="20" uuid="20c6affa-85fc-4d3c-90c1-dfb010a7997d"/>
 					<textFieldExpression><![CDATA[$V{bcg_vaccinated_sum}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField pattern="#,##0.00;-#,##0.00">
 					<reportElement x="644" y="0" width="70" height="20" uuid="d6243341-e73d-4c51-9818-8364b75ce85a"/>
 					<textFieldExpression><![CDATA[$V{dtp_vaccinated_sum}]]></textFieldExpression>
 				</textField>
@@ -369,7 +369,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="714" y="0" width="76" height="20" forecolor="#FFFFFF" backcolor="#FF0000" uuid="f2a16bf4-2ce7-44a1-a75f-3ae7beb12bff">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}>10]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}>10]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
@@ -382,35 +382,35 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="483" y="1" width="70" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="18d0356c-7742-4110-8f64-158866ba6186">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="714" y="0" width="76" height="20" forecolor="#FFFFFF" backcolor="#00FF00" uuid="936775b1-2071-4dca-9f8b-ca1770622dfc">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="483" y="0" width="70" height="20" forecolor="#FFFFFF" backcolor="#FF0000" uuid="617bdb98-4d1d-46ea-af46-d63dec2abcd3">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}>10]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}>10]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="483" y="0" width="70" height="20" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="60598021-4bd7-46e9-90ff-d83c51f26edc">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=10 && $V{drop_out}>5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=10 && $F{bcg_mr_dropout}>5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="714" y="0" width="76" height="20" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="bde6da34-1979-435e-a392-6b556479ed9e">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=10 && $V{drop_out}>5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=10 && $F{bcg_mr_dropout}>5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
@@ -423,7 +423,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 				<reportElement x="412" y="0" width="70" height="20" uuid="bfa22c05-f847-44a8-a6e4-31d9919f9316"/>
 				<textFieldExpression><![CDATA[$F{mr_vaccinated}]]></textFieldExpression>
 			</textField>
@@ -448,7 +448,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<textFieldExpression><![CDATA[$F{district_name}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="339" y="0" width="73" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="536fd8ef-54ee-4113-9e3d-2d55f9f8da48">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -459,9 +459,9 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<textFieldExpression><![CDATA[$F{bcg_vaccinated}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+			<textField pattern="#,##0.00 %" isBlankWhenNull="true">
 				<reportElement x="483" y="0" width="70" height="20" uuid="edb18e79-900a-46a0-8f18-369e44bff292"/>
-				<textFieldExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})*100/($F{bcg_vaccinated})):0]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})/($F{bcg_vaccinated})):0]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="39" y="0" width="123" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="75af9441-a29d-4f9d-9496-f5297e49e66e">
@@ -489,11 +489,11 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<textFieldExpression><![CDATA[$F{period_name}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 				<reportElement x="644" y="0" width="70" height="20" uuid="d5cf7a48-585d-428c-9bb6-94143d2cc3fb"/>
 				<textFieldExpression><![CDATA[$F{cum_mr_vaccinated}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="554" y="0" width="90" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="3f777e69-a37e-4062-80b0-017ae82f51b0">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -504,9 +504,9 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cum_bcg_vaccinated}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+			<textField pattern="#,##0.00 %" isBlankWhenNull="true">
 				<reportElement x="714" y="0" width="76" height="20" uuid="57356a9d-0350-413b-990b-617b83edd200"/>
-				<textFieldExpression><![CDATA[($F{cum_bcg_vaccinated}!=0)?(($F{cum_bcg_vaccinated}-$F{cum_mr_vaccinated})*100/($F{cum_bcg_vaccinated})):0]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{cum_bcg_vaccinated}!=0)?(($F{cum_bcg_vaccinated}-$F{cum_mr_vaccinated})/($F{cum_bcg_vaccinated})):0]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -518,15 +518,15 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
-			<textField pattern="###0.00;-###0.00">
+			<textField pattern="#,##0.00 %">
 				<reportElement x="482" y="0" width="71" height="18" uuid="739b3bf9-1e70-47a7-848e-441b4dcedacc"/>
-				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}/100]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0.00;-#,##0.00">
 				<reportElement x="412" y="0" width="71" height="18" uuid="f2395587-20a0-4a42-8766-fad471dd5375"/>
 				<textFieldExpression><![CDATA[$V{grand_dtp_vaccinated_sum}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0.00;-#,##0.00">
 				<reportElement x="339" y="0" width="70" height="18" uuid="5610a98a-cb80-45e3-a965-9896ef096f4f"/>
 				<textFieldExpression><![CDATA[$V{grand_bcg_vaccinated_sum}]]></textFieldExpression>
 			</textField>
@@ -534,15 +534,15 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<reportElement x="212" y="0" width="200" height="18" uuid="eddc012d-e5fd-4e80-b77e-773ecb09ef69"/>
 				<text><![CDATA[Grand Total]]></text>
 			</staticText>
-			<textField>
+			<textField pattern="#,##0.00;-#,##0.00">
 				<reportElement x="554" y="0" width="90" height="18" uuid="2072b5bd-d50c-4a96-ae13-3a743d11ac4a"/>
 				<textFieldExpression><![CDATA[$V{grand_bcg_vaccinated_sum}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00;-###0.00">
+			<textField pattern="#,##0.00 %">
 				<reportElement x="714" y="0" width="76" height="18" uuid="4c95e281-7c8a-47f4-b623-690546466c43"/>
-				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}/100]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0.00;-#,##0.00">
 				<reportElement x="644" y="0" width="70" height="18" uuid="feb95c59-16da-4760-8872-14bdfb74bc26"/>
 				<textFieldExpression><![CDATA[$V{grand_dtp_vaccinated_sum}]]></textFieldExpression>
 			</textField>

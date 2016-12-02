@@ -176,12 +176,13 @@ public class ReportManager {
         params.put(Constants.REPORT_NAME, report.getName());
         params.put(Constants.REPORT_ID, report.getId());
         params.put(Constants.REPORT_TITLE, messageService.message(report.getTitle()));
-        params.put(Constants.REPORT_SUB_TITLE, report.getSubTitle());
         params.put(Constants.REPORT_SUB_BRANCH_TITLE, report.getSubBranchTitle());
         params.put(Constants.REPORT_VERSION, report.getVersion());
         params.put(Constants.REPORT_OUTPUT_OPTION, outputOption);
         ConfigurationSetting configuration =  configurationService.getByKey(Constants.LOGO_FILE_NAME_KEY);
         params.put(Constants.LOGO,this.getClass().getClassLoader().getResourceAsStream(configuration != null ? configuration.getValue() : "logo.png"));
+        configuration =  configurationService.getByKey(Constants.REPORT_SUBTITLE_TITLE_KEY);
+        params.put(Constants.REPORT_SUB_TITLE,configuration!=null? configuration.getValue():"");
         params.put(Constants.GENERATED_BY, generatedBy);
         configuration =  configurationService.getByKey(Constants.OPERATOR_LOGO_FILE_NAME_KEY);
 

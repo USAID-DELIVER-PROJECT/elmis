@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-dropout-region-subreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="241"/>
+	<property name="ireport.x" value="201"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -320,7 +320,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<textField pattern="#,##0.00 %">
 					<reportElement x="412" y="0" width="94" height="20" uuid="e0d9363d-de2e-4146-bb7d-57aa3a0ba38b"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$V{dropout_percentage}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{dropout_percentage}/100]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="214" y="0" width="78" height="20" uuid="f2c6e526-387b-4114-83b9-7b6396ee70d6"/>
@@ -329,7 +329,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<textField pattern="#,##0.00 %">
 					<reportElement x="684" y="0" width="94" height="20" uuid="673f9ba4-812a-4527-b144-a4dd23107043"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$V{dropout_percentage}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{dropout_percentage}/100]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00;-#,##0.00">
 					<reportElement x="614" y="0" width="70" height="20" uuid="6294084b-1209-4326-b93c-47a3709a9f0f"/>
@@ -360,42 +360,42 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="18d0356c-7742-4110-8f64-158866ba6186">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="617bdb98-4d1d-46ea-af46-d63dec2abcd3">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}>10]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}>10]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="60598021-4bd7-46e9-90ff-d83c51f26edc">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=10 && $V{drop_out}>5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=10 && $F{bcg_mr_dropout}>5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="684" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="87daae3b-d4a5-4ef0-b04e-50aba22bfe08">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=10 && $V{drop_out}>5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=10 && $F{bcg_mr_dropout}>5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="684" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="51f54785-686e-4b6e-846c-aa94897e47fc">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}>10]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}>10]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="684" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="f40b62c9-8715-43bd-94d5-466189245768">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
@@ -435,7 +435,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<textField pattern="#,##0.00 %" isBlankWhenNull="true">
 				<reportElement x="412" y="0" width="94" height="20" uuid="edb18e79-900a-46a0-8f18-369e44bff292"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})*100/($F{bcg_vaccinated})):0]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})/($F{bcg_vaccinated})):0]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Transparent" x="39" y="0" width="204" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="75af9441-a29d-4f9d-9496-f5297e49e66e">
@@ -482,7 +482,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<textField pattern="#,##0.00 %" isBlankWhenNull="true">
 				<reportElement x="684" y="0" width="94" height="20" uuid="bef7d0a1-b993-4c2b-b2dd-c328d360a87e"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[($F{cum_bcg_vaccinated}!=0)?(($F{cum_bcg_vaccinated}-$F{cum_mr_vaccinated})*100/($F{cum_bcg_vaccinated})):0]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{cum_bcg_vaccinated}!=0)?(($F{cum_bcg_vaccinated}-$F{cum_mr_vaccinated})/($F{cum_bcg_vaccinated})):0]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -497,7 +497,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<textField pattern="#,##0.00 %">
 				<reportElement x="412" y="0" width="94" height="18" uuid="739b3bf9-1e70-47a7-848e-441b4dcedacc"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}/100]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00">
 				<reportElement x="348" y="0" width="64" height="18" uuid="f2395587-20a0-4a42-8766-fad471dd5375"/>
@@ -521,7 +521,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<textField pattern="#,##0.00 %">
 				<reportElement x="684" y="0" width="94" height="18" uuid="50cfc5b4-7331-4149-b9e9-389a1556b3fa"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}/100]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00">
 				<reportElement x="506" y="0" width="108" height="18" uuid="403fd916-d43e-4429-88ff-5909cff5d475"/>

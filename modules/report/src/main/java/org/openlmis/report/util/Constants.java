@@ -57,7 +57,7 @@ public class Constants {
     public static String CONF_INDICATOR_PRODUCTS = "INDICATOR_PRODUCTS";
     public static final String REPORT_COUNTRY_TITLE_KEY="REPORT_COUNTRY_TITLE_TEXT";
     public static final String REPORT_MAIN_TITLE_KEY="";
-    public static final String REPORT_SUBTITLE_TITLE_KEY="";
+    public static final String REPORT_SUBTITLE_TITLE_KEY="REPORT_SUB_TITLE_TEXT";
 
     /**
      *  Miscellaneous

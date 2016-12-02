@@ -12,6 +12,8 @@ import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.report.vaccine.PerformanceByDisrictReport;
 import org.openlmis.report.model.report.vaccine.PerformanceByDropoutColumn;
 import org.openlmis.report.model.report.vaccine.PerformanceByDropoutRange;
+import org.openlmis.report.util.SelectedFilterHelper;
+import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +25,14 @@ import java.util.Map;
 public class PerformanceDropoutDataProvider extends ReportDataProvider {
     @Autowired
     private PerformanceByDropoutRateByDistrictService dropoutRateByDistrictService;
+    @Autowired
+    private SelectedFilterHelper filterHelper;
 
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filter, Map<String, String[]> sorter, int page, int pageSize) {
         List<PerformanceByDisrictReport> performanceByDisrictReports = new ArrayList<>();
-        Long userId=this.getUserId();
-        PerformanceByDisrictReport performanceByDisrictReport = this.dropoutRateByDistrictService.loadPerformanceByDropoutRateDistrictReports(filter,userId);
+        Long userId = this.getUserId();
+        PerformanceByDisrictReport performanceByDisrictReport = this.dropoutRateByDistrictService.loadPerformanceByDropoutRateDistrictReports(filter, userId);
         performanceByDisrictReport.setDistrictFlatList(this.convertToFlatList(performanceByDisrictReport.getColumnsValueList()));
         performanceByDisrictReport.setRegionFlatList(this.convertToFlatList(performanceByDisrictReport.getRegionColumnsValueList()));
         performanceByDisrictReports.add(performanceByDisrictReport);
@@ -41,8 +45,19 @@ public class PerformanceDropoutDataProvider extends ReportDataProvider {
             for (PerformanceByDropoutRange dropoutRange : columnsValueList) {
                 flatList.addAll(dropoutRange.getColumns());
             }
-        }
-        else return  null;
+        } else return null;
         return flatList;
+    }
+
+    @Override
+    public String getFilterSummary(Map<String, String[]> params) {
+        String district = StringHelper.getValue(params, "geographicZoneId");
+        String distrctName = district == null ? "" : filterHelper.getGeoZoneFilterString(Long.parseLong(district));
+
+        return filterHelper.getReportCombinedFilterString(
+                distrctName,
+                filterHelper.getSelectedProductSummary(params.get("productId")[0]),
+
+                filterHelper.getSelectedPeriodRange(params));
     }
 }

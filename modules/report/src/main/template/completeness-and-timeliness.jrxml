@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
-  ~
-  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="918" pageHeight="595" orientation="Landscape" columnWidth="878" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.100000000000001"/>
-	<property name="ireport.x" value="65"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
@@ -30,6 +19,8 @@
 	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_COUNTRY_TITLE" class="java.lang.String"/>
+	<parameter name="VIMS_LOGO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select 'torabora' regionName,
 'karatu' districtName,
@@ -246,9 +237,6 @@ from generate_series(1,12)]]>
 				<subreportParameter name="LOGO">
 					<subreportParameterExpression><![CDATA[$P{LOGO}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="OPERATOR_NAME">
-					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="REPORT_SUB_TITLE">
 					<subreportParameterExpression><![CDATA[$P{REPORT_SUB_TITLE}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -257,6 +245,15 @@ from generate_series(1,12)]]>
 				</subreportParameter>
 				<subreportParameter name="REPORT_FILTER_PARAM_VALUES">
 					<subreportParameterExpression><![CDATA[$P{REPORT_FILTER_PARAM_VALUES}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="VIMS_LOGO">
+					<subreportParameterExpression><![CDATA[$P{VIMS_LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_NAME">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_COUNTRY_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_COUNTRY_TITLE}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="OPERATOR_LOGO">
 					<subreportParameterExpression><![CDATA[$P{OPERATOR_LOGO}]]></subreportParameterExpression>

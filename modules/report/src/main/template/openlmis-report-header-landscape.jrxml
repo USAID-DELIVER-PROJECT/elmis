@@ -47,7 +47,7 @@
 				<textFieldExpression><![CDATA[($P{REPORT_FILTER_PARAM_VALUES} != 0)?$P{REPORT_FILTER_PARAM_VALUES}:""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="255" y="50" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="8e7e49a1-6c5e-4a50-ba77-935008c82741"/>
+				<reportElement x="255" y="70" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="8e7e49a1-6c5e-4a50-ba77-935008c82741"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="16" isBold="true"/>
 					<paragraph leftIndent="0"/>
@@ -77,6 +77,14 @@
 					<paragraph leftIndent="0"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($P{REPORT_COUNTRY_TITLE} != null)?$P{REPORT_COUNTRY_TITLE}:$P{REPORT_COUNTRY_TITLE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="255" y="49" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="f0612e80-b9ba-4d07-8fa8-6af2f8ad00cd"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="16" isBold="true"/>
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{REPORT_SUB_TITLE} != null)?$P{REPORT_SUB_TITLE}:$P{REPORT_SUB_TITLE}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
