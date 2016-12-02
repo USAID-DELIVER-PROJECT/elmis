@@ -262,7 +262,7 @@
 
 
                             <td class="number" ng-bind="concatPercentage(row.bcg_mr_dropout)"
-                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row,2) ,'text-align':'right'}"/>
                             <td ng-bind="row.cum_bcg_vaccinated| number"
                                 ng-style="{'text-align':'right'}"/>
 
@@ -272,7 +272,7 @@
 
 
                             <td class="number" ng-bind="concatPercentage(row.cum_bcg_mr_dropout)"
-                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row,1) ,'text-align':'right'}"/>
 
 
                         </tr>
@@ -338,11 +338,11 @@
 
                         <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="districtSubAggregate['total_row'].bcg_vaccinated| number"></td>
                         <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="districtSubAggregate['total_row'].mr_vaccinated| number"></td>
-                        <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; "><span
+                        <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated),0) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; "><span
                                 ng-bind="calculateSubTotalPercentage(districtSubAggregate['total_row'])| number"/>%
                             <td ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="districtSubAggregate['total_row'].bcg_vaccinated| number"></td>
                             <td ng-style="{font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; " ng-bind="districtSubAggregate['total_row'].mr_vaccinated| number"></td>
-                            <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; "><span
+                            <td ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated),0) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" style="text-align:right; "><span
                                     ng-bind="calculateSubTotalPercentage(districtSubAggregate['total_row'])| number"/>%
                         </td>
                         </tr>
@@ -561,7 +561,7 @@
 
 
                             <td class="number" ng-bind="concatPercentage(row.bcg_mr_dropout)"
-                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row,2) ,'text-align':'right'}"/>
                             <td ng-bind="row.cum_bcg_vaccinated"
                                 ng-style="{'text-align':'right'}"/>
 
@@ -571,7 +571,7 @@
 
 
                             <td class="number" ng-bind="concatPercentage(row.cum_bcg_mr_dropout)"
-                                ng-style="{'background-color':getBackGroundColor(row) ,'text-align':'right'}"/>
+                                ng-style="{'background-color':getBackGroundColor(row,1) ,'text-align':'right'}"/>
 
                         </tr>
                         <tr ng-if="((regionrows.length==$index+1)) && $index>0 && staticYear>0"
@@ -634,12 +634,12 @@
 
                         <td  ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="regionSubAggregate['total_row'].bcg_vaccinated| number"></td>
                         <td  ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="regionSubAggregate['total_row'].mr_vaccinated| number"></td>
-                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"><span
+                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated),0) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"><span
                                 ng-bind="calculateSubTotalPercentage(regionSubAggregate['total_row'])| number"/>%
                         </td>
                         <td  ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="regionSubAggregate['total_row'].bcg_vaccinated| number"></td>
                         <td  ng-style="{'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}" ng-bind="regionSubAggregate['total_row'].mr_vaccinated| number"></td>
-                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated)) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"><span
+                        <td  ng-style="{'background-color':getBackGroundColor(calculateTotalPercentage(report.total_bcg_vaccinated,report.total_mr_vaccinated),0) ,'font-weight':'bold','text-align':'right','font-weight':'bold','text-align':'right','border-top-style':'solid', 'border-top-color': 'black', 'border-top-width': '2px'}"><span
                                 ng-bind="calculateSubTotalPercentage(regionSubAggregate['total_row'])| number"/>%
                         </td>
 

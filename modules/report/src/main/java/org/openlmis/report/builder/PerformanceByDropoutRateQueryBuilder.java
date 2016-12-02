@@ -98,7 +98,7 @@ public class PerformanceByDropoutRateQueryBuilder {
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get(FACILITY_CRITERIA);
         String query =
                 prepareSqlStatement(filter) +
-                        " select * from mainQuery m order by 1,2,3,4,5";
+                        " select * from mainQuery m order by 1,2,3,8";
         return query;
     }
 
@@ -138,7 +138,7 @@ public class PerformanceByDropoutRateQueryBuilder {
                     "                    sum(d.cum_mr_vaccinated) cum_mr_vaccinated, \n" +
                     "                    sum(d.cum_dtp1_vaccinated) cum_dtp1_vaccinated, \n" +
                     "                     sum(d.cum_dtp3_vaccinated) cum_dtp3_vaccinated, \n" +
-                    "                                     case when sum(d.cum_bcg_vaccinated) > 0 then((sum(d.cum_bcg_mr_dropout) - sum(d.cum_mr_vaccinated)) / sum(d.cum_bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,   \n" +
+                    "                                     case when sum(d.cum_bcg_vaccinated) > 0 then((sum(d.cum_bcg_vaccinated) - sum(d.cum_mr_vaccinated)) / sum(d.cum_bcg_vaccinated)::numeric) * 100 else 0 end cum_bcg_mr_dropout,   \n" +
                     "                                       case when sum(d.cum_dtp1_vaccinated) > 0 then((sum(d.cum_dtp1_vaccinated) - sum(d.cum_dtp3_vaccinated)) / sum(d.cum_dtp1_vaccinated)::numeric) * 100 else 0 end cum_dtp1_dtp3_dropout  \n" +
                     "                    from mainQuery d  \n" +
                     "                    group by 1,2,3,4,5,6,7\n" +

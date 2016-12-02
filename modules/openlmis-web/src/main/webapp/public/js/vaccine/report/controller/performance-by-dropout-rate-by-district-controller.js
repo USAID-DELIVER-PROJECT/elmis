@@ -120,15 +120,16 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         return months <= 0 ? 0 : months;
     }
 
-    $scope.getBackGroundColor = function (value) {
+    $scope.getBackGroundColor = function (value,cumulative) {
         var bgColor = '';
         if(value.generated!=='undefined' && value.generated===true){
 
             return  $scope.nonReporting;
         }
-        if (value.bcg_mr_dropout > 10) {
+        var dropout=cumulative==1?value.cum_bcg_mr_dropout:value.bcg_mr_dropout;
+        if (dropout > 10) {
             bgColor = $scope.maxTemp;
-        } else if (value.bcg_mr_dropout > 5) {
+        } else if (dropout> 5) {
             bgColor = $scope.average;
         }
         else {
