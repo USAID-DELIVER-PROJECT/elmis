@@ -22,7 +22,7 @@
     <div filter-container>
       <form ng-submit="filterGrid()" name="filterForm" novalidate>
         <div class="app-form">
-          <select ui-select2 style="width: 450px;" ng-change="OnFilterChanged()" ng-model="filter.report_key">
+          <select ui-select2 style="width: 450px;" ng-change="OnReportTypeChanged(filter.report_key)" ng-model="filter.report_key">
             <option></option>
             <optgroup label="{{cat}}" ng-repeat="cat in categories">
               <option value="{{r.reportkey}}" ng-selected="r.reportkey == filter.report_key"
