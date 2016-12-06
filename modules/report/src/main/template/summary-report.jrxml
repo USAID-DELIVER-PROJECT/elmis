@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="summar-report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-12-05T16:59:36 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="summary-report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.2100000000000004"/>
 	<property name="ireport.x" value="36"/>
 	<property name="ireport.y" value="0"/>
@@ -65,7 +67,7 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
-	<group name="GroupByFacility" isStartNewPage="true">
+	<group name="GroupByFacility">
 		<groupExpression><![CDATA[$F{facility}]]></groupExpression>
 		<groupHeader>
 			<band height="44">
@@ -88,7 +90,7 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 					<text><![CDATA[]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Transparent" x="110" y="0" width="210" height="44" forecolor="#000000" backcolor="#333333" uuid="ffcd7c55-2c98-4ac0-9832-4e99fd6a85fe">
+					<reportElement mode="Transparent" x="110" y="0" width="270" height="44" forecolor="#000000" backcolor="#333333" uuid="ffcd7c55-2c98-4ac0-9832-4e99fd6a85fe">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Bottom" markup="none">
@@ -98,8 +100,10 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 					<textFieldExpression><![CDATA[$R{label.product}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="401" y="0" width="80" height="44" forecolor="#000000" backcolor="#333333" uuid="98b09e9f-83d8-4f42-a6ed-017073ec45e3">
+					<reportElement mode="Transparent" x="450" y="0" width="70" height="44" forecolor="#000000" backcolor="#333333" uuid="98b09e9f-83d8-4f42-a6ed-017073ec45e3">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
@@ -108,8 +112,10 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 					<textFieldExpression><![CDATA[$R{label.receipts}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="481" y="0" width="80" height="44" forecolor="#000000" backcolor="#333333" uuid="5ff308dc-0ec9-4d03-81dd-608e6cde9c8f">
+					<reportElement mode="Transparent" x="520" y="0" width="70" height="44" forecolor="#000000" backcolor="#333333" uuid="5ff308dc-0ec9-4d03-81dd-608e6cde9c8f">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
@@ -118,8 +124,10 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 					<textFieldExpression><![CDATA[$R{label.issues}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="321" y="0" width="80" height="44" forecolor="#000000" backcolor="#333333" uuid="bc529b11-25e1-4135-8c48-2fc0dbc27959">
+					<reportElement mode="Transparent" x="380" y="0" width="70" height="44" forecolor="#000000" backcolor="#333333" uuid="bc529b11-25e1-4135-8c48-2fc0dbc27959">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
 						<font fontName="SansSerif" size="9" isBold="false"/>
@@ -127,8 +135,10 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 					<textFieldExpression><![CDATA[$R{label.opening.balance}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="641" y="0" width="80" height="44" forecolor="#000000" backcolor="#333333" uuid="c01c0518-4cb6-4845-b959-dc1f29b1022a">
+					<reportElement mode="Transparent" x="660" y="0" width="70" height="44" forecolor="#000000" backcolor="#333333" uuid="c01c0518-4cb6-4845-b959-dc1f29b1022a">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
@@ -137,8 +147,10 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 					<textFieldExpression><![CDATA[$R{label.closing.balance}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="561" y="0" width="80" height="44" forecolor="#000000" backcolor="#333333" uuid="31892d45-bcab-4de6-866c-7a070970f10a">
+					<reportElement mode="Transparent" x="590" y="0" width="70" height="44" forecolor="#000000" backcolor="#333333" uuid="31892d45-bcab-4de6-866c-7a070970f10a">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
@@ -157,8 +169,9 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 					<textFieldExpression><![CDATA[$R{label.product.code}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="721" y="0" width="80" height="44" forecolor="#000000" backcolor="#333333" uuid="8be3eb0c-6593-43f8-aa27-ca7390754d23">
+					<reportElement mode="Transparent" x="730" y="0" width="70" height="44" forecolor="#000000" backcolor="#333333" uuid="8be3eb0c-6593-43f8-aa27-ca7390754d23">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
@@ -180,11 +193,9 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 			</band>
 		</groupHeader>
 	</group>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
 	<title>
 		<band height="79" splitType="Stretch">
+			<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
 			<subreport>
 				<reportElement x="0" y="0" width="802" height="79" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
@@ -219,11 +230,11 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 		</band>
 	</title>
 	<detail>
-		<band height="32" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
-				<reportElement x="43" y="0" width="759" height="32" forecolor="#006666" uuid="e0231363-bcba-40f6-8a6b-7e3b8020aac2">
+				<reportElement x="43" y="0" width="759" height="21" forecolor="#006666" uuid="e0231363-bcba-40f6-8a6b-7e3b8020aac2">
 					<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Top">
@@ -232,25 +243,29 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="30" y="0" width="801" height="32" backcolor="#F4F4F4" uuid="fb1b77a0-4d61-465c-9e55-2aa5da7933ea">
+				<reportElement mode="Opaque" x="0" y="0" width="801" height="20" backcolor="#F4F4F4" uuid="fb1b77a0-4d61-465c-9e55-2aa5da7933ea">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement stretchType="RelativeToTallestObject" x="49" y="0" width="40" height="32" uuid="29ff9399-7f59-451b-b8df-f1f6240f4a60"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="40" height="20" uuid="29ff9399-7f59-451b-b8df-f1f6240f4a60">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="0" y="19" width="801" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7">
+			<line direction="BottomUp">
+				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="801" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -258,7 +273,7 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				</graphicElement>
 			</line>
 			<textField isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="89" y="0" width="70" height="32" uuid="59787138-53b0-463e-9f84-2e9ce5a14990"/>
+				<reportElement stretchType="RelativeToTallestObject" x="40" y="0" width="70" height="20" uuid="59787138-53b0-463e-9f84-2e9ce5a14990"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 					<paragraph leftIndent="5"/>
@@ -266,11 +281,15 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="129" y="0" width="210" height="32" uuid="8ddba84e-d6c3-4439-b31d-f8ec92c2d972">
+				<reportElement stretchType="RelativeToTallestObject" x="110" y="0" width="270" height="20" uuid="8ddba84e-d6c3-4439-b31d-f8ec92c2d972">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+					<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+					<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="true"/>
+					<property name="net.sf.jasperreports.export.xls.wrap.text" value="false"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
@@ -279,10 +298,11 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="420" y="0" width="80" height="32" uuid="d8596805-00b4-4490-9ede-7ac22f213601">
+				<reportElement stretchType="RelativeToTallestObject" x="450" y="0" width="70" height="20" uuid="d8596805-00b4-4490-9ede-7ac22f213601">
 					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
@@ -291,9 +311,10 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0").format($F{receipts})]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="500" y="0" width="80" height="32" uuid="f832e7d8-65b1-404a-9349-a14bad5d30c6">
+				<reportElement stretchType="RelativeToTallestObject" x="520" y="0" width="70" height="20" uuid="f832e7d8-65b1-404a-9349-a14bad5d30c6">
 					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
@@ -302,9 +323,10 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0").format($F{issues})]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="340" y="0" width="80" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="99e933b2-929e-4337-a071-488b683dd9b0">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="380" y="0" width="70" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="99e933b2-929e-4337-a071-488b683dd9b0">
 					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
@@ -313,11 +335,11 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0").format($F{openingBalance})]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="580" y="0" width="80" height="32" uuid="6f2237fb-b282-4f18-9f5e-9241b8bb7059">
+				<reportElement stretchType="RelativeToTallestObject" x="590" y="0" width="70" height="20" uuid="6f2237fb-b282-4f18-9f5e-9241b8bb7059">
 					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
@@ -326,9 +348,10 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0").format($F{adjustments})]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="660" y="0" width="80" height="32" uuid="7fa33077-7077-4fe4-8f1c-3c3e864ed87b">
+				<reportElement stretchType="RelativeToTallestObject" x="660" y="0" width="70" height="20" uuid="7fa33077-7077-4fe4-8f1c-3c3e864ed87b">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
@@ -337,9 +360,9 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0").format($F{closingBalance})]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="721" y="0" width="80" height="32" uuid="d05a3f5c-d185-477f-94ac-8b30cc160411">
+				<reportElement stretchType="RelativeToTallestObject" x="730" y="0" width="70" height="20" uuid="d05a3f5c-d185-477f-94ac-8b30cc160411">
 					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>

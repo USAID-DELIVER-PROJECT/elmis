@@ -30,7 +30,9 @@
 <div class="row-fluid sortable ui-sortable">
     <div class="box span12">
         <div class="box-header">
-            <h2><i class="icon-edit"></i><span class="break" openlmis-message="report.title.timeliness.in.reporting"></span></h2>
+            <h2>
+                <span openlmis-message="report.title.timeliness.in.reporting"></span>
+            </h2>
 
             <div class="box-icon">
                 <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
@@ -63,22 +65,18 @@
             </tr>
         </table>
         <div ng-show="datarows.length > 0">
-            <div class="pull-right legend">Page: {{tableParams.page}}, Showing records {{ ((tableParams.page - 1) *
-                tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of {{tableParams.total}}
-            </div>
-
-            <div class="span12 offset1" ng-repeat="dates in reportingDates ">
-
-                <div>
-                    <div class="pull-left" style="font-size:13px; font-weight: bold;left: 0;">
+            <div top-right-table-summary></div>
+            <span ng-repeat="dates in reportingDates ">
+                <span>
+                    <span>
                         <span data-toggle="tooltip" title="This facilities reported on Time "
                               class="icon-warning-sign green"></span>
                         <span openlmis-message="label.timeliness.reported.on.time.from"> </span> :<strong> <span
                             class="reporting-data">{{dates.reportingStartDate | date:'dd-MM-yyyy'}}</span></strong>
                         <span> To </span> : <strong> <span class="reporting-data">{{dates.reportingEndDate | date:'dd-MM-yyyy'}}</span></strong>
 
-                    </div>
-                </div>
+                    </span>
+                </span>
 
                 <div>
                     <div class="pull-left" style="font-size:13px; font-weight: bold;">
@@ -99,7 +97,7 @@
                 </div>
 
 
-            </div>
+            </span>
 
             <div class="container-fluid">
                 <div class="row-fluid">

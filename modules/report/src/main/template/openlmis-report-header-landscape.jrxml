@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-12-05T15:36:54 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-header-landscape" language="groovy" pageWidth="842" pageHeight="200" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="720" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b1774485-8c52-493d-8b62-63c6cd58f66d">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -76,7 +78,7 @@
 					<font size="16" isBold="true"/>
 					<paragraph leftIndent="0"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($P{REPORT_COUNTRY_TITLE} != null)?$P{REPORT_COUNTRY_TITLE}:$P{REPORT_COUNTRY_TITLE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($P{REPORT_COUNTRY_TITLE} != null)?$P{REPORT_COUNTRY_TITLE}:""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="255" y="49" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="f0612e80-b9ba-4d07-8fa8-6af2f8ad00cd"/>

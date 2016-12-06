@@ -67,9 +67,7 @@ public class AdjustmentSummaryQueryBuilder {
       WHERE("f.operatedById = " + filter.getFacilityOperator().toString());
     }
     ORDER_BY(QueryHelpers.getSortOrder(params, " product, adjustment_type, facility_type_name,facility_name, supplying_facility_name, product_category_name "));
-      String query= SQL();
-      System.out.println(query);
-    return query;
+    return SQL();
   }
 
 }

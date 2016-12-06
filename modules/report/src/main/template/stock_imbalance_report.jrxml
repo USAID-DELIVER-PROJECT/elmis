@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-28T16:26:05 -->
+<!-- 2016-12-05T21:44:32 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_imbalance_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.1289478601075549"/>
 	<property name="ireport.x" value="0"/>
@@ -39,6 +39,7 @@
 	<field name="status" class="java.lang.String"/>
 	<field name="productCode" class="java.lang.String"/>
 	<field name="facilityCode" class="java.lang.String"/>
+	<field name="regionName" class="java.lang.String"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -237,16 +238,14 @@
 				<textField>
 					<reportElement stretchType="RelativeToTallestObject" x="253" y="0" width="75" height="20" uuid="4286d927-d555-4251-b698-41f2e3c8289b"/>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{zoneName}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{regionName}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 	</group>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
 	<title>
 		<band height="79" splitType="Stretch">
+			<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
 			<subreport>
 				<reportElement x="0" y="0" width="802" height="79" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
@@ -408,7 +407,7 @@
 			<textField>
 				<reportElement stretchType="RelativeToTallestObject" x="328" y="0" width="71" height="20" uuid="9b89acb2-ba8e-4b09-9bc0-76c4f23ea51e"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{zoneName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{regionName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="RelativeToTallestObject" x="399" y="0" width="59" height="20" uuid="758a89a7-1f76-481b-8476-a27f5a9d5a86">

@@ -877,6 +877,13 @@ app.directive('regimenFilter', ['ReportRegimensByCategory',
     }
 ]);
 
+app.directive('topRightTableSummary', [function(){
+    return {
+      restrict: 'EA',
+      templateUrl: '/public/pages/reports/shared/top-right-pagination-summary.html'
+    };
+}]);
+
 app.directive('clientSideSortPagination', ['$filter', 'ngTableParams',
     function ($filter, ngTableParams) {
 
@@ -1134,8 +1141,10 @@ app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographi
                 TreeGeographicTreeByProgramNoZones.get({
                     program: $scope.program
                 }, function (data) {
-                    $scope.zones = data.zone;
-
+                    $scope.zones = [data.zone];
+                    if($scope.selectedZone === undefined || $scope.selectedZone === null){
+                      $scope.selectedZone = data.zone;
+                    }
 
                 });
 
