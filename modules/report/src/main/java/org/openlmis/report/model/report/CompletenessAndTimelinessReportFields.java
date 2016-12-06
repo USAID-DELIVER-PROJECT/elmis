@@ -12,23 +12,35 @@
 
 package org.openlmis.report.model.report;
 
-
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.report.model.ResultRow;
 
+import javax.persistence.Column;
 import java.util.List;
-import java.util.Map;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompletenessAndTimelinessReport implements ResultRow {
+public class CompletenessAndTimelinessReportFields implements ResultRow {
 
-    List<CompletenessAndTimelinessReportFields> mainReport;
-    List<CompletenessAndTimelinessReportFields> summaryReport;
-    List<Map<String, Object>> summaryPeriodList;
-
-
+    String regionName;
+    String districtName;
+    String periodName;
+    String periodStartDate;
+    Integer geographicZoneId;
+    Double fixed;
+    Double outreach;
+    Double sessionTotal;
+    Long target;
+    Long expected;
+    Long reported;
+    Long onTime;
+    Long late;
+    Double percentReported;
+    Double percentLate;
+    String reportingStatus;
 }

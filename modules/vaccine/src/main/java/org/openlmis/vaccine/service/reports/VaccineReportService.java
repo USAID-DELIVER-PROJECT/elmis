@@ -277,23 +277,6 @@ public class VaccineReportService {
 
     }
 
-    public Map<String, List<Map<String, Object>>> getCompletenessAndTimelinessReportData(String periodStart, String periodEnd,
-                                                                                         Long districtId) {
-
-        Date startDate, endDate;
-
-        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
-        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
-
-        Map<String, List<Map<String, Object>>> result = new HashMap<>();
-
-        result.put("mainreport", repository.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId));
-        result.put("summary", repository.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId));
-        result.put("summaryPeriodLists", getSummaryPeriodList(startDate, endDate));
-
-        return result;
-    }
-
     public Map<String, List<Map<String, Object>>> getAdequacyLevelOfSupply(String periodStart, String periodEnd, Long districtId,
                                                                            Long productId) {
 

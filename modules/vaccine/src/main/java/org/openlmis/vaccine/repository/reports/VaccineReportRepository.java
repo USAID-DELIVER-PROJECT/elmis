@@ -150,15 +150,6 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
         return  mapper.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId, doseId, userId);
     }
 
-
-    public List<Map<String,Object>> getCompletenessAndTimelinessMainReportDataByDistrict(Date startDate, Date endDate, Long districtId) {
-        return mapper.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId);
-    }
-
-    public List<Map<String,Object>> getCompletenessAndTimelinessSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId) {
-         return mapper.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId);
-    }
-
     public List<Map<String,Object>> getAdequacyLevelOfSupplyByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {
         return mapper.getAdequacyLevelOfSupplyReportDataByDistrict(startDate, endDate, districtId, productId);
     }

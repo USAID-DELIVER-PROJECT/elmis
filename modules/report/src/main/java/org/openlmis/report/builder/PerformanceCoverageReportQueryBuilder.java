@@ -16,7 +16,7 @@ import org.openlmis.report.model.params.PerformanceCoverageReportParam;
 
 import java.util.Map;
 
-public class PerformanceCoverageReportQueryBuilder {
+public class  PerformanceCoverageReportQueryBuilder {
 
     public static String getFacilityReport(Map map){
 
@@ -73,9 +73,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "                   AND d.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "+
                         "                 group by d.region_name,d.region_id, d.district_name, d.district_id, i.period_name, \n" +
                         "                 i.period_id, i.period_start_date, i.facility_name, i.facility_id\n" +
-                        "                 \n" +
-                        "                 order by d.region_name, i.period_start_date\n" +
-                        ") \n" +
+                        " ) \n" +
 
                 "--  get cumulative coverages\n" +
                         ", coverage_with_cumulatives as (\n" +
@@ -160,7 +158,6 @@ public class PerformanceCoverageReportQueryBuilder {
                         "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
                         +params.getDistrict()+" or d.parent = "+params.getDistrict()+") " +
                         "    group by 1,2,3,4,5,6\n" +
-                        "    order by 2,1\n" +
                         ")\n" +
 
                         "-- Generate for each target a 12 month row for later use\n" +
@@ -171,7 +168,6 @@ public class PerformanceCoverageReportQueryBuilder {
                         "        pp.startdate::date >= '"+ params.getPeriodStart()+"'::date  \n" +
                         "        and pp.enddate::date <= '"+ params.getPeriodEnd()+"'::date   \n" +
                         "        and pp.numberofmonths = 1 \n" +
-                        "        order by region_name, district_name, startdate\n" +
                         ") \n" +
 
                         "-- Get coverage\n" +
@@ -195,7 +191,6 @@ public class PerformanceCoverageReportQueryBuilder {
                         "                   AND i.product_id = "+ params.getProduct()+"\n" +
                         "                   AND d.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "+
                         "                 group by d.region_name,d.region_id, d.district_name, d.district_id, i.period_name, i.period_id, i.period_start_date\n" +
-                        "                 order by d.region_name, i.period_start_date\n" +
                         ") \n" +
 
                         "--  get cumulative coverages\n" +
@@ -230,7 +225,7 @@ public class PerformanceCoverageReportQueryBuilder {
         PerformanceCoverageReportParam params  = (PerformanceCoverageReportParam)map.get("filterCriteria");
 
         String sql =
-                "-- Get population target\n" +
+                "-- GET POPULATION TARGET\n" +
                         "with ppl_demographics as (\n" +
                         "    select \"year\", vd.region_name, vd.region_id,  productid, coalesce(sum(denominator),0) target, coalesce(sum(population),0) population \n" +
                         "    from vw_vaccine_population_denominator vd \n" +
@@ -242,10 +237,9 @@ public class PerformanceCoverageReportQueryBuilder {
                         "      and (0 = "+params.getDistrict()+" or d.district_id = "+params.getDistrict()+" or d.region_id = "
                         + params.getDistrict()+" or d.parent = "+params.getDistrict()+") "+
                         "      group by 1,2,3,4\n" +
-                        "    order by 2,1\n" +
                         ")\n" +
                         "\n" +
-                        "-- Generate for each target a 12 month row for later use\n" +
+                "-- Generate for each target a 12 month row for later use\n" +
                         ", region_period AS (\n" +
                         "    select pp.id period_id, pp.startdate, pp.name period_name, dr.*\n" +
                         "       from processing_periods pp, (select * from ppl_demographics) dr\n" +
@@ -253,10 +247,9 @@ public class PerformanceCoverageReportQueryBuilder {
                         "        pp.startdate::date >= '"+ params.getPeriodStart()+"'::date  \n" +
                         "        and pp.enddate::date <= '"+ params.getPeriodEnd()+"'::date   \n" +
                         "        and pp.numberofmonths = 1 \n" +
-                        "        order by region_name, startdate\n" +
                         ") \n" +
                         "\n" +
-                        "-- Get coverage\n" +
+                "-- Get coverage\n" +
                         ", coverage as (\n" +
                         "    SELECT    d.region_name, \n" +
                         "                  d.region_id,\n" +
@@ -279,7 +272,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "                 order by d.region_name, i.period_start_date\n" +
                         ") \n" +
                         "\n" +
-                        "--  get cumulative coverages\n" +
+                "--  get cumulative coverages\n" +
                         ", coverage_with_cumulatives as (\n" +
                         "    select r.*, c.vaccinated, round((case when r.target > 0 then (c.vaccinated /r.target::numeric) else 0 end) * 100,2) coverage,\n" +
                         "    (select sum(coalesce(c.vaccinated,0)) from coverage c where c.period_start_date <= startdate and c.region_id = r.region_id) cum_vaccinated \n" +
@@ -288,7 +281,7 @@ public class PerformanceCoverageReportQueryBuilder {
                         "       where r.region_id in (select distinct region_id from coverage) " +
                         " )\n" +
                         "\n" +
-                        "   select c.region_name,\n" +
+                "   select c.region_name,\n" +
                         "      \n" +
                         "      c.period_name,\n" +
                         "      case when c.vaccinated is null then 'No' else 'Yes' end reported,\n" +
