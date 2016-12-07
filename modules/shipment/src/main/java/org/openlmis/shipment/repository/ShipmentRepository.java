@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.shipment.domain.ShipmentFileInfo;
 import org.openlmis.shipment.domain.ShipmentLineItem;
+import org.openlmis.shipment.dto.ShipmentImportedOrder;
 import org.openlmis.shipment.repository.mapper.ShipmentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -50,5 +51,9 @@ public class ShipmentRepository {
 
   public List<ShipmentLineItem> getLineItems(Long orderId) {
     return shipmentMapper.getLineItems(orderId);
+  }
+
+  public List<ShipmentImportedOrder> getShipmentImportedOrders(String facilityCode) {
+    return shipmentMapper.getShipmentImportedOrders(facilityCode);
   }
 }

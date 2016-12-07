@@ -12,9 +12,11 @@ package org.openlmis.shipment.repository.mapper;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.openlmis.shipment.domain.ShipmentFileInfo;
 import org.openlmis.shipment.domain.ShipmentLineItem;
+import org.openlmis.shipment.dto.ShipmentImportedOrder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -43,4 +45,14 @@ public interface ShipmentMapper {
 
   @Select({"SELECT * FROM shipment_line_items WHERE orderId = #{orderId}"})
   List<ShipmentLineItem> getLineItems(Long orderId);
+
+
+  @Select("SELECT o.id as orderId, pr.id as programId, f.id as facilityId, pr.name as programName, f.name as facilityName, p.startDate as periodStartDate, p.endDate as periodEndDate, r.emergency as isEmergency  FROM orders o " +
+      " join requisitions r on r.id = o.id " +
+      " join facilities f on f.id = r.facilityId " +
+      " join processing_periods p on p.id = r.periodId " +
+      " join programs pr on pr.id = r.programId " +
+      " where f.code = #{facilityCode} and r.id in (select orderId from shipment_line_items)" +
+      " order by p.startDate")
+  List<ShipmentImportedOrder> getShipmentImportedOrders(@Param("facilityCode") String facilityCode);
 }
