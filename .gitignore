@@ -27,4 +27,4 @@ gradlew
 gradlew.bat
 modules/export/src/main/resources/generated/
 atlassian-ide-plugin.xml
-shipment/
+/shipment/
