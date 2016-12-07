@@ -15,12 +15,8 @@ function CustomReportController($scope, $window, reports, CustomReportValue) {
   $scope.displayReports = _.groupBy(reports, 'category');
   $scope.categories = _.uniq(_.pluck(reports, 'category'));
 
-
-
   $scope.OnReportTypeChanged = function(value){
-    console.log(value);
     $scope.filter.report_key = value;
-    console.log($scope.requiredFilters);
     $scope.OnFilterChanged();
   };
 

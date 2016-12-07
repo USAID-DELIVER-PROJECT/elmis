@@ -43,8 +43,7 @@
                     </tr>
                 </table>
                 <div ng-show="datarows.length > 0">
-                    <div class="pull-right legend" >Page: {{tableParams.page}}, Showing records {{ ((tableParams.page - 1) * tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of {{tableParams.total}} </div>
-
+                    <div top-right-table-summary></div>
                     <div class="span12 offset1">
 
                         <div>

@@ -19,7 +19,8 @@
         Reports
       </h2>
     </div>
-    <div filter-container>
+    <filter-container >
+    <div>
       <form ng-submit="filterGrid()" name="filterForm" novalidate>
         <div class="app-form">
           <select ui-select2 style="width: 450px;" ng-change="OnReportTypeChanged(filter.report_key)" ng-model="filter.report_key">
@@ -144,5 +145,6 @@
         </div>
       </form>
     </div>
+    </filter-container>
   </div>
 </div>

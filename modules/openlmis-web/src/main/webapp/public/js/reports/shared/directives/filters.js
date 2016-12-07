@@ -83,7 +83,7 @@ app.directive('filterContainer', ['$routeParams', '$location', '$timeout', 'mess
                     }
                     for (var i = 0; i < requiredFilters.length; i++) {
                         var field = requiredFilters[i];
-                        if (isUndefined($scope.filter[field]) || _.isEmpty($scope.filter[field]) || $scope.filter[field] === '' || $scope.filter[field] === 0 || $scope.filter[field] === -1) {
+                        if (isUndefined($scope.filter[field]) || $scope.filter[field] === '' || $scope.filter[field] === 0 || $scope.filter[field] === -1) {
                             all_required_fields_set = false;
                             break;
                         }
@@ -342,9 +342,9 @@ app.directive('zoneFilter', ['TreeGeographicZoneList', 'TreeGeographicZoneListBy
             require: '^filterContainer',
             link: function (scope, elm, attr) {
                 scope.$watch('selectedZone', function(){
-                  if(scope.filter !== undefined && scope.selectedZone !== undefined && scope.selectedZone !== null){
-                    scope.filter.zone = scope.selectedZone.id;
-                    scope.filter.zoneName = scope.selectedZone.name.replace(/%20/g, '+');
+                  if(scope.$parent.filter !== undefined && scope.selectedZone !== undefined && scope.selectedZone !== null){
+                    scope.$parent.filter.zone = scope.selectedZone.id;
+                    scope.$parent.filter.zoneName = scope.selectedZone.name.replace(/%20/g, '+');
                     scope.notifyFilterChanged('zone-filter-changed');
                   }
                 });
