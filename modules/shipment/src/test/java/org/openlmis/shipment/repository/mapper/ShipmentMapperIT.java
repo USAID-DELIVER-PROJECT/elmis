@@ -120,7 +120,8 @@ public class ShipmentMapperIT {
   public void shouldInsertShipmentFileInfo() throws Exception {
     ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo();
     shipmentFileInfo.setFileName("abc");
-
+    shipmentFileInfo.setSkippedShipmentLineItems("[]");
+    shipmentFileInfo.setHasSkippedLineItems(false);
     mapper.insertShipmentFileInfo(shipmentFileInfo);
 
     assertThat(shipmentFileInfo.getId(), is(notNullValue()));
@@ -130,7 +131,8 @@ public class ShipmentMapperIT {
   public void shouldGetShipmentFileInfoById() throws Exception {
     ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo();
     shipmentFileInfo.setFileName("abc");
-
+    shipmentFileInfo.setSkippedShipmentLineItems("[]");
+    shipmentFileInfo.setHasSkippedLineItems(false);
     mapper.insertShipmentFileInfo(shipmentFileInfo);
 
     ShipmentFileInfo result = mapper.getShipmentFileInfo(shipmentFileInfo.getId());

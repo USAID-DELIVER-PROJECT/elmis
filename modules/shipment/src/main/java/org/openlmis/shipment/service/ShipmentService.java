@@ -57,6 +57,7 @@ public class ShipmentService {
       Product product = productService.getByCode(shipmentLineItem.getProductCode());
       if (product == null) {
         throw new DataException("error.unknown.product");
+        //TODO: log product in database and get past this line.
       }
 
       Long programId = requisitionService.getProgramId(shipmentLineItem.getOrderId());
@@ -72,6 +73,7 @@ public class ShipmentService {
     if (shipmentLineItem.getSubstitutedProductCode() != null) {
       if (productService.getByCode(shipmentLineItem.getSubstitutedProductCode()) == null) {
         throw new DataException("error.unknown.product");
+        //TODO: log product in database and get past this line.
       }
     }
 

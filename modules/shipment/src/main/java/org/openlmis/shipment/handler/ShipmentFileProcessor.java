@@ -85,19 +85,21 @@ public class ShipmentFileProcessor {
 
     EDIFileTemplate shipmentFileTemplate = shipmentFileTemplateService.get();
 
-    boolean successfullyProcessed = true;
+    List<ShipmentLineItemDTO> productsWithProcessingIssues = new ArrayList<>();
+
     try (ICsvListReader listReader = new CsvListReader(new FileReader(shipmentFile), STANDARD_PREFERENCE)) {
 
       ignoreFirstLineIfHeadersArePresent(shipmentFileTemplate, listReader);
 
-      getSpringProxy().processShipmentLineItem(listReader, shipmentFileTemplate, orderNumbers, creationDate);
+      getSpringProxy().processShipmentLineItem(listReader, shipmentFileTemplate, orderNumbers, productsWithProcessingIssues,  creationDate);
       logger.debug("Successfully processed file " + shipmentFile.getName());
 
     } catch (Exception e) {
-      successfullyProcessed = false;
+      shipmentFilePostProcessHandler.process(orderNumbers, shipmentFile, false, productsWithProcessingIssues, e);
+      return;
     }
 
-    shipmentFilePostProcessHandler.process(orderNumbers, shipmentFile, successfullyProcessed);
+    shipmentFilePostProcessHandler.process(orderNumbers, shipmentFile, true, productsWithProcessingIssues, null);
   }
 
   //  TODO: important add unit test fot this method
@@ -105,6 +107,7 @@ public class ShipmentFileProcessor {
   public void processShipmentLineItem(ICsvListReader listReader,
                                       EDIFileTemplate shipmentFileTemplate,
                                       Set<String> orderSet,
+                                      List<ShipmentLineItemDTO> productsWithImportIssue,
                                       Date creationDate) throws Exception {
     boolean status = true;
 
@@ -122,7 +125,7 @@ public class ShipmentFileProcessor {
       status = addShippableOrder(orderSet, dto) && status;
 
       if (status) {
-        status = saveLineItem(dto, packedDateFormat, shippedDateFormat, creationDate);
+         saveLineItem(dto, packedDateFormat, shippedDateFormat, productsWithImportIssue, creationDate);
       }
     }
 
@@ -157,6 +160,7 @@ public class ShipmentFileProcessor {
   private boolean saveLineItem(ShipmentLineItemDTO dto,
                                String packedDateFormat,
                                String shippedDateFormat,
+                               List<ShipmentLineItemDTO> productsWithImportIssue,
                                Date creationDate) {
     boolean savedSuccessfully = true;
     try {
@@ -165,6 +169,8 @@ public class ShipmentFileProcessor {
       ShipmentLineItem lineItem = transformer.transform(dto, packedDateFormat, shippedDateFormat, creationDate);
       shipmentService.save(lineItem);
     } catch (DataException e) {
+      dto.setProcessingError(e.getOpenLmisMessage().getCode());
+      productsWithImportIssue.add(dto);
       logger.warn("Error in processing shipment file for orderId: " + dto.getOrderNumber(), e);
       savedSuccessfully = false;
     }

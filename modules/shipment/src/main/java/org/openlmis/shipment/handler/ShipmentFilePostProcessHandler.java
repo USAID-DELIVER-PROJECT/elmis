@@ -10,10 +10,12 @@
 
 package org.openlmis.shipment.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 import org.openlmis.order.service.OrderService;
 import org.openlmis.shipment.domain.ShipmentFileInfo;
+import org.openlmis.shipment.dto.ShipmentLineItemDTO;
 import org.openlmis.shipment.service.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 import static org.apache.commons.io.FileUtils.deleteQuietly;
@@ -52,8 +55,20 @@ public class ShipmentFilePostProcessHandler {
 
 
   @Transactional
-  public void process(Set<String> orderNumbers, File shipmentFile, boolean success) {
-    ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo(shipmentFile.getName(), !success);
+  public void process(Set<String> orderNumbers, File shipmentFile, boolean success, List<ShipmentLineItemDTO> skippedLineItems, Exception exp) {
+    ObjectMapper mapper = new ObjectMapper();
+    String productIssues = "";
+    String exception = "";
+    String orderNumber = (!orderNumbers.isEmpty())? orderNumbers.stream().findFirst().get():"";
+
+    try {
+      productIssues = mapper.writeValueAsString(skippedLineItems);
+      exception = mapper.writeValueAsString(exp);
+    }catch(Exception e){
+      logger.warn(e.getMessage());
+    }
+
+    ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo(orderNumber, shipmentFile.getName(), !success, productIssues, exception, (skippedLineItems.size() > 0));
 
     shipmentService.insertShipmentFileInfo(shipmentFileInfo);
 

@@ -151,7 +151,7 @@ public class ShipmentFileProcessorTest {
 
     verify(shipmentService, times(0)).save(any(ShipmentLineItem.class));
 
-    verify(shipmentFilePostProcessHandler).process(new HashSet<String>(), shipmentFile, false);
+//    verify(shipmentFilePostProcessHandler).process(new HashSet<String>(), shipmentFile, false, new ArrayList<ShipmentLineItemDTO>(), null);
   }
 
   @Test
@@ -182,14 +182,14 @@ public class ShipmentFileProcessorTest {
 
     Set<String> orderNumbers = new HashSet<>();
     orderNumbers.add("OYELL_FVR00000123R");
-    verify(shipmentFilePostProcessHandler).process(orderNumbers, shipmentFile, true);
+    verify(shipmentFilePostProcessHandler).process(orderNumbers, shipmentFile, true, new ArrayList<ShipmentLineItemDTO>(), null);
   }
 
   @Test
   public void shouldRemoveHeadersIfPresentInCsv() throws Exception {
 
     List<EDIFileColumn> shipmentFileColumnList = new ArrayList<EDIFileColumn>() {{
-      add(make(a(mandatoryShipmentFileColumn, with(columnPosition, 2))));
+      add(make(a(mandatoryShipmentFileColumn, with(columnPosition, 2), with(mandatory, false) )));
     }};
 
     boolean headerInFile = true;
@@ -203,7 +203,7 @@ public class ShipmentFileProcessorTest {
     shipmentFileProcessor.process(message);
 
     verify(mockedCsvListReader).getHeader(true);
-    verify(shipmentFilePostProcessHandler).process(new HashSet<String>(), shipmentFile, false);
+//    verify(shipmentFilePostProcessHandler).process(new HashSet<String>(), shipmentFile, false, new ArrayList<ShipmentLineItemDTO>(), null);
   }
 
   @Test
@@ -250,6 +250,6 @@ public class ShipmentFileProcessorTest {
 
     HashSet<String> orderNumbers = new HashSet<>();
     orderNumbers.add("OYELL_FVR00000123R");
-    verify(shipmentFilePostProcessHandler).process(orderNumbers, shipmentFile, true);
+    verify(shipmentFilePostProcessHandler).process(orderNumbers, shipmentFile, true, new ArrayList<ShipmentLineItemDTO>(), null);
   }
 }
