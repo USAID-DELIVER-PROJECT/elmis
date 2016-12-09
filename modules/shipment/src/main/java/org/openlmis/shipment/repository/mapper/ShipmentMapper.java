@@ -39,7 +39,7 @@ public interface ShipmentMapper {
   @Insert({"INSERT INTO shipment_file_info " +
       "(orderNumber, fileName, processingError, orderProcessingExceptions, skippedShipmentLineItems, hasSkippedLineItems) " +
       "VALUES " +
-      "(#{orderNumber}, #{fileName},#{processingError}, cast(#{orderProcessingExceptions} as json), cast(#{skippedShipmentLineItems} as json), #{hasSkippedLineItems} )"})
+      "(#{orderNumber}, #{fileName},#{processingError}, #{orderProcessingExceptions}, cast(#{skippedShipmentLineItems} as json), #{hasSkippedLineItems} )"})
   @Options(useGeneratedKeys = true)
   void insertShipmentFileInfo(ShipmentFileInfo shipmentFileInfo);
 
