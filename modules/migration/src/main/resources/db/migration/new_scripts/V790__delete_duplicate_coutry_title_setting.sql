@@ -1,0 +1,1 @@
+delete from configuration_settings where key = 'REPORT_COUNTRY_TITLE_TEXT';

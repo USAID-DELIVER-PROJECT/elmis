@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-header-landscape" language="groovy" pageWidth="842" pageHeight="200" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="720" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b1774485-8c52-493d-8b62-63c6cd58f66d">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="105"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="REPORT_TITLE" class="java.lang.String"/>
@@ -47,7 +47,7 @@
 				<textFieldExpression><![CDATA[($P{REPORT_FILTER_PARAM_VALUES} != 0)?$P{REPORT_FILTER_PARAM_VALUES}:""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="206" y="70" width="514" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="8e7e49a1-6c5e-4a50-ba77-935008c82741"/>
+				<reportElement x="155" y="70" width="576" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="8e7e49a1-6c5e-4a50-ba77-935008c82741"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="16" isBold="true"/>
 					<paragraph leftIndent="0"/>
@@ -55,7 +55,7 @@
 				<textFieldExpression><![CDATA[($P{CUSTOM_REPORT_TITLE} != null)?$P{CUSTOM_REPORT_TITLE}:$P{REPORT_TITLE}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="206" y="28" width="514" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="4e714469-2ec7-46c4-ab1a-c1a75cb2f71f"/>
+				<reportElement x="155" y="28" width="576" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="4e714469-2ec7-46c4-ab1a-c1a75cb2f71f"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="16" isBold="true"/>
 					<paragraph leftIndent="0"/>
@@ -71,7 +71,7 @@
 				<imageExpression><![CDATA[$P{VIMS_LOGO}]]></imageExpression>
 			</image>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="206" y="7" width="514" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="d48794b6-f1f8-4237-b5b7-a7b076292c2f"/>
+				<reportElement x="155" y="7" width="576" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="d48794b6-f1f8-4237-b5b7-a7b076292c2f"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="16" isBold="true"/>
 					<paragraph leftIndent="0"/>
@@ -79,7 +79,7 @@
 				<textFieldExpression><![CDATA[($P{REPORT_COUNTRY_TITLE} != null)?$P{REPORT_COUNTRY_TITLE}:$P{REPORT_COUNTRY_TITLE}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="206" y="49" width="514" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="f0612e80-b9ba-4d07-8fa8-6af2f8ad00cd"/>
+				<reportElement x="155" y="49" width="576" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="f0612e80-b9ba-4d07-8fa8-6af2f8ad00cd"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="16" isBold="true"/>
 					<paragraph leftIndent="0"/>
