@@ -975,10 +975,6 @@ app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCa
                     scope.periods = data.yearSchedulePeriod;
                 });
 
-                SettingsByKey.get({key: 'SYSTEM_DEPLOYMENT_INSTANCE'}, function (data){
-                    scope.zambiaInstance = data.settings.value == 'ZAMBIA';//) console.log('asdfasdf');
-                });
-
                 var onParentChanged = function () {
                     onProgramChanged(scope);
                 };
