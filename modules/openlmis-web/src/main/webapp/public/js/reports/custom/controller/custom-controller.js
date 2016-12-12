@@ -15,12 +15,8 @@ function CustomReportController($scope, $window, reports, CustomReportValue) {
   $scope.displayReports = _.groupBy(reports, 'category');
   $scope.categories = _.uniq(_.pluck(reports, 'category'));
 
-  $scope.isReady = true;
-  if (!angular.isUndefined($scope.filter) && angular.isUndefined($scope.filter.report_key)) {
-    $scope.OnFilterChanged();
-  }
-
-  $scope.OnReportTypeChanged = function(){
+  $scope.OnReportTypeChanged = function(value){
+    $scope.filter.report_key = value;
     $scope.OnFilterChanged();
   };
 
@@ -48,7 +44,9 @@ function CustomReportController($scope, $window, reports, CustomReportValue) {
   }
 
   $scope.OnFilterChanged = function () {
+
     if (angular.isUndefined($scope.filter) || angular.isUndefined($scope.filter.report_key) || !$scope.isReady) {
+      console.log($scope.filter.report_key);
       return;
     }
     $scope.applyUrl();
@@ -69,6 +67,14 @@ function CustomReportController($scope, $window, reports, CustomReportValue) {
     $window.open(url, '_blank');
   };
 
+  $scope.isReady = true;
+  if (!angular.isUndefined($scope.filter) && angular.isUndefined($scope.filter.report_key)) {
+    $scope.OnFilterChanged();
+  }
+
+  if(angular.isUndefined($scope.filter)){
+    $scope.filter = {};
+  }
 }
 
 CustomReportController.resolve = {

@@ -15,7 +15,9 @@
 <div class="row-fluid sortable ui-sortable">
   <div class="box span12">
     <div class="box-header">
-      <h2><i class="icon-edit"></i><span class="break"></span> <span openlmis-message="header.report.seasonality.rationing"></span></h2>
+      <h2>
+        <span openlmis-message="header.report.seasonality.rationing"></span>
+      </h2>
 
       <div class="box-icon">
         <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
@@ -45,9 +47,7 @@
           </table>
 
           <div ng-show="datarows.length > 0">
-            <div class="pull-right legend">Page: {{tableParams.page}}, Showing records {{ ((tableParams.page - 1) *
-              tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of {{tableParams.total}}
-            </div>
+            <div top-right-table-summary></div>
             <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right"
                    ng-table="tableParams">
               <tbody>

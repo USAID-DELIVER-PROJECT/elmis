@@ -303,7 +303,7 @@ var utils = {
     },
 
     getColumnSubTotal: function (reportData, districtName, columnToBeAgregated) {
-        return _.chain(reportData).where({districtname: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+        return _.chain(reportData).where({districtName: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
             return memo + num;
         }, 0).value();
     },

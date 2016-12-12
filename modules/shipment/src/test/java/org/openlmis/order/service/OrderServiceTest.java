@@ -323,7 +323,7 @@ public class OrderServiceTest {
     order1.setSupplyLine(supplyLine);
     order2.setSupplyLine(supplyLine);
 
-    ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo("shipmentFile.csv", processingError);
+    ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo("", "shipmentFile.csv", processingError, "[]", "", false);
     shipmentFileInfo.setId(shipmentId);
 
     when(orderRepository.getByOrderNumber(order1.getOrderNumber())).thenReturn(order1);
@@ -367,7 +367,7 @@ public class OrderServiceTest {
     order1.setStatus(PACKED);
     order2.setStatus(PACKED);
 
-    ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo("shipmentFile.csv", processingError);
+    ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo("","shipmentFile.csv", processingError, "[]", "", false);
     shipmentFileInfo.setId(shipmentId);
 
     when(orderRepository.getByOrderNumber(order1.getOrderNumber())).thenReturn(order1);

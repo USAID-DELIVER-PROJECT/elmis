@@ -105,16 +105,6 @@ Long userId= this.loggedInUserId(request);
         return OpenLmisResponse.response("denominatorName",
                 denominatorName);
     }
-    @RequestMapping(value = "/completenessAndTimeliness", method = RequestMethod.GET)
-    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
-    public ResponseEntity<OpenLmisResponse> completenessAndTimeliness(@RequestParam(value = "periodStart", required = false) String periodStart,
-                                                                      @RequestParam(value = "periodEnd", required = false) String periodEnd,
-                                                                      @RequestParam("district") Long districtId) {
-
-
-        return OpenLmisResponse.response("completenessAndTimeliness",
-                service.getCompletenessAndTimelinessReportData(periodStart, periodEnd, districtId));
-    }
 
     @RequestMapping(value = "/adequaceyLevel", method = RequestMethod.GET)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")

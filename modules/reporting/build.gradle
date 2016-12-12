@@ -15,7 +15,7 @@ dependencies {
         exclude group: 'org.apache.lucene'
         exclude group: 'org.olap4j'
     }
-    compile 'org.codehaus.groovy:groovy-all:2.4.4',
+    compile 'org.codehaus.groovy:groovy-all:2.3.9',
             'org.apache.poi:poi:3.13',
             project(':modules:core')
 

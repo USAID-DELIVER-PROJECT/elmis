@@ -48,6 +48,7 @@ public class ShipmentLineItemDTO {
   private String packSize;
   private String packedDate;
   private String shippedDate;
+  private String processingError;
 
   public ShipmentLineItemDTO(String orderNumber, String productCode, String substitutedProductCode, String quantityShipped,
                              String cost, String packedDate, String shippedDate) {

@@ -424,7 +424,7 @@ services.factory('VaccineDashboardDistrictSessions', function($resource) {
 });
 
 services.factory('CompletenessAndTimeliness', function ($resource) {
-    return $resource('/vaccine/report/completenessAndTimeliness.json', {}, {});
+    return $resource('/reports/reportdata/completenessAndTimeliness.json', {}, {});
 });
 
 services.factory('AdequacyLevelOfSupply', function ($resource) {

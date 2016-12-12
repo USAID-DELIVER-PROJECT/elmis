@@ -85,7 +85,7 @@
   <div>
     <label for="zone" class="labels" openlmis-message="label.geographic.zone">
         <span ng-show="requiredFilters.zone" class="label-required">*</span></label>
-        <tree-dropdown class="tree-dropdown" data="zones" selected="selectedZone" ng-model="filter.zone"></tree-dropdown>
+        <tree-dropdown class="tree-dropdown" data="zones" selected="selectedZone" ng-change="notifyFilterChanged('zone-changed')" ng-model="filter.zone"></tree-dropdown>
   </div>
 </script>
 
@@ -381,39 +381,10 @@
 </script>-->
 <script type="text/ng-template" id="filter-vaccine-zone-template">
     <div>
-        <div style=" display: inline-block;    margin-left: 10px;">
-            <div id="1" style="float: left">
-                <label for="zone" class="labels" openlmis-message="label.vaccine.geographic.zone"><span
-                        class="label-required">*</span></label>
-
-                <div>
-                    <select id="zone" ui-select2 class="input-large" data-placeholder="-- All Zones --"
-                            ng-model="filterZone">
-                        <option ng-selected=" filterZone == 0" value="0">
-                            {{user_geo_level}}
-                        </option>
-                        <optgroup ng-repeat="value in zones.children" value="{{ value.id }}"
-                                  ng-selected="filterZone == value.id" label="{{value.name}}">
-                            <option ng-selected="filterZone == value.id" value="{{value.id}}"><b class="green"> -- All of
-                                {{value.name}}</b></option>
-                            <option ng-repeat-start="v in value.children" ng-selected="filterZone == v.id" value="{{v.id}}">
-                                &nbsp; &nbsp; {{v.name}}
-                            </option>
-                            <option ng-repeat-end ng-repeat="d in v.children" ng-selected="filterZone == d.id"
-                                    value="{{d.id}}"> &nbsp; &nbsp; {{d.name}}
-                            </option>
-                        </optgroup>
-                    </select>
-                </div>
-            </div>
-            <div ng-show="faccilityShow==true" id="2" style="float: right; margin-left: 5px">
-                <label for="facility" class="labels" openlmis-message="label.facility"><span ng-show="requiredFilters.facility" class="label-required">*</span></label>
-                <div>
-                    <select id="facility" ui-select2 class="input-large" ng-model="facilityId" ng-change="notifyFilterChanged('facility-changed');">
-                        <option  ng-repeat="option in facilities" ng-selected="facilityId == option.id" value="{{ option.id }}" openlmis-message="option.name"></option>
-                    </select>
-                </div>
-            </div>
+        <div>
+            <label class="labels" openlmis-message="label.geographic.zone">
+                <span class="label-required">*</span></label>
+            <tree-dropdown class="tree-dropdown" data="zones" selected="selectedZone" ng-model="filter.zone"></tree-dropdown>
         </div>
     </div>
 

@@ -10,25 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.report.model.report;
+package org.openlmis.shipment.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.openlmis.report.model.ResultRow;
+import java.util.Date;
 
-import java.util.List;
-import java.util.Map;
+@Getter
+@Setter
+public class ShipmentImportedOrder {
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class CompletenessAndTimelinessReport implements ResultRow {
+  private Long orderId;
+  private Long programId;
+  private Long facilityId;
+  private String programName;
+  private String facilityName;
 
-    List<CompletenessAndTimelinessReportFields> mainReport;
-    List<CompletenessAndTimelinessReportFields> summaryReport;
-    List<Map<String, Object>> summaryPeriodList;
+  private Date periodStartDate;
+  private Date periodEndDate;
 
-
+  private Boolean isEmergency;
 }

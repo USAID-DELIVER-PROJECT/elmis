@@ -19,6 +19,7 @@ import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.service.MessageService;
@@ -290,19 +291,23 @@ public class JasperReportExporter implements ReportExporter {
          */
     public HttpServletResponse exportXls(JasperPrint jasperPrint, String outputFileName, HttpServletResponse response, ByteArrayOutputStream byteArrayOutputStream){
 
-        JRXlsxExporter exporter = new JRXlsxExporter();
+        JRXlsExporter exporter = new JRXlsExporter();
         exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
         exporter.setExporterOutput( new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
 
-        SimpleXlsxReportConfiguration config = new SimpleXlsxReportConfiguration();
-        config.setOnePagePerSheet(false);
+        SimpleXlsReportConfiguration config = new SimpleXlsReportConfiguration();
+
         config.setDetectCellType(true);
         config.setIgnoreCellBackground(true);
-        config.setIgnoreCellBorder(false);
+        config.setIgnoreCellBorder(true);
+        config.setIgnorePageMargins(true);
+        config.setIgnoreGraphics(true);
         config.setWhitePageBackground(false);
-        config.setWrapText(true);
+        config.setWrapText(false);
         config.setRemoveEmptySpaceBetweenRows(true);
         config.setCollapseRowSpan(true);
+        config.setOnePagePerSheet(true);
+
         exporter.setConfiguration(config);
 
         try {
@@ -312,7 +317,7 @@ public class JasperReportExporter implements ReportExporter {
             throw new RuntimeException(e);
         }
 
-        String fileName = outputFileName.isEmpty()? "openlmisReport.xls" : outputFileName+".xlsx";
+        String fileName = outputFileName.isEmpty()? "open-lmis-report.xls" : outputFileName + ".xls";
         response.setHeader(CONTENT_DISPOSITION, INLINE_FILENAME + fileName);
 
         response.setContentType(Constants.MEDIA_TYPE_EXCEL);

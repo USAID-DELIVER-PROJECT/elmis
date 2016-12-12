@@ -72,7 +72,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                join facilities f on f.id = ps.facilityId    \n" +
                 "                join geographic_zones z on z.id = f.geographicZoneId   \n" +
                 "                where ps.programId = (select id from programs where enableivdform = 't' limit 1)  \n" +
-                "                   and pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"'  order by geographiczoneid, pp.startdate\n" +
+                "                   and pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"'  \n" +
                 "                )    \n" +
                 "                select                                               \n" +
                 "                vd.region_name,  \n" +
@@ -94,10 +94,10 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                sum(case when reporting_status = 'L' then 1 else 0 end) late \n" +
                 "        from temp t  \n" +
                 "            join vw_districts vd on vd.district_id = t.geographiczoneid  \n"  + writeDistrictPredicate(params.getDistrict())  +
+                "      where vd.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "+
                 "        group by 1, 2, 3, 4,5 ,6 \n" +
                 " \n" +
                 ") a  \n" +
-                "order by 1,2,5\n" +
                 "), \n" +
                 "                 \n" +
                 "completness_with_nonreporting_periods as (\n" +
@@ -112,13 +112,12 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "         (\n" +
                 "              select id, name period_name, startdate period_start_date from processing_periods pp \n" +
                 "                where pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"' \n"+
-                "              AND pp.numberofmonths = 1 order by 3\n" +
+                "              AND pp.numberofmonths = 1 \n" +
                 "          ) periods , \n" +
                 "          (\n" +
                 "              select distinct geographiczoneid from \n" +
                 "              completeness_with_reporting_periods c\n" +
                 "          ) c\n" +
-                "    order by 1, period_start_date\n" +
                 "    )\n" +
                 "" +
                 " SELECT         \n" +
@@ -150,16 +149,7 @@ public class CompletenessAndTimelinessQueryBuilder {
     }
 
     public static CompletenessAndTimelinessReportParam getParamsValues(Map param){
-        CompletenessAndTimelinessReportParam params = new CompletenessAndTimelinessReportParam();
-
-        if(param.containsKey("filterCriteria"))
-            params = (CompletenessAndTimelinessReportParam)param.get("filterCriteria");
-        else {
-            params.setDistrict((Long) param.get("districtId"));
-            params.setPeriodStart(param.get("startDate").toString());
-            params.setPeriodEnd(param.get("endDate").toString());
-        }
-        return params;
+        return (CompletenessAndTimelinessReportParam)param.get("filterCriteria");
     }
 
     public static String  selectCompletenessAndTimelinessSummaryReportDataByDistrict(Map param){
@@ -207,7 +197,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "      join facilities f on f.id = ps.facilityId     \n" +
                 "      join geographic_zones z on z.id = f.geographicZoneId    \n" +
                 "      where ps.programId = (select id from programs where enableivdform = 't' limit 1)   \n" +
-                "         and pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"'  order by geographiczoneid, pp.startdate \n" +
+                "         and pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"'  " +
                 "      )     \n" +
 
                 "      select    " +
@@ -230,10 +220,10 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "      sum(case when reporting_status = 'L' then 1 else 0 end) late  \n" +
                 "    from temp t   \n" +
                 "        join vw_districts vd on vd.district_id = t.geographiczoneid "+writeDistrictPredicate(params.getDistrict())
+                +"      where vd.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()   +" and program_id = fn_get_vaccine_program_id())  "
                 +"    group by 1, 2, 3, 4,5 ,6  \n" +
                 "  ) a   \n" +
-                "  order by 1,2,5 \n" +
-                "                ),  \n" +
+                "     ),  \n" +
 
                 "                completness_with_nonreporting_periods as ( \n" +
                 "                      select c.geographiczoneid, periods.*, \n" +
@@ -247,13 +237,12 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                         ( \n" +
                 "                              select id, name period_name, startdate period_start_date from processing_periods pp  \n" +
                 "                                where pp.startdate::date >= '"+params.getPeriodStart()+"' and pp.enddate::date <= '"+params.getPeriodEnd()+"' \n" +
-                "                              AND pp.numberofmonths = 1 order by 3 \n" +
+                "                              AND pp.numberofmonths = 1 \n" +
                 "                          ) periods ,  \n" +
                 "                          ( \n" +
                 "                              select distinct geographiczoneid from  \n" +
                 "                              completeness_with_reporting_periods c \n" +
                 "                          ) c \n" +
-                "                    order by 1, period_start_date \n" +
                 "                    ) \n" +
 
                 "      SELECT         " +
