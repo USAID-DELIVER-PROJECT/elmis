@@ -14,18 +14,12 @@
 	<parameter name="CUSTOM_REPORT_TITLE" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<parameter name="VIMS_LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_COUNTRY_TITLE" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="105" splitType="Stretch">
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="207" y="66" width="348" height="20" isRemoveLineWhenBlank="true" uuid="51974f2d-08d1-44d1-bbce-2b8ba24425bb"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{REPORT_SUB_TITLE}.toUpperCase()=="NULL"?"":$P{REPORT_SUB_TITLE}]]></textFieldExpression>
-			</textField>
+		<band height="101" splitType="Stretch">
 			<staticText>
 				<reportElement x="741" y="66" width="36" height="20" uuid="71e84ef8-ce3f-4e0a-813d-c62b5574cb0d">
 					<printWhenExpression><![CDATA[!$P{PAGE_NO}.equals("-1")]]></printWhenExpression>
@@ -45,7 +39,7 @@
 				<textFieldExpression><![CDATA[$P{PAGE_NO}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="17" y="66" width="342" height="20" isRemoveLineWhenBlank="true" uuid="828612ae-f65b-4fa4-b46d-8317145288cc"/>
+				<reportElement x="0" y="59" width="238" height="20" isRemoveLineWhenBlank="true" uuid="828612ae-f65b-4fa4-b46d-8317145288cc"/>
 				<textElement textAlignment="Left" markup="none">
 					<font size="9"/>
 					<paragraph lineSpacing="Single"/>
@@ -53,7 +47,7 @@
 				<textFieldExpression><![CDATA[($P{REPORT_FILTER_PARAM_VALUES} != 0)?$P{REPORT_FILTER_PARAM_VALUES}:""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="207" y="45" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="8e7e49a1-6c5e-4a50-ba77-935008c82741"/>
+				<reportElement x="255" y="70" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="8e7e49a1-6c5e-4a50-ba77-935008c82741"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="16" isBold="true"/>
 					<paragraph leftIndent="0"/>
@@ -61,7 +55,7 @@
 				<textFieldExpression><![CDATA[($P{CUSTOM_REPORT_TITLE} != null)?$P{CUSTOM_REPORT_TITLE}:$P{REPORT_TITLE}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="207" y="13" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="4e714469-2ec7-46c4-ab1a-c1a75cb2f71f"/>
+				<reportElement x="255" y="28" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="4e714469-2ec7-46c4-ab1a-c1a75cb2f71f"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="16" isBold="true"/>
 					<paragraph leftIndent="0"/>
@@ -76,6 +70,22 @@
 				<reportElement x="741" y="13" width="67" height="42" uuid="4b9e84f3-d0f8-408e-8dae-10c9b80ba365"/>
 				<imageExpression><![CDATA[$P{VIMS_LOGO}]]></imageExpression>
 			</image>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="255" y="7" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="d48794b6-f1f8-4237-b5b7-a7b076292c2f"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="16" isBold="true"/>
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{REPORT_COUNTRY_TITLE} != null)?$P{REPORT_COUNTRY_TITLE}:$P{REPORT_COUNTRY_TITLE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="255" y="49" width="348" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="f0612e80-b9ba-4d07-8fa8-6af2f8ad00cd"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="16" isBold="true"/>
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{REPORT_SUB_TITLE} != null)?$P{REPORT_SUB_TITLE}:$P{REPORT_SUB_TITLE}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 </jasperReport>

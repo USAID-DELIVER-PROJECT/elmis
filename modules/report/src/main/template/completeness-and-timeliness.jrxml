@@ -259,7 +259,7 @@ from generate_series(1,12)]]>
 					<subreportParameterExpression><![CDATA[$P{OPERATOR_LOGO}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
-				<subreportExpression><![CDATA["openlmis-report-header-landscape.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["vims-report-header-landscape.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</title>

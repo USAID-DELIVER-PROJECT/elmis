@@ -101,7 +101,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
-				<subreportExpression><![CDATA["openlmis-report-header-landscape.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["vims-report-header-landscape.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
 				<reportElement x="200" y="39" width="353" height="41" uuid="d1e9a172-459d-4612-a94e-bdbcafdf92e2">
