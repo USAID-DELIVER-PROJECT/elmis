@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.openlmis.order.service.OrderService;
 import org.openlmis.shipment.domain.ShipmentLineItem;
 import org.openlmis.shipment.dto.ShipmentImportedOrder;
+import org.openlmis.shipment.dto.ShipmentLineItemDTO;
 import org.openlmis.shipment.service.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,4 +46,10 @@ public class ShipmentController extends BaseController{
   public @ResponseBody List<ShipmentLineItem> getShipmentLineItems(@RequestParam("orderid") Long orderId ) {
     return shipmentService.getLineItems(orderId);
   }
+
+  @RequestMapping(value = "/rest-api/shipment/skipped-shipment-items", method = RequestMethod.GET)
+  public @ResponseBody List<ShipmentLineItemDTO> getSkippedLineItems(@RequestParam("orderid") Long orderId){
+    return shipmentService.getSkippedShipmentLineItems(orderId);
+  }
+
 }

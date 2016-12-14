@@ -21,6 +21,7 @@ import org.openlmis.rnr.service.RequisitionService;
 import org.openlmis.shipment.domain.ShipmentFileInfo;
 import org.openlmis.shipment.domain.ShipmentLineItem;
 import org.openlmis.shipment.dto.ShipmentImportedOrder;
+import org.openlmis.shipment.dto.ShipmentLineItemDTO;
 import org.openlmis.shipment.repository.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,5 +91,9 @@ public class ShipmentService {
 
   public List<ShipmentImportedOrder> getShipmentImportedOrders(String facilityCode){
     return shipmentRepository.getShipmentImportedOrders(facilityCode);
+  }
+
+  public List<ShipmentLineItemDTO> getSkippedShipmentLineItems(Long orderId) {
+    return shipmentRepository.getSkippedLineItems(orderId);
   }
 }

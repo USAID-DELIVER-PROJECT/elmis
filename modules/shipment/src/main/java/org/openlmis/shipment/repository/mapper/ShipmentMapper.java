@@ -58,4 +58,7 @@ public interface ShipmentMapper {
       " where f.code = #{facilityCode} and r.id in (select orderId from shipment_line_items)" +
       " order by p.startDate")
   List<ShipmentImportedOrder> getShipmentImportedOrders(@Param("facilityCode") String facilityCode);
+
+  @Select("SELECT skippedShipmentLineItems from shipment_file_info where orderNumber = (select orderNumber from orders where id = #{orderId})")
+  String getSkippedLineItems(@Param("orderId") Long orderId);
 }
