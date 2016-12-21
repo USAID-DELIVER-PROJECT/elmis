@@ -1140,7 +1140,7 @@ app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographi
                     $scope.zones = [data.zone];
                     if($scope.selectedZone === undefined || $scope.selectedZone === null){
                       $scope.selectedZone = data.zone;
-                        $scope.filterZone = data.zone[0];
+                        $scope.filterZone =  $scope.zones [0];
 
                     }
 
