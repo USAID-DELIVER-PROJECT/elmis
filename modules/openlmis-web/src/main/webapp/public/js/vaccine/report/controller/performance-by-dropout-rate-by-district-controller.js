@@ -48,7 +48,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         //console.log('period start '+ $scope.filter.periodStart);
         $scope.data = $scope.datarows = [];
         $scope.filter.facilityId = '';
-        $scope.filter.geographicZoneId = $scope.filter.zone;
+        $scope.filter.geographicZoneId = $scope.filter.zone.id;
         $scope.filter.productId = $scope.filter.product;
         $scope.filter.periodId = 0;
         $scope.filter.programId = $scope.filter.program;
