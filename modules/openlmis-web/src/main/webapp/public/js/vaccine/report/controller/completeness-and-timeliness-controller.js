@@ -52,7 +52,7 @@ function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimel
 
             function (data) {
 
-                    var columnKeysToBeAggregated = ["target", "expected", "reported", "late", "fixed", "outreach", "sessionTotal"];
+                    var columnKeysToBeAggregated = ["target", "expected", "reported", "late", "fixed", "sessionTotal"];
                     var districtNameKey = "districtName";
                     var includeGrandTotal = true;
 

@@ -82,7 +82,7 @@
                             <th rowspan="2">{{getLocalMessage('label.period')}}</th>
                             <th rowspan="2">{{getLocalMessage('label.reported')}}</th>
                             <th colspan="5" style="text-align: center;">{{getLocalMessage('label.reporting.performance')}}</th>
-                            <th colspan="3" style="text-align: center;">{{getLocalMessage('label.session.conducted')}}</th>
+                            <th colspan="2" style="text-align: center;">{{getLocalMessage('label.session.conducted')}}</th>
                         </tr>
                         <tr>
                             <th>{{getLocalMessage('label.expected')}}</th>
@@ -91,7 +91,6 @@
                             <th>{{getLocalMessage('label.percent.reported')}}</th>
                             <th>{{getLocalMessage('label.percent.late')}}</th>
                             <th>{{getLocalMessage('label.fixed')}}</th>
-                            <th>{{getLocalMessage('label.outreach')}}</th>
                             <th>{{getLocalMessage('label.total')}}</th>
 
                         </tr>
@@ -103,7 +102,6 @@
                             <th></th>
                             <th></th>
                             <th>{{getLocalMessage('label.D')}}</th>
-                            <th>{{getLocalMessage('label.E')}}</th>
                             <th>{{getLocalMessage('label.F')}}</th>
                         </tr>
                         </thead>
@@ -120,7 +118,6 @@
                                  <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentReported}}%</td>
                                  <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentLate}}%</td>
                                  <td class="number" >{{row.fixed | number}}</td>
-                                 <td class="number" >{{row.outreach | number}}</td>
                                  <td class="number" >{{row.sessionTotal | number}}</td>
                             </tr>
                             <tr  ng-if="d.subtotal" class="aggregate-row">
@@ -134,7 +131,6 @@
                                 <td class="number aggregate-row" >{{d.subtotal.reported /d.subtotal.expected * 100 | number:2}}%</td>
                                 <td class="number aggregate-row" >{{d.subtotal.late /d.subtotal.reported * 100 | number:2}}%</td>
                                 <td class="number aggregate-row" >{{d.subtotal.fixed | number}}</td>
-                                <td class="number aggregate-row" >{{d.subtotal.outreach | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.sessionTotal | number}}</td>
                             </tr>
                             <tr ng-repeat-end ng-if="d.grandtotal" class="aggregate-row">
@@ -148,7 +144,6 @@
                                 <td class="number aggregate-row" >{{d.grandtotal.reported /d.grandtotal.expected * 100 | number:2}}%</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.late /d.grandtotal.reported * 100 | number:2}}%</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.fixed | number}}</td>
-                                <td class="number aggregate-row" >{{d.grandtotal.outreach | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.sessionTotal | number}}</td>
                             </tr>
                         </tbody>
