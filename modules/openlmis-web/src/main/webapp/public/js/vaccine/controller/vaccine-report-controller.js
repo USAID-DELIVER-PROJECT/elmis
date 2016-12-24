@@ -34,7 +34,9 @@ function VaccineReportPOCReportController($scope, VaccineMonthlyReport, VaccineU
 
          if(isUndefined($scope.filter.zone) || messageService.get('report.filter.all.geographic.zones') == $scope.filter.zone){
             $scope.filter.zone = -1;
-        }
+        }else{
+             $scope.filter.zone=$scope.filter.zone.id;
+         }
         if(isUndefined($scope.filter.facility) || $scope.filter.facility === ""){
             $scope.filter.facility = 0;
             $scope.showOtherActivities = false;

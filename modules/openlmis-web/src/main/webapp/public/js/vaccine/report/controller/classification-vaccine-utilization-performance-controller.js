@@ -33,7 +33,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope,
      $scope.reportParam =  {
                     periodStart: $scope.periodStartDate,
                     periodEnd: $scope.periodEnddate,
-                    district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
+                    district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
                     product: $scope.filter.product,
                 };
 
@@ -62,7 +62,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope,
                 periodStart: $scope.periodStartDate,
                 periodEnd: $scope.periodEnddate,
                 range: $scope.range,
-                zone: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
+                zone: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
                 product: $scope.filter.product
             },
 

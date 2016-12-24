@@ -44,7 +44,7 @@ function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimel
                periodStart: $scope.periodStartDate,
                periodEnd:   $scope.periodEnddate,
                range:       $scope.range,
-               district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone
+               district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id
            };
 
         CompletenessAndTimeliness.get(
