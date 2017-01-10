@@ -15,6 +15,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +25,6 @@ public class RegimenProductCombination  extends BaseModel {
 
     private Regimen regimen;
     private String name;
+    private List<RegimenCombinationConstituent> combinationConstituentList;
 
 }

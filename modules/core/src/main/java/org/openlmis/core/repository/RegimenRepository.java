@@ -24,63 +24,111 @@ import java.util.List;
 @Repository
 public class RegimenRepository {
 
-  @Autowired
-  RegimenMapper mapper;
+    @Autowired
+    RegimenMapper mapper;
 
-  @Autowired
-  RegimenCategoryMapper regimenCategoryMapper;
+    @Autowired
+    RegimenCategoryMapper regimenCategoryMapper;
 
-  @Autowired
-  DosageFrequencyMapper dosageFrequencyMapper;
+    @Autowired
+    DosageFrequencyMapper dosageFrequencyMapper;
 
-  @Autowired
-  RegimenCombinationConstituentMapper regimenCombinationConstituentMapper;
+    @Autowired
+    RegimenCombinationConstituentMapper regimenCombinationConstituentMapper;
 
-  @Autowired
-  RegimenProductCombinationMapper regimenProductCombinationMapper;
+    @Autowired
+    RegimenProductCombinationMapper regimenProductCombinationMapper;
 
-  @Autowired
-  RegimenConstituentDosageMapper regimenConstituentDosageMapper;
+    @Autowired
+    RegimenConstituentDosageMapper regimenConstituentDosageMapper;
+    @Autowired
+    DosageUnitMapper dosageUnitMapper;
 
 
-  public List<Regimen> getByProgram(Long programId) {
-    return mapper.getByProgram(programId);
-  }
-   public Regimen getById(Long id){return mapper.getById(id);}
-
-  public List<RegimenCategory> getAllRegimenCategories() {
-    return regimenCategoryMapper.getAll();
-  }
-
-  public void save(List<Regimen> regimens, Long userId) {
-    for (Regimen regimen : regimens) {
-      regimen.setModifiedBy(userId);
-      if (regimen.getId() == null) {
-        regimen.setCreatedBy(userId);
-        mapper.insert(regimen);
-      }
-      mapper.update(regimen);
+    public List<Regimen> getByProgram(Long programId) {
+        return mapper.getByProgram(programId);
     }
-  }
 
-  public List<Regimen> getAllRegimens(){
-       return mapper.getAllRegimens();
-  }
+    public Regimen getById(Long id) {
+        return mapper.getById(id);
+    }
 
-  public List<DosageFrequency> getAllDosageFrequencies(){
-      return dosageFrequencyMapper.getAll();
-  }
+    public List<RegimenCategory> getAllRegimenCategories() {
+        return regimenCategoryMapper.getAll();
+    }
 
-  public List<RegimenCombinationConstituent> getAllRegimenCombinationConstituents(){
-      return regimenCombinationConstituentMapper.getAll();
-  }
+    public void save(List<Regimen> regimens, Long userId) {
+        for (Regimen regimen : regimens) {
+            regimen.setModifiedBy(userId);
+            if (regimen.getId() == null) {
+                regimen.setCreatedBy(userId);
+                mapper.insert(regimen);
+            }
+            mapper.update(regimen);
+        }
+    }
 
-  public List<RegimenConstituentDosage> getAllRegimenConstituentsDosages(){
-      return regimenConstituentDosageMapper.getAll();
-  }
+    public void saveProductCombination(List<RegimenProductCombination> productCombinations, Long userId) {
+        for (RegimenProductCombination productCombination : productCombinations) {
+            productCombination.setModifiedBy(userId);
+            if (productCombination.getId() == null) {
+                productCombination.setCreatedBy(userId);
+                mapper.insertProcuctCombination(productCombination);
+            }
+            mapper.updateProductCombination(productCombination);
+        }
+    }
 
-  public List<RegimenProductCombination> getAllRegimenProductCombinations(){
-      return regimenProductCombinationMapper.getAll();
-  }
+    public List<Regimen> getAllRegimens() {
+        return mapper.getAllRegimens();
+    }
 
+    public List<DosageFrequency> getAllDosageFrequencies() {
+        return dosageFrequencyMapper.getAll();
+    }
+
+    public List<RegimenCombinationConstituent> getAllRegimenCombinationConstituents() {
+        return regimenCombinationConstituentMapper.getAll();
+    }
+
+    public List<RegimenCombinationConstituent> getAllRegimenCombinationConstituents(Long combinationId) {
+        return regimenCombinationConstituentMapper.getAllCombinationConstituents(combinationId);
+    }
+
+    public List<RegimenConstituentDosage> getAllRegimenConstituentsDosages() {
+        return regimenConstituentDosageMapper.getAll();
+    }
+
+    public List<RegimenConstituentDosage> getAllRegimenConstituentsDosages(Long constituentId) {
+        return regimenConstituentDosageMapper.getConstituentDosageList(constituentId);
+    }
+
+    public List<RegimenProductCombination> getAllRegimenProductCombinations() {
+        return regimenProductCombinationMapper.getAll();
+    }
+
+    public List<RegimenProductCombination> getAllRegimenProductCombinations(Long regimenId) {
+        return regimenProductCombinationMapper.getAllRegimenCombinations(regimenId);
+    }
+
+    public void saveProductConstituent(RegimenCombinationConstituent combinationConstituent) {
+        if (combinationConstituent.getId() == null) {
+            regimenCombinationConstituentMapper.save(combinationConstituent);
+            combinationConstituent.getDefaultDosage().setRegimenConstituent(combinationConstituent);
+            regimenConstituentDosageMapper.save(combinationConstituent.getDefaultDosage());
+        }
+        regimenCombinationConstituentMapper.update(combinationConstituent);
+    }
+
+    public void saveRegimenConstituentDosage(RegimenConstituentDosage constituentDosage) {
+        if (constituentDosage.getId() == null) {
+            regimenConstituentDosageMapper.save(constituentDosage);
+        } else {
+            regimenConstituentDosageMapper.update(constituentDosage);
+        }
+    }
+
+    public List<DosageUnit> getDosageUnits() {
+        return dosageUnitMapper.getAll();
+    }
 }

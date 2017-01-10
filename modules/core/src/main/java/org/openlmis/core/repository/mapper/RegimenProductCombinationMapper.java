@@ -14,7 +14,6 @@ import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-import org.openlmis.core.domain.DosageFrequency;
 import org.openlmis.core.domain.RegimenProductCombination;
 import org.springframework.stereotype.Repository;
 
@@ -31,10 +30,14 @@ public interface RegimenProductCombinationMapper {
             @Result(property = "regimen", column = "regimenid", javaType = Long.class,
                     one = @One(select = "org.openlmis.core.repository.mapper.RegimenMapper.getById"))})
     RegimenProductCombination getById(Long id);
-
-    @Select("SELECT * FROM regimen_product_combinations")
+    @Select("SELECT * FROM regimen_product_combinations ")
     @Results(value = {
             @Result(property = "regimen", column = "regimenid", javaType = Long.class,
                     one = @One(select = "org.openlmis.core.repository.mapper.RegimenMapper.getById"))})
     List<RegimenProductCombination> getAll();
+    @Select("SELECT * FROM regimen_product_combinations WHERE regimenid=#{regimenid}")
+    @Results(value = {
+            @Result(property = "regimen", column = "regimenid", javaType = Long.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.RegimenMapper.getById"))})
+    List<RegimenProductCombination> getAllRegimenCombinations(Long regimenid);
 }

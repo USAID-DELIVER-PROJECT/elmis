@@ -10,11 +10,7 @@
 
 package org.openlmis.core.repository.mapper;
 
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.openlmis.core.domain.DosageFrequency;
+import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.RegimenConstituentDosage;
 import org.springframework.stereotype.Repository;
 
@@ -46,5 +42,23 @@ public interface RegimenConstituentDosageMapper {
                     one = @One(select = "org.openlmis.core.repository.mapper.DosageFrequencyMapper.getById"))})
     List<RegimenConstituentDosage> getAll();
 
+    @Select("SELECT * FROM regimen_constituents_dosages where regimenproductid =#{consitutentId}")
+    @Results(value = {
+            @Result(property = "regimenConstituent", column = "regimenproductid", javaType = Long.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.RegimenCombinationConstituentMapper.getById")),
+            @Result(property = "dosageUnit", column = "dosageunitid", javaType = Long.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.DosageUnitMapper.getById")),
+            @Result(property = "dosageFrequency", column = "dosagefrequencyid", javaType = Long.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.DosageFrequencyMapper.getById"))})
+    List<RegimenConstituentDosage> getConstituentDosageList(Long consitutentId);
 
+    @Insert({"INSERT INTO regimen_constituents_dosages ( regimenproductid, quantity, dosageunitid, dosagefrequencyid) ",
+            "VALUES ( #{regimenConstituent.id},  #{quantity},#{dosageUnit.id},#{dosageFrequency.id})"})
+    @Options(useGeneratedKeys = true)
+    void save(RegimenConstituentDosage constituentDosage);
+
+    @Update({"UPDATE regimen_constituents_dosages\n" +
+            "   SET  regimenproductid=#{regimenConstituent.id}, quantity=#{quantity}, dosageunitid=#{dosageUnit.id}, dosagefrequencyid=#{dosageFrequency.id}\n" +
+            " WHERE id= #{id}"})
+    void update(RegimenConstituentDosage constituentDosage);
 }

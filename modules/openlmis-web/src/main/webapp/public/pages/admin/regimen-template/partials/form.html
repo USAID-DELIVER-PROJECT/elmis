@@ -7,7 +7,25 @@
   ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
   -->
+<!--<script type="text/ng-template" id="combination-constituent.html">-->
+    <!--<div class="modal-header modal-header">-->
+        <!--<button  class="close" ng-click="ok()">X</button>-->
+        <!--<h2 ><i class="flaticon-bar"></i>Investigation Detail</h2>-->
 
+
+    <!--</div>-->
+    <!--<div class="modal-body">-->
+        <!--<div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>-->
+        <!--<div class="row-fluid dashlet-scroll-table">-->
+
+        <!--</div>-->
+        <!--<div class="modal-footer">-->
+
+            <!--<button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>-->
+        <!--</div>-->
+    <!--</div>-->
+
+<!--</script>-->
 <div tab-scroll xmlns="http://www.w3.org/1999/html">
     <h2 openlmis-message="label.admin.configure.regimenTemplate"></h2>
 
@@ -21,23 +39,42 @@
         <ul>
             <li class="selected" ng-class="{'selected' : showReportingFields}">
                 <a id="reportingFieldsTab" openlmis-message="label.reporting.fields" href=""
-                   ng-click="showReportingFields=true;"></a>
+                   ng-click="option='showReportingFields';showReportingFields=true; showregimen=false;showcombination=false;showconstituents=false"></a>
             </li>
-            <li ng-class="{'selected' : !showReportingFields}">
-                <a id="regimensTab" openlmis-message="label.regimens" href="" ng-click="showReportingFields=false;"></a>
+            <li ng-class="{'selected' : showregimen}">
+                <a id="regimensTab" openlmis-message="label.regimens" href=""
+                   ng-click="option='showregimen';showReportingFields=false; showregimen=true;showcombination=false;showconstituents=false"></a>
+            </li>
+            <li ng-class="{'selected' : showcombination}">
+                <a id="regimensTab1" openlmis-message="ProductsCombination" href=""
+                   ng-click="option='showcombination'; showReportingFields=false; showregimen=false;showcombination=true;showconstituents=false"></a>
+            </li>
+            <li ng-class="{'selected' : showconstituents}">
+                <a id="regimensTab2" openlmis-message="Constituents" href=""
+                   ng-click="option='showconstituents'; showReportingFields=false; showregimen=false;showcombination=false;showconstituents=true"></a>
             </li>
         </ul>
     </div>
 
     <form name="regimenEditForm" class="regimenForm" ng-submit="save()">
 
-        <ng-switch on="showReportingFields">
-      <span ng-switch-when="true">
+        <ng-switch on="option">
+      <span ng-switch-default="showReportingFields">
         <ng-include src="'/public/pages/admin/regimen-template/partials/reporting-fields.html'"></ng-include>
       </span>
-      <span ng-switch-default>
+      <span ng-switch-when="showregimen">
         <ng-include src="'/public/pages/admin/regimen-template/partials/new-regimen.html'"></ng-include>
         <ng-include src="'/public/pages/admin/regimen-template/partials/edit-regimen-form.html'"></ng-include>
+      </span>
+             <span ng-switch-when="showcombination">
+        <ng-include src="'/public/pages/admin/regimen-template/partials/new-product-combinations.html'"></ng-include>
+        <ng-include
+                src="'/public/pages/admin/regimen-template/partials/edit-product-combination-form.html'"></ng-include>
+      </span>
+            <span ng-switch-when="showconstituents">
+
+        <ng-include
+                src="'/public/pages/admin/regimen-template/partials/edit-product-combination-constituent-form.html'"></ng-include>
       </span>
         </ng-switch>
 

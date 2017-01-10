@@ -12,6 +12,7 @@ package org.openlmis.core.repository.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.Regimen;
+import org.openlmis.core.domain.RegimenProductCombination;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +27,12 @@ public interface RegimenMapper {
     "VALUES (#{code}, #{name}, #{active}, #{programId}, #{category.id}, #{displayOrder}, #{createdBy}, #{modifiedBy})"})
   @Options(useGeneratedKeys = true)
   public void insert(Regimen regimen);
-
+  @Insert({"INSERT INTO regimen_product_combinations ( name, regimenid) ",
+          "VALUES ( #{name},  #{regimen.id})"})
+  @Options(useGeneratedKeys = true)
+  public void insertProcuctCombination(RegimenProductCombination productCombination);
+  @Update({"UPDATE regimen_product_combinations SET  name = #{name} WHERE id = #{id}"})
+  void updateProductCombination(RegimenProductCombination productCombination);
   @Select({"SELECT * FROM regimens R INNER JOIN regimen_categories RC ON R.categoryId = RC.id ",
     "WHERE R.programId=#{programId} ORDER BY RC.displayOrder,R.displayOrder"})
   @Results(value = {
