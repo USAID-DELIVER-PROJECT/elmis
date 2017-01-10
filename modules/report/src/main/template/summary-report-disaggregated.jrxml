@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-12-05T21:44:32 -->
+<!-- 2017-01-05T11:44:55 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="disaggregated-summary-report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.2100000000000004"/>
 	<property name="ireport.x" value="0"/>
@@ -187,7 +187,7 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Transparent" x="140" y="40" width="181" height="44" forecolor="#000000" backcolor="#333333" uuid="ffcd7c55-2c98-4ac0-9832-4e99fd6a85fe">
+				<reportElement mode="Transparent" x="140" y="40" width="130" height="44" forecolor="#000000" backcolor="#333333" uuid="ffcd7c55-2c98-4ac0-9832-4e99fd6a85fe">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Bottom" markup="none">
@@ -295,7 +295,7 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="220" y="40" width="101" height="44" forecolor="#000000" backcolor="#333333" uuid="9c80debc-f8f2-4fdf-9bdf-9115ba029cb2">
+				<reportElement mode="Transparent" x="270" y="40" width="51" height="44" forecolor="#000000" backcolor="#333333" uuid="9c80debc-f8f2-4fdf-9bdf-9115ba029cb2">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "XLS"]]></printWhenExpression>
@@ -358,15 +358,14 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[$F{facilityCode}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="140" y="0" width="181" height="20" uuid="8ddba84e-d6c3-4439-b31d-f8ec92c2d972">
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<reportElement x="140" y="0" width="130" height="20" uuid="8ddba84e-d6c3-4439-b31d-f8ec92c2d972">
+					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
-					<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
-					<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="true"/>
-					<property name="net.sf.jasperreports.export.xls.wrap.text" value="false"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
@@ -444,7 +443,7 @@ order by facilities.name asc,li.productcode asc,  li.product asc, li.productcate
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0").format($F{reorderAmount})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="220" y="0" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="337b9ba6-f9cd-48c0-bba5-77dfb737bd83">
+				<reportElement mode="Transparent" x="270" y="0" width="51" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="337b9ba6-f9cd-48c0-bba5-77dfb737bd83">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 					<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
