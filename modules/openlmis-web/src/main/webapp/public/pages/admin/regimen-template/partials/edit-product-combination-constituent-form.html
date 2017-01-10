@@ -11,6 +11,14 @@
   ~  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~  */
   -->
+<style>
+    div.row-fluid {
+        border-top: 1px inset;
+        border-bottom: 1px inset;
+
+
+    }
+</style>
 
 <div id="regimenEditForm" ng-show="regimenTree.length > 0">
 
@@ -21,7 +29,7 @@
             <div class="span2"><span openlmis-message="header.frequency"></span></div>
             <div class="span2"><span openlmis-message="header.quantity"></span></div>
             <div class="span2"></div>
-            <div class="span2"></div>
+
         </div>
     </div>
 
@@ -34,10 +42,10 @@
                 </div>
                 <div ng-model="regimen.productCombinationList">
                     <div ng-repeat="productCombination in regimen.productCombinationList"
-                         class="container-fluid"
+                         class="row-fluid"
                          ng-class="{'editable-row' : productCombination.editable}" id="mainContainer">
 
-                        <div class="row like-table-row" id="combinationContainer">
+                        <div class="row-fluid like-table-row" id="combinationContainer">
 
 
                             <div class="span4">
@@ -52,19 +60,20 @@
                             </div>
                             <div class="span2"></div>
                             <div class="span2"></div>
+                            <div class="span2"></div>
                             <div class="span2">
+                                <input id="addNewRow" name="button" type="button"
+                                       class="btn btn-primary btn-small "
+                                       openlmis-message="button.add.product.constituent"
+                                       ng-click="openAddConstituentDialog(productCombination,false)"/>
+
 
                                 <input id="editCombinationRow" name="button" type="button"
                                        class="btn btn-primary btn-small pull-right" openlmis-message="button.edit"
                                        ng-click="productCombination.editable=true;"/>
                             </div>
 
-                            <div class="span2">
-                                <input id="addNewRow" name="button" type="button"
-                                       class="btn btn-primary btn-small pull-right"
-                                       openlmis-message="button.add.product.constituent"
-                                       ng-click="openAddConstituentDialog(productCombination,false)"/>
-                            </div>
+
 
                             <!-- product constituents-->
                         </div>
@@ -72,11 +81,11 @@
 
                         <div ng-model="productCombination.combinationConstituentList" id="constituentsContainer">
                             <div ng-repeat="productConstituent in productCombination.combinationConstituentList"
-                                 class="row "
+                                 class="row-fluid "
                                  ng-class="{'editable-row' : productConstituent.editable}">
 
-                                <div class="row like-table-row">
-                                    <div class="span4">
+                                <div class="row-fluid">
+                                <div class="span4">
                                         <div ng-show="!productConstituent.editable">
                                             <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<i
                                                     class="icon-star"></i>&nbsp; &nbsp; &nbsp;Product Name:</span></span><span
@@ -88,7 +97,13 @@
                                     </div>
                                     <div class="span2"></div>
                                     <div class="span2"></div>
+                                    <div class="span2"></div>
                                     <div class="span2">
+                                        <input id="addNewDosageRow" name="button" type="button"
+                                               class="btn btn-primary btn-small "
+                                               openlmis-message="button.add.product.constituent.dosage"
+                                               ng-click="openAddConstituentDialog(productConstituent,true)"/>
+
 
                                         <input id="editConstituentRow" name="button" type="button"
                                                class="btn btn-primary btn-small pull-right"
@@ -96,17 +111,13 @@
                                                ng-click="productConstituent.editable=true;"/>
                                     </div>
 
-                                    <div class="span2">
-                                        <input id="addNewDosageRow" name="button" type="button"
-                                               class="btn btn-primary btn-small pull-right"
-                                               openlmis-message="button.add.product.constituent.dosage"
-                                               ng-click="openAddConstituentDialog(productConstituent,true)"/>
-                                    </div>
+
                                 </div>
                                 <div ng-repeat="dosage in productConstituent.constituentDosageList"
-                                     class="row rnr-template-columns"
+                                     class="row-fluid rnr-template-columns"
                                      ng-class="{'editable-row' : dosage.editable}">
-                                    <div class="span4"><span style="padding-left:130px"
+                                    <div class="rnr-template-columns ">
+                                    <div class="span4"><span
                                                              ng-show="dosage.id==productConstituent.defaultDosage.id">Default Dose</span>
                                     </div>
                                     <div class="span2">
@@ -139,10 +150,12 @@
                                                class="icon-pencil btn btn-primary btn-small pull-right"
                                                openlmis-message="button.edit"
                                                ng-click="dosage.editable=true;"/></div>
-                                    <div class="span2"></div>
+
+
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </div>
                     <!-- -->
 
