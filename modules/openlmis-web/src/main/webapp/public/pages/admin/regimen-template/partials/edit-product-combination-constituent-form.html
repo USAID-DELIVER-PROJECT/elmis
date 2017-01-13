@@ -13,9 +13,6 @@
   -->
 <style>
     div.row-fluid {
-        border-top: 1px inset;
-        border-bottom: 1px inset;
-
 
     }
 </style>
@@ -33,24 +30,33 @@
         </div>
     </div>
 
-    <div class="regiment-list-items">
+    <div  class="regiment-list-items">
         <div class="row-fluid" ng-show="regimenTree.length > 0">
             <div ng-model="regimens" ng-repeat="regimen in regimenTree" class="ui-sortable">
-                <div class="category-name">
-                    <div ng-show="regimen.productCombinationList.length > 0"><span><i class="icon-globe"></i>&nbsp;&nbsp;&nbsp;Regimen Name :</span>
-                        <span ng-bind="regimen.name"></span></div>
+                <div  ng-show="regimen.productCombinationList.length > 0"  class="category-name"><span>
+                    <button type="button" class="btn btn-info" ng-click="regimen.collapsed=!regimen.collapsed" >
+                        <i ng-class="regimen.collapsed==true?'icon-plus-sign':'icon-minus-sign'"></i>
+                    </button>
+</span>
+                    <span><span>&nbsp;&nbsp;&nbsp;Regimen Name :</span>
+                        <span ng-bind="regimen.name"></span></span>
                 </div>
+               <div collapse="regimen.collapsed" class="row-fluid like-table-row">
+
                 <div ng-model="regimen.productCombinationList">
                     <div ng-repeat="productCombination in regimen.productCombinationList"
                          class="row-fluid"
                          ng-class="{'editable-row' : productCombination.editable}" id="mainContainer">
 
-                        <div class="row-fluid like-table-row" id="combinationContainer">
+                        <div class="row-fluid like-table-row" id="combinationContainer{{productCombination.id}}">
 
 
                             <div class="span4">
-                                <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i
-                                        class="icon-globe"></i>&nbsp;&nbsp;&nbsp;Combination:
+                                <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    <button type="button" class="btn btn-info" ng-click="productCombination.collapsed=!productCombination.collapsed" >
+                                        <i ng-class="productCombination.collapsed==true?'icon-plus-sign':'icon-minus-sign'"></i>
+                                    </button></i>&nbsp;&nbsp;&nbsp;Combination:
 
                                       <span ng-show="!productCombination.editable"
                                             ng-bind="productCombination.name"></span></span>
@@ -79,7 +85,7 @@
                         </div>
 
 
-                        <div ng-model="productCombination.combinationConstituentList" id="constituentsContainer">
+                        <div collapse="productCombination.collapsed" ng-model="productCombination.combinationConstituentList" id="constituentsContainer">
                             <div ng-repeat="productConstituent in productCombination.combinationConstituentList"
                                  class="row-fluid "
                                  ng-class="{'editable-row' : productConstituent.editable}">
@@ -87,8 +93,10 @@
                                 <div class="row-fluid">
                                 <div class="span4">
                                         <div ng-show="!productConstituent.editable">
-                                            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<i
-                                                    class="icon-star"></i>&nbsp; &nbsp; &nbsp;Product Name:</span></span><span
+                                            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                                <button type="button" class="btn btn-info" ng-click="productConstituent.collapsed=!productConstituent.collapsed" >
+                                                <i ng-class="productConstituent.collapsed==true?'icon-plus-sign':'icon-minus-sign'"></i>
+                                            </button>&nbsp; &nbsp; &nbsp;Product Name:</span></span><span
                                                 ng-bind="productConstituent.product.primaryName"></span></div>
                                         <input name="constituentId" type="text"
                                                ng-model="productConstituent.product.primaryName"
@@ -113,11 +121,11 @@
 
 
                                 </div>
-                                <div ng-repeat="dosage in productConstituent.constituentDosageList"
+                                <div collapse="productConstituent.collapsed" ng-repeat="dosage in productConstituent.constituentDosageList"
                                      class="row-fluid rnr-template-columns"
                                      ng-class="{'editable-row' : dosage.editable}">
                                     <div class="rnr-template-columns ">
-                                    <div class="span4"><span
+                                    <div class="span4"><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
                                                              ng-show="dosage.id==productConstituent.defaultDosage.id">Default Dose</span>
                                     </div>
                                     <div class="span2">
@@ -157,6 +165,7 @@
                         </div>
                     </div>
                     </div>
+                </div>
                     <!-- -->
 
                 </div>

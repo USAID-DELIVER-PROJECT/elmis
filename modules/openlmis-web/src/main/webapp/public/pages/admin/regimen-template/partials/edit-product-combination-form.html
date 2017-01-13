@@ -15,7 +15,7 @@
 <div id="regimenEditForm" ng-show="getProductCombinationByRegimen().length > 0">
     <div class="rnr-template-head">
         <div class="row-fluid">
-            <div class="span2"><span openlmis-message="header.code"></span></div>
+
             <div class="span4"><span openlmis-message="header.name"></span></div>
             <div class="span2"><span openlmis-message="label.active"></span></div>
             <div class="span4"></div>
@@ -39,13 +39,14 @@
                             <input name="regimenName" type="text" ng-model="productCombination.name" ng-required="true"
                                    ng-show="productCombination.editable" maxlength="50"/>
                         </div>
-
-                        <div ng-show="!productCombination.editable" class="span3">
+                        <span class="span2"></span>
+                        <div ng-show="!productCombination.editable" class="span4">
                             <input id="editRegimen" name="button" type="button"
                                    class="btn btn-primary btn-small pull-right" openlmis-message="button.edit"
                                    ng-click="productCombination.editable=true;"/>
                         </div>
-                        <div ng-show="productCombination.editable" class="span3">
+
+                        <div ng-show="productCombination.editable" class="span4">
                             <input id="regimenDone" name="button" type="button"
                                    class="btn btn-primary btn-small pull-right" openlmis-message="button.done"
                                    ng-click="saveRow(productCombination)"/>
