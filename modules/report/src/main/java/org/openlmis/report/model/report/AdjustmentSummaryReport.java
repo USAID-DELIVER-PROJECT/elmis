@@ -37,6 +37,7 @@ public class AdjustmentSummaryReport implements ResultRow {
     private String productCode;
     private int year;
     private String month;
+    private int price;
 
 
 

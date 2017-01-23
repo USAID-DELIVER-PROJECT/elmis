@@ -99,6 +99,9 @@
                     sortable="adjustment">{{
                   row.signedadjustment | number }}
                 </td>
+                <td data-title="getLocalMessage('label.price')" class="number" style="width:80px"
+                    sortable="price"><span openlmis-message="label.currency.symbol"></span>{{ row.price | number }}
+                </td>
               </tr>
               </tbody>
             </table>
