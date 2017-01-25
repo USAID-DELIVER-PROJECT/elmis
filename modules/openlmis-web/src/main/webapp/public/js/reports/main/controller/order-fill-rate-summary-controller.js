@@ -10,12 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 function OrderFillRateReportSummaryController($scope, OrderFillRateSummaryReport, messageService, GetOrderFillRateSummary) {
-    $scope.$watch('filter.program', function (value){
-        $scope.OnFilterChanged();
-    });
-    $scope.$watch('filter.schedule', function (value){
-        $scope.OnFilterChanged();
-    });
+
     $scope.OnFilterChanged = function () {
 
         $scope.data = $scope.datarows = [];
@@ -128,6 +123,7 @@ function OrderFillRateReportSummaryController($scope, OrderFillRateSummaryReport
     }
 
     function bindChartEvent(elementSelector, eventType, callback) {
+        $(elementSelector).unbind(eventType);
         $(elementSelector).bind(eventType, callback);
     }
 
@@ -138,12 +134,14 @@ function OrderFillRateReportSummaryController($scope, OrderFillRateSummaryReport
             var label;
             var labelKey;
             if (!isUndefined($scope.orderFillRateRenderedData.orderFillRateStatus)) {
+                var ft = isUndefined($scope.filter.facilityType)?0:$scope.filter.facilityType;
+                var zone = isUndefined($scope.filter.zone)?0:$scope.filter.zone;
                 status = $scope.orderFillRateRenderedData.orderFillRateStatus[item.seriesIndex][1];
                 GetOrderFillRateSummary.get({programId: $scope.filter.program,
                     periodId: $scope.filter.period,
                     scheduleId: $scope.filter.schedule,
-                    facilityTypeId: $scope.filter.facilityType,
-                    zoneId: $scope.filter.zone,
+                    facilityTypeId: ft,
+                    zoneId: zone,
                     status: status
                 }, function (data) {
                     if (data.orderFillRateSummary !== undefined) {

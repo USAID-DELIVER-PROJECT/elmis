@@ -23,7 +23,7 @@ public class PushedProductsQueryBuilder {
 
 
   public static String getQueryForPushedItems(Map params) {
-    OrderFillRateReportParam filters = (OrderFillRateReportParam) params.get("filterParam");
+    OrderFillRateReportParam filters = (OrderFillRateReportParam) params.get("filterCriteria");
     return getProductsPushedQuery(filters);
   }
 
