@@ -68,7 +68,7 @@ public class PerformanceByDropoutRateByDistrictService {
             LOGGER.warn("error while formatting date ", ex);
         }
 
-        isRegionReport = filterParam.getGeographic_zone_id() == 0 ? true : false;
+        isRegionReport = filterParam.getGeographic_zone_id() == 437 ? true : false;
 
         isFailityReport = repository.isDistrictLevel(filterParam.getGeographic_zone_id());
         if (!isFailityReport) {

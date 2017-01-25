@@ -342,12 +342,9 @@ public class PerformanceByDropoutRateQueryBuilder {
                     "\n" +
                     "              case when p.cum_bcg_vaccinated >\n" +
                     "0 then round((p.cum_bcg_mr_dropout - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,2) else 0 end cum_bcg_mr_dropout,\n" +
-                    "                   case when m.cum_dtp1_vaccinated > 0 then round((p.cum_dtp1_vaccinated - p.cum_dtp3_vaccinated) / p.cum_dtp1_vaccinated::numeric\n" +
+                    "                   case when p.cum_dtp1_vaccinated > 0 then round((p.cum_dtp1_vaccinated - p.cum_dtp3_vaccinated) / p.cum_dtp1_vaccinated::numeric\n" +
                     " * 100,2) else 0 end cum_dtp1_dtp3_dropout\n" +
                     "from district_dropout m , district_cum p  where m.region_id=p.region_id and m.period_id=p.period_id order by 2,4,1,2" ;
-
-
-
             return query;
     }
 
