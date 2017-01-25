@@ -121,16 +121,19 @@ public class RegimenService {
                     if (combinationConstituentList != null && !combinationConstituentList.isEmpty())
                         for (RegimenCombinationConstituent combinationConstituent : combinationConstituentList) {
                             combinationConstituent.setProductCombination(productCombination);
+                            boolean isNewCombination = combinationConstituent.getId() == null;
                             repository.saveProductConstituent(combinationConstituent);
-                            if (combinationConstituent.getId() != null) {
-                                List<RegimenConstituentDosage> regimenConstituentDosageList = combinationConstituent.getConstituentDosageList();
-                                if (regimenConstituentDosageList != null && !regimenConstituentDosageList.isEmpty())
-                                    for (RegimenConstituentDosage constituentDosage : regimenConstituentDosageList) {
-                                        constituentDosage.setRegimenConstituent(combinationConstituent);
+
+
+                            List<RegimenConstituentDosage> regimenConstituentDosageList = combinationConstituent.getConstituentDosageList();
+                            if (regimenConstituentDosageList != null && !regimenConstituentDosageList.isEmpty())
+                                for (RegimenConstituentDosage constituentDosage : regimenConstituentDosageList) {
+                                    constituentDosage.setRegimenConstituent(combinationConstituent);
+                                    if (!isNewCombination && !constituentDosage.isDefaultValue()) {
                                         repository.saveRegimenConstituentDosage(constituentDosage);
 
                                     }
-                            }
+                                }
                         }
                 }
         }
