@@ -1683,11 +1683,10 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
                 }
             });
             StaticYears.get({}, function (data) {
-                $scope.years.push({id: '0', year_value: 'Current Period'});
+
                 data.years.forEach(function (value) {
                     $scope.years.push(value);
                 });
-                $scope.years.push({id: '-1', year_value: 'Custom Period'});
                 $scope.staticYear = $scope.years[0].id;
 
             });
