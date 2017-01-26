@@ -182,7 +182,7 @@ public class PerformanceByDropoutRateQueryBuilder {
                     "case when m.dtp1_vaccinated > 0 then round((m.dtp1_vaccinated - m.dtp3_vaccinated) / m.dtp1_vaccinated::numeric * 100,2) else 0 end dtp1_dtp3_dropout,\n" +
                     "\n" +
                     "              case when p.cum_bcg_vaccinated >\n" +
-                    "0 then round((p.cum_bcg_mr_dropout - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,2) else 0 end cum_bcg_mr_dropout,\n" +
+                    "0 then round((p.cum_bcg_vaccinated - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,2) else 0 end cum_bcg_mr_dropout,\n" +
                     "                   case when m.cum_dtp1_vaccinated > 0 then round((p.cum_dtp1_vaccinated - p.cum_dtp3_vaccinated) / p.cum_dtp1_vaccinated::numeric\n" +
                     " * 100,2) else 0 end cum_dtp1_dtp3_dropout\n" +
                     "from district_dropout m , district_cum p  where m.district_id=p.district_id and m.period_id=p.period_id order by 3,6,1,2,3,4" ;
@@ -253,7 +253,7 @@ public class PerformanceByDropoutRateQueryBuilder {
                     "case when m.dtp1_vaccinated > 0 then round((m.dtp1_vaccinated - m.dtp3_vaccinated) / m.dtp1_vaccinated::numeric * 100,2) else 0 end dtp1_dtp3_dropout,\n" +
                     "\n" +
                     "              case when p.cum_bcg_vaccinated >\n" +
-                    "0 then round((p.cum_bcg_mr_dropout - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,2) else 0 end cum_bcg_mr_dropout,\n" +
+                    "0 then round((p.cum_bcg_vaccinated - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,2) else 0 end cum_bcg_mr_dropout,\n" +
                     "                   case when m.cum_dtp1_vaccinated > 0 then round((p.cum_dtp1_vaccinated - p.cum_dtp3_vaccinated) / p.cum_dtp1_vaccinated::numeric\n" +
                     " * 100,2) else 0 end cum_dtp1_dtp3_dropout\n" +
                     "from district_dropout m , district_cum p  where m.district_id=p.district_id and m.period_id=p.period_id order by 3,6,1,2,3,4" ;
