@@ -64,7 +64,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
 
         $scope.error_message = '';
-        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)&& !utils.isNullOrUndefined($scope.filter.product)) {
+        if(!utils.isEmpty($scope.filter)&&!utils.isEmpty($scope.filter.periodStart)&&!utils.isEmpty($scope.filter.periodEnd)&& !utils.isEmpty($scope.filter.product)) {
 
             PerformanceByDropoutRateByDistrict.get(getParam(), function (data) {
 
@@ -136,9 +136,9 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
             return  $scope.nonReporting;
         }
         var dropout=cumulative===1?value.cum_bcg_mr_dropout:cumulative===0?value:value.bcg_mr_dropout;
-        if (dropout > 10) {
+        if (dropout > 10 || dropout<0) {
             bgColor = $scope.maxTemp;
-        } else if (dropout> 5) {
+        } else if (dropout> 5 ) {
             bgColor = $scope.average;
         }
         else {
@@ -182,7 +182,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
             dropOut= utils.isNullOrUndefined(value)||utils.isEmpty(value)|| value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
 
 
-        return dropOut.toFixed(2);
+        return dropOut.toFixed(0);
     };
     $scope.concatPercentage = function (value) {
 
