@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-dropout-facility-subreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="745"/>
+	<property name="ireport.x" value="59"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -496,7 +496,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<textFieldExpression><![CDATA[$F{region_name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="162" y="0" width="60" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="7126df37-f217-42aa-93db-489cf4cc9b14">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="160" y="0" width="62" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="7126df37-f217-42aa-93db-489cf4cc9b14">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -509,7 +509,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<textFieldExpression><![CDATA[$F{facility_name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMM-yy" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="290" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="894e3e22-c590-4751-8ecd-1413ac944d84">
+				<reportElement mode="Transparent" x="222" y="0" width="117" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="894e3e22-c590-4751-8ecd-1413ac944d84">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
