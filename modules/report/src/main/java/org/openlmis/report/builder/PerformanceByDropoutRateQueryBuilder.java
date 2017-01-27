@@ -76,14 +76,14 @@ public class PerformanceByDropoutRateQueryBuilder {
                         "                 ),              \n" +
                         "          mainQuery as(      select d.region_name, d.district_name,  d.facility_name, " +
                         "     d.facility_id,d.district_id, d.region_id, d.period_id,d.period_start_date, d.period_name," +
-                        "round(d.bcg_vaccinated,2) bcg_vaccinated," +
-                        "round(d.dtp1_vaccinated,2) dtp1_vaccinated," +
-                        "round(d.mr_vaccinated,2) mr_vaccinated," +
-                        "round(d.dtp3_vaccinated,2) dtp3_vaccinated," +
-                        "    round(d.bcg_mr_dropout,2) bcg_mr_dropout,round(d.dtp1_dtp3_dropout,2) dtp1_dtp3_dropout," +
-                        "     round(c.cum_bcg_vaccinated,2) cum_bcg_vaccinated, " +
-                        "round(c.cum_mr_vaccinated,2) cum_mr_vaccinated,round(cum_dtp1_vaccinated,2) cum_dtp1_vaccinated, round(c.cum_dtp3_vaccinated,2) cum_dtp3_vaccinated," +
-                        "round(c.cum_bcg_mr_dropout,2) cum_bcg_mr_dropout, round(c.cum_dtp1_dtp3_dropout,2)  cum_dtp1_dtp3_dropout " +
+                        "round(d.bcg_vaccinated,0) bcg_vaccinated," +
+                        "round(d.dtp1_vaccinated,0) dtp1_vaccinated," +
+                        "round(d.mr_vaccinated,0) mr_vaccinated," +
+                        "round(d.dtp3_vaccinated,0) dtp3_vaccinated," +
+                        "    round(d.bcg_mr_dropout,0) bcg_mr_dropout,round(d.dtp1_dtp3_dropout,0) dtp1_dtp3_dropout," +
+                        "     round(c.cum_bcg_vaccinated,0) cum_bcg_vaccinated, " +
+                        "round(c.cum_mr_vaccinated,0) cum_mr_vaccinated,round(cum_dtp1_vaccinated,0) cum_dtp1_vaccinated, round(c.cum_dtp3_vaccinated,0) cum_dtp3_vaccinated," +
+                        "round(c.cum_bcg_mr_dropout,0) cum_bcg_mr_dropout, round(c.cum_dtp1_dtp3_dropout,0)  cum_dtp1_dtp3_dropout " +
                         "     from dropout    d   ,cumulative c    " +
                         "     where d.facility_id= c.facility_id  and d.period_start_date=c.period_start_date\n" +
                         "                \n" +
@@ -178,13 +178,13 @@ public class PerformanceByDropoutRateQueryBuilder {
                     "p.cum_dtp1_vaccinated cum_dtp1_vaccinated,\n" +
                     "p.cum_dtp3_vaccinated cum_dtp3_vaccinated,\n" +
                     "case when m.bcg_vaccinated > 0\n" +
-                    "then round((m.bcg_vaccinated - m.mr_vaccinated) / m.bcg_vaccinated::numeric * 100,2) else 0 end bcg_mr_dropout,\n" +
-                    "case when m.dtp1_vaccinated > 0 then round((m.dtp1_vaccinated - m.dtp3_vaccinated) / m.dtp1_vaccinated::numeric * 100,2) else 0 end dtp1_dtp3_dropout,\n" +
+                    "then round((m.bcg_vaccinated - m.mr_vaccinated) / m.bcg_vaccinated::numeric * 100,0) else 0 end bcg_mr_dropout,\n" +
+                    "case when m.dtp1_vaccinated > 0 then round((m.dtp1_vaccinated - m.dtp3_vaccinated) / m.dtp1_vaccinated::numeric * 100,0) else 0 end dtp1_dtp3_dropout,\n" +
                     "\n" +
                     "              case when p.cum_bcg_vaccinated >\n" +
-                    "0 then round((p.cum_bcg_vaccinated - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,2) else 0 end cum_bcg_mr_dropout,\n" +
+                    "0 then round((p.cum_bcg_vaccinated - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,0) else 0 end cum_bcg_mr_dropout,\n" +
                     "                   case when m.cum_dtp1_vaccinated > 0 then round((p.cum_dtp1_vaccinated - p.cum_dtp3_vaccinated) / p.cum_dtp1_vaccinated::numeric\n" +
-                    " * 100,2) else 0 end cum_dtp1_dtp3_dropout\n" +
+                    " * 100,0) else 0 end cum_dtp1_dtp3_dropout\n" +
                     "from district_dropout m , district_cum p  where m.district_id=p.district_id and m.period_id=p.period_id order by 3,6,1,2,3,4" ;
 
 
@@ -203,14 +203,14 @@ public class PerformanceByDropoutRateQueryBuilder {
                     "                    sum(d.dtp1_vaccinated) dtp1_vaccinated, \n" +
                     "                    sum(d.mr_vaccinated) mr_vaccinated, \n" +
                     "                    sum(d.dtp3_vaccinated) dtp3_vaccinated, \n" +
-                    "                    case when sum(d.bcg_vaccinated) > 0 then round(((sum(d.bcg_vaccinated) - sum(d.mr_vaccinated)) / sum(d.bcg_vaccinated)::numeric) * 100,2) else 0 end bcg_mr_dropout,   \n" +
-                    "                    case when sum(d.dtp1_vaccinated) > 0 then round(((sum(d.dtp1_vaccinated) - sum(d.dtp3_vaccinated)) / sum(d.dtp1_vaccinated)::numeric) * 100,2) else 0 end dtp1_dtp3_dropout,  \n" +
+                    "                    case when sum(d.bcg_vaccinated) > 0 then round(((sum(d.bcg_vaccinated) - sum(d.mr_vaccinated)) / sum(d.bcg_vaccinated)::numeric) * 100,0) else 0 end bcg_mr_dropout,   \n" +
+                    "                    case when sum(d.dtp1_vaccinated) > 0 then round(((sum(d.dtp1_vaccinated) - sum(d.dtp3_vaccinated)) / sum(d.dtp1_vaccinated)::numeric) * 100,0) else 0 end dtp1_dtp3_dropout,  \n" +
                     "                    sum(d.cum_bcg_vaccinated) cum_bcg_vaccinated ,  \n" +
                     "                    sum(d.cum_mr_vaccinated) cum_mr_vaccinated, \n" +
                     "                    sum(d.cum_dtp1_vaccinated) cum_dtp1_vaccinated, \n" +
                     "                     sum(d.cum_dtp3_vaccinated) cum_dtp3_vaccinated, \n" +
-                    "                                     case when sum(d.cum_bcg_vaccinated) > 0 then round(((sum(d.cum_bcg_mr_dropout) - sum(d.cum_mr_vaccinated)) / sum(d.cum_bcg_vaccinated)::numeric) * 100,2) else 0 end cum_bcg_mr_dropout,   \n" +
-                    "                                       case when sum(d.cum_dtp1_vaccinated) > 0 then round(((sum(d.cum_dtp1_vaccinated) - sum(d.cum_dtp3_vaccinated)) / sum(d.cum_dtp1_vaccinated)::numeric) * 100,2) else 0 end cum_dtp1_dtp3_dropout  \n" +
+                    "                                     case when sum(d.cum_bcg_vaccinated) > 0 then round(((sum(d.cum_bcg_mr_dropout) - sum(d.cum_mr_vaccinated)) / sum(d.cum_bcg_vaccinated)::numeric) * 100,0) else 0 end cum_bcg_mr_dropout,   \n" +
+                    "                                       case when sum(d.cum_dtp1_vaccinated) > 0 then round(((sum(d.cum_dtp1_vaccinated) - sum(d.cum_dtp3_vaccinated)) / sum(d.cum_dtp1_vaccinated)::numeric) * 100,0) else 0 end cum_dtp1_dtp3_dropout  \n" +
                     "                    from mainQuery d  \n" +
                     "                    group by 1,2,3,4,5,6,7\n" +
                     "\n" +
@@ -249,13 +249,13 @@ public class PerformanceByDropoutRateQueryBuilder {
                     "p.cum_dtp1_vaccinated cum_dtp1_vaccinated,\n" +
                     "p.cum_dtp3_vaccinated cum_dtp3_vaccinated,\n" +
                     "case when m.bcg_vaccinated > 0\n" +
-                    "then round((m.bcg_vaccinated - m.mr_vaccinated) / m.bcg_vaccinated::numeric * 100,2) else 0 end bcg_mr_dropout,\n" +
-                    "case when m.dtp1_vaccinated > 0 then round((m.dtp1_vaccinated - m.dtp3_vaccinated) / m.dtp1_vaccinated::numeric * 100,2) else 0 end dtp1_dtp3_dropout,\n" +
+                    "then round((m.bcg_vaccinated - m.mr_vaccinated) / m.bcg_vaccinated::numeric * 100,0) else 0 end bcg_mr_dropout,\n" +
+                    "case when m.dtp1_vaccinated > 0 then round((m.dtp1_vaccinated - m.dtp3_vaccinated) / m.dtp1_vaccinated::numeric * 100,0) else 0 end dtp1_dtp3_dropout,\n" +
                     "\n" +
                     "              case when p.cum_bcg_vaccinated >\n" +
-                    "0 then round((p.cum_bcg_vaccinated - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,2) else 0 end cum_bcg_mr_dropout,\n" +
+                    "0 then round((p.cum_bcg_vaccinated - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,0) else 0 end cum_bcg_mr_dropout,\n" +
                     "                   case when m.cum_dtp1_vaccinated > 0 then round((p.cum_dtp1_vaccinated - p.cum_dtp3_vaccinated) / p.cum_dtp1_vaccinated::numeric\n" +
-                    " * 100,2) else 0 end cum_dtp1_dtp3_dropout\n" +
+                    " * 100,0) else 0 end cum_dtp1_dtp3_dropout\n" +
                     "from district_dropout m , district_cum p  where m.district_id=p.district_id and m.period_id=p.period_id order by 3,6,1,2,3,4" ;
 
 
@@ -337,13 +337,13 @@ public class PerformanceByDropoutRateQueryBuilder {
                     "p.cum_dtp1_vaccinated cum_dtp1_vaccinated,\n" +
                     "p.cum_dtp3_vaccinated cum_dtp3_vaccinated,\n" +
                     "case when m.bcg_vaccinated > 0\n" +
-                    "then round((m.bcg_vaccinated - m.mr_vaccinated) / m.bcg_vaccinated::numeric * 100,2) else 0 end bcg_mr_dropout,\n" +
-                    "case when m.dtp1_vaccinated > 0 then round((m.dtp1_vaccinated - m.dtp3_vaccinated) / m.dtp1_vaccinated::numeric * 100,2) else 0 end dtp1_dtp3_dropout,\n" +
+                    "then round((m.bcg_vaccinated - m.mr_vaccinated) / m.bcg_vaccinated::numeric * 100,0) else 0 end bcg_mr_dropout,\n" +
+                    "case when m.dtp1_vaccinated > 0 then round((m.dtp1_vaccinated - m.dtp3_vaccinated) / m.dtp1_vaccinated::numeric * 100,0) else 0 end dtp1_dtp3_dropout,\n" +
                     "\n" +
                     "              case when p.cum_bcg_vaccinated >\n" +
-                    "0 then round((p.cum_bcg_vaccinated - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,2) else 0 end cum_bcg_mr_dropout,\n" +
+                    "0 then round((p.cum_bcg_vaccinated - p.cum_mr_vaccinated) / p.cum_bcg_vaccinated::numeric * 100,0) else 0 end cum_bcg_mr_dropout,\n" +
                     "                   case when p.cum_dtp1_vaccinated > 0 then round((p.cum_dtp1_vaccinated - p.cum_dtp3_vaccinated) / p.cum_dtp1_vaccinated::numeric\n" +
-                    " * 100,2) else 0 end cum_dtp1_dtp3_dropout\n" +
+                    " * 100,0) else 0 end cum_dtp1_dtp3_dropout\n" +
                     "from district_dropout m , district_cum p  where m.region_id=p.region_id and m.period_id=p.period_id order by 2,4,1,2" ;
             return query;
     }
