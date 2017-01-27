@@ -162,7 +162,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     $scope.getColumnNameSummary = function (value) {
         var bgColor = '';
         if (value == '4_dropoutGreaterThanHigh') {
-            bgColor = 'DO >10%';
+            bgColor = 'DO >10% and DO (-ve)';
         } else if (value == '3_droOputBetweenMidAndHigh') {
             bgColor = '5% < DO <=10%';
         } else if (value == '2_dropOutBetweenMidAndMin') {
