@@ -139,7 +139,7 @@ public class PerformanceByDropoutRateByDistrictService {
             }
             float value = performanceByDropoutRateByDistrict.getBcg_mr_dropout();
 
-            if (value > 10) {
+            if (value > 10 || value<0) {
 
                 Long highVal = columnRangeValues.get(HIGHER).get(columngName) + 1L;
                 columnRangeValues.get(HIGHER).put(columngName, highVal);
