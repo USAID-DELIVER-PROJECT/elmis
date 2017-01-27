@@ -80,9 +80,7 @@
                             <th rowspan="2">{{getLocalMessage('label.region')}}</th>
                             <th rowspan="2">{{getLocalMessage('label.district')}}</th>
                             <th rowspan="2">{{getLocalMessage('label.period')}}</th>
-                            <th rowspan="2">{{getLocalMessage('label.reported')}}</th>
                             <th colspan="5" style="text-align: center;">{{getLocalMessage('label.reporting.performance')}}</th>
-                            <th colspan="2" style="text-align: center;">{{getLocalMessage('label.session.conducted')}}</th>
                         </tr>
                         <tr>
                             <th>{{getLocalMessage('label.expected')}}</th>
@@ -90,19 +88,15 @@
                             <th>{{getLocalMessage('label.late')}}</th>
                             <th>{{getLocalMessage('label.percent.reported')}}</th>
                             <th>{{getLocalMessage('label.percent.late')}}</th>
-                            <th>{{getLocalMessage('label.fixed')}}</th>
-                            <th>{{getLocalMessage('label.total')}}</th>
 
                         </tr>
                         <tr>
-                            <th colspan="4"></th>
+                            <th colspan="3"></th>
                             <th>{{getLocalMessage('label.A')}}</th>
                             <th>{{getLocalMessage('label.B')}}</th>
                             <th>{{getLocalMessage('label.C')}}</th>
                             <th></th>
                             <th></th>
-                            <th>{{getLocalMessage('label.D')}}</th>
-                            <th>{{getLocalMessage('label.F')}}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -111,40 +105,31 @@
                                  <td >{{ d.data[$index-1].regionName == row.regionName  ? '' : row.regionName }}</td>
                                  <td >{{ d.data[$index-1].districtName == row.districtName ? '' : row.districtName }}</td>
                                  <td class="{{row.reportingstatus}}_rows"  >{{row.periodName}}</td>
-                                 <td class="number"  >{{ row.reportingStatus === "REPORTING" ? getLocalMessage('label.yes') : getLocalMessage('label.no')  }}</td>
                                  <td class="number"  >{{row.expected | number}}</td>
                                  <td class="number"  >{{row.reported | number}}</td>
                                  <td class="number" >{{row.late | number}}</td>
                                  <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentReported}}%</td>
                                  <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentLate}}%</td>
-                                 <td class="number" >{{row.fixed | number}}</td>
-                                 <td class="number" >{{row.sessionTotal | number}}</td>
                             </tr>
                             <tr  ng-if="d.subtotal" class="aggregate-row">
                                 <td></td>
                                 <td class="aggregate-row">Annual Report Rate</td>
                                 <td class="aggregate-row"></td>
-                               <td class="aggregate-row"></td>
                                 <td class="number aggregate-row" >{{d.subtotal.expected | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.reported | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.late | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.reported /d.subtotal.expected * 100 | number:2}}%</td>
                                 <td class="number aggregate-row" >{{d.subtotal.late /d.subtotal.reported * 100 | number:2}}%</td>
-                                <td class="number aggregate-row" >{{d.subtotal.fixed | number}}</td>
-                                <td class="number aggregate-row" >{{d.subtotal.sessionTotal | number}}</td>
                             </tr>
                             <tr ng-repeat-end ng-if="d.grandtotal" class="aggregate-row">
                                 <td></td>
                                 <td class="aggregate-row">Grand Total</td>
                                 <td class="aggregate-row"></td>
-                                <td class="aggregate-row"  ></td>
                                 <td class="number aggregate-row" >{{d.grandtotal.expected | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.reported | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.late | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.reported /d.grandtotal.expected * 100 | number:2}}%</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.late /d.grandtotal.reported * 100 | number:2}}%</td>
-                                <td class="number aggregate-row" >{{d.grandtotal.fixed | number}}</td>
-                                <td class="number aggregate-row" >{{d.grandtotal.sessionTotal | number}}</td>
                             </tr>
                         </tbody>
                     </table>
