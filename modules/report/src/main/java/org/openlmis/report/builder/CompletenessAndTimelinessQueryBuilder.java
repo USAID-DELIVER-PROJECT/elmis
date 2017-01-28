@@ -86,7 +86,8 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                                (select count(*) from requisition_group_members rgm\n" +
                 "join facilities f on f.id = rgm.facilityid\n" +
                 "join programs_supported ps on ps.facilityid=f.id \n" +
-                "join requisition_group_program_schedules rgs on rgs.programid=82 and  rgs.requisitiongroupid=rgm.requisitiongroupid and rgs.scheduleid=45\n" +
+                "join requisition_group_program_schedules rgs on rgs.programid=(select id from programs where enableivdform = 't' limit 1)" +
+                " and  rgs.requisitiongroupid=rgm.requisitiongroupid and rgs.scheduleid=45\n" +
                 "\n" +
                 "where f.geographiczoneid = t.geographiczoneid  and f.active=true\n" +
                 "and f.sdp = true \n) expected,   \n" +
@@ -107,13 +108,14 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                            ( select count(*) from requisition_group_members rgm\n" +
                 "join facilities f on f.id = rgm.facilityid\n" +
                 "join programs_supported ps on ps.facilityid=f.id  \n" +
-                "join requisition_group_program_schedules rgs on rgs.programid=82 and  rgs.requisitiongroupid=rgm.requisitiongroupid and rgs.scheduleid=45\n" +
+                "join requisition_group_program_schedules rgs on rgs.programid=(select id from programs where enableivdform = 't' limit 1)" +
+                " and  rgs.requisitiongroupid=rgm.requisitiongroupid and rgs.scheduleid=periods.scheduleid\n" +
                 "\n" +
                 "where f.geographiczoneid = c.geographiczoneid  and f.active=true\n" +
                 "and f.sdp = true) expected \n" +
                 "                        from  \n" +
                 "                         ( \n" +
-                "                              select id, name period_name, startdate period_start_date from processing_periods pp  \n" +
+                "                              select id, scheduleid,name period_name, startdate period_start_date from processing_periods pp  \n" +
                 "                                where pp.startdate::date >= '" + params.getPeriodStart() + "'::date and pp.enddate::date <= '" + params.getPeriodEnd() + "'::date\n" +
                 "                              AND pp.numberofmonths = 1  \n" +
                 "                          ) periods ,  \n" +
