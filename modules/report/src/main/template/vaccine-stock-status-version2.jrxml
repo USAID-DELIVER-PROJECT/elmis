@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-distribution-summary" language="groovy" printOrder="Horizontal" pageWidth="1190" pageHeight="842" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="1170" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="81"/>
+	<style name="BandStyle"/>
+	<subDataset name="dataset1" uuid="091a1376-c476-4867-9ced-423695e8c98e"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String"/>
+	<parameter name="COUNTRY_NAME" class="java.lang.String"/>
+	<parameter name="GENERATED_BY" class="java.lang.String"/>
+	<parameter name="REPORT_VERSION" class="java.lang.String"/>
+	<parameter name="REPORT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_OUTPUT_OPTION" class="java.lang.String"/>
+	<parameter name="OPERATOR_LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_SUB_TITLE" class="java.lang.String"/>
+	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
+	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="image_dir" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DISTRIBUTION_ID" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIMS_LOGO" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="soh" class="java.lang.Double"/>
+	<field name="product" class="java.lang.String"/>
+	<field name="district" class="java.lang.String"/>
+	<field name="facilityName" class="java.lang.String"/>
+	<field name="region" class="java.lang.String"/>
+	<field name="adequacy" class="java.lang.String"/>
+	<field name="color" class="java.lang.String"/>
+	<field name="total" class="java.lang.Integer"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<variable name="LCGroup_COUNT" class="java.lang.Integer">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="75" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="64">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1? new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<image>
+				<reportElement x="11" y="2" width="80" height="62" uuid="d439be51-ccd2-444f-b3da-ab39c8dacd3c"/>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="1096" y="0" width="74" height="64" uuid="9d7c9338-b13a-4dae-b454-d2e4bb82934f"/>
+				<imageExpression><![CDATA[$P{VIMS_LOGO}]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="267" y="22" width="641" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="9c832540-666f-4c99-b96a-11f07f5e5b72"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="16" isBold="true"/>
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{OPERATOR_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="267" y="2" width="641" height="20" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="abed13bb-d3bc-4bc8-a316-5bd27ddd61fb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.title.united.republic.tanzania}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="267" y="43" width="641" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="7e1eeb20-2ce7-4c5d-bad0-0c0b95baa4aa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.title.immunization}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="109">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1? new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="170" y="0" width="822" height="50" uuid="d05259ac-f804-45c0-9e67-0ebe6b43fc52"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="16" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{report.title.vaccine.stock.status.report}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="78" width="122" height="20" forecolor="#3D9297" backcolor="#3D9297" uuid="5ac4b229-2eee-497d-a5b5-e9b55d319d7e"/>
+				<textElement verticalAlignment="Middle">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.date}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="132" y="78" width="339" height="20" uuid="8e63b72b-a4ac-42d1-9f7a-86f4b00840b1"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="108" width="1165" height="1" forecolor="#3D9297" backcolor="#3D9297" uuid="d11a274d-34bb-462f-80ee-7abeea60d07c"/>
+			</line>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="240">
+			<line>
+				<reportElement x="4" y="0" width="1165" height="1" forecolor="#FFFFFF" backcolor="#3D9297" uuid="b5f5ecc6-d086-489a-9136-efbc39c82ada"/>
+			</line>
+			<crosstab>
+				<reportElement x="0" y="12" width="1170" height="228" uuid="bc9cb673-91b5-4adc-9e4a-f30485fa8f22"/>
+				<crosstabDataset isDataPreSorted="true"/>
+				<rowGroup name="region" width="70">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{region}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="BandStyle" x="0" y="0" width="70" height="27" uuid="7cbef381-a3be-428c-a9a7-8e284328c08c"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{region}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="facilityName" width="142">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="BandStyle" x="0" y="2" width="142" height="25" uuid="c31604c7-1240-4b29-9232-215dadbe5ec6"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{facilityName}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="adequacy" width="0">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents>
+							<textField>
+								<reportElement x="0" y="0" width="0" height="25" uuid="eed37135-b9ad-416b-ab0d-45df8d2b3e6b"/>
+								<textFieldExpression><![CDATA[$V{adequacy}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="product" height="30">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{product}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="BandStyle" x="0" y="0" width="50" height="30" uuid="513d09e4-8a9c-496e-8aef-9ad4713a8e4a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{product}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="sohMeasure" class="java.lang.Double">
+					<measureExpression><![CDATA[$F{soh}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="27">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="BandStyle" mode="Opaque" x="0" y="0" width="50" height="25" uuid="bc163ffb-e4be-497a-ad3f-8c0ad7c9560a"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="facilityName">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="BandStyle" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="6aaae082-cfac-4bc8-af89-cc4dd11afd23"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="BandStyle" x="0" y="0" width="50" height="25" uuid="e60f6cb0-0180-43f4-812d-043436692cdc"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityName" columnTotalGroup="product">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="BandStyle" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="926f3c5f-9f8f-4a68-81c4-48794c2c321c"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="region">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="BandStyle" x="0" y="0" width="50" height="25" uuid="e4ca9f9e-96ba-453e-b94d-510029e39fb2"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="region" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="BandStyle" x="0" y="0" width="50" height="25" uuid="15e462fb-a7c1-483a-a3ad-7120c23386ca"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="adequacy">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="adequacy" columnTotalGroup="product">
+					<cellContents/>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>
