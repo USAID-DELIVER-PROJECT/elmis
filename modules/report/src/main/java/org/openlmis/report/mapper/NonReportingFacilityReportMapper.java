@@ -31,19 +31,26 @@ public interface NonReportingFacilityReportMapper {
 
   @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getQuery")
   @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-  public List<NonReportingFacilityDetail> getReport(@Param("filterCriteria") NonReportingFacilityParam params,
+  List<NonReportingFacilityDetail> getNonReportingFacilities(@Param("filterCriteria") NonReportingFacilityParam params,
                                                     @Param("RowBounds") RowBounds rowBounds,
                                                     @Param("userId") Long userId
   );
 
+  @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getReportingFacilities")
+  @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
+  List<NonReportingFacilityDetail> getReportingFacilities(@Param("filterCriteria") NonReportingFacilityParam params,
+                                             @Param("RowBounds") RowBounds rowBounds,
+                                             @Param("userId") Long userId
+  );
+
   @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getSummaryQuery")
   @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-  public List<NameCount> getReportSummary(@Param("filterCriteria") NonReportingFacilityParam params, @Param("userId") Long userId);
+  List<NameCount> getReportSummary(@Param("filterCriteria") NonReportingFacilityParam params, @Param("userId") Long userId);
 
   // Gets the count of the total facility count under the selection criteria
   @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getTotalFacilities")
   @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-  public Double getTotalFacilities(@Param("filterCriteria") NonReportingFacilityParam params, @Param("userId") Long userId);
+  Double getTotalFacilities(@Param("filterCriteria") NonReportingFacilityParam params, @Param("userId") Long userId);
 
   // Gets the count of the total facility count that did not report under the selection criteria
   @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getTotalNonReportingFacilities")

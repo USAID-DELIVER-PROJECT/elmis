@@ -59,7 +59,7 @@ public class StockImbalanceQueryBuilder {
       WHERE(geoZoneIsFilteredBy("d"));
     }
     ORDER_BY(QueryHelpers.getSortOrder(sortCriteria, StockImbalanceReport.class, "supplyingFacility asc, facility asc, product asc"));
-    return SQL();
+    return SQL() + " limit 20000";
   }
 
 }

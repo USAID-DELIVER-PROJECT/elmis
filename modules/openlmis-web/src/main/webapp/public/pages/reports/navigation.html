@@ -236,6 +236,10 @@
             <a ng-href="/public/pages/reports/main/index.html#non-reporting"
                openlmis-message="menu.report.non.reporting.facilities"></a>
           </li>
+          <li ng-show="hasPermission('VIEW_NON_REPORTING_FACILITIES')">
+            <a ng-href="/public/pages/reports/main/index.html#reporting-status"
+               openlmis-message="menu.report.reporting.status"></a>
+          </li>
           <li ng-show="hasPermission('VIEW_REPORTING_RATE_REPORT')">
             <a ng-href="/public/pages/reports/maps/index.html#reporting-rate" openlmis-message="menu.report.reporting.rate"></a>
           </li>

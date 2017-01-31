@@ -111,7 +111,7 @@
             <span class="label-required">*</span>
           </label>
           <div class="form-field">
-            <input ng-required="equipment.designation !==undefined && equipment.designation.refrigerator" ng-model="equipment.refrigeratorCapacity" name="refrigerator-capacity" id="refrigerator-capacity" type="number" min="0" maxlength="50" />
+            <input ng-model="equipment.refrigeratorCapacity" name="refrigerator-capacity" id="refrigerator-capacity" type="number" min="0" maxlength="50" />
             <span class="field-error" ng-show="equipmentForm.refrigerator-capacity.$error.min && showError" openlmis-message="number.value"></span>
           </div>
         </div>
@@ -122,7 +122,7 @@
             <span class="label-required">*</span>
           </label>
           <div class="form-field">
-            <input ng-required="equipment.designation !==undefined && equipment.designation.freezer" ng-model="equipment.freezerCapacity" id="freezer-capacity" name="freezer-capacity" type="number" maxlength="200" min="0" />
+            <input ng-model="equipment.freezerCapacity" id="freezer-capacity" name="freezer-capacity" type="number" maxlength="200" min="0" />
             <span class="field-error" ng-show="equipmentForm.freezer-capacity.$error.min && showError" openlmis-message="number.value"></span>
           </div>
         </div>
@@ -133,7 +133,7 @@
             <span class="label-required">*</span>
           </label>
           <div class="form-field">
-            <input ng-required="equipment.designation !==undefined && !equipment.designation.refrigerator && !equipment.designation.freezer" ng-model="equipment.capacity" id="capacity" name="capacity" type="number" maxlength="200" min="0" />
+            <input ng-model="equipment.capacity" id="capacity" name="capacity" type="number" maxlength="200" min="0" />
             <span class="field-error" ng-show="equipmentForm.capacity.$error.min && showError" openlmis-message="number.value"></span>
           </div>
         </div>

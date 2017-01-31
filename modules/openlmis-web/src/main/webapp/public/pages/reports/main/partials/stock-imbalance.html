@@ -70,7 +70,7 @@
                     <div class="checkbox">
                       <label for="us"><input id="us" class="checkbox" type="checkbox" value="US"
                                              ng-change="onCheckboxChanged()" ng-model="statuses.US">
-                        <span>Under Stocked</span>
+                        <span>Below Minimum</span>
                       </label>
                     </div>
                   </div>
@@ -79,7 +79,7 @@
                       <label for="sp">
                         <input id="sp" class="check-box" type="checkbox" value="SP"
                                ng-change="onCheckboxChanged()" ng-model="statuses.SP">
-                        <span>Stocked Appropriately</span>
+                        <span>Stocked According to Plan</span>
                       </label>
                     </div>
                   </div>
@@ -95,7 +95,7 @@
                     <div class="checkbox">
                       <label for="uk"><input id="uk" class="checkbox" type="checkbox" value="UK"
                                              ng-change="onCheckboxChanged()" ng-model="statuses.UK">
-                        <span>Unknown (AMC = 0)</span>
+                        <span>No Demand (AMC=0)</span>
                       </label>
                     </div>
                   </div>
@@ -154,7 +154,7 @@
                         {{ (row.status == 'SO') ?
                         'Stocked Out' :
                         (row.status=='SP') ?
-                        'Adequately Stocked' : (row.status=='OS') ? 'Over Stocked' : (row.status =='US') ? 'Under Stocked' : 'Unknown' }}
+                        'Adequately Stocked' : (row.status=='OS') ? 'Over Stocked' : (row.status =='US') ? 'Under Stocked' : 'No Demand (AMC=0)' }}
                       </div>
                     </td>
                   </tr>
@@ -169,3 +169,4 @@
       </div>
     </div>
   </div>
+</div>

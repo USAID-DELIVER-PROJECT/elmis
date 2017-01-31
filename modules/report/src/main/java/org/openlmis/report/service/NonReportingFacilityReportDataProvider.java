@@ -19,6 +19,7 @@ import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.dto.NameCount;
 import org.openlmis.report.model.params.NonReportingFacilityParam;
 import org.openlmis.report.model.report.MasterReport;
+import org.openlmis.report.model.report.NonReportingFacilityDetail;
 import org.openlmis.report.util.ParameterAdaptor;
 import org.openlmis.report.util.SelectedFilterHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,11 @@ import java.util.Map;
 @NoArgsConstructor
 public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
 
-  public static final String PERCENTAGE_NON_REPORTING = "PERCENTAGE_NON_REPORTING";
-  public static final String REPORT_FILTER_PARAM_VALUES = "REPORT_FILTER_PARAM_VALUES";
-  public static final String TOTAL_NON_REPORTING = "TOTAL_NON_REPORTING";
-  public static final String TOTAL_FACILITIES = "TOTAL_FACILITIES";
+  private static final String PERCENTAGE_NON_REPORTING = "PERCENTAGE_NON_REPORTING";
+  private static final String REPORT_FILTER_PARAM_VALUES = "REPORT_FILTER_PARAM_VALUES";
+  private static final String TOTAL_NON_REPORTING = "TOTAL_NON_REPORTING";
+  private static final String TOTAL_FACILITIES = "TOTAL_FACILITIES";
+  private static final String REPORTING_FACILITIES = "REPORTING_FACILITIES";
 
   @Autowired
   private NonReportingFacilityReportMapper reportMapper;
@@ -47,7 +49,7 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
   @Override
   public List<? extends ResultRow> getResultSet(Map<String, String[]> filterCriteria) {
     RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-    return reportMapper.getReport(getFilterParameters(filterCriteria), rowBounds, this.getUserId());
+    return reportMapper.getNonReportingFacilities(getFilterParameters(filterCriteria), rowBounds, this.getUserId());
   }
 
   @Override
@@ -56,7 +58,11 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
     NonReportingFacilityParam nonReportingFacilityParam = getFilterParameters(filterCriteria);
     List<MasterReport> reportList = new ArrayList<>();
     MasterReport report = new MasterReport();
-    report.setDetails(reportMapper.getReport(nonReportingFacilityParam, rowBounds, this.getUserId()));
+    List<NonReportingFacilityDetail> nonReportingFacilityDetails = reportMapper.getNonReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
+    List<NonReportingFacilityDetail> reportingFacilities = reportMapper.getReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
+    nonReportingFacilityDetails.addAll(reportingFacilities);
+    report.setDetails(nonReportingFacilityDetails);
+
     List<NameCount> summary = reportMapper.getReportSummary(nonReportingFacilityParam, this.getUserId());
 
     Double totalFacilities = reportMapper.getTotalFacilities(nonReportingFacilityParam, this.getUserId());
@@ -92,6 +98,11 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
     percentageReportingChart.setCount(percentReporting.toString());
     summary.add(percentageReportingChart);
 
+    summary.add(new NameCount(TOTAL_FACILITIES, totalFacilities.toString()));
+    summary.add(new NameCount(TOTAL_NON_REPORTING, nonReporting.toString()));
+    summary.add(new NameCount(REPORTING_FACILITIES, Double.toString(totalFacilities - nonReporting)));
+
+
     report.setSummary(summary);
     reportList.add(report);
 
@@ -121,7 +132,6 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
       percent = Math.round((nonReporting / totalFacilities) * 100);
     }
     result.put(PERCENTAGE_NON_REPORTING, percent.toString());
-
     result.put(REPORT_FILTER_PARAM_VALUES, filterHelper.getProgramPeriodGeoZone(params));
     return result;
   }
