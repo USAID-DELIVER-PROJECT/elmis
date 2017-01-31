@@ -1235,3 +1235,15 @@ services.factory('GetAllFacilityOperators', function($resource){
     return $resource('/reports/allFacilityOperators.json', {}, {});
 });
 
+services.factory('VaccineOnTimeInFullReporting', function ($resource) {
+    return $resource('/vaccine/orderRequisition/searchOnTimeReporting.json', {}, {});
+});
+
+services.factory('GetVaccineOnTimeInFullList', function ($resource) {
+    return $resource('/vaccine/orderRequisition/getOnTimeInFull.json', {}, {});
+});
+
+
+services.factory('OnTimeInFullReport',function($resource){
+    return $resource('/reports/reportdata/onTimeInFullReport.json',{},{});
+});
