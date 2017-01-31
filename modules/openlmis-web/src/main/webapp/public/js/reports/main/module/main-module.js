@@ -47,6 +47,7 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
         when('/stock-ledger-report', {controller: VaccineStockLedgerReportController, templateUrl:'partials/stock-ledger.html',reloadOnSearch:false}).
         when('/cold-chain-temperature', {controller: ColdChainTemperatureController, templateUrl:'partials/cold-chain-temperature.html',reloadOnSearch:false}).
         when('/distribution-completeness', {controller: VaccineDistributionCompletenessReportController, templateUrl:'partials/vaccine-distribution-completeness-report.html',reloadOnSearch:false}).
+        when('/on-time-in-full', {controller: OnTimeInFullReportController, templateUrl:'partials/on-time-in-full.html',reloadOnSearch:false}).
           otherwise({redirectTo:'/adjustment-summary'});
     }]).config(function(angularCombineConfigProvider) {
     angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');

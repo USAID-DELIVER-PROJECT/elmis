@@ -1,0 +1,123 @@
+<!--
+  ~ This program is part of the OpenLMIS logistics management information system platform software.
+  ~ Copyright © 2013 VillageReach
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~  
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+  -->
+
+<style>
+
+    table td.disabled, .rnr-table .table-bordered td.disabled {
+        background-color: #F0F0F0;
+
+    }
+    .table-rows td{
+        line-height: 79px;
+    }
+    .red {
+        color: red;
+    }
+    .blue{
+        color:blue;
+    }
+    .orange{
+        color:black;
+    }
+
+
+    .rnr-table .table-bordered  td.line {
+        border-bottom: 1px solid #ccc !important;
+        padding-bottom:4px !important;
+
+    }
+
+    .dosesIssued   input{
+        width: 140px !important;
+        font-size: 13px !important;
+        text-align: right !important;
+    }
+    #gap {
+        font-size: 16px !important;
+
+    }
+
+</style>
+
+<div>
+<!--
+    <ng-include src="'/public/pages/reports/general/partials/header.html'"></ng-include>
+-->
+
+    <div class="rnr-table regimen-table" tab-scroll bottom-offset="180">
+        <table id="equipmentTable" fixed-table-header class="table table-bordered scrollable">
+            <thead>
+            <tr>
+
+            <tr>
+                <th></th>
+                <th>Date Requested: {{distributedOrders[0].requestedDate | date : 'dd-MM-yyyy'}}</th>
+                <th>Date Received: {{distributedOrders[0].receivedDate | date : 'dd-MM-yyyy'}}</th>
+                <th></th>
+                <th></th>
+            </tr>
+                <th class="col-product" >
+                    <div class="regimen-heading">
+                        <span openlmis-message="label.product"></span>
+                    </div>
+                </th>
+
+                <th class="col-quantityRequested" >
+                    <div class="regimen-heading">
+                        <span>Quantity Requested (A)</span>
+                    </div>
+                </th>
+
+                <th class="col-quantityReceived" >
+                    <div class="regimen-heading">
+                        <span>Quantity Received (B)</span>
+                    </div>
+                </th>
+
+                <th class="col-gap" >
+                    <div class="regimen-heading">
+                        <span>Gap (B - A)</span>
+                    </div>
+                </th>
+
+                <th class="col-inFull" >
+                    <div class="regimen-heading">
+                        <span>In Full</span>
+                    </div>
+                </th>
+
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat-start="order in distributedOrders"  ng-show="$index == 0 || ( $index > 0 && order.productCategory.code != distributedOrders[$index - 1].productCategory.code)">
+                <td class="productCategory" id="vaccine" colspan="5">
+                    {{order.productCategory.code}}
+                </td>
+            </tr>
+            <tr ng-repeat-end>
+                <td class="col-product cell-input" ><span class="cell-text">{{order.product.primaryName}}</span></td>
+                <td class="col-quantityRequested cell-input" ><span class="cell-text">{{order.quantityRequested}}</span></td>
+                <td class="col-quantityReceived cell-input" ><span class="cell-text">{{order.quantityReceived}}</span></td>
+                <td class="col-gap cell-input" ><span class="cell-text">{{order.gap}}</span></td>
+                <td class="col-inFull cell-input" ><span class="cell-text">{{order.onFull}}</span></td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+    <div class="clear-both"></div>
+
+
+
+
+</div>

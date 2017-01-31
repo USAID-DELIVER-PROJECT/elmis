@@ -69,6 +69,16 @@
             <a href="/public/pages/reports/main/index.html#distribution-completeness"
                openlmis-message="menu.report.vaccine.distribution.completeness"></a>
           </li>
+     <!--     <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
+            <a href="/public/pages/reports/general/index.html#search">
+              On Time In Full reporting
+            </a>
+          </li> -->
+          <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
+            <a href="/public/pages/reports/main/index.html#on-time-in-full">
+              On Time In Full reporting
+            </a>
+          </li>
 
         </ul>
       </div>

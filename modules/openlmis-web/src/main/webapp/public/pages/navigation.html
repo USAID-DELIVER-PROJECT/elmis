@@ -190,6 +190,10 @@
             <a href="/public/pages/vaccine/inventory/index.html#/mass-distribution"
                openlmis-message="link.vaccine.distribute"></a>
           </li>
+
+            <li ng-show="hasPermission('MASS_DISTRIBUTION')">
+            <a href="/public/pages/vaccine/inventory/index.html#/facility-distribution">Facility Distribution</a>
+          </li>
           <li ng-show="hasPermission('MANAGE_STOCK')">
             <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment"
                openlmis-message="link.vaccine.stock.adjustment"></a>

@@ -15,6 +15,7 @@ angular.module('vaccine-inventory', ['openlmis','ngGrid', 'ngTable','ui.bootstra
             when('/receive', {controller:ReceiveStockController, templateUrl:'partials/receive-stock.html',reloadOnSearch:false,resolve:ReceiveStockController.resolve}).
             when('/transfer-in', {controller:ReceiveStockController, templateUrl:'partials/receive-stock.html',reloadOnSearch:false,resolve:ReceiveStockController.resolve}).
             when('/mass-distribution', {controller:MassDistributionController, templateUrl:'partials/mass-distribution.html',reloadOnSearch:false,resolve:MassDistributionController.resolve}).
+            when('/facility-distribution', {controller:FacilityDistributionController, templateUrl:'partials/facility-distribution.html',reloadOnSearch:false,resolve:FacilityDistributionController.resolve}).
             when('/configuration', {controller:VaccineInventoryConfigurationController, templateUrl:'partials/configuration.html',reloadOnSearch:false,resolve:VaccineInventoryConfigurationController.resolve}).
             when('/vaccine-forecasting', {controller:VaccineForecastingController, templateUrl:'partials/vaccine-forecast.html',reloadOnSearch:false,resolve:VaccineForecastingController.resolve}).
             when('/transfer-out', {controller:TransferOutController, templateUrl:'partials/transfer-out-partial.html',reloadOnSearch:false,resolve:TransferOutController.resolve}).
