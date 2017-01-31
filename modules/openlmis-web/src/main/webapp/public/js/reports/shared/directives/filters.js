@@ -1902,3 +1902,66 @@ app.directive('facilityOperatorFilter', ['GetAllFacilityOperators', '$routeParam
         };
     }
 ]);
+
+
+
+
+
+app.directive('vaccineFacilityByDistrictFilter', ['UserFacilityWithViewStockLedgerReport', '$routeParams',
+
+        function (UserFacilityWithViewStockLedgerReport, $routeParams) {
+
+            var onCascadedPVarsChanged = function ($scope, attr) {
+
+                if (!$routeParams.program) {
+                    $scope.facilities = $scope.unshift([], 'report.filter.all.facilities');
+                }
+
+              /*  if (isUndefined($scope.filter.program) || $scope.filter.program === 0) {
+                    return;
+                }*/
+
+                UserFacilityWithViewStockLedgerReport.get(function (data) {
+                    $scope.facilities = (attr.required) ? $scope.unshift(data.facilities, 'report.filter.select.facility') : $scope.unshift(data.facilities, 'report.filter.all.facilities');
+                });
+
+            };
+
+            return {
+                restrict: 'E',
+                link: function (scope, elm, attr) {
+                   scope.registerRequired('facility', attr);
+
+                    var onParentChanged = function () {
+                        onCascadedPVarsChanged(scope, attr);
+                    };
+                    scope.subscribeOnChanged('facility','program', onParentChanged, true);
+                },
+                templateUrl: 'filter-vaccine-facility-by-level-template'
+            };
+
+
+        }]
+);
+
+
+
+app.directive('vaccineFacilitByDistrictFilter', ['UserFacilityWithViewStockLedgerReport', '$routeParams', 'messageService',
+    function (UserFacilityWithViewStockLedgerReport, $routeParams, messageService) {
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+
+                scope.registerRequired('facility', attr);
+
+                UserFacilityWithViewStockLedgerReport.get(function (data) {
+                    scope.facilities = (attr.required) ? scope.unshift(data.facilities, 'report.filter.select.facility') : scope.unshift(data.facilities, 'report.filter.all.facilities');
+                });
+
+            },
+            templateUrl: 'filter-vaccine-facility-by-level-template'
+        };
+    }
+]);

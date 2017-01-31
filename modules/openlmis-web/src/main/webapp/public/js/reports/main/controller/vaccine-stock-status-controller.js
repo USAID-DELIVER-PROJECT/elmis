@@ -51,6 +51,7 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
             for(var i = 0; i <product.length; i++){
                 total += product[i].adequacy;
             }
+
             return (total / product.length) * 100;
         };
 

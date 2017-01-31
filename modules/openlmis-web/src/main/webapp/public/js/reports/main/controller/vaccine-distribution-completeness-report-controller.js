@@ -65,6 +65,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                                                       function(data){
 
                                                         var distributedFacilities=data.distributedFacilities;
+                                                          console.log(distributedFacilities);
                                                         $scope.dPagination = data.pagination;
                                                         $scope.dTotalItems = $scope.dPagination.totalRecords;
                                                         $scope.dCurrentPage = $scope.dPagination.page;
@@ -92,6 +93,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
    $scope.showDistributionModal=function(row){
       $scope.distributionModal=true;
       $scope.query=row;
+       console.log(row);
       $scope.loadDistributedFacilities();
 
    };
