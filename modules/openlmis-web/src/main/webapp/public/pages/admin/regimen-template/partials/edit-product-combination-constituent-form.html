@@ -1,0 +1,179 @@
+<!--
+  ~ /*
+  ~  * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+  ~  *
+  ~  * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+  ~  *
+  ~  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~  *
+  ~  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+  ~  *
+  ~  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  */
+  -->
+<style>
+    div.row-fluid {
+
+    }
+</style>
+
+<div id="regimenEditForm" ng-show="regimenTree.length > 0">
+
+    <div class="rnr-template-head">
+        <div class="row-fluid">
+            <div class="span4"><span openlmis-message="header.name"></span></div>
+            <div class="span2"><span openlmis-message="header.dose"></span></div>
+            <div class="span2"><span openlmis-message="header.frequency"></span></div>
+            <div class="span2"><span openlmis-message="header.quantity"></span></div>
+            <div class="span2"></div>
+
+        </div>
+    </div>
+
+    <div  class="regiment-list-items">
+        <div class="row-fluid" ng-show="regimenTree.length > 0">
+            <div ng-model="regimens" ng-repeat="regimen in regimenTree" class="ui-sortable">
+                <div  ng-show="regimen.productCombinationList.length > 0"  class="category-name"><span>
+                    <button type="button" class="btn btn-info" ng-click="regimen.collapsed=!regimen.collapsed" >
+                        <i ng-class="regimen.collapsed==true?'icon-plus-sign':'icon-minus-sign'"></i>
+                    </button>
+</span>
+                    <span><span>&nbsp;&nbsp;&nbsp;Regimen Name :</span>
+                        <span ng-bind="regimen.name"></span></span>
+                </div>
+               <div collapse="regimen.collapsed" class="row-fluid like-table-row">
+
+                <div ng-model="regimen.productCombinationList">
+                    <div ng-repeat="productCombination in regimen.productCombinationList"
+                         class="row-fluid"
+                         ng-class="{'editable-row' : productCombination.editable}" id="mainContainer">
+
+                        <div class="row-fluid like-table-row" id="combinationContainer{{productCombination.id}}">
+
+
+                            <div class="span4">
+                                <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    <button type="button" class="btn btn-info" ng-click="productCombination.collapsed=!productCombination.collapsed" >
+                                        <i ng-class="productCombination.collapsed==true?'icon-plus-sign':'icon-minus-sign'"></i>
+                                    </button></i>&nbsp;&nbsp;&nbsp;Combination:
+
+                                      <span ng-show="!productCombination.editable"
+                                            ng-bind="productCombination.name"></span></span>
+                                <input name="regimenName" type="text" ng-model="productCombination.name"
+                                       ng-required="true"
+                                       ng-show="productCombination.editable" maxlength="50"/>
+                            </div>
+                            <div class="span2"></div>
+                            <div class="span2"></div>
+                            <div class="span2"></div>
+                            <div class="span2">
+                                <input id="addNewRow" name="button" type="button"
+                                       class="btn btn-primary btn-small "
+                                       openlmis-message="button.add.product.constituent"
+                                       ng-click="openAddConstituentDialog(productCombination,false)"/>
+
+
+                                <input id="editCombinationRow" name="button" type="button"
+                                       class="btn btn-primary btn-small pull-right" openlmis-message="button.edit"
+                                       ng-click="productCombination.editable=true;"/>
+                            </div>
+
+
+
+                            <!-- product constituents-->
+                        </div>
+
+
+                        <div collapse="productCombination.collapsed" ng-model="productCombination.combinationConstituentList" id="constituentsContainer">
+                            <div ng-repeat="productConstituent in productCombination.combinationConstituentList"
+                                 class="row-fluid "
+                                 ng-class="{'editable-row' : productConstituent.editable}">
+
+                                <div class="row-fluid">
+                                <div class="span4">
+                                        <div ng-show="!productConstituent.editable">
+                                            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                                <button type="button" class="btn btn-info" ng-click="productConstituent.collapsed=!productConstituent.collapsed" >
+                                                <i ng-class="productConstituent.collapsed==true?'icon-plus-sign':'icon-minus-sign'"></i>
+                                            </button>&nbsp; &nbsp; &nbsp;Product Name:</span></span><span
+                                                ng-bind="productConstituent.product.primaryName"></span></div>
+                                        <input name="constituentId" type="text"
+                                               ng-model="productConstituent.product.primaryName"
+                                               ng-required="true"
+                                               ng-show="productConstituent.editable" maxlength="50"/>
+                                    </div>
+                                    <div class="span2"></div>
+                                    <div class="span2"></div>
+                                    <div class="span2"></div>
+                                    <div class="span2">
+                                        <input id="addNewDosageRow" name="button" type="button"
+                                               class="btn btn-primary btn-small "
+                                               openlmis-message="button.add.product.constituent.dosage"
+                                               ng-click="openAddConstituentDialog(productConstituent,true)"/>
+
+
+                                        <input id="editConstituentRow" name="button" type="button"
+                                               class="btn btn-primary btn-small pull-right"
+                                               openlmis-message="button.edit"
+                                               ng-click="productConstituent.editable=true;"/>
+                                    </div>
+
+
+                                </div>
+                                <div collapse="productConstituent.collapsed" ng-repeat="dosage in productConstituent.constituentDosageList"
+                                     class="row-fluid rnr-template-columns"
+                                     ng-class="{'editable-row' : dosage.editable}">
+                                    <div class="rnr-template-columns ">
+                                    <div class="span4"><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+                                                             ng-show="dosage.id==productConstituent.defaultDosage.id">Default Dose</span>
+                                    </div>
+                                    <div class="span2">
+                                        <div ng-show="!dosage.editable">
+                                            <span><i class="icon-star-empty"></i>&nbsp; &nbsp; &nbsp;</span></span><span
+                                                ng-bind="dosage.dosageUnit.code"></span></div>
+                                        <input name="dosageId" type="text" ng-model="dosage.dosageUnit.code"
+                                               ng-required="true"
+                                               ng-show="dosage.editable" maxlength="50"/>
+                                    </div>
+                                    <div class="span2">
+                                        <div ng-show="!dosage.editable">
+                                            <span ng-bind="dosage.dosageFrequency.name"></span></div>
+                                        <input name="dosageId" type="text" ng-model="dosage.dosageFrequency.name"
+                                               ng-required="true"
+                                               ng-show="dosage.editable" maxlength="50"/>
+                                    </div>
+                                    <div class="span2">
+
+                                        <div ng-show="!dosage.editable">
+                                            <span ng-bind="dosage.quantity"></span></div>
+                                        <input name="dosageId" type="number" ng-model="dosage.quantity"
+                                               ng-required="true"
+                                               ng-show="dosage.editable" maxlength="50"/>
+                                    </div>
+
+                                    <div class="span2">
+
+                                        <input id="editDosageRow" name="button" type="button"
+                                               class="icon-pencil btn btn-primary btn-small pull-right"
+                                               openlmis-message="button.edit"
+                                               ng-click="dosage.editable=true;"/></div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                    <!-- -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-include
+            src="'/public/pages/admin/regimen-template/partials/RegimenConstituentModal.html'"></ng-include>
+</div>
+
+</div>

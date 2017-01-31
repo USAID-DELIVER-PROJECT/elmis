@@ -26,11 +26,11 @@ function OrderFillRateController($scope, $window, OrderFillRateReport, GetPushed
         });
 
 
-        GetPushedProductList.get($scope.getSanitizedParameter(),function (data) {
-                if (data.pages !== undefined && data.pages.rows !== undefined) {
-                    $scope.pusheditems = data.pages.rows;
-                }
-            });
+        // GetPushedProductList.get($scope.getSanitizedParameter(),function (data) {
+        //         if (data.pages !== undefined && data.pages.rows !== undefined) {
+        //             $scope.pusheditems = data.pages.rows;
+        //         }
+        //     });
     };
 
     $scope.exportReport = function (type) {

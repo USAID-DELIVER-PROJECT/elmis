@@ -24,39 +24,118 @@ import java.util.List;
 @Service
 public class RegimenService {
 
-  @Autowired
-  RegimenRepository repository;
+    @Autowired
+    RegimenRepository repository;
 
-  @Autowired
-  ProgramService programService;
+    @Autowired
+    ProgramService programService;
 
-  public void save(List<Regimen> regimens, Long userId) {
-    repository.save(regimens, userId);
-  }
+    public void save(List<Regimen> regimens, Long userId) {
+        repository.save(regimens, userId);
+    }
 
-  public List<Regimen> getByProgram(Long programId) {
-    return repository.getByProgram(programId);
-  }
+    public void saveProductCombination(List<RegimenProductCombination> productCombinations, Long userId) {
+        repository.saveProductCombination(productCombinations, userId);
+    }
 
-  public List<RegimenCategory> getAllRegimenCategories() {
-    return repository.getAllRegimenCategories();
-  }
+    public List<Regimen> getByProgram(Long programId) {
+        return repository.getByProgram(programId);
+    }
 
-  public Regimen getById(Long id){return repository.getById(id);}
+    public List<RegimenCategory> getAllRegimenCategories() {
+        return repository.getAllRegimenCategories();
+    }
 
-  public List<DosageFrequency> getAllDosageFrequencies(){
-      return repository.getAllDosageFrequencies();
-  }
+    public Regimen getById(Long id) {
+        return repository.getById(id);
+    }
 
-  public List<RegimenProductCombination> getAllRegimenProductCombinations(){
-      return repository.getAllRegimenProductCombinations();
-  }
+    public List<DosageFrequency> getAllDosageFrequencies() {
+        return repository.getAllDosageFrequencies();
+    }
 
-  public List<RegimenCombinationConstituent> getAllRegimenCombinationConstituents(){
+    public List<RegimenProductCombination> getAllRegimenProductCombinations(Long regimenId) {
+        return repository.getAllRegimenProductCombinations(regimenId);
+    }
+
+    public List<RegimenProductCombination> getAllRegimenProductCombinations() {
+        return repository.getAllRegimenProductCombinations();
+    }
+
+    public List<RegimenCombinationConstituent> getAllRegimenCombinationConstituents() {
         return repository.getAllRegimenCombinationConstituents();
-  }
+    }
 
-  public List<RegimenConstituentDosage> getAllRegimenConstituentDosages(){
+    public List<RegimenConstituentDosage> getAllRegimenConstituentDosages() {
         return repository.getAllRegimenConstituentsDosages();
-  }
+    }
+
+    public List<Regimen> buildRegimenTree(Long programId) {
+        List<Regimen> regimenList = null;
+        regimenList = repository.getByProgram(programId);
+        if (regimenList != null && !regimenList.isEmpty()) {
+            for (Regimen regimen : regimenList) {
+                List<RegimenProductCombination> productCombinationList = repository.getAllRegimenProductCombinations(regimen.getId());
+                if (productCombinationList != null && !productCombinationList.isEmpty()) {
+                    regimen.setProductCombinationList(productCombinationList);
+                    for (RegimenProductCombination productCombination : productCombinationList) {
+                        if (productCombinationList != null && !productCombinationList.isEmpty()) {
+                            List<RegimenCombinationConstituent> combinationConstituentList = null;
+                            combinationConstituentList = repository.getAllRegimenCombinationConstituents(productCombination.getId());
+                            productCombination.setCombinationConstituentList(combinationConstituentList);
+                            if (combinationConstituentList != null && !combinationConstituentList.isEmpty()) {
+                                for (RegimenCombinationConstituent combinationConstituent : combinationConstituentList) {
+                                    List<RegimenConstituentDosage> constituentDosageList = null;
+                                    constituentDosageList = repository.getAllRegimenConstituentsDosages(combinationConstituent.getId());
+                                    combinationConstituent.setConstituentDosageList(constituentDosageList);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return regimenList;
+
+    }
+
+    public void addProductConstituent(RegimenCombinationConstituent combinationConstituent) {
+
+        repository.saveProductConstituent(combinationConstituent);
+    }
+
+    public void addProductConstituentDosage(RegimenConstituentDosage constituentDosage) {
+        repository.saveRegimenConstituentDosage(constituentDosage);
+    }
+
+    public List<DosageUnit> getDosageUnits() {
+        return repository.getDosageUnits();
+    }
+
+    public void saveRegimenTree(List<Regimen> regimenTreeList, Long aLong) {
+        for (Regimen regimen : regimenTreeList) {
+            List<RegimenProductCombination> productCombinationList = regimen.getProductCombinationList();
+            if (productCombinationList != null && !productCombinationList.isEmpty())
+                for (RegimenProductCombination productCombination : productCombinationList) {
+                    List<RegimenCombinationConstituent> combinationConstituentList = productCombination.getCombinationConstituentList();
+                    if (combinationConstituentList != null && !combinationConstituentList.isEmpty())
+                        for (RegimenCombinationConstituent combinationConstituent : combinationConstituentList) {
+                            combinationConstituent.setProductCombination(productCombination);
+                            boolean isNewCombination = combinationConstituent.getId() == null;
+                            repository.saveProductConstituent(combinationConstituent);
+
+
+                            List<RegimenConstituentDosage> regimenConstituentDosageList = combinationConstituent.getConstituentDosageList();
+                            if (regimenConstituentDosageList != null && !regimenConstituentDosageList.isEmpty())
+                                for (RegimenConstituentDosage constituentDosage : regimenConstituentDosageList) {
+                                    constituentDosage.setRegimenConstituent(combinationConstituent);
+                                    if (!isNewCombination && !constituentDosage.isDefaultValue()) {
+                                        repository.saveRegimenConstituentDosage(constituentDosage);
+
+                                    }
+                                }
+                        }
+                }
+        }
+    }
 }

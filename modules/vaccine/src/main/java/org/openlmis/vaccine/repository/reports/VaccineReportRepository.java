@@ -128,35 +128,26 @@ public Map<String, VaccineCoverageReport> calculateVaccineCoverageReportForFacil
   }
 
 
-    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId, Long doseId){
-        return mapper.getPerformanceCoverageMainReportDataByRegionAggregate(startDate, endDate, districtId, productId, doseId);
+    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId, Long doseId, Long userId){
+        return mapper.getPerformanceCoverageMainReportDataByRegionAggregate(startDate, endDate, districtId, productId, doseId, userId);
     }
 
-    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId, Long doseId){
-        return mapper.getPerformanceCoverageSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId, doseId);
+    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByRegionAggregate(Date startDate, Date endDate, Long districtId, Long productId, Long doseId, Long userId){
+        return mapper.getPerformanceCoverageSummaryReportDataByRegionAggregate(startDate, endDate, districtId, productId, doseId, userId);
     }
 
-    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId, Long doseId){
-        return  mapper.getPerformanceCoverageMainReportDataByDistrict(startDate, endDate, districtId, productId, doseId);
+    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId, Long doseId, Long userId){
+        return  mapper.getPerformanceCoverageMainReportDataByDistrict(startDate, endDate, districtId, productId, doseId, userId);
     }
 
-    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId, Long doseId){
-        return mapper.getPerformanceCoverageSummaryReportDataByDistrict(startDate, endDate, districtId, productId, doseId);
+    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId, Long productId, Long doseId, Long userId){
+        return mapper.getPerformanceCoverageSummaryReportDataByDistrict(startDate, endDate, districtId, productId, doseId, userId);
     }
-    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId, Long doseId){
-        return mapper.getPerformanceCoverageMainReportDataByRegion(startDate, endDate, districtId, productId, doseId);
+    public List<Map<String, Object>> getPerformanceCoverageMainReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId, Long doseId, Long userId){
+        return mapper.getPerformanceCoverageMainReportDataByRegion(startDate, endDate, districtId, productId, doseId, userId);
     }
-    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId, Long doseId){
-        return  mapper.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId, doseId);
-    }
-
-
-    public List<Map<String,Object>> getCompletenessAndTimelinessMainReportDataByDistrict(Date startDate, Date endDate, Long districtId) {
-        return mapper.getCompletenessAndTimelinessMainReportDataByDistrict(startDate, endDate, districtId);
-    }
-
-    public List<Map<String,Object>> getCompletenessAndTimelinessSummaryReportDataByDistrict(Date startDate, Date endDate, Long districtId) {
-         return mapper.getCompletenessAndTimelinessSummaryReportDataByDistrict(startDate, endDate, districtId);
+    public List<Map<String, Object>> getPerformanceCoverageSummaryReportDataByRegion(Date startDate, Date endDate, Long districtId, Long productId, Long doseId, Long userId){
+        return  mapper.getPerformanceCoverageSummaryReportDataByRegion(startDate, endDate, districtId, productId, doseId, userId);
     }
 
     public List<Map<String,Object>> getAdequacyLevelOfSupplyByDistrict(Date startDate, Date endDate, Long districtId, Long productId) {

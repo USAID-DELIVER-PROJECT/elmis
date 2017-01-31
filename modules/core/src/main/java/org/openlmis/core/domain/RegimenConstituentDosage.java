@@ -27,5 +27,6 @@ public class RegimenConstituentDosage  extends BaseModel {
     private BigDecimal quantity;
     private DosageUnit dosageUnit;
     private DosageFrequency dosageFrequency;
+    private boolean defaultValue;
 
 }

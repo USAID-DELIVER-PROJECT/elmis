@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-app.directive('filterContainer', ['$routeParams', '$location', 'messageService', function ($routeParams, $location, messageService) {
+app.directive('filterContainer', ['$routeParams', '$location', '$timeout', 'messageService', function ($routeParams, $location, $timeout, messageService) {
     return {
         restrict: 'EA',
         scope: true,
@@ -70,20 +70,25 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
             };
 
             function isValid() {
-                var all_required_fields_set = true;
-
+                if($scope.noRequiredParameter){
+                    return true;
+                }
+                var all_required_fields_set = false;
                 // check if all of the required parameters have been specified
                 if (!angular.isUndefined($scope.requiredFilters)) {
+                    all_required_fields_set = true;
                     var requiredFilters = _.values($scope.requiredFilters);
+                    if(requiredFilters.length === 0){
+                      all_required_fields_set = false;
+                    }
                     for (var i = 0; i < requiredFilters.length; i++) {
                         var field = requiredFilters[i];
-                        if (isUndefined($scope.filter[field]) || _.isEmpty($scope.filter[field]) || $scope.filter[field] === 0 || $scope.filter[field] === -1) {
+                        if (isUndefined($scope.filter[field]) || $scope.filter[field] === '' || $scope.filter[field] === 0 || $scope.filter[field] === -1) {
                             all_required_fields_set = false;
                             break;
                         }
                     }
                 }
-
                 return all_required_fields_set;
             }
 
@@ -99,9 +104,10 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
 
 
             $scope.$on('filter-changed', $scope.filterChanged);
-            $scope.filterChanged();
+            $timeout($scope.filterChanged, 100);
         },
-        link: function (scope) {
+        link: function (scope, elm, attr) {
+            scope.noRequiredParameter = ( "true" === (attr.noRequiredParam) );
             angular.extend(scope, {
                 showMoreFilters: false,
 
@@ -115,7 +121,6 @@ app.directive('filterContainer', ['$routeParams', '$location', 'messageService',
                     }
                     return array;
                 },
-
                 toggleMoreFilters: function () {
                     scope.showMoreFilters = !scope.showMoreFilters;
                 }
@@ -278,7 +283,11 @@ app.directive('scheduleFilter', ['ReportSchedules', 'ReportProgramSchedules', '$
                     ReportProgramSchedules.get({
                         program: scope.filter.program
                     }, function (data) {
-                        scope.schedules = scope.unshift(data.schedules, 'report.filter.select.group');
+                      if(data.schedules.length === 1){
+                        scope.filter.schedule = data.schedules[0].id;
+                        scope.notifyFilterChanged('schedule-changed');
+                      }
+                      scope.schedules = scope.unshift(data.schedules, 'report.filter.select.group');
                     });
                 };
 
@@ -301,12 +310,17 @@ app.directive('zoneFilter', ['TreeGeographicZoneList', 'TreeGeographicZoneListBy
                 TreeGeographicZoneListByProgram.get({
                     program: $scope.filter.program
                 }, function (data) {
-                    $scope.zones = data.zone;
-
+                    $scope.zones = [data.zone];
+                    if($scope.selectedZone === undefined || $scope.selectedZone === null){
+                      $scope.selectedZone = data.zone;
+                    }
                 });
             } else {
                 TreeGeographicZoneList.get(function (data) {
-                    $scope.zones = data.zone;
+                    $scope.zones = [data.zone];
+                    if($scope.selectedZone === undefined){
+                        $scope.selectedZone = data.zone;
+                    }
                 });
             }
         };
@@ -327,7 +341,21 @@ app.directive('zoneFilter', ['TreeGeographicZoneList', 'TreeGeographicZoneListBy
             restrict: 'E',
             require: '^filterContainer',
             link: function (scope, elm, attr) {
+                scope.$watch('selectedZone', function(){
+                  if(scope.$parent.filter !== undefined && scope.selectedZone !== undefined && scope.selectedZone !== null){
+                    scope.$parent.filter.zone = scope.selectedZone.id;
+                    scope.$parent.filter.zoneName = scope.selectedZone.name.replace(/%20/g, '+');
+                    scope.notifyFilterChanged('zone-filter-changed');
+                  }
+                });
+
                 scope.registerRequired('zone', attr);
+                if(scope.filter !== undefined && scope.filter !== null && scope.filter.zone !== undefined){
+                  scope.selectedZone = {
+                      id: scope.filter.zone,
+                    name: scope.filter.zoneName.replace(/\+/g, ' ')
+                  };
+                }
 
                 if (attr.districtOnly) {
                     scope.showDistrictOnly = true;
@@ -852,6 +880,13 @@ app.directive('regimenFilter', ['ReportRegimensByCategory',
     }
 ]);
 
+app.directive('topRightTableSummary', [function(){
+    return {
+      restrict: 'EA',
+      templateUrl: '/public/pages/reports/shared/top-right-pagination-summary.html'
+    };
+}]);
+
 app.directive('clientSideSortPagination', ['$filter', 'ngTableParams',
     function ($filter, ngTableParams) {
 
@@ -863,7 +898,7 @@ app.directive('clientSideSortPagination', ['$filter', 'ngTableParams',
                 scope.tableParams = new ngTableParams({
                     page: 1,
                     total: 0,
-                    count: 25
+                    count: 100
                 });
 
                 scope.paramsChanged = function (params) {
@@ -872,7 +907,12 @@ app.directive('clientSideSortPagination', ['$filter', 'ngTableParams',
                     if (scope.data === undefined) {
                         scope.datarows = [];
                         params.total = 0;
+                        params.page = 1;
                     } else {
+                        if(((params.page - 1) * params.count) > scope.data.length){
+                            // reset the page number to 1.
+                            params.page = 1;
+                        }
                         var data = scope.data;
                         var orderedData = params.filter ? $filter('filter')(data, params.filter) : data;
                         orderedData = params.sorting ? $filter('orderBy')(orderedData, params.orderBy()) : data;
@@ -936,10 +976,6 @@ app.directive('programProductPeriodFilter', ['ReportUserPrograms', 'GetProductCa
 
                 GetYearSchedulePeriodTree.get({}, function (data) {
                     scope.periods = data.yearSchedulePeriod;
-                });
-
-                SettingsByKey.get({key: 'SYSTEM_DEPLOYMENT_INSTANCE'}, function (data){
-                    scope.zambiaInstance = data.settings.value == 'ZAMBIA';//) console.log('asdfasdf');
                 });
 
                 var onParentChanged = function () {
@@ -1104,8 +1140,12 @@ app.directive('vaccineZoneFilter', ['FacilitiesByGeographicZone', 'TreeGeographi
                 TreeGeographicTreeByProgramNoZones.get({
                     program: $scope.program
                 }, function (data) {
-                    $scope.zones = data.zone;
+                    $scope.zones = [data.zone];
+                    if($scope.selectedZone === undefined || $scope.selectedZone === null){
+                      $scope.selectedZone = data.zone;
+                        $scope.filterZone =  $scope.zones [0];
 
+                    }
 
                 });
 
@@ -1646,11 +1686,10 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
                 }
             });
             StaticYears.get({}, function (data) {
-                $scope.years.push({id: '0', year_value: 'Current Period'});
+
                 data.years.forEach(function (value) {
                     $scope.years.push(value);
                 });
-                $scope.years.push({id: '-1', year_value: 'Custom Period'});
                 $scope.staticYear = $scope.years[0].id;
 
             });

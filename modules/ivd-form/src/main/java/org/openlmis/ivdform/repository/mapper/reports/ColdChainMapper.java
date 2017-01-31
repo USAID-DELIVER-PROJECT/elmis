@@ -54,10 +54,11 @@ public interface ColdChainMapper {
       " i.reportId = #{reportId} order by i.id")
   List<ColdChainLineItem> getLineItems(@Param("reportId") Long reportId);
 
-  @Select("select e.id as equipmentInventoryId, eq.name as equipmentName, eq.model as model, e.serialNumber as serial, eq.energyTypeId " +
+  @Select("select e.id as equipmentInventoryId, eq.name as equipmentName, eq.model as model, e.serialNumber as serial, eq.energyTypeId, eet.name as energySource " +
       " from " +
       "     equipment_inventories e " +
       "     join equipments eq on eq.id = e.equipmentId " +
+      "     join equipment_energy_types eet on eet.id = eq.energyTypeId " +
       "   where" +
       "  e.programId = #{programId} and e.facilityId = #{facilityId} " +
       " order by eq.name")

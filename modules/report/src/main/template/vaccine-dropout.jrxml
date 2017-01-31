@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stocked-out" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="405"/>
+	<property name="ireport.x" value="101"/>
+	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
@@ -34,6 +34,8 @@
 	<parameter name="IS_FACILITY_REPORT" class="java.lang.Boolean">
 		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
 	</parameter>
+	<parameter name="REPORT_COUNTRY_TITLE" class="java.lang.String"/>
+	<parameter name="VIMS_LOGO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
      i."bcg_1" AS bcg_vaccinated,
@@ -83,11 +85,11 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<subreportParameter name="REPORT_TITLE">
 					<subreportParameterExpression><![CDATA[$P{REPORT_TITLE}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="OPERATOR_NAME">
-					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="LOGO">
 					<subreportParameterExpression><![CDATA[$P{LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_SUB_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_SUB_TITLE}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REPORT_NAME">
 					<subreportParameterExpression><![CDATA[$P{REPORT_NAME}]]></subreportParameterExpression>
@@ -95,11 +97,17 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<subreportParameter name="REPORT_FILTER_PARAM_VALUES">
 					<subreportParameterExpression><![CDATA[$P{REPORT_FILTER_PARAM_VALUES}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="REPORT_SUB_TITLE">
-					<subreportParameterExpression><![CDATA[$P{REPORT_SUB_TITLE}]]></subreportParameterExpression>
+				<subreportParameter name="VIMS_LOGO">
+					<subreportParameterExpression><![CDATA[$P{VIMS_LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_NAME">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_COUNTRY_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_COUNTRY_TITLE}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
-				<subreportExpression><![CDATA["openlmis-report-header-landscape.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["vims-report-header-landscape.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
 				<reportElement x="200" y="39" width="353" height="41" uuid="d1e9a172-459d-4612-a94e-bdbcafdf92e2">

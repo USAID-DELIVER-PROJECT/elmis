@@ -148,6 +148,8 @@ public class OrderMapperIT {
     ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo();
     shipmentFileInfo.setFileName("abc.csv");
     shipmentFileInfo.setProcessingError(false);
+    shipmentFileInfo.setSkippedShipmentLineItems("[]");
+    shipmentFileInfo.setHasSkippedLineItems(false);
     shipmentMapper.insertShipmentFileInfo(shipmentFileInfo);
     mapper.updateShipmentAndStatus(order.getOrderNumber(), RELEASED, shipmentFileInfo.getId());
     Long userId = insertUserAndRoleForOrders();
@@ -162,7 +164,7 @@ public class OrderMapperIT {
   public void shouldUpdateStatusAndShipmentIdForOrder() throws Exception {
     Order order = insertOrder(1L);
 
-    ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo("shipment.csv", true);
+    ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo("","shipment.csv", true, "[]", "", false);
     shipmentMapper.insertShipmentFileInfo(shipmentFileInfo);
 
     mapper.updateShipmentAndStatus(order.getOrderNumber(), PACKED, shipmentFileInfo.getId());

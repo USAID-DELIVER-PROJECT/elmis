@@ -43,6 +43,7 @@ public class VaccineCoverageItem extends BaseModel {
 
   private Long displayOrder;
   private String displayName;
+  private String productName;
 
   private Long regularMale;
   private Long regularFemale;

@@ -145,21 +145,21 @@ public interface GeographicZoneReportMapper {
                                                       @Param("userId") Long userId);
 
 
-    @Select("select * from geographic_zones where parentId is null")
+    @Select("select gz.id, gz.name || ' - ' || l.name as name, gz.* from geographic_zones gz join geographic_levels l on l.id = gz.levelid where parentId is null")
     GeoZoneTree getParentZoneTree();
 
-    @Select("select distinct gz.* from geographic_zones gz " +
+    @Select("select distinct gz.id, gz.name || ' - ' || gl.name as name, gz.* from geographic_zones gz join geographic_levels gl on gl.id = gz.levelId " +
             " join (select vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.program_id = #{programId} and vud.user_id = #{userId}) sq" +
             " on sq.district_id = gz.id or sq.zone_id = gz.id or gz.id = sq.region_id or gz.id = sq.parent")
     List<GeoZoneTree> getGeoZonesForUserByProgram(@Param("userId") Long userId, @Param("programId") Long programId);
 
 
-    @Select("select distinct gz.* from geographic_zones gz " +
+    @Select("select distinct gz.id, gz.name || ' - ' || gl.name as name, gz.* from geographic_zones gz join geographic_levels gl on gl.id = gz.levelId  " +
                 " join (select vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.program_id = #{programId} and vud.user_id = #{userId} ) sq" +
                 " on sq.district_id = gz.id or sq.zone_id = gz.id or gz.id = sq.region_id or gz.id = sq.parent")
     List<GeoZoneTree> getGeoZones(@Param("programId")Long ProgramId,@Param("userId") Long userId);
 
-        @Select("select distinct gz.* from geographic_zones gz " +
+        @Select("select distinct gz.id, gz.name || ' - ' || gl.name as name, gz.* from geographic_zones gz join geographic_levels gl on gl.id = gz.levelId  " +
                 " join (select vd.* from vw_districts vd join vw_user_districts vud on vud.district_id = vd.district_id where vud.user_id = #{userId}) sq" +
                 " on sq.district_id = gz.id or sq.zone_id = gz.id or gz.id = sq.region_id or gz.id = sq.parent")
         List<GeoZoneTree> getGeoZonesForUser(@Param("userId") Long userId);

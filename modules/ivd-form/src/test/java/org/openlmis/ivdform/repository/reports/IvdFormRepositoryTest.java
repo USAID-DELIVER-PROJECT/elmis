@@ -63,7 +63,7 @@ public class IvdFormRepositoryTest {
   public void shouldUpdate() throws Exception {
     VaccineReport report = new VaccineReport();
     repository.update(persistedReport, report, 2L);
-    verify(mapper).update(report);
+    verify(mapper).update(persistedReport);
   }
 
   @Test

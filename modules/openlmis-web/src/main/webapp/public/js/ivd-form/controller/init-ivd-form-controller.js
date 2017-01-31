@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function InitIvdFormController($scope, programs, VaccineReportFacilities, VaccineReportPeriods, VaccineReportInitiate, messageService, $location) {
+function InitIvdFormController($scope, $window, programs, VaccineReportFacilities, VaccineReportPeriods, VaccineReportInitiate, messageService, $location) {
 
   $scope.programs = programs;
 
@@ -32,6 +32,11 @@ function InitIvdFormController($scope, programs, VaccineReportFacilities, Vaccin
         period.statusMessage = getStatusText(period.status);
       });
     });
+  };
+
+  $scope.downloadOfflineForm = function(){
+    var url = '/ivd-form/' +  $scope.filter.program + '/' + $scope.year + '/download-reporting-form.xdp';
+    $window.open(url, '_blank');
   };
 
   $scope.initiate = function (period) {

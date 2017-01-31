@@ -41,7 +41,7 @@ function StatusVaccinationReceiceController($window,$scope, StatuVaccinationSupp
 
         $scope.data = $scope.datarows = [];
         $scope.filter.facility='' ;
-        $scope.filter.geographicZoneId = $scope.filter.zone;
+        $scope.filter.geographicZoneId = $scope.filter.zone.id;
         $scope.filter.productId = $scope.filter.product;
         $scope.filter.periodId = 0;
         $scope.filter.programId = $scope.filter.program;

@@ -15,7 +15,12 @@ package org.openlmis.report.exporter;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.*;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.service.MessageService;
 import org.openlmis.report.ReportOutputOption;
@@ -29,7 +34,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Handles Exporting of Jasper reports
@@ -199,17 +207,20 @@ public class JasperReportExporter implements ReportExporter {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        JRXlsExporter exporter = new JRXlsExporter();
+        JRXlsxExporter exporter = new JRXlsxExporter();
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput( new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
 
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, byteArrayOutputStream);
-
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
-        exporter.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.FALSE);
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+        SimpleXlsxReportConfiguration config = new SimpleXlsxReportConfiguration();
+        config.setOnePagePerSheet(false);
+        config.setDetectCellType(true);
+        config.setIgnoreCellBackground(true);
+        config.setIgnoreCellBorder(false);
+        config.setWhitePageBackground(false);
+        config.setWrapText(false);
+        config.setRemoveEmptySpaceBetweenRows(true);
+        config.setCollapseRowSpan(true);
+        exporter.setConfiguration(config);
 
 
         try {
@@ -226,8 +237,8 @@ public class JasperReportExporter implements ReportExporter {
 
         JRPdfExporter exporter = new JRPdfExporter();
 
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, byteArrayOutputStream);
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput( new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
 
         try {
 
@@ -251,8 +262,8 @@ public class JasperReportExporter implements ReportExporter {
 
         JRPdfExporter exporter = new JRPdfExporter();
 
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, byteArrayOutputStream);
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput( new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
 
         try {
             exporter.exportReport();
@@ -281,17 +292,23 @@ public class JasperReportExporter implements ReportExporter {
     public HttpServletResponse exportXls(JasperPrint jasperPrint, String outputFileName, HttpServletResponse response, ByteArrayOutputStream byteArrayOutputStream){
 
         JRXlsExporter exporter = new JRXlsExporter();
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput( new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
 
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, byteArrayOutputStream);
+        SimpleXlsReportConfiguration config = new SimpleXlsReportConfiguration();
 
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
-        exporter.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.FALSE);
-        exporter.setParameter(JRXlsAbstractExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+        config.setDetectCellType(true);
+        config.setIgnoreCellBackground(true);
+        config.setIgnoreCellBorder(true);
+        config.setIgnorePageMargins(true);
+        config.setIgnoreGraphics(true);
+        config.setWhitePageBackground(false);
+        config.setWrapText(false);
+        config.setRemoveEmptySpaceBetweenRows(true);
+        config.setCollapseRowSpan(true);
+        config.setOnePagePerSheet(true);
 
+        exporter.setConfiguration(config);
 
         try {
             exporter.exportReport();
@@ -300,7 +317,7 @@ public class JasperReportExporter implements ReportExporter {
             throw new RuntimeException(e);
         }
 
-        String fileName = outputFileName.isEmpty()? "openlmisReport.xls" : outputFileName+".xls";
+        String fileName = outputFileName.isEmpty()? "open-lmis-report.xls" : outputFileName + ".xls";
         response.setHeader(CONTENT_DISPOSITION, INLINE_FILENAME + fileName);
 
         response.setContentType(Constants.MEDIA_TYPE_EXCEL);

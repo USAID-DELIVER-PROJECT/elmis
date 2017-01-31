@@ -675,6 +675,23 @@ public class InteractiveReportController extends BaseController {
         return new Pages(page, max, reportData);
     }
 
+    @RequestMapping(value = "/reportdata/completenessAndTimeliness", method = GET, headers = BaseController.ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
+    public CompletenessAndTimelinessReport getCompletenessAndTimelinessReportData(
+                                                  HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("completeness_and_timelness");
+
+        CompletenessAndTimelinessReportDataProvider dataProvider = (CompletenessAndTimelinessReportDataProvider)report.getReportDataProvider();
+
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+
+        CompletenessAndTimelinessReport reportData = (CompletenessAndTimelinessReport) dataProvider.
+                getCompletenessAndTimelinessReportData(request.getParameterMap());
+
+        return reportData;
+    }
 
 
     @RequestMapping(value = "/reportdata/onTimeInFullReport", method = GET, headers = BaseController.ACCEPT_JSON)

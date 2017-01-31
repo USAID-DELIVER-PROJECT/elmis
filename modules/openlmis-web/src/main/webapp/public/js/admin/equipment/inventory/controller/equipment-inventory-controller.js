@@ -78,7 +78,7 @@ function EquipmentInventoryController($scope,NumberOfYears,DeleteEquipmentInvent
         $scope.inventory = data.inventory;
 
         var groupedInventoryData = _.groupBy($scope.inventory,function(item){
-              return item.equipment.designation.name;
+              return (item.equipment.designation) ? item.equipment.designation.name: '-';
             });
 
         $scope.inventoryList = $.map(groupedInventoryData, function(value, index) {

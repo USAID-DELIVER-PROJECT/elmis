@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle','ui.bootstrap.pagination'])
+angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle','ui.bootstrap.pagination', 'tree.dropdown'])
     .config(['$routeProvider', function ($routeProvider) {
       $routeProvider.
         when('/adjustment-summary', {controller: AdjustmentSummaryReportController, templateUrl:'partials/adjustment-summary.html',reloadOnSearch:false}).
@@ -28,6 +28,7 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
         when('/lab-equipments-non-functioning', {controller: LabEquipmentNonFunctioningReportController, templateUrl:'partials/lab-equipment-non-functioning.html',reloadOnSearch:false}).
 
         when('/non-reporting', {controller: NonReportingController, templateUrl:'partials/non-reporting.html',reloadOnSearch:false}).
+        when('/reporting-status', {controller: ReportingStatusController, templateUrl:'partials/reporting-status.html',reloadOnSearch:false}).
         when('/order', {controller: OrderReportController, templateUrl:'partials/order.html',reloadOnSearch:false}).
         when('/order-fill-rate', {controller: OrderFillRateController, templateUrl:'partials/order-fill-rate.html',reloadOnSearch:false}).
         when('/order-fill-rate-summary', {controller: OrderFillRateReportSummaryController, templateUrl:'partials/order-fill-rate-summary.html',reloadOnSearch:false}).

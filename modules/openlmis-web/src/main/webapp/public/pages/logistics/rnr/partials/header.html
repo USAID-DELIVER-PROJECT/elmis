@@ -56,9 +56,13 @@
           </strong><span
           id='parentLevel' ng-bind="rnr.facility.geographicZone.parent.name"></span>
         </div>
-        <div class="span6">
+        <div class="span3">
           <strong id='reportingPeriodLabel' openlmis-message="label.facility.reportingPeriod"></strong>:&nbsp;<span
           id='reportingPeriod' ng-bind="rnr.periodDisplayName()"></span>
+        </div>
+        <div class="span3">
+          <strong id='sourceLabel' openlmis-message="label.rnr.source"></strong>:&nbsp;<span
+            id='source' ng-bind="rnr.sourceApplication"></span>
         </div>
       </div>
     </div>

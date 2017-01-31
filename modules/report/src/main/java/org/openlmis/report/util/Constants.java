@@ -36,9 +36,14 @@ public class Constants {
     public static String OPERATOR_LOGO = "OPERATOR_LOGO";
     public static String OPERATOR_NAME = "OPERATOR_NAME";
     public static String REPORT_SUB_TITLE = "REPORT_SUB_TITLE";
+    public static String REPORT_SUB_BRANCH_TITLE = "REPORT_LAST_TITLE";
     public static String REPORT_FILTER_PARAM_VALUES = "REPORT_FILTER_PARAM_VALUES";
     public static String REPORT_MESSAGE_WHEN_NO_DATA = "REPORT_MESSAGE_WHEN_NO_DATA";
     public static String REPORT_PROGRAM_TITLE = "REPORTING_PROGRAM_TITLE";
+    public static final String REPORT_COUNTRY_TITLE="REPORT_COUNTRY_TITLE";
+    public static final String REPORT_MAIN_TITLE="";
+    public static final String REPORT_SUBTITLE_TITLE="";
+
 
 
     /**
@@ -50,6 +55,9 @@ public class Constants {
     public static String START_YEAR = "start_year";
     public static String MONTHS = "months";
     public static String CONF_INDICATOR_PRODUCTS = "INDICATOR_PRODUCTS";
+    public static final String REPORT_COUNTRY_TITLE_KEY="COUNTRY";
+    public static final String REPORT_MAIN_TITLE_KEY="";
+    public static final String REPORT_SUBTITLE_TITLE_KEY="REPORT_SUB_TITLE_TEXT";
 
     /**
      *  Miscellaneous

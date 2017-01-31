@@ -117,7 +117,7 @@ public class CalculationService {
     }
 
 
-    previousRequisition = requisitionRepository.getLWById(previousRequisition.getId());
+    previousRequisition = requisitionRepository.getById(previousRequisition.getId());
 
     Map map = new HashMap<String, RnrLineItem>();
 

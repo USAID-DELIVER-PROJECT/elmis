@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
-  ~
-  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-06-22T15:13:09 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mailing-labels" language="groovy" pageWidth="812" pageHeight="595" orientation="Landscape" columnWidth="712" leftMargin="40" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-12-05T14:08:58 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="non-reporting-facility" language="groovy" pageWidth="812" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="4.594972986357225"/>
 	<property name="ireport.x" value="2442"/>
 	<property name="ireport.y" value="625"/>
@@ -115,7 +103,7 @@
 				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="415" y="0" width="160" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="e268b6f3-c02e-43cb-823b-bbef5370279b"/>
+				<reportElement mode="Transparent" x="415" y="0" width="336" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="e268b6f3-c02e-43cb-823b-bbef5370279b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -167,7 +155,7 @@
 				<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="415" y="0" width="160" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="56fa579b-f8be-4f08-bcb3-14f443e36267">
+				<reportElement mode="Transparent" x="415" y="0" width="336" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="56fa579b-f8be-4f08-bcb3-14f443e36267">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
@@ -198,43 +186,6 @@
 		</band>
 	</detail>
 	<summary>
-		<band height="109">
-			<textField>
-				<reportElement x="650" y="10" width="70" height="21" uuid="f25da274-6a65-48c7-a355-b9b15fa28588">
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{TOTAL_NON_REPORTING}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="650" y="31" width="70" height="20" uuid="992853e5-7ddb-4d79-96fa-0f23ccc3f9eb">
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{TOTAL_FACILITIES}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="650" y="51" width="70" height="20" uuid="992853e5-7ddb-4d79-96fa-0f23ccc3f9eb">
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{PERCENTAGE_NON_REPORTING} + " %"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="520" y="10" width="130" height="21" uuid="d53f087b-a1bc-4c97-aef0-38e24aa75a85"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$R{label.non.reporting.facility}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="520" y="31" width="130" height="20" uuid="b6bbad2e-904a-4de7-8333-6de0817dcc81"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$R{label.total.facilities}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="520" y="51" width="130" height="20" uuid="929bddf2-aecb-4343-bfa2-ad54d84cfb67"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$R{label.percent.not.reporting}]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="109"/>
 	</summary>
 </jasperReport>

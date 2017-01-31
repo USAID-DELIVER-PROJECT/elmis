@@ -48,7 +48,7 @@ public interface ProductCategoryReportMapper {
     " order by name")
   List<ProductCategory> getForProgramUsingProgramProductCategory(@Param("programId") int programId);
 
-    @Select("SELECT pp.programId As program_id, pp.productcategoryid AS category_id, p.id AS product_id,  pc.name AS category, concat(p.primaryname ,' ', form.code ,' ', p.strength ,' ', du.code) as product, p.code as code  \n" +
+    @Select("SELECT pp.programId As program_id, pp.productcategoryid AS category_id, p.id AS product_id,  pc.name AS category, concat(p.primaryname ,' ', form.code ,' ', p.strength ,' ', du.code) as product, p.code as code, pc.displayOrder  \n" +
             "FROM  " +
             "   products as p  " +
             "  join product_forms as form on form.id = p.formid  " +
@@ -56,6 +56,6 @@ public interface ProductCategoryReportMapper {
             "  join program_products pp on pp.productId = p.id " +
             " join product_categories pc on   pc.id = pp.productcategoryid " +
             " where pp.programId = #{programId} and pp.active = true " +
-            "    order by pp.programId, pp.productcategoryid, p.id")
+            "    order by pc.displayOrder, product")
     List<ProductCategoryProductTree> getProductCategoryProductByProgramId(@Param("programId") int programId);
 }

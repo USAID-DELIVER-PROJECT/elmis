@@ -16,6 +16,7 @@ import org.openlmis.core.service.ProgramService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
+import org.openlmis.report.service.PerformanceCoverageDataProvider;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.service.reports.VaccineReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,8 @@ public class VaccineReportController extends BaseController {
     @Autowired
     FacilityService facilityService;
 
-
+@Autowired
+PerformanceCoverageDataProvider coverageDataProvider;
     @RequestMapping(value = "vaccine-monthly-report")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
     public ResponseEntity<OpenLmisResponse> getVaccineMonthlyReport(@RequestParam("facility") Long facilityId, @RequestParam("period") Long periodId, @RequestParam("zone") Long zoneId, HttpServletRequest request) {
@@ -63,7 +65,7 @@ public class VaccineReportController extends BaseController {
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public ResponseEntity<OpenLmisResponse> vaccineUsageTrend( HttpServletRequest request,@RequestParam("facilityCode") String facilityCode, @RequestParam("productCode") String productCode, @RequestParam("period") Long periodId, @RequestParam("zone") Long zoneId) {
 Long userId= this.loggedInUserId(request);
-        return OpenLmisResponse.response("vaccineUsageTrend", service.vaccineUsageTrend(facilityCode, productCode, periodId, zoneId,userId));
+        return OpenLmisResponse.response("vaccineUsageTrend", service.vaccineUsageTrend(facilityCode, productCode, periodId, zoneId, userId));
     }
 
     @RequestMapping(value = "/orderRequisition/downloadPDF", method = RequestMethod.GET)
@@ -81,23 +83,27 @@ Long userId= this.loggedInUserId(request);
                                                               @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                               @RequestParam("district") Long districtId,
                                                               @RequestParam("product") Long product,
-                                                              @RequestParam("doseId") Long doseId
+                                                              @RequestParam("doseId") Long doseId,  HttpServletRequest request
   ) {
-
+      Long userId = this.loggedInUserId(request);
     return OpenLmisResponse.response("performanceCoverage",
-        service.getPerformanceCoverageReportData(periodStart, periodEnd, districtId, product, doseId));
+            service.getPerformanceCoverageReportData(periodStart, periodEnd, districtId, product, doseId, userId));
   }
 
-
-    @RequestMapping(value = "/completenessAndTimeliness", method = RequestMethod.GET)
+    @RequestMapping(value = "/denominatorName", method = RequestMethod.GET)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
-    public ResponseEntity<OpenLmisResponse> completenessAndTimeliness(@RequestParam(value = "periodStart", required = false) String periodStart,
-                                                                      @RequestParam(value = "periodEnd", required = false) String periodEnd,
-                                                                      @RequestParam("district") Long districtId) {
+    public ResponseEntity<OpenLmisResponse> denominatorName(@RequestParam(value = "periodStart", required = false) String periodStart,
+                                                                @RequestParam(value = "periodEnd", required = false) String periodEnd,
+                                                                @RequestParam("district") Long districtId,
+                                                                @RequestParam("product") Long product,
+                                                                @RequestParam("doseId") Long doseId,  HttpServletRequest request
+    ) {
+        Long userId = this.loggedInUserId(request);
 
+        String denominatorName=coverageDataProvider.getDenominatorName(periodStart,periodEnd,districtId,product,doseId,userId);
 
-        return OpenLmisResponse.response("completenessAndTimeliness",
-                service.getCompletenessAndTimelinessReportData(periodStart, periodEnd, districtId));
+        return OpenLmisResponse.response("denominatorName",
+                denominatorName);
     }
 
     @RequestMapping(value = "/adequaceyLevel", method = RequestMethod.GET)

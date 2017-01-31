@@ -285,7 +285,22 @@ services.factory('ProgramRegimens', function ($resource) {
 services.factory('RegimenCategories', function ($resource) {
   return $resource('/regimenCategories.json', {}, {});
 });
+services.factory('ProductCombinations',function ($resource){
 
+  return $resource('/regimens/all-product-combinations.json', {}, {});
+});
+services.factory('RegimenTree',function ($resource){
+
+  return $resource('/regimens/regimens-tree.json', {}, {});
+});
+services.factory('DosageFrequencies',function ($resource){
+
+  return $resource('/regimens/dosage-frequencies.json', {}, {});
+});
+services.factory('DosageUnits',function ($resource){
+
+  return $resource('/regimens/dosage-units.json', {}, {});
+});
 services.factory('Regimens', function ($resource) {
   return $resource('/programId/:programId/regimens.json', {}, {post: {method: 'POST', isArray: true}});
 });

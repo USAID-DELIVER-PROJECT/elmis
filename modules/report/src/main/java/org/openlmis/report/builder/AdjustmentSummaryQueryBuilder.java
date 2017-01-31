@@ -30,12 +30,14 @@ public class AdjustmentSummaryQueryBuilder {
     SELECT("d.district_name as district, program_name as program, productcode, product productDescription, supplying_facility_name supplyingFacility");
     SELECT("t.description  AS  adjustmentType, extract(year from processing_periods_start_date) as year, initcap(to_char(processing_periods_start_date, 'mon')) as month");
     SELECT("adjutment_qty adjustment, processing_periods_name as period, product_category_name category, adjustment_type");
-    SELECT("adjutment_qty * case when adjustment_additive  = 't' then 1 else -1 end AS signedadjustment");
+    SELECT("adjutment_qty * case when adjustment_additive  = 't' then 1 else -1 end AS signedadjustment ");
+    SELECT("adjutment_qty * pp.currentPrice as price");
     FROM("vw_requisition_adjustment ");
       JOIN(" facilities f on f.id = vw_requisition_adjustment.facility_id ");
       JOIN(" vw_districts d on f.geographicZoneId = d.district_id ");
       JOIN(" losses_adjustments_types t on t.name = vw_requisition_adjustment.adjustment_type AND t.isdefault = TRUE ");
       JOIN(" products p on p.id = vw_requisition_adjustment.product_id");
+      JOIN(" program_products pp on p.id = pp.productId and pp.programId = program_id");
     WHERE(rnrStatusFilteredBy("req_status", filter.getAcceptedRnrStatuses()));
     WHERE(programIsFilteredBy("program_id"));
     WHERE(userHasPermissionOnFacilityBy("f.id"));
@@ -49,7 +51,7 @@ public class AdjustmentSummaryQueryBuilder {
       WHERE(geoZoneIsFilteredBy("d"));
     }
     if (filter.getFacility() != 0) {
-      WHERE(facilityIsFilteredBy("f.id"));
+      WHERE(facilityIsFilteredBy("vw_requisition_adjustment.facility_id"));
     }
 
     if (filter.getProductCategory() != 0L ) {
@@ -63,10 +65,11 @@ public class AdjustmentSummaryQueryBuilder {
     if (filter.getAdjustmentType() != null && !"0".equals(filter.getAdjustmentType()) && !filter.getAdjustmentType().isEmpty()) {
       WHERE("adjustment_type = #{filterCriteria.adjustmentType}");
     }
+    if(filter.getFacilityOperator() != 0L){
+      WHERE("f.operatedById = " + filter.getFacilityOperator().toString());
+    }
     ORDER_BY(QueryHelpers.getSortOrder(params, " product, adjustment_type, facility_type_name,facility_name, supplying_facility_name, product_category_name "));
-      String query= SQL();
-      System.out.println(query);
-    return query;
+    return SQL();
   }
 
 }

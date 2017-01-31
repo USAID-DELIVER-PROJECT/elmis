@@ -1,0 +1,54 @@
+<script type="text/ng-template" id="combination-constituent.html">
+    <div class="modal-header">
+        <h3 class="modal-title"><span ng-show="isDosage==false" openlmis-message="header.product.combination.constituent"></span>
+            <span ng-show="isDosage==true" openlmis-message="header.product.combination.dose"></span>
+        </h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group" ng-show="isDosage==false">
+            <label for="product" class="col-sm-3 control-label" openlmis-message="label.program.regimen.product"></label>
+            <div class="col-sm-5">
+                <select id="product"
+                        ng-model="combinationConstituent.selectedProgramProduct"
+                        ng-options="pro.product.primaryName for pro in programProducts"
+                        ng-change="populationSourceChanged()"
+                        style="width:auto; min-width: 220px;">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label ng-show="isDosage==false" for="dosage" class="col-sm-3 control-label" openlmis-message="label.regimen.product.default.dosage"></label>
+            <label ng-show="isDosage==true" for="dosage" class="col-sm-3 control-label" openlmis-message="label.regimen.product.dosage"></label>
+            <div class="col-sm-5">
+                <select id="dosage"
+                        ng-model="combinationConstituent.selectedDose"
+                        ng-options="dose.code for dose in dosageUnits"
+
+                        style="width:auto; min-width: 220px;">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="frequency" class="col-sm-3 control-label" openlmis-message="label.regimen.product.frequency"></label>
+            <div class="col-sm-5">
+                <select id="frequency"
+                        ng-model="combinationConstituent.selectedFrequency"
+                        ng-options="frequency.name for frequency in dosageFrequencies"
+
+                        style="width:auto; min-width: 220px;">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="quantity" class="col-sm-3 control-label" openlmis-message="label.regimen.product.dosage.quantity"></label>
+            <div class="col-sm-5">
+                <input type="number" class="form-control" id="quantity" placeholder="Quantity" ng-model="combinationConstituent.quantity">
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <input name="button" class="btn btn-default" type="button" ng-click="cancel()" openlmis-message="button.cancel"/>
+        <input id="btnAdd" name="button"  ng-click="save(combinationConstituent)" class="btn btn-primary" type="button" openlmis-message="button.add "/>
+    </div>
+</script>

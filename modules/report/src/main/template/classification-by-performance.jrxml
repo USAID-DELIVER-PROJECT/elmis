@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="1.9487171000000014"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String"/>
+	<parameter name="COUNTRY_NAME" class="java.lang.String"/>
+	<parameter name="GENERATED_BY" class="java.lang.String"/>
+	<parameter name="REPORT_VERSION" class="java.lang.String"/>
+	<parameter name="REPORT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_OUTPUT_OPTION" class="java.lang.String"/>
+	<parameter name="OPERATOR_LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_SUB_TITLE" class="java.lang.String"/>
+	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
+	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_COUNTRY_TITLE" class="java.lang.String"/>
+	<parameter name="VIMS_LOGO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[-- Get population target
+with vaccine_dropout as (
+   select
+		vd.region_id,
+		vd.district_id,
+		period_id,
+		vd.region_name,
+		vd.district_name,
+		facility_id,
+		facility_name,
+		period_start_date startdate,
+		demographics.population,
+		demographics.denominator,
+		to_char(period_start_date, 'Mon YYYY')  period_name ,
+		extract( month from period_start_date) month_number,
+		extract( year from period_start_date) year_number,
+		period_start_date::date period_start_date,
+		coalesce(within_outside_total, 0) vaccinated,
+		bcg_1,
+		mr_1,
+		dtp_1,
+		dtp_3
+    from vw_vaccine_dropout
+    inner join vw_districts vd on vd.district_id = geographic_zone_id
+    join (
+		select vd.region_id, vd.district_id, coalesce(sum(denominator),0) denominator,
+		coalesce(sum(population),0) population
+		from vw_vaccine_population_denominator vd
+		join vw_districts d ON vd.district_id = d.district_id
+		where programid = fn_get_vaccine_program_id()
+		and (productid = 2421)
+		and year = extract(year from '2014-01-01'::date)
+		and (0 = 0 or d.district_id = 0 or d.region_id = 0 or d.parent = 0)
+		group by 1,2
+		order by 2,1
+    ) demographics on demographics.district_id = geographic_zone_id
+
+    where
+	    product_id =2421 and
+	    period_start_date::date >= 'Wed Jan 01 00:00:00 EAT 2014' and
+	    period_end_date::date <= 'Wed Dec 31 00:00:00 EAT 2014'
+	    and (vd.parent = 0 or vd.district_id = 0 or vd.region_id = 0 or 0=0)
+    )
+
+
+,vaccine_dropout_with_faility_count as (
+    select region_id, district_id, region_name, district_name, period_id, period_name , month_number, year_number, period_start_date,
+    population, denominator, facility_count, startdate, sum(vaccinated) vaccinated, sum(bcg_1) bcg_1, sum(mr_1) mr_1, sum(dtp_1) dtp_1, sum(dtp_3) dtp_3
+    from vaccine_dropout
+    JOIN (
+	select region_name rname, district_name dname, count(distinct facility_name) facility_count
+	from vaccine_dropout group by 1, 2
+    ) as fcount ON fcount.dname = vaccine_dropout.district_name
+    group by 1,2,3,4,5,6,7,8,9,10,11,12,13
+    order by 1,5
+ )
+
+, progressive_total as (
+select
+	*,
+	(select case when population_tot = 0 then 0
+		    when (select code from products where id = 2421 limit 1) = 'V001' then bcg_1_tot / (population_tot * 0.1)
+		    else  dtp_1_tot / (population_tot * 0.1) end) as coverage_rate,
+
+	(select case when dtp_1_tot = 0 then 0
+		     when (select code from products where id = 2421 limit 1) = 'V001' and bcg_1_tot <> 0 then ((bcg_1_tot - mr_1_tot) / bcg_1_tot) * 100
+		     when (select code from products where id = 2421 limit 1) = 'V010' and dtp_1_tot <> 0 then ((dtp_1_tot - dtp_3_tot) / dtp_1_tot) * 100
+		     else 0 end) as dropout_rate
+ from  (
+	select *,
+		sum(population) OVER (PARTITION BY district_id order by district_id, month_number) population_tot,
+		sum(bcg_1) OVER (PARTITION BY district_id order by district_id, month_number) bcg_1_tot,
+		sum(mr_1) OVER (PARTITION BY district_id order by district_id, month_number) mr_1_tot,
+		sum(dtp_1) OVER (PARTITION BY district_id order by district_id, month_number) dtp_1_tot,
+		sum(dtp_3) OVER (PARTITION BY district_id order by district_id, month_number) dtp_3_tot,
+		coverage min_coverage, dropout min_dropout, wastage
+	from
+	vaccine_dropout_with_faility_count
+	join (
+		select coalesce(whoratio,0) coverage,  coalesce(dropout,0) dropout , coalesce(wastagefactor,0) wastage
+		from program_products pp
+		join isa_coefficients c on pp.isacoefficientsid = c.id
+		join vaccine_inventory_product_configurations pc on pc.productid=pp.productid
+		where pp.productid = 2421 limit 1
+	) as isa_coffecients ON 1=1
+
+	order by region_name, district_name, period_start_date
+) temp
+)
+
+
+select
+	region_name regionName,
+	district_name districtName,
+	max(facility_count) over (partition by district_id) facilityCount,
+	period_name periodName,
+        startdate,
+	coalesce(population,0) population,
+	case
+		when coverage_rate is null then ''
+		when coverage_rate >= min_coverage and dropout_rate <= min_dropout then 'Cat_1'
+		when coverage_rate < min_coverage and dropout_rate <= min_dropout then 'Cat_3'
+		when coverage_rate >= min_coverage and dropout_rate > min_dropout then 'Cat_2'
+		else 'Cat_4'
+	end as classification
+ from  progressive_total]]>
+	</queryString>
+	<field name="districtReport" class="java.util.List"/>
+	<field name="regionReport" class="java.util.List"/>
+	<field name="facilityDistrictSummary" class="java.util.List"/>
+	<field name="facilityReport" class="java.util.List"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="802" height="79" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="PAGE_NO">
+					<subreportParameterExpression><![CDATA[$V{PAGE_NUMBER}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_TITLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOGO">
+					<subreportParameterExpression><![CDATA[$P{LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_SUB_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_SUB_TITLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_NAME">
+					<subreportParameterExpression><![CDATA[$P{REPORT_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_FILTER_PARAM_VALUES">
+					<subreportParameterExpression><![CDATA[$P{REPORT_FILTER_PARAM_VALUES}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="VIMS_LOGO">
+					<subreportParameterExpression><![CDATA[$P{VIMS_LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_NAME">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_COUNTRY_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_COUNTRY_TITLE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_LOGO">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA["vims-report-header-landscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<detail>
+		<band height="85">
+			<printWhenExpression><![CDATA[$F{facilityReport}!=null]]></printWhenExpression>
+			<staticText>
+				<reportElement x="0" y="6" width="176" height="18" forecolor="#17888F" uuid="10835921-c81d-4148-8480-d7511fcc0fb7"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[District Level]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="2" y="31" width="802" height="52" uuid="b65c767e-d365-4a3a-9542-3f8f75ccfffa"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{facilityReport})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["classification-by-performance-facility.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement x="0" y="25" width="802" height="1" uuid="32c89616-efe0-4bb9-8a61-5c5b627013ea"/>
+			</line>
+		</band>
+		<band height="97">
+			<printWhenExpression><![CDATA[$F{districtReport}!=null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="32" width="802" height="65" uuid="5287001d-0ccd-470e-bf66-7f4dc275c3d7"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{districtReport})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["classification-by-performance-district.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="2" y="7" width="176" height="19" forecolor="#17888F" uuid="c78df28a-e5cb-429d-bf9e-b1f74a644a63"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[District Level]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="26" width="802" height="1" uuid="6ed0d183-fe64-4ec6-804a-40ce44c3571c"/>
+			</line>
+		</band>
+		<band height="107">
+			<printWhenExpression><![CDATA[$F{facilityDistrictSummary}!=null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="41" width="802" height="66" uuid="0a72e6e8-d845-4f06-a93d-e952706cfddc"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{facilityDistrictSummary})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["classification-by-performance-summary.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="2" y="21" width="300" height="16" forecolor="#17888F" uuid="705f9bcb-5800-4735-bb10-9f9d56940000">
+					<printWhenExpression><![CDATA[$F{facilityReport}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Distribution of Facility per Category of Performance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="21" width="300" height="19" forecolor="#17888F" uuid="566096d7-a444-42d1-bb00-e40420608b84">
+					<printWhenExpression><![CDATA[$F{districtReport}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Distribution of District per Category of Performance]]></text>
+			</staticText>
+			<line>
+				<reportElement x="2" y="37" width="800" height="1" uuid="69d626b9-851b-4b2d-bd8b-272def614b57"/>
+			</line>
+		</band>
+		<band height="104">
+			<printWhenExpression><![CDATA[$F{regionReport}!=null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="31" width="802" height="73" uuid="d1c4bfd6-74f4-48f6-a2d7-955e7334a58c"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{regionReport})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["classification-by-performance-region.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="2" y="7" width="331" height="19" forecolor="#17888F" uuid="c934bf89-bfe5-4e7a-9931-2d50d2c31232"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Region Level]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="26" width="800" height="1" uuid="607d5253-f009-430f-823b-92beb24599bc"/>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band height="107">
+			<printWhenExpression><![CDATA[$F{regionReport}!=null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="31" width="802" height="76" uuid="49b6e44f-ce36-4eb3-a88f-a56b867bbcd0"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{regionReport})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["classification-by-performance-summary.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="2" y="11" width="331" height="16" forecolor="#17888F" uuid="ce9138f1-1fc2-4b0c-bb25-a733c7007b02"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Distribution of Region per Category of Performance]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="27" width="800" height="1" uuid="aa6d2818-c459-4277-af4c-5c0df02688f7"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

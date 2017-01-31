@@ -469,6 +469,15 @@
                     <property name="version" value="1.0"/>
                 </bean>
                 <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="classification_of_vacccine_utilization"/>
+                    <property name="template" value="classification-by-performance.jasper"/>
+                    <property name="reportDataProvider" ref="classificationByPerformanceReportDataProvider"/>
+                    <property name="id" value="classification_of_vacccine_utilization"/>
+                    <property name="name" value="classification of vacccine utilization Report"/>
+                    <property name="title" value="report.title.classification.of.vacccine.utilization"/>
+                    <property name="version" value="1.0"/>
+                </bean>
+                <bean class="org.openlmis.report.Report">
                     <property name="reportKey" value="vaccine_on_time_in_full_report"/>
                     <property name="template" value="on-time-in-full-report.jasper"/>
                     <property name="reportDataProvider" ref="onTimeInFullReportDataProvider"/>

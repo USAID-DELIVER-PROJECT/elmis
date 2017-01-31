@@ -37,7 +37,7 @@ public interface OrderFillRateReportMapper {
     @SelectProvider(type = OrderFillRateQueryBuilder.class, method = "getSummaryQuery")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
     public List<OrderFillRateReport> getReportSummary(
-            @Param("filterCriteria") OrderFillRateReportParam params,
+           @Param("filterCriteria") OrderFillRateReportParam params,
             @Param("userId") Long userId
     );
 

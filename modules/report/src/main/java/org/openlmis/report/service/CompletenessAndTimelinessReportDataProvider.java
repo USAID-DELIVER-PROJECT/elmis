@@ -17,14 +17,15 @@ import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.mapper.CompletenessAndTimelinessMapper;
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.CompletenessAndTimelinessReportParam;
+import org.openlmis.report.model.report.CompletenessAndTimelinessReport;
+import org.openlmis.report.model.report.CompletenessAndTimelinessReportFields;
 import org.openlmis.report.util.ParameterAdaptor;
 import org.openlmis.report.util.SelectedFilterHelper;
+import org.openlmis.report.util.VIMSReportUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @NoArgsConstructor
@@ -43,16 +44,32 @@ public class CompletenessAndTimelinessReportDataProvider extends ReportDataProvi
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
 
-        RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
+        CompletenessAndTimelinessReportParam params = getParameter(filterCriteria);
+        params.setUserId(this.getUserId());
+
+        return reportMapper.getDistrictReport(params, this.getUserId());
+
+    }
+
+    public ResultRow getCompletenessAndTimelinessReportData(Map<String, String[]> filterCriteria) {
+
+        Map<String, List<CompletenessAndTimelinessReportFields>> result = new HashMap<>();
 
         CompletenessAndTimelinessReportParam params = getParameter(filterCriteria);
+        params.setUserId(this.getUserId());
 
-        return reportMapper.getDistrictReport(params, sortCriteria, rowBounds, this.getUserId());
+        CompletenessAndTimelinessReport report = new CompletenessAndTimelinessReport();
+        report.setMainReport(reportMapper.getDistrictReport(params,  this.getUserId()));
+        report.setSummaryReport(reportMapper.getSummaryReport(params,  this.getUserId()));
+        report.setSummaryPeriodList(VIMSReportUtil.getSummaryPeriodList(params.getPeriodStart(), params.getPeriodEnd()));
 
+         return report;
     }
 
     @Override
     public String getFilterSummary(Map<String, String[]> params) {
-        return filterHelper.getProgramPeriodGeoZone(params);
+        return  filterHelper.getReportCombinedFilterString(
+                filterHelper.getGeoZoneFilterString(params),
+                filterHelper.getSelectedPeriodRange(params));
     }
 }

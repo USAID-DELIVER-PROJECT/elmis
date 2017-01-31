@@ -10,11 +10,7 @@
 
 package org.openlmis.core.repository.mapper;
 
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.openlmis.core.domain.DosageFrequency;
+import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.RegimenCombinationConstituent;
 import org.springframework.stereotype.Repository;
 
@@ -45,4 +41,25 @@ public interface RegimenCombinationConstituentMapper {
             @Result(property = "product", column = "productid", javaType = Long.class,
                     one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getById"))})
     List<RegimenCombinationConstituent> getAll();
+
+    @Select("SELECT * FROM regimen_combination_constituents" +
+            " where productcomboid=#{combinationId}")
+    @Results(value = {
+            @Result(property = "defaultDosage", column = "defaultdosageid", javaType = Long.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.RegimenConstituentDosageMapper.getById")),
+            @Result(property = "productCombination", column = "productcomboid", javaType = Long.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.RegimenProductCombinationMapper.getById")),
+            @Result(property = "product", column = "productid", javaType = Long.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getById"))})
+    List<RegimenCombinationConstituent> getAllCombinationConstituents(Long combinationId);
+
+    @Insert({"INSERT INTO regimen_combination_constituents (  productcomboid, productid) ",
+            "VALUES (  #{productCombination.id},#{product.id})"})
+    @Options(useGeneratedKeys = true)
+    void save(RegimenCombinationConstituent combinationConstituent);
+
+    @Update({"UPDATE regimen_combination_constituents\n" +
+            "   SET  defaultdosageid=#{defaultDosage.id}, productcomboid=#{productCombination.id}, productid=#{product.id}\n" +
+            " WHERE id =#{id}"})
+    void update(RegimenCombinationConstituent combinationConstituent);
 }

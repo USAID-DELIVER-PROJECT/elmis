@@ -8,9 +8,6 @@
 -- You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
 --
 
-DO $$
-    BEGIN
-        BEGIN
             UPDATE master_rnr_columns
               SET position = position + 1
               WHERE position > 13;
@@ -20,9 +17,3 @@ DO $$
               VALUES
                 ('periodNormalizedConsumption', 14, 'Period Normalized Consumption', 'C', FALSE, 'formula.column.period.normalised.consumption',
                  'indicator.column.period.normalized.consumption', TRUE, TRUE, FALSE, 'description.column.period.normalized.consumption');
-
-        EXCEPTION
-          WHEN unique_violation THEN CONTINUE;
-        END;
-    END;
-$$

@@ -12,7 +12,7 @@
  *
  */
 
-function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, SettingsByKey, ReportProductsByProgram,  messageService ) {
+function PerformanceCoverageReportController($scope, $routeParams, PerformanceCoverage, SettingsByKey, ReportProductsByProgram,  messageService,DenominatorName ) {
 
     $scope.perioderror = "";
     $scope.grayCount = {};
@@ -24,15 +24,18 @@ function PerformanceCoverageReportController($scope, $routeParams, PerformanceCo
             periodStart: $scope.periodStartDate,
             periodEnd: $scope.periodEnddate,
             range: $scope.range,
-            district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
+            district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
             product: $scope.filter.product,
             doseId : utils.isEmpty($scope.filter.dose) ? 0 : $scope.filter.dose
         };
 
          // prevent first time loading
-        if (utils.isEmpty($scope.filter.product) || $scope.filter.product === "0" || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
+        if (utils.isEmpty($scope.filter.dose) ||utils.isEmpty($scope.filter.zone.id) ||utils.isEmpty($scope.filter.product) || $scope.filter.product === "0" || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
-
+        DenominatorName.get(  $scope.coverageReportParams,
+        function(data){
+            $scope.denominatorName=data.denominatorName;
+        });
         PerformanceCoverage.get(
 
             $scope.coverageReportParams,

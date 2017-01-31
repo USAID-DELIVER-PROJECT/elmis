@@ -57,6 +57,9 @@
                          readonly
                          ng-required="true"
                   />
+                  <div class="toolbar-error" ng-show="report.validate && !report.isReportingDateValid()">
+                    Submission Date should not be empty.
+                  </div>
                 </div>
               </div>
             </div>

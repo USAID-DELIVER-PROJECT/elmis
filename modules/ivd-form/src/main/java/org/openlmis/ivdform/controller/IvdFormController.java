@@ -1,6 +1,6 @@
 /*
  * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
- *
+
  * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -11,33 +11,19 @@
  */
 package org.openlmis.ivdform.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
-import org.openlmis.core.service.FacilityService;
-import org.openlmis.core.service.ProgramService;
-import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
-import org.openlmis.ivdform.exceptions.OutOfOrderFormSubmissionException;
 import org.openlmis.ivdform.service.IvdFormService;
-import org.openlmis.ivdform.view.pdf.SubmissionResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.util.Date;
 
 @Controller
@@ -48,18 +34,9 @@ public class IvdFormController extends BaseController {
   private static final String REPORT = "report";
   private static final String PENDING_SUBMISSIONS = "pending_submissions";
 
-  @Autowired
-  IvdFormService service;
 
   @Autowired
-  ProgramService programService;
-
-  @Autowired
-  UserService userService;
-
-  @Autowired
-  FacilityService facilityService;
-
+  private IvdFormService service;
 
   @RequestMapping(value = {"/vaccine/report/periods/{facilityId}/{programId}", "/rest-api/ivd/periods/{facilityId}/{programId}"}, method = RequestMethod.GET)
   @ApiOperation(position = 2, value = "Get Open IVD Periods for Facility")
@@ -102,30 +79,6 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(REPORT, report);
   }
 
-  @RequestMapping(value = {"/rest-api/ivd-from-pdf/save"}, method = {RequestMethod.POST}, consumes = MediaType.ALL_VALUE)
-  @ApiOperation(position = 5, value = "Save IVD form")
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
-  public ModelAndView saveFromPDF(HttpServletRequest request) throws ParserConfigurationException, IOException, SAXException {
-    ModelAndView modelAndView = new ModelAndView("ivdFormResponseView");
-    SubmissionResponseModel model;
-    try {
-      DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-      Document doc = dBuilder.parse(request.getInputStream());
-      ObjectMapper mapper = new ObjectMapper();
-      VaccineReport report = mapper.readValue(doc.getDocumentElement().getTextContent().toString(), VaccineReport.class);
-
-      service.submitFromOtherApplications(report, loggedInUserId(request));
-      model = new SubmissionResponseModel(messageService.message("ivd.form.successfully.submitted"), false);
-    } catch(OutOfOrderFormSubmissionException exp){
-      model = new SubmissionResponseModel(messageService.message(exp.getMessage()) + " Expected period was " +  exp.getExpected() + " but submission was for " + exp.getFound(), true);
-    }
-    catch (Exception exp) {
-      model = new SubmissionResponseModel(messageService.message(exp.getMessage()), true);
-    }
-    modelAndView.addObject("STATUS", model);
-    return modelAndView;
-  }
 
   @RequestMapping(value = {"/vaccine/report/submit", "/rest-api/ivd/submit"}, method = {RequestMethod.PUT, RequestMethod.POST})
   @ApiOperation(position = 6, value = "Submit IVD form")

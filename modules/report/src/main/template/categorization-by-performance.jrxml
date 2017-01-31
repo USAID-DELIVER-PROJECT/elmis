@@ -19,6 +19,8 @@
 	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_COUNTRY_TITLE" class="java.lang.String"/>
+	<parameter name="VIMS_LOGO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[-- Get population target
 with vaccine_dropout as (
@@ -152,9 +154,6 @@ select
 				<subreportParameter name="LOGO">
 					<subreportParameterExpression><![CDATA[$P{LOGO}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="OPERATOR_NAME">
-					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="REPORT_SUB_TITLE">
 					<subreportParameterExpression><![CDATA[$P{REPORT_SUB_TITLE}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -164,11 +163,20 @@ select
 				<subreportParameter name="REPORT_FILTER_PARAM_VALUES">
 					<subreportParameterExpression><![CDATA[$P{REPORT_FILTER_PARAM_VALUES}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="VIMS_LOGO">
+					<subreportParameterExpression><![CDATA[$P{VIMS_LOGO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="OPERATOR_NAME">
+					<subreportParameterExpression><![CDATA[$P{OPERATOR_NAME}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_COUNTRY_TITLE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_COUNTRY_TITLE}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="OPERATOR_LOGO">
 					<subreportParameterExpression><![CDATA[$P{OPERATOR_LOGO}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
-				<subreportExpression><![CDATA["openlmis-report-header-landscape.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["vims-report-header-landscape.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</title>
@@ -176,7 +184,7 @@ select
 		<band height="85">
 			<printWhenExpression><![CDATA[$F{facilityReport}!=null]]></printWhenExpression>
 			<staticText>
-				<reportElement x="0" y="13" width="176" height="18" forecolor="#17888F" uuid="10835921-c81d-4148-8480-d7511fcc0fb7"/>
+				<reportElement x="0" y="11" width="176" height="18" forecolor="#17888F" uuid="10835921-c81d-4148-8480-d7511fcc0fb7"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -187,6 +195,9 @@ select
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{facilityReport})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["categorization-by-performance-facility.jasper"]]></subreportExpression>
 			</subreport>
+			<line>
+				<reportElement x="0" y="27" width="802" height="1" uuid="4bfd955e-05c4-4645-bb06-ae1e1d8fe2b8"/>
+			</line>
 		</band>
 		<band height="97">
 			<printWhenExpression><![CDATA[$F{districtReport}!=null]]></printWhenExpression>
@@ -202,6 +213,9 @@ select
 				</textElement>
 				<text><![CDATA[District Level]]></text>
 			</staticText>
+			<line>
+				<reportElement x="0" y="29" width="802" height="1" uuid="79e64dfa-ba40-4c1e-9962-cb61ea0d4319"/>
+			</line>
 		</band>
 		<band height="107">
 			<printWhenExpression><![CDATA[$F{facilityDistrictSummary}!=null]]></printWhenExpression>
@@ -228,6 +242,9 @@ select
 				</textElement>
 				<text><![CDATA[Distribution of District per Category of Performance]]></text>
 			</staticText>
+			<line>
+				<reportElement x="0" y="37" width="802" height="1" uuid="dfabf8a1-9b75-4199-b20a-a75eb66c2b1a"/>
+			</line>
 		</band>
 		<band height="104">
 			<printWhenExpression><![CDATA[$F{regionReport}!=null]]></printWhenExpression>
@@ -243,6 +260,9 @@ select
 				</textElement>
 				<text><![CDATA[Region Level]]></text>
 			</staticText>
+			<line>
+				<reportElement x="0" y="28" width="802" height="1" uuid="e6762897-f0ce-4124-a339-040f707c575b"/>
+			</line>
 		</band>
 	</detail>
 	<summary>
@@ -260,6 +280,9 @@ select
 				</textElement>
 				<text><![CDATA[Distribution of Region per Category of Performance]]></text>
 			</staticText>
+			<line>
+				<reportElement x="0" y="28" width="802" height="1" uuid="beedf409-b846-4cb8-a6f8-328cd20b288f"/>
+			</line>
 		</band>
 	</summary>
 </jasperReport>

@@ -25,6 +25,10 @@ import org.openlmis.core.domain.BaseModel;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ShipmentFileInfo extends BaseModel{
+  private String orderNumber;
   private String fileName;
   private boolean processingError;
+  private String skippedShipmentLineItems;
+  private String orderProcessingExceptions;
+  private boolean hasSkippedLineItems;
 }

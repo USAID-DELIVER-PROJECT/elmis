@@ -116,6 +116,9 @@ public class LineItemService {
   public void saveAdverseEffectLineItems(VaccineReport dbVersion, List<AdverseEffectLineItem> adverseEffectLineItems, Long reportId, Long userId) {
 
     // delete and recreate the line items here.
+    if(reportId == null && dbVersion != null){
+      reportId = dbVersion.getId();
+    }
     adverseLineItemRepository.deleteLineItems(reportId);
 
     for (AdverseEffectLineItem lineItem : emptyIfNull(adverseEffectLineItems)) {
@@ -166,7 +169,7 @@ public class LineItemService {
         }
       }
       lineItem.setReportId(reportId);
-      if (!lineItem.hasId()) {
+      if (!lineItem.hasId() && reportId != null) {
         lineItem.setCreatedBy(userId);
         coldChainLIRepository.insert(lineItem);
       }

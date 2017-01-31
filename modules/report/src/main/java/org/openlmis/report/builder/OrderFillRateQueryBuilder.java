@@ -23,10 +23,8 @@ import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.*;
 public class OrderFillRateQueryBuilder {
 
   public static String getQuery(Map params) {
-
-    Long userId = (Long) params.get("userId");
     OrderFillRateReportParam queryParam = (OrderFillRateReportParam) params.get("filterCriteria");
-    return getQueryString(queryParam, userId);
+    return getQueryString(queryParam, queryParam.getUserId());
   }
 
   private static void writePredicates(OrderFillRateReportParam param) {
@@ -74,40 +72,41 @@ public class OrderFillRateQueryBuilder {
     return SQL();
   }
 
-  public static String getTotalProductsReceived(OrderFillRateReportParam param) {
-
+  public static String getTotalProductsReceived(Map param) {
+    OrderFillRateReportParam queryParam = (OrderFillRateReportParam) param.get("filterCriteria");
     BEGIN();
     SELECT("count(totalproductsreceived) quantityreceived");
     FROM("vw_order_fill_rate join vw_districts gz on gz.district_id = zoneId");
     WHERE("facilityid in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
     WHERE("totalproductsreceived>0 and totalproductsapproved >0  and status in ('RELEASED') and periodId = #{filterCriteria.period} and programId= #{filterCriteria.program} and facilityId = #{filterCriteria.facility}");
-    writePredicates(param);
+    writePredicates(queryParam);
     GROUP_BY("totalproductsreceived");
     return SQL();
   }
 
 
-  public static String getTotalProductsOrdered(OrderFillRateReportParam params) {
+  public static String getTotalProductsOrdered(Map params) {
+    OrderFillRateReportParam queryParam = (OrderFillRateReportParam) params.get("filterCriteria");
 
     BEGIN();
     SELECT("count(totalproductsapproved) quantityapproved");
     FROM("vw_order_fill_rate join vw_districts gz on gz.district_id = zoneId");
     WHERE("facilityid in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
     WHERE("totalproductsapproved > 0  and status in ('RELEASED') and periodId= #{filterCriteria.period} and programId= #{filterCriteria.program} and facilityId= #{filterCriteria.facility} ");
-    writePredicates(params);
+    writePredicates(queryParam);
     return SQL();
 
   }
 
 
-  public static String getSummaryQuery(OrderFillRateReportParam params) {
-
+  public static String getSummaryQuery(Map params) {
+    OrderFillRateReportParam queryParam = (OrderFillRateReportParam) params.get("filterCriteria");
     BEGIN();
     SELECT("count(totalproductsreceived) quantityreceived");
     FROM("vw_order_fill_rate join vw_districts gz on gz.district_id = zoneId");
     WHERE("facilityid in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
     WHERE("totalproductsreceived>0 and totalproductsapproved > 0 and  status in ('RELEASED') and periodId= #{filterCriteria.period} and programId= #{filterCriteria.program} and facilityId= #{filterCriteria.facility}");
-    writePredicates(params);
+    writePredicates(queryParam);
     GROUP_BY("totalproductsreceived");
     String query = SQL();
     RESET();
@@ -115,7 +114,7 @@ public class OrderFillRateQueryBuilder {
     SELECT("count(totalproductsapproved) quantityapproved");
     FROM("vw_order_fill_rate join vw_districts gz on gz.district_id = zoneId");
     WHERE("status in ('RELEASED') and totalproductsapproved > 0 and periodId= #{filterCriteria.period} and programId= #{filterCriteria.program} and facilityId= #{filterCriteria.facility}");
-    writePredicates(params);
+    writePredicates(queryParam);
     query += " UNION " + SQL();
     return query;
   }

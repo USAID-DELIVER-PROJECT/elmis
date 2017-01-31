@@ -32,4 +32,5 @@ public class PerformanceByDropoutRateParam {
     Long program_id;
     Long geographic_zone_id;
     Long facility_id;
+    Long userId;
 }

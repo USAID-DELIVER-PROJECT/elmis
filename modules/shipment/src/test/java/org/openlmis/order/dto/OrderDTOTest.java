@@ -52,12 +52,12 @@ public class OrderDTOTest {
     Date createdDate = new Date();
     order1.setCreatedDate(createdDate);
     order1.setRnr(make(a(defaultRequisition)));
-    order1.setShipmentFileInfo(new ShipmentFileInfo("1.csv", false));
+    order1.setShipmentFileInfo(new ShipmentFileInfo("","1.csv", false, "[]", "", false));
     order1.setSupplyLine(supplyLine);
     order1.setOrderNumber("OrdHIV00000001R");
     final Order order2 = new Order();
     order2.setRnr(make(a(defaultRequisition, with(RequisitionBuilder.periodId, 2L), with(RequisitionBuilder.program, new Program(11L)))));
-    order2.setShipmentFileInfo(new ShipmentFileInfo("2.csv", true));
+    order2.setShipmentFileInfo(new ShipmentFileInfo("","2.csv", true, "[]", "", false));
     final RnrDTO dtoForOrder1 = new RnrDTO();
     dtoForOrder1.setId(1L);
     final RnrDTO dtoForOrder2 = new RnrDTO();

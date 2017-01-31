@@ -10,15 +10,21 @@
 
 package org.openlmis.shipment.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.shipment.domain.ShipmentFileInfo;
 import org.openlmis.shipment.domain.ShipmentLineItem;
+import org.openlmis.shipment.dto.ShipmentImportedOrder;
+import org.openlmis.shipment.dto.ShipmentLineItemDTO;
 import org.openlmis.shipment.repository.mapper.ShipmentMapper;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,6 +36,8 @@ import java.util.List;
 public class ShipmentRepository {
 
   private ShipmentMapper shipmentMapper;
+
+  private static org.slf4j.Logger logger = LoggerFactory.getLogger(ShipmentRepository.class);
 
   @Autowired
   public ShipmentRepository(ShipmentMapper shipmentMapper) {
@@ -50,5 +58,22 @@ public class ShipmentRepository {
 
   public List<ShipmentLineItem> getLineItems(Long orderId) {
     return shipmentMapper.getLineItems(orderId);
+  }
+
+  public List<ShipmentImportedOrder> getShipmentImportedOrders(String facilityCode) {
+    return shipmentMapper.getShipmentImportedOrders(facilityCode);
+  }
+
+  public List<ShipmentLineItemDTO> getSkippedLineItems(Long orderId) {
+    String list = shipmentMapper.getSkippedLineItems(orderId);
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      List<ShipmentLineItemDTO> result = mapper.readValue(list, new TypeReference<List<ShipmentLineItemDTO>>() {
+      });
+      return result;
+    } catch (Exception exp) {
+      logger.warn(exp.getMessage());
+    }
+    return Collections.emptyList();
   }
 }

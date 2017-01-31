@@ -298,6 +298,9 @@ services.factory('DropoutProducts', function ($resource) {
 services.factory('PerformanceCoverage', function ($resource) {
     return $resource('/vaccine/report/performanceCoverage.json', {}, {});
 });
+services.factory('DenominatorName', function ($resource) {
+    return $resource('/vaccine/report/denominatorName.json', {}, {});
+});
 
 services.factory('VaccineDashboardSummary', function($resource){
 
@@ -421,7 +424,7 @@ services.factory('VaccineDashboardDistrictSessions', function($resource) {
 });
 
 services.factory('CompletenessAndTimeliness', function ($resource) {
-    return $resource('/vaccine/report/completenessAndTimeliness.json', {}, {});
+    return $resource('/reports/reportdata/completenessAndTimeliness.json', {}, {});
 });
 
 services.factory('AdequacyLevelOfSupply', function ($resource) {

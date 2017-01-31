@@ -44,23 +44,32 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
         $scope.nonReporting=data.settings.value;
     });
+    function getParam(){
+        return {facilityId :'',
+            geographicZoneId : $scope.filter.zone.id,
+            zone : $scope.filter.zone.id,
+            zoneId:$scope.filter.zone.id,
+            productId : $scope.filter.product,
+            periodId :0,
+            programId : $scope.filter.program,
+            reportType : false,
+            periodStart:$scope.filter.periodStart,
+            periodEnd:$scope.filter.periodEnd};
+
+    }
     $scope.OnFilterChanged = function () {
         //console.log('period start '+ $scope.filter.periodStart);
         $scope.data = $scope.datarows = [];
-        $scope.filter.facilityId = '';
-        $scope.filter.geographicZoneId = $scope.filter.zone;
-        $scope.filter.productId = $scope.filter.product;
-        $scope.filter.periodId = 0;
-        $scope.filter.programId = $scope.filter.program;
-        $scope.reportType = false;
 
-        var param = $scope.filter;
+
 
         $scope.error_message = '';
-        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)&& !utils.isNullOrUndefined($scope.filter.product)) {
-            PerformanceByDropoutRateByDistrict.get(param, function (data) {
+        if(!utils.isEmpty($scope.filter)&&!utils.isEmpty($scope.filter.periodStart)&&!utils.isEmpty($scope.filter.periodEnd)&& !utils.isEmpty($scope.filter.product)) {
+
+            PerformanceByDropoutRateByDistrict.get(getParam(), function (data) {
+
                 var reportVal;
-                if (data !== undefined && data.PerformanceByDropoutRateList !== null && !utils.isEmpty(data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList)) {
+                 {
 
                     $scope.data = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
                     $scope.datarows = data.PerformanceByDropoutRateList.performanceByDropOutDistrictsList;
@@ -120,15 +129,16 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         return months <= 0 ? 0 : months;
     }
 
-    $scope.getBackGroundColor = function (value) {
+    $scope.getBackGroundColor = function (value,cumulative) {
         var bgColor = '';
         if(value.generated!=='undefined' && value.generated===true){
 
             return  $scope.nonReporting;
         }
-        if (value.bcg_mr_dropout > 10) {
+        var dropout=cumulative===1?value.cum_bcg_mr_dropout:cumulative===0?value:value.bcg_mr_dropout;
+        if (dropout > 10 || dropout<0) {
             bgColor = $scope.maxTemp;
-        } else if (value.bcg_mr_dropout > 5) {
+        } else if (dropout> 5 ) {
             bgColor = $scope.average;
         }
         else {
@@ -152,7 +162,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     $scope.getColumnNameSummary = function (value) {
         var bgColor = '';
         if (value == '4_dropoutGreaterThanHigh') {
-            bgColor = 'DO >10%';
+            bgColor = 'DO >10% and DO (-ve)';
         } else if (value == '3_droOputBetweenMidAndHigh') {
             bgColor = '5% < DO <=10%';
         } else if (value == '2_dropOutBetweenMidAndMin') {
@@ -169,14 +179,14 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     $scope.calculateSubTotalPercentage = function (value) {
         var dropOut;
 
-            dropOut= utils.isEmpty(value)|| value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
+            dropOut= utils.isNullOrUndefined(value)||utils.isEmpty(value)|| value.bcg_vaccinated === 0 ? 0 : ((value.bcg_vaccinated - value.mr_vaccinated) / value.bcg_vaccinated * 100);
 
 
-        return dropOut;
+        return dropOut.toFixed(0);
     };
     $scope.concatPercentage = function (value) {
 
-        return value + '%';
+        return utils.isNullOrUndefined(value)?'0.00%':value + '%';
     };
     $scope.showCategory = function (index) {
         var absIndex = ($scope.pageSize * ($scope.currentPage - 1)) + index;
@@ -322,14 +332,17 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 }
             });
             for (var key in distrctList) {
+                var recent=null;
                 for (var i = 0; i < indexValue; i++) {
                     var hasValue = false;
+
                     for (var j = 0; j < len; j++) {
                         var dateValue=new Date(reportList[j].period_name);
 
                        var reportMonth=periodList[dateValue.getMonth()];
                         if (angular.equals(getPopulationKey(reportList[j], type), key) &&reportMonth ===periodList[i]) {
                             formattedData.push(reportList[j]);
+                            recent=reportList[j];
                             hasValue = true;
                             break;
                         }
@@ -347,6 +360,9 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                             bcg_vaccinated: 0,
                             mr_vaccinated:0,
                             bcg_mr_dropout:0,
+                           cum_bcg_vaccinated: utils.isNullOrUndefined(recent)?0:recent.cum_bcg_vaccinated,
+                            cum_mr_vaccinated:utils.isNullOrUndefined(recent)?0:recent.cum_mr_vaccinated,
+                            cum_bcg_mr_dropout:utils.isNullOrUndefined(recent)?0:recent.cum_bcg_mr_dropout,
                             generated: true
 
                         };
@@ -375,18 +391,22 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     function aggregateSubTotal(reportList, type) {
         var subAggregateTotal = {};
         var len = reportList.length;
-        var totalObj={target:0,bcg_vaccinated:0,mr_vaccinated:0};
+        var totalObj={target:0,bcg_vaccinated:0,mr_vaccinated:0,cum_bcg_vaccinated:0,cum_mr_vaccinated:0};
         var i = 0;
         for (i; i < len; i++) {
             totalObj.target=totalObj.target+reportList[i].target;
             totalObj.bcg_vaccinated=totalObj.bcg_vaccinated+reportList[i].bcg_vaccinated;
             totalObj.mr_vaccinated=totalObj.mr_vaccinated+reportList[i].mr_vaccinated;
+            totalObj.cum_bcg_vaccinated=totalObj.cum_bcg_vaccinated+reportList[i].cum_bcg_vaccinated;
+            totalObj.cum_mr_vaccinated=totalObj.cum_mr_vaccinated+reportList[i].cum_mr_vaccinated;
             var keyName = getPopulationKey(reportList[i], type);
             if (keyName in subAggregateTotal) {
                 subAggregateTotal[keyName] = {
                     target: subAggregateTotal[keyName].target + reportList[i].target,
                     bcg_vaccinated: subAggregateTotal[keyName].bcg_vaccinated + reportList[i].bcg_vaccinated,
-                    mr_vaccinated: subAggregateTotal[keyName].mr_vaccinated + reportList[i].mr_vaccinated
+                    mr_vaccinated: subAggregateTotal[keyName].mr_vaccinated + reportList[i].mr_vaccinated,
+                    cum_bcg_vaccinated: subAggregateTotal[keyName].cum_bcg_vaccinated + reportList[i].cum_bcg_vaccinated,
+                    cum_mr_vaccinated: subAggregateTotal[keyName].cum_mr_vaccinated + reportList[i].cum_mr_vaccinated
                 };
 
             } else {
@@ -394,7 +414,9 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                 var obj = {
                     target: reportList[i].target,
                     bcg_vaccinated: reportList[i].bcg_vaccinated,
-                    mr_vaccinated: reportList[i].mr_vaccinated
+                    mr_vaccinated: reportList[i].mr_vaccinated,
+                    cum_bcg_vaccinated: reportList[i].cum_bcg_vaccinated,
+                    cum_mr_vaccinated: reportList[i].cum_mr_vaccinated
                 };
                 subAggregateTotal[keyName] = obj;
             }
@@ -405,7 +427,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
     }
     $scope.exportReport = function(type) {
         $scope.filter.pdformat = 1;
-        var params = jQuery.param($scope.filter);
+        var params = jQuery.param(getParam());
 
         var url = '/reports/download/performance_dropout/' + type + '?' + params;
         $window.open(url, '_blank');

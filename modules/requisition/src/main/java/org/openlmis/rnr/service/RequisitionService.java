@@ -122,8 +122,8 @@ public class RequisitionService {
     program = programService.getById(program.getId());
     ProcessingPeriod period = findPeriod(facility, program, emergency);
 
-    if(proposedPeriod != null){
-      if(proposedPeriod.getId() != period.getId()){
+    if (proposedPeriod != null) {
+      if (proposedPeriod.getId() != period.getId()) {
         // take caution in this case.
         // todo: log a warning here.
         period = proposedPeriod;
@@ -131,11 +131,11 @@ public class RequisitionService {
     }
 
     List<FacilityTypeApprovedProduct> facilityTypeApprovedProducts = facilityApprovedProductService.getFullSupplyFacilityApprovedProductByFacilityAndProgram(
-      facility.getId(), program.getId());
+        facility.getId(), program.getId());
 
-     //N:B If usePriceSchedule is selected for the selected program, use the product price from price_schedule table
-    if(program.getUsePriceSchedule())
-        populateProductsPriceBasedOnPriceSchedule(facility.getId(), program.getId(), facilityTypeApprovedProducts); //non intrusive on the legacy setup
+    //N:B If usePriceSchedule is selected for the selected program, use the product price from price_schedule table
+    if (program.getUsePriceSchedule())
+      populateProductsPriceBasedOnPriceSchedule(facility.getId(), program.getId(), facilityTypeApprovedProducts); //non intrusive on the legacy setup
 
     List<Regimen> regimens = regimenService.getByProgram(program.getId());
     RegimenTemplate regimenTemplate = regimenColumnService.getRegimenTemplateByProgramId(program.getId());
@@ -146,15 +146,15 @@ public class RequisitionService {
 
     calculationService.fillFieldsForInitiatedRequisition(requisition, rnrTemplate, regimenTemplate);
     calculationService.fillReportingDays(requisition);
-    if(!emergency && configurationSettingsService.getBoolValue(ConfigurationSettingKey.RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR)) {
+    if (!emergency && configurationSettingsService.getBoolValue(ConfigurationSettingKey.RNR_COPY_SKIPPED_FROM_PREVIOUS_RNR)) {
       calculationService.copySkippedFieldFromPreviousPeriod(requisition);
     }
-    if(emergency && program.getHideSkippedProducts()){
+    if (emergency && program.getHideSkippedProducts()) {
       calculationService.skipAllLineItems(requisition);
     }
     // if program supports equipments, initialize it here.
-    if(program.getIsEquipmentConfigured()){
-       populateEquipments(requisition);
+    if (program.getIsEquipmentConfigured()) {
+      populateEquipments(requisition);
     }
     requisition.setSourceApplication(sourceApplication);
     insert(requisition);
@@ -163,22 +163,29 @@ public class RequisitionService {
     return fillSupportingInfo(requisition);
   }
 
-    public void populateProductsPriceBasedOnPriceSchedule(Long facilityId, Long programId, List<FacilityTypeApprovedProduct> facilityTypeApprovedProducts) {
-        List<ProductPriceSchedule> productPriceSchedules = priceScheduleService.getPriceScheduleFullSupplyFacilityApprovedProduct(programId, facilityId);
+  public void populateProductsPriceBasedOnPriceSchedule(Long facilityId, Long programId, List<FacilityTypeApprovedProduct> facilityTypeApprovedProducts) {
+    List<ProductPriceSchedule> productPriceSchedules = priceScheduleService.getPriceScheduleFullSupplyFacilityApprovedProduct(programId, facilityId);
 
-        for(ProductPriceSchedule productPriceSchedule : productPriceSchedules){
-            for(FacilityTypeApprovedProduct facilityTypeApprovedProduct : facilityTypeApprovedProducts) {
-                if (productPriceSchedule.getProduct().getId().equals(facilityTypeApprovedProduct.getProgramProduct().getProduct().getId()))
-                    facilityTypeApprovedProduct.getProgramProduct().setCurrentPrice(new Money(BigDecimal.valueOf(productPriceSchedule.getPrice())));
-            }
-        }
+    for (ProductPriceSchedule productPriceSchedule : productPriceSchedules) {
+      Optional<FacilityTypeApprovedProduct> facilityTypeApprovedProduct = facilityTypeApprovedProducts
+          .parallelStream()
+          .filter(f -> f.getProgramProduct().getProduct().getId().equals(productPriceSchedule.getProduct().getId()))
+          .findFirst();
+      facilityTypeApprovedProduct
+          .ifPresent(
+              facilityTypeApprovedProduct1 -> facilityTypeApprovedProduct1
+                  .getProgramProduct()
+                  .setCurrentPrice(new Money(BigDecimal.valueOf(productPriceSchedule.getPrice())))
+          );
+
     }
+  }
 
 
-    private void populateEquipments(Rnr requisition) {
+  private void populateEquipments(Rnr requisition) {
     List<EquipmentInventory> inventories = equipmentInventoryService.getInventoryForFacility(requisition.getFacility().getId(), requisition.getProgram().getId());
     requisition.setEquipmentLineItems(new ArrayList<EquipmentLineItem>());
-    for(EquipmentInventory inv : inventories){
+    for (EquipmentInventory inv : inventories) {
       EquipmentLineItem lineItem = new EquipmentLineItem();
       lineItem.setRnrId(requisition.getId());
       lineItem.setEquipmentSerial(inv.getSerialNumber());
@@ -368,7 +375,7 @@ public class RequisitionService {
     }
 
     ProcessingPeriod currentPeriod = processingScheduleService.getCurrentPeriod(facility.getId(), program.getId(),
-      programService.getProgramStartDate(facility.getId(), program.getId()));
+        programService.getProgramStartDate(facility.getId(), program.getId()));
 
     if (currentPeriod == null)
       throw new DataException("error.program.configuration.missing");
@@ -407,16 +414,16 @@ public class RequisitionService {
 
     List<ProcessingPeriod> rejected = processingScheduleService.getOpenPeriods(facilityId, programId, periodIdOfLastRequisitionToEnterPostSubmitFlow);
 
-    if(periods == null || periods.isEmpty()){
+    if (periods == null || periods.isEmpty()) {
       periods = rejected;
-    }else {
-      if(rejected != null && !rejected.isEmpty()){
+    } else {
+      if (rejected != null && !rejected.isEmpty()) {
         periods.addAll(rejected);
       }
     }
 
     // find the distinct list
-    Set<ProcessingPeriod> finalList = new HashSet<ProcessingPeriod> (periods);
+    Set<ProcessingPeriod> finalList = new HashSet<ProcessingPeriod>(periods);
     periods = new ArrayList<ProcessingPeriod>(finalList);
     // sort the list of periods by start date
     Collections.sort(periods, new Comparator<ProcessingPeriod>() {
@@ -567,7 +574,7 @@ public class RequisitionService {
     Integer pageSize = Integer.parseInt(staticReferenceDataService.getPropertyValue(CONVERT_TO_ORDER_PAGE_SIZE));
 
     List<Rnr> requisitions = requisitionRepository.getApprovedRequisitionsForCriteriaAndPageNumber(searchType, searchVal,
-      pageNumber, pageSize, userId, rightName, sortBy, sortDirection);
+        pageNumber, pageSize, userId, rightName, sortBy, sortDirection);
 
     fillFacilityPeriodProgramWithAuditFields(requisitions);
     fillSupplyingFacility(requisitions.toArray(new Rnr[requisitions.size()]));
@@ -626,7 +633,7 @@ public class RequisitionService {
 
   public void skipRnR(Long rnrId, Long userId) {
     Rnr rnr = this.getFullRequisitionById(rnrId);
-    for(RnrLineItem li : rnr.getFullSupplyLineItems()){
+    for (RnrLineItem li : rnr.getFullSupplyLineItems()) {
       li.setSkipped(true);
     }
     rnr.setModifiedBy(userId);
@@ -640,7 +647,7 @@ public class RequisitionService {
   public void reOpenRnR(Long rnrId, Long userId) {
     Rnr rnr = this.getFullRequisitionById(rnrId);
     rnr.setModifiedBy(userId);
-    for(RnrLineItem li : rnr.getFullSupplyLineItems()){
+    for (RnrLineItem li : rnr.getFullSupplyLineItems()) {
       li.setSkipped(false);
     }
     rnr.setStatus(RnrStatus.INITIATED);

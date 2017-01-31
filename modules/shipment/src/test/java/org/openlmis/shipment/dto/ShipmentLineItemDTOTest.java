@@ -31,6 +31,7 @@ public class ShipmentLineItemDTOTest {
   private String packSize = "";
   private String packedDate =  "12-10-2013";
   private String shippedDate = "14-09-2013";
+  private String processingError = "";
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -54,7 +55,8 @@ public class ShipmentLineItemDTOTest {
        substitutedProductQuantityShipped,
        packSize,
        packedDate,
-       shippedDate
+       shippedDate,
+       processingError
       );
 
     expectedException.expect(DataException.class);
@@ -80,7 +82,8 @@ public class ShipmentLineItemDTOTest {
         substitutedProductQuantityShipped,
         packSize,
         packedDate,
-        shippedDate
+        shippedDate,
+        processingError
     );
 
     expectedException.expect(DataException.class);
@@ -106,7 +109,8 @@ public class ShipmentLineItemDTOTest {
         substitutedProductQuantityShipped,
         packSize,
         packedDate,
-        shippedDate
+        shippedDate,
+        processingError
     );
 
     expectedException.expect(DataException.class);

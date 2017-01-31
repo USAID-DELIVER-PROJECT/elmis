@@ -15,6 +15,8 @@ package org.openlmis.report.model.report;
 import lombok.*;
 import org.openlmis.report.model.ResultRow;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,4 +28,9 @@ public class NonReportingFacilityDetail implements ResultRow {
     private String name;
     private String facilityType;
     private String location;
+    private Long rnrId;
+    private String rnrStatus;
+    private String reportingStatus;
+    private Date createdDate;
+
 }

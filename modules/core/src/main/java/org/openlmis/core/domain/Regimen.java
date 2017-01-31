@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.util.List;
+
 import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.NON_EMPTY;
 
 /**
@@ -36,5 +38,6 @@ public class Regimen extends BaseModel {
   private Boolean active;
   private RegimenCategory category;
   private Integer displayOrder;
+  private List<RegimenProductCombination> productCombinationList;
 
 }

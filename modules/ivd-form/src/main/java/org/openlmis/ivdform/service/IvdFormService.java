@@ -169,7 +169,7 @@ public class IvdFormService {
     return reportFromDb;
   }
 
-  private VaccineReport createNewVaccineReport(Long facilityId, Long programId, Long periodId) {
+  public VaccineReport createNewVaccineReport(Long facilityId, Long programId, Long periodId) {
     VaccineReport report;
     List<ProgramProduct> programProducts = programProductService.getActiveByProgram(programId);
     List<VaccineDisease> diseases = diseaseService.getAll();
@@ -225,7 +225,10 @@ public class IvdFormService {
 
     if (lastRequest != null) {
       lastRequest.setPeriod(periodService.getById(lastRequest.getPeriodId()));
-      startDate = lastRequest.getPeriod().getStartDate();
+      Date lastReportStartDate = lastRequest.getPeriod().getStartDate();
+      if(startDate.before(lastReportStartDate)){
+        startDate = lastReportStartDate;
+      }
     }
 
     List<ReportStatusDTO> results = new ArrayList<>();

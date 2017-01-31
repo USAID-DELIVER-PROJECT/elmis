@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.order.service.OrderService;
 import org.openlmis.shipment.domain.ShipmentFileInfo;
+import org.openlmis.shipment.dto.ShipmentLineItemDTO;
 import org.openlmis.shipment.handler.ShipmentFilePostProcessHandler;
 import org.openlmis.shipment.service.ShipmentService;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -29,6 +30,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -73,9 +75,9 @@ public class ShipmentFilePostProcessHandlerTest {
     ShipmentFileInfo shipmentFileInfo = mock(ShipmentFileInfo.class);
 
     when(shipmentFile.getName()).thenReturn(fileName);
-    whenNew(ShipmentFileInfo.class).withArguments(fileName, failure).thenReturn(shipmentFileInfo);
+    whenNew(ShipmentFileInfo.class).withArguments("", fileName, failure, "[]", "null", false).thenReturn(shipmentFileInfo);
 
-    shipmentFilePostProcessHandler.process(orderNumbers, shipmentFile, success);
+    shipmentFilePostProcessHandler.process(orderNumbers, shipmentFile, success, new ArrayList<ShipmentLineItemDTO>(), null);
 
     verify(shipmentService).insertShipmentFileInfo(shipmentFileInfo);
     verify(orderService).updateStatusAndShipmentIdForOrders(orderNumbers, shipmentFileInfo);
@@ -93,9 +95,9 @@ public class ShipmentFilePostProcessHandlerTest {
     ShipmentFileInfo shipmentFileInfo = new ShipmentFileInfo();
 
     when(shipmentFile.getName()).thenReturn(fileName);
-    whenNew(ShipmentFileInfo.class).withArguments(fileName, failure).thenReturn(shipmentFileInfo);
+    whenNew(ShipmentFileInfo.class).withArguments("", fileName, failure, "[]", "null", false).thenReturn(shipmentFileInfo);
 
-    shipmentFilePostProcessHandler.process(orderNumbers, shipmentFile, success);
+    shipmentFilePostProcessHandler.process(orderNumbers, shipmentFile, success, new ArrayList<ShipmentLineItemDTO>(), null);
 
     verify(shipmentService).insertShipmentFileInfo(shipmentFileInfo);
     verify(orderService).updateStatusAndShipmentIdForOrders(orderNumbers, shipmentFileInfo);

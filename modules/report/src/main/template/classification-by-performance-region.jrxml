@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="1.9487171000000014"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<style name="paqua" mode="Opaque">
+		<box rightPadding="0"/>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{classificationMeasure} == "A"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#009933">
+				<box>
+					<topPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{classificationMeasure} == "B"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#E6E6F4">
+				<box>
+					<topPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{classificationMeasure} == "C"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FFFF00">
+				<box>
+					<topPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{classificationMeasure} == "D"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FF6666">
+				<box>
+					<topPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
+				</box>
+			</style>
+		</conditionalStyle>
+	</style>
+	<queryString>
+		<![CDATA[-- Get population target
+with vaccine_dropout as (
+   select
+		vd.region_id,
+		vd.district_id,
+		period_id,
+		vd.region_name,
+		vd.district_name,
+		facility_id,
+		facility_name,
+		period_start_date startdate,
+		demographics.population,
+		demographics.denominator,
+		to_char(period_start_date, 'Mon YYYY')  period_name ,
+		extract( month from period_start_date) month_number,
+		extract( year from period_start_date) year_number,
+		period_start_date::date period_start_date,
+		coalesce(within_outside_total, 0) vaccinated,
+		bcg_1,
+		mr_1,
+		dtp_1,
+		dtp_3
+    from vw_vaccine_dropout
+    inner join vw_districts vd on vd.district_id = geographic_zone_id
+    join (
+		select vd.region_id, coalesce(sum(denominator),0) denominator,
+		coalesce(sum(population),0) population
+		from vw_vaccine_population_denominator vd
+		join vw_districts d ON vd.district_id = d.district_id
+		where programid = fn_get_vaccine_program_id()
+		and (productid = 2421)
+		and year = extract(year from '2014-01-01'::date)
+		and (0 = 0 or d.district_id = 0 or d.region_id = 0 or d.parent = 0)
+		group by 1
+		order by 2,1
+    ) demographics on demographics.region_id = vd.region_id
+
+    where
+	    product_id =2421 and
+	    period_start_date::date >= 'Wed Jan 01 00:00:00 EAT 2014' and
+	    period_end_date::date <= 'Wed Dec 31 00:00:00 EAT 2014'
+	    and (vd.parent = 0 or vd.district_id = 0 or vd.region_id = 0 or 0=0)
+    )
+
+
+,vaccine_dropout_with_faility_count as (
+    select region_id, region_name, period_id, period_name , month_number, year_number, period_start_date,
+    population, denominator, facility_count, startdate, sum(vaccinated) vaccinated, sum(bcg_1) bcg_1, sum(mr_1) mr_1, sum(dtp_1) dtp_1, sum(dtp_3) dtp_3
+    from vaccine_dropout
+    JOIN (
+	select region_name rname, count(distinct facility_name) facility_count
+	from vaccine_dropout group by 1
+    ) as fcount ON fcount.rname = vaccine_dropout.region_name
+    group by 1,2,3,4,5,6,7,8,9,10,11
+    order by 1,5
+ )
+
+, progressive_total as (
+select
+	*,
+	(select case when population_tot = 0 then 0
+		    when (select code from products where id = 2421 limit 1) = 'V001' then bcg_1_tot / (population_tot * 0.1)
+		    else  dtp_1_tot / (population_tot * 0.1) end) as coverage_rate,
+
+	(select case when dtp_1_tot = 0 then 0
+		     when (select code from products where id = 2421 limit 1) = 'V001' and bcg_1_tot <> 0 then ((bcg_1_tot - mr_1_tot) / bcg_1_tot) * 100
+		     when (select code from products where id = 2421 limit 1) = 'V010' and dtp_1_tot <> 0 then ((dtp_1_tot - dtp_3_tot) / dtp_1_tot) * 100
+		     else 0 end) as dropout_rate
+ from  (
+	select *,
+		sum(population) OVER (PARTITION BY region_id order by region_id, month_number) population_tot,
+		sum(bcg_1) OVER (PARTITION BY region_id order by region_id, month_number) bcg_1_tot,
+		sum(mr_1) OVER (PARTITION BY region_id order by region_id, month_number) mr_1_tot,
+		sum(dtp_1) OVER (PARTITION BY region_id order by region_id, month_number) dtp_1_tot,
+		sum(dtp_3) OVER (PARTITION BY region_id order by region_id, month_number) dtp_3_tot,
+		coverage min_coverage, dropout min_dropout, wastage
+	from
+	vaccine_dropout_with_faility_count
+	join (
+		select coalesce(whoratio,0) coverage,  coalesce(dropout,0) dropout , coalesce(wastagefactor,0) wastage
+		from program_products pp
+		join isa_coefficients c on pp.isacoefficientsid = c.id
+		join vaccine_inventory_product_configurations pc on pc.productid=pp.productid
+		where pp.productid = 2421 limit 1
+	) as isa_coffecients ON 1=1
+
+	order by region_name, period_start_date
+) temp
+)
+
+
+select
+	region_name regionName,
+	max(facility_count) over (partition by region_id) facilityCount,
+	period_name periodName,
+        startdate StartDate,
+	coalesce(population,0) population,
+	case
+		when coverage_rate is null then ''
+		when coverage_rate >= min_coverage and dropout_rate <= min_dropout then 'A'
+		when coverage_rate < min_coverage and dropout_rate <= min_dropout then 'C'
+		when coverage_rate >= min_coverage and dropout_rate > min_dropout then 'B'
+		else 'D'
+	end as classification
+ from  progressive_total]]>
+	</queryString>
+	<field name="regionName" class="java.lang.String"/>
+	<field name="facilityCount" class="java.lang.Long"/>
+	<field name="periodName" class="java.lang.String"/>
+	<field name="startDate" class="java.sql.Date"/>
+	<field name="population" class="java.lang.Double"/>
+	<field name="classification" class="java.lang.String"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<summary>
+		<band height="109">
+			<crosstab>
+				<reportElement x="0" y="0" width="802" height="109" uuid="5c5ffd5d-656a-444b-a09e-b4ed338101c0"/>
+				<rowGroup name="regionName" width="70">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{regionName}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="5a6a261a-8da6-43a7-88de-db3b686621ff"/>
+								<textFieldExpression><![CDATA[$V{regionName}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="facilityCount" width="52">
+					<bucket class="java.lang.Long">
+						<bucketExpression><![CDATA[$F{facilityCount}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0">
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="52" height="25" uuid="e191f019-0eec-4d36-90cc-f7dbd0c8e9c9"/>
+								<box rightPadding="2"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$V{facilityCount}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="population" width="72">
+					<bucket class="java.lang.Long">
+						<bucketExpression><![CDATA[$F{population}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textField pattern="#,##0">
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="72" height="25" uuid="4e65f08a-a890-4898-944e-8375db4d8e25"/>
+								<box rightPadding="2"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$V{population}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="startDate" height="0">
+					<bucket class="java.sql.Date">
+						<bucketExpression><![CDATA[$F{startDate}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="periodName" height="30">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{periodName}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="30" uuid="e01980b2-1368-4f22-a6c9-8b5968cc46e7"/>
+								<textFieldExpression><![CDATA[$V{periodName}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="classificationMeasure" class="java.lang.String" calculation="Count">
+					<measureExpression><![CDATA[$F{classification}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="25">
+					<cellContents style="paqua">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="feb6f738-0e7c-44be-9b79-ae75468d22fe"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure} == null ? '' : 'Class_'+$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="regionName">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="c33c21ae-f162-4589-8b8a-c3694f1c5103"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="startDate">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="fe2212f6-b5e8-4cba-a6ab-76d0e5d551a3"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="regionName" columnTotalGroup="startDate">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="a78f7f33-e05a-44f9-80fc-f3491f66b15a"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="periodName">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="3f5e6121-0b60-4221-8edb-cbd7ce6b8a5f"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="regionName" columnTotalGroup="periodName">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="ea7379f4-736d-426f-b8ec-75cdfdbc3ee1"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="facilityCount">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="3c453a6d-96a3-4873-853b-a6dd9d399104"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityCount" columnTotalGroup="startDate">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="2ab32dfa-709d-4968-b279-667c1c167612"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityCount" columnTotalGroup="periodName">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="3f0fd8a7-d1b7-43aa-a22e-345c54f342d9"/>
+							<textFieldExpression><![CDATA[$V{classificationMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="population">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="population" columnTotalGroup="startDate">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="population" columnTotalGroup="periodName">
+					<cellContents/>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

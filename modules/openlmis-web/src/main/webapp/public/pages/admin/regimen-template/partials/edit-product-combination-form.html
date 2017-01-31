@@ -1,0 +1,62 @@
+<!--
+  ~ /*
+  ~  * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+  ~  *
+  ~  * Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+  ~  *
+  ~  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~  *
+  ~  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+  ~  *
+  ~  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  */
+  -->
+
+<div id="regimenEditForm" ng-show="getProductCombinationByRegimen().length > 0">
+    <div class="rnr-template-head">
+        <div class="row-fluid">
+
+            <div class="span4"><span openlmis-message="header.name"></span></div>
+            <div class="span2"><span openlmis-message="label.active"></span></div>
+            <div class="span4"></div>
+        </div>
+    </div>
+
+    <div class="regiment-list-items">
+        <div class="row-fluid" ng-show="getProductCombinationByRegimen().length > 0">
+            <div ng-model="regimens" ng-repeat="regimen in regimens" class="ui-sortable">
+                <div class="category-name">
+                    <div ng-show="procutCombinationsByRegimen[regimen.id].length > 0" ng-bind="regimen.name"></div>
+                </div>
+                <div ui-sortable ng-model="procutCombinationsByRegimen[regimen.id]" id="sortable">
+                    <div ng-repeat="productCombination in procutCombinationsByRegimen[regimen.id]" class="row-fluid rnr-template-columns"
+                         ng-class="{'editable-row' : productCombination.editable}">
+
+                        <div class="drag-handle"></div>
+
+                        <div class="span4">
+                            <div ng-show="!productCombination.editable"><span ng-bind="productCombination.name"></span></div>
+                            <input name="regimenName" type="text" ng-model="productCombination.name" ng-required="true"
+                                   ng-show="productCombination.editable" maxlength="50"/>
+                        </div>
+                        <span class="span2"></span>
+                        <div ng-show="!productCombination.editable" class="span4">
+                            <input id="editRegimen" name="button" type="button"
+                                   class="btn btn-primary btn-small pull-right" openlmis-message="button.edit"
+                                   ng-click="productCombination.editable=true;"/>
+                        </div>
+
+                        <div ng-show="productCombination.editable" class="span4">
+                            <input id="regimenDone" name="button" type="button"
+                                   class="btn btn-primary btn-small pull-right" openlmis-message="button.done"
+                                   ng-click="saveRow(productCombination)"/>
+                        </div>
+                        <!--<div class="alert alert-error" id="doneFailMessage{{regimen.code}}"-->
+                             <!--openlmis-message="label.missing.values"-->
+                             <!--ng-show="regimen.doneRegimenError"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

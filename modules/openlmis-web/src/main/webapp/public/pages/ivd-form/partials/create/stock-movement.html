@@ -259,18 +259,18 @@
                 type="text"/>
           </td>
           <td ng-if="false" ng-repeat-end=""></td>
-          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
-            <span>
+          <td ng-show="showStockStatusReportColumns" class="number cell-input">
+            <span class="cell-text">
               {{product.childrenImmunized() | number : 0}}
             </span>
           </td>
-          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
-            <span ng-show="product.usageRate() != '-'">
+          <td ng-show="showStockStatusReportColumns" class="number cell-input">
+            <span class="cell-text" ng-show="product.usageRate() != '-'">
               {{product.usageRate() | number : 2}} %
             </span>
           </td>
-          <td ng-show="showStockStatusReportColumns" style="background-color:silver;" class="number">
-            <span ng-show="product.usageRate() != '-'">
+          <td ng-show="showStockStatusReportColumns" class="number cell-input">
+            <span class="cell-text" ng-show="product.usageRate() != '-'">
               {{product.wastageRate() | number : 2}} %
             </span>
           </td>

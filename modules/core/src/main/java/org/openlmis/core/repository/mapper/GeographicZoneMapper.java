@@ -140,4 +140,10 @@ public interface GeographicZoneMapper {
   @Select({"SELECT COUNT(*) FROM geographic_zones where (LOWER(name) LIKE '%' || LOWER(#{searchParam}) || '%'",
     "OR LOWER(code) LIKE '%' || LOWER(#{searchParam}) || '%')"})
   Integer getGeographicZonesCountBy(String searchParam);
+
+  @Select({"SELECT distinct * FROM geographic_zones " +
+      "where " +
+      " id in (select geographicZoneId from facilities where facilities.id =  ANY(#{facilityIds}::INTEGER[]) ) " +
+      "order by name"})
+  List<GeographicZone> getDistrictsForFacilities(@Param("facilityIds") String facilityIds);
 }

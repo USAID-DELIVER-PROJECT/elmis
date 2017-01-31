@@ -11,6 +11,7 @@
 package org.openlmis.core.service;
 
 import lombok.NoArgsConstructor;
+import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.GeographicLevel;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.domain.Pagination;
@@ -37,7 +38,7 @@ public class GeographicZoneService {
 
   @Autowired
   GeographicZoneGeoJSONMapper geoJsonMapper;
-  
+
   @Autowired
   GeographicZoneRepository repository;
 
@@ -124,4 +125,7 @@ public class GeographicZoneService {
   }
 
 
+  public List<GeographicZone> getDistrictsFor(List<Facility> facilities) {
+    return repository.getDistrictsFor(facilities);
+  }
 }

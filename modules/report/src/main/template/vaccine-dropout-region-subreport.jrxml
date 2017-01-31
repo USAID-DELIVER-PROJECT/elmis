@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-dropout-region-subreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="333"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -60,6 +60,10 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 	<field name="facility_name" class="java.lang.String"/>
 	<field name="district_name" class="java.lang.String"/>
 	<field name="region_name" class="java.lang.String"/>
+	<field name="cum_bcg_vaccinated" class="java.math.BigDecimal"/>
+	<field name="cum_mr_vaccinated" class="java.math.BigDecimal"/>
+	<field name="cum_bcg_mr_dropout" class="java.math.BigDecimal"/>
+	<field name="cum_dtp3_vaccinated" class="java.math.BigDecimal"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -100,25 +104,25 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 				<staticText>
-					<reportElement mode="Opaque" x="412" y="20" width="389" height="25" forecolor="#FFFFFF" backcolor="#3D9297" uuid="60040ca1-6639-4cf0-adfc-15606e1c1a5c">
+					<reportElement mode="Opaque" x="292" y="20" width="486" height="25" forecolor="#FFFFFF" backcolor="#3D9297" uuid="60040ca1-6639-4cf0-adfc-15606e1c1a5c">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					</reportElement>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="412" y="45" width="389" height="19" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="7054bf0f-ba55-4a5a-bed2-8b811399a1ce">
+					<reportElement mode="Opaque" x="292" y="45" width="486" height="19" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="7054bf0f-ba55-4a5a-bed2-8b811399a1ce">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					</reportElement>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="0" y="20" width="412" height="44" forecolor="#FFFFFF" backcolor="#3D9297" uuid="d28eb1aa-5ce3-4073-8f47-4d16cb4774c8">
+					<reportElement mode="Opaque" x="0" y="20" width="292" height="44" forecolor="#FFFFFF" backcolor="#3D9297" uuid="d28eb1aa-5ce3-4073-8f47-4d16cb4774c8">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					</reportElement>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Transparent" x="40" y="20" width="250" height="44" forecolor="#000000" backcolor="#003333" uuid="3df9e74b-e89d-4c9c-ab6e-732f1169ad99"/>
+					<reportElement mode="Transparent" x="40" y="20" width="203" height="44" forecolor="#000000" backcolor="#003333" uuid="3df9e74b-e89d-4c9c-ab6e-732f1169ad99"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
@@ -134,25 +138,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="340" y="20" width="72" height="44" forecolor="#000000" backcolor="#003333" uuid="bc8bf970-2845-4af7-a852-2bab4066d61b">
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-						<paragraph lineSpacing="Single"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$R{label.target.population}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="412" y="20" width="389" height="25" uuid="49232288-ece7-4e2b-8804-fb73d04987ed">
-						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
-					<textFieldExpression><![CDATA[$R{label.monthly.dropout}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement mode="Transparent" x="290" y="20" width="49" height="44" forecolor="#000000" backcolor="#003333" uuid="75d267fa-ac4b-4a62-b61c-3f72e799a091">
+					<reportElement mode="Transparent" x="243" y="20" width="49" height="44" forecolor="#000000" backcolor="#003333" uuid="75d267fa-ac4b-4a62-b61c-3f72e799a091">
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					</reportElement>
@@ -163,7 +149,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<textFieldExpression><![CDATA[$R{label.period}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="553" y="45" width="115" height="19" forecolor="#000000" backcolor="#003333" uuid="99b4261c-6699-4e64-9e22-060810f58a75">
+					<reportElement mode="Transparent" x="348" y="45" width="64" height="19" forecolor="#000000" backcolor="#003333" uuid="99b4261c-6699-4e64-9e22-060810f58a75">
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
@@ -174,14 +160,14 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<textFieldExpression><![CDATA[$P{IS_DTP_PRODUCT}==true ?$R{label.dropout.dtp3}:$R{label.dropout.mr}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="668" y="45" width="133" height="19" uuid="10bb77fe-a196-4b27-9b3d-9dc1ea01cd49">
+					<reportElement x="412" y="45" width="94" height="19" uuid="10bb77fe-a196-4b27-9b3d-9dc1ea01cd49">
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle" markup="none"/>
 					<textFieldExpression><![CDATA[$R{label.percent}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="412" y="45" width="141" height="19" forecolor="#000000" backcolor="#003333" uuid="3d028657-6392-4c6a-99f9-bd8c016914d3">
+					<reportElement mode="Transparent" x="292" y="45" width="56" height="19" forecolor="#000000" backcolor="#003333" uuid="3d028657-6392-4c6a-99f9-bd8c016914d3">
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
@@ -192,13 +178,13 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<textFieldExpression><![CDATA[$P{IS_DTP_PRODUCT}==true ?$R{label.dropout.dtp1}:$R{label.dropout.bcg}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="0" y="64" width="801" height="15" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="beb4e4da-3c03-41dd-8ef5-124f42aaeac8">
+					<reportElement mode="Opaque" x="0" y="64" width="778" height="15" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="beb4e4da-3c03-41dd-8ef5-124f42aaeac8">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					</reportElement>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Transparent" x="39" y="64" width="251" height="15" forecolor="#000000" backcolor="#003333" uuid="0ed30901-0cb0-4c93-9a58-ecc491dcd253">
+					<reportElement mode="Transparent" x="39" y="64" width="373" height="15" forecolor="#000000" backcolor="#003333" uuid="0ed30901-0cb0-4c93-9a58-ecc491dcd253">
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
@@ -209,7 +195,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<textFieldExpression><![CDATA[$R{label.A}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="553" y="64" width="115" height="15" forecolor="#000000" backcolor="#003333" uuid="6589a0ab-efe9-469a-b7b5-29c88386ced8">
+					<reportElement mode="Transparent" x="348" y="64" width="64" height="15" forecolor="#000000" backcolor="#003333" uuid="6589a0ab-efe9-469a-b7b5-29c88386ced8">
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
@@ -220,7 +206,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<textFieldExpression><![CDATA[$R{label.F}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="668" y="64" width="133" height="15" forecolor="#000000" backcolor="#003333" uuid="5726b4f0-8f57-4ca9-8f1b-cfe8d5cf5459">
+					<reportElement mode="Transparent" x="412" y="64" width="94" height="15" forecolor="#000000" backcolor="#003333" uuid="5726b4f0-8f57-4ca9-8f1b-cfe8d5cf5459">
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
@@ -231,7 +217,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<textFieldExpression><![CDATA[$R{label.G.G}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="412" y="64" width="141" height="15" forecolor="#000000" backcolor="#003333" uuid="6260e9e3-a48d-4739-a163-b8d56fae51d1">
+					<reportElement mode="Transparent" x="292" y="64" width="56" height="15" forecolor="#000000" backcolor="#003333" uuid="6260e9e3-a48d-4739-a163-b8d56fae51d1">
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
@@ -242,7 +228,21 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<textFieldExpression><![CDATA[$R{label.E.E}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="339" y="64" width="73" height="15" forecolor="#000000" backcolor="#003333" uuid="c77d17b7-6b30-46f5-8399-7a3fbfec0de1">
+					<reportElement x="506" y="20" width="272" height="25" uuid="fe796003-103e-40cf-8e82-1af18c7184e6">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					<textFieldExpression><![CDATA[$R{label.cumulative}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="292" y="20" width="214" height="25" uuid="4cd0391c-a6a4-45f2-91f5-cb130c8cde37">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					<textFieldExpression><![CDATA[$R{label.monthly}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="614" y="45" width="72" height="19" forecolor="#000000" backcolor="#003333" uuid="546faf4c-1990-4527-afa4-47b6182f889c">
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
@@ -250,36 +250,97 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$R{label.D}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{IS_DTP_PRODUCT}==true ?$R{label.dropout.dtp3}:$R{label.dropout.mr}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="506" y="45" width="108" height="19" forecolor="#000000" backcolor="#003333" uuid="06179e54-2013-4bab-8614-96b4de8a84b2">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{IS_DTP_PRODUCT}==true ?$R{label.dropout.dtp1}:$R{label.dropout.bcg}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="686" y="45" width="92" height="19" uuid="b851ae41-f75c-40e0-84dc-54a21cf72a84">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle" markup="none"/>
+					<textFieldExpression><![CDATA[$R{label.percent}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="506" y="64" width="108" height="15" forecolor="#000000" backcolor="#003333" uuid="c6baf390-e7b1-4317-a016-63c4c8230fb3">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.E.E}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="614" y="64" width="72" height="15" forecolor="#000000" backcolor="#003333" uuid="edbcd225-b7fb-45e1-afb4-28d236cbce46">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.F}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="686" y="64" width="92" height="15" forecolor="#000000" backcolor="#003333" uuid="da8474b1-58a7-44d3-bac0-a473414137dc">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.G.G}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="20">
 				<textField pattern="#,##0.00;-#,##0.00">
-					<reportElement x="339" y="0" width="73" height="20" uuid="63adf9a9-4ba9-40c3-9092-d4c3ee4e7ea6"/>
-					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$V{total_popiulation}]]></textFieldExpression>
-				</textField>
-				<textField pattern="#,##0.00;-#,##0.00">
-					<reportElement x="412" y="0" width="141" height="20" uuid="4dcb62f9-9d28-4f77-840f-b39a747bd652"/>
+					<reportElement x="292" y="0" width="56" height="20" uuid="4dcb62f9-9d28-4f77-840f-b39a747bd652"/>
 					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$V{bcg_vaccinated_sum}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00;-#,##0.00">
-					<reportElement x="553" y="0" width="115" height="20" uuid="11e7e770-ee23-4f11-9366-0bbe771a1ebd"/>
+					<reportElement x="348" y="0" width="64" height="20" uuid="11e7e770-ee23-4f11-9366-0bbe771a1ebd"/>
 					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$V{dtp_vaccinated_sum}]]></textFieldExpression>
 				</textField>
-				<textField pattern="#,##0.00 %">
-					<reportElement x="668" y="0" width="133" height="20" uuid="e0d9363d-de2e-4146-bb7d-57aa3a0ba38b"/>
+				<textField pattern="#,##0 %">
+					<reportElement x="412" y="0" width="94" height="20" uuid="e0d9363d-de2e-4146-bb7d-57aa3a0ba38b"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$V{dropout_percentage}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{dropout_percentage}/100]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="214" y="0" width="126" height="20" uuid="f2c6e526-387b-4114-83b9-7b6396ee70d6"/>
+					<reportElement x="214" y="0" width="78" height="20" uuid="f2c6e526-387b-4114-83b9-7b6396ee70d6"/>
 					<text><![CDATA[Sub Total]]></text>
 				</staticText>
+				<textField pattern="#,##0 %">
+					<reportElement x="684" y="0" width="94" height="20" uuid="673f9ba4-812a-4527-b144-a4dd23107043"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{dropout_percentage}/100]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="614" y="0" width="70" height="20" uuid="6294084b-1209-4326-b93c-47a3709a9f0f"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{dtp_vaccinated_sum}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="505" y="0" width="109" height="20" uuid="c72f3b59-a51e-44d6-8d2a-4f3ed1fd0978"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{bcg_vaccinated_sum}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -291,34 +352,55 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="801" height="20" backcolor="#F4F4F4" uuid="02df148d-9dc0-49e9-b8cb-0ad28657078b">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="778" height="20" backcolor="#F4F4F4" uuid="02df148d-9dc0-49e9-b8cb-0ad28657078b">
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 1]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="339" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="18d0356c-7742-4110-8f64-158866ba6186">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="18d0356c-7742-4110-8f64-158866ba6186">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=5 &&$F{bcg_mr_dropout}>=0]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="340" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="617bdb98-4d1d-46ea-af46-d63dec2abcd3">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="617bdb98-4d1d-46ea-af46-d63dec2abcd3">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}>10]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}>10 ||$F{bcg_mr_dropout}<0]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="339" y="1" width="462" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="60598021-4bd7-46e9-90ff-d83c51f26edc">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="60598021-4bd7-46e9-90ff-d83c51f26edc">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{drop_out}<=10 && $V{drop_out}>5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=10 && $F{bcg_mr_dropout}>5]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="684" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="87daae3b-d4a5-4ef0-b04e-50aba22bfe08">
+					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=10 && $F{bcg_mr_dropout}>5]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="684" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="51f54785-686e-4b6e-846c-aa94897e47fc">
+					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}>10||$F{bcg_mr_dropout}<0]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="684" y="1" width="94" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="f40b62c9-8715-43bd-94d5-466189245768">
+					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					<printWhenExpression><![CDATA[$F{bcg_mr_dropout}<=5]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="39" y="0" width="762" height="20" forecolor="#006666" uuid="962b58e8-595f-4b19-aa3e-63710daa586b">
+				<reportElement x="39" y="0" width="739" height="20" forecolor="#006666" uuid="962b58e8-595f-4b19-aa3e-63710daa586b">
 					<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Top">
@@ -327,7 +409,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement x="553" y="0" width="115" height="20" uuid="bfa22c05-f847-44a8-a6e4-31d9919f9316"/>
+				<reportElement x="348" y="0" width="64" height="20" uuid="bfa22c05-f847-44a8-a6e4-31d9919f9316"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{mr_vaccinated}]]></textFieldExpression>
 			</textField>
@@ -340,7 +422,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="412" y="0" width="141" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="536fd8ef-54ee-4113-9e3d-2d55f9f8da48">
+				<reportElement mode="Transparent" x="292" y="0" width="56" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="536fd8ef-54ee-4113-9e3d-2d55f9f8da48">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
@@ -350,13 +432,13 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				</textElement>
 				<textFieldExpression><![CDATA[$F{bcg_vaccinated}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00 %" isBlankWhenNull="true">
-				<reportElement x="668" y="0" width="133" height="20" uuid="edb18e79-900a-46a0-8f18-369e44bff292"/>
+			<textField pattern="#,##0 %" isBlankWhenNull="true">
+				<reportElement x="412" y="0" width="94" height="20" uuid="edb18e79-900a-46a0-8f18-369e44bff292"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})*100/($F{bcg_vaccinated})):0]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{bcg_vaccinated}!=0)?(($F{bcg_vaccinated}-$F{mr_vaccinated})/($F{bcg_vaccinated})):0]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Transparent" x="39" y="0" width="251" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="75af9441-a29d-4f9d-9496-f5297e49e66e">
+				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Transparent" x="39" y="0" width="204" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="75af9441-a29d-4f9d-9496-f5297e49e66e">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -369,7 +451,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<textFieldExpression><![CDATA[$F{region_name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMM-yy" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="290" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="894e3e22-c590-4751-8ecd-1413ac944d84">
+				<reportElement mode="Transparent" x="243" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="894e3e22-c590-4751-8ecd-1413ac944d84">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -382,52 +464,70 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<textFieldExpression><![CDATA[$F{period_name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="339" y="0" width="73" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="6ff9ab62-05a1-4038-9ea0-26d9f34f46c7">
+				<reportElement x="614" y="0" width="70" height="20" uuid="4427689a-3144-4ec8-9bda-01c2a46682a1"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{cum_mr_vaccinated}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="506" y="0" width="108" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="c7aed168-8a31-4501-8338-ee2d938e26c0">
 					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{target}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cum_bcg_vaccinated}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 %" isBlankWhenNull="true">
+				<reportElement x="684" y="0" width="94" height="20" uuid="bef7d0a1-b993-4c2b-b2dd-c328d360a87e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[($F{cum_bcg_vaccinated}!=0)?(($F{cum_bcg_vaccinated}-$F{cum_mr_vaccinated})/($F{cum_bcg_vaccinated})):0]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<lastPageFooter>
 		<band height="18">
 			<staticText>
-				<reportElement mode="Opaque" x="-1" y="0" width="802" height="18" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="7a8fc6b0-ea25-47e6-9c33-eac0d328057e">
+				<reportElement mode="Opaque" x="-1" y="0" width="779" height="18" forecolor="#FFFFFF" backcolor="#A0BDB2" uuid="7a8fc6b0-ea25-47e6-9c33-eac0d328057e">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
-			<textField pattern="#,##0.00;-#,##0.00">
-				<reportElement x="339" y="0" width="73" height="18" uuid="fe43277a-c530-4259-bcc8-b78ccf1dcdfb"/>
+			<textField pattern="#,##0 %">
+				<reportElement x="412" y="0" width="94" height="18" uuid="739b3bf9-1e70-47a7-848e-441b4dcedacc"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$V{grand_total_popiulation}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00 %">
-				<reportElement x="668" y="0" width="133" height="18" uuid="739b3bf9-1e70-47a7-848e-441b4dcedacc"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}/100]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00">
-				<reportElement x="553" y="0" width="115" height="18" uuid="f2395587-20a0-4a42-8766-fad471dd5375"/>
+				<reportElement x="348" y="0" width="64" height="18" uuid="f2395587-20a0-4a42-8766-fad471dd5375"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{grand_dtp_vaccinated_sum}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00">
-				<reportElement x="412" y="0" width="141" height="18" uuid="5610a98a-cb80-45e3-a965-9896ef096f4f"/>
+				<reportElement x="292" y="0" width="56" height="18" uuid="5610a98a-cb80-45e3-a965-9896ef096f4f"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{grand_bcg_vaccinated_sum}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="212" y="0" width="126" height="18" uuid="eddc012d-e5fd-4e80-b77e-773ecb09ef69"/>
+				<reportElement x="212" y="0" width="80" height="18" uuid="eddc012d-e5fd-4e80-b77e-773ecb09ef69"/>
 				<text><![CDATA[Grand Total]]></text>
 			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="614" y="0" width="70" height="18" uuid="ea7b5abc-8475-40d2-9a9b-bb005be93af8"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{grand_dtp_vaccinated_sum}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 %">
+				<reportElement x="684" y="0" width="94" height="18" uuid="50cfc5b4-7331-4149-b9e9-389a1556b3fa"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{grand_dropout_percentage}/100]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="506" y="0" width="108" height="18" uuid="403fd916-d43e-4429-88ff-5909cff5d475"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{grand_bcg_vaccinated_sum}]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 </jasperReport>

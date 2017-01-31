@@ -21,7 +21,22 @@ function ClassificationVaccineUtilizationPerformanceController($scope,
 
     $scope.perioderror = "";
 
+        $scope.exportReport   = function (type){
+            $scope.filter.pdformat = 1;
+            var params = jQuery.param($scope.reportParam);
+            var url = '/reports/download/classification_of_vacccine_utilization/' + type +'?' + params;
+            window.open(url);
+        };
+
     $scope.OnFilterChanged = function () {
+
+     $scope.reportParam =  {
+                    periodStart: $scope.periodStartDate,
+                    periodEnd: $scope.periodEnddate,
+                    district: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
+                    product: $scope.filter.product,
+                };
+
         if (utils.isEmpty($scope.filter.product) || utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
             return;
 
@@ -47,7 +62,7 @@ function ClassificationVaccineUtilizationPerformanceController($scope,
                 periodStart: $scope.periodStartDate,
                 periodEnd: $scope.periodEnddate,
                 range: $scope.range,
-                zone: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
+                zone: utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
                 product: $scope.filter.product
             },
 
@@ -319,7 +334,6 @@ function ClassificationVaccineUtilizationPerformanceController($scope,
                 unformattedReport[i].wastage_rate = wastage_rate;
                 unformattedReport[i].classification = determineClass(coverage_rate, wastage_rate);
                 unformattedReport[i].hide = unformattedReport[i].year_number == $scope.year && unformattedReport[i].month_number < $scope.month ? true : false;
-
 
             }
         }

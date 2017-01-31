@@ -34,6 +34,12 @@ public class PerformanceByDropoutRateByDistrict {
     private String facility_name;
     private Long facility_id;
     private Date period_name;
+    private Long cum_bcg_vaccinated;
+    private Long cum_mr_vaccinated;
+    private Long cum_dtp3_vaccinated;
+    private float cum_bcg_mr_dropout;
+    private float cum_dtp1_dtp3_dropout;
+    private Long cum_dtp1_vaccinated;
     private Long bcg_vaccinated;
     private Long dtp1_vaccinated;
     private Long mr_vaccinated;

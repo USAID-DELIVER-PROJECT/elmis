@@ -13,7 +13,9 @@
 <div class="row-fluid sortable ui-sortable">
             <div class="box span12">
                     <div class="box-header">
-                        <h2 openlmis-message="report.title.non.reporting.facility"><i class="icon-edit"></i><span class="break"></span></h2>
+                        <h2 >
+                          <span openlmis-message="report.title.non.reporting.facility"></span>
+                        </h2>
                         <div class="box-icon">
                             <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
                             <a ng-click="section(1)"  ng-show="show(0)" class="btn-minimize"><i class="icon-chevron-down"></i></a>
@@ -41,8 +43,7 @@
                     </tr>
                 </table>
                 <div ng-show="datarows.length > 0">
-                    <div class="pull-right legend" >Page: {{tableParams.page}}, Showing records {{ ((tableParams.page - 1) * tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of {{tableParams.total}} </div>
-
+                    <div top-right-table-summary></div>
                     <div class="span12 offset1">
 
                         <div>

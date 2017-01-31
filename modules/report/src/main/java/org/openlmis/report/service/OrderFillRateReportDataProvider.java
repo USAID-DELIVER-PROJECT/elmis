@@ -51,6 +51,7 @@ public class OrderFillRateReportDataProvider extends ReportDataProvider {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
 
     OrderFillRateReportParam parameter = ParameterAdaptor.parse(filterCriteria, OrderFillRateReportParam.class);
+    parameter.setUserId(this.getUserId());
     List<MasterReport> reportList = new ArrayList<MasterReport>();
     MasterReport report = new MasterReport();
     report.setDetails(reportMapper.getReport(parameter, rowBounds, this.getUserId()));

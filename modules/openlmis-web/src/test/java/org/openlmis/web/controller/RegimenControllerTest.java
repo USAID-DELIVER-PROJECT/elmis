@@ -98,7 +98,7 @@ public class RegimenControllerTest {
     List<RegimenColumn> columns = new ArrayList<>();
     List<Regimen> regimens = new ArrayList<>();
     RegimenTemplate regimenTemplate = new RegimenTemplate(programId, columns);
-    RegimenFormDTO regimenFormDTO = new RegimenFormDTO(regimens, columns);
+    RegimenFormDTO regimenFormDTO = new RegimenFormDTO(regimens,null, columns,null);
 
     controller.save(programId, regimenFormDTO, request);
 

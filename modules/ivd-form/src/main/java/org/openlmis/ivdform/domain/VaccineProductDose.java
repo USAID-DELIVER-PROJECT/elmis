@@ -29,6 +29,7 @@ public class VaccineProductDose extends BaseModel {
   Long programId;
   Long productId;
 
+  String productName;
   String displayName;
   Long displayOrder;
 

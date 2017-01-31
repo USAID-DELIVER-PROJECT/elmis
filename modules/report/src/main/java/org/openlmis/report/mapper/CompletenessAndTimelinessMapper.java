@@ -18,7 +18,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.CompletenessAndTimelinessQueryBuilder;
 import org.openlmis.report.model.params.CompletenessAndTimelinessReportParam;
-import org.openlmis.report.model.report.CompletenessAndTimelinessReport;
+import org.openlmis.report.model.report.CompletenessAndTimelinessReportFields;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,16 +30,12 @@ public interface CompletenessAndTimelinessMapper {
 
     @SelectProvider(type = CompletenessAndTimelinessQueryBuilder.class, method = "selectCompletenessAndTimelinessMainReportDataByDistrict")
     @Options(timeout = 0, useCache = true, flushCache = true)
-    public List<CompletenessAndTimelinessReport> getDistrictReport(@Param("filterCriteria") CompletenessAndTimelinessReportParam filterCriteria,
-                                                               @Param("SortCriteria") Map<String, String[]> sortCriteria,
-                                                               @Param("RowBounds") RowBounds rowBounds,
-                                                               @Param("userId") Long userId);
+    public List<CompletenessAndTimelinessReportFields> getDistrictReport(@Param("filterCriteria") CompletenessAndTimelinessReportParam filterCriteria,
+                                                                         @Param("userId") Long userId);
 
     @SelectProvider(type = CompletenessAndTimelinessQueryBuilder.class, method = "selectCompletenessAndTimelinessSummaryReportDataByDistrict")
     @Options(timeout = 0, useCache = true, flushCache = true)
-    public List<CompletenessAndTimelinessReport> getRegionReport(@Param("filterCriteria") CompletenessAndTimelinessReportParam filterCriteria,
-                                                              @Param("SortCriteria") Map<String, String[]> sortCriteria,
-                                                              @Param("RowBounds") RowBounds rowBounds,
-                                                              @Param("userId") Long userId);
+    public List<CompletenessAndTimelinessReportFields> getSummaryReport(@Param("filterCriteria") CompletenessAndTimelinessReportParam filterCriteria,
+                                                                        @Param("userId") Long userId);
 
 }
