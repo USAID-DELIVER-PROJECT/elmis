@@ -68,6 +68,10 @@ public class OrderRequisitionDTO extends SupervisoryNode{
 
     String productCode;
 
+    String distributionType;
+
+    private Date receivedDate;
+
 
 
 

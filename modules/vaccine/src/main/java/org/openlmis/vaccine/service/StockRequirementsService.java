@@ -359,4 +359,9 @@ public class StockRequirementsService
             }
         }
     }
+
+    public List<StockRequirementsDTO>getAllForOrderRequisition(Long programId, Long facilityId, int year){
+        return repository.getAll(programId,facilityId,year);
+    }
+
 }
