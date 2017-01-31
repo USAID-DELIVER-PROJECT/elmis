@@ -11,6 +11,7 @@ import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderStatus;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
 import org.openlmis.vaccine.dto.StockRequirementsDTO;
+import org.openlmis.vaccine.dto.VaccineOnTimeInFullDTO;
 import org.openlmis.vaccine.repository.VaccineOrderRequisitions.VaccineOrderRequisitionRepository;
 import org.openlmis.vaccine.repository.VaccineOrderRequisitions.VaccineOrderRequisitionStatusChangeRepository;
 import org.openlmis.vaccine.service.StockRequirementsService;
@@ -19,9 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
@@ -66,6 +65,8 @@ public class VaccineOrderRequisitionService {
     @Autowired
     VaccineNotificationService notificationService;
 
+    @Autowired
+    ConfigurationSettingService configurationSettingService;
 
     public static String  getCommaSeparatedIds(List<Long> idList){
 
@@ -108,7 +109,13 @@ public class VaccineOrderRequisitionService {
 
         Date date = new Date();
         SupervisoryNode supervisoryNode = supervisoryNodeService.getFor(facilityService.getFacilityById(facilityId), programService.getById(programId));
-        List<StockRequirementsDTO> stockRequirements = stockRequirementsService.getStockRequirements(facilityId, programId);
+        Date d = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        int year = cal.get(Calendar.YEAR);
+
+        //List<StockRequirementsDTO> stockRequirements = stockRequirementsService.getStockRequirements(facilityId, programId);
+        List<StockRequirementsDTO>stockRequirements2 = stockRequirementsService.getAllForOrderRequisition(programId,facilityId,year);
         orderRequisition = new VaccineOrderRequisition();
         orderRequisition.setPeriodId(periodId);
         orderRequisition.setProgramId(programId);
@@ -120,8 +127,9 @@ public class VaccineOrderRequisitionService {
         orderRequisition.setModifiedBy(userId);
         if(facility !=null)
         orderRequisition.setFacility(facility);
-        if(stockRequirements != null)
-        orderRequisition.initiateOrder(stockRequirements,service,stockCardMapper);
+        System.out.println(stockRequirements2);
+        if(stockRequirements2 != null)
+        orderRequisition.initiateOrder(stockRequirements2,service,stockCardMapper);
 
         return orderRequisition;
     }
@@ -268,5 +276,60 @@ public class VaccineOrderRequisitionService {
             total = orderRequisitionRepository.getTotalPendingRequest(userId, facilityId, programId);
         }
         return total;
+    }
+
+    public List<VaccineOnTimeInFullDTO>getOnTimeInFullData(Long facilityId, Long periodId, Long orderId){
+
+        List<VaccineOnTimeInFullDTO> onTimeInFullDTOList = orderRequisitionRepository.getOnTimeInFullData(facilityId,periodId,orderId);
+         List<VaccineOnTimeInFullDTO> arr = new ArrayList<>();
+         VaccineOnTimeInFullDTO dto;
+         for(VaccineOnTimeInFullDTO fullDTO : onTimeInFullDTOList) {
+             dto = new VaccineOnTimeInFullDTO();
+             Product prod = service.getById(fullDTO.getProductId());
+             if (prod != null) {
+                 dto.setProduct(prod);
+                 ProgramProduct programProduct = programProductService.getByProgramAndProductId(programService.getAllIvdPrograms().get(0).getId(), prod.getId());
+                 dto.setProductCategory(programProduct.getProductCategory());
+                 dto.setProductName(fullDTO.getProductName());
+                 dto.setQuantityRequested(fullDTO.getQuantityRequested());
+                 dto.setQuantityReceived(fullDTO.getQuantityReceived());
+                 dto.setRequestedDate(fullDTO.getRequestedDate());
+                 dto.setReceivedDate(fullDTO.getReceivedDate());
+                 dto.setGap(calculateGap(fullDTO));
+                 dto.setOnFull(calculateOnFUll(fullDTO));
+                 arr.add(dto);
+             }
+
+        }
+        return arr;
+    }
+
+    private String calculateOnFUll(VaccineOnTimeInFullDTO fullDTO) {
+
+        getTenPercentLess(fullDTO.getQuantityRequested());
+        Double full = fullDTO.getQuantityRequested() - getTenPercentLess(fullDTO.getQuantityRequested());
+        Double full2 = fullDTO.getQuantityRequested() + getTenPercentLess(fullDTO.getQuantityRequested());
+
+        if(full <= fullDTO.getQuantityReceived() && fullDTO.getQuantityReceived() <= full2){
+             return "Yes";
+        }else {
+             return  "No";
+        }
+
+    }
+
+    private double getTenPercentLess(Integer quantityRequested) {
+        return ( configurationSettingService.getConfigurationIntValue("ON_TIME_IN_FULL_CONF_NUMBER") * quantityRequested) / 100L;
+    }
+
+    private Integer calculateGap(VaccineOnTimeInFullDTO fullDTO) {
+        return  fullDTO.getQuantityReceived() - fullDTO.getQuantityRequested();
+
+    }
+
+    public List<OrderRequisitionDTO>getSearchedDataForOnTimeReportingBy(Long facilityId,String dateRangeStart,String dateRangeEnd){
+
+        Program  p =  programService.getAllIvdPrograms().get(0);
+        return orderRequisitionRepository.getSearchedDataForOnTimeReportingBy(facilityId, dateRangeStart, dateRangeEnd, p.getId());
     }
 }

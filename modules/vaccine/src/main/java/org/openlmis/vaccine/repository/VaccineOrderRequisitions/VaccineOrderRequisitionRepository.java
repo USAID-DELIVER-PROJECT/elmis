@@ -3,12 +3,12 @@ package org.openlmis.vaccine.repository.VaccineOrderRequisitions;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
+import org.openlmis.vaccine.dto.VaccineOnTimeInFullDTO;
 import org.openlmis.vaccine.repository.mapper.OrderRequisitions.VaccineOrderRequisitionMapper;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineOrderRequisitionLineItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -93,5 +93,13 @@ public class VaccineOrderRequisitionRepository {
 
     public Integer getTotalPendingRequest(Long userId, Long facilityId, Long programId) {
         return orderRequisitionMapper.getTotalPendingRequest(userId, facilityId, programId);
+    }
+
+    public List<VaccineOnTimeInFullDTO>getOnTimeInFullData(Long facilityId, Long periodId, Long orderId){
+        return  orderRequisitionMapper.getOnTimeInFullData(facilityId,periodId,orderId);
+    }
+
+    public List<OrderRequisitionDTO>getSearchedDataForOnTimeReportingBy(Long facilityId,String dateRangeStart,String dateRangeEnd,Long programId){
+        return orderRequisitionMapper.getSearchedDataForOnTimeReportingBy(facilityId, dateRangeStart, dateRangeEnd, programId);
     }
 }

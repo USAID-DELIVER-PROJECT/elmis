@@ -22,7 +22,7 @@ public class VaccineOrderRequisitionLineItemService {
                 lineItem.setOrderId(reportId);
                 itemRepository.Insert(lineItem);
             } else {
-
+                System.out.println(lineItem);
                 if(lineItem.getMaximumStock() < lineItem.getStockOnHand()) {
                     lineItem.setQuantityRequested(0L);
                     itemRepository.Update(lineItem);

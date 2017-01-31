@@ -118,6 +118,10 @@ public class VaccineInventoryDistributionRepository {
         return mapper.getDistributionsByDate(facilityId, date);
     }
 
+    public List<VaccineDistribution> getDistributionsByDateRange(Long facilityId, String date, String endDate,String distributionType) {
+        return mapper.getDistributionsByDateRange(facilityId, date, endDate,distributionType);
+    }
+
     public VaccineDistribution getDistributionByVoucherNumberIfExist(Long facilityId, String voucherNumber) {
         return mapper.getDistributionByVoucherNumberIfExist(facilityId, voucherNumber);
     }

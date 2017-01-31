@@ -8,6 +8,7 @@ import org.openlmis.core.domain.Program;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
+import org.openlmis.vaccine.dto.VaccineOnTimeInFullDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -173,5 +174,43 @@ public interface VaccineOrderRequisitionMapper {
             "     JOIN processing_periods pp on r.periodId = pp.id " +
             "     WHERE ra.userId = #{userId} AND R.STATUS  IN('SUBMITTED') AND  isVerified = false AND r.programId = #{programId} AND sn.facilityId = #{facilityId}")
     Integer getTotalPendingRequest(@Param("userId") Long userId, @Param("facilityId") Long facilityId, @Param("programId") Long programId);
+
+
+    @Select("   SELECT y.id productId, y.product productName,y.quantityRequested,x.QuantityReceived,requestedDate, distributiondate receivedDate from   " +
+            "   (    "+
+            "   SELECT p.id, p.primaryName product, dl.quantity QuantityReceived,distributiondate FROM vaccine_distributions d   " +
+            "   JOIN vaccine_distribution_line_items dl on d.id = dl.distributionId   " +
+            "   JOIN products p on p.id = dl.productId    " +
+            "   JOIN program_products  pp ON pp.productId = p.id    " +
+            "   JOIN product_categories pc ON pp.productCategoryId = PC.ID      " +
+            "   WHERE d.status = 'RECEIVED' and toFacilityId=#{facilityId}  and d.periodId = #{periodId} and d.orderId = #{orderId}   " +
+            "   order by pc.displayOrder   " +
+            "   ) x LEFT JOIN (     " +
+            "   SELECT p.id,p.primaryName product, quantityRequested,o.createddate requestedDate FROM vaccine_order_requisitions o\n" +
+            "   JOIN vaccine_order_requisition_line_items li on li.orderid = o.id    " +
+            "   JOIN products p on p.id = li.productId     " +
+            "   JOIN program_products  pp ON pp.productId = p.id   " +
+            "   JOIN product_categories pc ON pp.productCategoryId = PC.ID     " +
+            "   WHERE o.status = 'ISSUED' and facilityId=#{facilityId}  and periodId = #{periodId} and o.id = #{orderId}    " +
+            "   order by pc.displayOrder " +
+            "   ) Y ON x.id = y.id   ")
+
+    List<VaccineOnTimeInFullDTO> getOnTimeInFullData(@Param("facilityId") Long facilityId, @Param("periodId") Long periodId,@Param("orderId") Long orderId);
+
+    @Select("select vd.status,vd.modifiedDate receivedDate, vd.distributionType,   " +
+            "pp.id periodId, r.id,p.name programName,    " +
+            "f.id facilityId, f.name facilityName,pp.startdate periodStartDate,pp.enddate periodEndDate,emergency, orderDate,r.createdDate  from vaccine_order_requisitions r   " +
+            "JOIN vaccine_distributions vd ON r.id = vd.orderId  " +
+            "JOIN programs p on r.programId =p.id  " +
+            "JOIN processing_periods pp on r.periodId = pp.id  " +
+            "JOIN facilities f on r.facilityId= f.id    "+
+            " WHERE programId = #{programId} AND r.createdDate::date >= #{dateRangeStart}::date and r.createdDate::date <= #{dateRangeEnd}::date  " +
+            " and facilityId = #{facilityId} and vd.STATUS  IN('RECEIVED')")
+    List<OrderRequisitionDTO> getSearchedDataForOnTimeReportingBy(@Param("facilityId") Long facilityId,
+                                                @Param("dateRangeStart") String dateRangeStart,
+                                                @Param("dateRangeEnd") String dateRangeEnd
+                                                ,@Param("programId") Long programId);
+
+
 }
 

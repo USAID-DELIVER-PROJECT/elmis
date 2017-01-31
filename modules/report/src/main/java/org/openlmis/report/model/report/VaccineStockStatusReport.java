@@ -48,6 +48,9 @@ public class VaccineStockStatusReport implements ResultRow {
 
     private String region;
 
+    private Integer total;
+
+    private Integer adequacy2;
 
     //private JSONPObject products;
 

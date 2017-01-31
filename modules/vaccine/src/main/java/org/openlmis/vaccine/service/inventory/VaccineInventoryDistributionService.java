@@ -277,6 +277,10 @@ public class VaccineInventoryDistributionService {
         return repository.getDistributionsByDate(facilityId, date);
     }
 
+    public List<VaccineDistribution> getDistributionsByDateRange(Long facilityId, String date, String endDate,String distributionType) {
+        return repository.getDistributionsByDateRange(facilityId, date, endDate,distributionType);
+    }
+
     public VaccineDistribution getDistributionByVoucherNumberIfExist(Long userId, String voucherNumber) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long facilityId = homeFacility.getId();
