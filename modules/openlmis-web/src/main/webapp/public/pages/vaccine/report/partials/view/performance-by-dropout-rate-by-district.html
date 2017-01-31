@@ -213,7 +213,9 @@
 
 
                             <td class="aggregate-row"
-                                    >
+
+                                ng-style="{'background-color':getBackGroundColor(calculateSubTotalPercentage(reportType==false? districtSubAggregate[ datarows[$index-1].district_name]:districtSubAggregate[ datarows[$index-1].facility_name]),0),'text-align':'right'}">
+
                                 {{calculateSubTotalPercentage(reportType==false? districtSubAggregate[ datarows[$index-1].district_name]:districtSubAggregate[ datarows[$index-1].facility_name])|number}}%
 
                             </td>
@@ -229,6 +231,7 @@
 
 
                             <td class="aggregate-row"
+                                ng-style="{'background-color':getBackGroundColor(calculateSubTotalPercentage(reportType==false? districtSubAggregate[ datarows[$index-1].district_name]:districtSubAggregate[ datarows[$index-1].facility_name]),0) ,'text-align':'right'}"
                                     >
                                 {{calculateSubTotalPercentage(reportType==false? districtSubAggregate[ datarows[$index-1].district_name]:districtSubAggregate[ datarows[$index-1].facility_name])|number}}%
 
@@ -302,6 +305,8 @@
 
 
                             <td class="aggregate-row"
+                                ng-style="{'background-color':getBackGroundColor(calculateSubTotalPercentage(reportType==false? districtSubAggregate[ datarows[$index].district_name]:districtSubAggregate[ datarows[$index].facility_name]),0),'text-align':'right'}"
+
                                     >
                                 {{calculateSubTotalPercentage(reportType==false? districtSubAggregate[ datarows[$index].district_name]:districtSubAggregate[ datarows[$index].facility_name])|number}}%
 
@@ -318,6 +323,7 @@
 
 
                             <td class="aggregate-row"
+                                ng-style="{'background-color':getBackGroundColor(calculateSubTotalPercentage(reportType==false? districtSubAggregate[ datarows[$index].district_name]:districtSubAggregate[ datarows[$index].facility_name]),0),'text-align':'right'}"
                                     >
                                 {{calculateSubTotalPercentage(reportType==false? districtSubAggregate[ datarows[$index].district_name]:districtSubAggregate[ datarows[$index].facility_name])|number}}%
 
@@ -351,7 +357,8 @@
                     <!-- end of the table-->
 
                 </div>
-                <div ng-show="datarows.length > 0 && (isUndefined(filter.facility) )">
+
+                <div ng-show="datarows.length > 0 && (reportType!=true )">
 
                     <table
                             class="rnr-table table-bordered table summary-table"
@@ -516,6 +523,7 @@
 
 
                             <td class="aggregate-row"
+                                ng-style="{'background-color':getBackGroundColor(calculateSubTotalPercentage(regionSubAggregate[ regionrows[$index-1].region_name]),0),'text-align':'right'}"
                                     >
                                 {{calculateSubTotalPercentage(regionSubAggregate[ regionrows[$index-1].region_name])|number}}%
 
@@ -533,6 +541,7 @@
 
 
                             <td class="aggregate-row"
+                                ng-style="{'background-color':getBackGroundColor(calculateSubTotalPercentage(regionSubAggregate[ regionrows[$index-1].region_name]),0),'text-align':'right'}"
                                     >
                                 {{calculateSubTotalPercentage(regionSubAggregate[ regionrows[$index-1].region_name])|number}}%
 
@@ -597,6 +606,7 @@
 
 
                             <td class="aggregate-row"
+                                ng-style="{'background-color':getBackGroundColor(calculateSubTotalPercentage(regionSubAggregate[ regionrows[$index].region_name]),0),'text-align':'right'}"
                                     >
                                 {{calculateSubTotalPercentage(regionSubAggregate[ regionrows[$index].region_name])|number}}%
 
@@ -613,6 +623,7 @@
 
 
                             <td class="aggregate-row"
+                                ng-style="{'background-color':getBackGroundColor(calculateSubTotalPercentage(regionSubAggregate[ regionrows[$index].region_name]),0),'text-align':'right'}"
                                     >
                                 {{calculateSubTotalPercentage(regionSubAggregate[ regionrows[$index].region_name])|number}}%
 
