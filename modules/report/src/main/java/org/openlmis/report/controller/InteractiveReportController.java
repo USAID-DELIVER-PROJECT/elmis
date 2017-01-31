@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -673,6 +672,21 @@ public class InteractiveReportController extends BaseController {
         List<PerformanceCoverageReport> reportData = (List<PerformanceCoverageReport>)dataProvider.getReportBody(request.getParameterMap(),
                 request.getParameterMap(), page, max);
 
+        return new Pages(page, max, reportData);
+    }
+
+
+
+    @RequestMapping(value = "/reportdata/onTimeInFullReport", method = GET, headers = BaseController.ACCEPT_JSON)
+    public Pages getOnTmeInFullData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                       HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("vaccine_on_time_in_full_report");
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+        List<OnTimeInFullReport> reportData =
+                (List<OnTimeInFullReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
         return new Pages(page, max, reportData);
     }
 
