@@ -14,7 +14,6 @@ OnTimeInFullListFunction.resolve = {
         var deferred = $q.defer();
         $timeout(function () {
             if (isUndefined($route.current.params.id) && isUndefined($route.current.params.facilityId)
-                && isUndefined($route.current.params.periodId)
             ) {
                 return null;
             } else {
