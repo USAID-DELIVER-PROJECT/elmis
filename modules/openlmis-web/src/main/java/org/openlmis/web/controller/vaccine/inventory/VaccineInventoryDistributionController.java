@@ -231,6 +231,25 @@ public class VaccineInventoryDistributionController extends BaseController {
         }
     }
 
+    //Get by DATE  Range
+    @RequestMapping(value = "get-by-date-range/{facilityId}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")
+    public ResponseEntity<OpenLmisResponse> getDistributionsByDateRange(@PathVariable Long facilityId, @Param("date") String date,
+                                                                        @Param("endDate") String endDate,@Param("type") String type,
+                                                                   HttpServletRequest request) throws ParseException {
+        if (null == facilityId) {
+            return OpenLmisResponse.error(messageService.message("error.facility.unknown"), HttpStatus.BAD_REQUEST);
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String distributionType = "";
+            distributionType = "ROUTINE";
+            distributionType = (null== type)?distributionType:type;
+            String dateString = (date == null) ? formatter.format(new Date()) : date;
+            ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(DISTRIBUTIONS, service.getDistributionsByDateRange(facilityId, dateString, endDate,distributionType));
+            return response;
+        }
+    }
+
     @RequestMapping(value = "summary/print/{distributionId}", method = GET, headers = ACCEPT_JSON)
     public ModelAndView printConsolidatedList(@PathVariable List<Long> distributionId) throws JRException, IOException, ClassNotFoundException {
         Template orPrintTemplate = templateService.getByName(PRINT_VACCINE_DISTRIBUTION_SUMMARY);

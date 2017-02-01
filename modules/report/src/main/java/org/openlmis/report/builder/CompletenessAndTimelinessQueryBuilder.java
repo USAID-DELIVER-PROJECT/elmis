@@ -39,7 +39,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                  a.ontime,    \n" +
                 "                  a.late,  \n" +
                 "                  trunc((a.reported::numeric/a.expected::numeric)*100,2) percent_reported,  \n" +
-                "                  trunc((a.late::numeric/a.expected::numeric)*100,2) percent_late  \n" +
+                "                  trunc((a.late::numeric/a.reported::numeric)*100,2) percent_late  \n" +
                 "                    \n" +
                 "                from (  \n" +
                 "                     with temp as (  select  pp.id priod_id, pp.name period_name,   \n" +

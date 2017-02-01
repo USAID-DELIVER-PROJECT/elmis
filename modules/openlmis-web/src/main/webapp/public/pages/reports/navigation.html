@@ -69,6 +69,16 @@
             <a href="/public/pages/reports/main/index.html#distribution-completeness"
                openlmis-message="menu.report.vaccine.distribution.completeness"></a>
           </li>
+     <!--     <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
+            <a href="/public/pages/reports/general/index.html#search">
+              On Time In Full reporting
+            </a>
+          </li> -->
+          <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
+            <a href="/public/pages/reports/main/index.html#on-time-in-full">
+              On Time In Full reporting
+            </a>
+          </li>
 
         </ul>
       </div>
@@ -235,6 +245,10 @@
           <li ng-show="hasPermission('VIEW_NON_REPORTING_FACILITIES')">
             <a ng-href="/public/pages/reports/main/index.html#non-reporting"
                openlmis-message="menu.report.non.reporting.facilities"></a>
+          </li>
+          <li ng-show="hasPermission('VIEW_NON_REPORTING_FACILITIES')">
+            <a ng-href="/public/pages/reports/main/index.html#reporting-status"
+               openlmis-message="menu.report.reporting.status"></a>
           </li>
           <li ng-show="hasPermission('VIEW_REPORTING_RATE_REPORT')">
             <a ng-href="/public/pages/reports/maps/index.html#reporting-rate" openlmis-message="menu.report.reporting.rate"></a>

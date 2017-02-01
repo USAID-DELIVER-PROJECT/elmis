@@ -12,7 +12,6 @@ import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
 import org.openlmis.vaccine.dto.OrderRequisitionStockCardDTO;
 import org.openlmis.vaccine.dto.StockRequirementsDTO;
 
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,16 +68,20 @@ public class VaccineOrderRequisition extends BaseModel {
                 Product p = service.getById(stockRequirements.getProductId());
                 StockCard s = stockCardMapper.getByFacilityAndProduct(stockRequirements.getFacilityId(), p.getCode());
                 if (s != null){
-                    int soh = multipleOfPresentation(p.getDosesPerDispensingUnit(),s.getTotalQuantityOnHand());
-                    lineItem.setStockOnHand(Long.valueOf(soh));
+                  //  int soh = multipleOfPresentation(p.getDosesPerDispensingUnit(),s.getTotalQuantityOnHand());
+                   // lineItem.setStockOnHand(Long.valueOf(soh));
+                    if(s.getTotalQuantityOnHand() == null)
+                        lineItem.setStockOnHand(0L);
+                    else
+                    lineItem.setStockOnHand(s.getTotalQuantityOnHand());
                 }
                 else {
                     lineItem.setStockOnHand(0L);
                 }
                 lineItem.setOrderedDate(form.format(new Date()));
                 lineItem.setBufferStock(stockRequirements.getBufferStock());
-                int maxS= multipleOfPresentation(p.getDosesPerDispensingUnit(), Long.valueOf(stockRequirements.getMaximumStock()));
-                lineItem.setMaximumStock(maxS);
+                //int maxS= multipleOfPresentation(p.getDosesPerDispensingUnit(), Long.valueOf(stockRequirements.getMaximumStock()));
+                lineItem.setMaximumStock(stockRequirements.getMaximumStock());
                 lineItem.setReOrderLevel(stockRequirements.getReorderLevel());
                 lineItem.setCategory(stockRequirements.getProductCategory());
 

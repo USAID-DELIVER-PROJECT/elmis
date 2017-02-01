@@ -36,10 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 
-import static org.openlmis.core.domain.RightName.VIEW_VACCINE_ORDER_REQUISITION;
-import static org.openlmis.core.web.OpenLmisResponse.error;
-import static org.openlmis.core.web.OpenLmisResponse.response;
-import static org.openlmis.core.web.OpenLmisResponse.success;
+import static org.openlmis.core.web.OpenLmisResponse.*;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 
@@ -365,4 +362,24 @@ public class VaccineOrderRequisitionController extends BaseController {
     }
 
 
+
+    @RequestMapping(value = "getOnTimeInFull", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getVaccineOnTimeInFull(
+            @RequestParam(value = "facilityId", required = false) Long facilityId,
+            @RequestParam(value = "orderId", required = false) Long orderId,
+            @RequestParam(value = "period", required = false) Long periodId, HttpServletRequest request
+            ) {
+
+        return response("OnTimeInFull", service.getOnTimeInFullData(facilityId,periodId,orderId));
+    }
+
+
+    @RequestMapping(value = "searchOnTimeReporting", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> searchOrderRequisitionForOIF(@RequestParam(value = "facility", required = false) Long facilityId,
+                                                       @RequestParam(value = "periodStartDate", required = false) String dateRangeStart,
+                                                       @RequestParam(value = "periodEndDate", required = false) String dateRangeEnd, HttpServletRequest request
+    ) {
+        return response(ORDER_REQUISITION_SEARCH, service.getSearchedDataForOnTimeReportingBy(facilityId, dateRangeStart, dateRangeEnd));
+
+    }
 }

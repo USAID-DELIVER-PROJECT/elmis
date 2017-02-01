@@ -28,6 +28,7 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
         when('/lab-equipments-non-functioning', {controller: LabEquipmentNonFunctioningReportController, templateUrl:'partials/lab-equipment-non-functioning.html',reloadOnSearch:false}).
 
         when('/non-reporting', {controller: NonReportingController, templateUrl:'partials/non-reporting.html',reloadOnSearch:false}).
+        when('/reporting-status', {controller: ReportingStatusController, templateUrl:'partials/reporting-status.html',reloadOnSearch:false}).
         when('/order', {controller: OrderReportController, templateUrl:'partials/order.html',reloadOnSearch:false}).
         when('/order-fill-rate', {controller: OrderFillRateController, templateUrl:'partials/order-fill-rate.html',reloadOnSearch:false}).
         when('/order-fill-rate-summary', {controller: OrderFillRateReportSummaryController, templateUrl:'partials/order-fill-rate-summary.html',reloadOnSearch:false}).
@@ -47,6 +48,7 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
         when('/stock-ledger-report', {controller: VaccineStockLedgerReportController, templateUrl:'partials/stock-ledger.html',reloadOnSearch:false}).
         when('/cold-chain-temperature', {controller: ColdChainTemperatureController, templateUrl:'partials/cold-chain-temperature.html',reloadOnSearch:false}).
         when('/distribution-completeness', {controller: VaccineDistributionCompletenessReportController, templateUrl:'partials/vaccine-distribution-completeness-report.html',reloadOnSearch:false}).
+        when('/on-time-in-full', {controller: OnTimeInFullReportController, templateUrl:'partials/on-time-in-full.html',reloadOnSearch:false}).
           otherwise({redirectTo:'/adjustment-summary'});
     }]).config(function(angularCombineConfigProvider) {
     angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');

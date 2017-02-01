@@ -477,6 +477,15 @@
                     <property name="title" value="report.title.classification.of.vacccine.utilization"/>
                     <property name="version" value="1.0"/>
                 </bean>
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="vaccine_on_time_in_full_report"/>
+                    <property name="template" value="on-time-in-full-report.jasper"/>
+                    <property name="reportDataProvider" ref="onTimeInFullReportDataProvider"/>
+                    <property name="id" value="vaccine_on_time_in_full_report"/>
+                    <property name="name" value="On Time In Full Report"/>
+                    <property name="title" value="On Time In Full Report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

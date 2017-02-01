@@ -1,0 +1,98 @@
+<!--
+  ~ This program is part of the OpenLMIS logistics management information system platform software.
+  ~ Copyright © 2013 VillageReach
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~  
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+  -->
+
+<style>
+
+    .ui-grid-vcenter div {
+        background-color: yellow !important;
+        text-align: center;
+        position: relative;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+</style>
+
+<h2 id="viewRequisitionHeader" openlmis-message="header.view.on.time.in.full" xmlns="http://www.w3.org/1999/html"></h2>
+<form name="viewRequisitionForm" id="viewRequisitionForm" novalidate>
+
+    <div class="app-form view-req-form" ng-submit="filterGrid()" name="filterForm" novalidate>
+        <div class="row-fluid">
+
+            <div class="span3 form-cell horizontalFilters">
+                <div class="info-box" filter-container>
+                    <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+
+                    <!--
+                                        <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
+                                                             faccility="false" pro="filter.program" user_geo_level="user_geo_level"
+                                                             zones="zones" val="filter.zone"></vaccine-zone-filter>-->
+
+                </div>
+
+            </div>
+
+            <div class="span3">
+                <div class="info-box" filter-container>
+                    <vaccine-Facilit-By-District-Filter class="form-cell horizontalFilters"
+                                                        required="true"></vaccine-Facilit-By-District-Filter>
+
+                    <!--     lity-By-Supervisory-Node-Filter>
+                        -->
+                    <div class="padding2px"></div>
+                </div>
+            </div>
+
+
+            <div class="span6">
+                <div class="span6  info-box">
+                    <div class="horizontalFilters form-cell">
+                        <label for="start" class="labels"><span openlmis-message="label.start.date"></span></label>
+
+                        <div>
+                            <input id="start"
+                                   ng-model="filter.periodStartDate"
+                                   ui-date-format="yy-mm-dd"
+                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                                   ng-change="OnFilterChanged()"
+                                    />
+                        </div>
+                    </div>
+                    <div class="padding2px"></div>
+                </div>
+                <div class="span6 info-box">
+                    <div class="horizontalFilters form-cell">
+                        <label for="end" class="labels"><span openlmis-message="label.end.date"></span></label>
+
+                        <div>
+                            <input id="end"
+                                   ng-model="filter.periodEndDate"
+                                   ui-date-format="yy-mm-dd"
+                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                                   ng-change="OnFilterChanged()"
+                                    />
+                        </div>
+                    </div>
+                    <div class="padding2px"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+<div class="alert alert-info" id="noRequisitions" ng-show="requisitionFoundMessage"
+     openlmis-message="requisitionFoundMessage">
+</div>
+
+<div ng-show="receivedOrders.length">
+    <div id='viewReqList' class="gridStyle" ng-grid="receivedOrderListGrid"
+         ng-show="receivedOrders.length"></div>
+</div>

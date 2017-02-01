@@ -233,6 +233,19 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select("SELECT *" +
             " FROM vaccine_distributions " +
+            " WHERE fromfacilityid=#{facilityId} AND  " +
+            " distributiondate::DATE >= #{date}::DATE AND distributiondate::DATE <= #{endDate}::DATE  AND distributionType= #{distributionType}  " +
+            " order by createddate DESC")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "toFacilityId", column = "toFacilityId"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "toFacility", column = "toFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    List<VaccineDistribution> getDistributionsByDateRange(@Param("facilityId") Long facilityId, @Param("date") String date, @Param("endDate") String endDate,@Param("distributionType") String distributionType);
+
+    @Select("SELECT *" +
+            " FROM vaccine_distributions " +
             "WHERE tofacilityid=#{facilityId} AND vouchernumber=#{voucherNumber} LIMIT 1")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lineItems", column = "id", javaType = List.class,

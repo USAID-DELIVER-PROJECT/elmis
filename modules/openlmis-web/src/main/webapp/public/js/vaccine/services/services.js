@@ -539,6 +539,10 @@ services.factory('DistributionsByDate',function($resource){
     return $resource('/vaccine/inventory/distribution/get-by-date/:facilityId',{facilityId:'@facilityId'},{});
 });
 
+services.factory('DistributionsByDateRange',function($resource){
+    return $resource('/vaccine/inventory/distribution/get-by-date-range/:facilityId',{facilityId:'@facilityId'},{});
+});
+
 services.factory('VaccineDashboardMonthlyStockStatus', function($resource){
     return $resource('/vaccine/dashboard/monthly-stock-status.json',{},{});
 });

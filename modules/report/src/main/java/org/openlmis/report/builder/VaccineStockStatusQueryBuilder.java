@@ -37,14 +37,13 @@ public class VaccineStockStatusQueryBuilder {
                         "  " + writePredicates(filter) +
                         "    ORDER BY e.modifiedDate ) t) x \n" +
                         "    JOIN stock_requirements r on r.facilityid=x.facilityid and r.productid=x.productid\n" +
-                        "    WHERE  x.r <= 1           " +
+                        "    WHERE  x.r <= 1 and r.year = (SELECT date_part('YEAR', #{filterCriteria.statusDate}::date ))         " +
                         "    ORDER BY facilityId,productId )  \n" +
                         "    SELECT facilityId,districtId,regionId, productId, facilityName,district,region,product,lastUpdate,soh,isaValue,   \n" +
-                        "    CASE WHEN isaValue > 0 THEN  ROUND((soh::numeric(10,2) / isaValue::numeric(10,2)),2) else 0 end as mos,color, adequacy\n" +
-                        "    FROM Q   "
-
-
-
+                        "    CASE WHEN isaValue > 0 THEN  ROUND((soh::numeric(10,2) / isaValue::numeric(10,2)),2) else 0 end as mos,color, adequacy," +
+                        "    sum(adequacy) OVER (PARTITION BY facilityId) adequacy2, count(productId) OVER (PARTITION BY facilityId) total\n   " +
+                        "    FROM Q  " +
+                             " ORDER BY region ASC "
                 );
 
     }
