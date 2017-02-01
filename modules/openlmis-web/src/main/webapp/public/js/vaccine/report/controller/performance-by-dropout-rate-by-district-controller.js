@@ -79,8 +79,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                     $scope.regionColumnVals = data.PerformanceByDropoutRateList.regionColumnsValueList;
                     $scope.report = data.PerformanceByDropoutRateList;
                     $scope.colValueList = data.PerformanceByDropoutRateList.columnsValueList;
-                    $scope.population = data.PerformanceByDropoutRateList.population;
-                    $scope.regionPopulation = data.PerformanceByDropoutRateList.regionPopulation;
+
 
                     if (!utils.isEmpty($scope.datarows)) {
 
@@ -89,14 +88,14 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                             $scope.datarows = reportVal.reportList;
                             $scope.nonReportingDistrict =!utils.isNullOrUndefined(reportVal)? reportVal.grayCount:null;
 
-                            extractPopulationInfo($scope.datarows, $scope.population, 1);
+
                             $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 1);
 
                         } else {
                             reportVal = findMonthValue($scope.datarows, 2);
                             $scope.datarows = reportVal.reportList;
                             $scope.nonReportingDistrict =!utils.isEmpty(reportVal.grayCount)&&!utils.isNullOrUndefined(reportVal.grayCount)? reportVal.grayCount:null;
-                            extractPopulationInfo($scope.datarows, $scope.population, 2);
+
                             $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
 
                         }
@@ -106,7 +105,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                         var regportVal = findMonthValue($scope.regionrows, 3);
                         $scope.regionrows = regportVal.reportList;
                         $scope.nonReportingRegion = regportVal.grayCount;
-                        extractPopulationInfo($scope.regionrows, $scope.regionPopulation, 3);
+
                         $scope.regionSubAggregate = aggregateSubTotal($scope.regionrows, 3);
                     }
                 }
@@ -121,13 +120,6 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         }
         return messageService.get('label.reported.yes');
     };
-    function monthDiff(d1, d2) {
-        var months;
-        months = (d2.getFullYear() - d1.getFullYear()) * 12;
-        months -= d1.getMonth() + 1;
-        months += d2.getMonth();
-        return months <= 0 ? 0 : months;
-    }
 
     $scope.getBackGroundColor = function (value,cumulative) {
         var bgColor = '';
@@ -277,38 +269,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         return keyValue;
     }
 
-    function extractPopulationInfo(reportList, popuplationList, type) {
-        var population = 0;
-        var denominator = 0;
-        var i = 0;
-        var repLen = reportList.length;
-        var popuLen = popuplationList.length;
 
-        for (i; i < repLen; i++) {
-            var j = 0;
-
-            var repKey = getPopulationKey(reportList[i], type) + "_" + parseInt($scope.staticYear, 10);
-
-            for (j; j < popuLen; j++) {
-                population = 0;
-                denominator = 0;
-                var currentKey = getPopulationKey(popuplationList[j], type) + "_" + parseInt(popuplationList[j].year, 10);
-
-                if (repKey === currentKey) {
-
-                    population = popuplationList[j].population;
-                    denominator = popuplationList[j].denominator;
-
-                    break;
-                }
-
-            }
-            //reportList[i].population = population;
-            reportList[i].target = population;
-            //reportList[i].denominator = denominator;
-        }
-        return population;
-    }
 
     function findMonthValue(reportList, type) {
         var formattedData = [];

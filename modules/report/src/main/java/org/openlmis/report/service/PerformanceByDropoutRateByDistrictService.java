@@ -28,8 +28,6 @@ import java.util.*;
 
 @Component
 public class PerformanceByDropoutRateByDistrictService {
-//    @Autowired
-//    private VaccineReportRepository vaccineReportRepository;
     @Autowired
     private PerformanceByDropoutRateByDistrictRepository repository;
     public static final String BELOW_MIN = "1_dropoutGreaterThanHigh";
@@ -48,8 +46,6 @@ public class PerformanceByDropoutRateByDistrictService {
         boolean isFailityReport;
         boolean isRegionReport;
         PerformanceByDisrictReport performanceByDisrictReport;
-        List<Map<String, Object>> population;
-        List<Map<String, Object>> regionPpulation = null;
         Map<String, Map<Date, Long>> columnRangeValues;
         Map<String, Map<Date, Long>> regionColumnRangeValues;
         List<Date> columnNames;
@@ -73,14 +69,14 @@ public class PerformanceByDropoutRateByDistrictService {
         isFailityReport = repository.isDistrictLevel(filterParam.getGeographic_zone_id());
         if (!isFailityReport) {
             performanceByDropoutRateByDistrictList = repository.loadPerformanceByDropoutRateDistrictReports(filterParam);
-            population = repository.getClassficationVaccinePopulationForDistrict(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
+
             if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
                 performanceByDropoutRateByDistrictList = this.transposeDptVAlueToBg(performanceByDropoutRateByDistrictList);
             }
 
             if (isRegionReport) {
                 performanceByDropoutRateByRegionList = repository.loadPerformanceByDropoutRateRegionReports(filterParam);
-                regionPpulation = repository.getClassficationVaccinePopulationForRegion(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
+
                 if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
                     performanceByDropoutRateByRegionList = this.transposeDptVAlueToBg(performanceByDropoutRateByRegionList);
                 }
@@ -92,7 +88,6 @@ public class PerformanceByDropoutRateByDistrictService {
         } else {
 
             performanceByDropoutRateByDistrictList = repository.loadPerformanceByDropoutRateFacillityReports(filterParam);
-            population = repository.getClassficationVaccinePopulationForFacility(startDate, endDate, filterParam.getGeographic_zone_id(), filterParam.getProduct_id());
             if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
                 performanceByDropoutRateByDistrictList = this.transposeDptVAlueToBg(performanceByDropoutRateByDistrictList);
             }
@@ -104,8 +99,7 @@ public class PerformanceByDropoutRateByDistrictService {
       if(  filterParam.getProduct_id().equals(DTP_PRODUCT_ID)){
           performanceByDisrictReport.setDtpProduct(true);
       }
-        performanceByDisrictReport.setPopulation(population);
-        performanceByDisrictReport.setRegionPopulation(regionPpulation);
+
         performanceByDisrictReport.setRegionReport(isRegionReport);
         performanceByDisrictReport.setFacillityReport(isFailityReport);
         columnNames = ReportsCommonUtilService.extractColumnValues(filterParam);
@@ -174,28 +168,6 @@ public class PerformanceByDropoutRateByDistrictService {
         return performanceByDropoutRateByDistrictList;
     }
 
-    public Map<String, List<PerformanceByDropoutRateByDistrict>> prepareReportForGeographicLevel(List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList, int reportType) {
-        Map<String, List<PerformanceByDropoutRateByDistrict>> stringPerformanceByDropoutRateByDistrictMap = new HashMap<>();
-
-        for (PerformanceByDropoutRateByDistrict performanceByDropoutRateByDistrict : performanceByDropoutRateByDistrictList) {
-
-
-            String districtName = performanceByDropoutRateByDistrict.getRegion_name();
-            if (reportType == DISTRICT_REPORT) {
-                districtName = districtName + "_" + performanceByDropoutRateByDistrict.getDistrict_name();
-            }
-            if (reportType == FACILLITY_REPORT) {
-                districtName = districtName + "_" + performanceByDropoutRateByDistrict.getFacility_name();
-            }
-            if (!stringPerformanceByDropoutRateByDistrictMap.containsKey(districtName)) {
-                stringPerformanceByDropoutRateByDistrictMap.put(districtName, new ArrayList<PerformanceByDropoutRateByDistrict>());
-            }
-            stringPerformanceByDropoutRateByDistrictMap.get(districtName).add(performanceByDropoutRateByDistrict);
-
-        }
-        return stringPerformanceByDropoutRateByDistrictMap;
-    }
-
     public PerformanceByDisrictReport aggregateReport(List<PerformanceByDropoutRateByDistrict> performanceByDropoutRateByDistrictList) {
         PerformanceByDisrictReport performanceByDisrictReport = new PerformanceByDisrictReport();
         Long total_target = 0L;
@@ -238,43 +210,7 @@ public class PerformanceByDropoutRateByDistrictService {
         return columnRangeValues;
     }
 
-    public List<PerformanceByDropOutDistricts> prepareDistrict(Map<String, List<PerformanceByDropoutRateByDistrict>> stringPerformanceByDropoutRateByDistrictMap) {
-        List<PerformanceByDropOutDistricts> performanceByDropOutDistrictsList = new ArrayList<>();
-        List<String> regionDestrictFacilityNameList = new ArrayList<>();
-        if (stringPerformanceByDropoutRateByDistrictMap == null) {
-            return performanceByDropOutDistrictsList;
-        }
 
-        Set<String> districtKey = stringPerformanceByDropoutRateByDistrictMap.keySet();
-        Iterator<String> districtKeyIterator = districtKey.iterator();
-        Long totalPopulation = 0L;
-        while (districtKeyIterator.hasNext()) {
-            String keyValue = districtKeyIterator.next();
-            String regionName = stringPerformanceByDropoutRateByDistrictMap.get(keyValue).get(0).getRegion_name();
-            String districtName = stringPerformanceByDropoutRateByDistrictMap.get(keyValue).get(0).getDistrict_name();
-            String facilityName = stringPerformanceByDropoutRateByDistrictMap.get(keyValue).get(0).getFacility_name();
-            PerformanceByDropOutDistricts performanceByDropOutDistricts = new PerformanceByDropOutDistricts();
-            Long population = stringPerformanceByDropoutRateByDistrictMap.get(keyValue).get(0).getTarget();
-            if (!regionDestrictFacilityNameList.contains(regionName)) {
-                performanceByDropOutDistricts.setRegionName(regionName);
-                regionDestrictFacilityNameList.add(regionName);
-            }
-            if (!regionDestrictFacilityNameList.contains(districtName)) {
-                performanceByDropOutDistricts.setDistrictName(districtName);
-                regionDestrictFacilityNameList.add(districtName);
-            }
-            if (!regionDestrictFacilityNameList.contains(facilityName)) {
-                performanceByDropOutDistricts.setFacilityName(facilityName);
-                regionDestrictFacilityNameList.add(facilityName);
-            }
-            performanceByDropOutDistricts.setPopulation(population);
-            totalPopulation = totalPopulation + population;
-            performanceByDropOutDistricts.setPerformanceByDropoutRateByDistrictList(stringPerformanceByDropoutRateByDistrictMap.get(keyValue));
-            performanceByDropOutDistrictsList.add(performanceByDropOutDistricts);
-        }
-        return performanceByDropOutDistrictsList;
-
-    }
 
     public List<PerformanceByDropoutRange> prepareColumn(Map<String, Map<Date, Long>> columnRangeValues) {
         List<PerformanceByDropoutRange> performanceByDropoutColumnList = new ArrayList<>();
@@ -309,14 +245,7 @@ public class PerformanceByDropoutRateByDistrictService {
 
     }
 
-    public Map<String, Long> intiateColumnRangeValues() {
-        Map<String, Long> columnRangeValue = new HashMap<>();
-        columnRangeValue.put(BELOW_MIN, 0L);
-        columnRangeValue.put(MIN, 0L);
-        columnRangeValue.put(AVERAGE, 0L);
-        columnRangeValue.put(HIGHER, 0L);
-        return columnRangeValue;
-    }
+
 
     public PerformanceByDropoutRateParam prepareParam(Map<String, String[]> filterCriteria) {
         PerformanceByDropoutRateParam filterParam = null;
@@ -353,6 +282,8 @@ public class PerformanceByDropoutRateByDistrictService {
         });
 
     }
+
+
 
 
 }
