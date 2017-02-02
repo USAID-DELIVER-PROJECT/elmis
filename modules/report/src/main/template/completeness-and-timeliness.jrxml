@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="918" pageHeight="595" orientation="Landscape" columnWidth="878" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="2.3579476910000032"/>
+	<property name="ireport.zoom" value="1.771561000000001"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -156,35 +156,35 @@ from generate_series(1,12)]]>
 			<band height="29">
 				<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
 				<textField>
-					<reportElement x="392" y="0" width="93" height="29" uuid="79c998ce-5a27-4b31-9f19-61e7694fa04b"/>
+					<reportElement x="340" y="0" width="67" height="29" uuid="79c998ce-5a27-4b31-9f19-61e7694fa04b"/>
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{expected_2}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="485" y="0" width="106" height="29" uuid="2016ad39-baef-4b79-939f-2d230491e5dd"/>
+					<reportElement x="407" y="0" width="73" height="29" uuid="2016ad39-baef-4b79-939f-2d230491e5dd"/>
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{reported_1}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="591" y="0" width="96" height="29" uuid="c656e61c-f071-4a04-a440-7b5a7548b3c7"/>
+					<reportElement x="540" y="0" width="64" height="29" uuid="c656e61c-f071-4a04-a440-7b5a7548b3c7"/>
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{late_1}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00 %">
-					<reportElement x="687" y="0" width="97" height="29" uuid="ed96be95-9807-4f68-9f38-76fa3a970b0c"/>
+					<reportElement x="606" y="0" width="97" height="29" uuid="ed96be95-9807-4f68-9f38-76fa3a970b0c"/>
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{percentReported_1}/(12*100)]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="200" y="0" width="192" height="29" forecolor="#000000" backcolor="#333333" uuid="2464e346-1bfa-4206-8be7-84bfc4e9df21"/>
+					<reportElement mode="Transparent" x="200" y="0" width="139" height="29" forecolor="#000000" backcolor="#333333" uuid="2464e346-1bfa-4206-8be7-84bfc4e9df21"/>
 					<textElement verticalAlignment="Top" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
@@ -196,6 +196,20 @@ from generate_series(1,12)]]>
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{percentLate_1}/(12*100)]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="480" y="0" width="60" height="29" uuid="0e62e01d-3903-4214-870f-7ef27c8ad360"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{reported_1}-$V{late_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00 %">
+					<reportElement x="703" y="0" width="81" height="29" uuid="797dd15b-47cd-466e-8c46-0a9149f31e93"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[1-$V{percentLate_1}/(12*100)]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -274,35 +288,35 @@ from generate_series(1,12)]]>
 				<textFieldExpression><![CDATA[$R{label.period}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="286" y="21" width="106" height="21" forecolor="#000000" backcolor="#333333" uuid="261392b9-1fa4-4cb6-8281-6fea8015f884"/>
+				<reportElement mode="Transparent" x="286" y="21" width="53" height="21" forecolor="#000000" backcolor="#333333" uuid="261392b9-1fa4-4cb6-8281-6fea8015f884"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.reported}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="392" y="21" width="93" height="21" forecolor="#000000" backcolor="#333333" uuid="1b43418c-07c5-4155-8d7e-ddae80ec0b8d"/>
+				<reportElement mode="Transparent" x="340" y="21" width="67" height="21" forecolor="#000000" backcolor="#333333" uuid="1b43418c-07c5-4155-8d7e-ddae80ec0b8d"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.expected}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="485" y="21" width="106" height="21" forecolor="#000000" backcolor="#333333" uuid="d37d998c-86d2-405d-ba07-5f4524ba7db6"/>
+				<reportElement mode="Transparent" x="407" y="21" width="73" height="21" forecolor="#000000" backcolor="#333333" uuid="d37d998c-86d2-405d-ba07-5f4524ba7db6"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.reported}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="591" y="21" width="96" height="21" forecolor="#000000" backcolor="#333333" uuid="477068e2-52aa-4562-bbc2-f51d231ab399"/>
+				<reportElement mode="Transparent" x="540" y="21" width="64" height="21" forecolor="#000000" backcolor="#333333" uuid="477068e2-52aa-4562-bbc2-f51d231ab399"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.late}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="687" y="21" width="97" height="21" forecolor="#000000" backcolor="#333333" uuid="f043bdcc-b7bb-4116-be6a-6931a2b573e6"/>
+				<reportElement mode="Transparent" x="606" y="21" width="97" height="21" forecolor="#000000" backcolor="#333333" uuid="f043bdcc-b7bb-4116-be6a-6931a2b573e6"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font size="12" isBold="false"/>
 				</textElement>
@@ -316,7 +330,7 @@ from generate_series(1,12)]]>
 				<textFieldExpression><![CDATA[$R{label.percent.late}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="392" y="0" width="486" height="21" forecolor="#000000" backcolor="#333333" uuid="fa0bea61-f1d8-4740-a7ee-93d8f30c6849"/>
+				<reportElement mode="Transparent" x="340" y="2" width="523" height="21" forecolor="#000000" backcolor="#333333" uuid="fa0bea61-f1d8-4740-a7ee-93d8f30c6849"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -329,34 +343,55 @@ from generate_series(1,12)]]>
 				<textFieldExpression><![CDATA[$R{label.reporting.performance}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="392" y="42" width="93" height="13" forecolor="#000000" backcolor="#333333" uuid="63b7a60b-a834-476a-9b00-70df3b6da3d5"/>
+				<reportElement mode="Transparent" x="340" y="42" width="67" height="13" forecolor="#000000" backcolor="#333333" uuid="63b7a60b-a834-476a-9b00-70df3b6da3d5"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.A}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="485" y="42" width="106" height="13" forecolor="#000000" backcolor="#333333" uuid="4b228fe0-3195-48b3-8222-961a85054cf1"/>
+				<reportElement mode="Transparent" x="407" y="42" width="73" height="13" forecolor="#000000" backcolor="#333333" uuid="4b228fe0-3195-48b3-8222-961a85054cf1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.B}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="591" y="42" width="96" height="13" forecolor="#000000" backcolor="#333333" uuid="d713faee-cd62-4ea9-85cd-caef077894cf"/>
+				<reportElement mode="Transparent" x="540" y="42" width="64" height="13" forecolor="#000000" backcolor="#333333" uuid="d713faee-cd62-4ea9-85cd-caef077894cf"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$R{label.C}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{label.D}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="687" y="42" width="191" height="13" uuid="55102435-0386-4676-b084-237770f41279"/>
+				<reportElement x="604" y="42" width="274" height="13" uuid="55102435-0386-4676-b084-237770f41279"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="42" width="392" height="13" uuid="badebb4b-29af-4907-afe9-f1f4c3076d49"/>
 				<text><![CDATA[]]></text>
 			</staticText>
+			<textField>
+				<reportElement mode="Transparent" x="480" y="21" width="60" height="21" forecolor="#000000" backcolor="#333333" uuid="3411ce7e-1f62-4fce-a076-9f66fe86aeae"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{reporting.label.on.time}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="480" y="42" width="60" height="13" forecolor="#000000" backcolor="#333333" uuid="9419ed5a-71d8-45e0-b6d2-7e188c915488"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.C.C}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="703" y="21" width="81" height="21" forecolor="#000000" backcolor="#333333" uuid="ce74e7c2-0dd7-4ded-96e1-88fb37e0de7f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["%"+$R{label.on.time}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -395,26 +430,26 @@ from generate_series(1,12)]]>
 				<textFieldExpression><![CDATA[$F{periodName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="286" y="0" width="106" height="20" uuid="0c97d746-11b5-421e-8e0c-cad3018b8df1"/>
+				<reportElement x="286" y="0" width="53" height="20" uuid="0c97d746-11b5-421e-8e0c-cad3018b8df1"/>
 				<textFieldExpression><![CDATA[$F{reportingStatus} == "REPORTING" ? $R{label.yes} : $R{label.no}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="591" y="0" width="96" height="20" uuid="96fc1209-dae5-408d-8f0d-9e864a171bd1"/>
+				<reportElement x="540" y="0" width="64" height="20" uuid="96fc1209-dae5-408d-8f0d-9e864a171bd1"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{late}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="392" y="0" width="93" height="20" uuid="60a2ba34-3a07-4fb1-9ee8-d59da582b3d0"/>
+				<reportElement x="340" y="0" width="67" height="20" uuid="60a2ba34-3a07-4fb1-9ee8-d59da582b3d0"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{expected}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="485" y="0" width="106" height="20" uuid="4f4ece97-ee00-468e-ac72-6c0ef878158f"/>
+				<reportElement x="407" y="0" width="73" height="20" uuid="4f4ece97-ee00-468e-ac72-6c0ef878158f"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{reported}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00 %">
-				<reportElement x="687" y="0" width="97" height="20" uuid="9cc6b074-a0a8-4e76-a6a8-7f6afbd5dee5"/>
+				<reportElement x="606" y="0" width="97" height="20" uuid="9cc6b074-a0a8-4e76-a6a8-7f6afbd5dee5"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{percentReported}/100]]></textFieldExpression>
 			</textField>
@@ -423,34 +458,44 @@ from generate_series(1,12)]]>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{percentLate}/100]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="60" height="20" uuid="30fcdafb-957d-4863-b8a0-b4be981075d0"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{reported}-$F{late}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 %">
+				<reportElement x="703" y="0" width="81" height="20" uuid="c5bbf0f7-e3a5-4e26-b202-ad9eef58b590"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[1-$F{percentLate}/100]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<summary>
 		<band height="29">
 			<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
 			<textField>
-				<reportElement x="392" y="0" width="93" height="29" uuid="405e119f-bf80-4417-8d1e-f1943502a9ca"/>
+				<reportElement x="340" y="0" width="67" height="29" uuid="405e119f-bf80-4417-8d1e-f1943502a9ca"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{expected_3}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="485" y="0" width="106" height="29" uuid="55730f26-4581-499e-b3ad-d52f4431579b"/>
+				<reportElement x="407" y="0" width="73" height="29" uuid="55730f26-4581-499e-b3ad-d52f4431579b"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{reported_2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="591" y="0" width="96" height="29" uuid="340673a6-4142-43f4-8809-362ff79d968b"/>
+				<reportElement x="540" y="0" width="64" height="29" uuid="340673a6-4142-43f4-8809-362ff79d968b"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{late_2}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00 %">
-				<reportElement x="687" y="0" width="97" height="29" uuid="63dee992-23fa-4d81-8551-0c6bdadbfadf"/>
+				<reportElement x="606" y="0" width="97" height="29" uuid="63dee992-23fa-4d81-8551-0c6bdadbfadf"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
@@ -464,11 +509,25 @@ from generate_series(1,12)]]>
 				<textFieldExpression><![CDATA[$V{percentLate_4}/($V{REPORT_COUNT} * 100)]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="200" y="0" width="192" height="29" forecolor="#000000" backcolor="#333333" uuid="6676ef8f-fe67-4670-a435-d3be3e192623"/>
+				<reportElement mode="Transparent" x="200" y="0" width="140" height="29" forecolor="#000000" backcolor="#333333" uuid="6676ef8f-fe67-4670-a435-d3be3e192623"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.grand.total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="60" height="29" uuid="a44403da-2fd2-46b2-a265-309fe279cac5"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{reported_2}-$V{late_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 %">
+				<reportElement x="703" y="0" width="81" height="29" uuid="bc3a8156-56a1-4316-a280-bfe1bcea7c23"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[1-($V{percentLate_4}/($V{REPORT_COUNT} * 100))]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

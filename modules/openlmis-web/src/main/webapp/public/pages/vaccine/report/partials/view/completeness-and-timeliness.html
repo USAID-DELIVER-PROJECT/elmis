@@ -80,13 +80,15 @@
                             <th rowspan="3">{{getLocalMessage('label.region')}}</th>
                             <th rowspan="3">{{getLocalMessage('label.district')}}</th>
                             <th rowspan="3">{{getLocalMessage('label.period')}}</th>
-                            <th colspan="5" style="text-align: center;">{{getLocalMessage('label.reporting.performance')}}</th>
+                            <th colspan="7" style="text-align: center;">{{getLocalMessage('label.reporting.performance')}}</th>
                         </tr>
                         <tr>
                             <th>{{getLocalMessage('label.expected')}}</th>
                             <th>{{getLocalMessage('label.reported')}}</th>
+                            <th>{{getLocalMessage('reporting.label.on.time')}}</th>
                             <th>{{getLocalMessage('label.late')}}</th>
                             <th>{{getLocalMessage('label.percent.reported')}}</th>
+                            <th>%{{getLocalMessage('reporting.label.on.time')}}</th>
                             <th>{{getLocalMessage('label.percent.late')}}</th>
 
                         </tr>
@@ -94,8 +96,10 @@
 
                             <th>{{getLocalMessage('label.A')}}</th>
                             <th>{{getLocalMessage('label.B')}}</th>
+                            <th >{{getLocalMessage('label.C.C')}}</th>
+                            <th>{{getLocalMessage('label.D')}}</th>
+                            <th>{{getLocalMessage('label.E.E')}}={{getLocalMessage('label.formula.percent.reported')}}</th>
                             <th></th>
-                            <th>{{getLocalMessage('label.C')}}</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -107,9 +111,11 @@
                                  <td class="{{row.reportingstatus}}_rows"  >{{row.periodName}}</td>
                                  <td class="number"  >{{row.expected | number}}</td>
                                  <td class="number"  >{{row.reported | number}}</td>
+                                 <td class="number"  >{{row.reported -row.late| number}}</td>
                                  <td class="number" >{{row.late | number}}</td>
-                                 <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentReported}}%</td>
-                                 <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentLate}}%</td>
+                                 <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentReported|number:0}}%</td>
+                                 <td class="number" style="background-color : {{bgColorCode(row)}}" >{{100-row.percentLate|number:0}}%</td>
+                                 <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentLate|number:0}}%</td>
                             </tr>
                             <tr  ng-if="d.subtotal" class="aggregate-row">
                                 <td></td>
@@ -117,9 +123,11 @@
                                 <td class="aggregate-row"></td>
                                 <td class="number aggregate-row" >{{d.subtotal.expected | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.reported | number}}</td>
+                                <td class="number aggregate-row" >{{d.subtotal.reported- d.subtotal.late | number}}</td>
                                 <td class="number aggregate-row" >{{d.subtotal.late | number}}</td>
-                                <td class="number aggregate-row" >{{d.subtotal.reported /d.subtotal.expected * 100 | number:2}}%</td>
-                                <td class="number aggregate-row" >{{d.subtotal.late /d.subtotal.reported * 100 | number:2}}%</td>
+                                <td class="number aggregate-row" >{{d.subtotal.reported /d.subtotal.expected * 100 | number:0}}%</td>
+                                <td class="number aggregate-row" >{{100-(d.subtotal.late /d.subtotal.reported * 100) | number:0}}%</td>
+                                <td class="number aggregate-row" >{{d.subtotal.late /d.subtotal.reported * 100 | number:0}}%</td>
                             </tr>
                             <tr ng-repeat-end ng-if="d.grandtotal" class="aggregate-row">
                                 <td></td>
@@ -127,9 +135,11 @@
                                 <td class="aggregate-row"></td>
                                 <td class="number aggregate-row" >{{d.grandtotal.expected | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.reported | number}}</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.reported-d.grandtotal.late | number}}</td>
                                 <td class="number aggregate-row" >{{d.grandtotal.late | number}}</td>
-                                <td class="number aggregate-row" >{{d.grandtotal.reported /d.grandtotal.expected * 100 | number:2}}%</td>
-                                <td class="number aggregate-row" >{{d.grandtotal.late /d.grandtotal.reported * 100 | number:2}}%</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.reported /d.grandtotal.expected * 100 | number:0}}%</td>
+                                <td class="number aggregate-row" >{{100-(d.grandtotal.late /d.grandtotal.reported * 100 )| number:0}}%</td>
+                                <td class="number aggregate-row" >{{d.grandtotal.late /d.grandtotal.reported * 100 | number:0}}%</td>
                             </tr>
                         </tbody>
                     </table>
@@ -158,11 +168,11 @@
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.completeness"></td>
-                                <td ng-repeat="comp in completeness">{{comp.total | number}}%</td>
+                                <td ng-repeat="comp in completeness">{{comp.total | number:0}}%</td>
                             </tr>
                             <tr>
                                 <td openlmis-message="completeness.and.timliness.timeliness"></td>
-                                <td ng-repeat="tim in timelines">{{tim.total | number}}%</td>
+                                <td ng-repeat="tim in timelines">{{tim.total | number:0}}%</td>
                             </tr>
 
                             </tbody>

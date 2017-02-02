@@ -18,9 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.report.model.ResultRow;
 
-import javax.persistence.Column;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -43,4 +40,6 @@ public class CompletenessAndTimelinessReportFields implements ResultRow {
     Double percentReported;
     Double percentLate;
     String reportingStatus;
+    Long year;
+    Long month;
 }

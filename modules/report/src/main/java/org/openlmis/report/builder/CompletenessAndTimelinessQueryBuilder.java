@@ -216,10 +216,16 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "      sum(outreach) outreach,   \n" +
                 "      sum(fixed) + sum(outreach) session_total,   \n" +
                 "      sum(target) target,     \n" +
-                "      (select count(*) from programs_supported ps  join facilities f on ps.facilityid = f.id   \n" +
-                "         join vw_districts vd on f.geographiczoneid = vd.district_id   \n" +
-                "         where ps.programid = (select id from programs where enableivdform = 't' limit 1)   \n" +
-                "         and district_id = t.geographiczoneid ) expected,   \n" +
+                "     (select count(*) from requisition_group_members rgm\n" +
+                " \n" +
+                "                join facilities f on f.id = rgm.facilityid \n" +
+                "                join programs_supported ps on ps.facilityid=f.id  \n" +
+                "                join requisition_group_program_schedules rgs on rgs.programid=(select id from programs where enableivdform = 't' limit 1) \n" +
+                "                 and  rgs.requisitiongroupid=rgm.requisitiongroupid and rgs.scheduleid=45 \n" +
+                "                 \n" +
+                "                where f.geographiczoneid = t.geographiczoneid  and f.active=true \n" +
+                "                and f.sdp = true \n" +
+                ") expected,   \n" +
                 "      sum(case when reporting_status IN ('T','L') then 1 else 0 end) reported,   \n" +
                 "      sum(case when reporting_status = 'T' then 1 else 0 end) ontime,    \n" +
                 "      sum(case when reporting_status = 'L' then 1 else 0 end) late  \n" +
@@ -232,12 +238,16 @@ public class CompletenessAndTimelinessQueryBuilder {
 
                 "                completness_with_nonreporting_periods as ( \n" +
                 "                      select c.geographiczoneid, periods.*, \n" +
-                "                            ( \n" +
-                "                               select count(*) from programs_supported ps  join facilities f on ps.facilityid = f.id   \n" +
-                "                               join vw_districts vd on f.geographiczoneid = vd.district_id   \n" +
-                "                               where ps.programid = (select id from programs where enableivdform = 't' limit 1)   \n" +
-                "                               and district_id = c.geographiczoneid \n" +
-                "                             ) expected \n" +
+                "                            (select count(*) from requisition_group_members rgm\n" +
+                " \n" +
+                "                join facilities f on f.id = rgm.facilityid \n" +
+                "                join programs_supported ps on ps.facilityid=f.id  \n" +
+                "                join requisition_group_program_schedules rgs on rgs.programid=(select id from programs where enableivdform = 't' limit 1) \n" +
+                "                 and  rgs.requisitiongroupid=rgm.requisitiongroupid and rgs.scheduleid=45 \n" +
+                "                 \n" +
+                "                where f.geographiczoneid = c.geographiczoneid  and f.active=true \n" +
+                "                and f.sdp = true \n" +
+                ") expected\n" +
                 "                        from  \n" +
                 "                         ( \n" +
                 "                              select id, name period_name, startdate period_start_date from processing_periods pp  \n" +

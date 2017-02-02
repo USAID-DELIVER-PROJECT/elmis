@@ -90,8 +90,8 @@ function CompletenesssAndTimelinessReportController($scope, CompletenessAndTimel
                     $scope.expected.push     ({total:summary[i].expected});
                     $scope.reported.push     ({total:summary[i].reported});
                     $scope.ontime.push       ({total:summary[i].onTime});
-                    $scope.completeness.push ({total:summary[i].reported === 0 ? 0 : Math.round(((summary[i].reported/summary[i].expected) * 100)*100)/100});
-                    $scope.timelines.push    ({total:summary[i].ontime === 0 ? 0 : Math.round(((summary[i].ontime/summary[i].reported) * 100)*100)/100});
+                    $scope.completeness.push ({total:summary[i].expected === 0 ? 0 : Math.round(((summary[i].reported/summary[i].expected) * 100)*100)/100});
+                    $scope.timelines.push    ({total:summary[i].reported === 0 ? 0 : Math.round(((summary[i].onTime/summary[i].reported) * 100)*100)/100});
                     break;
                 }
                 // if no match is found add a dummy object as a place holder
