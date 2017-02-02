@@ -13,7 +13,8 @@ OnTimeInFullListFunction.resolve = {
     OnTimeInFull: function ($q, $route, $timeout, GetVaccineOnTimeInFullList) {
         var deferred = $q.defer();
         $timeout(function () {
-            if (isUndefined($route.current.params.id) && isUndefined($route.current.params.facilityId)&& isUndefined($route.current.params.periodId)) {
+            if (isUndefined($route.current.params.id) && isUndefined($route.current.params.facilityId)
+            ) {
                 return null;
             } else {
 
