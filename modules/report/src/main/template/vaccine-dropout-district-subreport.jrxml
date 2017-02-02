@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-dropout-facility-subreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="280"/>
+	<property name="ireport.x" value="284"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -363,9 +363,9 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<text><![CDATA[]]></text>
 				</staticText>
 				<staticText>
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="0" width="72" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="7b889e16-856f-49f6-9d42-f94994341cda">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="0" width="72" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="7b889e16-856f-49f6-9d42-f94994341cda">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-						<printWhenExpression><![CDATA[$V{dropout_percentage}<10 && $V{dropout_percentage}>=5]]></printWhenExpression>
+						<printWhenExpression><![CDATA[$V{dropout_percentage}<0 ||$V{dropout_percentage}>=10]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>

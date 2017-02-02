@@ -360,9 +360,9 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 		<groupFooter>
 			<band height="20">
 				<staticText>
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="1" width="72" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="21b51465-ee58-4067-b0f5-7e64a6b24742">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="1" width="72" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="21b51465-ee58-4067-b0f5-7e64a6b24742">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-						<printWhenExpression><![CDATA[$V{dropout_percentage}<10 && $V{dropout_percentage}>=5]]></printWhenExpression>
+						<printWhenExpression><![CDATA[$V{dropout_percentage}<0 || $V{dropout_percentage}>=10]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
