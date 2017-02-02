@@ -707,5 +707,18 @@ public class InteractiveReportController extends BaseController {
         return new Pages(page, max, reportData);
     }
 
+    @RequestMapping(value = "/reportdata/getMinMaxVaccineData", method = GET, headers = BaseController.ACCEPT_JSON)
+    public Pages getMinMaxVaccineReportData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                       HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("min_max_vaccine_report");
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+        List<MinMaxVaccineReport> reportData =
+                (List<MinMaxVaccineReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+        return new Pages(page, max, reportData);
+    }
+
 
 }

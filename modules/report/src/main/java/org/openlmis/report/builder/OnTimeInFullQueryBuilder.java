@@ -18,7 +18,7 @@ public class OnTimeInFullQueryBuilder {
                 "              x.orderId ,y.orderId,x.product \n" +
                 "              FROM   \n" +
                 "               (    \n" +
-                "               SELECT p.id productId,p.primaryName product,M.region_name region, M.district_name district,f.name storeName, dl.quantity QuantityReceived,distributiondate,d.orderId \n" +
+                "               SELECT p.id productId,p.primaryName product,M.region_name region, M.district_name district,f.name storeName, dl.quantity QuantityReceived,d.modifiedDate distributiondate,d.orderId \n" +
                 "               FROM vaccine_distributions d   \n" +
                 "               JOIN vaccine_distribution_line_items dl on d.id = dl.distributionId   \n" +
                 "               JOIN products p on p.id = dl.productId    \n" +
