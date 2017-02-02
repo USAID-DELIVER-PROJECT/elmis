@@ -34,6 +34,7 @@ public class PerformanceByDropoutRateByDistrictService {
     public static final String MIN = "2_dropOutBetweenMidAndMin";
     public static final String AVERAGE = "3_droOputBetweenMidAndHigh";
     public static final String HIGHER = "4_dropoutGreaterThanHigh";
+    public static final String NONREPORTING = "5_nonReporting";
     public static final String DISTRICT_LEVEL = "";
     public static final int REGION_REPORT = 1;
     public static final int DISTRICT_REPORT = 2;
@@ -42,7 +43,7 @@ public class PerformanceByDropoutRateByDistrictService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceByDropoutRateByDistrictService.class);
 
 
-    public PerformanceByDisrictReport loadPerformanceByDropoutRateDistrictReports(Map<String, String[]> filterCriteria,Long userId) {
+    public PerformanceByDisrictReport loadPerformanceByDropoutRateDistrictReports(Map<String, String[]> filterCriteria, Long userId) {
         boolean isFailityReport;
         boolean isRegionReport;
         PerformanceByDisrictReport performanceByDisrictReport;
@@ -55,6 +56,7 @@ public class PerformanceByDropoutRateByDistrictService {
         Date endDate = null;
         PerformanceByDropoutRateParam filterParam;
         filterParam = prepareParam(filterCriteria);
+        columnNames = ReportsCommonUtilService.extractColumnValues(filterParam);
         filterParam.setUserId(userId);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
         try {
@@ -73,7 +75,7 @@ public class PerformanceByDropoutRateByDistrictService {
             if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
                 performanceByDropoutRateByDistrictList = this.transposeDptVAlueToBg(performanceByDropoutRateByDistrictList);
             }
-
+            generateRowForNonReportingPeriods(columnNames, performanceByDropoutRateByDistrictList, DISTRICT_REPORT);
             if (isRegionReport) {
                 performanceByDropoutRateByRegionList = repository.loadPerformanceByDropoutRateRegionReports(filterParam);
 
@@ -81,8 +83,7 @@ public class PerformanceByDropoutRateByDistrictService {
                     performanceByDropoutRateByRegionList = this.transposeDptVAlueToBg(performanceByDropoutRateByRegionList);
                 }
 
-
-
+                generateRowForNonReportingPeriods(columnNames, performanceByDropoutRateByRegionList, REGION_REPORT);
             }
 
         } else {
@@ -90,19 +91,20 @@ public class PerformanceByDropoutRateByDistrictService {
             performanceByDropoutRateByDistrictList = repository.loadPerformanceByDropoutRateFacillityReports(filterParam);
             if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
                 performanceByDropoutRateByDistrictList = this.transposeDptVAlueToBg(performanceByDropoutRateByDistrictList);
-            }
 
+            }
+            generateRowForNonReportingPeriods(columnNames, performanceByDropoutRateByDistrictList, FACILLITY_REPORT);
         }
 
 
         performanceByDisrictReport = this.aggregateReport(performanceByDropoutRateByDistrictList);
-      if(  filterParam.getProduct_id().equals(DTP_PRODUCT_ID)){
-          performanceByDisrictReport.setDtpProduct(true);
-      }
+        if (filterParam.getProduct_id().equals(DTP_PRODUCT_ID)) {
+            performanceByDisrictReport.setDtpProduct(true);
+        }
 
         performanceByDisrictReport.setRegionReport(isRegionReport);
         performanceByDisrictReport.setFacillityReport(isFailityReport);
-        columnNames = ReportsCommonUtilService.extractColumnValues(filterParam);
+
         columnRangeValues = this.prepareColumnRangesForSummary(columnNames, performanceByDropoutRateByDistrictList);
         if (isRegionReport) {
             regionColumnRangeValues = this.prepareColumnRangesForSummary(columnNames, performanceByDropoutRateByRegionList);
@@ -132,8 +134,10 @@ public class PerformanceByDropoutRateByDistrictService {
                 LOGGER.warn(" error while preparing:", e);
             }
             float value = performanceByDropoutRateByDistrict.getBcg_mr_dropout();
-
-            if (value > 10 || value<0) {
+            if (performanceByDropoutRateByDistrict.isGenerated()) {
+                Long highVal = columnRangeValues.get(NONREPORTING).get(columngName) + 1L;
+                columnRangeValues.get(NONREPORTING).put(columngName, highVal);
+            } else if (value > 10 || value < 0) {
 
                 Long highVal = columnRangeValues.get(HIGHER).get(columngName) + 1L;
                 columnRangeValues.get(HIGHER).put(columngName, highVal);
@@ -142,7 +146,7 @@ public class PerformanceByDropoutRateByDistrictService {
                 Long highVal = columnRangeValues.get(AVERAGE).get(columngName) + 1L;
                 columnRangeValues.get(AVERAGE).put(columngName, highVal);
 
-            }  else {
+            } else {
 
                 Long highVal = columnRangeValues.get(BELOW_MIN).get(columngName) + 1L;
                 columnRangeValues.get(BELOW_MIN).put(columngName, highVal);
@@ -178,7 +182,7 @@ public class PerformanceByDropoutRateByDistrictService {
         Long total_bcg_mr_dropout = 0L;
         for (PerformanceByDropoutRateByDistrict performanceByDropoutRateByDistrict : performanceByDropoutRateByDistrictList) {
 
-            total_target =performanceByDropoutRateByDistrict.getTarget()!=null? total_target+performanceByDropoutRateByDistrict.getTarget():total_target;
+            total_target = performanceByDropoutRateByDistrict.getTarget() != null ? total_target + performanceByDropoutRateByDistrict.getTarget() : total_target;
             total_bcg_vaccinated = total_bcg_vaccinated + performanceByDropoutRateByDistrict.getBcg_vaccinated();
             total_dtp1_vaccinated = total_dtp1_vaccinated + performanceByDropoutRateByDistrict.getDtp1_vaccinated();
             total_mr_vaccinated = total_mr_vaccinated + performanceByDropoutRateByDistrict.getMr_vaccinated();
@@ -201,15 +205,16 @@ public class PerformanceByDropoutRateByDistrictService {
         columnRangeValues.put(AVERAGE, new HashMap<Date, Long>());
 
         columnRangeValues.put(BELOW_MIN, new HashMap<Date, Long>());
+        columnRangeValues.put(NONREPORTING, new HashMap<Date, Long>());
         for (int i = 0; i < columnNameList.size(); i++) {
             columnRangeValues.get(HIGHER).put(columnNameList.get(i), 0L);
             columnRangeValues.get(AVERAGE).put(columnNameList.get(i), 0L);
 
             columnRangeValues.get(BELOW_MIN).put(columnNameList.get(i), 0L);
+            columnRangeValues.get(NONREPORTING).put(columnNameList.get(i), 0L);
         }
         return columnRangeValues;
     }
-
 
 
     public List<PerformanceByDropoutRange> prepareColumn(Map<String, Map<Date, Long>> columnRangeValues) {
@@ -246,7 +251,6 @@ public class PerformanceByDropoutRateByDistrictService {
     }
 
 
-
     public PerformanceByDropoutRateParam prepareParam(Map<String, String[]> filterCriteria) {
         PerformanceByDropoutRateParam filterParam = null;
         if (filterCriteria != null) {
@@ -254,7 +258,7 @@ public class PerformanceByDropoutRateByDistrictService {
             filterParam.setFacility_id(filterCriteria.get("facility") == null || filterCriteria.get("facility").length <= 0 || StringUtils.isBlank(filterCriteria.get("facility")[0]) ? 0 : Long.parseLong(filterCriteria.get("facility")[0])); //defaults to 0
             filterParam.setGeographic_zone_id(filterCriteria.get("geographicZoneId") == null || StringUtils.isBlank(filterCriteria.get("geographicZoneId")[0]) ? 0 : Long.parseLong(filterCriteria.get("geographicZoneId")[0]));
             filterParam.setPeriod_end_date(filterCriteria.get("periodEnd") == null || StringUtils.isBlank(filterCriteria.get("periodEnd")[0]) ? null : filterCriteria.get("periodEnd")[0]);
-            filterParam.setPeriod_start_date(filterCriteria.get("periodStart")== null || StringUtils.isBlank(filterCriteria.get("periodStart")[0]) ? null : filterCriteria.get("periodStart")[0]);
+            filterParam.setPeriod_start_date(filterCriteria.get("periodStart") == null || StringUtils.isBlank(filterCriteria.get("periodStart")[0]) ? null : filterCriteria.get("periodStart")[0]);
             filterParam.setProduct_id(filterCriteria.get("productId") == null || StringUtils.isBlank(filterCriteria.get("productId")[0]) ? 0 : Long.parseLong(filterCriteria.get("productId")[0]));
         }
         return filterParam;
@@ -283,7 +287,117 @@ public class PerformanceByDropoutRateByDistrictService {
 
     }
 
+    private static void orderDistrictReportList(List<PerformanceByDropoutRateByDistrict> rateByDistrictList) {
 
+        Collections.sort(rateByDistrictList, new Comparator<PerformanceByDropoutRateByDistrict>() {
+            @Override
+            public int compare(PerformanceByDropoutRateByDistrict o1, PerformanceByDropoutRateByDistrict o2) {
+
+
+                String x1 = extractUniqueZoneKey(((PerformanceByDropoutRateByDistrict) o1), FACILLITY_REPORT);
+                String x2 = extractUniqueZoneKey(((PerformanceByDropoutRateByDistrict) o2), FACILLITY_REPORT);
+
+                if (x1.equals(x2)) {
+                    Date x1Date = ((PerformanceByDropoutRateByDistrict) o1).getPeriod_name();
+                    Date x2Date = ((PerformanceByDropoutRateByDistrict) o2).getPeriod_name();
+                    return x1Date.compareTo(x2Date);
+                }
+                return x1.compareTo(x2);
+            }
+        });
+
+    }
+
+    private void generateRowForNonReportingPeriods(List<Date> columnNames, List<PerformanceByDropoutRateByDistrict> reportList, int zoneType) {
+        List<PerformanceByDropoutRateByDistrict> formattedList = new ArrayList<>();
+        List<PerformanceByDropoutRateByDistrict> zoneUniqueKeyList = extractUniqueZoneKeyList(reportList, zoneType);
+        orderDistrictReportList(zoneUniqueKeyList);
+        Collections.sort(columnNames);
+        PerformanceByDropoutRateByDistrict generatedDropoutRateByDistrict = null;
+        for (PerformanceByDropoutRateByDistrict dropoutRateByDistrict : zoneUniqueKeyList) {
+
+
+            PerformanceByDropoutRateByDistrict recentDropoutRateByDistrict = null;
+
+            for (Date colValue : columnNames) {
+
+                String zoneKey = extractUniqueZoneKey(dropoutRateByDistrict, zoneType);
+                if (!isReportingForPeriod(zoneKey, colValue, dropoutRateByDistrict, zoneType)) {
+                    generatedDropoutRateByDistrict = new PerformanceByDropoutRateByDistrict();
+                    generatedDropoutRateByDistrict.setPeriod_name(colValue);
+                    generatedDropoutRateByDistrict.setRegion_name(dropoutRateByDistrict.getRegion_name());
+                    generatedDropoutRateByDistrict.setDistrict_name(dropoutRateByDistrict.getDistrict_name());
+                    generatedDropoutRateByDistrict.setFacility_name(dropoutRateByDistrict.getFacility_name());
+                    generatedDropoutRateByDistrict.setBcg_vaccinated(0L);
+                    generatedDropoutRateByDistrict.setMr_vaccinated(0L);
+                    generatedDropoutRateByDistrict.setBcg_mr_dropout(0L);
+                    generatedDropoutRateByDistrict.setDtp1_vaccinated(0L);
+
+                    generatedDropoutRateByDistrict.setDtp3_vaccinated(0L);
+                    generatedDropoutRateByDistrict.setDtp1_dtp3_dropout(0L);
+                    generatedDropoutRateByDistrict.setCum_bcg_vaccinated(recentDropoutRateByDistrict != null ? recentDropoutRateByDistrict.getCum_bcg_vaccinated() : 0);
+                    generatedDropoutRateByDistrict.setCum_mr_vaccinated(recentDropoutRateByDistrict != null ? recentDropoutRateByDistrict.getCum_mr_vaccinated() : 0);
+                    generatedDropoutRateByDistrict.setCum_bcg_mr_dropout(recentDropoutRateByDistrict != null ? recentDropoutRateByDistrict.getCum_bcg_mr_dropout() : 0);
+                    generatedDropoutRateByDistrict.setGenerated(true);
+                    formattedList.add(generatedDropoutRateByDistrict);
+                } else {
+                    recentDropoutRateByDistrict = dropoutRateByDistrict.getPeriodValue(colValue);
+                }
+
+            }
+        }
+        reportList.addAll(formattedList);
+        orderDistrictReportList(reportList);
+    }
+
+    private boolean isReportingForPeriod(String uniqueDistrictKey, Date columnName, PerformanceByDropoutRateByDistrict dropoutRateByDistrict, int zoneType) {
+        boolean reporting = false;
+        Calendar columnCalendar = Calendar.getInstance();
+        Calendar reportCalendar = Calendar.getInstance();
+        columnCalendar.setTime(columnName);
+        for (PerformanceByDropoutRateByDistrict periodName : dropoutRateByDistrict.getReportedPeriods()) {
+            reportCalendar.setTime(periodName.getPeriod_name());
+
+            String reportZoneKey = extractUniqueZoneKey(dropoutRateByDistrict, zoneType);
+            if (reportZoneKey.equals(uniqueDistrictKey) && columnCalendar.get(Calendar.YEAR) == reportCalendar.get(Calendar.YEAR) && columnCalendar.get(Calendar.MONTH) == reportCalendar.get(Calendar.MONTH)) {
+                return true;
+            }
+        }
+        return reporting;
+    }
+
+    private List<PerformanceByDropoutRateByDistrict> extractUniqueZoneKeyList(List<PerformanceByDropoutRateByDistrict> reportList, int zoneType) {
+        List<PerformanceByDropoutRateByDistrict> zoneKeyList = new ArrayList<>();
+        for (PerformanceByDropoutRateByDistrict disrictReport : reportList) {
+
+            if (!zoneKeyList.contains(disrictReport)) {
+                disrictReport.setReportedPeriods(new ArrayList<>());
+                disrictReport.getReportedPeriods().add(disrictReport.clone());
+                zoneKeyList.add(disrictReport);
+            } else {
+                zoneKeyList.get(zoneKeyList.indexOf(disrictReport)).getReportedPeriods().add(disrictReport.clone());
+            }
+
+        }
+
+        return zoneKeyList;
+    }
+
+    private static String extractUniqueZoneKey(PerformanceByDropoutRateByDistrict report, int zoneType) {
+        StringBuilder uniqueZoneKey = new StringBuilder();
+        switch (zoneType) {
+            case REGION_REPORT:
+                uniqueZoneKey.append(report.getRegion_name());
+                break;
+            case DISTRICT_REPORT:
+                uniqueZoneKey.append(report.getRegion_name()).append(" _").append(report.getDistrict_name());
+                break;
+            case FACILLITY_REPORT:
+                uniqueZoneKey.append(report.getRegion_name()).append(" _").append(report.getDistrict_name()).append("_").append(report.getFacility_name());
+                break;
+        }
+        return uniqueZoneKey.toString();
+    }
 
 
 }

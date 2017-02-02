@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -46,6 +47,47 @@ public class PerformanceByDropoutRateByDistrict {
     private Long dtp3_vaccinated;
     private float bcg_mr_dropout;
     private float dtp1_dtp3_dropout;
+    List<PerformanceByDropoutRateByDistrict> reportedPeriods;
+    boolean generated;
 
+    @Override
+    public boolean equals(Object obj) {
+        String objKey = "";
+        String thisKey = "";
+        PerformanceByDropoutRateByDistrict report = (PerformanceByDropoutRateByDistrict) obj;
+        StringBuilder uniqueZoneKey = new StringBuilder();
+        StringBuilder thisZoneKey = new StringBuilder();
+        uniqueZoneKey.append(report.getRegion_name()).append(" _").append(report.getDistrict_name()).append("_").append(report.getFacility_name());
+        thisZoneKey.append(this.getRegion_name()).append(" _").append(this.getDistrict_name()).append("_").append(this.getFacility_name());
+        objKey = uniqueZoneKey.toString();
+        thisKey = thisZoneKey.toString();
+        return objKey.equals(thisKey);
 
+    }
+
+    public PerformanceByDropoutRateByDistrict getPeriodValue(Date period_name) {
+        if (reportedPeriods != null && !reportedPeriods.isEmpty()) {
+            for (PerformanceByDropoutRateByDistrict rateByDistrict : this.getReportedPeriods()) {
+                if (rateByDistrict.getPeriod_name().equals(period_name)) {
+                    return rateByDistrict;
+                }
+            }
+
+        }
+        return null;
+    }
+    @Override
+    public PerformanceByDropoutRateByDistrict clone(){
+        PerformanceByDropoutRateByDistrict dropoutRateByDistrict = new PerformanceByDropoutRateByDistrict();
+        dropoutRateByDistrict.setPeriod_name(this.period_name);
+
+        dropoutRateByDistrict.setCum_bcg_vaccinated(this.getCum_bcg_vaccinated());
+        dropoutRateByDistrict.setCum_mr_vaccinated(this.getCum_mr_vaccinated());
+        dropoutRateByDistrict.setCum_bcg_mr_dropout(this.cum_bcg_mr_dropout);
+        dropoutRateByDistrict.setCum_dtp1_vaccinated(this.getCum_dtp1_vaccinated());
+        dropoutRateByDistrict.setCum_dtp3_vaccinated(this.cum_dtp3_vaccinated);
+        dropoutRateByDistrict.setCum_dtp1_dtp3_dropout(this.getCum_dtp1_dtp3_dropout());
+
+        return  dropoutRateByDistrict;
+    }
 }

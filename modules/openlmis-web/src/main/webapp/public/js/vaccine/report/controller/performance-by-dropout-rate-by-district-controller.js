@@ -84,27 +84,15 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
                     if (!utils.isEmpty($scope.datarows)) {
 
                         if ($scope.reportType === true) {
-                            reportVal = findMonthValue($scope.datarows, 1);
-                            $scope.datarows = reportVal.reportList;
-                            $scope.nonReportingDistrict =!utils.isNullOrUndefined(reportVal)? reportVal.grayCount:null;
-
-
                             $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 1);
 
                         } else {
-                            reportVal = findMonthValue($scope.datarows, 2);
-                            $scope.datarows = reportVal.reportList;
-                            $scope.nonReportingDistrict =!utils.isEmpty(reportVal.grayCount)&&!utils.isNullOrUndefined(reportVal.grayCount)? reportVal.grayCount:null;
-
                             $scope.districtSubAggregate = aggregateSubTotal($scope.datarows, 2);
 
                         }
 
                     }
                     if (!utils.isEmpty($scope.regionrows)) {
-                        var regportVal = findMonthValue($scope.regionrows, 3);
-                        $scope.regionrows = regportVal.reportList;
-                        $scope.nonReportingRegion = regportVal.grayCount;
 
                         $scope.regionSubAggregate = aggregateSubTotal($scope.regionrows, 3);
                     }
@@ -146,9 +134,13 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
             bgColor = $scope.average;
         } else if (value == '2_dropOutBetweenMidAndMin') {
             bgColor = $scope.belowAverage;
-        } else {
-            bgColor = $scope.minTemp;
         }
+        else if(value == '1_dropoutGreaterThanHigh') {
+            bgColor = $scope.minTemp;
+        }else{
+            bgColor = $scope.nonReporting;
+        }
+
         return bgColor;
     };
     $scope.getColumnNameSummary = function (value) {
@@ -159,8 +151,10 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
             bgColor = '5% < DO <=10%';
         } else if (value == '2_dropOutBetweenMidAndMin') {
             bgColor = ' 5% < DO <=10%';
-        } else {
+        } else if(value == '1_dropoutGreaterThanHigh') {
             bgColor = 'DO <=5';
+        }else{
+            bgColor = 'Non Reporting';
         }
         return bgColor;
     };
@@ -180,81 +174,6 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
 
         return utils.isNullOrUndefined(value)?'0.00%':value + '%';
     };
-    $scope.showCategory = function (index) {
-        var absIndex = ($scope.pageSize * ($scope.currentPage - 1)) + index;
-        return !((index > 0 ) && ($scope.colValueList.length > absIndex) && ($scope.rnr.equipmentLineItems[absIndex].equipmentCategory == $scope.rnr.equipmentLineItems[absIndex - 1].equipmentCategory));
-    };
-    $scope.getStartDate = function () {
-        if ($scope.filter.periodType != 5) {
-            var currentDate = new Date();
-            var endDate;
-            var startDate;
-            var months = 0;
-            var monthBack = 0;
-            var currentDays = currentDate.getDate();
-            if (currentDays <= maxReportSubmission) {
-                monthBack = 1;
-            }
-            endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - monthBack, 0);
-            startDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1);
-
-            switch ($scope.filter.periodType) {
-                case '1':
-                    months = startDate.getMonth() - 1;
-                    break;
-                case '2':
-                    months = startDate.getMonth() - 3;
-
-                    break;
-                case '3':
-                    months = startDate.getMonth() - 6;
-                    break;
-                case '4':
-                    months = startDate.getMonth() - 12;
-                    break;
-                default :
-                    months = 0;
-            }
-            startDate.setMonth(months);
-            $scope.filter.periodStart = $.datepicker.formatDate("yy-mm-dd", startDate);
-            $scope.filter.periodEnd = $.datepicker.formatDate("yy-mm-dd", endDate);
-
-        }
-    };
-    $scope.getCurrentPeriodDateRange = function () {
-        var d = new Date();
-        var quarter = Math.floor((d.getMonth() / 3));
-        var firstDate1 = new Date(d.getFullYear(), quarter * 3, 1);
-        var endDate1 = new Date(firstDate1.getFullYear(), firstDate1.getMonth() + 3, 0);
-        $scope.filter.periodStart = $.datepicker.formatDate("yy-mm-dd", firstDate1);
-        $scope.filter.periodEnd = $.datepicker.formatDate("yy-mm-dd", endDate1);
-
-    };
-    function getStyle(className_) {
-
-        var styleSheets = window.document.styleSheets;
-        var styleSheetsLength = styleSheets.length;
-        for (var i = 0; i < styleSheetsLength; i++) {
-            var classes = styleSheets[i].rules || styleSheets[i].cssRules;
-            var classesLength = classes.length;
-            for (var x = 0; x < classesLength; x++) {
-
-                if (classes[x].selectorText == className_) {
-                    var ret;
-                    if (classes[x].cssText) {
-                        ret = classes[x].cssText;
-                    } else {
-                        ret = classes[x].style.cssText;
-                    }
-                    if (ret.indexOf(classes[x].selectorText) == -1) {
-                        ret = classes[x].selectorText + "{" + ret + "}";
-                    }
-                    return ret;
-                }
-            }
-        }
-    }
-
 
     function getPopulationKey(dreport, type) {
         var keyValue = '';
@@ -267,86 +186,6 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
             keyValue = dreport.region_name;
         }
         return keyValue;
-    }
-
-
-
-    function findMonthValue(reportList, type) {
-        var formattedData = [];
-        var date= new Date($scope.filter.periodEnd);
-        var indexValue=date.getMonth()+1;
-        var grayCount = {};
-        if (utils.isEmpty(reportList)) {
-            return reportList;
-        }
-
-        if ($scope.staticYear !== '0') {
-            var len = reportList.length;
-
-            var distrctList = {};
-            var periodList = utils.generatePeriodNamesWithDashForVaccineYear($scope.staticYear);
-            grayCount = intializeGrayCount(periodList);
-            reportList.forEach(function (value) {
-                var district = getPopulationKey(value, type);
-                if (!(district in distrctList)) {
-                    distrctList[district] = value;
-                }
-            });
-            for (var key in distrctList) {
-                var recent=null;
-                for (var i = 0; i < indexValue; i++) {
-                    var hasValue = false;
-
-                    for (var j = 0; j < len; j++) {
-                        var dateValue=new Date(reportList[j].period_name);
-
-                       var reportMonth=periodList[dateValue.getMonth()];
-                        if (angular.equals(getPopulationKey(reportList[j], type), key) &&reportMonth ===periodList[i]) {
-                            formattedData.push(reportList[j]);
-                            recent=reportList[j];
-                            hasValue = true;
-                            break;
-                        }
-                    }
-                    if (!hasValue) {
-                        var object = {
-                            target: distrctList[key].target,
-                            //denominator: distrctList[key].denominator,
-                            month: i + 1,
-                            year: $scope.staticYear,
-                            period_name: periodList[i],
-                            region_name: distrctList[key].region_name,
-                            district_name: distrctList[key].district_name,
-                            facility_name: distrctList[key].facility_name,
-                            bcg_vaccinated: 0,
-                            mr_vaccinated:0,
-                            bcg_mr_dropout:0,
-                           cum_bcg_vaccinated: utils.isNullOrUndefined(recent)?0:recent.cum_bcg_vaccinated,
-                            cum_mr_vaccinated:utils.isNullOrUndefined(recent)?0:recent.cum_mr_vaccinated,
-                            cum_bcg_mr_dropout:utils.isNullOrUndefined(recent)?0:recent.cum_bcg_mr_dropout,
-                            generated: true
-
-                        };
-                        grayCount[$scope.staticYear + "_" + i].count++;
-                        formattedData.push(object);
-                    }
-                }
-            }
-        } else {
-            formattedData = reportList;
-        }
-
-        return {reportList: formattedData, grayCount: grayCount};
-
-    }
-
-    function intializeGrayCount(periods) {
-        var grayCount = {};
-        for (var i = 0; i < 12; i++) {
-            grayCount[$scope.staticYear + "_" + i] = {count: 0};
-        }
-
-        return grayCount;
     }
 
     function aggregateSubTotal(reportList, type) {

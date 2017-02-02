@@ -37,6 +37,17 @@
 					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
 				</box>
 			</style>
+</conditionalStyle>
+<conditionalStyle>
+			<conditionExpression><![CDATA[$V{rangeName} == "5_nonReporting"]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#cccccc">
+				<box>
+					<topPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.25" lineColor="#FFFFFF"/>
+				</box>
+			</style>
 		</conditionalStyle>
 	</style>
 	<style name="Crosstab Data Text" hAlign="Center"/>
@@ -60,7 +71,8 @@
 							<textField isStretchWithOverflow="true">
 								<reportElement style="paqua" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="25" uuid="ad1d2d7f-f211-4eb9-9a51-c2c9f1729794"/>
 								<textFieldExpression><![CDATA[$V{rangeName}=="4_dropoutGreaterThanHigh" ?"DO >10%":
- $V{rangeName}=="3_droOputBetweenMidAndHigh"? "5% < DO <=10%":"DO <=5"]]></textFieldExpression>
+ $V{rangeName}=="3_droOputBetweenMidAndHigh"? "5% < DO <=10%":
+  $V{rangeName}=="1_dropoutGreaterThanHigh"?"DO <=5":"Non Reporting"]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabRowHeader>
