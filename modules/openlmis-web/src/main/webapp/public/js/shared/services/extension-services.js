@@ -1251,3 +1251,7 @@ services.factory('OnTimeInFullReport',function($resource){
 services.factory('MinMaxStockReport',function($resource){
     return $resource('/reports/reportdata/getMinMaxVaccineData.json',{},{});
 });
+
+services.factory('DistributionSummaryReport',function($resource){
+    return $resource('/reports/reportdata/getDistributionSummaryData.json',{},{});
+});
