@@ -1,0 +1,89 @@
+<div ng-show="distribution === undefined && (receivedProducts.voucherNumber ==='' || receivedProducts.voucherNumber === undefined)" style="padding: 30px;" >
+    <h3 style="opacity: 0.5; text-align: center">Scan The Barcode on The Issuing Voucher</h3>
+</div>
+<div ng-show="distribution ===undefined && voucherNumberSearched" class="alert alert-danger" ng-hide="receivedProducts.voucherNumber ==='' || receivedProducts.voucherNumber === undefined">
+    <span  openlmis-message="alert.no.distribution"></span><strong> {{receivedProducts.voucherNumber}}</strong>
+</div>
+                <div ng-show="distribution !==undefined">
+                <table id="podTable2" class="table table-bordered" fixed-table-header>
+                    <thead>
+                    <tr>
+                        <th class="col-product " openlmis-message="label.products"></th>
+                        <th class="col-quantity" style="max-width:160px !important"
+                            openlmis-message="label.quantity.requested"></th>
+                        <th class="col-quantity" style="max-width:160px !important"
+                            openlmis-message="label.stock.total.quantity"></th>
+                        <th class="col-lot"><span openlmis-message="label.stock.batch"></span></th>
+                        <th class="col-quantity" style="max-width:160px !important"><span
+                                openlmis-message="label.stock.quantity"></span></th>
+                        <th class="col-vvm-status"><span openlmis-message="label.stock.vvm"></span></th>
+
+                        <th colspan="3"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat-start="product in distribution.lineItems" style="border-bottom:2px solid #333"
+                        ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
+                        ng-form="receivingForm2">
+                        <td rowspan="{{product.lots.length}}" class="col-product cell-input last-row disabled">
+                            <span class="cell-text" ng-bind="product.product.primaryName"></span>
+                        </td>
+                        <td rowspan="{{product.lots.length}}" class="col-product cell-input last-row disabled">
+                            <span ng-show="product.quantityRequested !== null" class="cell-text" class="cell-text">{{product.quantityRequested | number}}</span>
+                        </td>
+                        <td rowspan="{{product.lots.length}}" class="col-product cell-input last-row disabled"
+                            ng-class="{'disabled':product.batchTracked}">
+                            <span class="cell-text" ng-if="product.lots.length>0" class="cell-text">{{sumLots(product) | number}}</span>
+                            <span class="cell-text" ng-if="product.lots.length ===0" class="cell-text">{{product.quantity | number}}</span>
+                        </td>
+
+                        <td  class="col-lot cell-input cell-text disabled"
+                            ng-class="{'last-row':product.lots.length===1,'skip':product.lots.length===0}">
+                            <span class="cell-text" ng-if="product.lots.length > 0"
+                                  ng-bind="product.lots[0].lot.lotCode"></span>
+                        </td>
+                        <td  class="col-count cell-input col-general"
+                            ng-class="{'last-row':product.lots.length===1}">
+                            <input ng-required="product.lots.length > 0" ng-if="product.lots.length > 0"
+                                   name="batchQuantity_{{$index}}_0" ng-model="product.lots[0].quantity" min="1"
+                                   type="number"/>
+                            <input name="quantity_{{$index}}"
+                                   ng-if="!product.lots.length" type="number" min="1" ng-model="product.quantity">
+                        </td>
+                        <td
+                            class="col-vvmstatus cell-text"
+                            ng-class="{'last-row':product.lots.length===1,'skip':product.lots[0].vvmStatus ===undefined || product.lots[0].vvmStatus ===null}">
+                            <!--<span ng-if="product.lots.length > 0" ng-bind="product.lots[0].vvmStatus"></span>-->
+                            <select ng-show="(product.lots.length >0 && product.lots[0].vvmStatus !== null ) || (product.lots.length ===0 && product.vvmStatus !== null)"  style="max-width:130px !important;min-width:130px !important" ui-select2
+                                    ng-options="i.value as i.name for i in vvmStatuses" name="vvmToAdd"
+                                    ng-model="product.lots[0].vvmStatus">
+                                <option value="" openlmis-message="placeholder.select.vvmstatus"></option>
+                            </select>
+                        </td>
+
+                        <td colspan="3" rowspan="{{product.lots.length}}" class="col-product cell-input last-row disabled"></td>
+
+                    </tr>
+                    <tr ng-repeat-end ng-repeat="lot in product.lots" ng-show="!$first" ng-class="color">
+                        <td  ng-class="{'last-row':$last}"
+                            class="col-lot cell-input cell-text disabled">
+                            <span class="cell-text" ng-bind="lot.lot.lotCode"></span>
+                        </td>
+                        <td ng-class="{'last-row':$last}"
+                            class="col-count cell-input col-general ">
+                            <input name="batchQuantity_{{$parent.$index}}_{{$index}}" ng-required="product.batchTracked"
+                                   ng-model="lot.quantity" min="1" type="number"/>
+                        </td>
+                        <td ng-class="{'last-row':$last}"
+                            class="col-count cell-text ">
+                            <select ng-show="lot.vvmStatus !== undefined"  style="max-width:130px !important;min-width:130px !important" ui-select2
+                            ng-options="i.value as i.name for i in vvmStatuses" name="vvmToAdd"
+                            ng-model="lot.vvmStatus">
+                            <option value="" openlmis-message="placeholder.select.vvmstatus"></option>
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                </div>

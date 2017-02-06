@@ -1,0 +1,256 @@
+<div class="rnr-table" ng-form="adjustmentForm" ng-show="stockCardsToDisplay.length >0">
+    <table id="adjustmentTable" class="table table-bordered" fixed-table-header>
+        <thead>
+        <tr>
+            <th rowspan="2" class="col-product cell-input"><span openlmis-message="label.products"></span></th>
+            <th rowspan="2" class="col-quantity "><span openlmis-message="label.stock.total.quantity"></span></th>
+            <th rowspan="2" class="col-lot"><span openlmis-message="label.stock.batch"></span></th>
+            <th rowspan="2" class="col-available"><span openlmis-message="label.stock.onhand"></span></th>
+            <th colspan="3" class="col-count" style="max-width:150px !important; width:150px !important"><span openlmis-message="label.stock.physical.count"></span></th>
+            <th rowspan="2" class="col-count"><span openlmis-message="label.stock.vvm"></span></th>
+            <th rowspan="2" style="min-width:5px !important;width:10px !important" class="col-skip"><span
+                    openlmis-message="label.skip"></span></th>
+            <th rowspan="2" class="col-reason"><span openlmis-message="label.stock.adjustment.reasons"></span></th>
+            <th rowspan="2" class="col-affected"><span openlmis-message="label.stock.amount.affected"></span></th>
+            <th rowspan="2" class="col-validation"><span openlmis-message="label.stock.validation"></span></th>
+        </tr>
+        <tr>
+
+            <th class="col-count" style="max-width:100px !important; width:100px !important"><span>Boxes</span></th>
+            <th class="col-count" style="max-width:100px !important; width:100px !important"><span>Lose Vials</span></th>
+            <th class="col-count" style="max-width:100px !important; width:100px !important"><span>Doses</span></th>
+
+        </tr>
+        </thead>
+        <tbody ng-repeat="stock in stockCardsToDisplay">
+        <tr>
+            <td class="productCategory" id="vaccine" colspan="12">
+                {{stock.productCategory}}
+            </td>
+        </tr>
+        <tr ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
+            ng-repeat-start="c in stock.stockCards" style="border-bottom:2px solid #333">
+            <td rowspan="{{c.lotsOnHand.length}}" class="col-product cell-input last-row disabled">
+                <span class="cell-text" ng-bind="c.product.primaryName"></span>
+            </td>
+            <td rowspan="{{c.lotsOnHand.length}}" class="cell-input last-row disabled">
+                <span class="cell-text" ng-bind="c.totalQuantityOnHand | number"></span>
+            </td>
+
+            <td colspan="2" ng-if="c.lotsOnHand.length === 0" class="skip last-row"></td>
+
+            <td ng-if="c.lotsOnHand.length >0" class="col-lot cell-input  disabled"
+                ng-class="{'last-row':c.lotsOnHand.length===1}">
+                <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.lotCode"></span>
+            </td>
+            <td ng-if="c.lotsOnHand.length >0" class="col-available cell-input number disabled"
+                ng-class="{'last-row':c.lotsOnHand.length===1}">
+                <span class="cell-text" ng-bind="c.lotsOnHand[0].quantityOnHand | number"></span>
+            </td>
+            <!--Boxes-->
+            <td class="col-count cell-input col-general" ng-if="stock.productCategory == 'Vaccine'"
+                ng-class="{'disabled':(c.lotsOnHand[0].isSkipped || c.isSkipped),'':(!c.lotsOnHand[0].isSkipped || !c.isSkipped), 'last-row':(c.lotsOnHand.length===1 || c.lotsOnHand.length===0)}">
+                <input ng-if="c.lotsOnHand.length >0"
+                       name="{{c.product.primaryName}} batch # {{c.lotsOnHand[0].lot.lotCode}}"
+                       ng-required="!c.lotsOnHand[0].isSkipped"
+                       ng-disabled="c.lotsOnHand[0].isSkipped" ng-model="c.lotsOnHand[0].boxes" maxlength="8"
+                       type="number" min="0"
+                       ng-change="updateCurrentTotal1(c,c.lotsOnHand[0])"
+                       style="width: 90px !important;"/>
+                <input ng-if="c.lotsOnHand.length ===0" name="{{c.product.primaryName}}" ng-required="!c.isSkipped"
+                       ng-disabled="c.isSkipped" ng-model="c.boxes" maxlength="8"
+                       type="number" min="0"
+                       style="width: 90px !important;"/>
+            </td>
+            <!--Lose Vials-->
+            <td class="col-count cell-input col-general" ng-if="stock.productCategory == 'Vaccine'"
+                ng-class="{'disabled':(c.lotsOnHand[0].isSkipped || c.isSkipped),'':(!c.lotsOnHand[0].isSkipped || !c.isSkipped), 'last-row':(c.lotsOnHand.length===1 || c.lotsOnHand.length===0)}">
+                <input ng-if="c.lotsOnHand.length >0"
+                       name="{{c.product.primaryName}} batch # {{c.lotsOnHand[0].lot.lotCode}}"
+                       ng-required="!c.lotsOnHand[0].isSkipped"
+                       ng-disabled="c.lotsOnHand[0].isSkipped" ng-model="c.lotsOnHand[0].vials" maxlength="8"
+                       type="number" min="0"
+                       ng-change="updateCurrentTotal1(c,c.lotsOnHand[0])"
+                       style="width: 90px !important;" />
+                <input ng-if="c.lotsOnHand.length ===0" name="{{c.product.primaryName}}" ng-required="!c.isSkipped"
+                       ng-disabled="c.isSkipped" ng-model="c.vials" maxlength="8"
+                       type="number" min="0"
+                       style="width: 90px !important;"/>
+            </td>
+            <!--doses-->
+            <td class="col-count cell-input col-general"  ng-if="stock.productCategory == 'Vaccine'"
+                ng-class="{'disabled':(c.lotsOnHand[0].isSkipped || c.isSkipped),'':(!c.lotsOnHand[0].isSkipped || !c.isSkipped), 'last-row':(c.lotsOnHand.length===1 || c.lotsOnHand.length===0)}">
+                <input ng-if="c.lotsOnHand.length >0"
+                       name="{{c.product.primaryName}} batch # {{c.lotsOnHand[0].lot.lotCode}}"
+                       ng-required="!c.lotsOnHand[0].isSkipped"
+                       ng-disabled="c.lotsOnHand[0].isSkipped" ng-model="c.lotsOnHand[0].quantity" maxlength="8"
+                       type="number" min="0"
+                       divisible-by-presentation="{{c.presentation}}" style="width: 90px !important;"
+                       ng-change="updateCurrentTotal(c,c.lotsOnHand[0])"/>
+                <input ng-if="c.lotsOnHand.length ===0" name="{{c.product.primaryName}}" ng-required="!c.isSkipped"
+                       ng-disabled="c.isSkipped" ng-model="c.quantity" maxlength="8"
+                       type="number" min="0"
+                       divisible-by-presentation="{{c.presentation}}" style="width: 90px !important;"/>
+            </td>
+            <td class="col-count cell-input col-general"  ng-if="stock.productCategory !== 'Vaccine'" colspan="3"
+                ng-class="{'disabled':(c.lotsOnHand[0].isSkipped || c.isSkipped),'':(!c.lotsOnHand[0].isSkipped || !c.isSkipped), 'last-row':(c.lotsOnHand.length===1 || c.lotsOnHand.length===0)}">
+                <input ng-if="c.lotsOnHand.length >0"
+                       name="{{c.product.primaryName}} batch # {{c.lotsOnHand[0].lot.lotCode}}"
+                       ng-required="!c.lotsOnHand[0].isSkipped"
+                       ng-disabled="c.lotsOnHand[0].isSkipped" ng-model="c.lotsOnHand[0].quantity" maxlength="8"
+                       type="number" min="0"
+                       divisible-by-presentation="{{c.presentation}}"
+                       ng-change="updateCurrentTotal(c,c.lotsOnHand[0])"/>
+                <input ng-if="c.lotsOnHand.length ===0" name="{{c.product.primaryName}}" ng-required="!c.isSkipped"
+                       ng-disabled="c.isSkipped" ng-model="c.quantity" maxlength="8"
+                       type="number" min="0"
+                       divisible-by-presentation="{{c.presentation}}" />
+            </td>
+            <td ng-if="vvmTracked(c)" class="col-count cell-input col-general"
+                ng-class="{'disabled':c.lotsOnHand[0].isSkipped,'':!c.lotsOnHand[0].isSkipped, 'last-row':c.lotsOnHand.length===1}">
+                <select style="max-width:130px !important;min-width:130px !important" ui-select2
+                        ng-options="i.value as i.name for i in vvmStatuses" name="vvm_0"
+                        ng-disabled="c.lotsOnHand[0].isSkipped" ng-model="c.lotsOnHand[0].customProps.vvmstatus" maxlength="8"
+                        type="text">
+                    <option value="" openlmis-message="placeholder.select.vvmstatus"></option>
+                </select>
+            </td>
+            <td ng-if="!vvmTracked(c)" class="skip last-row"></td>
+            <td class="col-skip cell-input "
+                ng-class="{'disabled':(c.lotsOnHand[0].isSkipped || c.isSkipped),'':(!c.lotsOnHand[0].isSkipped || !c.isSkipped), 'last-row':(c.lotsOnHand.length <=1)}">
+                <input ng-if="c.lotsOnHand.length >0"
+                       ng-disabled="c.lotsOnHand[0].quantity !==undefined && c.lotsOnHand[0].quantity !==''"
+                       style="margin-left:10px" type="checkbox" ng-model="c.lotsOnHand[0].isSkipped"/>
+
+                <input ng-if="c.lotsOnHand.length === 0" ng-disabled="c.quantity !==undefined && c.quantity !==''"
+                       style="margin-left:10px" type="checkbox" ng-model="c.isSkipped"/>
+            </td>
+
+            <td class="col-reason cell-input "
+                ng-class="{'disabled':(c.lotsOnHand[0].isSkipped || c.isSkipped),'':(!c.lotsOnHand[0].isSkipped || !c.isSkipped), 'last-row':(c.lotsOnHand.length <=1),
+                    'adj-reason-error':((!c.lotsOnHand[0].isSkipped && (c.lotsOnHand[0].quantity !==undefined && c.lotsOnHand[0].quantity !==''))   &&  ((c.lotsOnHand[0].quantity !=='' || c.lotsOnHand[0].quantity != undefined)  && ((c.lotsOnHand[0].adjustmentReasons.length ===0 || c.lotsOnHand[0].adjustmentReasons ===undefined ) || c.lotsOnHand[0].totalAdjustments != (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand))))
+                    || ((c.lotsOnHand.length === 0 && !c.isSkipped && (c.quantity !==undefined && c.quantity !=='') ) && (((c.quantity !=='' || c.quantity != undefined)  && ((c.adjustmentReasons.length ===0 || c.adjustmentReasons ===undefined ) ||   c.totalAdjustments != (c.quantity - c.totalQuantityOnHand)))))
+
+                    }">
+                <a ng-if="c.lotsOnHand.length >0" ng-hide="c.lotsOnHand[0].isSkipped" href
+                   id="lossesAndAdjustmentLink_0"
+                   ng-click="showAdjustmentReason(c.lotsOnHand[0])" class="rnr-adjustment">
+                        <span class="adjustment-value" ng-bind="c.lotsOnHand[0].totalAdjustments | number"
+                              ng-class="{'adj-error':((!c.lotsOnHand[0].isSkipped && (c.lotsOnHand[0].quantity !==undefined && c.lotsOnHand[0].quantity !==''))   &&  ((c.lotsOnHand[0].quantity !=='' || c.lotsOnHand[0].quantity != undefined)  && ((c.lotsOnHand[0].adjustmentReasons.length ===0 || c.lotsOnHand[0].adjustmentReasons ===undefined ) || c.lotsOnHand[0].totalAdjustments != (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand))))}"></span>
+
+                </a>
+
+                <a ng-if="c.lotsOnHand.length === 0" ng-hide="c.isSkipped" href id="lossesAndAdjustmentLink_"
+                   ng-click="showAdjustmentReason(c)" class="rnr-adjustment">
+                        <span ng-init="c.totalAdjustments=0" class="adjustment-value"
+                              ng-bind="c.totalAdjustments | number"
+                              ng-class="{'adj-error':((!c.isSkipped && (c.quantity !==undefined && c.quantity !=='')) && (((c.quantity !=='' || c.quantity != undefined)  && ((c.adjustmentReasons.length ===0 || c.adjustmentReasons ===undefined ) ||   c.totalAdjustments != (c.quantity - c.totalQuantityOnHand)))))}"></span>
+                </a>
+            </td>
+            <td class="col-affected cell-input col-general number cell-text disabled"
+                ng-class="{'last-row':(c.lotsOnHand.length <=1)}">
+                <span ng-show="(c.lotsOnHand[0].quantity !==undefined && c.lotsOnHand[0].quantity !=='') && !c.lotsOnHand[0].isSkipped ">{{c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand | number}}</span>
+                <span ng-show="(c.quantity !==undefined && c.quantity !=='') && !c.isSkipped ">{{c.quantity - c.totalQuantityOnHand | number}}</span>
+            </td>
+            <td class="col-validation cell-input disabled" ng-class="{'last-row':c.lotsOnHand.length <=1}">
+                <div ng-if="c.lotsOnHand.length >0"
+                     ng-show="!c.lotsOnHand[0].isSkipped && (c.lotsOnHand[0].quantity !==undefined && c.lotsOnHand[0].quantity !=='')">
+                        <span ng-show="c.lotsOnHand[0].quantity != undefined && (c.lotsOnHand[0].adjustmentReasons.length >0 && (c.lotsOnHand[0].totalAdjustments === (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand)))"
+                              class="icon-ok-sign green" style="margin-left:20px"></span>
+                        <span ng-show='((c.lotsOnHand[0].quantity !=="" || c.lotsOnHand[0].quantity != undefined)  && ((c.lotsOnHand[0].adjustmentReasons.length ===0 || c.lotsOnHand[0].adjustmentReasons ===undefined ) || c.lotsOnHand[0].totalAdjustments != (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand)))'
+                              class="icon-remove red" style="margin-left:20px"></span>
+                    <input ng-model="c.lotsOnHand[0].valid"
+                           name="{{c.product.primaryName}} batch # {{c.lotsOnHand[0].lot.lotCode}}" type="hidden"
+                           ng-required="!c.lotsOnHand[0].isSkipped && ((c.lotsOnHand[0].quantity !=='' || c.lotsOnHand[0].quantity !== undefined)  && ((c.lotsOnHand[0].adjustmentReasons.length ===0 || c.lotsOnHand[0].adjustmentReasons ===undefined ) || c.lotsOnHand[0].totalAdjustments !== (c.lotsOnHand[0].quantity - c.lotsOnHand[0].quantityOnHand)))"/>
+
+                </div>
+                <div ng-if="c.lotsOnHand.length === 0"
+                     ng-show="!c.isSkipped && (c.quantity !==undefined && c.quantity !=='')">
+                        <span ng-show="c.quantity != undefined && ( c.adjustmentReasons.length >0 && (c.totalAdjustments === (c.quantity - c.totalQuantityOnHand)))"
+                              class="icon-ok-sign green" style="margin-left:20px"></span>
+                        <span ng-show='((c.quantity !=="" || c.quantity != undefined)  && ((c.adjustmentReasons.length ===0 || c.adjustmentReasons ===undefined ) ||   c.totalAdjustments != (c.quantity - c.totalQuantityOnHand)))'
+                              class="icon-remove red" style="margin-left:20px"></span>
+                    <input ng-model="c.valid" name="validator_{{c.$index}}_" type="hidden"
+                           ng-required="!c.isSkipped && ((c.quantity !=='' || c.quantity !== undefined)  && ((c.adjustmentReasons.length ===0 || c.adjustmentReasons ===undefined ) || c.totalAdjustments !== (c.quantity - c.totalQuantityOnHand)))"/>
+                </div>
+
+            </td>
+        </tr>
+        <tr ng-repeat-end ng-repeat="lot in c.lotsOnHand" ng-show="!$first" ng-class="color">
+            <td class="col-lot  cell-input disabled" ng-class="{'last-row':$last}">
+                <span class="cell-text" ng-bind="lot.lot.lotCode"></span>
+            </td>
+            <td class="col-available cell-input col-general number disabled" ng-class="{'last-row':$last}">
+                <span class="cell-text" ng-bind="lot.quantityOnHand | number"></span>
+            </td>
+            <!--Boxes-->
+            <td ng-class="{'last-row':$last,'disabled':lot.isSkipped}" class="col-count cell-input col-general " ng-if="stock.productCategory == 'Vaccine'">
+                <input name="{{c.product.primaryName}} batch # {{lot.lot.lotCode}}" ng-required="!lot.isSkipped"
+                       ng-disabled="lot.isSkipped"
+                       ng-model="lot.boxes" maxlength="5" type="number" min="0"
+                       style="width: 90px !important;"/>
+            </td>
+            <!--Lose Vials-->
+            <td ng-class="{'last-row':$last,'disabled':lot.isSkipped}" class="col-count cell-input col-general "  ng-if="stock.productCategory == 'Vaccine'">
+                <input name="{{c.product.primaryName}} batch # {{lot.lot.lotCode}}" ng-required="!lot.isSkipped"
+                       ng-disabled="lot.isSkipped"
+                       ng-model="lot.vials" maxlength="5" type="number" min="0"
+                       style="width: 90px !important;"
+                       ng-change="updateCurrentTotal1(c,lot)"/>
+            </td>
+            <!--Doses-->
+            <td ng-class="{'last-row':$last,'disabled':lot.isSkipped}" class="col-count cell-input col-general "  ng-if="stock.productCategory == 'Vaccine'">
+                <input name="{{c.product.primaryName}} batch # {{lot.lot.lotCode}}" ng-required="!lot.isSkipped"
+                       ng-disabled="lot.isSkipped"
+                       ng-model="lot.quantity" maxlength="5" type="number" min="0"
+                       ng-change="updateCurrentTotal(c,lots)"
+                       divisible-by-presentation="{{c.presentation}}" style="width: 90px !important;"/>
+            </td>
+            <td ng-class="{'last-row':$last,'disabled':lot.isSkipped}" class="col-count cell-input col-general "  ng-if="stock.productCategory !== 'Vaccine'" colspan="3">
+                <input name="{{c.product.primaryName}} batch # {{lot.lot.lotCode}}" ng-required="!lot.isSkipped"
+                       ng-disabled="lot.isSkipped"
+                       ng-model="lot.quantity" maxlength="5" type="number" min="0"
+                       ng-change="updateCurrentTotal(c,lots)"
+                       divisible-by-presentation="{{c.presentation}}" />
+            </td>
+            <td ng-if="vvmTracked(c)" ng-class="{'last-row':$last,'disabled':lot.isSkipped}"
+                class="col-count cell-input col-general ">
+                <select style="max-width:130px !important;min-width:130px !important" ui-select2
+                        ng-options="i.value as i.name for i in vvmStatuses" name="vvm_{{lot.$index}}"
+                        ng-disabled="lot.isSkipped"
+                        ng-model="lot.customProps.vvmstatus" maxlength="5" type="text">
+                    <option value="">--VVM Status--</option>
+                </select>
+            </td>
+            <td ng-if="!vvmTracked(c)" class="skip last-row"></td>
+            <td ng-class="{'last-row':$last, 'disabled':lot.isSkipped}" class="col-skip cell-input ">
+                <input ng-disabled="lot.quantity !==undefined && lot.quantity !==''" style="margin-left:10px"
+                       type="checkbox" ng-model="lot.isSkipped"/></td>
+            <td ng-class="{'last-row':$last, 'disabled':lot.isSkipped,
+                 'adj-reason-error':((!lot.isSkipped && (lot.quantity !==undefined && lot.quantity !==''))   &&  ((lot.quantity !=='' || lot.quantity != undefined)  && ((lot.adjustmentReasons.length ===0 || lot.adjustmentReasons ===undefined ) || lot.totalAdjustments != (lot.quantity - lot.quantityOnHand))))
+                }" class="col-reason cell-input ">
+                <a ng-hide="lot.isSkipped" href id="lossesAndAdjustmentLink_{{$index}}"
+                   ng-click="showAdjustmentReason(lot)" class="rnr-adjustment">
+                        <span ng-init="lot.totalAdjustments=0" class="adjustment-value"
+                              ng-bind="lot.totalAdjustments | number"
+                              ng-class="{'adj-error':((!lot.isSkipped && (lot.quantity !==undefined && lot.quantity !==''))   &&  ((lot.quantity !=='' || lot.quantity != undefined)  && ((lot.adjustmentReasons.length ===0 || lot.adjustmentReasons ===undefined ) || lot.totalAdjustments != (lot.quantity - lot.quantityOnHand))))}"
+                        ></span>
+                </a>
+            </td>
+            <td class="col-affected cell-input number cell-text disabled" ng-class="{'last-row':($last)}">
+                <span ng-show="(lot.quantity !==undefined && lot.quantity !=='') && !lot.isSkipped ">{{lot.quantity - lot.quantityOnHand | number}}</span>
+            </td>
+            <td class="col-validation cell-input cell-text disabled" ng-class="{'last-row':$last}">
+                <div ng-show="!lot.isSkipped && (lot.quantity !==undefined && lot.quantity !=='')">
+                        <span ng-show="lot.adjustmentReasons.length >0 && lot.totalAdjustments === (lot.quantity - lot.quantityOnHand)"
+                              class="icon-ok-sign green" style="margin-left:20px"></span>
+                        <span ng-show="(lot.adjustmentReasons.length ===0 || lot.adjustmentReasons ===undefined ) || !(lot.totalAdjustments === (lot.quantity - lot.quantityOnHand))"
+                              class="icon-remove red" style="margin-left:20px"></span>
+                    <input ng-model="lot.valid" name="validator_{{$index}}_0" type="hidden"
+                           ng-required="!lot.isSkipped && ((lot.quantity !=='' || lot.quantity !== undefined)  && ((lot.adjustmentReasons.length ===0 || lot.adjustmentReasons ===undefined ) || lot.totalAdjustments !== (lot.quantity - lot.quantityOnHand)))"/>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

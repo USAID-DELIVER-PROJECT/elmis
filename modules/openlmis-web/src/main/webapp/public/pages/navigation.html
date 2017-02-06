@@ -179,6 +179,10 @@
             <a href="/public/pages/vaccine/inventory/index.html#/receive"
                openlmis-message="link.vaccine.receive"></a>
           </li>
+	  <li ng-show="hasPermission('USE_BARCODE_FEATURE') ">
+            <a href="/public/pages/vaccine/inventory/index.html#/receive_barcode"
+               >Receive With Barcode</a>
+          </li>
 
             <li ng-show="hasPermission('MANAGE_STOCK') ">
                 <a href="/public/pages/vaccine/inventory/index.html#/view-issue-voucher"
@@ -195,9 +199,21 @@
             <a href="/public/pages/vaccine/inventory/index.html#/facility-distribution">Facility Distribution</a>
           </li>
           <li ng-show="hasPermission('MANAGE_STOCK')">
+            <a href="/public/pages/vaccine/inventory/index.html#/mass-distribution"
+               openlmis-message="link.vaccine.distribute"></a>
+          </li>
+          <li ng-show="hasPermission('USE_BARCODE_FEATURE')">
+              <a href="/public/pages/vaccine/inventory/index.html#/distribute_barcode"
+              >Distribute with Barcode</a>
+          </li>
+          <li ng-show="hasPermission('MANAGE_STOCK')">
             <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment"
                openlmis-message="link.vaccine.stock.adjustment"></a>
           </li>
+	  <li ng-show="hasPermission('USE_BARCODE_FEATURE')">
+                  <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment-barcode"
+                     >Physical Count/Stock Adjustment</a>
+             </li>
             <li ng-show="hasPermission('MANAGE_STOCK')">
                 <a href="/public/pages/vaccine/inventory/index.html#/transfer-in"
                    openlmis-message="link.vaccine.transfer.in"></a>

@@ -1,0 +1,78 @@
+<!--header-->
+
+<div style="width: 712px; font-family: 'Arial', sans-serif;  font-size: 17px" ng-if="distribution_found">
+    <div class="row">
+        <div class="span2" style="margin-left: 20px"><img src="../../../images/help/logo.png" style="height: 70px"></div>
+        <div class="span8" style="text-align: center">
+            <p><strong>The United Republic Of Tanzania</strong></p>
+            <p> <strong>Ministry of Health and Social Welfare</strong></p>
+            <p> <strong> Immunization and Vaccine Development</strong></p>
+            <p><strong>Immunization and Vaccine Development</strong></p>
+        </div>
+        <div class="span1">
+            <img src="../../../images/help/logo-right.jpg" class="pull-right">
+        </div>
+    </div>
+
+    <h3 style="text-align: center;margin: 0px">ISSUE VOUCHER</h3>
+
+    <div barcode-generator="{{ data.finalDistribution.voucherNumber  }}" style="height:80px; margin-left: 110px"></div>
+
+    <div style="border: 2px #0e90d2 solid; padding: 15px; margin-bottom: 10px;margin-top: 10px">
+        <table>
+            <tr>
+                <td style="width: 120px">Distributed To:</td>
+                <td>: {{ data.finalDistribution.toFacility.name }} </td>
+
+            </tr>
+            <tr>
+                <td>Issue Date</td>
+                <td>: {{ data.finalDistribution.distributionDate | date :  "MMM d, y" }}</td>
+            </tr>
+            <tr>
+                <td>Issue Voucher</td>
+                <td>: {{ data.finalDistribution.voucherNumber  }}</td>
+            </tr>
+        </table>
+    </div>
+    <table style="width:712px;border-collapse: collapse; " class="table table-bordered">
+        <tr style="background-color: #0e90d2; max-height: 30px">
+            <td style="text-align: center">Product</td>
+            <td style="text-align: center">Batch #</td>
+            <td style="text-align: center">Expiry Date</td>
+            <td style="text-align: center">Doses Requested</td>
+            <td style="text-align: center">Doses Issued</td>
+        </tr>
+        <tbody ng-repeat=" vaccine in data.finalDistribution.lineItems">
+            <tr ng-repeat="lot in vaccine.lots" style="max-height: 30px;">
+                <td style="text-align: center">{{ lot.lot.product.primaryName }}</td>
+                <td style="text-align: center">{{ lot.lot.lotCode }}</td>
+                <td style="text-align: center">{{ lot.lot.expirationDate | date :  "MMM d, y"}}</td>
+                <td style="text-align: center"></td>
+                <td style="text-align: center">{{ lot.quantity }}</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+    <div style="border: 1px black solid; padding: 15px; margin-bottom: 10px; margin top: ">
+        <table style="width: 680px">
+            <tr style="height: 35px">
+                <td colspan="3">Issuing Officer</td>
+            </tr>
+            <tr>
+                <td style="width: 33%">Signature <br>_______________</td>
+                <td style="width: 33%">Designation <br>_______________</td>
+                <td style="width: 33%">Date <br>_______________</td>
+            </tr>
+            <tr style="height: 35px">
+                <td colspan="3"><hr>Receiving Officer</td>
+            </tr>
+            <tr>
+                <td style="width: 33%">Signature <br>_______________</td>
+                <td style="width: 33%">Designation <br>_______________</td>
+                <td style="width: 33%">Date <br>_______________</td>
+            </tr>
+        </table>
+    </div>
+</div>

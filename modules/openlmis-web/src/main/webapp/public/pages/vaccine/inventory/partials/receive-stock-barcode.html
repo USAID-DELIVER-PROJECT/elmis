@@ -1,0 +1,246 @@
+<!--
+* Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+*
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+*
+* This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE html>
+
+<style>
+    .rnr-table .table-bordered td:last-child {
+        border-right: 1px solid #ddd !important;
+    }
+
+    .rnr-table .table-bordered td.last-row {
+        border-bottom: 1px solid #ccc !important;
+    }
+
+    .table-bordered td.row-add-batch {
+        border-right:none !important;
+        background:#c7e5e7 !important;
+        padding-top:8px !important;
+        border-top:1px solid #ddd;
+
+    }
+
+    .table-bordered td.row-add-batch-last {
+        background:#c7e5e7 !important;
+        padding-top:8px !important;
+        border-top:1px solid #ddd;
+
+    }
+
+    .table-bordered td.row-add {
+        background:#e1f5f8 !important;
+        border-top:1px solid #ddd;
+
+        /*e1f5f8*/
+    }
+
+    .rnr-table .table-bordered tr td {
+        padding-left:6px !important;
+    }
+
+    input[type="text"]{height:30px !important;}
+    input[type="text"].orderNumberError{border:1px solid #ff0000 !important;}
+
+    table.receive{
+        background:#FAFAFA;
+    }
+    table.receive td, table.receive th{
+        border-top-color:#FAFAFA;
+        border-bottom-color:#FAFAFA;
+        padding:6px 6px 6px 6px;
+        text-align:left;
+    }
+    table.receive th{
+        /* border-bottom: 1px solid #ddd;*/
+    }
+
+</style>
+
+<div >
+    <div class="row-fluid" ng-if="isTransferIn === undefined">
+        <div class="span10">
+            <h2><span openlmis-message="label.vaccine.stock.receive"></span></h2>
+        </div>
+        <div class="span2" style="padding: 10px;" ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
+            <label class="pull-right" style="opacity: .7" style="border-bottom: 1px solid #d6d6d6;">
+                <input type="checkbox" ng-model="useBarcode" ng-change="switchBarcodeToNormal()" style="height: 19px;width: 19px; margin:-1px 4px 0 0;vertical-align:middle;cursor:pointer;">
+                Use Barcode
+            </label>
+        </div>
+    </div>
+
+    <h2 ng-if="isTransferIn === true"><span openlmis-message="label.vaccine.transfer.in"></span></h2>
+
+    <div ng-show="hasStock && !hasPermission('INITIALIZE_STOCK') && hasPermission('OPEN_STOCK_RECEIVING_PROCESS')">
+
+    </div>
+    <br/>
+    <div class="row-fluid" >
+        <div class="span12" >
+            <div ng-show="hasStock && !hasPermission('INITIALIZE_STOCK')">
+                <div class="info-box padding2px" >
+                    <div class="requisition-head-block">
+                        <div class="row-fluid" ng-form="receivingForm">
+                            <div class="span12" style="padding:18px 10px 0px 10px">
+                                <div class="row-fluid">
+                                    <div class="span3 input-append"
+                                         ng-show=" (!hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !hasPermission('INITIALIZE_STOCK')) || isTransferIn ">
+                                        <button id="searchOptionButton" class="btn dropdown-toggle">
+                                            <span id="selectedSearchOption"
+                                                  openlmis-message="label.stock.enter.issue.voucher"></span>
+                                        </button>
+                                        <input type="text" name="voucherNumber" ng-required="true"
+                                               ng-model="receivedProducts.voucherNumber" ng-change="clear()"/>
+                                        <button class="btn" ng-click="loadDistribution(1);">
+                                            <i id="searchIcon" class="icon-search"></i>
+                                        </button>
+
+                                    </div>
+                                    <div class="span3"
+                                         ng-show=" hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !isTransferIn">
+                                        <strong id="voucher-number"
+                                                openlmis-message="label.stock.order.number"> </strong>
+                                        <span class="label-required">*</span>:&nbsp;
+                                        <input ng-reqiured=" hasPermission('OPEN_STOCK_RECEIVING_PROCESS')" type="text"
+                                               name="orderNumber" ng-required="true"
+                                               ng-class="{'orderNumberError':orderNumberExist}"
+                                               ng-model="orderNumber" ng-change="clear()" ng-blur="checkOrderNumber()"/>
+                                        <br><small style="opacity: .7">** Order number (will be provided by the sender) </small>
+                                        <span ng-show="orderNumberExist" style="color:#ff0000">
+                                            <br/>
+                                            <span style="margin-left:120px"
+                                                  openlmis-message="error.message.order.number.exist"></span>
+                                        </span>
+
+                                    </div>
+                                    <!--<div class="span1"></div>-->
+                                    <div class="span3"
+                                         ng-show="distribution !== undefined && (!hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || isTransferIn)">
+                                        <div>
+                                            <strong id="received-date-label"
+                                                    openlmis-message="label.stock.received.date"> </strong>
+                                            <span class="label-required">*</span>:&nbsp;
+                                            <input ng-required="(distribution !== undefined && !noVoucherNumber) || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')"
+                                                   id="receivingDate" name="receivingDate" type="text"
+                                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: false,maxDate:'today',minDate:period.stringStartDate}"
+                                                   ui-date-format="yy-mm-dd"
+                                                   ng-model="occurredDate"/>
+
+                                        </div>
+                                    </div>
+                                    <div class="span3"
+                                         ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !isTransferIn">
+                                        <div>
+                                            <strong id="received-date-label1"
+                                                    openlmis-message="label.stock.received.date"> </strong>
+                                            <span class="label-required">*</span>:&nbsp;
+                                            <input ng-required="(distribution !== undefined && !noVoucherNumber) || hasPermission('OPEN_STOCK_RECEIVING_PROCESS')"
+                                                   id="receivingDate1"
+                                                   name="receivingDate"
+                                                   type="text"
+                                                   ui-date-format="yy-mm-dd"
+                                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: false,maxDate:'today',minDate:period.stringStartDate}"
+                                                   ng-model="orderDate"/>
+                                            <br><small style="opacity: .7">** Date of Receiving </small>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="span4"
+                                         ng-show="hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !isTransferIn && useBarcode">
+                                        <div>
+                                            <strong>Scan Item </strong>
+                                            <span class="label-required"></span>:&nbsp;&nbsp;
+                                            <input ng-if="hasStock" id="barcode_string" type="text" class="form-control" ng-model="barcode_string" ng-blur="scanLotNumber(barcode_string)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <span style="opacity: .7">
+                                            <input style="height: 19px;width: 19px; margin:-1px 4px 0 0;vertical-align:middle;cursor:pointer;" type="checkbox" ng-model="data.allowMultipleScan">
+                                            Add Doses
+                                        </span>
+                                                    <br><small style="opacity: .7">** Add Doses checked will add one box in each scan</small>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="span2" ng-show="distribution !== undefined">
+                                        <div>
+                                            <strong id='facilityLabel' openlmis-message="label.facility"> </strong>:&nbsp;
+                                            <span id='facility' ng-bind="facilityDisplayName"></span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="rnr-table" ng-show=" !hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || isTransferIn">
+                    <ng-include src="'/public/pages/vaccine/inventory/partials/voucher-receive-stock-partial.html'"></ng-include>
+                </div>
+            </div>
+
+            <!--if someone doesnt have stock-->
+            <div ng-show="!hasStock || hasPermission('INITIALIZE_STOCK')">
+                <div ng-show="useBarcode">
+                    <div>
+                        <strong>Scan Item </strong>
+                        <span class="label-required"></span>:&nbsp;&nbsp;
+                        <input id="barcode_string" type="text" class="form-control" ng-model="barcode_string" ng-blur="scanLotNumber(barcode_string)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="opacity: .7">
+                                            <input style="height: 19px;width: 19px; margin:-1px 4px 0 0;vertical-align:middle;cursor:pointer;" type="checkbox" ng-model="data.allowMultipleScan">
+                                            Add Doses
+                                        </span>
+                        <br><small style="opacity: .7">** Add Doses checked will add one box in each scan</small>
+
+                    </div>
+                </div>
+            </div>
+            <div ng-show="!isTransferIn && (hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || hasPermission('INITIALIZE_STOCK') || !hasStock)">
+                <ng-include src="'/public/pages/vaccine/inventory/partials/open-receive-stock-barcode-partial.html?i=21'"></ng-include>
+            </div>
+        </div>
+    </div>
+
+    <div form-toolbar id="action_buttons" class="action-buttons">
+        <div class="form-cell button-row">
+            <input ng-show="(hasStock && !hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && !hasPermission('INITIALIZE_STOCK') || isTransferIn)"
+                   ng-disabled="receivingForm.$valid || occurredDate ==null || distribution == undefined"
+                   type="submit"
+                   id="submit-button"
+                   ng-click="receive()"
+                   class="btn btn-primary save-button"
+                   openlmis-message="button.submit"/>
+
+            <input ng-show="!isTransferIn && (hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || !hasStock || hasPermission('INITIALIZE_STOCK'))"
+                   ng-disabled="orderNumberExist || openReceiveForm.$invalid || receivedProducts.length == 0 ||(hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderNumber ==null) || (hasStock && hasPermission('OPEN_STOCK_RECEIVING_PROCESS') && orderDate==null)"
+                   type="submit"
+                   id="submit-button2"
+                   ng-click="openReceive()"
+                   class="btn btn-primary save-button"
+                   openlmis-message="button.submit"/>
+
+            <input id="cancel" type="submit" id="cancel-button" ng-click="cancel()" class="btn btn-primary save-button"
+                   openlmis-message="button.cancel"/>
+
+        </div>
+
+
+        <div class="toolbar-error" id="saveErrorMsgDiv">
+            <span openlmis-message="error" ng-show="error"></span>&nbsp;
+            <span ng-show="errorProgram" ng-bind="errorProgram"></span>
+        </div>
+        <div class="toolbar-success" id="saveSuccessMsgDiv" openlmis-message="message.receive.successful"
+             ng-show="message"></div>
+    </div>
+
+</div>
