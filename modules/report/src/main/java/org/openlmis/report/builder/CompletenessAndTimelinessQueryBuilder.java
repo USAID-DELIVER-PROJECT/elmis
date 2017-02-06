@@ -186,11 +186,11 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "       COALESCE(vr.outreachimmunizationsessions,0) outreach,   \n" +
                 "       COALESCE(z.catchmentpopulation,0) target,   \n" +
                 "     CASE   \n" +
-                "        WHEN date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone) <=  \n" +
+                "        WHEN date_part('day'::text,  COALESCE(vr.submissiondate::date,vr.createddate::date) - pp.enddate::date::timestamp without time zone) <=  \n" +
                 "        COALESCE((( SELECT configuration_settings.value FROM configuration_settings    \n" +
                 "        WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision  \n" +
                 "        THEN 'T'::text    \n" +
-                "        WHEN COALESCE(date_part('day'::text, vr.createddate::date - pp.enddate::date::timestamp without time zone), 0::double precision) >  \n" +
+                "        WHEN COALESCE(date_part('day'::text,  COALESCE(vr.submissiondate::date,vr.createddate::date) - pp.enddate::date::timestamp without time zone), 0::double precision) >  \n" +
                 "        COALESCE((( SELECT configuration_settings.value FROM configuration_settings    \n" +
                 "        WHERE configuration_settings.key::text = 'VACCINE_LATE_REPORTING_DAYS'::text))::integer, 0)::double precision  \n" +
                 "        THEN 'L'::text    \n" +
