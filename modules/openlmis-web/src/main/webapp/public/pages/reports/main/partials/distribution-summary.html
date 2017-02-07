@@ -8,6 +8,12 @@
 ~ You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
 -->
 <style>
+
+
+
+
+
+
     .summary-table {
         table-layout: fixed;
         width: 100% !important;
@@ -32,6 +38,66 @@
         table-layout: fixed;
         width: 100%;
     }
+
+    .rnr-table .table-bordered th.p-column, .rnr-table .table-bordered td.p-column{
+        border-right:solid 3px #ddd !important;
+    }
+
+    td.cross span{
+        text-decoration:line-through;
+    }
+
+
+    .rnr-table #fullSupplyFrozenTable th ,.rnr-table #fullSupplyFrozenTable td{min-width:80px !important;width:80px
+    !important;}
+    .rnr-table .left-table {width: 24%; max-width: 24%;}
+    .rnr-table .right-table {width: 75.7%;max-width: 75.7%;}
+    .rnr-table .left-table th.col-action,.rnr-table .left-table
+    td.col-action{width:100px;max-width:100px;min-width:100px}
+    .rnr-table .left-table input[type="submit"]{width:80px !important;margin:4px 2px 5px 2px !important}
+    a span{font-size:12px}
+    #popupModel2 {width:80%; }
+    table tr.pod td {
+        background-color: #F0F0F0;
+
+    }
+    .right-table table tr.pod td span{
+        float:right;margin:9px 8px 10px 2px;
+        color:#055e74;
+    }
+
+
+
+    .rnr-table .table-bordered tr td.error{
+        background:#f00 !important;
+    }
+    .rnr-table .table-bordered th.p-column, .rnr-table .table-bordered td.p-column{
+        border-right:solid 3px #ddd !important;
+    }
+
+    .rnr-table .table-bordered tr.unchecked td{
+        background:#F2F2F2 !important;
+    }
+
+    td.lot-expired span{
+        color:#d58512;
+    }
+
+    td.cross span{
+        text-decoration:line-through;
+    }
+
+
+    <!--th.header {-->
+        <!--background: #F2F2F2; !important;-->
+        <!--color:#000 !important;-->
+        <!--font-weight: normal !important;-->
+        <!--text-shadow: none !important;-->
+        <!--}-->
+
+
+
+
 </style>
 <div class="row-fluid">
     <div class="box span12">
@@ -78,120 +144,30 @@
             <div class="box-icon" style="float:right;">
                 <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
                 <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
-                <div class="clear-both"><br/></div>
+                <div class="clearfix"><br/></div>
             </div>
             <h2 ></h2>
 
-<!--
-            <div class="clear-both"><br/></div>
--->
+            <div class="clearfix"><br/></div>
 
 
-            <div style="background-color: #fff; padding: 5px" class="rnr-table">
-
-            <div class="float-left left-table parent">
-
-                <table class="table table-bordered" fixed-table-header id="fullSupplyFrozenTable">
-                    <thead>
-                    <tr>
-                        <th colspan="2" ng-if="routineFacility.status !=='RECEIVED'">
-                            <span openlmis-message="header.issue.type" class="cell-text"></span>:
-                            <strong id='routineLabel2' openlmis-message="label.vaccine.stock.routine"> </strong>
-                        </th>
-                        <th colspan="2" ng-if="routineFacility.status ==='RECEIVED'">
-                            <span openlmis-message="header.issue.type" class="cell-text"></span>:
-                            <strong id='EmergencyLabel2' openlmis-message="label.vaccine.stock.emergency"> </strong>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th colspan="2">
-                            <span openlmis-message="label.period" class="cell-text"></span>:
-                            <strong id='periodLabel' ng-bind="routineFacility.currentPeriod.name"> </strong><br/>&nbsp;
-                        </th>
-                    </tr>
-                    <tr>
-                        <th openlmis-message="label.facility"></th>
-                        <th style="width:100px;max-width:100px;min-width:100px" class="col-action"
-                            openlmis-message="label.action"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-class="{'pod':(routineFacility.status === 'PENDING')}"
-                        ng-click="setSelectedFacility(routineFacility)"
-                        style="{{getSelectedFacilityColor(facility)}}">
-                        <td class="col-facility">
-                            <span class="cell-text">{{routineFacility.name}}</span>
-                        </td>
-                        <td style="width:100px;max-width:100px;min-width:100px" class="col-action">
-                            <input ng-show="(routineFacility.status !== 'RECEIVED' && routineFacility.status === undefined && routineFacility.status !=='PENDING')"
-                                   ng-click="showIssueModal(routineFacility,'ROUTINE')"
-                                   type="submit" class="btn btn-primary" openlmis-message="button.add"
-                                   title="Add Products to distribute"
-                                    >
-                            <input ng-show="routineFacility.status ==='RECEIVED'"
-                                   ng-click="showIssueModal(routineFacility,'EMERGENCE')"
-                                   type="submit" class="btn btn-primary" openlmis-message="button.add">
-                            <input
-                                    ng-show="routineFacility.status === 'PENDING'"
-                                    ng-click="showPODModal(routineFacility)"
-                                    type="submit"
-                                    class="btn btn-primary" value="POD" title="Proof of Delivery"
-                                    openlmis-message="button.vaccine.stock.pod">
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <div style="background-color: #fff;" class="rnr-table">
 
 
-
-
-            <div  class="float-left right-table parent"
-                 custom-horizontal-scroll>
+            <div  class="float-left right-table parent" custom-horizontal-scroll>
                 <table class="table table-bordered" fixed-table-header>
-                    <thead>
-                    <tr>
-                        <th colspan="{{routineFacility.productsToIssue.length *2}}"
-                            openlmis-message="label.products"></th>
+
+                    <tr><th>Region</th>
+                        <th>Facility</th>
+                        <th ng-repeat="year in headCells">{{year}}</th>
                     </tr>
-                    <tr>
-                        <th style="text-align:left" colspan="1" class="p-column"
-                            ng-repeat="product in routineFacility.productsToIssue">
-                            {{product.name}} <br/> ({{product.dosageUnit}})
-                        </th>
+                    <tr ng-repeat="(itemName, value) in rows">
+                        <td>{{value[$index].region}}</td>
+                        <td>{{itemName}}</td>
+                        <td ng-repeat="obj in sortByProductProp(value)">
+                            <span>{{obj.quantityIssued}}</span></td>
                     </tr>
-                    <tr colspan="2">
-                        <th style="max-width:80px;width:80px;min-width:80px"
-                            ng-show="(routineFacility.status !== 'RECEIVED' && routineFacility.status === undefined && routineFacility.status !=='PENDING')"
-                            ng-repeat="product in routineFacility.productsToIssue"
-                            openlmis-message="label.vaccine.stock.quantity.required">
-                        </th>
-                        <th ng-show="routineFacility.status === 'PENDING'"
-                            style="max-width:80px;width:80px;min-width:80px" class="p-column"
-                            ng-repeat="product in routineFacility.productsToIssue"
-                            openlmis-message="label.vaccine.stock.quantity.toissue"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-class="{'pod':(routineFacility.status === 'PENDING')}"
-                        ng-if="routineFacility.status !=='RECEIVED'"
-                        ng-click="setSelectedFacility(routineFacility)"
-                        style="{{getSelectedFacilityColor(facility)}}"
-                            >
-                        <td ng-show="(routineFacility.status !== 'RECEIVED' && routineFacility.status === undefined && routineFacility.status !=='PENDING')"
-                            class="col-facility" ng-repeat-start="product in routineFacility.productsToIssue">
-                            <span style="float:left;margin:9px 2px 10px 3px;padding-left:10px;"
-                                  ng-bind="product.quantityRequired"></span>
-                        </td>
-                        <td ng-show="routineFacility.status === 'PENDING'" style="text-align:left !important"
-                            class="col-facility p-column" ng-repeat-end>
-                            <span style="float:left;margin:9px 2px 10px 3px;padding-left:2px;"
-                                  ng-if="(routineFacility.status === undefined || routineFacility.status === 'PENDING') && product.quantity !==0"
-                                  ng-bind="product.quantity"></span>
-                            <span style="float:left;margin:9px 2px 10px 3px;padding-left:2px;"
-                                  ng-if="(routineFacility.status === undefined || routineFacility.status === 'PENDING') && product.quantity ===0">0</span>
-                        </td>
-                    </tr>
+
                 </table>
             </div>
 
