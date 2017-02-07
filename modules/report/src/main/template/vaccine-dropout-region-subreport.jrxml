@@ -322,7 +322,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<staticText>
 					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="1" width="72" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="21b51465-ee58-4067-b0f5-7e64a6b24742">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-						<printWhenExpression><![CDATA[$V{dropout_percentage}<0 || $V{dropout_percentage}>=10]]></printWhenExpression>
+						<printWhenExpression><![CDATA[$V{dropout_percentage}<0 || $V{dropout_percentage}>10]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
@@ -330,7 +330,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<staticText>
 					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="0" width="77" height="20" forecolor="#FFFFFF" backcolor="#00FF00" uuid="d6981882-143b-42e7-a1b6-b8523d9921c9">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-						<printWhenExpression><![CDATA[$V{dropout_percentage}<5 &&$V{dropout_percentage}>=0]]></printWhenExpression>
+						<printWhenExpression><![CDATA[$V{dropout_percentage}<=10 &&$V{dropout_percentage}>=0]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
@@ -338,23 +338,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<staticText>
 					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="1" width="72" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="8b4bfca5-9a43-4416-8ed8-ff840a358c51">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-						<printWhenExpression><![CDATA[$V{dropout_percentage}<5 && $V{dropout_percentage}>=0]]></printWhenExpression>
-					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
-					<text><![CDATA[]]></text>
-				</staticText>
-				<staticText>
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="0" width="72" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="7b889e16-856f-49f6-9d42-f94994341cda">
-						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-						<printWhenExpression><![CDATA[$V{dropout_percentage}<10 && $V{dropout_percentage}>=5]]></printWhenExpression>
-					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
-					<text><![CDATA[]]></text>
-				</staticText>
-				<staticText>
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="0" width="77" height="20" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="d1231c57-dd55-4ad0-8684-4c6c46afda41">
-						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-						<printWhenExpression><![CDATA[$V{dropout_percentage}<10 &&$V{dropout_percentage}>=5]]></printWhenExpression>
+						<printWhenExpression><![CDATA[$V{dropout_percentage}<=10 && $V{dropout_percentage}>=0]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
@@ -362,7 +346,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<staticText>
 					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="0" width="77" height="20" forecolor="#FFFFFF" backcolor="#FF0000" uuid="04001b72-bbd3-4b91-8b1d-61a821026ed2">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-						<printWhenExpression><![CDATA[$V{dropout_percentage}<0 ||$V{dropout_percentage}>=10]]></printWhenExpression>
+						<printWhenExpression><![CDATA[$V{dropout_percentage}<0 ||$V{dropout_percentage}>10]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
@@ -420,17 +404,9 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="1" width="77" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="746cc72d-2567-44cb-8d8b-1127f59bad20">
-					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$F{generated}==false&&$F{cum_bcg_mr_dropout}<10 &&$F{cum_bcg_mr_dropout}>=5]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="1" width="77" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="eaa40e2b-c6d3-4f5e-8c11-6d42c65a2b9e">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$F{generated}==false&&$F{cum_bcg_mr_dropout}>=10 ||$F{cum_bcg_mr_dropout}<0]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{generated}==false&&$F{cum_bcg_mr_dropout}>10 ||$F{cum_bcg_mr_dropout}<0]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
@@ -438,7 +414,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="1" width="77" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="102319fd-5f49-41be-b3b5-553e55d4d7e5">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$F{generated}==false&&$F{cum_bcg_mr_dropout}<5 &&$F{cum_bcg_mr_dropout}>=0]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{generated}==false&&$F{cum_bcg_mr_dropout}<=10 &&$F{cum_bcg_mr_dropout}>=0]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
@@ -446,7 +422,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="486" y="1" width="72" height="19" forecolor="#FFFFFF" backcolor="#00FF00" uuid="18d0356c-7742-4110-8f64-158866ba6186">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$F{generated}==false&&$F{bcg_mr_dropout}<5 &&$F{bcg_mr_dropout}>=0]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{generated}==false&&$F{bcg_mr_dropout}<=10 &&$F{bcg_mr_dropout}>=0]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
@@ -454,15 +430,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="486" y="1" width="72" height="19" forecolor="#FFFFFF" backcolor="#FF0000" uuid="617bdb98-4d1d-46ea-af46-d63dec2abcd3">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$F{generated}==false&&$F{bcg_mr_dropout}>=10 ||$F{bcg_mr_dropout}<0]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="486" y="1" width="72" height="19" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="60598021-4bd7-46e9-90ff-d83c51f26edc">
-					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$F{generated}==false&&$F{bcg_mr_dropout}<10 && $F{bcg_mr_dropout}>=5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{generated}==false&&$F{bcg_mr_dropout}>10 ||$F{bcg_mr_dropout}<0]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
@@ -593,22 +561,6 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="0" width="72" height="18" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="84dd4691-38fe-4686-bb65-ebf3940abc18">
-					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}<10 && $V{grand_dropout_percentage}>=5]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="0" width="77" height="18" forecolor="#FFFFFF" backcolor="#FFFF00" uuid="b5e0436d-b619-4a66-aa90-e2f51920587d">
-					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}<10 && $V{grand_dropout_percentage}>=5]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="0" width="77" height="18" forecolor="#FFFFFF" backcolor="#FF0000" uuid="24085ca6-fcb5-4bcc-b0e5-666055f57f59">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}>10 || $V{grand_dropout_percentage}<0]]></printWhenExpression>
@@ -619,7 +571,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="713" y="0" width="77" height="18" forecolor="#FFFFFF" backcolor="#00FF00" uuid="e0febab7-4be8-44fb-88a9-a752bd5182cf">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}>=0 &&$V{grand_dropout_percentage}<5]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}>=0 &&$V{grand_dropout_percentage}<10]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
@@ -635,7 +587,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<staticText>
 				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="487" y="0" width="72" height="18" forecolor="#FFFFFF" backcolor="#00FF00" uuid="54b9418f-26ec-4077-b433-0eb8c5f9ed6d">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
-					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}<5 &&$V{grand_dropout_percentage}>=0]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}<10 &&$V{grand_dropout_percentage}>=0]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>

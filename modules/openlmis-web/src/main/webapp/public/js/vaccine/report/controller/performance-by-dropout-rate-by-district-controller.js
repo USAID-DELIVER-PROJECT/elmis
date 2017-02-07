@@ -118,8 +118,6 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         var dropout=cumulative===1?value.cum_bcg_mr_dropout:cumulative===0?value:value.bcg_mr_dropout;
         if (dropout > 10 || dropout<0) {
             bgColor = $scope.maxTemp;
-        } else if (dropout> 5 ) {
-            bgColor = $scope.average;
         }
         else {
             bgColor = $scope.minTemp;
@@ -147,12 +145,8 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         var bgColor = '';
         if (value == '4_dropoutGreaterThanHigh') {
             bgColor = 'DO >10% and DO (-ve)';
-        } else if (value == '3_droOputBetweenMidAndHigh') {
-            bgColor = '5% < DO <=10%';
-        } else if (value == '2_dropOutBetweenMidAndMin') {
-            bgColor = ' 5% < DO <=10%';
         } else if(value == '1_dropoutGreaterThanHigh') {
-            bgColor = 'DO <=5';
+            bgColor = 'DO <=10 and DO (+ve)';
         }else{
             bgColor = 'Non Reporting';
         }
