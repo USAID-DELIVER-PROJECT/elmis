@@ -136,7 +136,7 @@ public class IvdFormServiceTest {
     VaccineReport report = make(a(VaccineReportBuilder.defaultVaccineReport));
     when(repository.getByProgramPeriod(1L, 1L, 1L)).thenReturn(report);
 
-    VaccineReport result = service.initialize(1L, 1L, 1L, 1L);
+    VaccineReport result = service.initialize(1L, 1L, 1L, 1L, false);
     verify(programProductService, never()).getActiveByProgram(1L);
     assertThat(result, is(report));
   }

@@ -52,7 +52,20 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(PERIODS, service.getReportedPeriodsFor(facilityId, programId));
   }
 
-  @RequestMapping(value = {"/vaccine/report/initialize/{facilityId}/{programId}/{periodId}", "rest-api/ivd/initialize/{facilityId}/{programId}/{periodId}"}, method = RequestMethod.GET)
+
+  @RequestMapping(value = {"rest-api/ivd/initialize/{facilityId}/{programId}/{periodId}"}, method = RequestMethod.GET)
+  @ApiOperation(position = 4, value = "Initiate and IVD form")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
+  public ResponseEntity<OpenLmisResponse> initializeFromRestAPI(
+          @PathVariable Long facilityId,
+          @PathVariable Long programId,
+          @PathVariable Long periodId,
+          HttpServletRequest request
+  ) {
+    return OpenLmisResponse.response(REPORT, service.initialize(facilityId, programId, periodId, loggedInUserId(request), true));
+  }
+
+  @RequestMapping(value = {"/vaccine/report/initialize/{facilityId}/{programId}/{periodId}"}, method = RequestMethod.GET)
   @ApiOperation(position = 4, value = "Initiate and IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> initialize(
@@ -61,7 +74,7 @@ public class IvdFormController extends BaseController {
       @PathVariable Long periodId,
       HttpServletRequest request
   ) {
-    return OpenLmisResponse.response(REPORT, service.initialize(facilityId, programId, periodId, loggedInUserId(request)));
+    return OpenLmisResponse.response(REPORT, service.initialize(facilityId, programId, periodId, loggedInUserId(request), false));
   }
 
   @RequestMapping(value = {"/vaccine/report/get/{id}.json", "/rest-api/ivd/get/{id}.json"}, method = RequestMethod.GET)

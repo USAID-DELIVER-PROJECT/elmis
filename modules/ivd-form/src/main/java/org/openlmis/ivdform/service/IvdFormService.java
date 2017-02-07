@@ -118,12 +118,12 @@ public class IvdFormService {
   private static final String DATE_FORMAT = "yyyy-MM-dd";
 
   @Transactional
-  public VaccineReport initialize(Long facilityId, Long programId, Long periodId, Long userId) {
+  public VaccineReport initialize(Long facilityId, Long programId, Long periodId, Long userId, Boolean allowDraftsForMultipleMonths) {
     VaccineReport report = repository.getByProgramPeriod(facilityId, programId, periodId);
     if (report != null) {
       return report;
     }
-    validateInitiate(facilityId, programId, periodId);
+    validateInitiate(facilityId, programId, periodId, allowDraftsForMultipleMonths);
     report = createNewVaccineReport(facilityId, programId, periodId);
     repository.insert(report, userId);
     ReportStatusChange change = new ReportStatusChange(report, ReportStatus.DRAFT, userId);
@@ -131,9 +131,9 @@ public class IvdFormService {
     return report;
   }
 
-  private void validateInitiate(Long facilityId, Long programId, Long periodId) {
+  private void validateInitiate(Long facilityId, Long programId, Long periodId, Boolean allowDraftsForMultipleMonths) {
     VaccineReport draftReport = repository.getDraftReport(facilityId, programId);
-    if (draftReport != null) {
+    if (draftReport != null && !allowDraftsForMultipleMonths) {
       throw new DataException("error.facility.has.pending.draft");
     }
     List<ReportStatusDTO> openPeriods = this.getPeriodsFor(facilityId, programId, new Date());
@@ -367,7 +367,7 @@ public class IvdFormService {
     report.validateBasicHeaders();
     Long id = this.getReportIdForFacilityAndPeriod(report.getFacilityId(), report.getPeriodId());
     if (id == null) {
-      this.initialize(report.getFacilityId(), report.getProgramId(), report.getPeriodId(), userId);
+      this.initialize(report.getFacilityId(), report.getProgramId(), report.getPeriodId(), userId, false);
     }
     report.setSubmissionDate(new Date());
     this.submit(report, userId);

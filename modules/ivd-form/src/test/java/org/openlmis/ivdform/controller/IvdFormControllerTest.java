@@ -98,11 +98,11 @@ public class IvdFormControllerTest {
   @Test
   public void shouldInitialize() throws Exception {
     VaccineReport report = new VaccineReport();
-    when(service.initialize(1L, 1L, 1L, 1L)).thenReturn(report);
+    when(service.initialize(1L, 1L, 1L, 1L, false)).thenReturn(report);
 
     ResponseEntity<OpenLmisResponse> response = controller.initialize(1L, 1L, 1L, httpServletRequest);
 
-    verify(service).initialize(1L, 1L, 1L, 1L);
+    verify(service).initialize(1L, 1L, 1L, 1L, false);
     assertThat(report, is(response.getBody().getData().get("report")));
   }
 
