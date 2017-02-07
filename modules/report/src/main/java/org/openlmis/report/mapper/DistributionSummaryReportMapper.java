@@ -6,11 +6,8 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.DistributionSummaryQueryBuilder;
-import org.openlmis.report.builder.MinMaxVaccineReportQueryBuilder;
 import org.openlmis.report.model.params.DistributionSummaryReportParam;
-import org.openlmis.report.model.params.MinMaxVaccineReportParam;
 import org.openlmis.report.model.report.DistributionSummaryReport;
-import org.openlmis.report.model.report.MinMaxVaccineReport;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,11 +18,10 @@ import java.util.List;
 @Repository
 public interface DistributionSummaryReportMapper {
 
-    @SelectProvider(type = DistributionSummaryQueryBuilder.class, method = "getQuery")
-    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-    public List<DistributionSummaryReport> getReport(
-            @Param("filterCriteria") DistributionSummaryReportParam params,
-            @Param("RowBounds") RowBounds rowBounds);
-
+    @SelectProvider(type=DistributionSummaryQueryBuilder.class, method="getQuery")
+    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
+    public List<DistributionSummaryReport> getReportData(
+            @Param("filterCriteria") DistributionSummaryReportParam params
+            , @Param("RowBounds") RowBounds rowBounds );
 
 }

@@ -734,5 +734,4 @@ public class InteractiveReportController extends BaseController {
         return new Pages(page, max, reportData);
     }
 
-
 }

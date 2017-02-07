@@ -8,6 +8,7 @@ import org.openlmis.report.model.params.DistributionSummaryReportParam;
 import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,11 @@ public class DistributionSummaryReportDataProvider extends ReportDataProvider {
     @Autowired
     private DistributionSummaryReportMapper reportMapper;
 
-
     @Override
-    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+    @Transactional
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> SortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-        return reportMapper.getReport(getReportFilterData(filterCriteria), rowBounds);
-
+        return reportMapper.getReportData(getReportFilterData(filterCriteria), rowBounds);
     }
 
     private DistributionSummaryReportParam getReportFilterData(Map<String, String[]> filterCriteria) {

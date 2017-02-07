@@ -22,4 +22,19 @@ public class DistributionSummaryReport implements ResultRow {
 
     private String product;
 
+    private Integer facilityId;
+
+    private String BCG;
+
+    private String OPV;
+
+    private String PCV_13;
+
+    private String Rota;
+
+    private String DTP;
+
+    private String MR;
+
 }
+
