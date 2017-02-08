@@ -111,7 +111,7 @@
         </div>
         <div class="app-form">
             <form ng-submit="filterGrid()" name="filterForm" novalidate>
-                <div class="clearfix">
+                <div filter-container class="clearfix">
 
                     <!--================================ filter start ====================-->
 
@@ -150,28 +150,44 @@
 
             <div class="clearfix"><br/></div>
 
+            <table client-side-sort-pagination  class="table table-bordered" ng-show="distributedFacilities == undefined || distributedFacilities.length == 0">
+                <tr>
+                    <td>No data to show under selected filters</td>
+                </tr>
+            </table>
 
-            <div style="background-color: #fff;" class="rnr-table">
+            <div class="row-fluid rnr-table" scrollable>
 
-
-            <div  class="float-left right-table parent" custom-horizontal-scroll>
-                <table class="table table-bordered" fixed-table-header>
-
-                    <tr><th>Region</th>
-                        <th>Facility</th>
-                        <th ng-repeat="year in headCells">{{year}}</th>
-                    </tr>
-                    <tr ng-repeat="(itemName, value) in rows">
-                        <td>{{value[$index].region}}</td>
-                        <td>{{itemName}}</td>
-                        <td ng-repeat="obj in sortByProductProp(value)">
-                            <span>{{obj.quantityIssued}}</span></td>
-                    </tr>
-
-                </table>
+                <div >
+                    <table class="table table-bordered" table-striped scrollable ng-table="tableParams">
+                        <thead>
+                        <tr>
+                            <th openlmis-message="label.region"></th>
+                            <th openlmis-message="label.district"></th>
+                            <th openlmis-message="label.dvs.name" style="width:10%;!important;"></th>
+                            <th colspan="{{facilityProduct.length}}"><span style="text-align: left;!important;">Products</span></th>
+                        </tr>
+                        <tr><th></th>
+                            <th></th>
+                            <th></th>
+                            <th ng-repeat="p in facilityProduct" style="text-align: left">{{p.programProduct.product.primaryName}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="f in distributedFacilities">
+                            <td>{{f.products[$index].region}}</td>
+                            <td>{{f.products[$index].district}}</td>
+                            <td>{{f.facilityName}}</td>
+                            <td ng-repeat="p in facilityProduct">{{getProductQuantity(f.facilityName, p.programProduct.product.primaryName)}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                 <!--   <pagination total-items="dTotalItems" page="dCurrentPage" max-size="5"
+                                items-per-page="dPagination.limit"
+                                direction-links="false" class="pagination-sm"></pagination>-->
+                </div>
             </div>
 
-           </div>
             <div class="clear-both"><br/></div>
 
 
