@@ -31,10 +31,15 @@
         </div>
 
 
-        <div style="display: none;">
+        <div >
             <div class="app-form"  style="padding: 1px;">
                 <form ng-submit="filterGrid()"  name="filterForm" novalidate>
-                    (Filters go here)
+                    <div filter-container class="clearfix">
+                    <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+
+                    <facility-level-filter class="form-cell horizontalFilters"
+                                           required="true"></facility-level-filter>
+                        </div>
                 </form>
             </div>
         </div>
@@ -84,7 +89,7 @@
 
                         <td data-title="getLocalMessage('label.ownership')" sortable="facilityOperator">{{row.facilityOperator}}</td>
 
-                        <td data-title="getLocalMessage('label.electricity')" sortable="facilityHasElectricity">{{row.facilityHasElectricity}}</td>
+                        <td data-title="getLocalMessage('label.electricity')" sortable="facilityHasElectricity">{{(row.facilityHasElectricity)?'Yes':'No'}}</td>
                         <td data-title="getLocalMessage('label.manufacturer')" sortable="manufacturer">{{row.manufacturer}}</td>
                         <td data-title="getLocalMessage('label.refrigerator.model')" sortable="model">{{row.model}}</td>
                         <td data-title="getLocalMessage('label.equipment.code')" sortable="equipmentColdChainEquipmentsCode">{{row.equipmentColdChainEquipmentsCode}}</td>
