@@ -16,13 +16,19 @@ public class DistributionSummaryReport implements ResultRow {
 
     private String region;
 
-    private String storeName;
+    private String facilityName;
+
+    private String district;
 
     private Integer quantityIssued;
 
     private String product;
 
+    private Long period;
+
     private Integer facilityId;
+
+    private Long productId;
 
     private String BCG;
 
