@@ -17,18 +17,18 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.ColdChainEquipmentReportQueryBuilder;
+import org.openlmis.report.model.params.ColdChainEquipmentReportParam;
 import org.openlmis.report.model.report.CCEInventoryReportDatum;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface ColdChainEquipmentReportMapper {
 
     @SelectProvider(type = ColdChainEquipmentReportQueryBuilder.class, method = "getQuery")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-    public List<CCEInventoryReportDatum> getReport(@Param("filterCriteria") Map params
+    public List<CCEInventoryReportDatum> getReport(@Param("filterCriteria") ColdChainEquipmentReportParam params
             , @Param("RowBounds") RowBounds rowBounds
             , @Param("userId") Long userId);
 }

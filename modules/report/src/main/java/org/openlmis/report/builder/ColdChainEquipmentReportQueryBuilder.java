@@ -14,38 +14,48 @@
 package org.openlmis.report.builder;
 
 
+import org.openlmis.report.model.params.ColdChainEquipmentReportParam;
+
 import java.util.Map;
-import static org.apache.ibatis.jdbc.SqlBuilder.*;
-import static org.apache.ibatis.jdbc.SqlBuilder.SQL;
 
 
 public class ColdChainEquipmentReportQueryBuilder
 {
     public static String getQuery(Map params)
     {
-        Map filterCriteria = (Map)params.get("filterCriteria");
+      // Map filterCriteria = (Map)params.get("filterCriteria");
+
+        ColdChainEquipmentReportParam filter = (ColdChainEquipmentReportParam)params.get("filterCriteria");
         Long userId = (Long) params.get("userId");
 
-        BEGIN();
-        SELECT("*");
-        FROM("vw_cold_chain_equipment");
+        return " SELECT * FROM vw_cold_chain_equipment   "+
+                   writePredicates(filter)
+        + "  ORDER BY geozoneHierarchy  ";
 
-        //TODO: Obviate the need for the below code (which is hokey).
-        if(filterCriteria.containsKey("sortBy"))
-        {
-            String sortBy = ((String[])filterCriteria.get("sortBy"))[0];
-            String order = ((String[])filterCriteria.get("order"))[0];
-            if(sortBy != null && !sortBy.trim().isEmpty())
-            {
-                if(sortBy.contains("Capacity") || sortBy.equals("yearOfInstallation"))
-                    sortBy = sortBy.toLowerCase();
-                else if(sortBy.contains("geozoneHierarchy"))
-                    sortBy = "geozoneHierarchy";
-                ORDER_BY("\"" + sortBy + "\"" + " " + order);
-            }
+    }
+
+
+    private static String writePredicates(ColdChainEquipmentReportParam params) {
+
+        String predicate = " ";
+
+        String facilityLevel = params.getFacilityLevel();
+        System.out.println("----------------------");
+        System.out.println(facilityLevel);
+
+        if (  facilityLevel.equalsIgnoreCase("cvs")
+                || facilityLevel.equalsIgnoreCase("rvs")
+                || facilityLevel.equalsIgnoreCase("dvs")) {
+                predicate += "  where facilitytypecode = #{filterCriteria.facilityLevel}::text ";
+
+        } else {
+            predicate += "  where facilitytypecode NOT IN ('cvs','rvs','dvs') ";
+
         }
 
-        return SQL();
+        return predicate;
+
     }
+
 
 }

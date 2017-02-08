@@ -32,6 +32,24 @@ function ColdChainEquipmentReportController($scope, $log, ColdChainEquipmentServ
         window.open(url);
     };
 
+    $scope.OnFilterChanged = function () {
+        $scope.filter.max = 10000;
+
+        ColdChainEquipmentService.get
+        (
+            $scope.getSanitizedParameter(),
+
+            function (data)
+            {
+                $scope.data = $scope.datarows = data.pages.rows;
+                $scope.pages = data.pages;
+                $scope.tableParams.total = $scope.pages.total;
+            }
+        );
+
+
+    };
+
     // the grid options
     $scope.tableParams = new ngTableParams({
         page: 1,            // show first page
@@ -50,21 +68,6 @@ function ColdChainEquipmentReportController($scope, $log, ColdChainEquipmentServ
     };
 
 
-    ColdChainEquipmentService.get
-    (
-        {
-            page: $scope.page,
-            max: 900000,
-            filter: $scope.filter
-        } ,
-
-        function (data)
-        {
-            $scope.data = $scope.datarows = data.pages.rows;
-            $scope.pages = data.pages;
-            $scope.tableParams.total = $scope.pages.total;
-        }
-    );
 
     $scope.getLargestRecordShown = function()
     {

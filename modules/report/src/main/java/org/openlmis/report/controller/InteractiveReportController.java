@@ -721,4 +721,17 @@ public class InteractiveReportController extends BaseController {
     }
 
 
+    @RequestMapping(value = "/reportdata/getDistributionSummaryData", method = GET, headers = BaseController.ACCEPT_JSON)
+    public Pages getDistributionSummaryData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                       HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("distribution_summary_report");
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+        List<DistributionSummaryReport> reportData =
+                (List<DistributionSummaryReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+        return new Pages(page, max, reportData);
+    }
+
 }
