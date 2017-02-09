@@ -9,7 +9,7 @@
 */
 
 
-function VaccineStockStatusReportController($scope,$filter, $window, VaccineStockStatusReport) {
+function VaccineStockStatusReportController($scope,$filter, $window, VaccineStockStatusReport,VaccineHomeFacilityIvdPrograms,UserFacilityList,FacilityTypeAndProgramProducts) {
 
     $scope.exportReport = function (type) {
         $scope.filter.pdformat = 1;
@@ -18,6 +18,20 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
         $window.open(url, "_BLANK");
     };
 
+    VaccineHomeFacilityIvdPrograms.get({}, function (p) {
+        var programId = p.programs[0].id;
+        UserFacilityList.get({}, function (f) {
+            var facilityId = f.facilityList[0].id;
+            FacilityTypeAndProgramProducts.get({facilityId: facilityId, programId: programId}, function (data) {
+                var facilityProduct = data.facilityProduct;
+                    $scope.facilityProduct = facilityProduct.sort(function (a, b) {
+                        return (a.programProduct.product.id > b.programProduct.product.id) ? 1 : ((b.programProduct.product.id > a.programProduct.product.id) ? -1 : 0);
+                    });
+
+            });
+        });
+
+    });
 
     $scope.OnFilterChanged = function () {
 
@@ -31,15 +45,14 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
 
         VaccineStockStatusReport.get($scope.getSanitizedParameter(), function (data) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
+          var groupByFacility = _.groupBy(data.pages.rows,function(f){
+              return f.facilityName;
+          });
 
-          var groupByFacility = _.groupBy(data.pages.rows,'facilityId');
+                $scope.distributedFacilities = $.map(groupByFacility, function (value, index) {
+                    return [{"facilityName": index, "products": value}];
+                });
 
-          arr =  $.map(groupByFacility,function(value,index){
-                 return [value];
-             }).sort(function(a, b) {
-                    return  b.length - a.length ;
-             });
-             $scope.data = arr;
              $scope.paramsChanged($scope.tableParams);
             }
         });
@@ -59,6 +72,23 @@ function VaccineStockStatusReportController($scope,$filter, $window, VaccineStoc
 
     $scope.formatNumber = function (value) {
         return utils.formatNumber(value, '0,0.00');
+    };
+
+    $scope.getProductQuantity = function (facilityName, productName) {
+        console.log(facilityName);
+
+        var f = _.findWhere($scope.distributedFacilities, {facilityName: facilityName});
+
+        if (f !== undefined)
+            p = _.findWhere(f.products, {product: productName});
+        if (p !== undefined)
+        {
+
+            return p;
+
+        }
+        else
+            return null;
     };
 
 }

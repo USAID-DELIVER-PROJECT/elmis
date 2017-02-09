@@ -25,4 +25,6 @@ public class MinMaxVaccineReport implements ResultRow {
 
     private String product;
 
+    private Integer soh;
+
 }

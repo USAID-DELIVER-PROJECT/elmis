@@ -496,6 +496,16 @@
                     <property name="title" value="report.title.min.max.vaccine.report"/>
                     <property name="version" value="1.0"/>
                 </bean>
+
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="distribution_summary_report"/>
+                    <property name="template" value="distribution-summary-report.jasper"/>
+                    <property name="reportDataProvider" ref="distributionSummaryReportDataProvider"/>
+                    <property name="id" value="distribution_summary_report"/>
+                    <property name="name" value="Distribution Summary Report"/>
+                    <property name="title" value="report.title.distribution.summary.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

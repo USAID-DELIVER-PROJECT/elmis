@@ -14,7 +14,6 @@ import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,26 +34,7 @@ public class VaccineStockStatusReportDataProvider extends ReportDataProvider {
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-/*
-        List<VaccineStockStatusReport>statusReports = reportMapper.getReport(getReportFilterData(filterCriteria), rowBounds);
-
-        List<VaccineStockStatusReport> stockStatusReportList = new ArrayList<>();
-        VaccineStockStatusReport vaccineStockStatusReport = new VaccineStockStatusReport();
-        vaccineStockStatusReport.setAdequacy(getTotal(statusReports));
-        stockStatusReportList.add(vaccineStockStatusReport);*/
-
-        List<VaccineStockStatusReport> stockStatusReports = reportMapper.getReport(getReportFilterData(filterCriteria),rowBounds);
-        System.out.println("cahahhahahahahhaha");
-        System.out.println(stockStatusReports
-        );
-        List<VaccineStockStatusReport> stockStatusReportList = new ArrayList<>();
-
-        VaccineStockStatusReport vaccineStockStatusReport = new VaccineStockStatusReport();
-        vaccineStockStatusReport.setAdequacy(getTotal(stockStatusReports));
-        stockStatusReportList.add(vaccineStockStatusReport);
-        System.out.println("----------------------");
-        System.out.println(vaccineStockStatusReport.getAdequacy());
-       return stockStatusReports;
+       return  reportMapper.getReport(getReportFilterData(filterCriteria),rowBounds);
 
     }
 

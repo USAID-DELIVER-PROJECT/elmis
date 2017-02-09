@@ -131,9 +131,11 @@
                                     <td data-title="'#'" class="number"
                                         style="width:2% !important; text-align: left !important;">{{ row.no }}
                                     </td>
+
                                     <td data-title="getLocalMessage('label.region')" style="width:40%">{{
                                         row.region }}
                                     </td>
+
                                     <td data-title="'Store Name '" style="width:30%" sortable="">
                                         <span ng-bind="row.storeName"></span>
                                     </td>
@@ -144,6 +146,10 @@
 
                                     <td class="number" data-title="'Maximum Stock'" style="width:20% !important;"
                                         sortable=" ">{{row.maximumStock }}
+                                    </td>
+
+                                    <td class="number" data-title="'Stock On Hand'" style="width:20% !important;"
+                                        sortable=" ">{{row.soh }}
                                     </td>
 
                                 </tr>

@@ -14,15 +14,20 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
+import org.openlmis.core.domain.Facility;
+import org.openlmis.core.service.FacilityService;
 import org.openlmis.report.mapper.ColdChainEquipmentReportMapper;
 import org.openlmis.report.model.ResultRow;
-import org.openlmis.report.util.SelectedFilterHelper;
+import org.openlmis.report.model.params.ColdChainEquipmentReportParam;
+import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
 
 @Component
 @NoArgsConstructor
@@ -32,12 +37,48 @@ public class ColdChainEquipmentReportDataProvider extends ReportDataProvider{
     @Autowired
     private ColdChainEquipmentReportMapper reportMapper;
 
+    @Autowired
+    private FacilityService facilityService;
+
 
     @Override
     @Transactional
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-        return reportMapper.getReport(filterCriteria, rowBounds, this.getUserId());
+        return reportMapper.getReport(getReportFilterData(filterCriteria), rowBounds, this.getUserId());
+    }
+
+
+    public ColdChainEquipmentReportParam getReportFilterData(Map<String, String[]> filterCriteria) {
+
+        ColdChainEquipmentReportParam param = new ColdChainEquipmentReportParam();
+
+        Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
+        param.setProgram(programId);
+
+        //param.setFacilityLevel(filterCriteria.get("facilityLevel")[0]);
+
+
+        String facilityLevel = StringHelper.isBlank(filterCriteria, "facilityLevel") ? null : ((String[]) filterCriteria.get("facilityLevel"))[0];
+        param.setFacilityLevel(facilityLevel);
+
+        // List of facilities includes supervised and home facility
+        List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), programId, MANAGE_EQUIPMENT_INVENTORY);
+        facilities.add(facilityService.getHomeFacility(this.getUserId()));
+
+        StringBuilder str = new StringBuilder();
+        str.append("{");
+        for (Facility f : facilities) {
+            str.append(f.getId());
+            str.append(",");
+        }
+        if (str.length() > 1) {
+            str.deleteCharAt(str.length()-1);
+        }
+        str.append("}");
+        param.setFacilityIds(str.toString());
+
+        return param;
     }
 
     @Override
