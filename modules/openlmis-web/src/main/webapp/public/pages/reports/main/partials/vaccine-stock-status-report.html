@@ -1,0 +1,169 @@
+<style>
+
+    /* .rnr-table {
+         padding-top: 0px !important;
+     }
+ */
+
+    h2 {
+        line-height: 40px;
+    }
+
+    table {
+        /*
+                table-layout: fixed;
+        */
+        padding-top: 0px !important;
+        width: 100%;
+    }
+
+    .rnr-table .table-bordered th.p-column, .rnr-table .table-bordered td.p-column {
+        border-right: solid 2px #ddd !important;
+        text-align: right;
+        min-width: 80px;
+    }
+
+    #p-column-r {
+        min-width: 5% !important;
+    }
+
+
+</style>
+
+<div class="row-fluid">
+    <div class="box span12">
+        <div class="box-header">
+            <h2 openlmis-message="report.vaccine.title.stock.status"><i class="icon-edit">
+
+            </i><span
+                    class="break"></span>
+            </h2>
+
+            <div class="box-icon">
+                <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span>Export Excel</span></a>
+            </div>
+        </div>
+        <div class="app-form">
+            <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                <div filter-container class="clearfix">
+                    <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+                    <facility-level-filter class="form-cell horizontalFilters"
+                                           required="true"></facility-level-filter>
+                        <product-category-filter class="form-cell horizontalFilters"
+                                                 required="true"></product-category-filter>
+
+                    <div class="form-cell horizontalFilters">
+                        <label for="startTime" class="labels">
+                            <span>Date</span>
+                            <span class="label-required"> *&nbsp;</span>
+
+                        </label>
+
+                        <div class="form-field">
+                            <input name="startTime" id="startTime" type="text"
+                                   ui-date="{dateFormat: 'dd/mm/yy',changeYear: true,maxDate:'today'}"
+                                   ng-model="filter.dateStatus"
+                                   ng-change="OnFilterChanged()"/>
+
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+
+        <div class="content-body">
+
+            <table client-side-sort-pagination class="table table-bordered"
+                   ng-show="distributedFacilities == undefined || distributedFacilities.length == 0">
+                <tr>
+                    <td>No data to show under selected filters</td>
+                </tr>
+            </table>
+
+            <div class="row-fluid rnr-table" scrollable ng-show="distributedFacilities.length > 0 ">
+
+                <div class="clearfix"></div>
+
+                <div class="form-cell">
+                    <Strong class="labels"><span>Show SOH</span> </Strong>
+                    <input type="checkbox" ng-model="filter.isMOS" ng-change="filterChanged()"/>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <table class="table table-bordered" table-striped scrollable ng-table="tableParams">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th ng-repeat="p in facilityProduct" colspan="{p.length}" style="text-align: center;"
+                            ng-show="filter.isMOS == true" class="p-column" id="p-column-r">
+                            {{p.programProduct.product.primaryName}}
+                        </th>
+
+                        <th ng-repeat="p in facilityProduct" colspan="3" style="text-align: center;"
+                            ng-hide="filter.isMOS == true" class="p-column" id="p-column-r1">
+                            {{p.programProduct.product.primaryName}}
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th openlmis-message="label.region" style="text-align: left"></th>
+                        <th openlmis-message="label.district" style="text-align: left"></th>
+                        <th openlmis-message="label.dvs.name" style="width:10%;!important;text-align: left;"></th>
+                        <th style="width:10%;!important;  text-align: left;">Adequacy</th>
+
+                        <th ng-repeat-start="p in facilityProduct" openlmis-message="header.status.soh"
+                            class="p-column"></th>
+                        <th openlmis-message="header.vaccine.mos" class="p-column" ng-hide="filter.isMOS == true"></th>
+                        <th ng-repeat-end openlmis-message="header.status.last.update"
+                            ng-hide="filter.isMOS == true" class="p-column"></th>
+
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr ng-repeat="f in distributedFacilities">{{distributedFacilities.products[$index-1].region}}
+
+
+                        <td> {{distributedFacilities.products[$index-1].region == f.products[0].region ? '' :
+                            f.products[0].region}}
+                        </td>
+                        <td>{{f.products[0].district}}</td>
+                        <td>{{f.products[0].facilityName}}</td>
+                        <td> {{getTotal(f.products).toFixed(0)}} %</td>
+                        <td ng-repeat-start="p in facilityProduct"
+                            ng-style="{'background-color':getProductQuantity(f.facilityName,p.programProduct.product.primaryName).color}"
+                            class="p-column">
+                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).soh | number}}
+                        </td>
+
+                        <td class="p-column" ng-hide="filter.isMOS == true">
+                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).mos | number}}
+                        </td>
+
+                        <td ng-repeat-end ng-hide="filter.isMOS == true" class="p-column">
+                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).lastUpdate}}
+                        </td>
+
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+</div>
