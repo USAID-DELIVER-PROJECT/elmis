@@ -37,17 +37,26 @@ function StatusVaccinationReceiceController($window,$scope, StatuVaccinationSupp
     SettingsByKey.get({key:'VCP_BLUE'},function(data){
         $scope.minColorCode=data.settings.value;
     });
+
+    function getParam(){
+        return {facilityId :'',
+            geographicZoneId : $scope.filter.zone.id,
+            zone : $scope.filter.zone.id,
+            zoneId:$scope.filter.zone.id,
+            productId : $scope.filter.product,
+            periodId :0,
+            programId : $scope.filter.program,
+            reportType : false,
+            periodStart:$scope.filter.periodStart,
+            periodEnd:$scope.filter.periodEnd};
+
+    }
     $scope.OnFilterChanged = function () {
 
         $scope.data = $scope.datarows = [];
-        $scope.filter.facility='' ;
-        $scope.filter.geographicZoneId = $scope.filter.zone.id;
-        $scope.filter.productId = $scope.filter.product;
-        $scope.filter.periodId = 0;
-        $scope.filter.programId = $scope.filter.program;
-        $scope.reportType=false;
 
-        var param=   $scope.filter;
+
+        var param=  getParam();
 
         $scope.error_message='';
         if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd) && !utils.isNullOrUndefined($scope.filter.product)&&$scope.filter.product!==0) {

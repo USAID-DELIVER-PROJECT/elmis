@@ -41,7 +41,7 @@ public class StatusOfVaccinationSupplyService {
         Map<String, StatusOfVaccinationSuppliesRecievedDetail> regionPopulationMap ;
         PerformanceByDropoutRateParam filterParam ;
         filterParam = ReportsCommonUtilService.prepareParam(filterCriteria);
-        isRegionReport = filterParam.getGeographic_zone_id() == 0 ? true : false;
+        isRegionReport = filterParam.getGeographic_zone_id() == 437 ? true : false;
         isFacilityReport = dropoutRateByDistrictRepository.isDistrictLevel(filterParam.getGeographic_zone_id());
         if (isFacilityReport) {
             statusOfVaccinationSuppliesFacilityDistrictList = this.repository.loadStatusOfVaccineSupplyForFacilityReports(filterParam);

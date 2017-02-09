@@ -281,7 +281,7 @@ var utils = {
             if (districtData.length > 1) {
 
                 _.each(columnKeys, function (columnKey) {
-                    district_total[columnKey] = utils.getReportColumnSubTotal(reportData, districtName, columnKey, type);
+                    district_total[columnKey] = utils.getReportColumnSubTotalVS(reportData, districtName, columnKey, type);
                 });
 
                 reportDataWithAggregates.push({subtotal: district_total});
@@ -319,6 +319,21 @@ var utils = {
             }, 0).value();
         }
         return _.chain(reportData).where({districtname: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+            return memo + num;
+        }, 0).value();
+    },
+    getReportColumnSubTotalVS: function (reportData, districtName, columnToBeAgregated, type) {
+
+        if (type === 1) {
+            return _.chain(reportData).where({facility_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+                return memo + num;
+            }, 0).value();
+        } else if (type === 3) {
+            return _.chain(reportData).where({region_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
+                return memo + num;
+            }, 0).value();
+        }
+        return _.chain(reportData).where({district_name: districtName}).pluck(columnToBeAgregated).reduce(function (memo, num) {
             return memo + num;
         }, 0).value();
     },
