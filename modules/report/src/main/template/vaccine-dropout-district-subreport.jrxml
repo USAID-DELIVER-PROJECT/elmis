@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-dropout-facility-subreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="284"/>
+	<property name="ireport.x" value="140"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -222,7 +222,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
@@ -233,7 +233,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
@@ -244,7 +244,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
@@ -298,7 +298,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
@@ -309,7 +309,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
@@ -320,7 +320,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} == null]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
@@ -343,7 +343,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 						<printWhenExpression><![CDATA[$V{dropout_percentage}<=10 &&$V{dropout_percentage}>=0]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<staticText>
@@ -351,7 +351,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 						<printWhenExpression><![CDATA[$V{dropout_percentage}<=10 && $V{dropout_percentage}>=0]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<staticText>
@@ -359,7 +359,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 						<printWhenExpression><![CDATA[$V{dropout_percentage}<0 ||$V{dropout_percentage}>10]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<staticText>
@@ -367,7 +367,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 						<printWhenExpression><![CDATA[$V{dropout_percentage}<0 ||$V{dropout_percentage}>10]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<textField pattern="#,##0.00;-#,##0.00">
@@ -427,7 +427,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$F{generated}==false&&$F{cum_bcg_mr_dropout}>10 ||$F{cum_bcg_mr_dropout}<0]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -435,7 +435,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$F{generated}==false&&$F{cum_bcg_mr_dropout}<=10 &&$F{cum_bcg_mr_dropout}>=0]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -443,7 +443,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$F{generated}==false&&$F{bcg_mr_dropout}<=10 &&$F{bcg_mr_dropout}>=0]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -451,7 +451,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$F{generated}==false&&$F{bcg_mr_dropout}>10 ||$F{bcg_mr_dropout}<0]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -459,7 +459,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$F{generated}==true]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -467,7 +467,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$F{generated}==true]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
@@ -550,7 +550,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 				<reportElement x="559" y="0" width="87" height="20" uuid="aaa11449-4589-46a0-86bf-f54b3f6d9472"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
-				<textFieldExpression><![CDATA[$F{cum_mr_vaccinated}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cum_bcg_vaccinated}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="644" y="0" width="69" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="34879a52-bb6f-48bc-bb14-5ecbc1e2ee56">
@@ -561,7 +561,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cum_bcg_vaccinated}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cum_mr_vaccinated}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0 %" isBlankWhenNull="true">
 				<reportElement x="713" y="0" width="79" height="20" uuid="a651fca1-7ea9-4be1-873b-4a779706402c"/>
@@ -597,7 +597,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}>10 || $V{grand_dropout_percentage}<0]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -605,7 +605,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}>=0 &&$V{grand_dropout_percentage}<=10]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -613,7 +613,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}<0 ||$V{grand_dropout_percentage}>10]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -621,7 +621,7 @@ inner join "public"."vaccine_reports"  vr ON i.report_id = vr.ID
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					<printWhenExpression><![CDATA[$V{grand_dropout_percentage}<=10 &&$V{grand_dropout_percentage}>=0]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField pattern="#,##0 %">
