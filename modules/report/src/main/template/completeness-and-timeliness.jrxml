@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="918" pageHeight="595" orientation="Landscape" columnWidth="878" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.771561000000001"/>
-	<property name="ireport.x" value="797"/>
+	<property name="ireport.x" value="340"/>
 	<property name="ireport.y" value="110"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
@@ -151,7 +151,7 @@ from generate_series(1,12)]]>
 		<variableExpression><![CDATA[$F{percentLate}]]></variableExpression>
 	</variable>
 	<group name="groupByDistrict">
-		<groupExpression><![CDATA[$F{geographicZoneId}]]></groupExpression>
+		<groupExpression><![CDATA[$F{districtName}]]></groupExpression>
 		<groupFooter>
 			<band height="29">
 				<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
@@ -181,7 +181,7 @@ from generate_series(1,12)]]>
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{percentReported_1}/(12*100)]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{expected_2}>0?($V{reported_1})/$V{expected_2}:0]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Transparent" x="200" y="0" width="139" height="29" forecolor="#000000" backcolor="#333333" uuid="2464e346-1bfa-4206-8be7-84bfc4e9df21"/>
@@ -195,7 +195,7 @@ from generate_series(1,12)]]>
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{percentLate_1}/(12*100)]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{reported_1}>0?($V{late_1})/($V{reported_1}):0]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="480" y="0" width="60" height="29" uuid="0e62e01d-3903-4214-870f-7ef27c8ad360"/>
@@ -209,7 +209,7 @@ from generate_series(1,12)]]>
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[1-$V{percentLate_1}/(12*100)]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{reported_1}>0?($V{reported_1}-$V{late_1})/($V{reported_1}):0]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -499,14 +499,14 @@ from generate_series(1,12)]]>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{percentReported_5}/($V{REPORT_COUNT} * 100)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{expected_3}>0?$V{reported_2}/$V{expected_3}:0]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0 %">
 				<reportElement x="784" y="0" width="94" height="29" uuid="a612e2ba-3b90-4962-9c3e-8b8548aaf97c"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{percentLate_4}/($V{REPORT_COUNT} * 100)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{reported_2}>0?$V{late_2}/$V{reported_2}:0]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Transparent" x="200" y="0" width="140" height="29" forecolor="#000000" backcolor="#333333" uuid="6676ef8f-fe67-4670-a435-d3be3e192623"/>
@@ -527,7 +527,7 @@ from generate_series(1,12)]]>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[1-($V{percentLate_4}/($V{REPORT_COUNT} * 100))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{reported_2}>0?($V{reported_2}-$V{late_2})/$V{reported_2}:0]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
