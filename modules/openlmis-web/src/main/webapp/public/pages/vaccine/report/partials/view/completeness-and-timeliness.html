@@ -114,7 +114,7 @@
                                  <td class="number"  >{{row.reported -row.late| number}}</td>
                                  <td class="number" >{{row.late | number}}</td>
                                  <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentReported|number:0}}%</td>
-                                 <td class="number" style="background-color : {{bgColorCode(row)}}" >{{100-row.percentLate|number:0}}%</td>
+                                 <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentReported>0?100-(row.percentLate|number:0):0}}%</td>
                                  <td class="number" style="background-color : {{bgColorCode(row)}}" >{{row.percentLate|number:0}}%</td>
                             </tr>
                             <tr  ng-if="d.subtotal" class="aggregate-row">
