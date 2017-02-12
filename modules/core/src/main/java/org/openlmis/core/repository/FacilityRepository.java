@@ -276,4 +276,7 @@ public class FacilityRepository {
       return mapper.getSuperVisedUserFacility(program,facilityId);
     }
 
+  public List<Facility> getFacilitiesByCommaSeparatedCodes(String commaSeparatedCodes) {
+    return mapper.getFacilitiesByCommaSeparatedCodes(commaSeparatedCodes);
+  }
 }
