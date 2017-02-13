@@ -97,7 +97,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                        from temp t   \n" +
                 "                            join vw_districts vd on vd.district_id = t.geographiczoneid     \n" +
                 writeDistrictPredicate(params.getDistrict()) +
-                "                      where vd.district_id in (select district_id from vw_user_facilities where user_id = 2   and program_id = fn_get_vaccine_program_id())  \n" +
+                "                      where vd.district_id in (select district_id from vw_user_facilities where user_id = "+params.getUserId()+"   and program_id = fn_get_vaccine_program_id())  \n" +
                 "                        group by 1, 2, 3, 4,5 ,6  \n" +
                 "                  \n" +
                 "                ) a   \n" +
