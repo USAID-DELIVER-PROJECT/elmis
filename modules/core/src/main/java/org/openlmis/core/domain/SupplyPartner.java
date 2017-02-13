@@ -27,9 +27,12 @@ public class SupplyPartner extends BaseModel {
   private String name;
 
   @Getter @Setter
+  private String code;
+
+  @Getter @Setter
   private Boolean isActive;
 
   @Getter @Setter
-  List<SupplyPartnerProgram> programs;
+  List<SupplyPartnerProgram> subscribedPrograms;
 
 }

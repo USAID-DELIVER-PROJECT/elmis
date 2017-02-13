@@ -14,6 +14,8 @@ package org.openlmis.core.repository;
 
 import org.openlmis.core.domain.SupplyPartner;
 import org.openlmis.core.domain.SupplyPartnerProgram;
+import org.openlmis.core.domain.SupplyPartnerProgramFacility;
+import org.openlmis.core.domain.SupplyPartnerProgramProduct;
 import org.openlmis.core.repository.mapper.SupplyPartnerProgramMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -26,20 +28,45 @@ public class SupplyPartnerProgramRepository {
   @Autowired
   private SupplyPartnerProgramMapper mapper;
 
-  public  List<SupplyPartner> getPartnersThatSupportProgram(Long programId){
+  public List<SupplyPartner> getPartnersThatSupportProgram(Long programId) {
     return mapper.getPartnersThatSupportProgram(programId);
   }
 
-  public void insert(SupplyPartnerProgram spp){
+  public void insert(SupplyPartnerProgram spp) {
     mapper.insert(spp);
+    saveProductAndFacilities(spp);
   }
 
-  public void deleteForSupplyPartner(Long spp){
+  private void saveProductAndFacilities(SupplyPartnerProgram spp) {
+    mapper.deleteProducts(spp.getId());
+    mapper.deleteFacilities(spp.getId());
+    for (SupplyPartnerProgramFacility facility : spp.getFacilities()) {
+      if(facility.getActive()) {
+        facility.setSupplyPartnerProgramId(spp.getId());
+        mapper.insertFacilities(facility);
+      }
+    }
+
+    for (SupplyPartnerProgramProduct product : spp.getProducts()) {
+      if(product.getActive()) {
+        product.setSupplyPartnerProgramId(spp.getId());
+        mapper.insertProduct(product);
+      }
+    }
+  }
+
+  public void deleteForSupplyPartner(Long spp) {
+    List<SupplyPartnerProgram> programs = mapper.getProgramsForPartner(spp);
+    for (SupplyPartnerProgram p : programs) {
+      mapper.deleteFacilities(p.getId());
+      mapper.deleteProducts(p.getId());
+    }
     mapper.delete(spp);
   }
 
-  public void update(SupplyPartnerProgram spp){
+  public void update(SupplyPartnerProgram spp) {
     mapper.update(spp);
+    saveProductAndFacilities(spp);
   }
 
 }

@@ -21,10 +21,8 @@
       <table class="table table-bordered">
         <thead>
         <tr class="gradient-header">
-          <th>#</th>
+          <th class="number" style="width: 20px">#</th>
           <th>Name</th>
-          <th>Source Programs</th>
-          <th>Destination Program</th>
           <th>Action</th>
         </tr>
         </thead>
@@ -35,11 +33,9 @@
           </td>
         </tr>
         <tr ng-repeat="row in list">
-          <td>{{$index}}</td>
+          <td>{{$index + 1}}</td>
           <td>{{row.name}}</td>
-          <th></th>
-          <th></th>
-          <th><a>Edit</a></th>
+          <th><a ng-href="#/edit/{{row.id}}">Edit</a></th>
         </tr>
         </tbody>
       </table>

@@ -27,7 +27,7 @@ public interface SupplyPartnerMapper {
   @Select("select * from supply_partners where id = #{id}")
   @Results( value = {
       @Result(column = "id", property = "id"),
-      @Result(column = "id", property = "programs", many = @Many(select = "org.openlmis.core.repository.mapper.SupplyPartnerProgramMapper.getProgramsForPartner"))
+      @Result(column = "id", property = "subscribedPrograms", many = @Many(select = "org.openlmis.core.repository.mapper.SupplyPartnerProgramMapper.getProgramsForPartner"))
   })
   SupplyPartner getById(@Param("id") Long id);
 

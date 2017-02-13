@@ -19,15 +19,25 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class SupplyPartnerProgramProducts extends BaseModel{
+public class SupplyPartnerProgramProduct extends BaseModel{
 
   @Getter @Setter
   private Long supplyPartnerProgramId;
 
   @Getter @Setter
-  private Long programId;
+  private Long productId;
 
   @Getter @Setter
-  private Integer percentageSupported;
+  private Integer percentageSupported = 100;
+
+  @Getter @Setter
+  private Boolean active;
+
+  // For Display purposes only.
+  @Getter @Setter
+  private String primaryName;
+
+  @Getter @Setter
+  private String code;
 
 }

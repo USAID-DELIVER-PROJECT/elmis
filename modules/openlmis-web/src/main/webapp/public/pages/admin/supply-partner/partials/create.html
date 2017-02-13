@@ -54,19 +54,19 @@
           <div class="form-cell">
             <label id="descriptionLabel" for="description" openlmis-message="label.description"></label>
             <div class="form-field">
-              <input ng-model="supplyPartner.description" name="description" id="description" type="text"
-                     maxlength="250"/>
+              <textarea class="form-control" ng-model="supplyPartner.description" name="description"
+                        id="description"></textarea>
             </div>
           </div>
         </div>
 
         <div class="form-row clearfix">
           <div class="form-cell">
-            <label id="primaryProgram" for="primaryProgram" openlmis-message="label.program"></label>
+            <label id="primaryProgram" for="primaryProgramId" openlmis-message="label.program.supply.partner"></label>
             <div class="form-field">
-              <select ng-model="p.primaryProgramId"
-                      name="primaryProgramId{{$index}}"
-                      id="primaryProgramId{{$index}}"
+              <select ng-model="supplyPartner.primaryProgramId"
+                      name="primaryProgramId"
+                      id="primaryProgramId"
                       ng-required="true">
                 <option ng-repeat="p in programs" value="{{p.id}}">{{p.name}}</option>
               </select>
@@ -82,21 +82,22 @@
                 <th style="min-width: 20px;width:20px;max-width: 30px">#</th>
                 <th>Source Program</th>
                 <th>Supervisory Node</th>
+                <th>Requisition Group</th>
                 <th>Facilities</th>
                 <th>Products</th>
                 <th>Actions</th>
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat="p in supplyPartner.programProducts">
+              <tr ng-repeat="p in supplyPartner.subscribedPrograms">
                 <td class="cell-input col-general">{{$index + 1}}</td>
                 <td class="cell-input col-general">
-                      <select ng-model="p.sourceProgramId"
-                              name="sourceProgramId{{$index}}"
-                              id="sourceProgramId{{$index}}"
-                              ng-required="true">
-                        <option ng-repeat="p in programs" value="{{p.id}}">{{p.name}}</option>
-                      </select>
+                  <select ng-model="p.sourceProgramId"
+                          name="sourceProgramId{{$index}}"
+                          id="sourceProgramId{{$index}}"
+                          ng-required="true">
+                    <option ng-repeat="pr in programs" value="{{pr.id}}">{{pr.name}}</option>
+                  </select>
                 </td>
 
                 <td class="cell-input col-general">
@@ -108,37 +109,50 @@
                   </select>
                 </td>
                 <td class="cell-input col-general">
-                  <a class="btn-link btn">0 members</a>
+                  <select ng-model="p.destinationRequisitionGroupId"
+                          name="destinationRequisitionGroupId"
+                          id="destinationRequisitionGroupId"
+                          ng-required="true">
+                    <option ng-repeat="p in requisitionGroups" value="{{p.id}}">{{p.name}}</option>
+                  </select>
+                </td>
+
+                <td class="cell-input col-general">
+                  <a ng-click="showFacilitiesModal(p)" class="btn-link btn">{{p.facilities.length}} facilities</a>
                 </td>
                 <td class="cell-input col-general">
-                  <a class="btn-link btn">0 products</a>
+                  <a class="btn-link btn" ng-click="showProductsModal(p)" >{{p.products.length}} products</a>
                 </td>
                 <td class="cell-input col-general">
-                  <a class="btn btn-danger">Remove (-)</a>
+
                 </td>
               </tr>
               <tr>
                 <td colspan="7">
-                  <a href="" ng-click="addNewProgramProducts()">add new program schedule</a>
+                  <a href="" ng-click="addNewPrograms()">Add new subscription</a>
                 </td>
               </tr>
               </tbody>
             </table>
           </div>
         </div>
-
       </div>
-
-      <div form-toolbar id="action_buttons" class="action-buttons">
-        <div class="form-cell button-row">
-          <input id="saveButton" type="submit" class="btn btn-primary save-button"
-                 openlmis-message="button.save" ng-click="save()"/>
-          <input id="cancelButton" type="button" class="btn btn-cancel cancel-button" openlmis-message="button.cancel"
-                 ng-click="cancel()"/>
-        </div>
-        <div class="toolbar-error" id="saveErrorMsgDiv" openlmis-message="error" ng-show="error"></div>
+      <div>
+        <ng-include src="'/public/pages/admin/supply-partner/partials/facilities-modal.html'"></ng-include>
+        <ng-include src="'/public/pages/admin/supply-partner/partials/products-modal.html'"></ng-include>
       </div>
+    </div>
 
+    <div form-toolbar id="action_buttons" class="action-buttons">
+      <div class="form-cell button-row">
+        <input id="saveButton" type="submit" class="btn btn-primary save-button"
+               openlmis-message="button.save" ng-click="save()"/>
+        <input id="cancelButton" type="button" class="btn btn-cancel cancel-button"
+               openlmis-message="button.cancel"
+               ng-click="cancel()"/>
+      </div>
+      <div class="toolbar-error" id="saveErrorMsgDiv" openlmis-message="error" ng-show="error"></div>
+    </div>
   </form>
 </div>
 

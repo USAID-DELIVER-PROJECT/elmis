@@ -1,0 +1,43 @@
+<div close="closeProductsModal()" id="productsModal" modal="productsModal"
+     options="{ backdrop: 'static', escape: true}">
+  <div class="modal-header">
+    <h3>
+      <span openlmis-message="label.products"></span>
+    </h3>
+  </div>
+  <div class="modal-body app-form">
+    <div>
+      <table class="table table-bordered ">
+        <thead>
+        <tr>
+          <th></th>
+          <th><span openlmis-message="label.code"></span></th>
+          <th><span openlmis-message="label.product"></span></th>
+          <th><span openlmis-message="label.action"></span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="f in currentProgramSubscription.products">
+          <td><input type="checkbox" id="t[]" ng-model="f.active"/></td>
+          <td>{{f.code}}</td>
+          <td>{{f.primaryName}}</td>
+          <td></td>
+        </tr>
+        <tr ng-show="currentProgramSubscription.products == undefined || currentProgramSubscription.products.length == 0">
+          <td colspan="4">No products are added</td>
+        </tr>
+        </tbody>
+      </table>
+      <div>
+        <label for="productList">Please add product codes (one product code per line)</label>
+        <textarea class="form-control" ng-model="productCodeList" id="productList" name="productList"></textarea>
+        <div class="clear-both"></div>
+        <a href="" ng-click="addProductsByCode(productCodeList)" class="btn">Add Products by Codes</a>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary save-button" ng-click="closeProductsModal()">Okay</button>
+    <button class="btn btn-cancel" ng-click="closeProductsModal()">Cancel</button>
+  </div>
+</div>

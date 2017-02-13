@@ -36,9 +36,12 @@ public class SupplyPartnerProgram extends BaseModel {
   private Long destinationSupervisoryNodeId;
 
   @Getter @Setter
-  List<SupplyPartnerProgramProducts> programProducts;
+  private Long destinationRequisitionGroupId;
 
   @Getter @Setter
-  List<SupplyPartnerProgramFacilities> facilities;
+  List<SupplyPartnerProgramProduct> products;
+
+  @Getter @Setter
+  List<SupplyPartnerProgramFacility> facilities;
 
 }

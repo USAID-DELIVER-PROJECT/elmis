@@ -19,11 +19,21 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class SupplyPartnerProgramFacilities extends BaseModel {
+public class SupplyPartnerProgramFacility extends BaseModel {
 
   @Getter @Setter
   private Long supplyPartnerProgramId;
 
   @Getter @Setter
   private Long facilityId;
+
+  @Getter @Setter
+  private Boolean active;
+
+  //For display purposes only
+  @Getter @Setter
+  private String name;
+
+  @Getter @Setter
+  private String code;
 }

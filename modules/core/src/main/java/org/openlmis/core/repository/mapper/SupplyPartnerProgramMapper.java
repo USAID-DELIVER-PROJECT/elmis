@@ -15,6 +15,8 @@ package org.openlmis.core.repository.mapper;
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.SupplyPartner;
 import org.openlmis.core.domain.SupplyPartnerProgram;
+import org.openlmis.core.domain.SupplyPartnerProgramFacility;
+import org.openlmis.core.domain.SupplyPartnerProgramProduct;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,12 +28,27 @@ public interface SupplyPartnerProgramMapper {
   List<SupplyPartner> getPartnersThatSupportProgram(@Param("programId") Long programId);
 
   @Select("select * from supply_partner_programs where supplyPartnerId = #{partnerId}")
+  @Results( value = {
+      @Result(column = "id", property = "id"),
+      @Result(column = "id", property = "products", many = @Many(select = "org.openlmis.core.repository.mapper.SupplyPartnerProgramMapper.getProducts")),
+      @Result(column = "id", property = "facilities", many = @Many(select = "org.openlmis.core.repository.mapper.SupplyPartnerProgramMapper.getFacilities"))
+  })
   List<SupplyPartnerProgram> getProgramsForPartner(@Param("partnerId") Long partnerId );
 
+  @Select("select s.*, f.name, f.code, s.active from supply_partner_program_facilities s " +
+      " join facilities f on f.id = s.facilityId " +
+      " where supplyPartnerProgramId = #{id}")
+  List<SupplyPartnerProgramFacility> getFacilities(@Param("id") Long id);
+
+  @Select("select s.*, p.primaryName, p.code, s.active from supply_partner_program_products s " +
+      " join products p on p.id = s.productId " +
+      " where supplyPartnerProgramId = #{id}")
+  List<SupplyPartnerProgramProduct> getProducts(@Param("id") Long id);
+
   @Insert("insert into supply_partner_programs " +
-      " ( supplyPartnerId, sourceProgramId, destinationProgramId, destinationSupervisoryNodeId, createdBy, createdDate ) " +
+      " ( supplyPartnerId, sourceProgramId, destinationProgramId, destinationSupervisoryNodeId, destinationRequisitionGroupId, createdBy, createdDate ) " +
       " values " +
-      " (#{supplyPartnerId}, #{sourceProgramId}, #{destinationProgramId}, #{destinationSupervisoryNodeId}, #{createdBy}, NOW() )")
+      " (#{supplyPartnerId}, #{sourceProgramId}, #{destinationProgramId}, #{destinationSupervisoryNodeId}, #{destinationRequisitionGroupId}, #{createdBy}, NOW() )")
   @Options(useGeneratedKeys = true)
   int insert(SupplyPartnerProgram spp);
 
@@ -42,8 +59,21 @@ public interface SupplyPartnerProgramMapper {
       "set supplyPartnerId = #{supplyPartnerId}, " +
       "sourceProgramId = #{sourceProgramId}, " +
       "destinationProgramId = #{destinationProgramId}," +
-      "destinationSupervisoryNodeId = #{destinationSupervisoryNodeId} " +
+      "destinationSupervisoryNodeId = #{destinationSupervisoryNodeId}, " +
+      "destinationRequisitionGroupId = #{destinationRequisitionGroupId}" +
       "where " +
       "id = #{id}")
   int update(SupplyPartnerProgram spp);
+
+  @Delete("delete from supply_partner_program_facilities where supplyPartnerProgramId = #{id}")
+  void deleteFacilities(@Param("id") Long supplyPartnerProgramId);
+
+  @Delete("delete from supply_partner_program_products where supplyPartnerProgramId = #{id}")
+  void deleteProducts(@Param("id") Long supplyPartnerProgramId);
+
+  @Insert("insert into supply_partner_program_facilities (supplyPartnerProgramId, facilityId, createdDate) values(#{supplyPartnerProgramId}, #{facilityId}, NOW())")
+  void insertFacilities(SupplyPartnerProgramFacility facility);
+
+  @Insert("insert into supply_partner_program_products (supplyPartnerProgramId, productId, createdDate) values (#{supplyPartnerProgramId}, #{productId}, NOW())")
+  void insertProduct(SupplyPartnerProgramProduct product);
 }

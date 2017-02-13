@@ -14,40 +14,73 @@ package org.openlmis.web.controller;
 
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.SupplyPartner;
+import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProductService;
 import org.openlmis.core.service.SupplyPartnerService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 @Controller
 @NoArgsConstructor
 public class SupplyPartnerController extends BaseController {
 
-  public static final String SUPPLY_PARTNERS = "supply-partners";
+  private static final String SUPPLY_PARTNERS = "supply_partners";
+  private static final String SUPPLY_PARTNER = "supply_partner";
+  private static final String PRODUCTS = "products";
+  private static final String FACILITIES = "facilities";
+
   @Autowired
   SupplyPartnerService service;
+
+  @Autowired
+  FacilityService facilityService;
+
+  @Autowired
+  ProductService productService;
+
 
   @RequestMapping(value = "/supply-partners", headers = ACCEPT_JSON, method = RequestMethod.GET)
   public ResponseEntity<OpenLmisResponse> getAll(){
     return OpenLmisResponse.response(SUPPLY_PARTNERS,service.getAll());
   }
 
-  @RequestMapping(value = "/supply-partners", headers = ACCEPT_JSON, method = RequestMethod.PUT)
+  @Transactional
+  @RequestMapping(value = "/supply-partners", headers = ACCEPT_JSON, method = RequestMethod.POST)
   public ResponseEntity<OpenLmisResponse> insert(@RequestBody SupplyPartner partner){
      service.insert(partner);
-    return OpenLmisResponse.success("Supply partner successfully inserted");
+     return OpenLmisResponse.response(SUPPLY_PARTNER, partner);
   }
 
-  @RequestMapping(value = "/supply-partners/{id}", headers = ACCEPT_JSON, method = RequestMethod.POST)
+  @Transactional
+  @RequestMapping(value = "/supply-partners/{id}", headers = ACCEPT_JSON, method = RequestMethod.PUT)
   public ResponseEntity<OpenLmisResponse> update(@PathVariable("id") Long id,  @RequestBody SupplyPartner partner){
     service.update(partner);
-    return OpenLmisResponse.success("Supply partner successfully inserted");
+    return OpenLmisResponse.response(SUPPLY_PARTNER, partner);
+  }
+
+  @RequestMapping(value="/supply-partners/{id}.json", headers = ACCEPT_JSON, method = RequestMethod.GET)
+  public ResponseEntity<OpenLmisResponse> getSupplyPartnerById(@PathVariable("id") Long id){
+    return OpenLmisResponse.response(SUPPLY_PARTNER, service.getById(id));
+  }
+
+  @RequestMapping(value="/supply-partners/facility-list.json", method = RequestMethod.POST)
+  public ResponseEntity<OpenLmisResponse> facilityListByCode(@RequestBody List<String> facilityCodes){
+    return OpenLmisResponse.response(FACILITIES, facilityService.getListByCodes(facilityCodes));
+  }
+
+  @RequestMapping(value="/supply-partners/product-list.json", method = RequestMethod.POST)
+  public ResponseEntity<OpenLmisResponse> productListByCode(@RequestBody List<String> facilityCodes){
+    return OpenLmisResponse.response(PRODUCTS, productService.getListByCodes(facilityCodes));
   }
 
 }
