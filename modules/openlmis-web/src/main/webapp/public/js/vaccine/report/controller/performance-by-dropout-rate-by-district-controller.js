@@ -146,7 +146,7 @@ function ViewPerformanceByDropoutRateByDistrictController($scope, SettingsByKey,
         if (value == '4_dropoutGreaterThanHigh') {
             bgColor = 'DO >10% and DO (-ve)';
         } else if(value == '1_dropoutGreaterThanHigh') {
-            bgColor = 'DO <=10 and DO (+ve)';
+            bgColor = 'DO <=10';
         }else{
             bgColor = 'Non Reporting';
         }
