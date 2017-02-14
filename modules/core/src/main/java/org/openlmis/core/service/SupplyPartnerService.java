@@ -72,6 +72,14 @@ public class SupplyPartnerService {
     }
   }
 
+  public List<SupplyPartnerProgram> getSubscriptions(Long facilityId, Long programId){
+    return supplyPartnerProgramRepository.getSubscriptions(facilityId, programId);
+  }
+
+  public List<SupplyPartnerProgram> getSubscriptionsWithDetails(Long facilityId, Long programId){
+    return supplyPartnerProgramRepository.getSubscriptionsWithDetails(facilityId, programId);
+  }
+
   private void configureProducts(SupplyPartnerProgram spp) {
     // check if this product has an entry in program_products
     Program program = programService.getById(spp.getDestinationProgramId());
@@ -137,4 +145,5 @@ public class SupplyPartnerService {
 
     }
   }
+
 }

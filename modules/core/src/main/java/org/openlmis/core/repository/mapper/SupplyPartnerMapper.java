@@ -41,4 +41,6 @@ public interface SupplyPartnerMapper {
       "isActive = #{isActive} " +
       "where id = #{id}")
   int update(SupplyPartner supplyPartner);
+
+
 }

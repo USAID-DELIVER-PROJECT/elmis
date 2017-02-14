@@ -35,6 +35,21 @@ public interface SupplyPartnerProgramMapper {
   })
   List<SupplyPartnerProgram> getProgramsForPartner(@Param("partnerId") Long partnerId );
 
+  @Select("select distinct ps.* from supply_partner_programs ps " +
+      " join supply_partner_program_facilities f on f.supplyPartnerProgramId = ps.id " +
+      " where f.facilityId = #{facilityId} and ps.sourceProgramId = #{programId}")
+  List<SupplyPartnerProgram> getSubscriptions(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
+
+  @Select("select distinct ps.* from supply_partner_programs ps " +
+      " join supply_partner_program_facilities f on f.supplyPartnerProgramId = ps.id " +
+      " where f.facilityId = #{facilityId} and ps.sourceProgramId = #{programId}")
+  @Results( value = {
+      @Result(column = "id", property = "id"),
+      @Result(column = "id", property = "products", many = @Many(select = "org.openlmis.core.repository.mapper.SupplyPartnerProgramMapper.getProducts")),
+      @Result(column = "id", property = "facilities", many = @Many(select = "org.openlmis.core.repository.mapper.SupplyPartnerProgramMapper.getFacilities"))
+  })
+  List<SupplyPartnerProgram> getSubscriptionsWithDetails(@Param("facilityId") Long facilityId, @Param("programId") Long programId);
+
   @Select("select s.*, f.name, f.code, s.active from supply_partner_program_facilities s " +
       " join facilities f on f.id = s.facilityId " +
       " where supplyPartnerProgramId = #{id}")

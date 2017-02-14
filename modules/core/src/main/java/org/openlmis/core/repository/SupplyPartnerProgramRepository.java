@@ -69,4 +69,11 @@ public class SupplyPartnerProgramRepository {
     saveProductAndFacilities(spp);
   }
 
+  public List<SupplyPartnerProgram> getSubscriptions(Long facilityId, Long programId) {
+    return mapper.getSubscriptions(facilityId, programId);
+  }
+
+  public List<SupplyPartnerProgram> getSubscriptionsWithDetails(Long facilityId, Long programId) {
+    return mapper.getSubscriptionsWithDetails(facilityId, programId);
+  }
 }

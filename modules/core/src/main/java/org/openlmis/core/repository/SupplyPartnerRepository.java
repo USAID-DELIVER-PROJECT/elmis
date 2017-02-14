@@ -41,4 +41,5 @@ public class SupplyPartnerRepository {
      mapper.update(supplyPartner);
    }
 
+
 }
