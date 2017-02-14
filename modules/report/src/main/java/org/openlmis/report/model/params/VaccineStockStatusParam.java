@@ -29,4 +29,11 @@ public class VaccineStockStatusParam extends BaseParam implements ReportParamete
     private Boolean isMOS;
 
 
+    Long district;
+    Long doseId;
+    String periodEnd;
+    String periodStart;
+    Long product;
+
+
 }

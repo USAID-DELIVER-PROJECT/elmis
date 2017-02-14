@@ -1,3 +1,4 @@
+
 function DistributionSummaryReportController($scope, DistributionSummaryReport, VaccineHomeFacilityIvdPrograms, UserFacilityList, FacilityTypeAndProgramProducts) {
 
 
@@ -8,20 +9,7 @@ function DistributionSummaryReportController($scope, DistributionSummaryReport, 
         window.open(url, "_BLANK");
     };
 
-    VaccineHomeFacilityIvdPrograms.get({}, function (p) {
-        var programId = p.programs[0].id;
-        UserFacilityList.get({}, function (f) {
-            var facilityId = f.facilityList[0].id;
-            FacilityTypeAndProgramProducts.get({facilityId: facilityId, programId: programId}, function (data) {
-                var facilityProduct = data.facilityProduct;
-                $scope.facilityProduct = facilityProduct.sort(function (a, b) {
-                    return (a.programProduct.product.id > b.programProduct.product.id) ? 1 : ((b.programProduct.product.id > a.programProduct.product.id) ? -1 : 0);
-                });
-            });
-        });
 
-
-    });
 
     $scope.OnFilterChanged = function () {
 
@@ -36,6 +24,8 @@ function DistributionSummaryReportController($scope, DistributionSummaryReport, 
 
                 $scope.datarows = data.pages.rows;
                 var distributedFacilities = data.pages.rows;
+                var productData = _.uniq(_.pluck(distributedFacilities,'productId'));
+               headerCellData(productData);
                 var byFacility = _.groupBy(distributedFacilities, function (f) {
                     return f.facilityName;
                 });
@@ -60,5 +50,32 @@ function DistributionSummaryReportController($scope, DistributionSummaryReport, 
         else
             return null;
     };
+
+    function headerCellData(products) {
+
+        VaccineHomeFacilityIvdPrograms.get({}, function (p) {
+            var programId = p.programs[0].id;
+            UserFacilityList.get({}, function (f) {
+                var facilityId = f.facilityList[0].id;
+                FacilityTypeAndProgramProducts.get({facilityId: facilityId, programId: programId}, function (data) {
+                    var facilityProduct = data.facilityProduct;
+                    var filteredData = [];
+                    for(var i= 0;i<facilityProduct.length; i++){
+
+                        if(_.contains(products,facilityProduct[i].programProduct.product.id)){
+                            filteredData.push(facilityProduct[i]);
+                        }
+                    }
+
+                    $scope.facilityProduct = filteredData.sort(function (a, b) {
+                        return (a.programProduct.product.id > b.programProduct.product.id) ? 1 : ((b.programProduct.product.id > a.programProduct.product.id) ? -1 : 0);
+                    });
+                });
+            });
+
+
+        });
+
+    }
 
 }
