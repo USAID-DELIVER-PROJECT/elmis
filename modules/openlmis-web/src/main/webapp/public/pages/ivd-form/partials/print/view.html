@@ -209,7 +209,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td style="text-align: center;">{{report.dropOutRate.dtp}}%</td>
+                    <td style="text-align: center;">{{report.getDptDropout() | number : 2}}%</td>
                 </tr>
                 </tbody>
             </table>
@@ -224,7 +224,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td style="text-align: center;">{{report.dropOutRate.bcg}}%</td>
+                    <td style="text-align: center;">{{report.getBcgDropout() | number : 2}}%</td>
                 </tr>
                 </tbody>
             </table>
