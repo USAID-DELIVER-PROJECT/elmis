@@ -29,6 +29,16 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
         // prevent first time loading
         if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEndDate) || !utils.isEmpty($scope.perioderror))
             return;
+
+        var par = {    periodStart: $scope.periodStartDate,
+            periodEnd:   $scope.periodEndDate,
+            range:       $scope.range,
+            page:        $scope.page,
+            district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
+            product:     0
+        };
+        console.log(par);
+
         VaccineDistributionCompletenessReport.get(
             {
 
@@ -36,18 +46,18 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                 periodEnd:   $scope.periodEndDate,
                 range:       $scope.range,
                 page:        $scope.page,
-                district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone,
+                district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
                 product:     0
             },
 
             function (data) {
                 $scope.dataRows=data.distributionCompleteness;
+                console.log($scope.dataRows);
 
                 $scope.pagination = data.pagination;
                 $scope.totalItems = $scope.pagination.totalRecords;
                 $scope.currentPage = $scope.pagination.page;
 
-                console.log(data);
             });
     };
 
@@ -61,12 +71,13 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
     $scope.loadDistributedFacilities=function(){
         VaccineDistributedFacilitiesReport.get({periodId: $scope.query.periodid,
                                                       facilityId: $scope.query.facilityid,
-                                                      page:$scope.dPage,},
+                                                      page:$scope.dPage},
                                                       function(data){
 
                                                         var distributedFacilities=data.distributedFacilities;
-                                                          console.log(distributedFacilities);
+                                                          console.log(data.pagination);
                                                         $scope.dPagination = data.pagination;
+
                                                         $scope.dTotalItems = $scope.dPagination.totalRecords;
                                                         $scope.dCurrentPage = $scope.dPagination.page;
 
@@ -93,6 +104,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
    $scope.showDistributionModal=function(row){
       $scope.distributionModal=true;
       $scope.query=row;
+       console.log('Modal Data');
        console.log(row);
       $scope.loadDistributedFacilities();
 
