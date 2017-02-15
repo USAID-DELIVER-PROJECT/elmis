@@ -26,7 +26,7 @@ public class VaccineInventoryReportRepository {
     }
 
     public List<Map<String,String>> getDistributedFacilities(Long periodId, Long facilityId,Pagination pagination){
-        return mapper.getDistributedFacilities(periodId,facilityId,pagination);
+        return mapper.getDistributedFacilities(periodId,facilityId);
     }
 
     public Integer getTotalDistributedFacilities(Long periodId, Long facilityId) {
