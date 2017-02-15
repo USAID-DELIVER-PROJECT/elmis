@@ -2,6 +2,7 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
+import org.joda.time.Days;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.FacilityService;
@@ -14,9 +15,16 @@ import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
 
@@ -42,12 +50,12 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
 
-        List<OnTimeInFullReport> onTimeInFullReports = reportMapper.getReport(getReportFilterData(filterCriteria),rowBounds);
-        System.out.println(onTimeInFullReports);
-        List<OnTimeInFullReport> arr = new ArrayList<>();
-        OnTimeInFullReport onTimeInFullReport ;
+        List<OnTimeInFullReport> onTimeInFullReports = reportMapper.getReport(getReportFilterData(filterCriteria), rowBounds);
 
-        for(OnTimeInFullReport fullReport : onTimeInFullReports){
+        List<OnTimeInFullReport> arr = new ArrayList<>();
+        OnTimeInFullReport onTimeInFullReport;
+
+        for (OnTimeInFullReport fullReport : onTimeInFullReports) {
 
             onTimeInFullReport = new OnTimeInFullReport();
             onTimeInFullReport.setReceivedDate(fullReport.getReceivedDate());
@@ -57,7 +65,8 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
             onTimeInFullReport.setStoreName(fullReport.getStoreName());
             onTimeInFullReport.setRegion(fullReport.getRegion());
             onTimeInFullReport.setProduct(fullReport.getProduct());
-            if(fullReport.getQuantityRequested() != null) {
+            onTimeInFullReport.setOnTime(getOnTimeData(fullReport.getReceivedDate(), fullReport.getRequestedDate()));
+            if (fullReport.getQuantityRequested() != null) {
 
                 Double less = fullReport.getQuantityRequested() - getTenPercentLess(fullReport.getQuantityRequested());
                 Double greater = fullReport.getQuantityRequested() + getTenPercentLess(fullReport.getQuantityRequested());
@@ -71,22 +80,54 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
             }
 
         }
-        System.out.println(arr);
         return arr;
 
     }
 
+    private String getOnTimeData(Date receivedDate, Date requestedDate) {
+
+        if (receivedDate != null && requestedDate != null) {
+
+            int valueToCompare = configurationSettingService.getConfigurationIntValue("DELIVERED_ON_TIME_CONFIG_NUMBER");
+
+            long diff = -1;
+
+            try {
+
+                DateFormat readFormat = new SimpleDateFormat("EEE MMM dd hh:mm:ss z yyyy");
+
+                Date dateStart = readFormat.parse(String.valueOf(requestedDate));
+                Date dateEnd = readFormat.parse(String.valueOf(receivedDate));
+
+                System.out.println(dateStart);
+                System.out.println(dateEnd);
+                diff = Math.round((dateEnd.getTime() - dateStart.getTime()) / (double) 86400000);
+                System.out.println(diff);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (valueToCompare <= diff)
+                return "Yes";
+            else
+                return "No";
+        } else
+            return "Not sure";
+    }
+
+
     private String getInFull(Double less, Double greater, Integer received) {
 
-        if(less <= received && received <= greater){
+        if (less <= received && received <= greater) {
             return "Yes";
-        }else {
-            return  "No";
+        } else {
+            return "No";
         }
     }
 
     private double getTenPercentLess(Integer quantityRequested) {
-        return ( configurationSettingService.getConfigurationIntValue("ON_TIME_IN_FULL_CONF_NUMBER") * quantityRequested) / 100L;
+        return (configurationSettingService.getConfigurationIntValue("ON_TIME_IN_FULL_CONF_NUMBER") * quantityRequested) / 100L;
     }
 
 
@@ -145,7 +186,6 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
     public String getFilterSummary(Map<String, String[]> params) {
         return filterHelper.getProgramPeriodGeoZone(params);
     }
-
 
 
 }

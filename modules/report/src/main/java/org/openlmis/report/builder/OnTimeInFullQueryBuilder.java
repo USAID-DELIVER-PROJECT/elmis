@@ -27,7 +27,8 @@ public class OnTimeInFullQueryBuilder {
                 "               JOIN facilities f ON toFacilityId = f.id  \n" +
                 "               JOIN vw_districts M ON f.geographiczoneId = M.district_id  \n" +
                 "               JOIN facility_types  ON f.typeId = facility_types.Id   \n" +
-                "               "+writePredicates(filter)+"   AND  d.status = 'RECEIVED' \n" +
+                "               "+writePredicates(filter)+"   AND  d.status = 'RECEIVED'   " +
+                "               AND d.modifiedDate::date >= #{filterCriteria.startDate}::date and d.modifiedDate::date <= #{filterCriteria.endDate}::date \n" +
                 "               order by M.region_name   \n" +
                 "               ) x LEFT JOIN (     \n" +
                 "               SELECT LI.PRODUCTID,p.primaryName product, M.region_name region, M.district_name district,f.name storeName, quantityRequested,o.createddate requestedDate,o.id orderId\n" +
@@ -40,7 +41,6 @@ public class OnTimeInFullQueryBuilder {
                 "               JOIN vw_districts M ON f.geographiczoneId = M.district_id  \n" +
                 "               JOIN facility_types  ON f.typeId = facility_types.Id     \n" +
                 "               "+writePredicates(filter)+"  and o.status = 'ISSUED'  " +
-                "               AND o.createdDate::date >= #{filterCriteria.startDate}::date and o.createdDate::date <= #{filterCriteria.endDate}::date\n" +
                 "               order by M.region_name   \n" +
                 "               ) y ON (x.orderId = y.orderId and X.productId = y.productId) ";
 

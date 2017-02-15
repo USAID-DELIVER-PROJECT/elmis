@@ -39,4 +39,7 @@ public class OnTimeInFullReport implements ResultRow{
 
     private String product;
 
+    private String onTime;
+
+
 }

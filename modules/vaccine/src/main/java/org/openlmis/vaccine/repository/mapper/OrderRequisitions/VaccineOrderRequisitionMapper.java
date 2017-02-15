@@ -113,7 +113,7 @@ public interface VaccineOrderRequisitionMapper {
             "JOIN processing_periods pp on r.periodId = pp.id  " +
             "JOIN facilities f on r.facilityId= f.id    "+
             " WHERE programId = #{programId} AND r.createdDate::date >= #{dateRangeStart}::date and r.createdDate::date <= #{dateRangeEnd}::date  " +
-            " and facilityId = #{facilityId} and R.STATUS  IN('SUBMITTED')")
+            " and facilityId = #{facilityId} and R.STATUS  IN('SUBMITTED','ISSUED')")
     List<OrderRequisitionDTO> getSearchedDataBy(@Param("facilityId") Long facilityId,
                                                 @Param("dateRangeStart") String dateRangeStart,
                                                 @Param("dateRangeEnd") String dateRangeEnd
