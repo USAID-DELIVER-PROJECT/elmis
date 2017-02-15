@@ -61,7 +61,7 @@ public interface LogisticsLineItemMapper {
   @Results(value = {
       @Result(property = "productId", column = "productId"),
       @Result(property = "product", column = "productId", javaType = Product.class,
-          one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getById"))
+          one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getLWProduct"))
   })
   List<LogisticsLineItem> getLineItems(@Param("reportId") Long reportId);
 
@@ -73,7 +73,7 @@ public interface LogisticsLineItemMapper {
   @Results(value = {
           @Result(property = "productId", column = "productId"),
           @Result(property = "product", column = "productId", javaType = Product.class,
-                  one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getById"))
+                  one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getLWProduct"))
   })
   List<LogisticsLineItem> getVaccineProductLineItems(@Param("reportId") Long reportId);
 
