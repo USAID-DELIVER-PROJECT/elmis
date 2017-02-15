@@ -54,7 +54,6 @@ public class VaccineReport extends BaseModel {
   private Long plannedOutreachImmunizationSessions;
   private Long outreachImmunizationSessions;
   private Long outreachImmunizationSessionsCanceled;
-  private DropOutRate dropOutRate;
 
   @JsonDeserialize(using = DateDeserializer.class)
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

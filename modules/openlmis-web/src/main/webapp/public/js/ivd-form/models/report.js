@@ -6,7 +6,7 @@ var VaccineReport = function (report) {
 
   VaccineReport.prototype.init = function () {
 
-    this.month =  new Date(this.period.startDate).getMonth() + 1;
+    this.month = new Date(this.period.startDate).getMonth() + 1;
 
     function getCoverageLineItems(collection, r) {
       var lineItems = [];
@@ -24,7 +24,7 @@ var VaccineReport = function (report) {
       return lineItems;
     }
 
-    this.products  = _.pluck(this.logisticsLineItems, 'product');
+    this.products = _.pluck(this.logisticsLineItems, 'product');
 
     this.mainProducts = _.where(this.products, {fullSupply: true});
     this.coverageLineItems = getCoverageLineItems(this.coverageLineItems, this);
@@ -32,18 +32,46 @@ var VaccineReport = function (report) {
     this.coverageLineItemViews = [];
     var coverages = _.groupBy(this.coverageLineItems, 'productId');
     //insert these groups in the order of products
-    for(var i = 0; i < this.logisticsLineItems.length; i++){
+    for (var i = 0; i < this.logisticsLineItems.length; i++) {
       var product = this.logisticsLineItems[i];
       var coverageGroup = coverages[product.productId];
-      if(coverageGroup !== undefined){
+      if (coverageGroup !== undefined) {
         this.coverageLineItemViews.push(coverageGroup);
       }
     }
-
+    this.initializeDropouts();
     this.editable = (this.status === 'DRAFT' || this.status === 'REJECTED');
     this.ready = true;
   };
 
+  VaccineReport.prototype.initializeDropouts = function () {
+    var bcg = _.filter(this.coverageLineItems, function (obj) {
+      return (obj.product.code === 'V001');
+    });
+    this.bcg = bcg[0];
+
+    var mr = _.filter(this.coverageLineItems, function (obj) {
+      return (obj.product.code === 'V009');
+    });
+    this.mr1 = mr[0];
+
+    var dpt = _.filter(this.coverageLineItems, function (obj) {
+      return (obj.product.code === 'V010');
+    });
+
+    this.dpt1 = dpt[0];
+    this.dpt3 = dpt[2];
+  };
+
+  VaccineReport.prototype.getBcgDropout = function () {
+    return (this.bcg.getTotalRegular() === 0) ? 0 :
+      ((this.bcg.getTotalRegular() - this.mr1.getTotalRegular()) / this.bcg.getTotalRegular()) * 100;
+  };
+
+  VaccineReport.prototype.getDptDropout = function () {
+    return (this.dpt1.getTotalRegular() === 0) ? 0 :
+      ((this.dpt1.getTotalRegular() - this.dpt3.getTotalRegular()) / this.dpt1.getTotalRegular() ) * 100;
+  };
 
   VaccineReport.prototype.setSkip = function (collectionName, value) {
     angular.forEach(this[collectionName], function (item) {
@@ -52,15 +80,15 @@ var VaccineReport = function (report) {
   };
 
   VaccineReport.prototype.isCoverageTabValid = function () {
-    return this.coverageLineItems.checkIfRequiredFieldsAreValid(['regularMale', 'regularFemale','outreachMale','outreachFemale']);
+    return this.coverageLineItems.checkIfRequiredFieldsAreValid(['regularMale', 'regularFemale', 'outreachMale', 'outreachFemale']);
   };
 
-  VaccineReport.prototype.isReportingDateValid = function(){
+  VaccineReport.prototype.isReportingDateValid = function () {
     return !(this.submissionDate === undefined || this.submissionDate === null);
   };
 
   VaccineReport.prototype.isLogisticsTabValid = function () {
-    if(!this.logisticsLineItems.checkIfRequiredFieldsAreValid(['openingBalance', 'quantityReceived', 'quantityIssued','closingBalance'])){
+    if (!this.logisticsLineItems.checkIfRequiredFieldsAreValid(['openingBalance', 'quantityReceived', 'quantityIssued', 'closingBalance'])) {
       return false;
     }
     for (var i = 0; i < this.logisticsLineItems.length; i++) {
@@ -86,12 +114,12 @@ var VaccineReport = function (report) {
   VaccineReport.prototype.isValid = function () {
     this.validate = true;
     this.validations = {
-        submissionDate: this.isReportingDateValid(),
-        logisticsTab: this.isLogisticsTabValid(),
-        diseaseTab: this.isDiseaseTabValid(),
-        coverageTab: this.isCoverageTabValid(),
-        coldChainTab: this.isColdChainTabValid(),
-        vitaminTab: this.isVitaminTabValid()
+      submissionDate: this.isReportingDateValid(),
+      logisticsTab: this.isLogisticsTabValid(),
+      diseaseTab: this.isDiseaseTabValid(),
+      coverageTab: this.isCoverageTabValid(),
+      coldChainTab: this.isColdChainTabValid(),
+      vitaminTab: this.isVitaminTabValid()
     };
     return (_.without(_.values(this.validations), true).length === 0);
   };

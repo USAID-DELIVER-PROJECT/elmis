@@ -65,7 +65,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "                            ELSE 'N'::text    \n" +
                 "                         END AS reporting_status   \n" +
                 "                                from programs_supported ps    \n" +
-                "                                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid    \n" +
+                "                                left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid  and status in ('SUBMITTED','APPROVED','REJECTED')  \n" +
                 "                                left outer join processing_periods pp on pp.id = vr.periodid   \n" +
                 "                                join facilities f on f.id = ps.facilityId     \n" +
                 "                                join geographic_zones z on z.id = f.geographicZoneId    \n" +
@@ -197,7 +197,7 @@ public class CompletenessAndTimelinessQueryBuilder {
                 "        ELSE 'N'::text    \n" +
                 "     END AS reporting_status   \n" +
                 "      from programs_supported ps    \n" +
-                "      left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid    \n" +
+                "      left join vaccine_reports vr on vr.programid = ps.programid and vr.facilityid = ps.facilityid and status in ('SUBMITTED','APPROVED','REJECTED')   \n" +
                 "      left outer join processing_periods pp on pp.id = vr.periodid   \n" +
                 "      join facilities f on f.id = ps.facilityId     \n" +
                 "      join geographic_zones z on z.id = f.geographicZoneId    \n" +
