@@ -31,8 +31,8 @@ import static org.openlmis.authentication.web.UserAuthenticationSuccessHandler.U
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.core.domain.Product;
 import org.openlmis.db.categories.UnitTests;
-import org.openlmis.equipment.domain.EquipmentTypeProduct;
-import org.openlmis.equipment.service.ProgramEquipmentTypeProductService;
+import org.openlmis.equipment.domain.EquipmentProduct;
+import org.openlmis.equipment.service.EquipmentProductService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -43,10 +43,10 @@ import java.util.List;
 
 @Category(UnitTests.class)
 @RunWith(MockitoJUnitRunner.class)
-public class ProgramEquipmentTypeProductControllerTest {
+public class ProgramEquipmentProductControllerTest {
 
   @Mock
-  ProgramEquipmentTypeProductService service;
+  EquipmentProductService service;
 
   @InjectMocks
   ProgramEquipmentTypeProductController controller;
@@ -63,7 +63,7 @@ public class ProgramEquipmentTypeProductControllerTest {
 
   @Test
   public void shouldGetByProgramEquipmentId() throws Exception {
-    List<EquipmentTypeProduct> list = new ArrayList<>();
+    List<EquipmentProduct> list = new ArrayList<>();
     when(service.getByProgramEquipmentId(2L)).thenReturn(list);
 
     ResponseEntity<OpenLmisResponse> response = controller.getByProgramEquipmentId(2L);
@@ -72,7 +72,7 @@ public class ProgramEquipmentTypeProductControllerTest {
 
   @Test
   public void shouldSave() throws Exception {
-    EquipmentTypeProduct pep = new EquipmentTypeProduct();
+    EquipmentProduct pep = new EquipmentProduct();
     doNothing().when(service).Save(pep);
 
     ResponseEntity<OpenLmisResponse> response = controller.save(pep, request);

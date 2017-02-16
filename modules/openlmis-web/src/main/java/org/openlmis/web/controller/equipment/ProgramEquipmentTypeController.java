@@ -13,7 +13,7 @@ package org.openlmis.web.controller.equipment;
 
 import org.openlmis.core.exception.DataException;
 import org.openlmis.equipment.domain.ProgramEquipmentType;
-import org.openlmis.equipment.service.ProgramEquipmentTypeProductService;
+import org.openlmis.equipment.service.EquipmentProductService;
 import org.openlmis.equipment.service.ProgramEquipmentTypeService;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.core.web.OpenLmisResponse;
@@ -41,7 +41,7 @@ public class ProgramEquipmentTypeController extends BaseController {
   ProgramEquipmentTypeService programEquipmentTypeService;
 
   @Autowired
-  ProgramEquipmentTypeProductService programEquipmentTypeProductService;
+  EquipmentProductService equipmentProductService;
 
   @RequestMapping(value = "save", method = RequestMethod.POST, headers = ACCEPT_JSON)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
@@ -87,7 +87,7 @@ public class ProgramEquipmentTypeController extends BaseController {
 
         try{
             //remove the program_equipment_products first
-            programEquipmentTypeProductService.removeAllByEquipmentProducts(programEquipmentId);
+            equipmentProductService.removeAllByEquipmentProducts(programEquipmentId);
 
             //then  go for the program_equipment
             programEquipmentTypeService.remove(programEquipmentId);

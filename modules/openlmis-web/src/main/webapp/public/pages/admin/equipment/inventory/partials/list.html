@@ -175,6 +175,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr ng-show="inventory == undefined || inventory.length == 0">
+                    <td colspan="8">
+                        No equipments to display.
+                    </td>
+                </tr>
                 <tr ng-repeat="item in inventory">
                     <td>{{$index + 1}}</td>
                     <td>{{item.facility.geographicZone.name}}</td>

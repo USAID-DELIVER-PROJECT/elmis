@@ -66,8 +66,8 @@ public interface EquipmentLineItemMapper {
       "         JOIN requisition_line_items rli on r.id = rli.rnrId " +
       "         JOIN products p on p.code::text = rli.productCode::text " +
       "         JOIN equipment_status_line_items esli on esli.rnrId = r.id " +
-      "         JOIN equipment_type_programs pe on pe.programId = r.programId " +
-      "         JOIN equipment_type_products ep on pe.id = ep.programEquipmentTypeId " +
+      "         JOIN equipment_inventories ei on ei.id = esli.equipmentInventoryId " +
+      "         JOIN equipment_products ep on ei.equipmentId = ep.equipmentId " +
       "               and p.id = ep.productId " +
       " WHERE " +
       "       esli.id = #{id}")

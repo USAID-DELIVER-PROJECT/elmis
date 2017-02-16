@@ -29,6 +29,11 @@
         </tr>
       </thead>
       <tbody>
+        <tr ng-show="list == undefined || list.length == 0">
+          <td colspan="6">
+            No contract to display.
+          </td>
+        </tr>
         <tr ng-repeat="row in list">
           <td>{{$index + 1}}</td>
           <td> <a ng-href="#/edit/{{row.id}}">{{row.identifier}}</a></td>

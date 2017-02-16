@@ -43,7 +43,7 @@
         <td>{{row.recommendedDateString}}</td>
         <th class="span1"><input type="button" class="btn btn-small" ng-click="respondToRequest(row)" value="Respond"/></th>
       </tr>
-      <tr>
+      <tr ng-show="list == undefined || list.length == 0">
         <td colspan="7" openlmis-message="label.no.maintenance.request.pending"></td>
       </tr>
       </tbody>

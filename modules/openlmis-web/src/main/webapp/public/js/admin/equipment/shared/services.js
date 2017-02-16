@@ -46,6 +46,10 @@ services.factory('SaveEquipment', function ($resource) {
   return $resource('/equipment/manage/save.json', {}, {});
 });
 
+services.factory('SaveEquipmentRelatedProducts', function ($resource) {
+  return $resource('/equipment/manage/save-related-products.json', {}, {});
+});
+
 services.factory('RemoveEquipment',function($resource){
     return $resource('/equipment/manage/remove/:equipmentTypeId/:id.json',{},{});
 });

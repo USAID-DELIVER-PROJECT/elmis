@@ -19,6 +19,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
+import org.openlmis.core.domain.Product;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +48,8 @@ public class Equipment extends BaseModel {
   private Long energyTypeId;
 
   private Integer inventoryCount;
+
+  private List<Product> relatedProducts;
 
   public boolean equalsByMakeAndModel(Equipment other) {
     return other.manufacturer != null && other.model != null

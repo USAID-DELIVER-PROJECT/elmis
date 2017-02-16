@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function ManageEquipmentController($scope, $routeParams,$dialog, $location,messageService, Equipments,EquipmentTypes,EquipmentType,RemoveEquipment,currentEquipmentTypeId,ProgramCompleteList,EquipmentTypesByProgram,currentProgramId,ColdChainPqsStatus,SaveEquipment,$timeout) {
+function ManageEquipmentController($scope, $routeParams,$dialog, PossibleProductsForProgram, messageService, Equipments,EquipmentTypes,EquipmentType,RemoveEquipment,currentEquipmentTypeId,ProgramCompleteList,EquipmentTypesByProgram,currentProgramId,ColdChainPqsStatus,SaveEquipment, SaveEquipmentRelatedProducts,$timeout) {
 
     //Load All Equipment Types if No program filter applied
     $scope.getAllEquipmentTypes = function () {
@@ -18,6 +18,40 @@ function ManageEquipmentController($scope, $routeParams,$dialog, $location,messa
           $scope.equipmentTypes = data.equipment_type;
           });
      };
+
+  $scope.showRelatedProducts = function (equipment){
+    $scope.currentEquipment = equipment;
+    $scope.relatedProductModal = true;
+    $scope.getProductOptions();
+  };
+
+  $scope.addSelectedProduct = function(selectedProduct){
+    selectedProduct.active = true;
+    // check if it exists in added products
+    var currentIds = _.pluck($scope.currentEquipment.relatedProducts, 'id');
+    if(!_.contains(currentIds, selectedProduct.id)){
+      $scope.currentEquipment.relatedProducts.push(selectedProduct);
+    }
+  };
+
+  $scope.saveRelatedProducts = function(){
+    $scope.currentEquipment.equipmentTypeName = 'equipment';
+    SaveEquipmentRelatedProducts.save($scope.currentEquipment, $scope.closeModal);
+  };
+
+  $scope.closeModal = function(){
+    $scope.relatedProductModal = false;
+  };
+
+  $scope.getProductOptions = function () {
+    PossibleProductsForProgram.get({
+      program: $scope.programId,
+      equipmentType: $scope.currentEquipment.id
+    }, function (data) {
+      $scope.allProducts = data.products;
+      $scope.productsLoaded = true;
+    });
+  };
 
     //Load Equipment types by program if program filter applied
     $scope.getAllEquipmentTypesByProgram = function (initLoad) {
@@ -41,7 +75,9 @@ function ManageEquipmentController($scope, $routeParams,$dialog, $location,messa
 
    $scope.listEquipments=function(initLoad)
    {
-
+      if(isUndefined($scope.equipmentTypeId)){
+        return;
+      }
       if(initLoad)
       {
             $scope.page=1;
