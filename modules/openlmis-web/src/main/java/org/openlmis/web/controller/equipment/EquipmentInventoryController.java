@@ -12,6 +12,8 @@
 
 package org.openlmis.web.controller.equipment;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.service.FacilityService;
@@ -41,6 +43,7 @@ import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
 
 @Controller
 @RequestMapping(value="/equipment/inventory/")
+@Api("IVD Equipment Rest APIs ")
 public class EquipmentInventoryController extends BaseController {
 
   public static final String PROGRAMS = "programs";
@@ -60,7 +63,10 @@ public class EquipmentInventoryController extends BaseController {
   @Autowired
   private EquipmentInventoryNotificationService notificationService;
 
-  @RequestMapping(value="list", method = RequestMethod.GET)
+
+  @RequestMapping(value={"list" ,"/rest-api/EquipmentInventory/{typeId}/{programId}/{equipmentTypeId}"}, method = RequestMethod.GET)
+  @ApiOperation(position = 2, value = "Get Equipments By type, Program and EquipmentType")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')")
   public ResponseEntity<OpenLmisResponse> getInventory(@RequestParam("typeId") Long typeId,
                                                        @RequestParam("programId") Long programId,
                                                        @RequestParam("equipmentTypeId") Long equipmentTypeId,
@@ -104,7 +110,8 @@ public class EquipmentInventoryController extends BaseController {
     return OpenLmisResponse.response(INVENTORY, service.getInventoryById(id));
   }
 
-  @RequestMapping(value="save", method = RequestMethod.POST)
+  @RequestMapping(value={"save", "/rest-api/EquipmentInventory/save"}, method = {RequestMethod.PUT, RequestMethod.POST})
+  @ApiOperation(position = 3, value = "Save Equipment Inventory Information")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')")
   public ResponseEntity<OpenLmisResponse> save(@RequestBody EquipmentInventory inventory, HttpServletRequest request){
     ResponseEntity<OpenLmisResponse> response;
@@ -118,7 +125,8 @@ public class EquipmentInventoryController extends BaseController {
     return response;
   }
 
-  @RequestMapping(value="status/update", method = RequestMethod.POST)
+  @RequestMapping(value={"status/update","/rest-api/EquipmentInventory/update"}, method = {RequestMethod.POST,RequestMethod.PUT})
+  @ApiOperation(position = 4, value = "Update Equipment Status")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')")
   public ResponseEntity<OpenLmisResponse> updateStatus(@RequestBody EquipmentInventory inventory, HttpServletRequest request){
     ResponseEntity<OpenLmisResponse> response;
@@ -144,6 +152,15 @@ public class EquipmentInventoryController extends BaseController {
     return OpenLmisResponse.response("Equipment", "deleted");
   }
 
+
+  @RequestMapping(value = "/rest-api/EquipmentInventory/{facilityId}/{programId}", method = RequestMethod.GET)
+  @ApiOperation(position = 5, value = "GET Equipment Inventory by Facility and Program")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')")
+  public ResponseEntity<OpenLmisResponse> getInventoryByFacilityAndProgram(@RequestParam("facilityId") Long facilityId,
+                                                                           @RequestParam("programId") Long programId) {
+
+    return OpenLmisResponse.response("Equipments", service.getInventoryByFacilityAndProgram(facilityId,programId));
+  }
 
 
 }
