@@ -14,13 +14,13 @@ package org.openlmis.web.controller.equipment;
 
 import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.core.web.OpenLmisResponse;
+import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.equipment.domain.ColdChainEquipment;
 import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.domain.EquipmentType;
 import org.openlmis.equipment.service.EquipmentService;
 import org.openlmis.equipment.service.EquipmentTypeService;
-import org.openlmis.core.web.controller.BaseController;
-import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -36,6 +36,7 @@ import java.util.List;
 
 import static java.lang.Integer.parseInt;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
 @RequestMapping(value="/equipment/manage/")
@@ -106,6 +107,12 @@ public class EquipmentController extends BaseController {
       " or @permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_INVENTORY')")
   public ResponseEntity<OpenLmisResponse> getTypesByProgram(@PathVariable(value="programId") Long programId){
     return OpenLmisResponse.response("equipment_types", service.getTypesByProgram(programId));
+  }
+
+  @RequestMapping(value = "save-related-products", method = POST)
+  public ResponseEntity<OpenLmisResponse> saveRelatedEProducts(@RequestBody Equipment equipment){
+    service.saveEquipmentRelatedProducts(equipment);
+    return OpenLmisResponse.success("saved");
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "save", headers = ACCEPT_JSON)

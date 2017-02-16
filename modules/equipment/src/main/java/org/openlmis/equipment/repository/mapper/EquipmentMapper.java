@@ -14,6 +14,7 @@ package org.openlmis.equipment.repository.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.session.RowBounds;
+import org.openlmis.core.domain.Product;
 import org.openlmis.equipment.domain.ColdChainEquipmentDesignation;
 import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.domain.EquipmentEnergyType;
@@ -51,6 +52,7 @@ public interface EquipmentMapper {
         " GROUP BY equipments.id" +
         " ORDER BY id DESC")
     @Results({
+            @Result(property = "id", column = "id"),
             @Result(
                     property = "equipmentType", column = "equipmentTypeId", javaType = EquipmentType.class,
                     one = @One(select = "org.openlmis.equipment.repository.mapper.EquipmentTypeMapper.getEquipmentTypeById")),
@@ -58,9 +60,19 @@ public interface EquipmentMapper {
             @Result(
                     property = "energyType", column = "energyTypeId", javaType = EquipmentEnergyType.class,
                     one = @One(select = "org.openlmis.equipment.repository.mapper.EquipmentEnergyTypeMapper.getById")),
+            @Result(
+                property = "relatedProducts", column = "id", javaType = List.class,
+                many = @Many(select = "org.openlmis.equipment.repository.mapper.EquipmentMapper.getRelatedProducts")),
             @Result(property = "energyTypeId", column = "energyTypeId")
     })
     List<Equipment> getByType(@Param("equipmentTypeId") Long equipmentTypeId, RowBounds rowBounds);
+
+
+    @Select("SELECT p.id, p.code, p.primaryName, p.strength, true as active  from products p " +
+        " JOIN equipment_products etp on etp.productId = p.id " +
+        " WHERE " +
+        "  etp.equipmentId = #{equipmentId}")
+    List<Product> getRelatedProducts(@Param("equipmentId") Long equipmentId);
 
   @Select("SELECT equipments.*" +
       "   , COUNT(equipment_inventories.id) AS inventorycount,  " +

@@ -30,6 +30,11 @@
         </tr>
       </thead>
       <tbody>
+        <tr ng-show="equipment_types == undefined || equipment_types.length == 0">
+          <td colspan="6">
+            No equipment types to display.
+          </td>
+        </tr>
         <tr ng-repeat="type in equipment_types">
           <td>{{$index + 1}}</td>
           <td>{{type.code}}</td>

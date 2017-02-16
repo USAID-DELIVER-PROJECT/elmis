@@ -1,0 +1,55 @@
+<div id="productsDialogDiv" modal="relatedProductModal"
+     options="{'backdrop':'static', 'escape':false}">
+  <div class="modal-header">
+    <h3 openlmis-message="header.product.add.new"></h3>
+  </div>
+  <div class="modal-body">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th></th>
+        <th><span openlmis-message="label.product.code"></span></th>
+        <th><span openlmis-message="label.product.name"></span></th>
+        <th><span openlmis-message="label.strength"></span></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="r in currentEquipment.relatedProducts">
+        <td><input type="checkbox" ng-model="r.active" /> </td>
+        <td>{{r.code}}</td>
+        <td>{{r.primaryName}}</td>
+        <td>{{r.strength}}</td>
+      </tr>
+      </tbody>
+    </table>
+    <form name="addProductForm">
+      <div>
+        <div class="row-fluid">
+          <div class="span3">
+            <label for="productValue"><span openlmis-message="label.product"></span></label>
+          </div>
+          <div class="span9">
+            <select style="width: 100%" ng-required="true" size="7" name="productValue"
+                    id="productValue" ng-model="productToAdd"
+                    ng-options="option as option.code.concat(' - ( ').concat(option.fullName).concat(' )') for option in allProducts">
+            </select>
+            <button class="btn btn-primary" ng-click="addSelectedProduct(productToAdd)">Add Selected Product</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="alert alert-error" id="productSaveFailMessage" openlmis-message="productErrorMessage"
+         ng-show="productError">
+
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <input type="button" class="btn btn-primary save-button" value="Save"
+           ng-click="saveRelatedProducts()"/>
+    <input type="button"
+           ng-click="closeModal();productError=''"
+           class="btn btn-cancel" openlmis-message="button.cancel"/>
+  </div>
+
+</div>

@@ -31,14 +31,18 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="type in list">
-        <td>{{$index + 1}}</td>
-        <td>
-          <a ng-href="#/edit/{{type.id}}">{{type.name}}</a>
-        </td>
-        <td>{{type.description}}</td>
-
-      </tr>
+        <tr ng-show="list == undefined || list.length == 0">
+          <td colspan="3">
+            No service types to display.
+          </td>
+        </tr>
+        <tr ng-repeat="type in list">
+          <td>{{$index + 1}}</td>
+          <td>
+            <a ng-href="#/edit/{{type.id}}">{{type.name}}</a>
+          </td>
+          <td>{{type.description}}</td>
+        </tr>
       </tbody>
     </table>
   </div>

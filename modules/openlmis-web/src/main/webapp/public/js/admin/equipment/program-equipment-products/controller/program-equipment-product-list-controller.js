@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function ProgramEquipmentProductController($scope, $dialog, messageService, navigateBackService, EquipmentTypes, ProgramCompleteList, PossibleProductsForProgram, GetProgramEquipmentByProgramId, SaveProgramEquipment, GetProgramEquipmentProductByProgramEquipment, SaveProgramEquipmentProduct, RemoveProgramEquipmentProduct, RemoveProgramEquipment) {
+function ProgramEquipmentProductController($scope, $dialog, messageService,  EquipmentTypes, ProgramCompleteList, GetProgramEquipmentByProgramId, SaveProgramEquipment, RemoveProgramEquipment) {
   $scope.$on('$viewContentLoaded', function () {
     $scope.getAllEquipments();
     $scope.getAllPrograms();
@@ -28,15 +28,6 @@ function ProgramEquipmentProductController($scope, $dialog, messageService, navi
       });
   };
 
-  $scope.getAllProductsForAProgram = function () {
-    PossibleProductsForProgram.get({
-      program: $scope.currentProgramEquipment.program.id,
-      equipmentType: $scope.currentProgramEquipment.equipmentId
-    }, function (data) {
-      $scope.allProducts = data.products;
-      $scope.productsLoaded = true;
-    });
-  };
 
   $scope.getAllPrograms = function () {
     ProgramCompleteList.get(function (data) {
@@ -51,15 +42,11 @@ function ProgramEquipmentProductController($scope, $dialog, messageService, navi
       GetProgramEquipmentByProgramId.get({programId: $scope.currentProgramEquipment.program.id}, function (data) {
         $scope.programEquipments = data.programEquipments;
       });
-      $scope.getAllProductsForAProgram();
-      $scope.programEquipmentProducts = null;
       $scope.currentProgramEquipment.id = null;
       $scope.currentProgramEquipment.equipmentId = null;
-      $scope.currentProgramEquipmentProduct.product=null;
     }
     else {
       $scope.programEquipments = null;
-      $scope.programEquipmentProducts = null;
       $scope.currentProgramEquipment = {};
       $scope.currentProgramEquipmentProduct = {};
     }
@@ -73,10 +60,6 @@ function ProgramEquipmentProductController($scope, $dialog, messageService, navi
   $scope.deleteEquipment = function () {
     $scope.equipmentDialogModal = true;
     $scope.currentProgramEquipment.id = null;
-  };
-
-  $scope.addNewProduct = function () {
-    $scope.productDialogModal = true;
   };
 
   $scope.closeModal = function () {
@@ -95,19 +78,8 @@ function ProgramEquipmentProductController($scope, $dialog, messageService, navi
       $scope.currentProgramEquipmentProduct = null;
     }
 
-    $scope.refreshProgramEquipmentProductList();
   };
 
-  $scope.refreshProgramEquipmentProductList = function () {
-    if ($scope.currentProgramEquipment) {
-      GetProgramEquipmentProductByProgramEquipment.get({programEquipmentId: $scope.currentProgramEquipment.id}, function (data) {
-        $scope.programEquipmentProducts = data.programEquipmentProducts;
-      });
-    }
-    else {
-      $scope.programEquipmentProducts = null;
-    }
-  };
 
   $scope.getProgramEquipmentColor = function (programEquipment) {
     if (!$scope.currentProgramEquipment) {
@@ -162,24 +134,6 @@ function ProgramEquipmentProductController($scope, $dialog, messageService, navi
     SaveProgramEquipment.save($scope.currentProgramEquipment, successHandler, errorHandler);
   };
 
-  $scope.saveProgramEquipmentProduct = function () {
-    var successHandler = function (response) {
-      $scope.programEquipmentProduct = response.programEquipmentProduct;
-      $scope.productError = false;
-      $scope.productErrorMessage = '';
-      $scope.message = response.success;
-      $scope.showMessage = true;
-      $scope.closeModal();
-      $scope.refreshProgramEquipmentProductList();
-    };
-
-    var errorHandler = function (response) {
-      $scope.productError = true;
-      $scope.productErrorMessage = response.data.error;
-    };
-
-    SaveProgramEquipmentProduct.save($scope.currentProgramEquipmentProduct, successHandler, errorHandler);
-  };
 
 
   $scope.setDataChanged = function (programEquipment) {
@@ -218,38 +172,4 @@ function ProgramEquipmentProductController($scope, $dialog, messageService, navi
     }
   };
 
-  $scope.showRemoveProgramEquipmentProductConfirmDialog = function (index) {
-    var programEquipmentProduct = $scope.programEquipmentProducts[index];
-    $scope.index = index;
-    $scope.selectedProgramEquipmentProduct = programEquipmentProduct;
-    var options = {
-      id: "removeProgramEquipmentProductConfirmDialog",
-      header: "Confirmation",
-      body: "Please confirm that you want to remove the product: " + $scope.selectedProgramEquipmentProduct.product.fullName + '('+ $scope.selectedProgramEquipmentProduct.product.primaryName + ')'
-    };
-    OpenLmisDialog.newDialog(options, $scope.removeProgramEquipmentProductConfirm, $dialog, messageService);
-  };
-
-  $scope.removeProgramEquipmentProductConfirm = function (result) {
-    if (result) {
-      $scope.programEquipmentProducts.splice($scope.index, 1);
-      $scope.removeProgramEquipmentProduct();
-    }
-    $scope.selectedProgramEquipmentProduct = undefined;
-  };
-
-  $scope.removeProgramEquipmentProduct = function () {
-
-    var successCallBack = function (response) {
-      $scope.message = response.success;
-      $scope.showMessage = true;
-    };
-
-    var errorCallBack = function (response) {
-      $scope.productError = true;
-      $scope.productErrorMessage = response.data.error;
-    };
-    RemoveProgramEquipmentProduct.get({id: $scope.selectedProgramEquipmentProduct.id}, successCallBack, errorCallBack);
-
-  };
 }

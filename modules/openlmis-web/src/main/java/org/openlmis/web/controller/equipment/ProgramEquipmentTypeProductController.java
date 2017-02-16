@@ -12,8 +12,8 @@
 package org.openlmis.web.controller.equipment;
 
 import org.openlmis.core.exception.DataException;
-import org.openlmis.equipment.domain.EquipmentTypeProduct;
-import org.openlmis.equipment.service.ProgramEquipmentTypeProductService;
+import org.openlmis.equipment.domain.EquipmentProduct;
+import org.openlmis.equipment.service.EquipmentProductService;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,37 +34,37 @@ public class ProgramEquipmentTypeProductController extends BaseController{
   public static final String PRODUCTS = "products";
 
   @Autowired
-  ProgramEquipmentTypeProductService programEquipmentTypeProductService;
+  EquipmentProductService equipmentProductService;
 
   @RequestMapping(value="getByProgramEquipment/{programEquipmentId}",headers = ACCEPT_JSON,method = RequestMethod.GET)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
   public ResponseEntity<OpenLmisResponse> getByProgramEquipmentId(@PathVariable(value="programEquipmentId") Long programEquipmentId){
-    return OpenLmisResponse.response("programEquipmentProducts", programEquipmentTypeProductService.getByProgramEquipmentId(programEquipmentId));
+    return OpenLmisResponse.response("programEquipmentProducts", equipmentProductService.getByProgramEquipmentId(programEquipmentId));
   }
 
   @RequestMapping(value = "save", method = RequestMethod.POST, headers = ACCEPT_JSON)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
-  public ResponseEntity<OpenLmisResponse> save(@RequestBody EquipmentTypeProduct equipmentTypeProduct, HttpServletRequest request){
+  public ResponseEntity<OpenLmisResponse> save(@RequestBody EquipmentProduct equipmentProduct, HttpServletRequest request){
     Date date = new Date();
     Long userId = loggedInUserId(request);
     ResponseEntity<OpenLmisResponse> successResponse;
 
-    if(equipmentTypeProduct.getId() == null){
-      equipmentTypeProduct.setCreatedDate(date);
-      equipmentTypeProduct.setCreatedBy(userId);
+    if(equipmentProduct.getId() == null){
+      equipmentProduct.setCreatedDate(date);
+      equipmentProduct.setCreatedBy(userId);
     }
-    equipmentTypeProduct.setModifiedDate(date);
-    equipmentTypeProduct.setModifiedBy(userId);
+    equipmentProduct.setModifiedDate(date);
+    equipmentProduct.setModifiedBy(userId);
 
     try{
-      programEquipmentTypeProductService.Save(equipmentTypeProduct);
+      equipmentProductService.Save(equipmentProduct);
     }
     catch (DataException e){
       return OpenLmisResponse.error(e, HttpStatus.BAD_REQUEST);
     }
 
     successResponse = OpenLmisResponse.success("message.equipment.association.pep.saved");
-    successResponse.getBody().addData(PROGRAM_EQUIPMENT_PRODUCT, equipmentTypeProduct);
+    successResponse.getBody().addData(PROGRAM_EQUIPMENT_PRODUCT, equipmentProduct);
     return successResponse;
   }
 
@@ -74,7 +74,7 @@ public class ProgramEquipmentTypeProductController extends BaseController{
     ResponseEntity<OpenLmisResponse> successResponse;
 
     try{
-      programEquipmentTypeProductService.remove(programEquipmentId);
+      equipmentProductService.remove(programEquipmentId);
     }
     catch(DataException e){
       return OpenLmisResponse.error(e,HttpStatus.BAD_REQUEST);
@@ -87,6 +87,6 @@ public class ProgramEquipmentTypeProductController extends BaseController{
 
   @RequestMapping(value="possible-products",headers = ACCEPT_JSON,method = RequestMethod.GET)
   public ResponseEntity<OpenLmisResponse> getProducts(@RequestParam("program") Long programId, @RequestParam(value = "equipment", defaultValue = "0") Long equipmentId ){
-    return OpenLmisResponse.response(PRODUCTS, programEquipmentTypeProductService.getAvailableProductsToLink(programId, equipmentId));
+    return OpenLmisResponse.response(PRODUCTS, equipmentProductService.getAvailableProductsToLink(programId, equipmentId));
   }
 }

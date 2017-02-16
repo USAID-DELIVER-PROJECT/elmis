@@ -62,10 +62,16 @@
         <th><a openlmis-message="label.equipment.model" ng-click="sortBy('model')"></a></th>
         <th openlmis-message="label.equipment.energy-type"></th>
         <th openlmis-message="label.equipment.type"></th>
+        <th></th>
         <th openlmis-message="label.equipment.action"></th>
       </tr>
       </thead>
       <tbody>
+      <tr ng-show="equipments == undefined || equipments.length == 0">
+        <td colspan="8" >
+          No equipment to display.
+        </td>
+      </tr>
       <tr ng-repeat="eq in equipments | orderBy:orderTitle">
         <td style="width:30px;">{{$index + 1}}</td>
         <td><a ng-href="#/edit/{{eq.id}}/{{equipmentTypeId}}">{{eq.name}}</a></td>
@@ -73,10 +79,12 @@
         <td>{{eq.model}}</td>
         <td>{{eq.energyType.name}}</td>
         <td>{{eq.equipmentType.code}}</td>
+        <td><a href="" ng-click="showRelatedProducts(eq)">{{eq.relatedProducts.length}} related products</a></td>
         <td><a openlmis-message="label.equipment.remove" href="" ng-click="showRemoveEquipmentConfirmDialog(eq.id)" ng-hide="eq.inventoryCount > 0"></a></td>
       </tr>
       </tbody>
     </table>
+    <ng-include src="'/public/pages/admin/equipment/manage/partials/product-modal.html'"></ng-include>
     <table ng-show="equipment_type.coldChain != undefined && equipment_type.coldChain" class="table table-bordered table-striped">
       <thead>
       <tr class="gradient-header">

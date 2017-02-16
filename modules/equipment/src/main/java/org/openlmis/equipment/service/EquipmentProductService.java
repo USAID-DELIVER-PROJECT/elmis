@@ -9,44 +9,44 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.openlmis.equipment.repository;
+package org.openlmis.equipment.service;
 
 import org.openlmis.core.domain.Product;
-import org.openlmis.equipment.domain.EquipmentTypeProduct;
-import org.openlmis.equipment.repository.mapper.EquipmentTypeProductMapper;
+import org.openlmis.equipment.domain.EquipmentProduct;
+import org.openlmis.equipment.repository.EquipmentProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Repository
-public class EquipmentTypeProductRepository {
+@Service
+public class EquipmentProductService {
 
   @Autowired
-  EquipmentTypeProductMapper mapper;
+  EquipmentProductRepository repository;
 
-  public List<EquipmentTypeProduct> getByProgramEquipmentId(Long programEquipmentId){
-    return mapper.getByProgramEquipmentId(programEquipmentId);
+  public List<EquipmentProduct> getByProgramEquipmentId(Long programEquipmentId){
+    return repository.getByProgramEquipmentId(programEquipmentId);
   }
 
-  public void insert(EquipmentTypeProduct equipmentTypeProduct){
-    mapper.insert(equipmentTypeProduct);
-  }
-
-  public void update(EquipmentTypeProduct equipmentTypeProduct){
-    mapper.update(equipmentTypeProduct);
+  public void Save(EquipmentProduct equipmentProduct){
+    if(equipmentProduct.getId() == null){
+      repository.insert(equipmentProduct);
+    }
+    else {
+      repository.update(equipmentProduct);
+    }
   }
 
   public void remove(Long programEquipmentId) {
-    mapper.remove(programEquipmentId);
+    repository.remove(programEquipmentId);
   }
 
-   public void removeAllByEquipmentProducts(Long programEquipmentId){
-       mapper.removeByEquipmentProducts(programEquipmentId);
-   }
+  public void removeAllByEquipmentProducts(Long programEquipmentId){
+        repository.removeAllByEquipmentProducts(programEquipmentId);
+    }
 
   public List<Product> getAvailableProductsToLink(Long programId, Long equipmentId) {
-    return mapper.getAvailableProductsToLink(programId, equipmentId);
+    return repository.getAvailableProductsToLink(programId, equipmentId);
   }
 }
