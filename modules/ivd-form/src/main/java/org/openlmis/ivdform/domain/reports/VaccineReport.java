@@ -215,6 +215,7 @@ public class VaccineReport extends BaseModel {
     this.setRejectionComment(report.rejectionComment);
     this.setFixedImmunizationSessions(report.fixedImmunizationSessions);
     this.setMajorImmunizationActivities(report.majorImmunizationActivities);
+    this.setPlannedOutreachImmunizationSessions(report.plannedOutreachImmunizationSessions);
     this.setOutreachImmunizationSessions(report.outreachImmunizationSessions);
     this.setOutreachImmunizationSessionsCanceled(report.outreachImmunizationSessionsCanceled);
     this.setSubmissionDate(report.getSubmissionDate());
