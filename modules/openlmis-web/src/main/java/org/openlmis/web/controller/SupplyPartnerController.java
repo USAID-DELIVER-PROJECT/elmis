@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -56,15 +57,15 @@ public class SupplyPartnerController extends BaseController {
 
   @Transactional
   @RequestMapping(value = "/supply-partners", headers = ACCEPT_JSON, method = RequestMethod.POST)
-  public ResponseEntity<OpenLmisResponse> insert(@RequestBody SupplyPartner partner){
-     service.insert(partner);
+  public ResponseEntity<OpenLmisResponse> insert(@RequestBody SupplyPartner partner, HttpServletRequest request){
+     service.insert(partner, loggedInUserId(request));
      return OpenLmisResponse.response(SUPPLY_PARTNER, partner);
   }
 
   @Transactional
   @RequestMapping(value = "/supply-partners/{id}", headers = ACCEPT_JSON, method = RequestMethod.PUT)
-  public ResponseEntity<OpenLmisResponse> update(@PathVariable("id") Long id,  @RequestBody SupplyPartner partner){
-    service.update(partner);
+  public ResponseEntity<OpenLmisResponse> update(@PathVariable("id") Long id,  @RequestBody SupplyPartner partner, HttpServletRequest request){
+    service.update(partner, loggedInUserId(request));
     return OpenLmisResponse.response(SUPPLY_PARTNER, partner);
   }
 

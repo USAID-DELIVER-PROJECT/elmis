@@ -297,7 +297,7 @@ public class RequisitionService {
     savedRnr.calculateForApproval();
 
     if (requiresSplitting(savedRnr)) {
-      splitRequisition(savedRnr);
+      splitRequisition(savedRnr, requisition.getModifiedBy());
     }
     final SupervisoryNode parent = supervisoryNodeService.getParent(savedRnr.getSupervisoryNodeId());
 
@@ -318,10 +318,17 @@ public class RequisitionService {
     return savedRnr;
   }
 
-  private void splitRequisition(Rnr savedRnr) {
+  private void splitRequisition(Rnr savedRnr, Long userId) {
     if (supplyPartnerService != null) {
       List<SupplyPartnerProgram> subscriptions = supplyPartnerService.getSubscriptionsWithDetails(savedRnr.getFacility().getId(), savedRnr.getProgram().getId());
       for (SupplyPartnerProgram subscription : subscriptions) {
+
+        Rnr existingRnr = requisitionRepository.getRnrBy(savedRnr.getFacility().getId(), savedRnr.getPeriod().getId(), subscription.getDestinationProgramId(), savedRnr.isEmergency());
+        if (existingRnr != null) {
+          // there was an rnr already - skip splitting.
+          continue;
+        }
+
         List<String> productCodes = subscription.getProducts().stream().map(p -> p.getCode()).collect(Collectors.toList());
         List<RnrLineItem> lineItems = savedRnr
             .getAllLineItems()
@@ -329,20 +336,22 @@ public class RequisitionService {
             .filter(l -> productCodes.contains(l.getProductCode()))
             .collect(Collectors.toList());
 
+
         if (lineItems.size() > 0) {
           // generate the new rnr
           Program destinationProgram = programService.getById(subscription.getDestinationProgramId());
           Rnr rnr = new Rnr(savedRnr.getFacility(), destinationProgram, savedRnr.getPeriod());
           rnr.setEmergency(savedRnr.isEmergency());
           rnr.setSupervisoryNodeId(subscription.getDestinationSupervisoryNodeId());
-          rnr.setCreatedBy(savedRnr.getModifiedBy());
-          rnr.setModifiedBy(savedRnr.getModifiedBy());
+          rnr.setCreatedBy(userId);
+          rnr.setModifiedBy(userId);
           rnr.setFullSupplyLineItems(lineItems);
           requisitionRepository.insert(rnr);
+          User user = userService.getById(userId);
+          rnr.setStatus(RnrStatus.SUBMITTED);
+          requisitionRepository.logStatusChange(rnr, user.getFullName());
           rnr.setStatus(savedRnr.getStatus());
-
           update(rnr);
-
         }
         // mark the current line items are not f.
         //
@@ -352,14 +361,10 @@ public class RequisitionService {
   }
 
   private Boolean requiresSplitting(Rnr savedRnr) {
-    // is this the first approval? if so continue, otherwise return false.
-//    if(savedRnr.getStatus().equals(RnrStatus.IN_APPROVAL)){
-//      return false;
-//    }
+
     //is there a subscription for this facility and program
     if (supplyPartnerService != null) {
       List<SupplyPartnerProgram> subscriptions = supplyPartnerService.getSubscriptions(savedRnr.getFacility().getId(), savedRnr.getProgram().getId());
-      System.out.println(subscriptions);
       if (subscriptions != null && subscriptions.size() > 0) {
         return true;
       }

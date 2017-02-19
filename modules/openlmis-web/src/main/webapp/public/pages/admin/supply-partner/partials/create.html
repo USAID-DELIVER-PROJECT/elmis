@@ -50,29 +50,6 @@
             </div>
           </div>
         </div>
-        <div class="form-row clearfix">
-          <div class="form-cell">
-            <label id="descriptionLabel" for="description" openlmis-message="label.description"></label>
-            <div class="form-field">
-              <textarea class="form-control" ng-model="supplyPartner.description" name="description"
-                        id="description"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-row clearfix">
-          <div class="form-cell">
-            <label id="primaryProgram" for="primaryProgramId" openlmis-message="label.program.supply.partner"></label>
-            <div class="form-field">
-              <select ng-model="supplyPartner.primaryProgramId"
-                      name="primaryProgramId"
-                      id="primaryProgramId"
-                      ng-required="true">
-                <option ng-repeat="p in programs" value="{{p.id}}">{{p.name}}</option>
-              </select>
-            </div>
-          </div>
-        </div>
 
         <div>
           <div>
@@ -81,6 +58,7 @@
               <tr class="gradient-header">
                 <th style="min-width: 20px;width:20px;max-width: 30px">#</th>
                 <th>Source Program</th>
+                <th>Destination Program</th>
                 <th>Supervisory Node</th>
                 <th>Requisition Group</th>
                 <th>Facilities</th>
@@ -92,28 +70,27 @@
               <tr ng-repeat="p in supplyPartner.subscribedPrograms">
                 <td class="cell-input col-general">{{$index + 1}}</td>
                 <td class="cell-input col-general">
-                  <select ng-model="p.sourceProgramId"
-                          name="sourceProgramId{{$index}}"
-                          id="sourceProgramId{{$index}}"
+                  <select style="width: 100%;text-align: left;" ui-select2 ng-model="p.sourceProgramId"
                           ng-required="true">
                     <option ng-repeat="pr in programs" value="{{pr.id}}">{{pr.name}}</option>
                   </select>
                 </td>
-
-                <td class="cell-input col-general">
-                  <select ng-model="p.destinationSupervisoryNodeId"
-                          name="destinationProgram"
-                          id="destinationSupervisoryNode"
+                <td>
+                  <select ui-select2 ng-model="p.destinationProgramId"
                           ng-required="true">
-                    <option ng-repeat="p in supervisoryNodes" value="{{p.id}}">{{p.name}}</option>
+                    <option ng-repeat="pr in programs" value="{{pr.id}}">{{pr.name}}</option>
                   </select>
                 </td>
                 <td class="cell-input col-general">
-                  <select ng-model="p.destinationRequisitionGroupId"
-                          name="destinationRequisitionGroupId"
-                          id="destinationRequisitionGroupId"
+                  <select style="width: 200px" ui-select2 ng-model="p.destinationSupervisoryNodeId"
                           ng-required="true">
-                    <option ng-repeat="p in requisitionGroups" value="{{p.id}}">{{p.name}}</option>
+                    <option ng-repeat="sn in supervisoryNodes" value="{{sn.id}}">{{sn.name}}</option>
+                  </select>
+                </td>
+                <td class="cell-input col-general">
+                  <select style="width: 200px" ui-select2 ng-model="p.destinationRequisitionGroupId"
+                          ng-required="true">
+                    <option ng-repeat="rg in requisitionGroups" value="{{rg.id}}">{{rg.name}}</option>
                   </select>
                 </td>
 
@@ -124,11 +101,10 @@
                   <a class="btn-link btn" ng-click="showProductsModal(p)" >{{p.products.length}} products</a>
                 </td>
                 <td class="cell-input col-general">
-
                 </td>
               </tr>
               <tr>
-                <td colspan="7">
+                <td colspan="8">
                   <a href="" ng-click="addNewPrograms()">Add new subscription</a>
                 </td>
               </tr>

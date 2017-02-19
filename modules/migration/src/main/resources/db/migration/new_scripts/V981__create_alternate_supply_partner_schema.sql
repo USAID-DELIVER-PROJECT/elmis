@@ -1,4 +1,4 @@
-CREATE TABLE  supply_partners
+CREATE TABLE IF NOT EXISTS supply_partners
 (
   id SERIAL PRIMARY KEY,
   code varchar(10) NOT NULL UNIQUE,
@@ -12,7 +12,7 @@ CREATE TABLE  supply_partners
 );
 
 
-CREATE TABLE supply_partner_programs
+CREATE TABLE IF NOT EXISTS supply_partner_programs
 (
   id SERIAL PRIMARY KEY,
   supplyPartnerId INTEGER NOT NULL REFERENCES supply_partners(id),
@@ -28,7 +28,7 @@ CREATE TABLE supply_partner_programs
 );
 
 
-CREATE TABLE supply_partner_program_products(
+CREATE TABLE IF NOT EXISTS supply_partner_program_products(
   id SERIAL PRIMARY KEY,
   supplyPartnerProgramId INTEGER REFERENCES supply_partner_programs(id),
   productId INTEGER REFERENCES products(id),
@@ -42,7 +42,7 @@ CREATE TABLE supply_partner_program_products(
 );
 
 
-CREATE TABLE supply_partner_program_facilities(
+CREATE TABLE IF NOT EXISTS supply_partner_program_facilities(
   id SERIAL PRIMARY KEY,
   supplyPartnerProgramId INTEGER REFERENCES supply_partner_programs(id),
   facilityId INTEGER REFERENCES facilities(id),
