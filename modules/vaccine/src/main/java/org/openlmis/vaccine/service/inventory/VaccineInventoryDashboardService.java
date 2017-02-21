@@ -53,6 +53,8 @@ public class VaccineInventoryDashboardService {
         Long programId = programs.get(0).getId();
 
         List<Facility> facilities = facilityService.getUserSupervisedFacilities(userId, programId, MANAGE_EQUIPMENT_INVENTORY);
+        facilities.add(facilityService.getById(facilityId));
+
         StringBuilder str = new StringBuilder();
         str.append("(");
         for (Facility f : facilities) {
