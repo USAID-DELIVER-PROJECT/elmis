@@ -13,6 +13,7 @@ import org.openlmis.rnr.repository.RequisitionRepository;
 import org.openlmis.rnr.search.criteria.RequisitionSearchCriteria;
 import org.openlmis.rnr.search.factory.RequisitionSearchStrategyFactory;
 import org.openlmis.rnr.search.strategy.RequisitionSearchStrategy;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -319,6 +320,7 @@ public class RequisitionService {
   }
 
   private void splitRequisition(Rnr savedRnr, Long userId) {
+
     if (supplyPartnerService != null) {
       List<SupplyPartnerProgram> subscriptions = supplyPartnerService.getSubscriptionsWithDetails(savedRnr.getFacility().getId(), savedRnr.getProgram().getId());
       for (SupplyPartnerProgram subscription : subscriptions) {
@@ -329,15 +331,19 @@ public class RequisitionService {
           continue;
         }
 
-        List<String> productCodes = subscription.getProducts().stream().map(p -> p.getCode()).collect(Collectors.toList());
-        List<RnrLineItem> lineItems = savedRnr
-            .getAllLineItems()
-            .stream()
-            .filter(l -> productCodes.contains(l.getProductCode()))
-            .collect(Collectors.toList());
-
+        List<RnrLineItem> lineItems = findSubscribedLineItems(savedRnr, subscription);
 
         if (lineItems.size() > 0) {
+          ArrayList<RnrLineItem> newRnrLineItems = new ArrayList<>();
+          for (RnrLineItem li : lineItems) {
+            // clone the object
+            RnrLineItem nli = new RnrLineItem();
+            BeanUtils.copyProperties(li, nli);
+            newRnrLineItems.add(nli);
+            
+            li.setQuantityApproved(0);
+            li.setRemarks("Supplied by other warehouse/partner");
+          }
           // generate the new rnr
           Program destinationProgram = programService.getById(subscription.getDestinationProgramId());
           Rnr rnr = new Rnr(savedRnr.getFacility(), destinationProgram, savedRnr.getPeriod());
@@ -345,19 +351,28 @@ public class RequisitionService {
           rnr.setSupervisoryNodeId(subscription.getDestinationSupervisoryNodeId());
           rnr.setCreatedBy(userId);
           rnr.setModifiedBy(userId);
-          rnr.setFullSupplyLineItems(lineItems);
+          rnr.setFullSupplyLineItems(newRnrLineItems);
           requisitionRepository.insert(rnr);
           User user = userService.getById(userId);
           rnr.setStatus(RnrStatus.SUBMITTED);
           requisitionRepository.logStatusChange(rnr, user.getFullName());
           rnr.setStatus(savedRnr.getStatus());
           update(rnr);
+
+
         }
-        // mark the current line items are not f.
-        //
       }
     }
 
+  }
+
+  private List<RnrLineItem> findSubscribedLineItems(Rnr savedRnr, SupplyPartnerProgram subscription) {
+    List<String> productCodes = subscription.getProducts().stream().map(p -> p.getCode()).collect(Collectors.toList());
+    return savedRnr
+        .getAllLineItems()
+        .stream()
+        .filter(l -> productCodes.contains(l.getProductCode()))
+        .collect(Collectors.toList());
   }
 
   private Boolean requiresSplitting(Rnr savedRnr) {
