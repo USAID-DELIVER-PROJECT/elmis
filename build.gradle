@@ -31,7 +31,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.1"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
     classpath "net.saliman:gradle-cobertura-plugin:2.2.7"
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.8'
     classpath "net.saliman:gradle-properties-plugin:1.4.2"
@@ -40,7 +40,6 @@ buildscript {
 sonarqube {
     properties {
       property "sonar.host.url", "$sonarServer"
-      property "sonar.jdbc.url", "$sonarJdbc"
       property "sonar.projectName", "$sonarProject"
       property "sonar.projectVersion", "$sonarProjectVersion"
     }

@@ -340,7 +340,7 @@ public class RequisitionService {
             RnrLineItem nli = new RnrLineItem();
             BeanUtils.copyProperties(li, nli);
             newRnrLineItems.add(nli);
-            
+
             li.setQuantityApproved(0);
             li.setRemarks("Supplied by other warehouse/partner");
           }
