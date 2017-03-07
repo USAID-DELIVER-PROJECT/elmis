@@ -18,7 +18,6 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.NonReportingFacilityQueryBuilder;
-import org.openlmis.report.model.dto.NameCount;
 import org.openlmis.report.model.params.NonReportingFacilityParam;
 import org.openlmis.report.model.report.NonReportingFacilityDetail;
 import org.springframework.stereotype.Repository;
@@ -42,18 +41,5 @@ public interface NonReportingFacilityReportMapper {
                                              @Param("RowBounds") RowBounds rowBounds,
                                              @Param("userId") Long userId
   );
-
-  @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getSummaryQuery")
-  @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-  List<NameCount> getReportSummary(@Param("filterCriteria") NonReportingFacilityParam params, @Param("userId") Long userId);
-
-  // Gets the count of the total facility count under the selection criteria
-  @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getTotalFacilities")
-  @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-  Double getTotalFacilities(@Param("filterCriteria") NonReportingFacilityParam params, @Param("userId") Long userId);
-
-  // Gets the count of the total facility count that did not report under the selection criteria
-  @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getTotalNonReportingFacilities")
-  public Double getNonReportingTotalFacilities(@Param("filterCriteria") NonReportingFacilityParam params, @Param("userId") Long userId);
 
 }
