@@ -24,24 +24,38 @@ public class RnRFeedbackReportQueryBuilder {
 
 
     RnRFeedbackReportParam filter = (RnRFeedbackReportParam) params.get("filterCriteria");
-    // main product
     BEGIN();
-    SELECT("facility_code AS facilityCode, facility_name AS facility, productcode as productCode, product, productcode as productCodeMain, product as productMain, dispensingunit AS unit, beginningbalance as beginningBalance, quantityreceived AS totalQuantityReceived, quantitydispensed AS totalQuantityDispensed, totallossesandadjustments AS adjustments, stockinhand AS physicalCount, amc AS adjustedAMC, amc * nominaleop AS newEOP, maxstockquantity AS maximumStock, quantityrequested AS orderQuantity, quantityshipped AS quantitySupplied, quantity_shipped_total AS totalQuantityShipped, 0 AS emergencyOrder, 0 AS productIndex, err_open_balance, err_qty_required, err_qty_received, err_qty_stockinhand");
-    FROM("vw_rnr_feedback join facilities f on f.id = facility_id join vw_districts d on d.district_id = f.geographicZoneId ");
-    WHERE("(substitutedproductcode is null or (productcode is not null and substitutedproductcode is not null))");
+    SELECT("facility_code AS facilityCode, " +
+        "facility_name AS facility, " +
+        "productcode as productCode, " +
+        "product, " +
+        "productcode as productCodeMain, " +
+        "product as productMain, " +
+        "dispensingunit AS unit, " +
+        "beginningBalance as beginningBalance, " +
+        "quantityReceived, " +
+        "quantityDispensed, " +
+        "totalLossesAndAdjustments AS adjustments, " +
+        "stockInHand, " +
+        "previousStockInHand, " +
+        "amc, " +
+        "amc * nominalEop AS newEOP, " +
+        "maxStockQuantity AS maximumStock, " +
+        "quantityRequested," +
+        "calculatedOrderQuantity," +
+        "quantityApproved , " +
+        "quantityShipped, " +
+        "totalQuantityShipped, " +
+        "0 AS emergencyOrder, " +
+        "0 AS productIndex, " +
+        "openingBalanceError, " +
+        "quantityRequestedWasChanged, " +
+        "stockInHandError");
+    FROM("vw_rnr_feedback ");
+    WHERE("emergency = false ");
     WHERE("facility_id in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
     writePredicates(filter);
-    String query = SQL();
-    RESET();
-    //substitute product
-    BEGIN();
-    SELECT("facility_code AS facilityCode, facility_name AS facility, substitutedproductcode as productCode, substitutedproductname as product, productcode as productCodeMain, product as productMain, null AS unit, null as beginningBalance, null as totalQuantityReceived, null AS totalQuantityDispensed, null as adjustments, null AS physicalCount, null AS adjustedAMC, null AS newEOP, null AS maximumStock, null AS orderQuantity, substitutedproductquantityshipped quantitySupplied, null AS totalQuantityShipped, 0 AS emergencyOrder, 1 AS productIndex, 0 as err_open_balance, 0 as err_qty_required, 0 as err_qty_received, 0 as err_qty_stockinhand");
-    FROM("vw_rnr_feedback join facilities f on f.id = facility_id join vw_districts d on d.district_id = f.geographicZoneId ");
-    WHERE("substitutedproductcode is not null");
-    WHERE("facility_id in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
-    writePredicates(filter);
-    query += " UNION " + SQL() + " order by facility, productcodeMain, productIndex";
-    return query;
+    return SQL();
 
   }
 
@@ -54,9 +68,6 @@ public class RnRFeedbackReportQueryBuilder {
       WHERE(facilityIsFilteredBy("facility_id"));
     }
 
-    if (filter.getZone() > 0) {
-      WHERE(geoZoneIsFilteredBy("d"));
-    }
     if (filter.getProduct() > 0) {
       WHERE(productFilteredBy("product_id"));
     }
