@@ -163,13 +163,27 @@ public interface VaccineDashboardMapper {
         /*
          * ---------------- Coverage ------------------------------------
         */
+
+        String vaccineDistrictCoverageDenominatorSql = "fn_get_vaccine_coverage_district_denominator(" +
+                "       (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int," +
+                "       (select extract(year from startdate) from processing_periods where id = #{period} )::int," +
+                "       #{product}::int," +
+                "       fn_get_vaccine_program_id()::int" +
+                "  )";
+        String vaccineDistrictCoverageDenominatorWthPeriodStartDateSql = "fn_get_vaccine_coverage_district_denominator(" +
+                "       (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int," +
+                "       (select extract(year from  #{startDate}::date))::int," +
+                "       #{product}::int," +
+                "       fn_get_vaccine_program_id()::int" +
+                "  )";
+
         @Select("SELECT\n" +
                 "d.region_name,\n" +
                 "i.period_name,\n" +
                 "i.period_start_date,\n" +
-                "sum(i.denominator) target, \n" +
+                "round("+vaccineDistrictCoverageDenominatorWthPeriodStartDateSql+") target, \n" +
                 "sum(COALESCE(i.within_outside_total,0)) actual, \n" +
-                "(case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / sum(denominator)::numeric) else 0 end) * 100 coverage \n" +
+                "round((case when sum("+vaccineDistrictCoverageDenominatorWthPeriodStartDateSql+") > 0 then (sum(COALESCE(i.within_outside_total,0)) / round("+vaccineDistrictCoverageDenominatorWthPeriodStartDateSql+")::numeric) else 0 end) * 100) coverage \n" +
                 "FROM \n" +
                 "vw_vaccine_coverage i \n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id \n" +
@@ -190,10 +204,9 @@ public interface VaccineDashboardMapper {
         @Select("\n" +
                 "SELECT\n" +
                 "d.district_name geographic_zone_name,\n" +
-                "sum(i.denominator) target, \n" +
+                "round("+vaccineDistrictCoverageDenominatorSql+") target, \n" +
                 "sum(COALESCE(i.within_outside_total,0)) actual,\n" +
-                "(case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / \n" +
-                "sum(denominator)::numeric) else 0 end) * 100 coverage\n" +
+                "round((case when sum("+vaccineDistrictCoverageDenominatorSql+") > 0 then (sum(COALESCE(i.within_outside_total,0)) / round("+vaccineDistrictCoverageDenominatorSql+")::numeric) else 0 end) * 100) coverage \n" +
                 "FROM\n" +
                 "vw_vaccine_coverage i\n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
@@ -214,9 +227,9 @@ public interface VaccineDashboardMapper {
         @Select("SELECT\n" +
                 "d.district_name, \n" +
                 "i.facility_name,\n" +
-                "sum(i.denominator) target, \n" +
+                "round(sum(i.denominator)) target, \n" +
                 "sum(COALESCE(i.within_outside_total,0)) actual, \n" +
-                "(case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / sum(denominator)::numeric) else 0 end) * 100 coverage \n" +
+                "round((case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / round(sum(denominator))::numeric) else 0 end) * 100) coverage \n" +
                 "FROM \n" +
                 "vw_vaccine_coverage i \n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id \n" +
@@ -239,9 +252,9 @@ public interface VaccineDashboardMapper {
                 "d.district_name || i.facility_name key_val," +
                 "i.period_name,\n" +
                 "i.period_start_date,\n" +
-                "sum(i.denominator) target, \n" +
+                "round(sum(i.denominator)) target, \n" +
                 "sum(COALESCE(i.within_outside_total,0)) actual, \n" +
-                "(case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / sum(denominator)::numeric) else 0 end) * 100 coverage \n" +
+                "round((case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / round(sum(denominator))::numeric) else 0 end) * 100) coverage \n" +
                 "FROM \n" +
                 "vw_vaccine_coverage i \n" +
                 "JOIN vw_districts d ON i.geographic_zone_id = d.district_id \n" +
