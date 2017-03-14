@@ -14,6 +14,7 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
+import org.openlmis.report.mapper.RnRFeedbackReportMapper;
 import org.openlmis.report.mapper.SupplyStatusReportMapper;
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.SupplyStatusReportParam;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,8 @@ public class SupplyStatusReportDataProvider extends ReportDataProvider {
 
   @Autowired
   private SupplyStatusReportMapper reportMapper;
+  @Autowired
+  private RnRFeedbackReportMapper feedbackReportMapper;
 
   @Autowired
   private SelectedFilterHelper filterHelper;
@@ -42,7 +46,12 @@ public class SupplyStatusReportDataProvider extends ReportDataProvider {
   @Override
   public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
     RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-    return reportMapper.getSupplyStatus(getParam(filterCriteria), rowBounds, this.getUserId());
+    SupplyStatusReportParam param = getParam(filterCriteria);
+    Long rnrId = feedbackReportMapper.getRnrId(param.getProgram(), param.getFacility(), param.getPeriod());
+    if(rnrId != null) {
+      return reportMapper.getSupplyStatus(rnrId);
+    }
+    return new ArrayList<>();
   }
 
   private SupplyStatusReportParam getParam(Map<String, String[]> filterCriteria) {
@@ -53,7 +62,7 @@ public class SupplyStatusReportDataProvider extends ReportDataProvider {
 
   @Override
   public String getFilterSummary(Map<String, String[]> params) {
-    return filterHelper.getSelectedFilterString(params);
+    return filterHelper.getSelectedFilterString(params) + "\n" + filterHelper.getFacilityFilterString(params);
   }
 
 }

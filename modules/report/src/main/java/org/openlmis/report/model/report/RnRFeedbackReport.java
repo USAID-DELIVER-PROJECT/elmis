@@ -27,10 +27,11 @@ public class RnRFeedbackReport implements ResultRow {
     private String productCode;
     private String facility;
     private String facilityCode;
+    private String unit;
     private Long beginningBalance;
     private Long quantityReceived;
     private Long quantityDispensed;
-    private Long adjustments;
+    private Long totalLossesAndAdjustments;
     private Long stockInHand;
     private Long previousStockInHand;
     private Long amc;
@@ -39,7 +40,6 @@ public class RnRFeedbackReport implements ResultRow {
     private Long quantityRequested;
     private Long quantityApproved;
     private Long quantitySupplied;
-    private String unit;
     private Double maximumStock;
     private Double emergencyOrder;
     private Long openingBalanceError;
@@ -48,6 +48,6 @@ public class RnRFeedbackReport implements ResultRow {
     private Long quantityShipped;
     private Long substituteProductQuantityShipped;
     private Long totalQuantityShipped;
-    private Long productIndex;
+  private Long productIndex;
 
 }

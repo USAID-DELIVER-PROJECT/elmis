@@ -37,8 +37,6 @@
               <zone-filter class="form-cell horizontalFilters"></zone-filter>
               <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
               <facility-filter class="form-cell horizontalFilters" required="true"></facility-filter>
-              <product-category-filter class="form-cell horizontalFilters"></product-category-filter>
-              <product-filter class="form-cell horizontalFilters"></product-filter>
             </div>
           </form>
         </div>
@@ -57,41 +55,41 @@
                 <tbody>
                 <tr ng-repeat="row in datarows">
                   <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
-                  <td data-title="getLocalMessage('label.product.code')" sortable="code">
-                    <span style="width:80px">{{ row.code }}</span>
+                  <td data-title="getLocalMessage('label.product.code')" sortable="productCode">
+                    <span style="width:80px">{{ row.productCode }}</span>
                   </td>
                   <td data-title="getLocalMessage('label.product')" style="width:250px" sortable="product">
                     <div style="width:350px;">{{ row.product }}</div>
                   </td>
                   <td data-title="getLocalMessage('label.beginning.balance')" class="number" sortable="openingBalance">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.openingBalance | number }}</span>
+                    <span style="width:80px;display:inline-block" class="number">{{ row.beginningBalance | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.quantity.received')" class="number" sortable="recipts">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.receipts | number }}</span>
+                  <td data-title="getLocalMessage('label.quantity.received')" class="number" sortable="quantityReceived">
+                    <span style="width:80px;display:inline-block" class="number">{{ row.quantityReceived | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.quantity.consumed')" class="number" sortable="issues">
-                    <span style="width:80px; display:inline-block" class="number">{{ row.issues | number }}</span>
+                  <td data-title="getLocalMessage('label.quantity.consumed')" class="number" sortable="quantityDispensed">
+                    <span style="width:80px; display:inline-block" class="number">{{ row.quantityDispensed | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.adjustments')" class="number" sortable="adjustment">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.adjustments | number }}</span>
+                  <td data-title="getLocalMessage('label.adjustments')" class="number" sortable="totalLossesAndAdjustments">
+                    <span style="width:80px;display:inline-block" class="number">{{ row.totalLossesAndAdjustments | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.closing.balance')" class="number" sortable="closingBalance">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.closingBalance | number }}</span>
+                  <td data-title="getLocalMessage('label.closing.balance')" class="number" sortable="stockInHand">
+                    <span style="width:80px;display:inline-block" class="number">{{ row.stockInHand | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.mos')" class="number" sortable="monthsOfStock">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.monthsOfStock | number }}</span>
+                  <td data-title="getLocalMessage('label.mos')" class="number" sortable="mos">
+                    <span style="width:80px;display:inline-block" class="number">{{ row.mos | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.amc')" class="number" sortable="averageMonthlyConsumption">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.averageMonthlyConsumption | number }}</span>
+                  <td data-title="getLocalMessage('label.amc')" class="number" sortable="amc">
+                    <span style="width:80px;display:inline-block" class="number">{{ row.amc | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.max.stock')" class="number" sortable="maximumStock">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.maximumStock | number }}</span>
+                  <td data-title="getLocalMessage('label.max.stock')" class="number" sortable="maxStockQuantity">
+                    <span style="width:80px;display:inline-block" class="number">{{ row.maxStockQuantity | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.quantity.ordered')" class="number" sortable="reorderAmount">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.reorderAmount | number }}</span>
+                  <td data-title="getLocalMessage('label.quantity.requested')" class="number" sortable="reorderAmount">
+                    <span style="width:80px;display:inline-block" class="number">{{ row.quantityRequested | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.quantity.supplied.pod')" sortable="supplied">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.supplied | number}}</span>
+                  <td data-title="getLocalMessage('label.quantity.supplied')" sortable="totalQuantityShipped">
+                    <span style="width:80px;display:inline-block" class="number">{{ row.totalQuantityShipped | number}}</span>
                   </td>
                 </tr>
                 </tbody>
