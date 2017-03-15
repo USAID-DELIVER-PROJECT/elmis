@@ -145,6 +145,15 @@ app.directive('programFilter', ['ReportUserPrograms', 'ReportProgramsWithBudgeti
                         scope.programs = scope.unshift(list, 'report.filter.select.program');
                     }
 
+                    makeVaccineProgramDefault(list);
+                }
+
+                function makeVaccineProgramDefault(list){
+                    if(utils.isEmpty(scope.filter.program)){
+                        vaccineProgram = _.find(list, function(program){ return program.code == 'Vaccine'; });
+                        if(!utils.isNullOrUndefined(vaccineProgram))
+                            scope.filter.program = vaccineProgram.id;
+                    }
                 }
 
                 var Service = (attr.regimen) ? ReportRegimenPrograms : (attr.budget) ? ReportProgramsWithBudgeting : ReportUserPrograms;
@@ -287,9 +296,20 @@ app.directive('scheduleFilter', ['ReportSchedules', 'ReportProgramSchedules', '$
                         scope.filter.schedule = data.schedules[0].id;
                         scope.notifyFilterChanged('schedule-changed');
                       }
+                      else{
+                          makeMonthlyScheduleDefault(data.schedules);
+                      }
                       scope.schedules = scope.unshift(data.schedules, 'report.filter.select.group');
                     });
                 };
+
+                function makeMonthlyScheduleDefault(list){
+                    if(utils.isEmpty(scope.filter.schedule)){
+                        monthlySchedule = _.find(list, function(program){ return program.code == 'Monthly'; });
+                        if(!utils.isNullOrUndefined(monthlySchedule))
+                            scope.filter.schedule = monthlySchedule.id;
+                    }
+                }
 
                 if (!$routeParams.schedule) {
                     scope.schedules = scope.unshift([], 'report.filter.select.schedule');
