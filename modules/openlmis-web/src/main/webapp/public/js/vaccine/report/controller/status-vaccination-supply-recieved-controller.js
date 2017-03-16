@@ -137,8 +137,10 @@ function StatusVaccinationReceiceController($window,$scope, StatuVaccinationSupp
         return bgColor;
     };
     $scope.calculateWastageRate=function(vaccinated,issued,wasted){
+        var wastagePercentage;
         if(issued+wasted>0 && vaccinated>0){
-            return 100*(1-(vaccinated/(issued+wasted)));
+            wastagePercentage= 100*(1-(vaccinated/(issued+wasted)));
+            return wastagePercentage.toFixed(2);
         }
         return 0;
 
