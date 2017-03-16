@@ -59,7 +59,8 @@ function StatusVaccinationReceiceController($window,$scope, StatuVaccinationSupp
         var param=  getParam();
 
         $scope.error_message='';
-        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd) && !utils.isNullOrUndefined($scope.filter.product)&&$scope.filter.product!==0) {
+        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)
+            &&!utils.isNullOrUndefined($scope.filter.product)&& !utils.isNullOrUndefined($scope.filter.product)&&$scope.filter.product!==0) {
             StatuVaccinationSupply.get(param, function (data) {
 
                 if (data !== undefined || data !== null) {
@@ -135,6 +136,13 @@ function StatusVaccinationReceiceController($window,$scope, StatuVaccinationSupp
             bgColor=$scope.maxColorCode;
         }
         return bgColor;
+    };
+    $scope.calculateWastageRate=function(vaccinated,issued,wasted){
+        if(issued+wasted>0 && vaccinated>0){
+            return (100-(vaccinated/(issued+wasted)));
+        }
+        return 0;
+
     };
     $scope.exportReport = function(type) {
         $scope.filter.pdformat = 1;
