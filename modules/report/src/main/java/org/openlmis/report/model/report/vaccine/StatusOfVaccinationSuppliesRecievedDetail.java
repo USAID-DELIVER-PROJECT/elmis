@@ -36,6 +36,7 @@ private String region_name;
     private float wasted;
     private float used;
     private float administered;
+    private float vaccinated;
     private Long targetpopulation;
     private String reporting_status;
     private float usagerate;

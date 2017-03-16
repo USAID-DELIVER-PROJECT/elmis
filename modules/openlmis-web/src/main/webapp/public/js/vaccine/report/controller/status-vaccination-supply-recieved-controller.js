@@ -59,13 +59,12 @@ function StatusVaccinationReceiceController($window,$scope, StatuVaccinationSupp
         var param=  getParam();
 
         $scope.error_message='';
-        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)
-            &&!utils.isNullOrUndefined($scope.filter.product)&& !utils.isNullOrUndefined($scope.filter.product)&&$scope.filter.product!==0) {
+        if(!utils.isNullOrUndefined($scope.filter)&&!utils.isNullOrUndefined($scope.filter.periodStart)&&!utils.isNullOrUndefined($scope.filter.periodEnd)&&!utils.isNullOrUndefined($scope.filter.product)&& !utils.isNullOrUndefined($scope.filter.product)&&$scope.filter.product!==0) {
             StatuVaccinationSupply.get(param, function (data) {
 
                 if (data !== undefined || data !== null) {
 
-                    var columnKeysToBeAggregated = ["targetpopulation", "received", "onhand", "issued", "used", "wasted", "administered"];
+                    var columnKeysToBeAggregated = ["targetpopulation", "received", "onhand", "issued", "used", "wasted", "administered","vaccinated"];
                     var districtNameKey = "district_name";
                     var facilityNameKey = "facility_name";
                     var regionNameKey = "region_name";
@@ -139,7 +138,7 @@ function StatusVaccinationReceiceController($window,$scope, StatuVaccinationSupp
     };
     $scope.calculateWastageRate=function(vaccinated,issued,wasted){
         if(issued+wasted>0 && vaccinated>0){
-            return (100-(vaccinated/(issued+wasted)));
+            return 100*(1-(vaccinated/(issued+wasted)));
         }
         return 0;
 

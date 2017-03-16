@@ -37,6 +37,7 @@ public class StatusOfVaccinationSuppliesReceivedReport extends BaseModel impleme
     private float totalIssued;
     private float totalUsed;
     private float totalWasted;
+    private float totalVaccinated;
     private float totalAdminstered;
     private Long totalPopulation;
     private List<StatusOfVaccinationSuppliesRecievedDetail> facilityDistrictVaccineStatusList;

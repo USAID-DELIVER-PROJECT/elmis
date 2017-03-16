@@ -126,7 +126,7 @@
                             <td class="number aggregate-row" >{{d.subtotal.onhand | number}}</td>
                             <td class="number aggregate-row" >{{d.subtotal.used | number}}</td>
                             <td class="number aggregate-row" >{{d.subtotal.wasted | number}}</td>
-                            <td class="number aggregate-row" >{{calculateWastageRate(d.subtotal.administered,d.subtotal.issued ,d.subtotal.wasted)| number}}%</td>
+                            <td class="number aggregate-row" >{{calculateWastageRate(d.subtotal.vaccinated,d.subtotal.issued ,d.subtotal.wasted)| number}}%</td>
                             <td class="number aggregate-row" >{{d.subtotal.administered | number}}</td>
                         </tr>
                         </tbody>
@@ -141,7 +141,7 @@
                             <td class="number aggregate-row"  ng-bind="report.totalOnHand| number"></td>
                             <td class="number aggregate-row"><span ng-bind="report.totalUsed| number"/></td>
                             <td class="number aggregate-row" ><span ng-bind="report.totalWasted| number"/></td>
-                            <td class="number aggregate-row" >{{calculateWastageRate(report.administered,report.issued ,report.wasted)| number}}%</td>
+                            <td class="number aggregate-row" >{{calculateWastageRate(report.totalVaccinated,report.totalIssued ,report.totalWasted)| number}}%</td>
                             <td class="number aggregate-row" ><span ng-bind="report.totalAdminstered| number"/></td>
                         </tr>
                         </tfoot>
@@ -190,7 +190,7 @@
                             <td class="number aggregate-row" >{{d.subtotal.onhand | number}}</td>
                             <td class="number aggregate-row" >{{d.subtotal.used | number}}</td>
                             <td class="number aggregate-row" >{{d.subtotal.wasted | number}}</td>
-                            <td class="number aggregate-row" >{{calculateWastageRate(d.subtotal.administered,d.subtotal.issued ,d.subtotal.wasted)| number}}%</td>
+                            <td class="number aggregate-row" >{{calculateWastageRate(d.subtotal.vaccinated,d.subtotal.issued ,d.subtotal.wasted)| number}}%</td>
                             <td class="number aggregate-row" >{{d.subtotal.administered | number}}</td>
                         </tr>
                         </tbody>
@@ -206,7 +206,7 @@
 
                             <td class="number aggregate-row"><span ng-bind="report.totalUsed| number"/></td>
                             <td class="number aggregate-row" ><span ng-bind="report.totalWasted| number"/></td>
-                            <td class="number aggregate-row" >{{calculateWastageRate(report.administered,report.issued ,report.wasted)| number}}%</td>
+                            <td class="number aggregate-row" >{{calculateWastageRate(report.totalVaccinated,report.totalIssued ,report.totalWasted)| number}}%</td>
                             <td class="number aggregate-row" ><span ng-bind="report.totalAdminstered| number"/></td>
                         </tr>
                         </tfoot>
