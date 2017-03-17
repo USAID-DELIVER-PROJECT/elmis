@@ -42,6 +42,7 @@
 </style>
 
     <ul id="all-report-lists">
+        <h3 openlmis-message="title.main.reports"></h3>
         <li ng-show="hasPermission('VIEW_VACCINE_REPORT')" class="children"  >
             <a href="" openlmis-message="menu.report.routine.immunization"></a>
                 <ul>
@@ -153,6 +154,16 @@
 
         </li>
 
+        <h3>Custom Reports</h3>
+
+        <li class="children" ng-repeat="category in customReports">
+            <a href="javascript: void(0);">{{category[0].category}}</a>
+            <ul >
+                <li ng-repeat="report in category"><a ng-href="/public/pages/reports/custom/index.html#/list?report_key={{report.reportkey}}">{{report.name}}</a></li>
+            </ul>
+        </li>
+
+        <h3 openlmis-message="title.other.report"></h3>
         <li class="children">
             <a href="javascript: void(0);" openlmis-message="menu.report.admin"></a>
 
@@ -254,9 +265,6 @@
 
         <li class="children">
             <a href="javascript: void(0);" openlmis-message="menu.report.regimen"></a>
-
-
-
                 <ul>
                     <li ng-show="hasPermission('VIEW_REGIMEN_SUMMARY_REPORT')">
                         <a ng-href="/public/pages/reports/main/index.html#aggregate-regimen"
@@ -341,14 +349,4 @@
             </li>
         </ul>
     </li>
-
-   <h3>Custom Reports</h3>
-
-        <li class="children" ng-repeat="category in customReports">
-            <a href="javascript: void(0);">{{category[0].category}}</a>
-            <ul >
-                <li ng-repeat="report in category"><a ng-href="/public/pages/reports/custom/index.html#/list?report_key={{report.reportkey}}">{{report.name}}</a></li>
-            </ul>
-        </li>
-
     </ul>
