@@ -42,17 +42,18 @@
             <div class="box-icon">
                 <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
                 <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
-                   class='btn-small btn-info'><span>Export Excel</span></a>
+                   class='btn-small btn-info'><span openlmis-message="label.export.excel"></span></a>
             </div>
         </div>
         <div class="app-form">
             <form ng-submit="filterGrid()" name="filterForm" novalidate>
                 <div filter-container class="clearfix">
-                    <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
-                    <facility-level-filter class="form-cell horizontalFilters"
-                                           required="true"></facility-level-filter>
-                        <product-category-filter class="form-cell horizontalFilters"
-                                                 required="true"></product-category-filter>
+
+                    <product-category-without-program-filter class="form-cell horizontalFilters"
+                                                             required="false"></product-category-without-program-filter>
+                    <facility-level-without-program-filter class="form-cell horizontalFilters"
+                                                           required="false"></facility-level-without-program-filter>
+               
 
                     <div class="form-cell horizontalFilters">
                         <label for="startTime" class="labels">
@@ -69,7 +70,46 @@
 
                         </div>
                     </div>
+
+                    <div  class="form-cell" ng-show="distributedFacilities.length > 0">
+
+                        <label class="labels" style="float:right;">
+                          <span style="font-size: medium"><Strong>Indicators</Strong></span><br/>
+
+
+                           <span  data-toggle="tooltip" title="Indicate that you have Insufficient Stock in your stock ">
+                                <i class="icon-stop red fa-lg" aria-hidden="true"></i>  Order Now</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                               <span data-toggle="tooltip" title="Indicate that you have enough stock ">
+                                   <i class="icon-stop green fa-lg" aria-hidden="true"></i>  Sufficient Stock</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                               <span data-toggle="tooltip" title="Indicate that your stock is nearlest to Reorder Level ">
+                                   <i class="icon-stop yellow fa-lg" aria-hidden="true"></i>  Order Soon</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+
+                            <span data-toggle="tooltip" title="Indicate that you have more than your have supposed to have."> <i class="icon-stop blue fa-lg" aria-hidden="true"></i>  Over Stock</span>
+
+<!--
+                            <span ><i class="icon-warning-sign red"></i></span> Order Now
+-->
+
+                        </label>
+                        <!--<fieldset>
+                        <legend align="right">Personalia:</legend>
+
+                            Name: <input type="text" size="30"><br>
+                            Email: <input type="text" size="30"><br>
+                            Date of birth: <input type="text" size="10">
+                            </fieldset>
+-->
+
+                    </div>
+
                 </div>
+
+
 
             </form>
         </div>

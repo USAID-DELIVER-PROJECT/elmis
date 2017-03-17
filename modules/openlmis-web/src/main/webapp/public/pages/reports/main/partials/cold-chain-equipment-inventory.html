@@ -35,10 +35,9 @@
             <div class="app-form"  style="padding: 1px;">
                 <form ng-submit="filterGrid()"  name="filterForm" novalidate>
                     <div filter-container class="clearfix">
-                    <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
 
-                    <facility-level-filter class="form-cell horizontalFilters"
-                                           required="true"></facility-level-filter>
+                        <facility-level-without-program-filter class="form-cell horizontalFilters" required="true"></facility-level-without-program-filter>
+
                         </div>
                 </form>
             </div>

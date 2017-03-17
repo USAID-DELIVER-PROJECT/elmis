@@ -11,7 +11,7 @@
 
 <style>
     .red {
-        color: red;
+        background-color: red;
     }
 
     .black {
@@ -93,7 +93,8 @@
                         <span ng-bind="item.product.primaryName" id="product{{$index}}" class="cell-text"></span>
 
                     </td>
-                    <td class="cell-input col-unit-measure"  style="text-align: left; !important;">
+                    <td class="cell-input col-unit-measure
+                     "  style="text-align: left; !important;">
                         <span ng-bind="item.product.dosageUnit.code" id="item.product.dosageUnit.code{{$index}}" class="cell-text"></span>
                     </td>
                     <td class="cell-input col-maximumStock">
@@ -108,17 +109,22 @@
                               class="cell-text">
                         </span>
                     </td>
-                    <td class="cell-input col-stockAvailable" ng-hide="selectedType==1">
-                        <span class="{{(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
+                    <td class="cell-input col-stockAvailable
 
-                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}}  cell-text"
+
+                   ng-style: {'background-color':(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
+
+                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}" ng-hide="selectedType==1">
+                        <span class=" cell-text"
                               ng-bind="(selectedType==1)? (item.stockOnHand / item.product.dosesPerDispensingUnit).toFixed(0):item.stockOnHand | number">
                         </span>
                     </td>
 
-                    <td class="cell-input col-stockAvailable" ng-hide="selectedType==0">
-                        <span class="{{(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
-                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}}  cell-text "
+                    <td class="cell-input col-stockAvailable
+                     ng-style: {'background-color':(item.stockOnHand <= item.bufferStock)?'red':((item.stockOnHand > item.bufferStock) && (item.stockOnHand <= item.reOrderLevel)  )?'yellow':
+                        ((item.stockOnHand > item.reOrderLevel) && (item.reOrderLevel <= item.maximumStock))?green:'black'}
+                    " ng-hide="selectedType==0">
+                        <span class="cell-text "
                               ng-bind="(selectedType==1)? (item.stockOnHand / item.product.dosesPerDispensingUnit).toFixed(0):item.stockOnHand | number">
                         </span>
                     </td>

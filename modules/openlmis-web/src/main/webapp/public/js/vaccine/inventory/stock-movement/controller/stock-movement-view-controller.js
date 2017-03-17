@@ -155,7 +155,9 @@ function StockMovementViewController($scope,verifyDistribution, $window,$timeout
                                        event.lotId= l.lot.id;
                                        event.quantity= l.quantity;
                                        event.occurred=$scope.stockCardsByCategory[0].issueDate;
-                                       event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
+                                       event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate, "issuedto":$scope.toFacilityName
+                                       };
+
                                        events.push(event);
 
                                        lot.lotId = l.lot.id;
@@ -167,8 +169,10 @@ function StockMovementViewController($scope,verifyDistribution, $window,$timeout
                                        lineItem.lots.push(lot);
                                        lotSum = lotSum + l.quantity;
                                    }
-                                  });
+
+                               });
                                    lineItem.quantity = lotSum;
+
 
                            }
                         else{
@@ -180,7 +184,7 @@ function StockMovementViewController($scope,verifyDistribution, $window,$timeout
                                    event.facilityId=toFacilityId;
                                    event.quantity= s.quantity;
                                    event.occurred=$scope.stockCardsByCategory[0].issueDate;
-                                   event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate};
+                                   event.customProps={"occurred":$scope.stockCardsByCategory[0].issueDate, "issuedto":$scope.toFacilityName};
                                    events.push(event);
                                    lineItem.quantity=s.quantity;
                                    if(s.customProps !==undefined && s.customProps !==null && s.customProps.vvmstatus !==undefined  )

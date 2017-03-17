@@ -14,7 +14,9 @@ function VaccineStockStatusReportController($scope, $filter, $window, VaccineSto
     $scope.exportReport = function (type) {
         $scope.filter.pdformat = 1;
         var params = jQuery.param($scope.getSanitizedParameter());
-        var url = '/reports/download/vaccine_stock_status/' + type + '?' + params;
+
+        var url = '/reports/download/vaccine_stock_status' + (($scope.filter.isMOS === true)?'_soh': '') + '/' + type + '?' + params;
+
         $window.open(url, "_BLANK");
     };
 
@@ -30,6 +32,7 @@ function VaccineStockStatusReportController($scope, $filter, $window, VaccineSto
 
         VaccineStockStatusReport.get($scope.getSanitizedParameter(), function (data) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
+                console.log(JSON.stringify(data.pages.rows));
 
                 var productData = _.pluck(data.pages.rows, 'productId');
 
@@ -80,6 +83,7 @@ function VaccineStockStatusReportController($scope, $filter, $window, VaccineSto
                     $scope.facilityProduct = filteredProducts.sort(function (a, b) {
                         return (a.programProduct.product.id > b.programProduct.product.id) ? 1 : ((b.programProduct.product.id > a.programProduct.product.id) ? -1 : 0);
                     });
+
 
                 });
             });

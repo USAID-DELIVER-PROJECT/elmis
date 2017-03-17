@@ -10,7 +10,7 @@
 */
 
 
-function ColdChainEquipmentReportController($scope, $log, ColdChainEquipmentService, ngTableParams) {
+function ColdChainEquipmentReportController($scope, $log,$window, ColdChainEquipmentService, ngTableParams) {
 
     $scope.log = $log;
 
@@ -29,10 +29,12 @@ function ColdChainEquipmentReportController($scope, $log, ColdChainEquipmentServ
         sortOrderParams = jQuery.param(sortOrderParams);
 
         var url = '/reports/download/cold_chain_equipment/' + type + '?' + sortOrderParams +'&'+ params;
-        window.open(url);
+        $window.open(url);
     };
 
-    $scope.OnFilterChanged = function () {
+
+    $scope.OnFilterChanged  = function () {
+
         $scope.filter.max = 10000;
 
         ColdChainEquipmentService.get

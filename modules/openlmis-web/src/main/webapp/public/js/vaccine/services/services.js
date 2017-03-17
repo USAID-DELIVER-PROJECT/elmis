@@ -618,3 +618,8 @@ services.factory('VaccineDistributedFacilitiesReport', function ($resource) {
 services.factory('VaccineDistributionProgramProduct', function ($resource) {
     return $resource('/vaccine/orderRequisition/:programId.json', {programId: '@programId'}, {});
 });
+
+
+services.factory('searchDistributionsByDateRange',function($resource){
+    return $resource('/vaccine/inventory/distribution/searh-by-date-range/:facilityId',{facilityId:'@facilityId'},{});
+});

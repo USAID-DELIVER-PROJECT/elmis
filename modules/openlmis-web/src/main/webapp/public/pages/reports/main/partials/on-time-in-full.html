@@ -68,16 +68,15 @@
 
                         <form ng-submit="filterGrid()" name="filterForm" novalidate>
                             <div filter-container class="clearfix">
-                                <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
 
-                                <product-category-filter class="form-cell horizontalFilters"
-                                                         required="true"></product-category-filter>
+                                <product-category-without-program-filter class="form-cell horizontalFilters"
+                                                         required="false"></product-category-without-program-filter>
 
-                                <product-without-description-filter class="form-cell horizontalFilters"
-                                                                    required="true"></product-without-description-filter>
+                                <product-without-description-and-program-filter class="form-cell horizontalFilters"
+                                                                    required="true"></product-without-description-and-program-filter>
 
-                                <facility-level-filter class="form-cell horizontalFilters"
-                                                       required="true"></facility-level-filter>
+                                <facility-level-without-program-filter class="form-cell horizontalFilters"
+                                                       required="false"></facility-level-without-program-filter>
 
 
                                 <div class="form-cell horizontalFilters">
@@ -158,11 +157,16 @@
 
 
                                     <td data-title="'#'" class="number" style="width:2% !important; text-align: left !important;">{{ row.no }}</td>
-                                    <td data-title="getLocalMessage('label.region')" style="width:40%" >{{
-                                        row.region }}
+                                    <td data-title="getLocalMessage('label.region')" style="width:40%" >
+                                        {{ datarows[$index-1].region == datarows[$index].region ?'':row.region }}
                                     </td>
                                     <td data-title="'Store Name '" style="width:30%" sortable="">
-                                        <span ng-bind="row.storeName"></span>
+                                        <span>
+
+                                            {{ datarows[$index-1].storeName == datarows[$index].storeName ?'':row.storeName }}
+
+
+                                        </span>
                                     </td>
                                     <td class="number" data-title="'Date Requested'" style="width:20% !important;"
                                         sortable=" ">{{row.requestedDate | date:'dd-MM-yyyy' }}
@@ -173,30 +177,34 @@
                                     </td>
 
                                     <td class="number" data-title="'Quantity Requested'" style="width:20% !important;"
-                                        sortable=" ">{{row.quantityRequested }}
+                                        sortable=" ">{{row.quantityRequested | number}}
                                     </td>
                                     <td class="number" data-title="'Quantity Received'" style="width:20% !important;" sortable=" ">
-                                        {{ row.quantityReceived }}
+                                        {{ row.quantityReceived | number }}
                                     </td>
-                                    <td class="number" data-title="' Requested (- 10 )'" style="width:10% !important;"
+                                    <td class="number" data-title="' Requested (- 10 %)'" style="width:10% !important;"
                                         sortable="adjustment">
-                                        {{ row.inFullLessRange }}
+                                        {{ row.inFullLessRange | number}}
                                     </td>
 
-                                    <td class="number" data-title="' Requested (+ 10 )'" style="width:10% !important;"
+                                    <td class="number" data-title="' Requested (+ 10 %)'" style="width:10% !important;"
                                         sortable="adjustment">
-                                        {{ row.inFullGreatRange }}
+                                        {{ row.inFullGreatRange | number}}
                                     </td>
 
-                                    <td  data-title="' Delivered in Full'" style="width:10% !important;"
+                                 <!--   <td  data-title="' Delivered in Full'" style="width:10% !important;"
                                         sortable="adjustment">
                                         {{ row.onFull }}
                                     </td>
                                     <td  data-title="' Delivered in Time'" style="width:10% !important;"
                                         sortable="adjustment">
                                         {{ row.onTime }}
-                                    </td>
+                                    </td>-->
 
+                                    <td  data-title="' On Time And In Full'" style="width:10% !important;"
+                                         sortable="adjustment">
+                                        {{ row.onTimeAndOnFull }}
+                                    </td>
 
                                 </tr>
                                 </tbody>
