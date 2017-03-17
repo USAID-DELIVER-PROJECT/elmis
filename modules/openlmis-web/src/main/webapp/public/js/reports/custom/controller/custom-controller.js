@@ -78,7 +78,7 @@ function CustomReportController($scope, $window, reports, CustomReportValue, $ro
 
   $scope.loadReportFromExternalUrl = function () {
       if(!angular.isUndefined($routeParams.report_key))
-          $scope.filter['report_key']=$routeParams.report_key;
+          $scope.filter.report_key=$routeParams.report_key;
       $scope.OnFilterChanged();
   };
 
