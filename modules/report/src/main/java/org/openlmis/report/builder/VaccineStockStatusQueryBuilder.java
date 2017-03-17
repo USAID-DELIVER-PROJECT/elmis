@@ -10,6 +10,7 @@ public class VaccineStockStatusQueryBuilder {
     public String getQuery(Map params) {
 
         VaccineStockStatusParam filter = (VaccineStockStatusParam) params.get("filterCriteria");
+        Long userId = (Long) params.get("userId");
 
         return (
                         "   WITH Q AS (  SELECT  x.* , r.isaValue, \n" +
@@ -35,13 +36,16 @@ public class VaccineStockStatusQueryBuilder {
                         "    JOIN vw_districts d ON f.geographiczoneId = d.district_id  \n" +
                         "    JOIN facility_types  ON f.typeId = facility_types.Id   \n" +
                         "  " + writePredicates(filter) +
-                        "    ORDER BY e.modifiedDate ) t) x \n" +
+                        "   AND d.district_id in (select district_id from vw_user_facilities where user_id = '" + userId + "'::INT and program_id = fn_get_vaccine_program_id())  "+
+
+                                "    ORDER BY e.modifiedDate ) t) x \n" +
                         "    JOIN stock_requirements r on r.facilityid=x.facilityid and r.productid=x.productid\n" +
                         "    WHERE  x.r <= 1 and r.year = (SELECT date_part('YEAR', #{filterCriteria.statusDate}::date ))         " +
                         "    ORDER BY facilityId,productId )  \n" +
                         "    SELECT facilityId,districtId,regionId, productId, facilityName,district,region,product,lastUpdate,soh,isaValue,   \n" +
                         "    CASE WHEN isaValue > 0 THEN  ROUND((soh::numeric(10,2) / isaValue::numeric(10,2)),2) else 0 end as mos,color, adequacy," +
-                        "    sum(adequacy) OVER (PARTITION BY facilityId) adequacy2, count(productId) OVER (PARTITION BY facilityId) total\n   " +
+                        "    sum(adequacy) OVER (PARTITION BY facilityId) adequacy2, count(productId) OVER (PARTITION BY facilityId) total,\n  " +
+                        "    CASE WHEN count(productId) OVER (PARTITION BY facilityId) > 0 THEN ROUND( sum(adequacy) OVER (PARTITION BY facilityId) / count(productId) OVER (PARTITION BY facilityId),0) ELSE 0 END AS adequacy3 " +
                         "    FROM Q  " +
                              " ORDER BY region ASC "
                 );
@@ -52,7 +56,7 @@ public class VaccineStockStatusQueryBuilder {
 
         String predicate = " ";
 
-        predicate += " where programs.id = " + params.getProgram();
+        predicate += " where programs.id = fn_get_vaccine_program_id()";
         predicate += " and e.modifiedDate::DATE <= #{filterCriteria.statusDate}::date";
         predicate += " and pp.productCategoryId = " + params.getProductCategory();
         predicate += " and facilityId = ANY (#{filterCriteria.facilityIds}::INT[])";

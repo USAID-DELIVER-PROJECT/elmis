@@ -4,9 +4,12 @@ package org.openlmis.report.service;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.Program;
 import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProgramService;
 import org.openlmis.report.mapper.VaccineStockStatusMapper;
 import org.openlmis.report.model.ResultRow;
+import org.openlmis.report.model.params.VaccineReceivedSummaryReportParam;
 import org.openlmis.report.model.params.VaccineStockStatusParam;
 import org.openlmis.report.model.report.VaccineStockStatusReport;
 import org.openlmis.report.util.SelectedFilterHelper;
@@ -31,10 +34,15 @@ public class VaccineStockStatusReportDataProvider extends ReportDataProvider {
     @Autowired
     private FacilityService facilityService;
 
+    @Autowired
+    private ProgramService programService;
+
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-       return  reportMapper.getReport(getReportFilterData(filterCriteria),rowBounds);
+        VaccineStockStatusParam params = getReportFilterData(filterCriteria);
+         params.setUserId(this.getUserId());
+       return reportMapper.getReport(getReportFilterData(filterCriteria),this.getUserId(),rowBounds);
 
     }
 
@@ -50,8 +58,8 @@ public class VaccineStockStatusReportDataProvider extends ReportDataProvider {
 
         VaccineStockStatusParam param = new VaccineStockStatusParam();
 
-        Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
-        param.setProgram(programId);
+       /* Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
+        param.setProgram(programId);*/
         param.setFacilityLevel(filterCriteria.get("facilityLevel")[0]);
         String productCategory = StringHelper.isBlank(filterCriteria, "productCategory") ? null : ((String[]) filterCriteria.get("productCategory"))[0];
         param.setProductCategory(productCategory);
@@ -62,8 +70,10 @@ public class VaccineStockStatusReportDataProvider extends ReportDataProvider {
         String products = StringHelper.isBlank(filterCriteria, "products") ? null : ((String[]) filterCriteria.get("products"))[0];
         param.setProducts(products);
 
+       List<Program> program = programService.getIvdProgramForSupervisedFacilities(this.getUserId(),MANAGE_EQUIPMENT_INVENTORY);
 
-        List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), programId, MANAGE_EQUIPMENT_INVENTORY);
+
+        List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), program.get(0).getId(), MANAGE_EQUIPMENT_INVENTORY);
         facilities.add(facilityService.getHomeFacility(this.getUserId()));
 
         StringBuilder str = new StringBuilder();
