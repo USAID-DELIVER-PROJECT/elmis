@@ -965,6 +965,8 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
             $scope.supplyingAllPendingOrders = data.pendingRequest;
             $scope.supplyingPendingReceive.supplyingPendingToReceive = data.pendingToReceive;
             $scope.supplyingPendingReceive.supplyingPendingToReceiveLowerLevel = data.pendingToReceiveLowerLevel;
+            $scope.supplyingPendingReceive.daysForUnreceivedNotification= daysNotReceive;
+
             if (data.pendingRequest !== undefined)
                 $scope.supplying.orders = data.pendingRequest.length;
             else {

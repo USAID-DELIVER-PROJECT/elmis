@@ -126,7 +126,7 @@ function DashboardWastageModalInstanceCtrl($scope, $modalInstance,items,  Vaccin
 
 }
 function DashboardStockStatusModalInstanceCtrl($scope, $modalInstance,items) {
-
+console.log(items);
     $scope.facilityStockStatusDetails=items.facilityDetails;
     $scope.stockstatusPeriodsList= items.periodsList;
     $scope.getBackGroundColor = function (_index) {
