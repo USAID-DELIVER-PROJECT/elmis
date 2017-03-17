@@ -88,7 +88,7 @@ public class InteractiveReportController extends BaseController {
                 (List<ConsumptionReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
         return new Pages(page, max, consumptionReportList);
     }
-    
+
     @RequestMapping(value = "/reportdata/summary", method = GET, headers = BaseController.ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_SUMMARY_REPORT')")
     public Pages getSummaryData(
@@ -395,21 +395,21 @@ public class InteractiveReportController extends BaseController {
         return new Pages(page, max, labEquipmentStatusList);
     }
 
-  @RequestMapping(value = "/reportdata/cceStorageCapacity", method = GET, headers = BaseController.ACCEPT_JSON)
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_CCE_STORAGE_CAPACITY_REPORT')")
-  public Pages getCCEStorageCapacity(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                     @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                     HttpServletRequest request) {
-    Report report = reportManager.getReportByKey("cce_storage_capacity");
-    report.getReportDataProvider().setUserId(loggedInUserId(request));
-    CCEStorageCapacityReportDataProvider provider = (CCEStorageCapacityReportDataProvider)report.getReportDataProvider();
-    List<CCEStorageCapacityReport> list = (List<CCEStorageCapacityReport>)
-        provider.getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+    @RequestMapping(value = "/reportdata/cceStorageCapacity", method = GET, headers = BaseController.ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_CCE_STORAGE_CAPACITY_REPORT')")
+    public Pages getCCEStorageCapacity(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                       HttpServletRequest request) {
+        Report report = reportManager.getReportByKey("cce_storage_capacity");
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+        CCEStorageCapacityReportDataProvider provider = (CCEStorageCapacityReportDataProvider) report.getReportDataProvider();
+        List<CCEStorageCapacityReport> list = (List<CCEStorageCapacityReport>)
+                provider.getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
 
-    return new Pages(page, max, list);
-  }
+        return new Pages(page, max, list);
+    }
 
-  @RequestMapping(value = "/reportdata/labEquipmentsByFundingSource", method = GET, headers = BaseController.ACCEPT_JSON)
+    @RequestMapping(value = "/reportdata/labEquipmentsByFundingSource", method = GET, headers = BaseController.ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_LAB_EQUIPMENTS_BY_FUNDING_SOURCE')")
     public Pages getLabEquipmentListByFundingSource(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                                     @RequestParam(value = "max", required = false, defaultValue = "10") int max,
@@ -513,6 +513,7 @@ public class InteractiveReportController extends BaseController {
                 (List<TimelinessReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
         return new Pages(page, max, timelinessReportList);
     }
+
     @RequestMapping(value = "/reportdata/cceRepairManagement", method = GET, headers = BaseController.ACCEPT_JSON)
     public Pages getRepairManagementSummary(
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -562,13 +563,13 @@ public class InteractiveReportController extends BaseController {
     @RequestMapping(value = "/reportdata/equipmentsInNeedForReplacement", method = GET, headers = BaseController.ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPLACEMENT_PLAN_SUMMARY')")
     public Pages getReplacementToBeReplaced(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                                 @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                                 HttpServletRequest request) {
+                                            @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                            HttpServletRequest request) {
 
         Report report = reportManager.getReportByKey("equipment_replacement_list");
         report.getReportDataProvider().setUserId(loggedInUserId(request));
 
-        List<ReplacementPlanSummary> SummaryList = (List<ReplacementPlanSummary>)report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+        List<ReplacementPlanSummary> SummaryList = (List<ReplacementPlanSummary>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
 
         return new Pages(page, max, SummaryList);
     }
@@ -576,8 +577,8 @@ public class InteractiveReportController extends BaseController {
     @RequestMapping(value = "/reportdata/coldChainEquipment", method = GET, headers = BaseController.ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_COLD_CHAIN_EQUIPMENT_LIST_REPORT')")
     public Pages getColdChainEquipment(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                   @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                   HttpServletRequest request
+                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                       HttpServletRequest request
 
     ) {
         Report report = reportManager.getReportByKey("cold_chain_equipment");
@@ -591,13 +592,13 @@ public class InteractiveReportController extends BaseController {
     @RequestMapping(value = "/reportdata/vaccineTemperature", method = GET, headers = BaseController.ACCEPT_JSON)
     ///@PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_COLD_CHAIN_EQUIPMENT_LIST_REPORT')")
     public Map<String, Pages> getVaccineTemperatureReport(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                       HttpServletRequest request
+                                                          @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                                          HttpServletRequest request
     ) {
         Report report = reportManager.getReportByKey("cold_chain_temperature");
         report.getReportDataProvider().setUserId(loggedInUserId(request));
 
-        ColdChainTemperatureDataProvider provider = (ColdChainTemperatureDataProvider)report.getReportDataProvider();
+        ColdChainTemperatureDataProvider provider = (ColdChainTemperatureDataProvider) report.getReportDataProvider();
 
         List<ColdChainTemperature> reportData =
                 (List<ColdChainTemperature>) provider.getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
@@ -659,17 +660,17 @@ public class InteractiveReportController extends BaseController {
 
     @RequestMapping(value = "/reportdata/performanceCoverage", method = GET, headers = BaseController.ACCEPT_JSON)
     public Pages getPerformanceCoverageReportData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                      @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                      HttpServletRequest request
+                                                  @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                                  HttpServletRequest request
 
     ) {
         Report report = reportManager.getReportByKey("performance_coverage");
 
-        PerformanceCoverageDataProvider dataProvider = (PerformanceCoverageDataProvider)report.getReportDataProvider();
+        PerformanceCoverageDataProvider dataProvider = (PerformanceCoverageDataProvider) report.getReportDataProvider();
 
         report.getReportDataProvider().setUserId(loggedInUserId(request));
 
-        List<PerformanceCoverageReport> reportData = (List<PerformanceCoverageReport>)dataProvider.getReportBody(request.getParameterMap(),
+        List<PerformanceCoverageReport> reportData = (List<PerformanceCoverageReport>) dataProvider.getReportBody(request.getParameterMap(),
                 request.getParameterMap(), page, max);
 
         return new Pages(page, max, reportData);
@@ -678,12 +679,12 @@ public class InteractiveReportController extends BaseController {
     @RequestMapping(value = "/reportdata/completenessAndTimeliness", method = GET, headers = BaseController.ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
     public CompletenessAndTimelinessReport getCompletenessAndTimelinessReportData(
-                                                  HttpServletRequest request
+            HttpServletRequest request
 
     ) {
         Report report = reportManager.getReportByKey("completeness_and_timelness");
 
-        CompletenessAndTimelinessReportDataProvider dataProvider = (CompletenessAndTimelinessReportDataProvider)report.getReportDataProvider();
+        CompletenessAndTimelinessReportDataProvider dataProvider = (CompletenessAndTimelinessReportDataProvider) report.getReportDataProvider();
 
         report.getReportDataProvider().setUserId(loggedInUserId(request));
 
@@ -696,8 +697,8 @@ public class InteractiveReportController extends BaseController {
 
     @RequestMapping(value = "/reportdata/onTimeInFullReport", method = GET, headers = BaseController.ACCEPT_JSON)
     public Pages getOnTmeInFullData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                       HttpServletRequest request
+                                    @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                    HttpServletRequest request
 
     ) {
         Report report = reportManager.getReportByKey("vaccine_on_time_in_full_report");
@@ -709,8 +710,8 @@ public class InteractiveReportController extends BaseController {
 
     @RequestMapping(value = "/reportdata/getMinMaxVaccineData", method = GET, headers = BaseController.ACCEPT_JSON)
     public Pages getMinMaxVaccineReportData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                       HttpServletRequest request
+                                            @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                            HttpServletRequest request
 
     ) {
         Report report = reportManager.getReportByKey("min_max_vaccine_report");
@@ -720,18 +721,38 @@ public class InteractiveReportController extends BaseController {
         return new Pages(page, max, reportData);
     }
 
-
     @RequestMapping(value = "/reportdata/getDistributionSummaryData", method = GET, headers = BaseController.ACCEPT_JSON)
-    public Pages getDistributionSummaryData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                       HttpServletRequest request
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
+    public DistributionSummaryReport getDistributionSummaryData(
+            HttpServletRequest request
 
     ) {
         Report report = reportManager.getReportByKey("distribution_summary_report");
+
+        DistributionSummaryReportDataProvider dataProvider = (DistributionSummaryReportDataProvider) report.getReportDataProvider();
+
         report.getReportDataProvider().setUserId(loggedInUserId(request));
-        List<DistributionSummaryReport> reportData =
-                (List<DistributionSummaryReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
-        return new Pages(page, max, reportData);
+
+        DistributionSummaryReport reportData = (DistributionSummaryReport) dataProvider.
+                getDistributionSummaryReportData(request.getParameterMap());
+
+        return reportData;
+    }
+
+    @RequestMapping(value = "/reportdata/getConsignmentReceivedData", method = GET, headers = BaseController.ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_VACCINE_REPORT')")
+    public DistributionSummaryReport getReceivedConsignmentSummaryData(HttpServletRequest request) {
+
+        Report report = reportManager.getReportByKey("vaccine_received_summary_report");
+
+        VaccineReceivedReportDataProvider dataProvider = (VaccineReceivedReportDataProvider) report.getReportDataProvider();
+
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+
+         DistributionSummaryReport reportData = (DistributionSummaryReport) dataProvider.
+                getVaccineReceivedSummaryReportData(request.getParameterMap());
+
+        return reportData;
     }
 
 }
