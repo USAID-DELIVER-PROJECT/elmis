@@ -3,7 +3,9 @@ package org.openlmis.report.service;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.Program;
 import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProgramService;
 import org.openlmis.report.mapper.MinMaxVaccineReportMapper;
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.MinMaxVaccineReportParam;
@@ -33,18 +35,21 @@ public class MinMaxVaccineReportDataProvider  extends ReportDataProvider  {
     @Autowired
     private FacilityService facilityService;
 
+    @Autowired
+    private ProgramService programService;
+
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-        return reportMapper.getReport(getReportFilterData(filterCriteria),rowBounds);
+        return reportMapper.getReport(getReportFilterData(filterCriteria),this.getUserId(),rowBounds);
 
     }
 
     private MinMaxVaccineReportParam getReportFilterData(Map<String, String[]> filterCriteria) {
         MinMaxVaccineReportParam param = new MinMaxVaccineReportParam();
-
+/*
         Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
-        param.setProgram(programId);
+        param.setProgram(programId);*/
 
         Long year = StringHelper.isBlank(filterCriteria, "year") ? 0L : Long.parseLong(filterCriteria.get("year")[0]);
         param.setYear(year);
@@ -60,8 +65,10 @@ public class MinMaxVaccineReportDataProvider  extends ReportDataProvider  {
         String facilityLevel = StringHelper.isBlank(filterCriteria, "facilityLevel") ? null : ((String[]) filterCriteria.get("facilityLevel"))[0];
         param.setFacilityLevel(facilityLevel);
 
+        List<Program> programs = programService.getIvdProgramForSupervisedFacilities(this.getUserId(),MANAGE_EQUIPMENT_INVENTORY);
 
-        List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), programId, MANAGE_EQUIPMENT_INVENTORY);
+
+        List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), programs.get(0).getId(), MANAGE_EQUIPMENT_INVENTORY);
         facilities.add(facilityService.getHomeFacility(this.getUserId()));
 
         StringBuilder str = new StringBuilder();

@@ -17,7 +17,7 @@ dependencies {
         exclude group: 'org.apache.lucene'
         exclude group: 'org.olap4j'
     }
-    compile 'org.codehaus.groovy:groovy-all:2.3.9',
+    compile 'org.codehaus.groovy:groovy-all:2.4.7',
           'org.apache.poi:poi:3.13',
       project(':modules:authentication'),
       project(':modules:stock-management'),

@@ -24,6 +24,7 @@ public interface MinMaxVaccineReportMapper {
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
     public List<MinMaxVaccineReport> getReport(
             @Param("filterCriteria") MinMaxVaccineReportParam params,
+            @Param("userId") Long userId,
             @Param("RowBounds") RowBounds rowBounds);
 
 

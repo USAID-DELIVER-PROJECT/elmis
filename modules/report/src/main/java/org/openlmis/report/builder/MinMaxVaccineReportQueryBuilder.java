@@ -12,6 +12,8 @@ public class MinMaxVaccineReportQueryBuilder {
     public String getQuery(Map params) {
 
         MinMaxVaccineReportParam filter = (MinMaxVaccineReportParam) params.get("filterCriteria");
+        Long userId = (Long)params.get("userId");
+        System.out.println(userId);
 
         return  "    SELECT m.region_name region, f.name storeName, sr.isaValue MinimumStock, sr.MaximumStock,p.primaryName product,    " +
                 "    sc.totalquantityonhand AS soh   " +
@@ -24,6 +26,8 @@ public class MinMaxVaccineReportQueryBuilder {
                 "    JOIN facility_types  ON f.typeId = facility_types.Id   " +
                 "    JOIN stock_cards sc ON sr.facilityId = SC.facilityId and sc.productId = SR.productId  " +
                            writePredicates(filter)+
+                "   AND M.district_id in (select district_id from vw_user_facilities where user_id = '" + userId + "'::INT and program_id = fn_get_vaccine_program_id())  "+
+
                 "     ORDER BY m.region_name asc  ";
 
     }
@@ -32,8 +36,7 @@ public class MinMaxVaccineReportQueryBuilder {
     private static String writePredicates(MinMaxVaccineReportParam params) {
 
         String predicate = " ";
-        predicate += " where sr.programId = " + params.getProgram();
-        predicate += "  and pp.productCategoryId = " + params.getProductCategory();
+        predicate += " WHERE  pp.productCategoryId = " + params.getProductCategory();
         predicate += " and pp.productId = " + params.getProduct();
         String facilityLevel = params.getFacilityLevel();
         predicate += " and facility_types.code = #{filterCriteria.facilityLevel}::text ";
