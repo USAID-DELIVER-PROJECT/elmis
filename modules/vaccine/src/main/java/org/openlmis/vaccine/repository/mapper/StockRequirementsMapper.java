@@ -73,6 +73,10 @@ public interface StockRequirementsMapper {
             "where programid=#{programId} and facilityid=#{facilityId} and year=#{year}")
     Integer resetFacilityStockRequirements(@Param("programId") Long programId, @Param("facilityId") Long facilityId, @Param("year") int year);
 
+    @Update("DELETE FROM stock_requirements " +
+            "where programid=#{programId} and facilityid=#{facilityId} and year=#{year}")
+    Integer deleteFacilityByStockRequirements(@Param("programId") Long programId, @Param("facilityId") Long facilityId, @Param("year") int year);
+
     @Update("update stock_requirements " +
             " set " +
             " annualneed = #{annualNeed}," +

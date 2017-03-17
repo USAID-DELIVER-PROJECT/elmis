@@ -63,7 +63,8 @@ public class StockRequirementsService
         cal.setTime(date);
         int year = cal.get(Calendar.YEAR);
 
-        repository.resetFacilityStockRequirements(programId, facilityId, year);
+        repository.deleteFacilityStockRequirements(programId, facilityId, year);
+        System.out.println("deleted...............");
 
         //Get facility in order to access its catchment population
         Facility facility = facilityService.getById(facilityId);

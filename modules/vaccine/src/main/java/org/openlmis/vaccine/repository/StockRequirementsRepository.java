@@ -42,6 +42,10 @@ public class StockRequirementsRepository {
         return mapper.resetFacilityStockRequirements(programId, facilityId, year);
     }
 
+    public Integer deleteFacilityStockRequirements(Long programId, Long facilityId, int year) {
+        return mapper.resetFacilityStockRequirements(programId, facilityId, year);
+    }
+
     public Integer updateBundling(StockRequirementsDTO requirements) {
         return mapper.updateBundling(requirements);
     }
