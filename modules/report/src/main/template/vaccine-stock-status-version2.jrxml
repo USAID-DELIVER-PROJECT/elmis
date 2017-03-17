@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine-distribution-summary" language="groovy" printOrder="Horizontal" pageWidth="1190" pageHeight="842" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="1170" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine stock status soh" language="groovy" printOrder="Horizontal" pageWidth="1190" pageHeight="842" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="1170" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="0.75"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -42,6 +42,7 @@
 	<field name="total" class="java.lang.Integer"/>
 	<field name="mos" class="java.lang.Float"/>
 	<field name="lastUpdate" class="java.lang.String"/>
+	<field name="adequacy2" class="java.lang.Integer"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -91,6 +92,27 @@
 								<reportElement style="Crosstab Data Text" x="0" y="0" width="72" height="28" uuid="a28f8e27-88e2-4dab-9be8-0a80a636cd5a"/>
 								<textElement verticalAlignment="Bottom"/>
 								<textFieldExpression><![CDATA[$V{facilityName}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="adequacy" width="95">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[new BigDecimal(new java.math.BigDecimal($F{adequacy2}.doubleValue()/
+$F{total}.doubleValue()).multiply(100)).setScale(0,BigDecimal.ROUND_HALF_UP) +"%"]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="###0">
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="95" height="28" uuid="a28f8e27-88e2-4dab-9be8-0a80a636cd5a"/>
+								<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{adequacy}]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabRowHeader>
@@ -155,7 +177,7 @@
 						<box>
 							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 						</box>
-						<textField>
+						<textField isBlankWhenNull="true">
 							<reportElement style="Crosstab Data Text" x="0" y="0" width="53" height="28" uuid="842a49b6-d52f-47bc-bd73-c80869bc7cef"/>
 							<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
@@ -217,6 +239,28 @@
 					</cellContents>
 				</crosstabCell>
 				<crosstabCell rowTotalGroup="facilityName" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="d1d09da2-331d-4b9d-81f3-d99d784dc588"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="adequacy">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="30ee8bea-a632-4fdf-8a2b-dbbd5fcf429e"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="adequacy" columnTotalGroup="product">
 					<cellContents backcolor="#BFE1FF" mode="Opaque">
 						<box>
 							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>

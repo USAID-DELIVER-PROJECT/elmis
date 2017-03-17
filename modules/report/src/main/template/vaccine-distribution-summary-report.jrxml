@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine received report" language="groovy" printOrder="Horizontal" pageWidth="1190" pageHeight="842" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="1170" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="BandStyle"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<subDataset name="dataset1" uuid="091a1376-c476-4867-9ced-423695e8c98e">
+		<queryString language="JSON">
+			<![CDATA[[{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"MR","period":null,"facilityId":19077,"productId":2420,"districtId":529,"receivedDate":1484812289622,"quantityReceived":1000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1485747538574,"quantityReceived":1000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"OPV","period":null,"facilityId":19077,"productId":2413,"districtId":529,"receivedDate":1485747538574,"quantityReceived":1800},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"PCV-13","period":null,"facilityId":19077,"productId":2415,"districtId":529,"receivedDate":1485747538574,"quantityReceived":1800},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"TT","period":null,"facilityId":19077,"productId":2418,"districtId":529,"receivedDate":1485747538574,"quantityReceived":2000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"MR","period":null,"facilityId":19077,"productId":2420,"districtId":529,"receivedDate":1485747538574,"quantityReceived":1700},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"ADS_0.05ml","period":null,"facilityId":19077,"productId":2422,"districtId":529,"receivedDate":1485747538574,"quantityReceived":2800},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"ADS_0.5ml","period":null,"facilityId":19077,"productId":2423,"districtId":529,"receivedDate":1485747538574,"quantityReceived":3300},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"Safety boxes","period":null,"facilityId":19077,"productId":2426,"districtId":529,"receivedDate":1485747538574,"quantityReceived":50},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1487394921740,"quantityReceived":1000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"OPV","period":null,"facilityId":19077,"productId":2413,"districtId":529,"receivedDate":1487394921740,"quantityReceived":300},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"PCV-13","period":null,"facilityId":19077,"productId":2415,"districtId":529,"receivedDate":1487394921740,"quantityReceived":1750},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1489434744241,"quantityReceived":500},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"OPV","period":null,"facilityId":19077,"productId":2413,"districtId":529,"receivedDate":1489434744241,"quantityReceived":1000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"Rota","period":null,"facilityId":19077,"productId":2416,"districtId":529,"receivedDate":1489434744241,"quantityReceived":450},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1489435096452,"quantityReceived":200},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1489487169339,"quantityReceived":100}]]]>
+		</queryString>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String"/>
+	<parameter name="COUNTRY_NAME" class="java.lang.String"/>
+	<parameter name="GENERATED_BY" class="java.lang.String"/>
+	<parameter name="REPORT_VERSION" class="java.lang.String"/>
+	<parameter name="REPORT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_OUTPUT_OPTION" class="java.lang.String"/>
+	<parameter name="OPERATOR_LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_SUB_TITLE" class="java.lang.String"/>
+	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
+	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="image_dir" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DISTRIBUTION_ID" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIMS_LOGO" class="java.io.InputStream"/>
+	<queryString language="JSON">
+		<![CDATA[[{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"MR","period":null,"facilityId":19077,"productId":2420,"districtId":529,"receivedDate":1484812289622,"quantityReceived":1000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1485747538574,"quantityReceived":1000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"OPV","period":null,"facilityId":19077,"productId":2413,"districtId":529,"receivedDate":1485747538574,"quantityReceived":1800},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"PCV-13","period":null,"facilityId":19077,"productId":2415,"districtId":529,"receivedDate":1485747538574,"quantityReceived":1800},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"TT","period":null,"facilityId":19077,"productId":2418,"districtId":529,"receivedDate":1485747538574,"quantityReceived":2000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"MR","period":null,"facilityId":19077,"productId":2420,"districtId":529,"receivedDate":1485747538574,"quantityReceived":1700},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"ADS_0.05ml","period":null,"facilityId":19077,"productId":2422,"districtId":529,"receivedDate":1485747538574,"quantityReceived":2800},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"ADS_0.5ml","period":null,"facilityId":19077,"productId":2423,"districtId":529,"receivedDate":1485747538574,"quantityReceived":3300},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"Safety boxes","period":null,"facilityId":19077,"productId":2426,"districtId":529,"receivedDate":1485747538574,"quantityReceived":50},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1487394921740,"quantityReceived":1000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"OPV","period":null,"facilityId":19077,"productId":2413,"districtId":529,"receivedDate":1487394921740,"quantityReceived":300},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"PCV-13","period":null,"facilityId":19077,"productId":2415,"districtId":529,"receivedDate":1487394921740,"quantityReceived":1750},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1489434744241,"quantityReceived":500},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"OPV","period":null,"facilityId":19077,"productId":2413,"districtId":529,"receivedDate":1489434744241,"quantityReceived":1000},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"Rota","period":null,"facilityId":19077,"productId":2416,"districtId":529,"receivedDate":1489434744241,"quantityReceived":450},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1489435096452,"quantityReceived":200},{"region":"Lindi","facilityName":"Lindi RVS","district":"Kilwa","quantityIssued":null,"product":"BCG","period":null,"facilityId":19077,"productId":2412,"districtId":529,"receivedDate":1489487169339,"quantityReceived":100}]]]>
+	</queryString>
+	<field name="product" class="java.lang.String"/>
+	<field name="district" class="java.lang.String"/>
+	<field name="facilityName" class="java.lang.String"/>
+	<field name="region" class="java.lang.String"/>
+	<field name="quantityIssued" class="java.lang.String"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<variable name="LCGroup_COUNT" class="java.lang.Integer">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="240">
+			<line>
+				<reportElement x="4" y="0" width="1165" height="1" forecolor="#FFFFFF" backcolor="#3D9297" uuid="b5f5ecc6-d086-489a-9136-efbc39c82ada"/>
+			</line>
+			<crosstab>
+				<reportElement x="-1" y="11" width="1170" height="229" uuid="af041fa3-3295-4441-a89b-76193657feb8"/>
+				<rowGroup name="region" width="70">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{region}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="28" uuid="141af3c3-f13b-464c-907c-86e0ec19b473"/>
+								<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{region}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="district" width="72">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{district}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="">
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="72" height="28" uuid="a28f8e27-88e2-4dab-9be8-0a80a636cd5a"/>
+								<textElement verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{district}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="facilityName" width="72">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{facilityName}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="72" height="28" uuid="a28f8e27-88e2-4dab-9be8-0a80a636cd5a"/>
+								<textElement verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{facilityName}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="product" height="42">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{product}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="17" width="69" height="25" backcolor="#17888F" uuid="2154b315-bcaa-4cff-96b1-4c4057f75dde"/>
+								<textElement verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{product}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="productMeasure" class="java.lang.String">
+					<measureExpression><![CDATA[$F{quantityIssued}]]></measureExpression>
+				</measure>
+				<crosstabCell width="69" height="28">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0" isBlankWhenNull="true">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="69" height="28" uuid="842a49b6-d52f-47bc-bd73-c80869bc7cef"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+							<textFieldExpression><![CDATA[$V{productMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="region">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="bf285714-5242-4b11-a5ac-624783038fb7"/>
+							<textFieldExpression><![CDATA[$V{productMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="4b6482fa-c0aa-44b4-a824-5fd46d067d3f"/>
+							<textFieldExpression><![CDATA[$V{productMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="region" columnTotalGroup="product">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="11095e77-f4a7-45d4-a74b-09f1756939de"/>
+							<textFieldExpression><![CDATA[$V{productMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="facilityName">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="30ee8bea-a632-4fdf-8a2b-dbbd5fcf429e"/>
+							<textFieldExpression><![CDATA[$V{productMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityName" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="d1d09da2-331d-4b9d-81f3-d99d784dc588"/>
+							<textFieldExpression><![CDATA[$V{productMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="district">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="30ee8bea-a632-4fdf-8a2b-dbbd5fcf429e"/>
+							<textFieldExpression><![CDATA[$V{productMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="district" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="d1d09da2-331d-4b9d-81f3-d99d784dc588"/>
+							<textFieldExpression><![CDATA[$V{productMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

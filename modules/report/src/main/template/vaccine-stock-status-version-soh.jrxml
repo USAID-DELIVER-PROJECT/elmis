@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vaccine stock status soh" language="groovy" printOrder="Horizontal" pageWidth="1190" pageHeight="842" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="1170" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="BandStyle"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<subDataset name="dataset1" uuid="091a1376-c476-4867-9ced-423695e8c98e">
+		<queryString language="JSON">
+			<![CDATA[[
+  {
+    "product": "BCG",
+    "district": "Kilwa",
+    "soh": 0,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Kilwa DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19080,
+    "productId": 2412,
+    "isaValue": 640980,
+    "mos": 0,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 0
+  },
+  {
+    "product": "OPV",
+    "district": "Kilwa",
+    "soh": 7060,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Kilwa DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19080,
+    "productId": 2413,
+    "isaValue": 854620,
+    "mos": 0.01,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 0
+  },
+  {
+    "product": "PCV-13",
+    "district": "Kilwa",
+    "soh": 9910,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Kilwa DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19080,
+    "productId": 2415,
+    "isaValue": 607500,
+    "mos": 0.02,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 0
+  },
+  {
+    "product": "Rota",
+    "district": "Kilwa",
+    "soh": 1474,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Kilwa DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19080,
+    "productId": 2416,
+    "isaValue": 405000,
+    "mos": 0,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 0
+  },
+  {
+    "product": "TT",
+    "district": "Kilwa",
+    "soh": 2540,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Kilwa DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19080,
+    "productId": 2418,
+    "isaValue": 427320,
+    "mos": 0.01,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 0
+  },
+  {
+    "product": "MR",
+    "district": "Kilwa",
+    "soh": 1950,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Kilwa DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19080,
+    "productId": 2420,
+    "isaValue": 512700,
+    "mos": 0,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 0
+  },
+  {
+    "product": "DTP-HepB-Hib",
+    "district": "Kilwa",
+    "soh": 7980,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Kilwa DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19080,
+    "productId": 2421,
+    "isaValue": 640970,
+    "mos": 0.01,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 0
+  },
+  {
+    "product": "BCG",
+    "district": "Lindi MC",
+    "soh": 1300,
+    "lastUpdate": "18-02-2017",
+    "facilityName": "Lindi MC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19157,
+    "productId": 2412,
+    "isaValue": 2500,
+    "mos": 0.52,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 1
+  },
+  {
+    "product": "OPV",
+    "district": "Lindi MC",
+    "soh": 1420,
+    "lastUpdate": "18-02-2017",
+    "facilityName": "Lindi MC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19157,
+    "productId": 2413,
+    "isaValue": 3340,
+    "mos": 0.43,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 1
+  },
+  {
+    "product": "PCV-13",
+    "district": "Lindi MC",
+    "soh": 3350,
+    "lastUpdate": "18-02-2017",
+    "facilityName": "Lindi MC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19157,
+    "productId": 2415,
+    "isaValue": 2370,
+    "mos": 1.41,
+    "color": "#ffdb00",
+    "adequacy": 1,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 1
+  },
+  {
+    "product": "Rota",
+    "district": "Lindi MC",
+    "soh": 425,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Lindi MC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19157,
+    "productId": 2416,
+    "isaValue": 1580,
+    "mos": 0.27,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 1
+  },
+  {
+    "product": "TT",
+    "district": "Lindi MC",
+    "soh": 1260,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Lindi MC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19157,
+    "productId": 2418,
+    "isaValue": 1680,
+    "mos": 0.75,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 1
+  },
+  {
+    "product": "MR",
+    "district": "Lindi MC",
+    "soh": 1260,
+    "lastUpdate": "02-02-2017",
+    "facilityName": "Lindi MC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19157,
+    "productId": 2420,
+    "isaValue": 2000,
+    "mos": 0.63,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 1
+  },
+  {
+    "product": "DTP-HepB-Hib",
+    "district": "Lindi MC",
+    "soh": 1250,
+    "lastUpdate": "08-02-2017",
+    "facilityName": "Lindi MC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19157,
+    "productId": 2421,
+    "isaValue": 2500,
+    "mos": 0.5,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 1
+  },
+  {
+    "product": "BCG",
+    "district": "Lindi DC",
+    "soh": 1180,
+    "lastUpdate": "28-12-2016",
+    "facilityName": "LINDI DC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19161,
+    "productId": 2412,
+    "isaValue": 40,
+    "mos": 29.5,
+    "color": "#00B2EE",
+    "adequacy": 1,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 5
+  },
+  {
+    "product": "OPV",
+    "district": "Lindi DC",
+    "soh": 2160,
+    "lastUpdate": "28-12-2016",
+    "facilityName": "LINDI DC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19161,
+    "productId": 2413,
+    "isaValue": 40,
+    "mos": 54,
+    "color": "#00B2EE",
+    "adequacy": 1,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 5
+  },
+  {
+    "product": "PCV-13",
+    "district": "Lindi DC",
+    "soh": 50,
+    "lastUpdate": "28-12-2016",
+    "facilityName": "LINDI DC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19161,
+    "productId": 2415,
+    "isaValue": 24,
+    "mos": 2.08,
+    "color": "#006600",
+    "adequacy": 1,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 5
+  },
+  {
+    "product": "Rota",
+    "district": "Lindi DC",
+    "soh": 700,
+    "lastUpdate": "28-12-2016",
+    "facilityName": "LINDI DC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19161,
+    "productId": 2416,
+    "isaValue": 16,
+    "mos": 43.75,
+    "color": "#00B2EE",
+    "adequacy": 1,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 5
+  },
+  {
+    "product": "TT",
+    "district": "Lindi DC",
+    "soh": 20,
+    "lastUpdate": "28-12-2016",
+    "facilityName": "LINDI DC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19161,
+    "productId": 2418,
+    "isaValue": 20,
+    "mos": 1,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 5
+  },
+  {
+    "product": "MR",
+    "district": "Lindi DC",
+    "soh": 0,
+    "lastUpdate": "28-12-2016",
+    "facilityName": "LINDI DC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19161,
+    "productId": 2420,
+    "isaValue": 20,
+    "mos": 0,
+    "color": "#ff0d00",
+    "adequacy": 0,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 5
+  },
+  {
+    "product": "DTP-HepB-Hib",
+    "district": "Lindi DC",
+    "soh": 3250,
+    "lastUpdate": "28-12-2016",
+    "facilityName": "LINDI DC DVS",
+    "monthlyStock": null,
+    "facilityType": null,
+    "facilityId": 19161,
+    "productId": 2421,
+    "isaValue": 30,
+    "mos": 108.33,
+    "color": "#00B2EE",
+    "adequacy": 1,
+    "region": "Lindi",
+    "total": 7,
+    "adequacy2": 5
+  }
+]]]>
+		</queryString>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String"/>
+	<parameter name="COUNTRY_NAME" class="java.lang.String"/>
+	<parameter name="GENERATED_BY" class="java.lang.String"/>
+	<parameter name="REPORT_VERSION" class="java.lang.String"/>
+	<parameter name="REPORT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_OUTPUT_OPTION" class="java.lang.String"/>
+	<parameter name="OPERATOR_LOGO" class="java.io.InputStream"/>
+	<parameter name="REPORT_SUB_TITLE" class="java.lang.String"/>
+	<parameter name="REPORT_FILTER_PARAM_VALUES" class="java.lang.String"/>
+	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="image_dir" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DISTRIBUTION_ID" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIMS_LOGO" class="java.io.InputStream"/>
+	<queryString language="JSON">
+		<![CDATA[[{"product":"BCG","district":"Kilwa","soh":0,"lastUpdate":"08-02-2017","facilityName":"Kilwa DVS","monthlyStock":null,"facilityType":null,"facilityId":19080,"productId":2412,"isaValue":640980,"mos":0,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":0,"adequacy3":0},{"product":"OPV","district":"Kilwa","soh":7060,"lastUpdate":"08-02-2017","facilityName":"Kilwa DVS","monthlyStock":null,"facilityType":null,"facilityId":19080,"productId":2413,"isaValue":854620,"mos":0.01,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":0,"adequacy3":0},{"product":"PCV-13","district":"Kilwa","soh":9910,"lastUpdate":"08-02-2017","facilityName":"Kilwa DVS","monthlyStock":null,"facilityType":null,"facilityId":19080,"productId":2415,"isaValue":607500,"mos":0.02,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":0,"adequacy3":0},{"product":"Rota","district":"Kilwa","soh":1474,"lastUpdate":"08-02-2017","facilityName":"Kilwa DVS","monthlyStock":null,"facilityType":null,"facilityId":19080,"productId":2416,"isaValue":405000,"mos":0,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":0,"adequacy3":0},{"product":"TT","district":"Kilwa","soh":2540,"lastUpdate":"08-02-2017","facilityName":"Kilwa DVS","monthlyStock":null,"facilityType":null,"facilityId":19080,"productId":2418,"isaValue":427320,"mos":0.01,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":0,"adequacy3":0},{"product":"MR","district":"Kilwa","soh":1950,"lastUpdate":"08-02-2017","facilityName":"Kilwa DVS","monthlyStock":null,"facilityType":null,"facilityId":19080,"productId":2420,"isaValue":512700,"mos":0,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":0,"adequacy3":0},{"product":"DTP-HepB-Hib","district":"Kilwa","soh":7980,"lastUpdate":"08-02-2017","facilityName":"Kilwa DVS","monthlyStock":null,"facilityType":null,"facilityId":19080,"productId":2421,"isaValue":640970,"mos":0.01,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":0,"adequacy3":0},{"product":"BCG","district":"Lindi MC","soh":1300,"lastUpdate":"18-02-2017","facilityName":"Lindi MC DVS","monthlyStock":null,"facilityType":null,"facilityId":19157,"productId":2412,"isaValue":2500,"mos":0.52,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":1,"adequacy3":0},{"product":"OPV","district":"Lindi MC","soh":1420,"lastUpdate":"18-02-2017","facilityName":"Lindi MC DVS","monthlyStock":null,"facilityType":null,"facilityId":19157,"productId":2413,"isaValue":3340,"mos":0.43,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":1,"adequacy3":0},{"product":"PCV-13","district":"Lindi MC","soh":3350,"lastUpdate":"18-02-2017","facilityName":"Lindi MC DVS","monthlyStock":null,"facilityType":null,"facilityId":19157,"productId":2415,"isaValue":2370,"mos":1.41,"color":"#ffdb00","adequacy":1,"region":"Lindi","total":7,"adequacy2":1,"adequacy3":0},{"product":"Rota","district":"Lindi MC","soh":425,"lastUpdate":"08-02-2017","facilityName":"Lindi MC DVS","monthlyStock":null,"facilityType":null,"facilityId":19157,"productId":2416,"isaValue":1580,"mos":0.27,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":1,"adequacy3":0},{"product":"TT","district":"Lindi MC","soh":1260,"lastUpdate":"08-02-2017","facilityName":"Lindi MC DVS","monthlyStock":null,"facilityType":null,"facilityId":19157,"productId":2418,"isaValue":1680,"mos":0.75,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":1,"adequacy3":0},{"product":"MR","district":"Lindi MC","soh":1260,"lastUpdate":"02-02-2017","facilityName":"Lindi MC DVS","monthlyStock":null,"facilityType":null,"facilityId":19157,"productId":2420,"isaValue":2000,"mos":0.63,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":1,"adequacy3":0},{"product":"DTP-HepB-Hib","district":"Lindi MC","soh":1250,"lastUpdate":"08-02-2017","facilityName":"Lindi MC DVS","monthlyStock":null,"facilityType":null,"facilityId":19157,"productId":2421,"isaValue":2500,"mos":0.5,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":1,"adequacy3":0},{"product":"BCG","district":"Lindi DC","soh":1180,"lastUpdate":"28-12-2016","facilityName":"LINDI DC DVS","monthlyStock":null,"facilityType":null,"facilityId":19161,"productId":2412,"isaValue":40,"mos":29.5,"color":"#00B2EE","adequacy":1,"region":"Lindi","total":7,"adequacy2":5,"adequacy3":0},{"product":"OPV","district":"Lindi DC","soh":2160,"lastUpdate":"28-12-2016","facilityName":"LINDI DC DVS","monthlyStock":null,"facilityType":null,"facilityId":19161,"productId":2413,"isaValue":40,"mos":54,"color":"#00B2EE","adequacy":1,"region":"Lindi","total":7,"adequacy2":5,"adequacy3":0},{"product":"PCV-13","district":"Lindi DC","soh":50,"lastUpdate":"28-12-2016","facilityName":"LINDI DC DVS","monthlyStock":null,"facilityType":null,"facilityId":19161,"productId":2415,"isaValue":24,"mos":2.08,"color":"#006600","adequacy":1,"region":"Lindi","total":7,"adequacy2":5,"adequacy3":0},{"product":"Rota","district":"Lindi DC","soh":700,"lastUpdate":"28-12-2016","facilityName":"LINDI DC DVS","monthlyStock":null,"facilityType":null,"facilityId":19161,"productId":2416,"isaValue":16,"mos":43.75,"color":"#00B2EE","adequacy":1,"region":"Lindi","total":7,"adequacy2":5,"adequacy3":0},{"product":"TT","district":"Lindi DC","soh":20,"lastUpdate":"28-12-2016","facilityName":"LINDI DC DVS","monthlyStock":null,"facilityType":null,"facilityId":19161,"productId":2418,"isaValue":20,"mos":1,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":5,"adequacy3":0},{"product":"MR","district":"Lindi DC","soh":0,"lastUpdate":"28-12-2016","facilityName":"LINDI DC DVS","monthlyStock":null,"facilityType":null,"facilityId":19161,"productId":2420,"isaValue":20,"mos":0,"color":"#ff0d00","adequacy":0,"region":"Lindi","total":7,"adequacy2":5,"adequacy3":0},{"product":"DTP-HepB-Hib","district":"Lindi DC","soh":3250,"lastUpdate":"28-12-2016","facilityName":"LINDI DC DVS","monthlyStock":null,"facilityType":null,"facilityId":19161,"productId":2421,"isaValue":30,"mos":108.33,"color":"#00B2EE","adequacy":1,"region":"Lindi","total":7,"adequacy2":5,"adequacy3":0}]]]>
+	</queryString>
+	<field name="soh" class="java.lang.Double"/>
+	<field name="product" class="java.lang.String"/>
+	<field name="district" class="java.lang.String"/>
+	<field name="facilityName" class="java.lang.String"/>
+	<field name="region" class="java.lang.String"/>
+	<field name="adequacy" class="java.lang.String"/>
+	<field name="color" class="java.lang.String"/>
+	<field name="total" class="java.lang.Integer"/>
+	<field name="mos" class="java.lang.Float"/>
+	<field name="lastUpdate" class="java.lang.String"/>
+	<field name="adequacy2" class="java.lang.Integer"/>
+	<variable name="TOTAL_PAGES" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<variable name="LCGroup_COUNT" class="java.lang.Integer">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="240">
+			<line>
+				<reportElement x="4" y="0" width="1165" height="1" forecolor="#FFFFFF" backcolor="#3D9297" uuid="b5f5ecc6-d086-489a-9136-efbc39c82ada"/>
+			</line>
+			<crosstab>
+				<reportElement x="-1" y="11" width="1170" height="229" uuid="af041fa3-3295-4441-a89b-76193657feb8"/>
+				<rowGroup name="region" width="70">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{region}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="28" uuid="141af3c3-f13b-464c-907c-86e0ec19b473"/>
+								<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{region}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="facilityName" width="95">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{facilityName}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="95" height="28" uuid="a28f8e27-88e2-4dab-9be8-0a80a636cd5a"/>
+								<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{facilityName}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="adequacy" width="95">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[new BigDecimal(new java.math.BigDecimal($F{adequacy2}.doubleValue()/
+$F{total}.doubleValue()).multiply(100)).setScale(0,BigDecimal.ROUND_HALF_UP) +"%"]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="###0">
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="95" height="28" uuid="a28f8e27-88e2-4dab-9be8-0a80a636cd5a"/>
+								<textElement textAlignment="Left" verticalAlignment="Bottom"/>
+								<textFieldExpression><![CDATA[$V{adequacy}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="product" height="42">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{product}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="98" height="21" uuid="2154b315-bcaa-4cff-96b1-4c4057f75dde"/>
+								<textElement verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{product}]]></textFieldExpression>
+							</textField>
+							<staticText>
+								<reportElement style="Crosstab Data Text" x="0" y="21" width="98" height="21" uuid="5067def5-8f8c-43ee-81af-8925024e7b9c"/>
+								<textElement textAlignment="Left" verticalAlignment="Bottom">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[SOH]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="sohMeasure" class="java.lang.Integer">
+					<measureExpression><![CDATA[$F{soh}]]></measureExpression>
+				</measure>
+				<measure name="mosMeasure" class="java.lang.Float">
+					<measureExpression><![CDATA[$F{mos}]]></measureExpression>
+				</measure>
+				<measure name="lastUpdateMeasure" class="java.lang.String">
+					<measureExpression><![CDATA[$F{lastUpdate}]]></measureExpression>
+				</measure>
+				<crosstabCell width="98" height="29">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="98" height="28" uuid="842a49b6-d52f-47bc-bd73-c80869bc7cef"/>
+							<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="region">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="bf285714-5242-4b11-a5ac-624783038fb7"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="4b6482fa-c0aa-44b4-a824-5fd46d067d3f"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="region" columnTotalGroup="product">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="11095e77-f4a7-45d4-a74b-09f1756939de"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="facilityName">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="30ee8bea-a632-4fdf-8a2b-dbbd5fcf429e"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="facilityName" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="d1d09da2-331d-4b9d-81f3-d99d784dc588"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="adequacy">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="30ee8bea-a632-4fdf-8a2b-dbbd5fcf429e"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="adequacy" columnTotalGroup="product">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="d1d09da2-331d-4b9d-81f3-d99d784dc588"/>
+							<textFieldExpression><![CDATA[$V{sohMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>
