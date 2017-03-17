@@ -6,8 +6,11 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.DistributionSummaryQueryBuilder;
+import org.openlmis.report.builder.VaccineReceivedSummaryReportQueryBuilder;
 import org.openlmis.report.model.params.DistributionSummaryReportParam;
+import org.openlmis.report.model.params.VaccineReceivedSummaryReportParam;
 import org.openlmis.report.model.report.DistributionSummaryReport;
+import org.openlmis.report.model.report.DistributionSummaryReportFields;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,10 +21,14 @@ import java.util.List;
 @Repository
 public interface DistributionSummaryReportMapper {
 
-    @SelectProvider(type=DistributionSummaryQueryBuilder.class, method="getQuery")
-    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
-    public List<DistributionSummaryReport> getReportData(
-            @Param("filterCriteria") DistributionSummaryReportParam params
-            , @Param("RowBounds") RowBounds rowBounds );
+    @SelectProvider(type = DistributionSummaryQueryBuilder.class, method = "getDistributionQueryData")
+    @Options(timeout = 0, useCache = true, flushCache = true)
+    public List<DistributionSummaryReportFields> getSummaryReport(@Param("filterCriteria") DistributionSummaryReportParam filterCriteria,
+                                                                  @Param("userId") Long userId);
+
+    @SelectProvider(type = DistributionSummaryQueryBuilder.class, method = "getReceivedConsignmentSummaryData")
+    @Options(timeout = 0, useCache = true, flushCache = true)
+    public List<DistributionSummaryReportFields> getReceivedSummaryReport(@Param("filterCriteria") DistributionSummaryReportParam filterCriteria,
+                                                                          @Param("userId")Long userId);
 
 }

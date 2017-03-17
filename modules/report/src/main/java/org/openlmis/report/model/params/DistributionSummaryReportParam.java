@@ -16,11 +16,9 @@ import org.openlmis.report.model.ReportParameter;
 @NoArgsConstructor
 public class DistributionSummaryReportParam extends BaseParam implements ReportParameter{
 
-    private Long facility;
-
-    private String startDate;
-
-    private String endDate;
+    Long district;
+    String periodEnd;
+    String periodStart;
 
 
 }
