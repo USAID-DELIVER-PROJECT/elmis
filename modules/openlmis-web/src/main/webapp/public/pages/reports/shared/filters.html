@@ -588,9 +588,9 @@
             </div>
         </div>
         <div class="horizontalFilters form-cell" >
-            <label for="periodStartdate" class="labels" ><span openlmis-message="label.start.date"></span></label>
+            <label for="periodStartMonth" class="labels" ><span openlmis-message="label.start.month"></span></label>
             <div>
-                <select style="width: 140px" id="periodStartdate" ui-select2 class="input-large" ng-model="startMonth">
+                <select style="width: 140px" id="periodStartMonth" ui-select2 class="input-large" ng-model="startMonth">
 
                     <option ng-repeat="option in monthNames" value="{{option.id}}" >{{option.value}}</option>
                 </select>
@@ -598,9 +598,9 @@
         </div>
 
         <div class="horizontalFilters form-cell" >
-            <label for="periodEnddate" class="labels" ><span openlmis-message="label.end.date"></span></label>
+            <label for="periodEndMonth" class="labels" ><span openlmis-message="label.end.month"></span></label>
             <div>
-                <select style="width: 140px" id="periodEnddate" ui-select2 class="input-large" ng-model="endMonth">
+                <select style="width: 140px" id="periodEndMonth" ui-select2 class="input-large" ng-model="endMonth">
 
                     <option ng-repeat="option in monthNames" value="{{option.id}}" >{{option.value}}</option>
                 </select>

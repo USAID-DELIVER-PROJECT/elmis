@@ -66,6 +66,11 @@
                         <strong><span openlmis-message="label.end.date"></span></strong> : {{filter.periodEnd}}
                     </div>
                 </div>
+                <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                    <div class="span11 ">
+                        <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                    </div>
+                </div>
             </div>
 
             <div class="content-body">
