@@ -10,10 +10,6 @@
 <style>
 
 
-
-
-
-
     .summary-table {
         table-layout: fixed;
         width: 100% !important;
@@ -35,67 +31,103 @@
     }
 
     table {
-        table-layout: fixed;
+        table-layout: fixed !important;
         width: 100%;
     }
 
-    .rnr-table .table-bordered th.p-column, .rnr-table .table-bordered td.p-column{
-        border-right:solid 3px #ddd !important;
+    .rnr-table .table-bordered th.p-column, .rnr-table .table-bordered td.p-column {
+        border-right: solid 3px #ddd !important;
     }
 
-    td.cross span{
-        text-decoration:line-through;
+    td.cross span {
+        text-decoration: line-through;
     }
 
+    .rnr-table #fullSupplyFrozenTable th, .rnr-table #fullSupplyFrozenTable td {
+        min-width: 80px !important;
+        width: 80px !important;
+    }
 
-    .rnr-table #fullSupplyFrozenTable th ,.rnr-table #fullSupplyFrozenTable td{min-width:80px !important;width:80px
-    !important;}
-    .rnr-table .left-table {width: 24%; max-width: 24%;}
-    .rnr-table .right-table {width: 75.7%;max-width: 75.7%;}
-    .rnr-table .left-table th.col-action,.rnr-table .left-table
-    td.col-action{width:100px;max-width:100px;min-width:100px}
-    .rnr-table .left-table input[type="submit"]{width:80px !important;margin:4px 2px 5px 2px !important}
-    a span{font-size:12px}
-    #popupModel2 {width:80%; }
+    .rnr-table .left-table {
+        width: 24%;
+        max-width: 24%;
+    }
+
+    .rnr-table .right-table {
+        width: 75.7%;
+        max-width: 75.7%;
+    }
+
+    .rnr-table .left-table th.col-action, .rnr-table .left-table
+    td.col-action {
+        width: 100px;
+        max-width: 100px;
+        min-width: 100px
+    }
+
+    .rnr-table .left-table input[type="submit"] {
+        width: 80px !important;
+        margin: 4px 2px 5px 2px !important
+    }
+
+    a span {
+        font-size: 12px
+    }
+
+    #popupModel2 {
+        width: 80%;
+    }
+
     table tr.pod td {
         background-color: #F0F0F0;
 
     }
-    .right-table table tr.pod td span{
-        float:right;margin:9px 8px 10px 2px;
-        color:#055e74;
+
+    .right-table table tr.pod td span {
+        float: right;
+        margin: 9px 8px 10px 2px;
+        color: #055e74;
     }
 
-
-
-    .rnr-table .table-bordered tr td.error{
-        background:#f00 !important;
-    }
-    .rnr-table .table-bordered th.p-column, .rnr-table .table-bordered td.p-column{
-        border-right:solid 3px #ddd !important;
+    .rnr-table .table-bordered tr td.error {
+        background: #f00 !important;
     }
 
-    .rnr-table .table-bordered tr.unchecked td{
-        background:#F2F2F2 !important;
+    .rnr-table .table-bordered th.p-column, .rnr-table .table-bordered td.p-column {
+        border-right: solid 3px #ddd !important;
     }
 
-    td.lot-expired span{
-        color:#d58512;
+    .rnr-table .table-bordered tr.unchecked td {
+        background: #F2F2F2 !important;
     }
 
-    td.cross span{
-        text-decoration:line-through;
+    td.lot-expired span {
+        color: #d58512;
     }
 
+    td.cross span {
+        text-decoration: line-through;
+    }
 
-    <!--th.header {-->
-        <!--background: #F2F2F2; !important;-->
-        <!--color:#000 !important;-->
-        <!--font-weight: normal !important;-->
-        <!--text-shadow: none !important;-->
-        <!--}-->
+    <!--
+    th.header {
+    --> <!-- background : #F2F2F2;
+    !important;
+    --> <!-- color : #000 !important;
+    --> <!-- font-weight : normal !important;
+    --> <!-- text-shadow : none !important;
+    --> <!--
+    }
 
+    -->
+    .odd {
+        background-color: #d7d7d7;
+        border-collapse: separate;
+    }
+    .even {
+        background-color: #EEEEEE;
 
+    }
 
 
 </style>
@@ -111,13 +143,15 @@
         </div>
         <div class="app-form">
             <form ng-submit="filterGrid()" name="filterForm" novalidate>
-                <div filter-container class="clearfix">
+                <div class="clearfix">
 
                     <!--================================ filter start ====================-->
 
+
                     <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
-                                         faccility="true" pro="filter.program" user_geo_level="user_geo_level"
+                                         faccility="false" pro="filter.program" user_geo_level="user_geo_level"
                                          zones="zones" val="filter.zone"></vaccine-zone-filter>
+
 
                     <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
                     <static-year-filter perioderror="perioderror" year="staticYear" startdate="periodStartDate"
@@ -142,49 +176,56 @@
         <div class="content-body">
 
             <div class="box-icon" style="float:right;">
-                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
-                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+              <!--  <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>-->
                 <div class="clearfix"><br/></div>
+
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span>Export To Excel</span></a>
+
             </div>
-            <h2 ></h2>
+            <h2></h2>
 
             <div class="clearfix"><br/></div>
 
-            <table client-side-sort-pagination  class="table table-bordered" ng-show="distributedFacilities == undefined || distributedFacilities.length == 0">
+            <table client-side-sort-pagination class="table table-bordered"
+                   ng-show="distributedFacilities == undefined || distributedFacilities.length == 0">
                 <tr>
                     <td>No data to show under selected filters</td>
                 </tr>
             </table>
 
-            <div class="row-fluid rnr-table" scrollable>
+            <div class="row-fluid rnr-table" scrollable ng-show="distributedFacilities.length >0 ">
 
-                <div >
+                <div>
                     <table class="table table-bordered" table-striped scrollable ng-table="tableParams">
                         <thead>
                         <tr>
-                            <th openlmis-message="label.region"></th>
-                            <th openlmis-message="label.district"></th>
-                            <th openlmis-message="label.dvs.name" style="width:10%;!important;"></th>
-                            <th colspan="{{facilityProduct.length}}"><span style="text-align: left;!important;">Products</span></th>
+                            <th rowspan="2" style="text-align:left;" openlmis-message="label.region"></th>
+                            <th rowspan="2" style="text-align: left" openlmis-message="label.district"></th>
+                            <th rowspan="2" style="text-align: left" openlmis-message="label.dvs.name" style="min-width:100%;!important;"></th>
+                            <th colspan="{{facilityProduct.length}}"><span
+                                    style="float: left;!important;">Products</span></th>
                         </tr>
-                        <tr><th></th>
-                            <th></th>
-                            <th></th>
-                            <th ng-repeat="p in facilityProduct" style="text-align: left">{{p.programProduct.product.primaryName}}</th>
+                        <tr>
+                            <th ng-repeat="p in facilityProduct" style="text-align: left">
+                                {{p.programProduct.product.primaryName}}
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="f in distributedFacilities">
-                            <td>{{f.products[$index].region}}</td>
-                            <td>{{f.products[$index].district}}</td>
-                            <td>{{f.facilityName}}</td>
-                            <td ng-repeat="p in facilityProduct">{{getProductQuantity(f.facilityName, p.programProduct.product.primaryName)}}</td>
+                        <tr ng-repeat="f in distributedFacilities"  ng-class-odd="'odd'" ng-class-even="'even'"
+                            ng-init="$index%2==0?(color='odd'): (color='even')">
+                            <td >{{f.products[$index-1].region == f.products[$index].region ? '' : f.products[0].region }}</td>
+                            <td >{{f.products[$index-1].district == f.products[$index].district ? '' : f.products[0].district }}</td>
+                            <td style="width: 200px !important;">{{f.facilityName}}</td>
+                            <td ng-repeat="p in facilityProduct" style="text-align: right">{{getProductQuantity(f.facilityName,p.programProduct.product.primaryName) | number}}</td>
                         </tr>
                         </tbody>
                     </table>
-                 <!--   <pagination total-items="dTotalItems" page="dCurrentPage" max-size="5"
-                                items-per-page="dPagination.limit"
-                                direction-links="false" class="pagination-sm"></pagination>-->
+                    <!--   <pagination total-items="dTotalItems" page="dCurrentPage" max-size="5"
+                                   items-per-page="dPagination.limit"
+                                   direction-links="false" class="pagination-sm"></pagination>-->
                 </div>
             </div>
 

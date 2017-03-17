@@ -4,7 +4,7 @@ function DistributionSummaryReportController($scope, DistributionSummaryReport, 
 
     $scope.exportReport = function (type) {
         $scope.filter.pdformat = 1;
-        var params = jQuery.param($scope.getSanitizedParameter());
+        var params = jQuery.param($scope.distributionSumaryReportParams);
         var url = '/reports/download/distribution_summary_report/' + type + '?' + params;
         window.open(url, "_BLANK");
     };
@@ -17,13 +17,29 @@ function DistributionSummaryReportController($scope, DistributionSummaryReport, 
         $scope.data = $scope.datarows = [];
         // $scope.filter.max = 10000;
         // $scope.filter.page = 1;
+        console.log($scope.filter.zone);
 
-        DistributionSummaryReport.get($scope.getSanitizedParameter(), function (data) {
+        // prevent first time loading
+        if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
+            return;
 
-            if (data.pages !== undefined) {
+        $scope.distributionSumaryReportParams =  {
+            periodStart: $scope.periodStartDate,
+            periodEnd:   $scope.periodEnddate,
+            range:       $scope.range,
+            district:    utils.isEmpty($scope.filter.zone) ? 0 : parseInt($scope.filter.zone.id, 10)
+        };
 
-                $scope.datarows = data.pages.rows;
-                var distributedFacilities = data.pages.rows;
+
+        DistributionSummaryReport.get($scope.distributionSumaryReportParams , function (data) {
+
+          var distributionList = [];
+            distributionList = data.distributionSummaryReport.summaryReportFieldsList;
+
+            if (distributionList !== undefined) {
+
+                $scope.datarows = distributionList;
+                var distributedFacilities = distributionList;
                 var productData = _.uniq(_.pluck(distributedFacilities,'productId'));
                headerCellData(productData);
                 var byFacility = _.groupBy(distributedFacilities, function (f) {

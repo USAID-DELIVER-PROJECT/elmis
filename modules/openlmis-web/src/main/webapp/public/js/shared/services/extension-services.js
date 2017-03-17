@@ -1255,3 +1255,23 @@ services.factory('MinMaxStockReport',function($resource){
 services.factory('DistributionSummaryReport',function($resource){
     return $resource('/reports/reportdata/getDistributionSummaryData.json',{},{});
 });
+
+services.factory('VaccineReceivedSummarReport',function($resource){
+    return $resource('/reports/reportdata/getConsignmentReceivedData.json',{},{});
+});
+
+services.factory('ReportFacilityLevelWithoutProgram', function ($resource) {
+    return $resource('/reports/facility-levelWithNoProgram.json', {}, {});
+});
+
+services.factory('ProductCategoriesWithoutProgram', function($resource){
+    return $resource('/reports/productCategoriesWithoutProgram.json', {}, {});
+}) ;
+
+services.factory('ReportProductsByProgramWithoutDescriptionsAndProgram', function($resource){
+    return $resource('/reports/program-products-with-no-descriptions-and-program.json', {}, {});
+}) ;
+
+services.factory('ReportProductsWithoutDescriptionsAndWithoutProgram', function($resource){
+    return $resource('/reports/program-products-with-no-descriptions-and-without-program.json', {}, {});
+}) ;
