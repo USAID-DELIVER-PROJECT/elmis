@@ -50,5 +50,6 @@ public interface VaccineOrderRequisitionLineItemsMapper {
     })
     List<VaccineOrderRequisitionLineItem> getLineItems(@Param("orderId") Long orderId);
 
-
+   @Select("Delete from vaccine_order_requisition_line_items where orderId =#{id}")
+    void delete(@Param("id") Long id);
 }

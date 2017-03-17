@@ -312,9 +312,25 @@ public interface VaccineInventoryDistributionMapper {
                     one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
     VaccineDistribution getAllDistributionsByVoucherNumber(@Param("facilityId") Long facilityId,@Param("voucherNumber") String voucherNumber);
 
-
-
-
-
-
+    @Select("SELECT * " +
+            " FROM vaccine_distributions " +
+            " WHERE fromfacilityid=#{facilityId} AND  " +
+            " distributiondate::DATE >= #{startDate}::DATE AND distributiondate::DATE <= #{endDate}::DATE  AND distributionType= #{distributionType} " +
+            " AND toFacilityId= ( " +
+            " SELECT f.id FROM FACILITIES F " +
+            " LEFT JOIN vaccine_distributions vd on F.id = toFacilityId " +
+            " WHERE  LOWER(name) LIKE '%' || LOWER(#{searchParam}) || '%' and fromfacilityid=#{facilityId}  LIMIT 1 )"+
+            " " +
+            " order by createddate DESC")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "toFacilityId", column = "toFacilityId"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "toFacility", column = "toFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    List<VaccineDistribution> searchDistributionAndFacilityByDateRange(@Param("facilityId") Long facilityId,
+                                                                     @Param("startDate") String startDate,
+                                                                     @Param("endDate") String endDate,
+                                                                       @Param("distributionType") String distributionType,
+                                                                       @Param("searchParam") String searchParam);
 }

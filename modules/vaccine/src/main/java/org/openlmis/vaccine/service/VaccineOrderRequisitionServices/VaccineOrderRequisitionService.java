@@ -6,6 +6,7 @@ import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.openlmis.core.service.*;
 import org.openlmis.stockmanagement.repository.mapper.StockCardMapper;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition;
+import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisitionLineItem;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisitionStatusChange;
 import org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderStatus;
 import org.openlmis.vaccine.dto.OrderRequisitionDTO;
@@ -68,6 +69,9 @@ public class VaccineOrderRequisitionService {
     @Autowired
     ConfigurationSettingService configurationSettingService;
 
+    @Autowired
+    VaccineOrderRequisitionLineItemService requisitionLineItemService;
+
     public static String  getCommaSeparatedIds(List<Long> idList){
 
         return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
@@ -76,6 +80,9 @@ public class VaccineOrderRequisitionService {
 
     @Transactional
     public VaccineOrderRequisition initialize(Long periodId, Long programId, Long facilityId, Long userId) {
+        //Update Stock Requirements
+     //   stockRequirementsService.getStockRequirements(facilityId, programId);
+
         VaccineOrderRequisition orderRequisition = orderRequisitionRepository.getByFacilityProgram(periodId, programId, facilityId);
         if (orderRequisition != null) {
             return orderRequisition;
@@ -90,6 +97,8 @@ public class VaccineOrderRequisitionService {
     }
     @Transactional
     public VaccineOrderRequisition initializeEmergency(Long periodId, Long programId, Long facilityId, Long userId) {
+        //Update Stock Requirements
+       // stockRequirementsService.getStockRequirements(facilityId, programId);
         VaccineOrderRequisition orderRequisition;
         orderRequisition = createNewOrderRequisition(periodId, programId, facilityId, userId);
         orderRequisition.setEmergency(true);
@@ -100,6 +109,12 @@ public class VaccineOrderRequisitionService {
 
     }
 
+     public Integer getYearFor(){
+         Date d = new Date();
+         Calendar cal = Calendar.getInstance();
+         cal.setTime(d);
+         return cal.get(Calendar.YEAR);
+     }
     private VaccineOrderRequisition createNewOrderRequisition(Long periodId, Long programId, Long facilityId, Long userId) {
 
         VaccineOrderRequisition orderRequisition;
@@ -114,8 +129,13 @@ public class VaccineOrderRequisitionService {
         cal.setTime(d);
         int year = cal.get(Calendar.YEAR);
 
-        //List<StockRequirementsDTO> stockRequirements = stockRequirementsService.getStockRequirements(facilityId, programId);
+        //Update Stock Requirements
+       // stockRequirementsService.getStockRequirements(facilityId, programId);
+
+        //Testing Function
+
         List<StockRequirementsDTO>stockRequirements2 = stockRequirementsService.getAllForOrderRequisition(programId,facilityId,year);
+
         orderRequisition = new VaccineOrderRequisition();
         orderRequisition.setPeriodId(periodId);
         orderRequisition.setProgramId(programId);
@@ -155,10 +175,24 @@ public class VaccineOrderRequisitionService {
     }
 
     public VaccineOrderRequisition getAllDetailsById(Long id) {
+
+        //Testing Function
         VaccineOrderRequisition requisition;
         requisition = orderRequisitionRepository.getAllDetailsById(id);
+                //Update Stock Requirements
+        List<StockRequirementsDTO>stockRequirements1 = stockRequirementsService.getStockRequirements(requisition.getFacilityId(), requisition.getProgramId());
 
-        return requisition;
+     //   List<StockRequirementsDTO>stockRequirements2 = stockRequirementsService.getAllForOrderRequisition(requisition.getProgramId(),requisition.getFacilityId(),getYearFor());
+
+       requisition.initiateOrder(stockRequirements1,service,stockCardMapper);
+        requisitionLineItemService.delete(requisition.getId());
+        for (VaccineOrderRequisitionLineItem lineItem : requisition.getLineItems()) {
+
+            lineItem.setOrderId(requisition.getId());
+
+            requisitionLineItemService.insert(lineItem);
+        }
+        return orderRequisitionRepository.getAllDetailsById(id);
     }
 
 
@@ -212,9 +246,21 @@ public class VaccineOrderRequisitionService {
     }
 
     public VaccineOrderRequisition getById(Long id) {
+
         VaccineOrderRequisition report = orderRequisitionRepository.getAllDetailsById(id);
+
+        //Update Stock Requirements
+         List<StockRequirementsDTO>stockRequirements1 = stockRequirementsService.getStockRequirements(report.getFacilityId(), report.getProgramId());
+       // List<StockRequirementsDTO>stockRequirements2 = stockRequirementsService.getAllForOrderRequisition(report.getProgramId(),report.getFacilityId(),getYearFor());
+        report.initiateOrder(stockRequirements1,service,stockCardMapper);
+        requisitionLineItemService.delete(report.getId());
+        for (VaccineOrderRequisitionLineItem lineItem : report.getLineItems()) {
+            lineItem.setOrderId(report.getId());
+            requisitionLineItemService.insert(lineItem);
+        }
+
         DateTime periodStartDate = new DateTime(report.getPeriod().getStartDate());
-        return report;
+        return orderRequisitionRepository.getAllDetailsById(id);
     }
 
     public Long getReportIdForFacilityAndPeriod(Long facilityId, Long periodId) {

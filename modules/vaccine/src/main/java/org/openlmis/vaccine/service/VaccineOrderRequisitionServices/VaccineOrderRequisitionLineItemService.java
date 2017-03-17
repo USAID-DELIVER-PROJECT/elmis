@@ -17,6 +17,7 @@ public class VaccineOrderRequisitionLineItemService {
 
     public void saveVaccineOrderRequisitionLineItems(List<VaccineOrderRequisitionLineItem> lineItems, Long reportId) {
 
+        System.out.println(lineItems.get(0).getId());
         for (VaccineOrderRequisitionLineItem lineItem : emptyIfNull(lineItems)) {
             if (lineItem.getId() == null) {
                 lineItem.setOrderId(reportId);
@@ -41,5 +42,11 @@ public class VaccineOrderRequisitionLineItemService {
         itemRepository.insert(item);
     }
 
+    public void update(VaccineOrderRequisitionLineItem item){
+        itemRepository.Update(item);
+    }
+    public  void delete(Long id){
+        itemRepository.delete(id);
+    }
 
 }

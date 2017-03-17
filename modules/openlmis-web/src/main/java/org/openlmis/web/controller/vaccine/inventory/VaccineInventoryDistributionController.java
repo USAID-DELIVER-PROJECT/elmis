@@ -300,4 +300,28 @@ public class VaccineInventoryDistributionController extends BaseController {
         return OpenLmisResponse.response("distributions", service.getDistributionsByDateRangeAndFacility(facilityId,startDate,endDate));
     }
 
+    //Search Distribution by Date Range
+
+    @RequestMapping(value = "searh-by-date-range/{facilityId}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK')")
+    public ResponseEntity<OpenLmisResponse> getDistributionsByDateRange(@PathVariable Long facilityId,
+                                                                        @Param("startDate") String startDate,
+                                                                        @Param("endDate") String endDate
+                                                                        ,@Param("type") String type,
+                                                                        @Param("searchParam") String searchParam,
+                                                                        HttpServletRequest request) throws ParseException {
+        if (null == facilityId) {
+            return OpenLmisResponse.error(messageService.message("error.facility.unknown"), HttpStatus.BAD_REQUEST);
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String distributionType = "";
+            distributionType = "ROUTINE";
+            distributionType = (null== type)?distributionType:type;
+            String dateString = (startDate == null) ? formatter.format(new Date()) : startDate;
+            ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(DISTRIBUTIONS, service.searchDistributionsByDateRangeAndFacility(facilityId, dateString, endDate, distributionType, searchParam));
+            return response;
+        }
+    }
+
+
 }

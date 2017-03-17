@@ -299,4 +299,7 @@ public class VaccineInventoryDistributionService {
         return repository.getDistributionsByDateRangeAndFacility(facilityId, startDate,endDate);
     }
 
+    public List<VaccineDistribution> searchDistributionsByDateRangeAndFacility(Long facilityId, String startDate, String endDate,String distributionType, String searchParam) {
+        return  repository.searchDistributionByDateRangeAndFacility(facilityId,startDate,endDate,distributionType,searchParam);
+    }
 }

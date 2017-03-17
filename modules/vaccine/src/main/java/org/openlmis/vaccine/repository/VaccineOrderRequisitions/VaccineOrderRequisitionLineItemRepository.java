@@ -21,4 +21,8 @@ public class VaccineOrderRequisitionLineItemRepository {
     public void insert(VaccineOrderRequisitionLineItem item){
         lineItemsMapper.insert(item);
     }
+
+    public void delete(Long id){
+        lineItemsMapper.delete(id);
+    }
 }

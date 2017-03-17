@@ -137,4 +137,9 @@ public class VaccineInventoryDistributionRepository {
     public List<VaccineDistribution> getDistributionsByDateRangeAndFacility(Long facilityId, String startDate, String endDate) {
         return mapper.getDistributionsByDateRangeAndFacility(facilityId, startDate,endDate);
     }
+
+    public List<VaccineDistribution> searchDistributionByDateRangeAndFacility(Long facilityId, String startDate, String endDate,String distributionType, String searchParam) {
+
+        return mapper.searchDistributionAndFacilityByDateRange(facilityId,startDate,endDate,distributionType,searchParam);
+    }
 }
