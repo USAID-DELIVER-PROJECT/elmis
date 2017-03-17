@@ -15,7 +15,9 @@ package org.openlmis.report.service;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.Program;
 import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProgramService;
 import org.openlmis.report.mapper.ColdChainEquipmentReportMapper;
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.ColdChainEquipmentReportParam;
@@ -40,6 +42,9 @@ public class ColdChainEquipmentReportDataProvider extends ReportDataProvider{
     @Autowired
     private FacilityService facilityService;
 
+    @Autowired
+    private ProgramService programService;
+
 
     @Override
     @Transactional
@@ -53,17 +58,13 @@ public class ColdChainEquipmentReportDataProvider extends ReportDataProvider{
 
         ColdChainEquipmentReportParam param = new ColdChainEquipmentReportParam();
 
-        Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
-        param.setProgram(programId);
-
-        //param.setFacilityLevel(filterCriteria.get("facilityLevel")[0]);
+       param.setFacilityLevel(filterCriteria.get("facilityLevel")[0]);
 
 
-        String facilityLevel = StringHelper.isBlank(filterCriteria, "facilityLevel") ? null : ((String[]) filterCriteria.get("facilityLevel"))[0];
-        param.setFacilityLevel(facilityLevel);
+        List<Program>programs = programService.getAllIvdPrograms();
 
         // List of facilities includes supervised and home facility
-        List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), programId, MANAGE_EQUIPMENT_INVENTORY);
+        List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), programs.get(0).getId(), MANAGE_EQUIPMENT_INVENTORY);
         facilities.add(facilityService.getHomeFacility(this.getUserId()));
 
         StringBuilder str = new StringBuilder();

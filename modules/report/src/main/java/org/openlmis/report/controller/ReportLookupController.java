@@ -13,17 +13,20 @@
 package org.openlmis.report.controller;
 
 import lombok.NoArgsConstructor;
+import org.openlmis.core.domain.*;
 import org.openlmis.core.domain.ProcessingPeriod;
-import org.openlmis.core.domain.SupervisoryNode;
-import org.openlmis.core.service.FacilityService;
-import org.openlmis.core.service.ProcessingScheduleService;
-import org.openlmis.core.service.RoleRightsService;
-import org.openlmis.core.service.SupervisoryNodeService;
+import org.openlmis.core.service.*;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.equipment.domain.Donor;
 import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.report.model.dto.*;
+import org.openlmis.report.model.dto.GeographicZone;
+import org.openlmis.report.model.dto.Product;
+import org.openlmis.report.model.dto.ProductCategory;
+import org.openlmis.report.model.dto.Program;
+import org.openlmis.report.model.dto.Regimen;
+import org.openlmis.report.model.dto.RequisitionGroup;
 import org.openlmis.report.model.report.OrderFillRateSummaryReport;
 import org.openlmis.report.service.lookup.ReportLookupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +85,7 @@ public class ReportLookupController extends BaseController {
   private static final String LAST_PERIODS = "lastPeriods";
   private static final String VACCINE_CUSTOM_PERIODS = "vaccineCustomPeriods";
   private static final String FACILITY_OPERATORS = "facilityOperators";
+  private static final String FACILITY_LEVELS_WITHOUT_PROGRAM = "facility_levels_without_programs";
 
   @Autowired
   private ReportLookupService reportLookupService;
@@ -94,6 +98,8 @@ public class ReportLookupController extends BaseController {
 
   @Autowired
   private SupervisoryNodeService supervisoryNodeService;
+  @Autowired
+  private ProgramService programService;
 
   @RequestMapping(value = "/programs", method = GET, headers = BaseController.ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getPrograms() {
@@ -584,5 +590,29 @@ public class ReportLookupController extends BaseController {
   @RequestMapping(value="/allFacilityOperators",method= RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getFacilityOperators(HttpServletRequest request){
     return OpenLmisResponse.response(FACILITY_OPERATORS, reportLookupService.getAllFacilityOperators());
+  }
+
+  @RequestMapping(value = "/facility-levelWithNoProgram", method = GET, headers = BaseController.ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getFacilityLevels(HttpServletRequest request) {
+    return OpenLmisResponse.response(FACILITY_LEVELS_WITHOUT_PROGRAM, this.reportLookupService.getFacilityLevelsWithoutProgram(loggedInUserId(request)));
+  }
+
+  @RequestMapping(value = "/productCategoriesWithoutProgram.json", method = GET, headers = BaseController.ACCEPT_JSON)
+  public List<ProductCategory> productCategoriesWithoutProgram() {
+
+    List<org.openlmis.core.domain.Program> programList = programService.getAllIvdPrograms();
+    return this.reportLookupService.getCategoriesForProgram((programList.get(0).getId()).intValue());
+  }
+
+  @RequestMapping(value = "/program-products-with-no-descriptions-and-program.json", method = GET, headers = BaseController.ACCEPT_JSON)
+  public List<Product> getProgramProductsWithoutDescriptions() {
+    List<org.openlmis.core.domain.Program> programList = programService.getAllIvdPrograms();
+    return this.reportLookupService.getProductsActiveUnderProgramWithoutDescriptions(programList.get(0).getId());
+  }
+
+  @RequestMapping(value = "/program-products-with-no-descriptions-and-without-program.json", method = GET, headers = BaseController.ACCEPT_JSON)
+  public List<Product> getProgramProductsWithoutDescriptionsWithoutProgram() {
+    List<org.openlmis.core.domain.Program> programList = programService.getAllIvdPrograms();
+    return this.reportLookupService.getProductsActiveUnderProgramWithoutDescriptions(programList.get(0).getId());
   }
 }

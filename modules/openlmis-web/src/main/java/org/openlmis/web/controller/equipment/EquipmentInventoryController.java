@@ -159,7 +159,7 @@ public class EquipmentInventoryController extends BaseController {
   public ResponseEntity<OpenLmisResponse> getInventoryByFacilityAndProgram(@RequestParam("facilityId") Long facilityId,
                                                                            @RequestParam("programId") Long programId) {
 
-    return OpenLmisResponse.response("Equipments", service.getInventoryByFacilityAndProgram(facilityId,programId));
+    return OpenLmisResponse.response("Equipments", service.getInventoryForFacility(facilityId,programId));
   }
 
 

@@ -23,25 +23,24 @@ public class ColdChainEquipmentReportQueryBuilder
 {
     public static String getQuery(Map params)
     {
-      // Map filterCriteria = (Map)params.get("filterCriteria");
 
         ColdChainEquipmentReportParam filter = (ColdChainEquipmentReportParam)params.get("filterCriteria");
         Long userId = (Long) params.get("userId");
 
-        return " SELECT * FROM vw_cold_chain_equipment   "+
-                   writePredicates(filter)
-        + "  ORDER BY geozoneHierarchy  ";
+        return " SELECT * FROM vw_cold_chain_equipment e  " +
+                "JOIN vw_districts vw ON e.geozoneId = vw.district_id   "+
+                  writePredicates(filter)
+       + "      AND vw.district_id in (select district_id from vw_user_facilities where user_id = '" + userId + "'::INT and program_id = fn_get_vaccine_program_id())  "
+
+                +"  ORDER BY geozoneHierarchy  ";
 
     }
-
 
     private static String writePredicates(ColdChainEquipmentReportParam params) {
 
         String predicate = " ";
 
         String facilityLevel = params.getFacilityLevel();
-        System.out.println("----------------------");
-        System.out.println(facilityLevel);
 
         if (  facilityLevel.equalsIgnoreCase("cvs")
                 || facilityLevel.equalsIgnoreCase("rvs")

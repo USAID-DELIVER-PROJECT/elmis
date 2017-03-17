@@ -15,21 +15,26 @@ package org.openlmis.report.service.lookup;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.openlmis.core.domain.FacilityOperator;
-import org.openlmis.core.domain.ProductGroup;
-import org.openlmis.core.domain.SupervisoryNode;
+import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.repository.mapper.FacilityMapper;
-import org.openlmis.core.service.ConfigurationSettingService;
-import org.openlmis.core.service.FacilityService;
-import org.openlmis.core.service.RequisitionGroupService;
-import org.openlmis.core.service.SupervisoryNodeService;
+import org.openlmis.core.service.*;
 import org.openlmis.equipment.domain.Donor;
 import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.repository.DonorRepository;
 import org.openlmis.report.mapper.ReportRequisitionMapper;
 import org.openlmis.report.mapper.lookup.*;
 import org.openlmis.report.model.dto.*;
+import org.openlmis.report.model.dto.Facility;
+import org.openlmis.report.model.dto.FacilityType;
+import org.openlmis.report.model.dto.GeographicZone;
+import org.openlmis.report.model.dto.ProcessingPeriod;
+import org.openlmis.report.model.dto.Product;
+import org.openlmis.report.model.dto.ProductCategory;
+import org.openlmis.report.model.dto.Program;
+import org.openlmis.report.model.dto.Regimen;
+import org.openlmis.report.model.dto.RegimenCategory;
+import org.openlmis.report.model.dto.RequisitionGroup;
 import org.openlmis.report.model.params.UserSummaryParams;
 import org.openlmis.report.model.report.OrderFillRateSummaryReport;
 import org.openlmis.report.model.report.TimelinessReport;
@@ -113,6 +118,9 @@ public class ReportLookupService {
 
   @Autowired
   private FacilityService facilityService;
+
+  @Autowired
+  private ProgramService programService;
 
   @Autowired
   private SupervisoryNodeService supervisoryNodeService;
@@ -742,5 +750,17 @@ public class ReportLookupService {
 
   public List<FacilityOperator> getAllFacilityOperators(){
     return facilityService.getAllOperators();
+  }
+
+
+
+  public List<FacilityType> getFacilityLevelsWithoutProgram(Long userId) {
+
+    List<org.openlmis.core.domain.Program> program =  programService.getAllIvdPrograms();
+    List<org.openlmis.core.domain.Facility> facilities = facilityService.getUserSupervisedFacilities(userId, program.get(0).getId(), MANAGE_EQUIPMENT_INVENTORY);
+    facilities.add(facilityService.getHomeFacility(userId));
+    String facilityIds = StringHelper.getStringFromListIds(facilities);
+
+    return facilityTypeMapper.getLevelsWithoutProgram(program.get(0).getId(), facilityIds);
   }
 }
