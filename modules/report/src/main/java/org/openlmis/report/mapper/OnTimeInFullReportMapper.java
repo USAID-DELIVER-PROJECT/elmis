@@ -20,7 +20,10 @@ public interface OnTimeInFullReportMapper {
 
     @SelectProvider(type = OnTimeInFullQueryBuilder.class, method = "getQuery")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-    public List<OnTimeInFullReport> getReport(@Param("filterCriteria") OnTimeInFullReportParam params, @Param("RowBounds") RowBounds rowBounds);
+    public List<OnTimeInFullReport> getReport(@Param("filterCriteria") OnTimeInFullReportParam params,
+                                              @Param("userId") Long userId,
+                                              @Param("RowBounds") RowBounds rowBounds);
+
 
 
 

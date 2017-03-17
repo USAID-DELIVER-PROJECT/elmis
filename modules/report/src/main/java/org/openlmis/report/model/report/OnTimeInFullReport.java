@@ -41,5 +41,6 @@ public class OnTimeInFullReport implements ResultRow{
 
     private String onTime;
 
+    public String onTimeAndOnFull;
 
 }

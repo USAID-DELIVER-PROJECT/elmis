@@ -8,6 +8,7 @@ import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.report.mapper.OnTimeInFullReportMapper;
 import org.openlmis.report.model.ResultRow;
+import org.openlmis.report.model.params.DistributionSummaryReportParam;
 import org.openlmis.report.model.params.OnTimeInFullReportParam;
 import org.openlmis.report.model.report.OnTimeInFullReport;
 import org.openlmis.report.util.SelectedFilterHelper;
@@ -20,10 +21,7 @@ import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static org.openlmis.core.domain.RightName.MANAGE_EQUIPMENT_INVENTORY;
@@ -49,8 +47,10 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
+        OnTimeInFullReportParam params = getReportFilterData(filterCriteria);
 
-        List<OnTimeInFullReport> onTimeInFullReports = reportMapper.getReport(getReportFilterData(filterCriteria), rowBounds);
+       params.setUserId(this.getUserId());
+        List<OnTimeInFullReport> onTimeInFullReports = reportMapper.getReport(getReportFilterData(filterCriteria),this.getUserId(), rowBounds);
 
         List<OnTimeInFullReport> arr = new ArrayList<>();
         OnTimeInFullReport onTimeInFullReport;
@@ -76,6 +76,10 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
 
                 String reportInFull = getInFull(less, greater, fullReport.getQuantityReceived());
                 onTimeInFullReport.setOnFull(reportInFull);
+                if((Objects.equals("Yes", onTimeInFullReport.getOnTime())) &&( Objects.equals(onTimeInFullReport.getOnFull(), "Yes")))
+                    onTimeInFullReport.setOnTimeAndOnFull("Yes");
+                else
+                    onTimeInFullReport.setOnTimeAndOnFull( "No");
                 arr.add(onTimeInFullReport);
             }
 
@@ -108,7 +112,7 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
                 e.printStackTrace();
             }
 
-            if (valueToCompare <= diff)
+            if (valueToCompare > diff)
                 return "Yes";
             else
                 return "No";
