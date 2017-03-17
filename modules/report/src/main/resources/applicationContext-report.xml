@@ -499,13 +499,35 @@
 
                 <bean class="org.openlmis.report.Report">
                     <property name="reportKey" value="distribution_summary_report"/>
-                    <property name="template" value="distribution-summary-report.jasper"/>
+                    <property name="template" value="vaccine-distribution-summary-report.jasper"/>
                     <property name="reportDataProvider" ref="distributionSummaryReportDataProvider"/>
                     <property name="id" value="distribution_summary_report"/>
                     <property name="name" value="Distribution Summary Report"/>
                     <property name="title" value="report.title.distribution.summary.report"/>
                     <property name="version" value="1.0"/>
                 </bean>
+
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="vaccine_received_summary_report"/>
+                    <property name="template" value="vaccine-received-summary-report.jasper"/>
+                    <property name="reportDataProvider" ref="vaccineReceivedReportDataProvider"/>
+                    <property name="id" value="Consignment Received Summary Report"/>
+                    <property name="name" value="Consignment Received Summary Report"/>
+                    <property name="title" value="report.title.received.summary.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
+
+
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="vaccine_stock_status_soh"/>
+                    <property name="template" value="vaccine-stock-status-version-soh.jasper"/>
+                    <property name="reportDataProvider" ref="vaccineStockStatusReportDataProvider"/>
+                    <property name="id" value="RP-replacement-plan"/>
+                    <property name="name" value="Vaccine Stock Status Report"/>
+                    <property name="title" value="report.vaccine.title.stock.status"/>
+                    <property name="version" value="1.0"/>
+                </bean>
+
             </list>
         </constructor-arg>
     </bean>
