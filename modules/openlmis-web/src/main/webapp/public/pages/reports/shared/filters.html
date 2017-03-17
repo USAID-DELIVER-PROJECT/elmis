@@ -650,3 +650,45 @@
     </div>
     </div>
 </script>
+
+<script type="text/ng-template" id="filter-facility-level-without-program-template">
+    <div>
+        <label for="facilityLevelWithoutProgram" class="labels" openlmis-message="label.facility.level"><span ng-show="requiredFilters.facilityLevel" class="label-required">*</span></label>
+        <div>
+            <select id="facilityLevelWithoutProgram" ui-select2 class="input-large" ng-model="filter.facilityLevel" ng-change="notifyFilterChanged('facility-level-changed');">
+                <option ng-repeat="level in facilityLevels | orderBy: 'display_order'" ng-selected="filter.facilityLevel == level.id" value="{{ level.id }}">{{level.name}}</option>
+            </select>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="filter-product-category-without-program-template">
+    <div>
+        <label for="productCategory" class="labels" openlmis-message="label.product.category"><span ng-show="requiredFilters.productCategory" class="label-required">*</span></label>
+        <div>
+            <select id="productCategoryWithoutProgram" ui-select2 class="input-large" ng-model="filter.productCategory" ng-change="notifyFilterChanged('product-category-changed');">
+                <option  ng-repeat="option in productCategories" value="{{ option.id }}" ng-selected="option.id == filter.productCategory">{{ option.name }}</option>
+            </select>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="filter-product-without-description-and-program-template">
+    <div>
+        <label for="product" class="labels" ><span openlmis-message="label.product"></span><span ng-show="requiredFilters.product" class="label-required">*</span></label><div>
+        <select id="product" ui-select2 class="input-large" ng-model="filter.product" ng-change="notifyFilterChanged('product-changed');">
+            <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
+        </select>
+    </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="filter-product-without-description-and-without-program-template">
+    <div>
+        <label for="product" class="labels" ><span openlmis-message="label.product"></span><span ng-show="requiredFilters.product" class="label-required">*</span></label><div>
+        <select id="product" ui-select2 class="input-large" ng-model="filter.product" ng-change="notifyFilterChanged('product-changed');">
+            <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
+        </select>
+    </div>
+    </div>
+</script>

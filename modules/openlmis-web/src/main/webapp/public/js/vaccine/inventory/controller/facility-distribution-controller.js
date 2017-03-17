@@ -9,7 +9,7 @@
  */
 
 
-function FacilityDistributionController($scope,$location,FacilitiesSameType, $document,$window,configurations,$timeout,homeFacility,OneLevelSupervisedFacilities,FacilityWithProducts,DistributionsByDateRange,StockCards,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
+function FacilityDistributionController($scope,$location,FacilitiesSameType, $document,$window,configurations,$timeout,homeFacility,OneLevelSupervisedFacilities,FacilityWithProducts,DistributionsByDateRange,searchDistributionsByDateRange,StockCards,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
 
     $scope.userPrograms=configurations.programs;
     $scope.period=configurations.period;
@@ -42,8 +42,6 @@ function FacilityDistributionController($scope,$location,FacilitiesSameType, $do
         });
     };
     $scope.loadDistributionsByDate=function(){
-        console.log($scope.searchDate);
-        console.log($scope.type);
 
         $scope.distributionsByDate=[];
         DistributionsByDateRange.get({facilityId:$scope.homeFacility.id,date:$scope.searchDate, endDate:$scope.endDate,type:$scope.type},function(data){
@@ -77,26 +75,27 @@ function FacilityDistributionController($scope,$location,FacilitiesSameType, $do
 
         if (compareQuery()) {
             $scope.distributionsByDate=[];
-            DistributionsByDateRange.get({facilityId:$scope.homeFacility.id,date:$scope.searchDate, endDate:$scope.endDate,type:$scope.type},function(data){
-                console.log(data);
+            searchDistributionsByDateRange.get({facilityId:$scope.homeFacility.id,startDate:$scope.searchDate, endDate:$scope.endDate,type:$scope.type,searchParam:$scope.query},function(data){
                 $scope.distributionsByDate=data.distributions;
+
+                $scope.hasSearch=true;
             });
 
-            FacilitiesSameType.get({facilityId:homeFacility.id,query:$scope.query}, function(data){
+         /*   FacilitiesSameType.get({facilityId:homeFacility.id,query:$scope.query}, function(data){
                 $scope.facilities = data.facilities;
                 $scope.filteredFacilityList = $scope.facilities;
                 $scope.previousQuery = $scope.query;
                 $scope.facilityResultCount = $scope.filteredFacilityList.length;
                 $scope.hasSearch=true;
             });
-
+*/
         }
         else {
-            $scope.filteredFacilityList = _.filter($scope.facilities, function (facility) {
-                return facility.name.toLowerCase().indexOf($scope.query.toLowerCase()) !== -1;
-            });
-            $scope.facilityResultCount = $scope.filteredFacilityList.length;
-            $scope.hasSearch=true;
+
+            $scope.searchDate=$scope.toDay;
+            $scope.loadDistributionsByDate($scope.toDay);
+
+
         }
     };
 

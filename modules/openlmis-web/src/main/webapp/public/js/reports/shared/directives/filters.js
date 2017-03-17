@@ -2004,3 +2004,184 @@ app.directive('vaccineFacilitByDistrictFilter', ['UserFacilityWithViewStockLedge
         };
     }
 ]);
+
+
+
+app.directive('facilityLevelWithoutProgramFilter', ['ReportFacilityLevelWithoutProgram',
+    function (ReportFacilityLevelWithoutProgram) {
+
+        var onCascadedPVarsChanged = function ($scope) {
+                ReportFacilityLevelWithoutProgram.get({
+                }, function (data) {
+                    $scope.facilityLevels = [];
+                    if (data.facility_levels_without_programs.length > 0) {
+                        $scope.facilityLevels.unshift({
+                            'id': 'hf',
+                            'name': 'Health Facilities (HF)'
+                        });
+                        _.each(data.facility_levels_without_programs, function (item) {
+                            if (item.code === 'cvs' ||
+                                item.code === 'rvs' ||
+                                item.code === 'dvs') {
+                                $scope.facilityLevels.unshift({
+                                    'id': item.code,
+                                    'name': item.name + ' (' + item.code.toUpperCase() + ')',
+                                    'display_order': item.displayOrder
+                                });
+                            }
+                        });
+                        $scope.facilityLevels.unshift({
+                            'id': '',
+                            'name': '-- Select Facility Level --',
+                            'display_order': 0
+                        });
+                    }
+                });
+
+        };
+
+        return {
+            restrict: 'E',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('facilityLevel', attr);
+                onCascadedPVarsChanged(scope);
+            },
+            templateUrl: 'filter-facility-level-without-program-template'
+        };
+    }
+]);
+
+app.directive('productCategoryWithoutProgramFilter', ['ProductCategoriesWithoutProgram', '$routeParams',
+    function (ProductCategoriesWithoutProgram, $routeParams) {
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('productCategory', attr);
+                if (!$routeParams.productCategory) {
+                    scope.productCategories = scope.unshift([], 'report.filter.all.product.categories');
+                }
+
+                    ProductCategoriesWithoutProgram.get({
+                    }, function (data) {
+                        scope.productCategories = scope.unshift(data.productCategoryList, 'report.filter.all.product.categories');
+                    });
+                //scope.subscribeOnChanged('productCategory',  onProgramChanged, false);
+            },
+            templateUrl: 'filter-product-category-without-program-template'
+        };
+    }
+]);
+
+
+
+app.directive('productWithoutDescriptionAndProgramFilter', ['ReportProductsByProgramWithoutDescriptionsAndProgram', 'messageService', '$routeParams',
+    function (ReportProductsByProgramWithoutDescriptionsAndProgram, messageService, $routeParams) {
+
+        var onPgCascadedVarsChanged = function ($scope, attr) {
+
+            ReportProductsByProgramWithoutDescriptionsAndProgram.get({
+            }, function (data) {
+                $scope.products = data.productList;
+                if (!attr.required) {
+                    $scope.products.unshift({
+                        'name': messageService.get('report.filter.select.indicator.product'),
+                        id: -1
+                    });
+                    $scope.products.unshift({
+                        'name': messageService.get('report.filter.all.products'),
+                        id: 0
+                    });
+                }
+
+            });
+
+        };
+
+        return {
+            restrict: 'E',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('product', attr);
+                if (!$routeParams.product && !attr.required) {
+                    scope.products = [{
+                        'name': messageService.get('report.filter.all.products'),
+                        id: 0
+                    }];
+                }
+
+                // this is what filters products based on product categories selected.
+                scope.productCFilter = function (option) {
+                    var show = (
+                        _.isEmpty(scope.filter.productCategory) ||
+                        _.isUndefined(scope.filter.productCategory) ||
+                        parseInt(scope.filter.productCategory, 10) === 0 ||
+                        option.categoryId == scope.filter.productCategory ||
+                        option.id === -1 ||
+                        option.id === 0
+                    );
+                    return show;
+                };
+
+                var onFiltersChanged = function () {
+                    onPgCascadedVarsChanged(scope, attr);
+                };
+                scope.subscribeOnChanged('product', 'product-category', onFiltersChanged, true);
+               // scope.subscribeOnChanged('product', 'program', onFiltersChanged, true);
+            },
+            templateUrl: 'filter-product-without-description-and-program-template'
+        };
+
+    }
+]);
+
+app.directive('productWithoutDescriptionAndWithoutProgramFilter', ['ReportProductsWithoutDescriptionsAndWithoutProgram', '$routeParams',
+    function (ReportProductsWithoutDescriptionsAndWithoutProgram, $routeParams) {
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+
+                if (!$routeParams.product) {
+                    scope.products = scope.unshift([], 'report.filter.all.products');
+                }
+
+                ReportProductsWithoutDescriptionsAndWithoutProgram.get({
+                }, function (data) {
+                    scope.products = scope.unshift(data.productList, 'report.filter.all.products');
+                });
+            },
+            templateUrl: 'filter-product-without-description-and-without-program-template'
+        };
+    }
+]);
+
+
+
+
+
+app.directive('vaccineFacilityBySupervisoryNodeWithoutProgramFilter', ['UserFacilityWithViewStockLedgerReport', '$routeParams',
+
+        function (UserFacilityWithViewStockLedgerReport, $routeParams) {
+
+            var onCascadedPVarsChanged = function ($scope, attr) {
+
+                UserFacilityWithViewStockLedgerReport.get(function (data) {
+                    $scope.facilities = (attr.required) ? $scope.unshift(data.facilities, 'report.filter.select.facility') : $scope.unshift(data.facilities, 'report.filter.all.facilities');
+                });
+
+            };
+
+            return {
+                restrict: 'E',
+                link: function (scope, elm, attr) {
+                    scope.registerRequired('facility', attr);
+                        onCascadedPVarsChanged(scope, attr);
+                },
+                templateUrl: 'filter-vaccine-facility-by-level-template'
+            };
+
+
+        }]
+);
