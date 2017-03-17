@@ -32,26 +32,28 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "                d.district_name,\n" +
                 "                s.facility_name,\n" +
                 "                s.period_id,\n" +
-                "                s.period_name,\n" +
+                "                s.period_name," +
+                "s.period_start_date,\n" +
                 "                extract(month from s.period_start_date) period_month, \n" +
                 "                extract(year from s.period_start_date) period_year,\n" +
-                "                sum(COALESCE(s.quantity_received,0)) received,\n" +
-                "                sum(COALESCE(s.quantity_issued,0)) issued,\n" +
-                "                sum(COALESCE(s.closing_balance,0)) onhand,\n" +
-                "                sum(COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) wasted,\n" +
-                "                sum((COALESCE(s.opening_balanace,0) + COALESCE(s.quantity_received,0) - COALESCE(s.quantity_issued,0) - COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) - COALESCE(s.closing_balance,0) ) used,\n" +
-                "                sum(COALESCE(s.vaccinated,0)) vaccinated\n" +
+                "                COALESCE(s.quantity_received,0) received,\n" +
+                "                COALESCE(s.quantity_issued,0) issued,\n" +
+                "                COALESCE(s.closing_balance,0) onhand,\n" +
+                "               COALESCE(s.quantity_discarded_unopened,0) wasted,\n" +
+                "                (COALESCE(s.opening_balanace,0) + COALESCE(s.quantity_received,0) - COALESCE(s.quantity_issued,0) - COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) ) - COALESCE(s.closing_balance,0) used,\n" +
+                "               COALESCE(s.vaccinated,0) vaccinated,\n" +
+                "                COALESCE(s.quantity_issued,0) + COALESCE(s.quantity_discarded_unopened,0) total\n" +
                 "                from vw_vaccine_stock_status s\n" +
                 "                join vw_districts d on s.geographic_zone_id = d.district_id\n" +
-                writePredicates(filter)  +
-                "                group by 1,2,3,4,5,6,7,8),\n" +
+                writePredicates(filter) +
+                "                ),\n" +
 
                 "         nonreportingAndReportingPeriods as(" +
                 "          select c.district_id, periods.* " +
                 "                        from  " +
                 "                         (" +
                 "                              select id period_id, name period_name, startdate period_start_date from processing_periods pp  \n" +
-                "                                where pp.startdate::date >= '"+filter.getPeriod_start_date()+"' and pp.enddate::date <= '"+filter.getPeriod_end_date()+"' \n" +
+                "                                where pp.startdate::date >= '" + filter.getPeriod_start_date() + "' and pp.enddate::date <= '" + filter.getPeriod_end_date() + "' \n" +
                 "                              AND pp.numberofmonths = 1 order by 3 \n" +
                 "                          ) periods," +
                 "                          (" +
@@ -61,64 +63,28 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "                    order by 1, period_start_date " +
                 "          )" +
                 "                select  \n" +
-                "                vd .region_name, \n" +
-                "                vd.district_name," +
+                "                t .region_name, \n" +
+                "                t.district_name," +
                 "                t.facility_name, \n" +
-                "                rn.period_name, \n" +
-                "                extract(month from rn.period_start_date) period_month,  \n" +
-                "                extract(year from rn.period_start_date) period_year,\n" +
-                "                COALESCE(t.received,0) received, \n" +
-                "                COALESCE(t.issued,0) issued, \n" +
-                "                COALESCE(t.onhand,0) onhand,  \n" +
-                "                COALESCE(t.vaccinated,0) administered, \n" +
+                "                t.period_name, \n" +
+                "               t. period_month,  \n" +
+                "                t. period_year,\n" +
+                "                t. received, \n" +
+                "                t.issued, \n" +
+                "               t.onhand,  \n" +
+                "               t.vaccinated administered, \n" +
                 "                COALESCE(case when t.wasted < 0 then 0 else t.wasted end,0) wasted, \n" +
                 "                COALESCE(case when t.used < 0 then 0 else t.used end,0) used,\n" +
-                "                CASE WHEN t.district_id is null then 'NONREPORTING' else 'REPORTING' end reporting_status \n" +
-                "                from nonreportingAndReportingPeriods rn \n" +
-                "            join geographic_zones z on z.id = rn.district_id\n" +
-                "            join vw_districts vd on vd.district_id = rn.district_id\n" +
-                "            left outer join temp t ON rn.district_id = t.district_id AND rn.period_id = t.period_id\n" +
+                "                CASE WHEN t.district_id is null then 'NONREPORTING' else 'REPORTING' end reporting_status," +
+                "case when t.total > 0 then round(t.vaccinated / (t.issued + t.wasted)::numeric * 100) else 0 end usagerate,\n" +
+                "case when t.total > 0 then 100 - round(t.vaccinated / (t.issued + t.wasted)::numeric * 100) else 0 end wastagerate \n" +
+                "                from  temp t " +
                 "                 order by 1,2,period_start_date";
-        
-        /*"with temp as (\n" +
-                "select " +
-                "d.region_name ," +
-                "d.district_name," +
-                "s.facility_name,\n" +
-                "s.period_name,\n" +
-                "extract(month from s.period_start_date) period_month, \n" +
-                "extract(year from s.period_start_date) period_year,\n" +
-                "sum(COALESCE(s.quantity_received,0)) received,\n" +
-                "sum(COALESCE(s.quantity_issued,0)) issued,\n" +
-                "sum(COALESCE(s.closing_balance,0)) onhand,\n" +
-                "sum(COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) wasted,\n" +
-                "sum((COALESCE(s.opening_balanace,0) + COALESCE(s.quantity_received,0) - COALESCE(s.quantity_issued,0) - COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) - COALESCE(s.closing_balance,0) ) used" +
-                " , \n" +
-                "sum(COALESCE(s.vaccinated,0)) vaccinated\n" +
 
-                "from vw_vaccine_stock_status s\n" +
-                "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
-                writePredicates(filter) +
-                "group by 1,2,3,4,5,6)\n" +
-                "select \n" +
-                "t.region_name," +
-                "t.district_name," +
-                " t.facility_name," +
-                "t.period_name,\n" +
-                "t.period_month,\n" +
-                "t.period_year,\n" +
-                "t.received,\n" +
-                "t.issued,\n" +
-                "t.onhand,\n" +
-                "t.vaccinated administered," +
-                "case when t.wasted < 0 then 0 else t.wasted end wasted,\n" +
-                "case when t.used < 0 then 0 else t.used end used\n" +
-                "from temp t\n" +
-                " order by 1,2,3,6,5" ;
-                */
 
         return query;
     }
+
     public String getStatusOfVaccineSupplyForDistrict(Map params) {
 
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
@@ -130,26 +96,28 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "                d.district_name,\n" +
                 "                s.period_id, \n" +
                 "                s.period_name, \n" +
+                "s.period_start_date,\n" +
                 "                extract(month from s.period_start_date) period_month,  \n" +
                 "                extract(year from s.period_start_date) period_year, \n" +
                 "                sum(COALESCE(s.quantity_received,0)) received, \n" +
                 "                sum(COALESCE(s.quantity_issued,0)) issued, \n" +
                 "                sum(COALESCE(s.closing_balance,0)) onhand, \n" +
-                "                sum(COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) wasted, \n" +
+                "                sum(COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) ) wasted, \n" +
                 "                sum((COALESCE(s.opening_balanace,0) + COALESCE(s.quantity_received,0) - COALESCE(s.quantity_issued,0) - COALESCE(s.quantity_discarded_unopened,0) + \n" +
-                "                COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) - COALESCE(s.closing_balance,0) ) used,\n" +
-                "                sum(COALESCE(s.vaccinated,0)) vaccinated  \n" +
+                "                COALESCE(s.quantity_discarded_opened,0) ) - COALESCE(s.closing_balance,0) ) used,\n" +
+                "                sum(COALESCE(s.vaccinated,0)) vaccinated ," +
+                "                sum(COALESCE(s.quantity_issued,0) + COALESCE(s.quantity_discarded_unopened,0)) total \n" +
                 "                from vw_vaccine_stock_status s \n" +
                 "                join vw_districts d on s.geographic_zone_id = d.district_id \n" +
-                               writePredicates(filter)  +
-                "                group by 1,2,3,4,5,6,7),\n" +
+                writePredicates(filter) +
+                "                group by 1,2,3,4,5,6,7,8),\n" +
 
                 "         nonreportingAndReportingPeriods as(" +
                 "          select c.district_id, periods.* " +
                 "                        from  " +
                 "                         (" +
                 "                              select id period_id, name period_name, startdate period_start_date from processing_periods pp  \n" +
-                "                                where pp.startdate::date >= '"+filter.getPeriod_start_date()+"' and pp.enddate::date <= '"+filter.getPeriod_end_date()+"' \n" +
+                "                                where pp.startdate::date >= '" + filter.getPeriod_start_date() + "' and pp.enddate::date <= '" + filter.getPeriod_end_date() + "' \n" +
                 "                              AND pp.numberofmonths = 1 order by 3 \n" +
                 "                          ) periods," +
                 "                          (" +
@@ -160,59 +128,29 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "          )" +
 
                 "                select  \n" +
-                "                vd .region_name, \n" +
-                "                vd.district_name, \n" +
-                "                rn.period_name, \n" +
-                "                extract(month from rn.period_start_date) period_month,  \n" +
-                "                extract(year from rn.period_start_date) period_year,\n" +
-                "                COALESCE(t.received,0) received, \n" +
-                "                COALESCE(t.issued,0) issued, \n" +
-                "                COALESCE(t.onhand,0) onhand,  \n" +
-                "                COALESCE(t.vaccinated,0) administered, \n" +
+                "                t .region_name, \n" +
+                "                t.district_name, \n" +
+                "                t.period_name, \n" +
+                "                t.period_month,  \n" +
+                "                t.period_year,\n" +
+                "                t.received, \n" +
+                "                t.issued, \n" +
+                "                t. onhand,  \n" +
+                "               t.vaccinated,0 administered, \n" +
                 "                COALESCE(case when t.wasted < 0 then 0 else t.wasted end,0) wasted, \n" +
                 "                COALESCE(case when t.used < 0 then 0 else t.used end,0) used,\n" +
-                "                CASE WHEN t.district_id is null then 'NONREPORTING' else 'REPORTING' end reporting_status \n" +
-                "                from nonreportingAndReportingPeriods rn \n" +
-                "          join geographic_zones z on z.id = rn.district_id\n" +
-                "          join vw_districts vd on vd.district_id = rn.district_id\n" +
-                "          left outer join temp t ON rn.district_id = t.district_id AND rn.period_id = t.period_id\n" +
+                "                CASE WHEN t.district_id is null then 'NONREPORTING' else 'REPORTING' end reporting_status ," +
+                " t.total ," +
+                "case when t.total > 0 then round(t.vaccinated / (t.issued + t.wasted)::numeric * 100) else 0 end usagerate,\n" +
+                "case when t.total > 0 then 100 - round(t.vaccinated / (t.issued + t.wasted)::numeric * 100) else 0 end wastagerate\n" +
+
+                "                from  temp t" +
                 "                 order by 1,2,period_start_date";
 
-                /*"with temp as (\n" +
-                "select " +
-                "d.region_name ," +
-                "d.district_name," +
-                "s.period_name,\n" +
-                "extract(month from s.period_start_date) period_month, \n" +
-                "extract(year from s.period_start_date) period_year,\n" +
-                "sum(COALESCE(s.quantity_received,0)) received,\n" +
-                "sum(COALESCE(s.quantity_issued,0)) issued,\n" +
-                "sum(COALESCE(s.closing_balance,0)) onhand,\n" +
-                "sum(COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) wasted,\n" +
-                "sum((COALESCE(s.opening_balanace,0) + COALESCE(s.quantity_received,0) - COALESCE(s.quantity_issued,0) - COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) - COALESCE(s.closing_balance,0) ) used\n" +
-                ", sum(COALESCE(s.vaccinated,0)) vaccinated " +
-                "from vw_vaccine_stock_status s\n" +
-                "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
-                writePredicates(filter) +
-                "group by 1,2,3,4,5)\n" +
-                "select \n" +
-                "t.region_name," +
-                "t.district_name," +
-                "t.period_name,\n" +
-                "t.period_month,\n" +
-                "t.period_year,\n" +
-                "t.received,\n" +
-                "t.issued,\n" +
-                "t.onhand,\n" +
-                "t.vaccinated administered," +
-                "case when t.wasted < 0 then 0 else t.wasted end wasted,\n" +
-                "case when t.used < 0 then 0 else t.used end used\n" +
-                "from temp t\n" +
-                " order by 1,2,5,4" ;
-                */
 
         return query;
     }
+
     public String getStatusOfVaccineSupplyForRegion(Map params) {
 
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
@@ -220,18 +158,20 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "select " +
                 "d.region_name ," +
                 "s.period_name," +
+                "s.period_start_date,\n" +
                 "extract(month from s.period_start_date) period_month, " +
                 "extract(year from s.period_start_date) period_year,\n" +
                 "sum(COALESCE(s.quantity_received,0)) received,\n" +
                 "sum(COALESCE(s.quantity_issued,0)) issued,\n" +
                 "sum(COALESCE(s.closing_balance,0)) onhand,\n" +
-                "sum(COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) wasted,\n" +
-                "sum((COALESCE(s.opening_balanace,0) + COALESCE(s.quantity_received,0) - COALESCE(s.quantity_issued,0) - COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) + COALESCE(s.quantity_wasted_other,0)) - COALESCE(s.closing_balance,0) ) used\n" +
-                ", sum(COALESCE(s.vaccinated,0)) vaccinated " +
+                "sum(COALESCE(s.quantity_discarded_unopened,0) ) wasted,\n" +
+                "sum((COALESCE(s.opening_balanace,0) + COALESCE(s.quantity_received,0) - COALESCE(s.quantity_issued,0) - COALESCE(s.quantity_discarded_unopened,0) + COALESCE(s.quantity_discarded_opened,0) ) - COALESCE(s.closing_balance,0) ) used\n" +
+                ", sum(COALESCE(s.vaccinated,0)) vaccinated ,\n" +
+                "                                sum(COALESCE(s.quantity_issued,0) + COALESCE(s.quantity_discarded_unopened,0)) total \n" +
                 "from vw_vaccine_stock_status s\n" +
                 "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
                 writePredicates(filter) +
-                "group by 1,2,3,4)\n" +
+                "group by 1,2,3,4,5)\n" +
                 "select \n" +
                 "t.region_name," +
                 "t.period_name,\n" +
@@ -242,34 +182,37 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "t.onhand,\n" +
                 "t.vaccinated administered," +
                 "case when t.wasted < 0 then 0 else t.wasted end wasted,\n" +
-                "case when t.used < 0 then 0 else t.used end used\n" +
+                "case when t.used < 0 then 0 else t.used end used,\n" +
+                "case when t.total > 0 then round(t.vaccinated / (t.issued + t.wasted)::numeric * 100) else 0 end usagerate,\n" +
+                "case when t.total > 0 then 100 - round(t.vaccinated / (t.issued + t.wasted)::numeric * 100) else 0 end wastagerate \n" +
                 "from temp t\n" +
-                "order by 1,4,3" ;
+                "order by 1,4,3";
 
         return query;
     }
 
     private static String writePredicates(PerformanceByDropoutRateParam param) {
-        String predicate ;
+        String predicate;
 
         predicate = "where  s.program_id = (SELECT id FROM programs p WHERE p.enableivdform = TRUE )";
-        predicate+=" and ";
-        predicate+=PerformanceByDropOutRateHelper.isFilteredPeriodStartDate("s.period_start_date");
-        predicate+=" and ";
-        predicate+=PerformanceByDropOutRateHelper.isFilteredPeriodEndDate("s.period_end_date");
-        predicate+=" and ";
-        predicate+= PerformanceByDropOutRateHelper.isFilteredProductId("s.product_id");
+        predicate += " and ";
+        predicate += PerformanceByDropOutRateHelper.isFilteredPeriodStartDate("s.period_start_date");
+        predicate += " and ";
+        predicate += PerformanceByDropOutRateHelper.isFilteredPeriodEndDate("s.period_end_date");
+        predicate += " and ";
+        predicate += PerformanceByDropOutRateHelper.isFilteredProductId("s.product_id");
         if (param.getFacility_id() != null && param.getFacility_id() != 0l) {
 
-            predicate+=" and ";
-            predicate+=PerformanceByDropOutRateHelper.isFilteredFacilityId("s.facility_id");
+            predicate += " and ";
+            predicate += PerformanceByDropOutRateHelper.isFilteredFacilityId("s.facility_id");
         }
-        predicate+=" and ";
-        predicate+=PerformanceByDropOutRateHelper.isFilteredGeographicZoneId("d.parent", "d.region_id", "d.district_id");
+        predicate += " and ";
+        predicate += PerformanceByDropOutRateHelper.isFilteredGeographicZoneId("d.parent", "d.region_id", "d.district_id");
         return predicate;
 
 
     }
+
     ////////
     public String getPopulationForFacility(Map params) {
 
@@ -286,10 +229,11 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "from vw_vaccine_coverage s\n" +
                 "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
                 writePredicates(filter) +
-                "group by 1,2,3,4,5,6\n"  ;
+                "group by 1,2,3,4,5,6\n";
 
         return query;
     }
+
     public String getPopulationForDistrict(Map params) {
 
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
@@ -304,10 +248,11 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "from vw_vaccine_coverage s\n" +
                 "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
                 writePredicates(filter) +
-                "group by 1,2,3,4,5\n"  ;
+                "group by 1,2,3,4,5\n";
 
         return query;
     }
+
     public String getPopulationForRegion(Map params) {
 
         PerformanceByDropoutRateParam filter = (PerformanceByDropoutRateParam) params.get("filterCriteria");
@@ -321,7 +266,7 @@ public class StatusOfVaccinationSuppliesQueryBuilder {
                 "from vw_vaccine_coverage s\n" +
                 "join vw_districts d on s.geographic_zone_id = d.district_id\n" +
                 writePredicates(filter) +
-                "group by 1,2,3,4\n"  ;
+                "group by 1,2,3,4\n";
 
         return query;
     }

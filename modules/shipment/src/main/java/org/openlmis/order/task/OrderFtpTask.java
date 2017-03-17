@@ -25,7 +25,6 @@ import org.openlmis.order.dto.OrderFileTemplateDTO;
 import org.openlmis.order.helper.OrderCsvHelper;
 import org.openlmis.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -63,14 +62,11 @@ public class OrderFtpTask {
   @Autowired
   private OrderFtpSender ftpSender;
 
-  @Value("${order.ftp.local.directory}")
-  String localFileDirectory;
 
   Boolean sendFtp;
 
   private void initiateSettings(){
     sendFtp = configurationSettingService.getBoolValue("USE_FTP_TO_SEND_ORDERS");
-    localFileDirectory = configurationSettingService.getConfigurationStringValue("LOCAL_ORDER_EXPORT_DIRECTORY");
   }
 
   private static Logger logger = Logger.getLogger(OrderFtpTask.class);
@@ -102,11 +98,11 @@ public class OrderFtpTask {
 
       OrderFileTemplateDTO orderFileTemplateDTO = orderService.getOrderFileTemplateDTO();
       String fileName = orderFileTemplateDTO.getOrderConfiguration().getFilePrefix() + order.getId() + ".csv";
-      File localDirectory = new File(localFileDirectory);
+      File localDirectory = new File(supplyingFacilityFtpDetails.getLocalFolderPath());
       if (!localDirectory.exists()) {
         localDirectory.mkdir();
       }
-      File file = new File(localFileDirectory + System.getProperty("file.separator") + fileName);
+      File file = new File(supplyingFacilityFtpDetails.getLocalFolderPath() + System.getProperty("file.separator") + fileName);
       try (FileWriter fileWriter = new FileWriter(file)) {
         orderCsvHelper.writeCsvFile(order, orderFileTemplateDTO, fileWriter);
         fileWriter.flush();
@@ -121,10 +117,6 @@ public class OrderFtpTask {
       } catch (Exception e) {
         logger.error("Error in ftp of order file", e);
         updateOrder(order, TRANSFER_FAILED, null);
-      } finally {
-        if(sendFtp) {
-          file.delete();
-        }
       }
     }
   }

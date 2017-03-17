@@ -316,8 +316,11 @@ public interface FacilityMapper {
                                     @Param(value = "enabled") Boolean enabled);
 
 
+  @Select("SELECT distinct id, code, name from facilities where code = ANY(#{codes}::varchar[])")
+  List<Facility> getFacilitiesByCommaSeparatedCodes(@Param("codes") String commaSeparatedCodes);
 
-    public class SelectFacilities {
+
+  public class SelectFacilities {
     @SuppressWarnings(value = "unused")
     public static String getFacilitiesCountBy(Map<String, Object> params) {
       StringBuilder sql = new StringBuilder();

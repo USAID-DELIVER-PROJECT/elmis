@@ -62,7 +62,7 @@
         </thead>
         <tbody>
         <tr ng-repeat-start="facility in form.estimateLineItems"></tr>
-        <tr class="gradient-header" ng-show="showParent($index)">
+        <tr class="gradient-header" ng-if="showParent($index)">
           <th style="min-width:25px;width: 25px;"></th>
           <th colspan="2">
             <span class=""

@@ -12,10 +12,11 @@
 
 package org.openlmis.report.model.report;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.report.model.ResultRow;
-
-import javax.persistence.Column;
 
 @Getter
 @Setter
@@ -24,38 +25,29 @@ import javax.persistence.Column;
 public class RnRFeedbackReport implements ResultRow {
     private String product;
     private String productCode;
-    @Column( name = "facility_name")
     private String facility;
-    @Column(name = "facility_code")
     private String facilityCode;
-    private Integer beginningBalance;
-    @Column(name = "quantityreceived")
-    private Integer totalQuantityReceived;
-    @Column(name = "quantitydispensed")
-    private Integer totalQuantityDispensed;
-    @Column(name = "totallossesandadjustments")
-    private Integer adjustments;
-    @Column(name = "stockinhand")
-    private Integer physicalCount;
-    @Column(name = "stockoutdays")
-    private Integer adjustedAMC;
-    private Integer newEOP;
-    @Column(name = "quantityrequested")
-    private Integer orderQuantity;
-    private Integer quantitySupplied;
     private String unit;
+    private Long beginningBalance;
+    private Long quantityReceived;
+    private Long quantityDispensed;
+    private Long totalLossesAndAdjustments;
+    private Long stockInHand;
+    private Long previousStockInHand;
+    private Long amc;
+    private Long newEOP;
+    private Long calculatedOrderQuantity;
+    private Long quantityRequested;
+    private Long quantityApproved;
+    private Long quantitySupplied;
     private Double maximumStock;
     private Double emergencyOrder;
-    private Integer err_open_balance;
-    private Integer err_qty_required;
-    private Integer err_qty_received;
-    private Integer err_qty_stockinhand;
-    @Column( name = "productcode")
-    private String productCodeMain;
-    @Column( name = "product")
-    private String productMain;
-    @Column( name = " quantity_shipped_total")
-    private Integer totalQuantityShipped;
-    private Integer productIndex;
+    private Long openingBalanceError;
+    private Long quantityRequestedWasChanged;
+    private Long stockInHandError;
+    private Long quantityShipped;
+    private Long substituteProductQuantityShipped;
+    private Long totalQuantityShipped;
+  private Long productIndex;
 
 }

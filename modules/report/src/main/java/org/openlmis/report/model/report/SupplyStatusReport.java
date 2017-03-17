@@ -12,47 +12,30 @@
 
 package org.openlmis.report.model.report;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.report.model.ResultRow;
-
-import javax.persistence.Column;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SupplyStatusReport implements ResultRow {
-    private String code;
-    private String category;
-    @Column(name = "li_product")
-    private String product;
-    private String facility;
-    @Column(name = "facility_type_name")
-    private String facilityType;
-    private String supplyingFacility;
-    @Column(name = "li_beginningbalance")
-    private int openingBalance;
-    @Column(name = "li_quantityreceived")
-    private int receipts;
-    @Column(name = "li_quantitydispensed")
-    private int issues;
-    @Column(name = "li_totallossesandadjustments")
-    private int adjustments;
-    @Column(name = "li_stockinhand")
-    private int closingBalance;
-    @Column(name = "li_stockinhand")
-    private Double monthsOfStock;
-    @Column(name = "li_amc")
-    private Double averageMonthlyConsumption;
-    @Column(name = "fp_maxmonthsofstock")
-    private Double maximumStock;
-    @Column(name = "li_calculatedorderquantity")
-    private int reorderAmount;
-    @Column(name = "li_maxmonthsofstock")
-    private Double minMOS;
-    @Column(name = "li_maxmonthsofstock")
-    private Double maxMOS;
-    @Column(name = "quantityshipped")
-    private Double supplied;
+  private String category;
+  private String product;
+  private String productCode;
+  private Long beginningBalance;
+  private Long quantityReceived;
+  private Long quantityDispensed;
+  private Long quantityRequested;
+  private Long totalLossesAndAdjustments;
+  private Long stockInHand;
+  private Double mos;
+  private Double amc;
+  private Double maxMonthsOfStock;
+  private Long maxStockQuantity;
+  private Double totalQuantityShipped;
 
 }

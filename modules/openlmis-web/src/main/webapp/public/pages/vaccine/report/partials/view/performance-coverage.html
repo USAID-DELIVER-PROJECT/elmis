@@ -52,7 +52,7 @@
                     <vaccine-product-doses-filter product="filter.product"></vaccine-product-doses-filter>
 
                     <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
-                    <static-year-filter perioderror="perioderror" year="staticYear" startdate="periodStartDate" enddate="periodEnddate" ></static-year-filter>
+                    <static-year-month-filter perioderror="perioderror" year="staticYear" startdate="periodStartDate" enddate="periodEnddate" ></static-year-month-filter>
                     <!--======================== filter end =========================-->
                 </div>
             </form>
@@ -77,6 +77,36 @@
                     <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
                     <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
                 </div>
+
+                <div ng-show="datarows.length > 0">
+                    <table id="region-summary" class="summary-table rnr-table table-bordered table">
+                        <thead >
+                        <tr>
+                            <th style="width:17%;"></th>
+                            <th  ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td style="background-color : {{colors.color_ninty_percent}}" openlmis-message="coverage.greater.than.or.equal.ninty.percent"></td>
+                            <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="b in coverageSummary.groupOne">{{b.total.value}}</td>
+                        </tr>
+                        <tr>
+                            <td  style="background-color : {{colors.color_80_percent}}" openlmis-message="coverage.greater.than.or.equal.eighty.percent"></td>
+                            <td style="background-color : {{colors.color_80_percent}}" ng-repeat="b in coverageSummary.groupTwo">{{b.total.value}}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
+                            <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="b in coverageSummary.groupThree">{{b.total.value}}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color : {{colors.color_non_reporting}}" openlmis-message="Non Reporting">Non Reporting</td>
+                            <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="b in coverageSummary.groupFour">{{b.total.value}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 <table id="vbfixTable" class="rnr-table table-bordered table">
                     <thead>
                     <tr>
@@ -163,36 +193,7 @@
                     </tfoot>
                 </table>
 
-                <div ng-show="datarows.length > 0">
-                    <table id="region-summary" class="summary-table rnr-table table-bordered table">
-                        <thead >
-                        <tr>
-                            <th style="width:17%;"></th>
-                            <th  ng-repeat="a in summaryPeriodLists">{{a.monthString +' '+ a.year}}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td style="background-color : {{colors.color_ninty_percent}}" openlmis-message="coverage.greater.than.or.equal.ninty.percent"></td>
-                            <td style="background-color : {{colors.color_ninty_percent}}" ng-repeat="b in coverageSummary.groupOne">{{b.total.value}}</td>
-                        </tr>
-                        <tr>
-                            <td  style="background-color : {{colors.color_80_percent}}" openlmis-message="coverage.greater.than.or.equal.eighty.percent"></td>
-                            <td style="background-color : {{colors.color_80_percent}}" ng-repeat="b in coverageSummary.groupTwo">{{b.total.value}}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color : {{colors.color_50_percent_below}}" openlmis-message="coverage.less.than.fifty.percent"></td>
-                            <td style="background-color : {{colors.color_50_percent_below}}" ng-repeat="b in coverageSummary.groupThree">{{b.total.value}}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color : {{colors.color_non_reporting}}" openlmis-message="Non Reporting">Non Reporting</td>
-                            <td style="background-color : {{colors.color_non_reporting}}" ng-repeat="b in coverageSummary.groupFour">{{b.total.value}}</td>
-                        </tr>
 
-
-                        </tbody>
-                    </table>
-                </div>
 
                 <h2 ng-show="dataRowsRegionAggregate">All Regions</h2>
                 <table id="fixTable" class="rnr-table table-bordered table" ng-show="dataRowsRegionAggregate">

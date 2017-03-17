@@ -44,6 +44,6 @@ function ConfigureCoverageController($scope, $routeParams, DemographicEstimateCa
   $scope.addProduct = function(product, scope){
     scope.showAddNewModal = false;
     var dose = $scope.protocol.possibleDoses[0];
-    $scope.protocol.protocols.push({productName: product.primaryName, productId: product.id , doses: [{doseId: dose.id, productId: product.id, programId: $scope.program, displayOrder: 1, displayName: dose.name, trackMale: true, trackFemale: true}]});
+    $scope.protocol.protocols.push({productName: product.primaryName, productId: product.id, productDisplayOrder: $scope.protocol.protocols.length + 1, doses: [{doseId: dose.id, productId: product.id, programId: $scope.program, displayOrder: 1, displayName: dose.name, trackMale: true, trackFemale: true}]});
   };
 }

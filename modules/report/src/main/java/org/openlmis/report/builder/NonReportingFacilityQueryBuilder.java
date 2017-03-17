@@ -48,7 +48,14 @@ public class NonReportingFacilityQueryBuilder {
     INNER_JOIN("requisitions r on r.facilityId = facilities.id and r.programId = ps.programId and r.periodId = period.id and r.emergency = false");
     WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
     WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = cast( #{userId} as int4) and program_id = cast( #{filterCriteria.program} as int4) )");
-    WHERE("facilities.id in (select r.facilityId from requisitions r where r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') and r.emergency = false and r.periodId = cast (#{filterCriteria.period} as int4) and r.programId = cast( #{filterCriteria.program} as int4) )");
+    WHERE("facilities.id in " +
+                                      "( select r.facilityId from requisitions r " +
+                                        "where " +
+                                          "r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') " +
+                                          "and r.emergency = false " +
+                                          "and r.periodId = cast (#{filterCriteria.period} as int4) " +
+                                          "and r.programId = cast( #{filterCriteria.program} as int4) " +
+                                        ")");
     writePredicates(filterParam);
     ORDER_BY("name");
 
@@ -70,7 +77,15 @@ public class NonReportingFacilityQueryBuilder {
     INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitiongroupid = rgm.requisitiongroupid and ps.programid = rgps.programid");
     WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
     WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = cast( #{userId} as int4) and program_id = cast( #{filterCriteria.program} as int4) )");
-    WHERE("facilities.id not in (select r.facilityid from requisitions r where r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') and r.emergency = false and r.periodid = cast (#{filterCriteria.period} as int4) and r.programid = cast( #{filterCriteria.program} as int4) )");
+    WHERE("facilities.id not in " +
+                                          "( select r.facilityId from requisitions r " +
+                                          "  where " +
+                                              "r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') " +
+                                              "and r.emergency = false " +
+                                              "and r.periodId = cast (#{filterCriteria.period} as int4) " +
+                                              "and r.programId = cast( #{filterCriteria.program} as int4) " +
+                                              ")");
+
     writePredicates(filterParam);
     ORDER_BY("name");
     return SQL();
@@ -91,72 +106,5 @@ public class NonReportingFacilityQueryBuilder {
 
 
 
-  public static String getTotalFacilities(Map params) {
-    NonReportingFacilityParam filterParams = (NonReportingFacilityParam) params.get(FILTER_CRITERIA);
 
-    BEGIN();
-    SELECT("COUNT (distinct facilities.id)");
-    FROM("facilities")
-    ;
-    INNER_JOIN("programs_supported ps on ps.facilityid = facilities.id and ps.active = true and ps.programId = #{filterCriteria.program}");
-    INNER_JOIN("vw_districts gz on gz.district_id = facilities.geographicZoneId");
-    INNER_JOIN("requisition_group_members rgm on rgm.facilityid = facilities.id");
-    INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitiongroupid = rgm.requisitiongroupid and ps.programid = rgps.programid and rgps.scheduleid = (select max(scheduleid) from processing_periods where processing_periods.id =  #{filterCriteria.period})");
-    WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
-    writePredicates(filterParams);
-    return SQL();
-  }
-
-  public static String getTotalNonReportingFacilities(Map params) {
-
-    NonReportingFacilityParam filterParams = (NonReportingFacilityParam) params.get(FILTER_CRITERIA);
-    BEGIN();
-    SELECT("COUNT (*)");
-    FROM("facilities");
-    INNER_JOIN("programs_supported ps on ps.facilityid = facilities.id and ps.active = true and ps.programId = #{filterCriteria.program}");
-    INNER_JOIN("vw_districts gz on gz.district_id = facilities.geographicZoneId");
-    INNER_JOIN("requisition_group_members rgm on rgm.facilityid = facilities.id");
-    INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitionGroupId = rgm.requisitionGroupId and ps.programid = rgps.programid");
-    WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
-    WHERE("facilities.id not in (select r.facilityid from requisitions r where  r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') and r.periodid = cast( #{filterCriteria.period} as int4) and r.programid = cast(#{filterCriteria.program} as int4) )");
-    writePredicates(filterParams);
-    return SQL();
-  }
-
-  public static String getSummaryQuery(Map params) {
-    NonReportingFacilityParam filterParams = (NonReportingFacilityParam) params.get(FILTER_CRITERIA);
-
-    BEGIN();
-    SELECT("'Non Reporting Facilities' AS name");
-    SELECT("COUNT (*)");
-    FROM("facilities");
-    INNER_JOIN("programs_supported ps on ps.facilityid = facilities.id and ps.programId = #{filterCriteria.program} and ps.active = true");
-    INNER_JOIN("vw_districts gz on gz.district_id = facilities.geographicZoneId");
-    INNER_JOIN("requisition_group_members rgm on rgm.facilityid = facilities.id");
-    INNER_JOIN("processing_periods period on period.id = #{filterCriteria.period}");
-    INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitiongroupid = rgm.requisitiongroupid and ps.programid = rgps.programid");
-    WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
-    //ONLY consider facilities that are currently active and support the program in the selected period
-    //IF facility is inactive, consider the facility expected to report until it was deactivated. The reason why we have to do this is because (deactivation date is not currently enforced.)
-    WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
-    WHERE("facilities.id not in (select r.facilityid from requisitions r where  r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') and r.periodid = cast( #{filterCriteria.period} as int4) and r.programid = cast(#{filterCriteria.program} as int4) )");
-    writePredicates(filterParams);
-
-    String query = SQL();
-    RESET();
-    BEGIN();
-    SELECT("'Facilities required to report for this program' AS name");
-    SELECT("COUNT (*)");
-    FROM("facilities");
-    INNER_JOIN("vw_districts gz on gz.district_id = facilities.geographicZoneId");
-    INNER_JOIN("programs_supported ps on ps.facilityid = facilities.id and ps.active = true and ps.programId = #{filterCriteria.program}");
-    INNER_JOIN("requisition_group_members rgm on rgm.facilityid = facilities.id");
-    INNER_JOIN("processing_periods period on period.id = #{filterCriteria.period}");
-    INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitiongroupid = rgm.requisitiongroupid and ps.programid = rgps.programid ");
-    WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = #{userId} and program_id = #{filterCriteria.program})");
-    WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
-    writePredicates(filterParams);
-    query += " UNION " + SQL();
-    return query;
-  }
 }

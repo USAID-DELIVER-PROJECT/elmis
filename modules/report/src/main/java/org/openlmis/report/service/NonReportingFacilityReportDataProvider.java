@@ -34,7 +34,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
 
-  private static final String PERCENTAGE_NON_REPORTING = "PERCENTAGE_NON_REPORTING";
   private static final String REPORT_FILTER_PARAM_VALUES = "REPORT_FILTER_PARAM_VALUES";
   private static final String TOTAL_NON_REPORTING = "TOTAL_NON_REPORTING";
   private static final String TOTAL_FACILITIES = "TOTAL_FACILITIES";
@@ -45,6 +44,8 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
 
   @Autowired
   private SelectedFilterHelper filterHelper;
+
+  List<NameCount> summary = new ArrayList<>();
 
   @Override
   public List<? extends ResultRow> getResultSet(Map<String, String[]> filterCriteria) {
@@ -58,45 +59,15 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
     NonReportingFacilityParam nonReportingFacilityParam = getFilterParameters(filterCriteria);
     List<MasterReport> reportList = new ArrayList<>();
     MasterReport report = new MasterReport();
+
     List<NonReportingFacilityDetail> nonReportingFacilityDetails = reportMapper.getNonReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
+    Double nonReporting = Double.parseDouble(String.valueOf(nonReportingFacilityDetails.size()));
     List<NonReportingFacilityDetail> reportingFacilities = reportMapper.getReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
     nonReportingFacilityDetails.addAll(reportingFacilities);
     report.setDetails(nonReportingFacilityDetails);
 
-    List<NameCount> summary = reportMapper.getReportSummary(nonReportingFacilityParam, this.getUserId());
-
-    Double totalFacilities = reportMapper.getTotalFacilities(nonReportingFacilityParam, this.getUserId());
-    Double nonReporting = reportMapper.getNonReportingTotalFacilities(nonReportingFacilityParam, this.getUserId());
-
-    // Assume by default that the 100% of facilities didn't report
-    Long percentNonReporting = 100L;
-    Long percentReporting = 100L;
-    if (totalFacilities != 0) {
-      percentNonReporting = Math.round((nonReporting / totalFacilities) * 100);
-      percentReporting = 100 - percentNonReporting;
-    }
-
-    NameCount percentageNonReporting = new NameCount();
-    NameCount percentageReporting = new NameCount();
-
-    percentageNonReporting.setName("Percentage not-reporting");
-    percentageNonReporting.setCount(percentNonReporting.toString() + "%");
-    summary.add(1, percentageNonReporting);
-
-    percentageReporting.setName("Percentage reporting");
-    percentageReporting.setCount(percentReporting.toString() + "%");
-    summary.add(percentageReporting);
-
-    NameCount percentageNonReportingChart = new NameCount();
-    NameCount percentageReportingChart = new NameCount();
-
-    percentageNonReportingChart.setName("Percentage not-reporting");
-    percentageNonReportingChart.setCount(percentNonReporting.toString());
-    summary.add(percentageNonReportingChart);
-
-    percentageReportingChart.setName("Percentage reporting");
-    percentageReportingChart.setCount(percentReporting.toString());
-    summary.add(percentageReportingChart);
+    Double totalFacilities = Double.parseDouble(String.valueOf(nonReportingFacilityDetails.size()));
+    summary = new ArrayList<>();
 
     summary.add(new NameCount(TOTAL_FACILITIES, totalFacilities.toString()));
     summary.add(new NameCount(TOTAL_NON_REPORTING, nonReporting.toString()));
@@ -121,17 +92,10 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
 
     HashMap<String, String> result = new HashMap<String, String>();
 
-    Double totalFacilities = reportMapper.getTotalFacilities(nonReportingFacilityParam, this.getUserId());
-    Double nonReporting = reportMapper.getNonReportingTotalFacilities(nonReportingFacilityParam, this.getUserId());
-
-    result.put(TOTAL_FACILITIES, totalFacilities.toString());
-    result.put(TOTAL_NON_REPORTING, nonReporting.toString());
-
-    Long percent = 100L;
-    if (totalFacilities != 0) {
-      percent = Math.round((nonReporting / totalFacilities) * 100);
+    for (NameCount nc : summary) {
+      result.put(nc.getName(), nc.getCount());
     }
-    result.put(PERCENTAGE_NON_REPORTING, percent.toString());
+
     result.put(REPORT_FILTER_PARAM_VALUES, filterHelper.getProgramPeriodGeoZone(params));
     return result;
   }

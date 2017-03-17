@@ -8,7 +8,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-function NavigationController($scope, ConfigSettingsByKey, localStorageService, Locales, $location, $window) {
+function NavigationController($scope, ConfigSettingsByKey, localStorageService, Locales, $location, $window, CustomReportList, $timeout) {
 
   ConfigSettingsByKey.get({key: 'LOGIN_SUCCESS_DEFAULT_LANDING_PAGE'}, function (data){
     $scope.homePage =  data.settings.value;
@@ -62,4 +62,15 @@ $scope.homeLinkClicked=function(){
       $scope.showNetworkError = true;
     }, {});
   };
+
+  $scope.getCustomReportsList = function() {
+      CustomReportList.get({}, function (list) {
+          $scope.customReports =_.groupBy(list.reports,'category');
+      });
+  }();
+
+  function hideEmptyReportCategory(){
+      $('#all-report-lists li.children ul li.ng-hide').parent().parent().hide();
+  }
+  $timeout(hideEmptyReportCategory, 0);
 }

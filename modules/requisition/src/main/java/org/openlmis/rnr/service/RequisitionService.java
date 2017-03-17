@@ -13,12 +13,14 @@ import org.openlmis.rnr.repository.RequisitionRepository;
 import org.openlmis.rnr.search.criteria.RequisitionSearchCriteria;
 import org.openlmis.rnr.search.factory.RequisitionSearchStrategyFactory;
 import org.openlmis.rnr.search.strategy.RequisitionSearchStrategy;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -101,6 +103,9 @@ public class RequisitionService {
 
   @Autowired
   private ProductPriceScheduleService priceScheduleService;
+
+  @Autowired
+  private SupplyPartnerService supplyPartnerService;
 
   @Autowired
   public void setRequisitionSearchStrategyFactory(RequisitionSearchStrategyFactory requisitionSearchStrategyFactory) {
@@ -292,6 +297,9 @@ public class RequisitionService {
 
     savedRnr.calculateForApproval();
 
+    if (requiresSplitting(savedRnr)) {
+      splitRequisition(savedRnr, requisition.getModifiedBy());
+    }
     final SupervisoryNode parent = supervisoryNodeService.getParent(savedRnr.getSupervisoryNodeId());
 
     boolean notifyStatusChange = true;
@@ -306,10 +314,78 @@ public class RequisitionService {
 
     savedRnr.setModifiedBy(requisition.getModifiedBy());
     requisitionRepository.approve(savedRnr);
-
     logStatusChangeAndNotify(savedRnr, notifyStatusChange, name);
 
     return savedRnr;
+  }
+
+  private void splitRequisition(Rnr savedRnr, Long userId) {
+
+    if (supplyPartnerService != null) {
+      List<SupplyPartnerProgram> subscriptions = supplyPartnerService.getSubscriptionsWithDetails(savedRnr.getFacility().getId(), savedRnr.getProgram().getId());
+      for (SupplyPartnerProgram subscription : subscriptions) {
+
+        Rnr existingRnr = requisitionRepository.getRnrBy(savedRnr.getFacility().getId(), savedRnr.getPeriod().getId(), subscription.getDestinationProgramId(), savedRnr.isEmergency());
+        if (existingRnr != null) {
+          // there was an rnr already - skip splitting.
+          continue;
+        }
+
+        List<RnrLineItem> lineItems = findSubscribedLineItems(savedRnr, subscription);
+
+        if (lineItems.size() > 0) {
+          ArrayList<RnrLineItem> newRnrLineItems = new ArrayList<>();
+          for (RnrLineItem li : lineItems) {
+            // clone the object
+            RnrLineItem nli = new RnrLineItem();
+            BeanUtils.copyProperties(li, nli);
+            newRnrLineItems.add(nli);
+
+            li.setQuantityApproved(0);
+            li.setRemarks("Supplied by other warehouse/partner");
+          }
+          // generate the new rnr
+          Program destinationProgram = programService.getById(subscription.getDestinationProgramId());
+          Rnr rnr = new Rnr(savedRnr.getFacility(), destinationProgram, savedRnr.getPeriod());
+          rnr.setEmergency(savedRnr.isEmergency());
+          rnr.setSupervisoryNodeId(subscription.getDestinationSupervisoryNodeId());
+          rnr.setCreatedBy(userId);
+          rnr.setModifiedBy(userId);
+          rnr.setFullSupplyLineItems(newRnrLineItems);
+          requisitionRepository.insert(rnr);
+          User user = userService.getById(userId);
+          rnr.setStatus(RnrStatus.SUBMITTED);
+          requisitionRepository.logStatusChange(rnr, user.getFullName());
+          rnr.setStatus(savedRnr.getStatus());
+          update(rnr);
+
+
+        }
+      }
+    }
+
+  }
+
+  private List<RnrLineItem> findSubscribedLineItems(Rnr savedRnr, SupplyPartnerProgram subscription) {
+    List<String> productCodes = subscription.getProducts().stream().map(p -> p.getCode()).collect(Collectors.toList());
+    return savedRnr
+        .getAllLineItems()
+        .stream()
+        .filter(l -> productCodes.contains(l.getProductCode()))
+        .collect(Collectors.toList());
+  }
+
+  private Boolean requiresSplitting(Rnr savedRnr) {
+
+    //is there a subscription for this facility and program
+    if (supplyPartnerService != null) {
+      List<SupplyPartnerProgram> subscriptions = supplyPartnerService.getSubscriptions(savedRnr.getFacility().getId(), savedRnr.getProgram().getId());
+      if (subscriptions != null && subscriptions.size() > 0) {
+        return true;
+      }
+    }
+    // iterate on each subscription
+    return false;
   }
 
   public void releaseRequisitionsAsOrder(List<Rnr> requisitions, Long userId) {

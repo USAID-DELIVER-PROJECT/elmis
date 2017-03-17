@@ -72,6 +72,7 @@ public class ProductDoseServiceTest {
     programProduct.setProduct(product);
     when(programProductRepository.getActiveByProgram(2L)).thenReturn(asList(programProduct));
     VaccineProductDose vpd = new VaccineProductDose();
+    vpd.setProductDisplayOrder(0L);
     when(repository.getDosesForProduct(2L, product.getId())).thenReturn(asList(vpd));
     when(repository.getAllDoses()).thenReturn(null);
 

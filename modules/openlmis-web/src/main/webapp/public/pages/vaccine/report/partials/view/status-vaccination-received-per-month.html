@@ -61,7 +61,7 @@
                                              val="filter.zone">
                         </vaccine-zone-filter>
                         <vaccine-product-filter class="form-cell horizontalFilters" default="defaultProduct" cm-model="filter.product"></vaccine-product-filter>
-                        <static-year-filter perioderror="perioderror" year="year" startdate="filter.periodStart" enddate="filter.periodEnd" ></static-year-filter>
+                        <static-year-month-filter perioderror="perioderror" year="year" startdate="filter.periodStart" enddate="filter.periodEnd" ></static-year-month-filter>
                         <br/>
                     </div>
 
@@ -77,6 +77,11 @@
                         <strong><span openlmis-message="label.start.date"></span></strong>: {{filter.periodStart}}
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <strong><span openlmis-message="label.end.date"></span></strong> : {{filter.periodEnd}}
+                    </div>
+                </div>
+                <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                    <div class="span11 ">
+                        <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
                     </div>
                 </div>
             </div>
@@ -96,6 +101,7 @@
                             <th><span openlmis-message="label.vaccine.supply.status.onhand"></span></th>
                             <th><span openlmis-message="label.vaccine.supply.status.used"></span></th>
                             <th><span openlmis-message="label.vaccine.supply.status.wastage"></span></th>
+                            <th><span openlmis-message="label.vaccine.supply.status.wastage.percent"></span></th>
                             <th style="max-width: 30px "><span openlmis-message="label.vaccine.supply.status.administered"></span></th>
                         </tr>
                         </thead>
@@ -112,6 +118,7 @@
                             <td ng-bind="subRow.onhand | number" class="number {{subRow.reporting_status}}_rows"/>
                             <td ng-bind="subRow.used | number" class="number {{subRow.reporting_status}}_rows"/>
                             <td ng-bind="subRow.wasted | number" class="number {{subRow.reporting_status}}_rows"/>
+                            <td  class="number {{subRow.reporting_status}}_rows">{{subRow.wastagerate | number}}%</td>
                             <td ng-bind="subRow.administered | number"  class="number {{subRow.reporting_status}}_rows"/>
                         </tr>
                         <tr ng-repeat-end ng-if="d.subtotal" class="aggregate-row">
@@ -124,6 +131,7 @@
                             <td class="number aggregate-row" >{{d.subtotal.onhand | number}}</td>
                             <td class="number aggregate-row" >{{d.subtotal.used | number}}</td>
                             <td class="number aggregate-row" >{{d.subtotal.wasted | number}}</td>
+                            <td class="number aggregate-row" >{{calculateWastageRate(d.subtotal.vaccinated,d.subtotal.issued ,d.subtotal.wasted)| number}}%</td>
                             <td class="number aggregate-row" >{{d.subtotal.administered | number}}</td>
                         </tr>
                         </tbody>
@@ -138,6 +146,7 @@
                             <td class="number aggregate-row"  ng-bind="report.totalOnHand| number"></td>
                             <td class="number aggregate-row"><span ng-bind="report.totalUsed| number"/></td>
                             <td class="number aggregate-row" ><span ng-bind="report.totalWasted| number"/></td>
+                            <td class="number aggregate-row" >{{calculateWastageRate(report.totalVaccinated,report.totalIssued ,report.totalWasted)| number}}%</td>
                             <td class="number aggregate-row" ><span ng-bind="report.totalAdminstered| number"/></td>
                         </tr>
                         </tfoot>
@@ -157,6 +166,7 @@
                             <th><span openlmis-message="label.vaccine.supply.status.onhand"></span></th>
                             <th><span openlmis-message="label.vaccine.supply.status.used"></span></th>
                             <th><span openlmis-message="label.vaccine.supply.status.wastage"></span></th>
+                            <th><span openlmis-message="label.vaccine.supply.status.wastage.percent"></span></th>
                             <th><span openlmis-message="label.vaccine.supply.status.administered"></span></th>
                         </tr>
                         </thead>
@@ -172,6 +182,7 @@
                             <td ng-bind="subRow.onhand | number" class="number {{subRow.reporting_status}}_rows"/>
                             <td ng-bind="subRow.used | number" class="number {{subRow.reporting_status}}_rows"/>
                             <td ng-bind="subRow.wasted | number" class="number {{subRow.reporting_status}}_rows"/>
+                            <td  class="number {{subRow.reporting_status}}_rows">{{subRow.wastagerate | number}}%</td>
                             <td ng-bind="subRow.administered | number"  class="number {{subRow.reporting_status}}_rows"/>
                         </tr>
                         <tr ng-repeat-end ng-if="d.subtotal" class="aggregate-row">
@@ -184,6 +195,7 @@
                             <td class="number aggregate-row" >{{d.subtotal.onhand | number}}</td>
                             <td class="number aggregate-row" >{{d.subtotal.used | number}}</td>
                             <td class="number aggregate-row" >{{d.subtotal.wasted | number}}</td>
+                            <td class="number aggregate-row" >{{calculateWastageRate(d.subtotal.vaccinated,d.subtotal.issued ,d.subtotal.wasted)| number}}%</td>
                             <td class="number aggregate-row" >{{d.subtotal.administered | number}}</td>
                         </tr>
                         </tbody>
@@ -199,6 +211,7 @@
 
                             <td class="number aggregate-row"><span ng-bind="report.totalUsed| number"/></td>
                             <td class="number aggregate-row" ><span ng-bind="report.totalWasted| number"/></td>
+                            <td class="number aggregate-row" >{{calculateWastageRate(report.totalVaccinated,report.totalIssued ,report.totalWasted)| number}}%</td>
                             <td class="number aggregate-row" ><span ng-bind="report.totalAdminstered| number"/></td>
                         </tr>
                         </tfoot>

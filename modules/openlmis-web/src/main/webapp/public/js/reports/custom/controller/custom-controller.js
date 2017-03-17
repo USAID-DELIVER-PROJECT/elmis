@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function CustomReportController($scope, $window, reports, CustomReportValue) {
+function CustomReportController($scope, $window, reports, CustomReportValue, $routeParams, $timeout) {
 
   $scope.reports = reports;
   $scope.displayReports = _.groupBy(reports, 'category');
@@ -75,6 +75,14 @@ function CustomReportController($scope, $window, reports, CustomReportValue) {
   if(angular.isUndefined($scope.filter)){
     $scope.filter = {};
   }
+
+  $scope.loadReportFromExternalUrl = function () {
+      if(!angular.isUndefined($routeParams.report_key))
+          $scope.filter.report_key=$routeParams.report_key;
+      $scope.OnFilterChanged();
+  };
+
+  $timeout($scope.loadReportFromExternalUrl, 0);
 }
 
 CustomReportController.resolve = {

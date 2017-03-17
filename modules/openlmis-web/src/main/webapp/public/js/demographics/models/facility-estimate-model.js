@@ -39,7 +39,7 @@ function FacilityEstimateModel() {
 function AggregateFacilityEstimateModel(facilityList, districts, categories, year) {
 
   this.categories = categories;
-
+  this.districtEstimateLineItems = districts;
   this.indexedList = _.groupBy(facilityList, 'parentId');
 
   AggregateFacilityEstimateModel.prototype.getSummary = function (district, category, year) {
@@ -53,7 +53,7 @@ function AggregateFacilityEstimateModel(facilityList, districts, categories, yea
   };
 
   AggregateFacilityEstimateModel.prototype.getDistrictEntry = function (district, category) {
-    var districtLineItem = _.findWhere(districts.estimates.estimateLineItems, {id: district});
+    var districtLineItem = _.findWhere(this.districtEstimateLineItems, {id: district});
     if (districtLineItem) {
       var estimateEntry = _.findWhere(districtLineItem.districtEstimates, {
         'demographicEstimateId': category.id
@@ -94,7 +94,6 @@ function FacilityDemographicsForm($scope, facilities, districts) {
 
     $scope.pageCount = Math.round($scope.lineItems.length / $scope.pageSize);
 
-    facilities.estimates.estimateLineItems = [];
     $scope.form = facilities.estimates;
     $scope.currentPage = 1;
     $scope.pageLineItems();
@@ -109,16 +108,14 @@ function FacilityDemographicsForm($scope, facilities, districts) {
 
     this.districtIds = _.pluck(facilities.estimates.estimateLineItems, 'parentId');
     this.districts = districts;
-    this.districts.estimates.estimateLineItems = _.filter(districts.estimates.estimateLineItems, function (item) {
-      return _.contains(this.ids, item.id);
-    }, {"ids": this.districtIds});
+    this.districts = districts.estimates.estimateLineItems;
     $scope.districtSummary = new AggregateFacilityEstimateModel($scope.lineItems, this.districts, $scope.categories, $scope.year);
     this.districtSummary = $scope.districtSummary;
   };
 
   FacilityDemographicsForm.prototype.isValid = function () {
-    for (var i = 0; i < this.districts.estimates.estimateLineItems.length; i++) {
-      var district = this.districts.estimates.estimateLineItems[i];
+    for (var i = 0; i < this.districts.length; i++) {
+      var district = this.districts[i];
       if (!this.districtSummary.isValid(district.id)) {
         return false;
       }

@@ -1,43 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
-  ~
-  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-07-29T16:58:07 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-03-13T22:27:22 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rnr-feedback-report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="err_open" fontName="SansSerif" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
 		<conditionalStyle>
-			<conditionExpression><![CDATA[$F{err_open_balance} == 1]]></conditionExpression>
-			<style mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" markup="none" pattern="#,##0" fontName="SansSerif" fontSize="10" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-BoldOblique" pdfEncoding="Cp1252"/>
-		</conditionalStyle>
-	</style>
-	<style name="err_received" fontName="SansSerif" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
-		<conditionalStyle>
-			<conditionExpression><![CDATA[$F{err_qty_received} == 1]]></conditionExpression>
+			<conditionExpression><![CDATA[$F{openingBalanceError} == 1]]></conditionExpression>
 			<style mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" markup="none" pattern="#,##0" fontName="SansSerif" fontSize="10" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-BoldOblique" pdfEncoding="Cp1252"/>
 		</conditionalStyle>
 	</style>
 	<style name="err_required" fontName="SansSerif" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
 		<conditionalStyle>
-			<conditionExpression><![CDATA[$F{err_qty_required} == 1]]></conditionExpression>
+			<conditionExpression><![CDATA[$F{quantityRequestedWasChanged} == 1]]></conditionExpression>
 			<style mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" markup="none" pattern="#,##0" fontName="SansSerif" fontSize="10" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-BoldOblique" pdfEncoding="Cp1252"/>
 		</conditionalStyle>
 	</style>
 	<style name="err_soh" pattern="" fontName="SansSerif" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
 		<conditionalStyle>
-			<conditionExpression><![CDATA[$F{err_qty_stockinhand} == 1]]></conditionExpression>
+			<conditionExpression><![CDATA[$F{stockInHandError} == 1]]></conditionExpression>
 			<style mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" markup="none" pattern="#,##0" fontName="SansSerif" fontSize="10" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-BoldOblique" pdfEncoding="Cp1252"/>
 		</conditionalStyle>
 	</style>
@@ -87,21 +70,27 @@ from vw_rnr_feedback]]>
 	<field name="facility" class="java.lang.String"/>
 	<field name="product" class="java.lang.String"/>
 	<field name="unit" class="java.lang.String"/>
-	<field name="beginningBalance" class="java.lang.Integer"/>
-	<field name="totalQuantityReceived" class="java.lang.Integer"/>
-	<field name="totalQuantityDispensed" class="java.lang.Integer"/>
-	<field name="adjustments" class="java.lang.Integer"/>
-	<field name="physicalCount" class="java.lang.Integer"/>
-	<field name="adjustedAMC" class="java.lang.Integer"/>
-	<field name="newEOP" class="java.math.BigDecimal"/>
-	<field name="maximumStock" class="java.lang.Integer"/>
-	<field name="orderQuantity" class="java.lang.Integer"/>
-	<field name="quantitySupplied" class="java.lang.Integer"/>
-	<field name="emergencyOrder" class="java.lang.Integer"/>
-	<field name="err_open_balance" class="java.lang.Integer"/>
-	<field name="err_qty_required" class="java.lang.Integer"/>
-	<field name="err_qty_received" class="java.lang.Integer"/>
-	<field name="err_qty_stockinhand" class="java.lang.Integer"/>
+	<field name="beginningBalance" class="java.lang.Long"/>
+	<field name="quantityReceived" class="java.lang.Long"/>
+	<field name="quantityDispensed" class="java.lang.Long"/>
+	<field name="totalLossesAndAdjustments" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="stockInHand" class="java.lang.Long"/>
+	<field name="amc" class="java.lang.Long"/>
+	<field name="maximumStock" class="java.lang.Long"/>
+	<field name="quantitySupplied" class="java.lang.Long"/>
+	<field name="emergencyOrder" class="java.lang.Long"/>
+	<field name="openingBalanceError" class="java.lang.Long"/>
+	<field name="quantityRequestedWasChanged" class="java.lang.Long"/>
+	<field name="calculatedOrderQuantity" class="java.lang.Long"/>
+	<field name="stockInHandError" class="java.lang.Long"/>
+	<field name="quantityRequested" class="java.lang.Long"/>
+	<field name="quantityApproved" class="java.lang.Long"/>
+	<field name="totalQuantityShipped" class="java.lang.Long"/>
+	<field name="newEOP" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -170,7 +159,7 @@ from vw_rnr_feedback]]>
 					<textFieldExpression><![CDATA[$R{label.emergency.order.point}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,###.#" isBlankWhenNull="false">
-					<reportElement mode="Transparent" x="770" y="20" width="30" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="d00feb98-9d2f-48b2-a691-ce6b178e8bb8">
+					<reportElement mode="Transparent" x="770" y="20" width="32" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="d00feb98-9d2f-48b2-a691-ce6b178e8bb8">
 						<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -190,7 +179,7 @@ from vw_rnr_feedback]]>
 					<textFieldExpression><![CDATA[$R{label.max.stock.level}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,###.#" isBlankWhenNull="false">
-					<reportElement mode="Transparent" x="770" y="0" width="30" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="f8ac6a7a-0dac-433a-b8b7-d04c42f39d78">
+					<reportElement mode="Transparent" x="770" y="0" width="32" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="f8ac6a7a-0dac-433a-b8b7-d04c42f39d78">
 						<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -252,7 +241,7 @@ from vw_rnr_feedback]]>
 					<textFieldExpression><![CDATA[$R{label.adjustments}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="569" y="40" width="49" height="43" forecolor="#000000" backcolor="#333333" uuid="6bd12265-4736-4d7a-b7e3-f16258f6c29c"/>
+					<reportElement mode="Transparent" x="569" y="40" width="61" height="43" forecolor="#000000" backcolor="#333333" uuid="6bd12265-4736-4d7a-b7e3-f16258f6c29c"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
@@ -260,31 +249,23 @@ from vw_rnr_feedback]]>
 					<textFieldExpression><![CDATA[$R{label.physical.count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="618" y="40" width="59" height="43" forecolor="#000000" backcolor="#333333" uuid="7c471c45-3a80-4bda-a3ec-e01cd20a68e8"/>
+					<reportElement mode="Transparent" x="630" y="40" width="60" height="43" forecolor="#000000" backcolor="#333333" uuid="7c471c45-3a80-4bda-a3ec-e01cd20a68e8"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$R{label.adjusted.amc}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{label.amc}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="677" y="40" width="29" height="43" forecolor="#000000" backcolor="#333333" uuid="bad06896-b0e0-4090-bb81-4ed965bfc822"/>
+					<reportElement mode="Transparent" x="690" y="40" width="63" height="43" forecolor="#000000" backcolor="#333333" uuid="fe2cb926-12c6-4270-b869-342cac6bba51"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$R{label.new.eop}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{label.quantity.approved}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="706" y="40" width="45" height="43" forecolor="#000000" backcolor="#333333" uuid="fe2cb926-12c6-4270-b869-342cac6bba51"/>
-					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
-						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-						<paragraph lineSpacing="Single"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$R{label.order.quantity}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement mode="Transparent" x="751" y="40" width="49" height="43" forecolor="#000000" backcolor="#333333" uuid="e1a5541d-fa30-469e-b833-683cd0feeeca"/>
+					<reportElement mode="Transparent" x="753" y="40" width="49" height="43" forecolor="#000000" backcolor="#333333" uuid="e1a5541d-fa30-469e-b833-683cd0feeeca"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
@@ -334,8 +315,9 @@ from vw_rnr_feedback]]>
 	</title>
 	<detail>
 		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
-				<reportElement x="72" y="0" width="759" height="20" forecolor="#006666" uuid="497dba92-6949-4bb2-9beb-1f85a98456e5">
+				<reportElement x="72" y="0" width="730" height="20" forecolor="#006666" uuid="497dba92-6949-4bb2-9beb-1f85a98456e5">
 					<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Top">
@@ -344,7 +326,8 @@ from vw_rnr_feedback]]>
 				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="801" height="20" backcolor="#F4F4F4" uuid="9a174af8-d2cb-46c8-b19f-0b17e1be585b">
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="20" backcolor="#F4F4F4" uuid="9a174af8-d2cb-46c8-b19f-0b17e1be585b">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
@@ -357,7 +340,8 @@ from vw_rnr_feedback]]>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="19" width="801" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7">
+				<reportElement x="0" y="19" width="802" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -386,28 +370,21 @@ from vw_rnr_feedback]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{adjustments}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalLossesAndAdjustments}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement style="err_soh" x="569" y="0" width="49" height="20" uuid="81c4a620-2b88-4eb3-a85a-423c4392760a"/>
+				<reportElement style="err_soh" x="569" y="0" width="61" height="20" uuid="81c4a620-2b88-4eb3-a85a-423c4392760a"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{physicalCount} == null ? " - " : $F{physicalCount} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{stockInHand} == null ? " - " : $F{stockInHand} )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="677" y="0" width="29" height="20" uuid="350280d3-0be5-497b-8286-443dcd5d6bd5"/>
+				<reportElement style="err_required" x="690" y="0" width="63" height="20" uuid="aa8e4ea8-2c5f-44ee-880a-5dc4a59cbff9"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{newEOP}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement style="err_required" x="706" y="0" width="45" height="20" uuid="aa8e4ea8-2c5f-44ee-880a-5dc4a59cbff9"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<paragraph rightIndent="3"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{orderQuantity} == null ? " - " : $F{orderQuantity} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{quantityApproved} == null ? " - " : $F{quantityApproved} )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="255" y="0" width="40" height="20" uuid="b6dc2c35-3773-4414-901f-9e556aaa81d3"/>
@@ -417,32 +394,32 @@ from vw_rnr_feedback]]>
 				<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="751" y="0" width="49" height="20" uuid="e139a2e8-e236-4fb0-9226-aa1a6b1a1d33"/>
+				<reportElement x="753" y="0" width="49" height="20" uuid="e139a2e8-e236-4fb0-9226-aa1a6b1a1d33"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{quantitySupplied}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalQuantityShipped}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="618" y="0" width="59" height="20" uuid="5a199f2b-e76d-4094-8190-54c8bd9d4435"/>
+				<reportElement x="630" y="0" width="60" height="20" uuid="5a199f2b-e76d-4094-8190-54c8bd9d4435"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{adjustedAMC} == null ? " - " : $F{adjustedAMC} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{amc} == null ? " - " : $F{amc} )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement x="438" y="0" width="66" height="20" uuid="6cbde3fb-bbe5-40a8-9575-bf2eac39741e"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{totalQuantityDispensed} == null ? " - " : $F{totalQuantityDispensed} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{quantityDispensed} == null ? " - " : $F{quantityDispensed} )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement style="err_received" x="376" y="0" width="62" height="20" uuid="97048a91-c2fe-40c6-ad1a-7014e5c5fef1"/>
+				<reportElement x="376" y="0" width="62" height="20" uuid="97048a91-c2fe-40c6-ad1a-7014e5c5fef1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{totalQuantityReceived} == null ? " - " : $F{totalQuantityReceived} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{quantityReceived} == null ? " - " : $F{quantityReceived} )]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

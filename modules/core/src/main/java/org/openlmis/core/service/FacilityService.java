@@ -319,4 +319,8 @@ public class FacilityService {
     return facilityRepository.getSuperVisedUserFacility(program,facilityId);
   }
 
+  public List<Facility> getListByCodes(List<String> facilityCodes) {
+    String commaSeparatedList = "{" + String.join(",", facilityCodes) + "}";
+    return facilityRepository.getFacilitiesByCommaSeparatedCodes(commaSeparatedList);
+  }
 }

@@ -29,9 +29,9 @@ public interface ProductDoseMapper {
       " order by pd.displayOrder")
   List<VaccineProductDose> getDoseSettingByProduct(@Param("programId") Long programId, @Param("productId") Long productId);
 
-  @Insert("insert into vaccine_product_doses (doseId, programId, productId, displayName, displayOrder, trackMale, trackFemale, denominatorEstimateCategoryId, createdBy, modifiedBy) " +
+  @Insert("insert into vaccine_product_doses (doseId, programId, productId, displayName, displayOrder, trackMale, trackFemale, denominatorEstimateCategoryId, productDisplayOrder, createdBy, modifiedBy) " +
       " values " +
-      " ( #{doseId}, #{programId} , #{productId}, #{displayName}, #{displayOrder}, #{trackMale}, #{trackFemale}, #{denominatorEstimateCategoryId}, #{createdBy}, #{modifiedBy} )")
+      " ( #{doseId}, #{programId} , #{productId}, #{displayName}, #{displayOrder}, #{trackMale}, #{trackFemale}, #{denominatorEstimateCategoryId}, #{productDisplayOrder} , #{createdBy}, #{modifiedBy} )")
   @Options(useGeneratedKeys = true)
   Integer insert(VaccineProductDose dose);
 
@@ -50,9 +50,8 @@ public interface ProductDoseMapper {
 
   @Select("select d.*, pr.primaryName as productName from vaccine_product_doses d " +
       " join products pr on pr.id = d.productId " +
-      " join program_products pp on pp.productId = d.productId and d.programId = pp.programId and pp.programId = #{programId} " +
       "where d.programId = #{programId} " +
-      " order by pp.displayOrder ASC, d.displayOrder ASC" )
+      " order by d.productDisplayOrder ASC, d.displayOrder ASC" )
   List<VaccineProductDose> getProgramProductDoses(@Param("programId") Long programId);
 
   @Select("select * from vaccine_doses order by displayOrder")

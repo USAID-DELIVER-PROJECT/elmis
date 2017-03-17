@@ -427,11 +427,11 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
                 $scope.facilityCoverage.data = data.facilityCoverage;
                 if (!isUndefined($scope.facilityCoverage.data)) {
                     $scope.filter.totalFacilityCoverage = $scope.facilityCoverage.data.length;
+                    $scope.districtCoveragePagination();
                 } else {
                     $scope.filter.totalFacilityCoverage = 0;
                 }
             });
-
 
         }
     };
@@ -447,6 +447,8 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
         if (!isUndefined($scope.filter.districtCoverageOffset)) {
             $scope.districtCoverage.dataPoints = $scope.districtCoverage.data.slice(parseInt($scope.filter.districtCoverageOffset, 10), s);
         }
+        else if($scope.filter.totalFacilityCoverage > 0)
+            $scope.districtCoverage.dataPoints = $scope.districtCoverage.data;
     };
     $scope.coverageDetailCallback = function () {
         if (!isUndefined($scope.startDate) && !isUndefined($scope.endDate) && !isUndefined($scope.filter.coverage.product) && $scope.filter.coverage.product !== 0) {

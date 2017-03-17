@@ -53,7 +53,7 @@
 
 
                         <!--<static-period-filter style="max-width: 100px"  range="range" startdate="filter.periodStart" enddate="filter.periodEnd" rangemax="10" error="perioderror" ></static-period-filter>-->
-                        <static-year-filter perioderror="perioderror" year="staticYear" startdate="filter.periodStart" enddate="filter.periodEnd" ></static-year-filter>
+                        <static-year-month-filter perioderror="perioderror" year="staticYear" startdate="filter.periodStart" enddate="filter.periodEnd" ></static-year-month-filter>
 
                     <br/>
                     </div>
@@ -66,10 +66,48 @@
                         <strong><span openlmis-message="label.end.date"></span></strong> : {{filter.periodEnd}}
                     </div>
                 </div>
+                <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                    <div class="span11 ">
+                        <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                    </div>
+                </div>
             </div>
 
             <div class="content-body">
                 <div style="font-weight: normal" ng-show="datarows == undefined || datarows.length == 0" openlmis-message="label.report.no.data.to.show"></div>
+                <div ng-show="datarows.length > 0 && (reportType!=true )">
+
+                    <table
+                            class="rnr-table table-bordered table summary-table"
+                    >
+                        <thead>
+                        <tr>
+                            <th style="min-width: 280px"></th>
+                            <th ng-style="{'max-width':'60px'}" ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody >
+                        <tr ng-repeat="row in colValueList" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
+                            <td ng-style="{'min-width':'2800px','background-color': getBackGroundColorSummary(row.rangeName)}" ng-bind="getColumnNameSummary(row.rangeName)"></td>
+
+                            <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-repeat="column in columnVals track by $index">
+                                    <span ng-if="row.columns[$index].value>0" ng-bind="row.columns[$index].value">
+
+                                    </span>
+                                <span ng-if="row.columns[$index].value==0">
+                                        -
+                                    </span>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
                 <div ng-show="datarows.length > 0">
 
                     <table id="fullSupplyTable" ng-show="datarows.length > 0"
@@ -239,14 +277,9 @@
 
                         </tr>
 
-                        <tr
-                               >
-                            <td
-
-                               >{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
-                            <td
-
-                               >{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
+                        <tr>
+                            <td>{{ datarows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
+                            <td>{{ datarows[$index-1].district_name == row.district_name ? '' : row.district_name }}</td>
                             <td ng-if="reportType==true"
 
                                 >{{ datarows[$index-1].facility_name == row.facility_name ? '' : row.facility_name }}</td>
@@ -358,11 +391,13 @@
 
                 </div>
 
-                <div ng-show="datarows.length > 0 && (reportType!=true )">
+
+                <div ng-show="regionrows.length > 0">
 
                     <table
                             class="rnr-table table-bordered table summary-table"
-                            >
+                            ng-show="datarows.length > 0"
+                    >
                         <thead>
                         <tr>
                             <th style="min-width: 280px"></th>
@@ -372,14 +407,14 @@
                         </thead>
 
                         <tbody >
-                        <tr ng-repeat="row in colValueList" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
+                        <tr ng-repeat="row in regionColumnVals" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
                             <td ng-style="{'min-width':'2800px','background-color': getBackGroundColorSummary(row.rangeName)}" ng-bind="getColumnNameSummary(row.rangeName)"></td>
 
                             <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-repeat="column in columnVals track by $index">
                                     <span ng-if="row.columns[$index].value>0" ng-bind="row.columns[$index].value">
 
                                     </span>
-                                     <span ng-if="row.columns[$index].value==0">
+                                <span ng-if="row.columns[$index].value==0">
                                         -
                                     </span>
                             </td>
@@ -388,8 +423,9 @@
 
                         </tbody>
                     </table>
-
                 </div>
+
+
                 <div ng-show="regionrows.length > 0">
 
                     <table id="dropOutRegiontReport" ng-show="datarows.length > 0"
@@ -655,38 +691,7 @@
                     <!-- end of the table-->
 
                 </div>
-                <div ng-show="regionrows.length > 0">
 
-                    <table
-                            class="rnr-table table-bordered table summary-table"
-                            ng-show="datarows.length > 0"
-                           >
-                        <thead>
-                        <tr>
-                            <th style="min-width: 280px"></th>
-                            <th ng-style="{'max-width':'60px'}" ng-bind="column| date:'MMM-yyyy'" ng-repeat="column in columnVals">
-                            </th>
-                        </tr>
-                        </thead>
-
-                        <tbody >
-                        <tr ng-repeat="row in regionColumnVals" ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}">
-                            <td ng-style="{'min-width':'2800px','background-color': getBackGroundColorSummary(row.rangeName)}" ng-bind="getColumnNameSummary(row.rangeName)"></td>
-
-                            <td ng-style="{'background-color': getBackGroundColorSummary(row.rangeName)}" ng-repeat="column in columnVals track by $index">
-                                    <span ng-if="row.columns[$index].value>0" ng-bind="row.columns[$index].value">
-
-                                    </span>
-                                     <span ng-if="row.columns[$index].value==0">
-                                        -
-                                    </span>
-                            </td>
-
-                        </tr>
-
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>

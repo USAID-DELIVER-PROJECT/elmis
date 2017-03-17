@@ -314,4 +314,8 @@ public class RequisitionRepository {
       requisitionMapper.insertRnrSignature(rnr, signature);
     }
   }
+
+  public Rnr getRnrBy(Long facilityId, Long periodId, Long programId, boolean emergency) {
+    return requisitionMapper.getRnrBy(facilityId, periodId, programId, emergency);
+  }
 }

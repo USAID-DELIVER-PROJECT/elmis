@@ -14,9 +14,16 @@ public class VaccineInventoryDashboardQueryBuilder {
         String facilities = (String) params.get("facilities");
 
         BEGIN();
-        SELECT("*");
-        FROM("alert_equipment_nonfunctional");
-        WHERE("facilityid IN " + facilities);
+        SELECT("repair.facilityid, " +
+                "repair.programid, " +
+                "repair.facilityname, " +
+                "repair.modifieddate," +
+                "users.firstname || ' '|| users.lastname modifiedby, " +
+                "repair.model, " +
+                "operationalstatus as status ");
+        FROM("vw_cce_repair_management_not_functional repair join users on users.id =  repair.modifiedby");
+        WHERE("repair.facilityid IN " + facilities);
+        ORDER_BY("repair.facilityname");
 
         String sql = SQL();
         return sql;

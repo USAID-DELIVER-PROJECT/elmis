@@ -1,0 +1,44 @@
+<div close="closeFacilitiesModal()" id="facilitiesModal" modal="facilitiesModal"
+     options="{ backdrop: 'static', escape: true}">
+  <div class="modal-header">
+    <h3>
+      <span openlmis-message="label.facilities"></span>
+    </h3>
+  </div>
+  <div class="modal-body app-form">
+    <div>
+      <table class="table table-bordered ">
+        <thead>
+        <tr>
+          <th></th>
+          <th><span openlmis-message="label.code"></span></th>
+          <th><span openlmis-message="label.facility"></span></th>
+          <th><span openlmis-message="label.action"></span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="f in currentProgramSubscription.facilities">
+          <td><input type="checkbox" id="t[]" ng-model="f.active" /> </td>
+          <td>{{f.code}}</td>
+          <td>{{f.name}}</td>
+          <td></td>
+        </tr>
+        <tr ng-show="currentProgramSubscription.facilities == undefined || currentProgramSubscription.facilities.length == 0">
+          <td colspan="4">No Facilities are added</td>
+        </tr>
+        </tbody>
+      </table>
+      <div>
+        <label for="facilityList">Please add facility codes (one facility code per line)</label>
+        <textarea class="form-control" ng-model="facilityCodeList" id="facilityList" name="facilityList"></textarea>
+        <div class="clear-both"></div>
+        <a href="" ng-click="addFacilitiesByCode(facilityCodeList)" class="btn">Add Facilities by Codes</a>
+      </div>
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary save-button" ng-click="closeFacilitiesModal();">Okay</button>
+    <button class="btn btn-cancel" ng-click="closeFacilitiesModal();">Cancel</button>
+  </div>
+</div>

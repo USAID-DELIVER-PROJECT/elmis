@@ -54,7 +54,7 @@
 
                     <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate"-->
                                           <!--formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
-                    <static-year-filter perioderror="perioderror" year="staticYear" startdate="periodStartDate" enddate="periodEnddate" ></static-year-filter>
+                    <static-year-month-filter perioderror="perioderror" year="staticYear" startdate="periodStartDate" enddate="periodEnddate" ></static-year-month-filter>
                     <!--======================== filter end =========================-->
                 </div>
             </form>
@@ -69,6 +69,11 @@
                     <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
                 </div>
             </div>
+            <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                <div class="span11 ">
+                    <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                </div>
+            </div>
         </div>
         <div class="content-body">
             <div style="font-weight: normal" ng-show="zoneMainReport == undefined || zoneMainReport.length == 0" openlmis-message="label.report.no.data.to.show"></div>
@@ -77,77 +82,7 @@
                            <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
                            <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
                        </div>
-                        <h2 ng-show="!regionSelected">District Level</h2>
 
-                        <h2 ng-show="regionSelected">Region Level</h2>
-                        <table id="vbfixTable" class="rnr-table table-bordered table">
-                            <thead>
-                            <tr>
-                                <th rowspan="2">{{getLocalMessage('label.region')}}</th>
-                                <th rowspan="2">{{getLocalMessage('label.district')}}</th>
-                                <th rowspan="2">{{getLocalMessage('label.total.health.facility')}}</th>
-                                <th rowspan="2">Population</th>
-                                <th ng-if="p.hide!=true " ng-repeat="p in periodlist">{{p.period_name}}</th>
-
-                            </tr>
-
-
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="row in zoneMainReport">
-                                <td>
-                               <span ng-if="zoneMainReport[$index-1].report.region_name!=row.report.region_name "
-
-                                     ng-bind="row.report.region_name"></span>
-                                </td>
-                                <td>
-                               <span ng-if="zoneMainReport[$index-1].report.geographic_zone_name!=row.report.geographic_zone_name "
-
-                                     ng-bind="row.report.geographic_zone_name"></span>
-                                </td>
-
-                                <td ng-if=" facilityReport==true"
-
-
-                                    ng-bind=" row.report.facility_name"></td>
-                                <td ng-if=" facilityReport==false"
-
-
-                                    ng-bind=" row.report.facility_count"></td>
-                                <td
-
-
-                                        ng-bind=" row.report.population|number"></td>
-
-                                <td ng-if="pc.hide!=true"
-                                    ng-style="{'background-color':getCellColor(pc.classification)  }"
-                                    ng-repeat="pc in row.period_class track by $index">
-                                    <span ng-if="pc.classification!=''"> Cat_{{pc.classification}}</span>
-
-                                </td>
-
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    {{getLocalMessage('label.total')}}
-                                </td>
-
-                                <td>
-                                    {{ totalDistricts | number}}
-                                </td>
-
-                                <td>
-                                    {{totalFacilities | number}}
-                                </td>
-                                <td>{{totalPopulation|number}}</td>
-                                <td colspan=" {{ periodlist.length }}">
-
-                                </td>
-                            </tr>
-
-                            </tbody>
-                        </table>
 
                         <h2><span ng-if="facilityReport">{{getLocalMessage('label.distribution.classification.vaccine.utilization.performance.facility')}}</span>
                         </h2>
@@ -180,6 +115,77 @@
 
                         </table>
 
+                       <h2 ng-show="!regionSelected">District Level</h2>
+
+                       <h2 ng-show="regionSelected">Region Level</h2>
+                       <table id="vbfixTable" class="rnr-table table-bordered table">
+                           <thead>
+                           <tr>
+                               <th rowspan="2">{{getLocalMessage('label.region')}}</th>
+                               <th rowspan="2">{{getLocalMessage('label.district')}}</th>
+                               <th rowspan="2">{{getLocalMessage('label.total.health.facility')}}</th>
+                               <th rowspan="2">Population</th>
+                               <th ng-if="p.hide!=true " ng-repeat="p in periodlist">{{p.period_name}}</th>
+
+                           </tr>
+
+
+                           </thead>
+                           <tbody>
+                           <tr ng-repeat="row in zoneMainReport">
+                               <td>
+                               <span ng-if="zoneMainReport[$index-1].report.region_name!=row.report.region_name "
+
+                                     ng-bind="row.report.region_name"></span>
+                               </td>
+                               <td>
+                               <span ng-if="zoneMainReport[$index-1].report.geographic_zone_name!=row.report.geographic_zone_name "
+
+                                     ng-bind="row.report.geographic_zone_name"></span>
+                               </td>
+
+                               <td ng-if=" facilityReport==true"
+
+
+                                   ng-bind=" row.report.facility_name"></td>
+                               <td ng-if=" facilityReport==false"
+
+
+                                   ng-bind=" row.report.facility_count"></td>
+                               <td
+
+
+                                       ng-bind=" row.report.population|number"></td>
+
+                               <td ng-if="pc.hide!=true"
+                                   ng-style="{'background-color':getCellColor(pc.classification)  }"
+                                   ng-repeat="pc in row.period_class track by $index">
+                                   <span ng-if="pc.classification!=''"> Cat_{{pc.classification}}</span>
+
+                               </td>
+
+                           </tr>
+
+                           <tr>
+                               <td>
+                                   {{getLocalMessage('label.total')}}
+                               </td>
+
+                               <td>
+                                   {{ totalDistricts | number}}
+                               </td>
+
+                               <td>
+                                   {{totalFacilities | number}}
+                               </td>
+                               <td>{{totalPopulation|number}}</td>
+                               <td colspan=" {{ periodlist.length }}">
+
+                               </td>
+                           </tr>
+
+                           </tbody>
+                       </table>
 
                     </div>
 

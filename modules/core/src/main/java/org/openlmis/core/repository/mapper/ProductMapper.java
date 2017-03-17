@@ -17,6 +17,8 @@ import org.openlmis.core.domain.ProductForm;
 import org.openlmis.core.domain.ProductGroup;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * ProductMapper maps the Product entity to corresponding representation in database.
  */
@@ -124,4 +126,8 @@ public interface ProductMapper {
   @Select({"SELECT COUNT(*) FROM products WHERE (LOWER(code) LIKE '%' || LOWER(#{searchParam}) || '%')",
     "OR (LOWER(primaryName) LIKE '%' || LOWER(#{searchParam}) || '%')"})
   Integer getTotalSearchResultCount(String searchParam);
+
+  @Select("SELECT distinct id, code, primaryName from products where code = ANY(#{codes}::varchar[])")
+  List<Product> getProductsByCommaSeparatedCodes(@Param("codes") String commaSeparatedCodes);
+
 }

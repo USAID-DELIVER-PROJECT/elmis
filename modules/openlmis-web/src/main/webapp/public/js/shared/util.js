@@ -110,7 +110,7 @@ var utils = {
 
     },
 
-    getYearStartAndEnd: function (year,_startDate,_endDate, _cuttofdate) {
+    getYearStartAndEnd: function (year, _startDate, _endDate, _cuttofdate, type) {
 
         var periodValues = [];
         var endDate;
@@ -120,19 +120,34 @@ var utils = {
                 periodValues = utils.getVaccineCustomDateRange(1, null, null, _cuttofdate);
 
             } else {
+                if(type===0) {
+                    periodValues = {
+                        enddate: utils.formatDate(new Date(year, 12, 0)),
+                        startdate: utils.formatDate(new Date(year, 0, 1))
+                    };
+                }
+                else{
+                    periodValues = {
+                        enddate: utils.formatDate(new Date(year, _endDate, 0)),
+                        startdate: utils.formatDate(new Date(year, _startDate, 1))
+                    };
+                }
+            }
+        } else {
+            if (type === 0) {
+                periodValues = {startdate: _startDate, enddate: _endDate};
+            }else if(type===1){
                 periodValues = {
-                    enddate: utils.formatDate(new Date(year, 12, 0)),
-                    startdate: utils.formatDate(new Date(year, 0, 1))
+                    enddate: utils.formatDate(new Date(year, _endDate+1, 0)),
+                    startdate: utils.formatDate(new Date(year, _startDate, 1))
                 };
             }
-        }else{
-
-            periodValues= {startdate: _startDate, enddate: _endDate};
             return periodValues;
         }
         return periodValues;
 
     },
+
     getVaccineMonthlyDefaultPeriod: function (periods, cuttoffDate) {
         var monthBack = 0;
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

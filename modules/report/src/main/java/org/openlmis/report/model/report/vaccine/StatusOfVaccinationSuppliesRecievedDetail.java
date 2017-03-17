@@ -18,9 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.openlmis.core.domain.BaseModel;
-
-import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -39,7 +36,10 @@ private String region_name;
     private float wasted;
     private float used;
     private float administered;
+    private float vaccinated;
     private Long targetpopulation;
     private String reporting_status;
+    private float usagerate;
+    private float wastagerate;
 
 }

@@ -49,6 +49,10 @@ angular.module('vaccine-report-create', ['openlmis', 'ngGrid', 'angularCombine',
                 controller: CategorizationVaccineUtilizationPerformanceController,
                 templateUrl:'partials/view/categorization-vaccine-utilization-performance.html', resolve: CategorizationVaccineUtilizationPerformanceController.resolve
             }).
+        when('/report-menu', {
+            controller: NavigationController,
+            templateUrl:'partials/view/report-menu.html'
+        }).
             otherwise({redirectTo: '/list'});
     }]).config(function (angularCombineConfigProvider) {
         angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');

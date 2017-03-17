@@ -47,7 +47,7 @@
                         <!--<static-period-filter range="range" startdate="filter.periodStart" enddate="filter.periodEnd"-->
                                               <!--rangemax="10" error="perioderror"></static-period-filter>-->
 
-                        <static-year-filter perioderror="perioderror" year="year" startdate="filter.periodStart" enddate="filter.periodEnd" ></static-year-filter>
+                        <static-year-month-filter perioderror="perioderror" year="year" startdate="filter.periodStart" enddate="filter.periodEnd" ></static-year-month-filter>
                         <br/>
                     </div>
 
@@ -62,6 +62,11 @@
                     <div class="span4">
                         <strong><span openlmis-message="label.start.date"></span></strong>: {{filter.periodStart}} &nbsp;&nbsp;&nbsp;&nbsp;
                         <strong><span openlmis-message="label.end.date"></span></strong> : {{filter.periodEnd}}
+                    </div>
+                </div>
+                <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                    <div class="span11 ">
+                        <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
                     </div>
                 </div>
             </div>

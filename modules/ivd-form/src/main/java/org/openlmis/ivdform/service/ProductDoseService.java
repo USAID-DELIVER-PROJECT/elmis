@@ -23,7 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductDoseService {
@@ -46,6 +48,14 @@ public class ProductDoseService {
       List<VaccineProductDose> doses = repository.getDosesForProduct(programId, p.getProduct().getId());
       if (!doses.isEmpty()) {
         ProductDoseDTO productDose = new ProductDoseDTO();
+        Long maxDisplayOrder = doses
+            .stream()
+            .map(VaccineProductDose::getProductDisplayOrder)
+            .collect(Collectors.toList())
+            .stream().max(Comparator.naturalOrder())
+            .get();
+
+        productDose.setProductDisplayOrder(maxDisplayOrder);
         productDose.setProductId(p.getProduct().getId());
         productDose.setProductName(p.getProduct().getPrimaryName());
         productDose.setDoses(doses);
@@ -57,7 +67,9 @@ public class ProductDoseService {
     }
     dto.setPossibleDoses(repository.getAllDoses());
     dto.setPossibleProducts(products);
+    productDoseDTOs.sort((p1, p2) -> p1.getProductDisplayOrder().compareTo(p2.getProductDisplayOrder() ));
     dto.setProtocols(productDoseDTOs);
+
     return dto;
   }
 
@@ -67,8 +79,9 @@ public class ProductDoseService {
 
   public void save(List<ProductDoseDTO> productDoseDTOs) {
     repository.deleteAllByProgram(productDoseDTOs.get(0).getDoses().get(0).getProgramId());
-    for (ProductDoseDTO productDose : productDoseDTOs) {
-      for (VaccineProductDose dose : productDose.getDoses()) {
+    for (ProductDoseDTO productDoseDTO : productDoseDTOs) {
+      for (VaccineProductDose dose : productDoseDTO.getDoses()) {
+        dose.setProductDisplayOrder(productDoseDTO.getProductDisplayOrder());
         repository.insert(dose);
       }
     }

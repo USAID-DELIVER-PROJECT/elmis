@@ -429,6 +429,11 @@
                   </ul>
                 </div>
             </li>
+          <li ng-show="hasPermission('SYSTEM_SETTINGS')">
+            <a
+                href="/public/pages/admin/supply-partner/index.html"
+                ><span openlmis-message="link.manage.supply.partners"></span></a>
+          </li>
             <li class="has-children"  >
             <a id="demographic-admin" href="" openlmis-message="link.manage.demographic.estimates"></a>
             <div class="submenu">

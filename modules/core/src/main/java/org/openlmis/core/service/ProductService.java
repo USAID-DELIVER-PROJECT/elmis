@@ -117,4 +117,9 @@ public class ProductService {
   public Product getById(Long id) {
     return repository.getById(id);
   }
+
+  public List<Product> getListByCodes(List<String> codes) {
+    String commaSeparatedCodes = "{" + String.join(",", codes) + "}";
+    return repository.getProductsByCommaSeparatedCode(commaSeparatedCodes);
+  }
 }
