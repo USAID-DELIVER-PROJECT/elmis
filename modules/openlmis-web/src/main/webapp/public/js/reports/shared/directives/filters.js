@@ -1717,7 +1717,7 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
 
             $scope.$watch('staticYear', function (newValues, oldValues) {
                 if (!utils.isNullOrUndefined($scope.staticYear) && $scope.staticYear >= 0) {
-                    periods = utils.getYearStartAndEnd($scope.staticYear, $scope.periodStartdate, $scope.periodEnddate, $scope.cutoffdate);
+                    periods = utils.getYearStartAndEnd($scope.staticYear, $scope.periodStartdate, $scope.periodEnddate, $scope.cutoffdate,0);
 
 
                     $scope.periodStartdate = periods.startdate;
@@ -1769,6 +1769,114 @@ app.directive('staticYearFilter', ['StaticYears', 'SettingsByKey', function (Sta
             };
         },
         templateUrl: 'filter-static-year'
+    };
+}]);
+
+app.directive('staticYearMonthFilter', ['StaticYears', 'SettingsByKey', function (StaticYears, SettingsByKey) {
+
+    return {
+        restrict: 'E',
+        scope: {
+            staticYear: '=year',
+            periodStartdate: '=startdate',
+            periodEnddate: '=enddate',
+            perioderror: '=perioderror',
+            onChange: '&'
+        },
+
+        controller: function ($scope, $timeout) {
+
+            $scope.periodStartdate = $scope.periodEnddate = "";
+            $scope.years = [];
+            $scope.monthNames=[{id:0,value:"Jan"},
+                {id:1,value:"Feb"},
+                {id:2,value:"Mar"},
+                {id:3,value:"Apr"},
+                {id:4,value:"May"},
+                {id:5,value:"Jun"},
+                {id:6,value:"Jul"},
+                {id:7,value:"Aug"},
+                {id:8,value:"Sep"},
+                {id:9,value:"Oct"},
+                {id:10,value:"Nov"},
+                {id:11,value:"Dec"}];
+            $scope.startMonth=0;
+            $scope.endMonth=11;
+            SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data, er) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    $scope.cutoffdate = data.settings.value;
+                } else {
+                    $scope.cutoffdate = 0;
+                }
+            });
+            StaticYears.get({}, function (data) {
+
+                data.years.forEach(function (value) {
+                    $scope.years.push(value);
+                });
+                $scope.staticYear = $scope.years[0].id;
+
+            });
+
+
+            $scope.$watch('staticYear', function (newValues, oldValues) {
+                if (!utils.isNullOrUndefined($scope.staticYear) && $scope.staticYear >= 0) {
+                    periods = utils.getYearStartAndEnd($scope.staticYear, $scope.startMonth, $scope.endMonth, $scope.cutoffdate,1);
+                    $scope.startMonth=0;
+                    $scope.endMonth=11;
+                    $scope.periodStartdate = periods.startdate;
+                    $scope.periodEnddate = periods.enddate;
+
+                    $timeout(function () {
+                        $scope.onChange();
+                        $scope.$parent.OnFilterChanged();
+                    }, 10);
+                }
+            });
+
+            $scope.$watchCollection('[startMonth,endMonth]', function (newValues, oldValues) {
+                if (utils.isEmpty($scope.startMonth) || utils.isEmpty($scope.endMonth))
+                    return;
+               var end=parseInt($scope.endMonth,10)+1;
+                periods = utils.getYearStartAndEnd($scope.staticYear, $scope.startMonth, end, $scope.cutoffdate,1);
+                $scope.periodStartdate = periods.startdate;
+                $scope.periodEnddate = periods.enddate;
+                var datediff = differenceInDays();
+                var yearDif = yearDifference();
+
+                if (datediff < 0) {
+                    $scope.perioderror = 'Period start date must be before or equal to end date';
+                }
+                else if (yearDif !== 0) {
+                    $scope.perioderror = 'Start and End date should be in same year';
+                }
+                else
+                    $scope.perioderror="";
+                $scope.$parent.OnFilterChanged();
+
+            });
+            var differenceInDays = function () {
+
+                var one = new Date($scope.periodStartdate),
+                    two = new Date($scope.periodEnddate);
+
+                var millisecondsPerDay = 1000 * 60 * 60 * 24;
+                var millisBetween = two.getTime() - one.getTime();
+                var days = millisBetween / millisecondsPerDay;
+
+                return Math.floor(days);
+            };
+            var yearDifference = function () {
+                var one = new Date($scope.periodStartdate),
+                    two = new Date($scope.periodEnddate);
+                var startyear = one.getFullYear(),
+                    endYear = two.getFullYear();
+                var dif = startyear - endYear;
+                return Math.floor(dif);
+
+            };
+        },
+        templateUrl: 'filter-static-year-month'
     };
 }]);
 

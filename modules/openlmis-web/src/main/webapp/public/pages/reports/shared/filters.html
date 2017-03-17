@@ -576,7 +576,39 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="filter-static-year-month">
+    <div>
+        <div  class="horizontalFilters form-cell">
+            <label for="static-year"  class="labels" openlmis-message="label.period"><span class="label-required">*</span></label>
+            <div>
+                <select style="width: 140px" id="static-year" ui-select2 class="input-large" ng-model="staticYear">
 
+                    <option ng-repeat="option in years" value="{{option.id}}" >{{option.year_value}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="horizontalFilters form-cell" >
+            <label for="periodStartdate" class="labels" ><span openlmis-message="label.start.date"></span></label>
+            <div>
+                <select style="width: 140px" id="periodStartdate" ui-select2 class="input-large" ng-model="startMonth">
+
+                    <option ng-repeat="option in monthNames" value="{{option.id}}" >{{option.value}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="horizontalFilters form-cell" >
+            <label for="periodEnddate" class="labels" ><span openlmis-message="label.end.date"></span></label>
+            <div>
+                <select style="width: 140px" id="periodEnddate" ui-select2 class="input-large" ng-model="endMonth">
+
+                    <option ng-repeat="option in monthNames" value="{{option.id}}" >{{option.value}}</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+</script>
 <script type="text/ng-template" id="filter-vaccine-product-doses-template">
     <div>
         <div  class="horizontalFilters form-cell">
