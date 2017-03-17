@@ -28,6 +28,7 @@ import org.openlmis.core.service.ProgramProductService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.demographics.service.AnnualFacilityDemographicEstimateService;
+import org.openlmis.equipment.service.EquipmentInventoryService;
 import org.openlmis.ivdform.builders.reports.VaccineReportBuilder;
 import org.openlmis.ivdform.domain.VaccineDisease;
 import org.openlmis.ivdform.domain.VaccineProductDose;
@@ -105,6 +106,9 @@ public class IvdFormServiceTest {
 
   @Mock
   ConfigurationSettingService configService;
+
+  @Mock
+  EquipmentInventoryService equipmentInventoryService;
 
   @InjectMocks
   IvdFormService service;

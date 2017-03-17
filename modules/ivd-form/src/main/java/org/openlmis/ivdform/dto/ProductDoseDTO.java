@@ -28,6 +28,8 @@ public class ProductDoseDTO {
 
   private Long productId;
 
+  private Long productDisplayOrder;
+
   private String productName;
 
   private List<VaccineProductDose> doses;

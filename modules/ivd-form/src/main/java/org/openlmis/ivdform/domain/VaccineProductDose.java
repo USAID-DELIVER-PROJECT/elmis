@@ -32,6 +32,7 @@ public class VaccineProductDose extends BaseModel {
   String productName;
   String displayName;
   Long displayOrder;
+  Long productDisplayOrder;
 
   Boolean trackMale;
   Boolean trackFemale;
