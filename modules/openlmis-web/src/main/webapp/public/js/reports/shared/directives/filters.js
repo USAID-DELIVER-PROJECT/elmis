@@ -1841,6 +1841,7 @@ app.directive('staticYearMonthFilter', ['StaticYears', 'SettingsByKey', function
                 periods = utils.getYearStartAndEnd($scope.staticYear, $scope.startMonth, end, $scope.cutoffdate,1);
                 $scope.periodStartdate = periods.startdate;
                 $scope.periodEnddate = periods.enddate;
+                $scope.$apply();
                 var datediff = differenceInDays();
                 var yearDif = yearDifference();
 
