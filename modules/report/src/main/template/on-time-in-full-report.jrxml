@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="on_time_in_full_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.1269722013523664"/>
-	<property name="ireport.x" value="341"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="err_open" fontName="SansSerif" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
 		<conditionalStyle>
@@ -58,6 +58,7 @@
 	<field name="receivedDate" class="java.util.Date"/>
 	<field name="product" class="java.lang.String"/>
 	<field name="onTime" class="java.lang.String"/>
+	<field name="onTimeAndOnFull" class="java.lang.String"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -136,12 +137,12 @@
 					<textFieldExpression><![CDATA[$R{label.requested.positive}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="700" y="40" width="44" height="43" forecolor="#000000" backcolor="#333333" uuid="276384e4-990e-4652-97be-f4b00dace770"/>
+					<reportElement mode="Transparent" x="700" y="40" width="101" height="43" forecolor="#000000" backcolor="#333333" uuid="276384e4-990e-4652-97be-f4b00dace770"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$R{label.delivered.in.full}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{label.on.time.and.on.full}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Transparent" x="442" y="40" width="62" height="43" forecolor="#000000" backcolor="#333333" uuid="6b0109e5-6eb1-4f0b-85cc-ed7dca43a2d5"/>
@@ -166,14 +167,6 @@
 						<paragraph leftIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement mode="Transparent" x="744" y="40" width="57" height="43" forecolor="#000000" backcolor="#333333" uuid="9e28ec24-664c-40d0-8e84-0c04a3815962"/>
-					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
-						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-						<paragraph lineSpacing="Single"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$R{label.delivered.in.time}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -289,11 +282,11 @@
 				<textFieldExpression><![CDATA[$F{inFullGreatRange}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="700" y="0" width="44" height="19" uuid="1dc9f534-746b-4f05-9c14-1fb9dede6468"/>
+				<reportElement x="700" y="0" width="101" height="19" uuid="1dc9f534-746b-4f05-9c14-1fb9dede6468"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{onFull}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{onTimeAndOnFull}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="false">
 				<reportElement x="376" y="0" width="66" height="20" uuid="6cbde3fb-bbe5-40a8-9575-bf2eac39741e"/>
@@ -308,13 +301,6 @@
 					<paragraph rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{receivedDate}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="744" y="0" width="57" height="19" uuid="c354d8df-0d69-4d73-b15e-94e5a843e8a4"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<paragraph rightIndent="3"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{onTime}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
