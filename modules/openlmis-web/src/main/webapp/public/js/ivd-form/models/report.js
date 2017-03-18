@@ -31,14 +31,14 @@ var VaccineReport = function (report) {
     this.logisticsLineItems = getLogisticsLineItems(this.logisticsLineItems, this);
     this.coverageLineItemViews = [];
     var coverages = _.groupBy(this.coverageLineItems, 'productId');
+    var productIdsInOrder = _.uniq(_.pluck(this.coverageLineItems,'productId'));
     //insert these groups in the order of products
-    for (var i = 0; i < this.logisticsLineItems.length; i++) {
-      var product = this.logisticsLineItems[i];
-      var coverageGroup = coverages[product.productId];
+    for (var i = 0; i < productIdsInOrder.length; i++) {
+      var coverageGroup = coverages[productIdsInOrder[i]];
       if (coverageGroup !== undefined) {
         this.coverageLineItemViews.push(coverageGroup);
       }
-    }
+   }
     this.initializeDropouts();
     this.editable = (this.status === 'DRAFT' || this.status === 'REJECTED');
     this.ready = true;
