@@ -45,13 +45,10 @@ function VaccineReceivedSummaryReportController($scope,$window,VaccineReceivedSu
                     return [{"receivedDate": index, "products": value}];
                 });
                 $scope.paramsChanged($scope.tableParams);
-                console.log(JSON.stringify($scope.distributedFacilities));
-
 
             }
 
         });
-        console.log($scope.distributedFacilities);
 
     };
 
