@@ -291,4 +291,11 @@ public class OrderService {
   public Order getByOrderNumber(String orderNumber) {
     return orderRepository.getByOrderNumber(orderNumber);
   }
+
+  public void releaseWithoutOrder(List<Rnr> rnrList, Long userId) {
+    User user = userService.getById(userId);
+    for(Rnr rnr: rnrList){
+      requisitionService.releaseWithoutOrder(rnr, user);
+    }
+  }
 }

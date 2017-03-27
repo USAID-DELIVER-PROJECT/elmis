@@ -767,5 +767,15 @@ public class RequisitionService {
   public void insertRnrSignatures(Rnr rnr) {
     requisitionRepository.insertRnrSignatures(rnr);
   }
+
+  public void releaseWithoutOrder(Rnr rnr, User user) {
+    Rnr requisition = requisitionRepository.getById(rnr.getId());
+    if(requisition.getStatus().equals(RnrStatus.APPROVED)) {
+      requisition.setStatus(RnrStatus.RELEASED_NO_ORDER);
+      requisition.setModifiedBy(user.getId());
+      requisitionRepository.update(requisition);
+      requisitionRepository.logStatusChange(requisition, user.getUserName());
+    }
+  }
 }
 

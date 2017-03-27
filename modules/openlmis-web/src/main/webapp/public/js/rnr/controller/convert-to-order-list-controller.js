@@ -8,7 +8,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-function ConvertToOrderListController($scope, Orders, RequisitionForConvertToOrder,SupplyingDepots, $dialog, messageService, $routeParams, $location) {
+function ConvertToOrderListController($scope, Orders, ReleaseWithoutOrders, RequisitionForConvertToOrder,SupplyingDepots, $dialog, messageService, $routeParams, $location) {
+
+  $scope.releaseWithoutOrder = ReleaseWithoutOrders;
+  $scope.releaseOrder = Orders;
+
   $scope.message = "";
   $scope.maxNumberOfPages = 10;
   $scope.selectedItems = [];
@@ -123,7 +127,9 @@ function ConvertToOrderListController($scope, Orders, RequisitionForConvertToOrd
     OpenLmisDialog.newDialog(options, callBack(), $dialog);
   };
 
-  $scope.convertToOrder = function () {
+  $scope.convertToOrder = function (service, confirmation) {
+    $scope.confirmation = confirmation;
+    $scope.service = service;
     $scope.message = "";
     $scope.noRequisitionSelectedMessage = "";
     if ($scope.selectedItems.length === 0) {
@@ -136,7 +142,7 @@ function ConvertToOrderListController($scope, Orders, RequisitionForConvertToOrd
   var convert = function () {
     var successHandler = function () {
       refreshGrid();
-      $scope.message = "msg.rnr.converted.to.order";
+      $scope.message = $scope.confirmation;
       $scope.error = "";
     };
 
@@ -151,6 +157,6 @@ function ConvertToOrderListController($scope, Orders, RequisitionForConvertToOrd
       refreshGrid();
     };
 
-    Orders.post({}, $scope.selectedItems, successHandler, errorHandler);
+    $scope.service.post({}, $scope.selectedItems, successHandler, errorHandler);
   };
 }

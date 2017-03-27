@@ -22,5 +22,6 @@ public enum RnrStatus {
   IN_APPROVAL,
   APPROVED,
   RELEASED,
+  RELEASED_NO_ORDER,
   SKIPPED
 }

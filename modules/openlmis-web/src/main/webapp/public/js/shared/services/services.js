@@ -222,6 +222,10 @@ services.factory('Orders', function ($resource) {
   return $resource('/orders.json', {}, {post: {isArray: true, method: 'POST'}});
 });
 
+services.factory('ReleaseWithoutOrders', function ($resource) {
+  return $resource('/release-without-order.json', {}, {post: {isArray: true, method: 'POST'}});
+});
+
 services.factory('OrdersForManagePOD', function ($resource) {
   return $resource('/manage-pod-orders', {}, {});
 });
