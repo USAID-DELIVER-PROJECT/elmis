@@ -29,7 +29,7 @@
         <table class="table table-bordered">
           <thead>
           <tr class="gradient-header">
-            <th style="width: 100px;" class="number"><span openlmis-message="label.vaccine.coverage.display.order"></span></th>
+            <th style="width: 50px;" class="number"><span openlmis-message="label.vaccine.coverage.display.order"></span></th>
             <th style="width: 300px;" class="col-product"><span openlmis-message="label.product"></span></th>
             <th class="number"><span openlmis-message="label.vaccine.coverage.display.order"></span></th>
             <th><span openlmis-message="label.vaccine.coverage.display.name"></span></th>
@@ -43,7 +43,7 @@
           <tr ng-repeat-start="product in protocol.protocols"></tr>
           <tr ng-repeat-start="dose in product.doses">
             <td class="col-general cell-input padding2px" style="text-align: center;" ng-if="$index == 0" rowspan="{{product.doses.length * 2}}">
-              <input ng-model="product.productDisplayOrder" />
+              <input style="width: 95px;" ng-model="product.productDisplayOrder" />
             </td>
             <td ng-if="$index == 0" rowspan="{{product.doses.length * 2}}">{{ product.productName }}</td>
             <td class="col-general cell-input"><span class="cell-text number padding2px" ng-bind="dose.displayOrder"></span>

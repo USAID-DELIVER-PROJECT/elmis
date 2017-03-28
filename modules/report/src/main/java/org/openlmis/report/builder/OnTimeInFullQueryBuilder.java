@@ -45,8 +45,9 @@ public class OnTimeInFullQueryBuilder {
                 "               "+writePredicates(filter)+"  and o.status = 'ISSUED'  " +
                 "                AND M.district_id in (select district_id from vw_user_facilities where user_id = '" + userId + "'::INT and program_id = fn_get_vaccine_program_id())  "+
 
-                "               order by M.region_name   \n" +
-                "               ) y ON (x.orderId = y.orderId and X.productId = y.productId) ";
+                "               order by M.region_name ASC  \n" +
+                "               ) y ON (x.orderId = y.orderId and X.productId = y.productId)" +
+                "                 ORDER BY region ASC  ";
 
 
     }

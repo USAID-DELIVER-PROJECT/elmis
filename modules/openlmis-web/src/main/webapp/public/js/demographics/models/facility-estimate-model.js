@@ -66,6 +66,9 @@ function AggregateFacilityEstimateModel(facilityList, districts, categories, yea
   };
 
   AggregateFacilityEstimateModel.prototype.isValid = function (district) {
+    if(isUndefined(this.indexedList[district])){
+      return true;
+    }
     for (var i = 0; i < this.categories.length; i++) {
       if (this.getSummary(district, this.categories[i], year) !== this.getDistrictEntry(district, this.categories[i])) {
         return false;
