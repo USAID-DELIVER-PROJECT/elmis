@@ -70,7 +70,7 @@ $scope.homeLinkClicked=function(){
   }();
 
   function hideEmptyReportCategory(){
-      $('#all-report-lists li.children ul li.ng-hide').parent().parent().hide();
+      $('#all-report-lists li.report-children ul li.ng-hide').parent().parent().hide();
   }
   $timeout(hideEmptyReportCategory, 0);
 }

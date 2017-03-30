@@ -222,6 +222,10 @@ services.factory('Orders', function ($resource) {
   return $resource('/orders.json', {}, {post: {isArray: true, method: 'POST'}});
 });
 
+services.factory('ReleaseWithoutOrders', function ($resource) {
+  return $resource('/release-without-order.json', {}, {post: {isArray: true, method: 'POST'}});
+});
+
 services.factory('OrdersForManagePOD', function ($resource) {
   return $resource('/manage-pod-orders', {}, {});
 });
@@ -488,4 +492,6 @@ services.factory('DeleteEquipmentInventory', function ($resource) {
   return $resource('/equipment/inventory/delete', {}, {});
 });
 
-
+services.factory('CustomReportList', function ($resource) {
+  return $resource('/report-api/list.json', {}, {});
+});

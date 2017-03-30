@@ -12,13 +12,13 @@ package org.openlmis.web.controller;
 
 import org.openlmis.core.domain.OrderNumberConfiguration;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.order.domain.DateFormat;
 import org.openlmis.order.domain.Order;
 import org.openlmis.order.dto.OrderFileTemplateDTO;
 import org.openlmis.order.service.OrderService;
 import org.openlmis.web.form.RequisitionList;
-import org.openlmis.core.web.OpenLmisResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,18 +28,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import static org.openlmis.core.domain.RightName.VIEW_ORDER;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.openlmis.core.domain.RightName.MANAGE_POD;
-import static org.openlmis.order.domain.OrderStatus.*;
-import static org.openlmis.order.dto.OrderDTO.getOrdersForView;
+import static org.openlmis.core.domain.RightName.VIEW_ORDER;
 import static org.openlmis.core.web.OpenLmisResponse.error;
 import static org.openlmis.core.web.OpenLmisResponse.response;
+import static org.openlmis.order.domain.OrderStatus.*;
+import static org.openlmis.order.dto.OrderDTO.getOrdersForView;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -73,6 +72,14 @@ public class OrderController extends BaseController {
     } catch (DataException de) {
       return error("msg.rnr.already.converted.to.order", CONFLICT);
     }
+    return new ResponseEntity<>(CREATED);
+  }
+
+  @RequestMapping(value = "/release-without-order", method = POST, headers = ACCEPT_JSON)
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'CONVERT_TO_ORDER')")
+  public ResponseEntity<OpenLmisResponse>releaseWithoutOrder(@RequestBody RequisitionList rnrList,
+                                                             HttpServletRequest request){
+    orderService.releaseWithoutOrder(rnrList, loggedInUserId(request));
     return new ResponseEntity<>(CREATED);
   }
 

@@ -58,12 +58,14 @@
         </div>
         <div form-toolbar id="action_buttons" class="action-buttons">
             <div class="form-cell button-row">
-                <input id='covertToOrderButton' type="submit" ng-click="convertToOrder()"
+                <input id='covertToOrderButton' type="submit" ng-click="convertToOrder(releaseOrder,'msg.rnr.converted.to.order')"
                        class="btn btn-primary save-button" openlmis-message="button.convert.to.order"
+                       ng-disabled="filteredRequisitions.length == 0"/>
+                <input id='releaseWithoutOrderButton' type="submit" ng-click="convertToOrder(releaseWithoutOrder,'msg.rnr.released.without.order')"
+                       class="btn btn-primary save-button" openlmis-message="button.release.without.order"
                        ng-disabled="filteredRequisitions.length == 0"/>
             </div>
         </div>
     </div>
-</div>
 </div>
 
