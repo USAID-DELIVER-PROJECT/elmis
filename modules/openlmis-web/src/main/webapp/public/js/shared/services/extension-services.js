@@ -1050,9 +1050,7 @@ services.factory('RmnchProducts', function($resource){
     return $resource('/reports/rmnch-products.json',{},{});
 });
 
-services.factory('CustomReportList', function ($resource) {
-    return $resource('/report-api/list.json', {}, {});
-});
+
 
 services.factory('CustomReportFullList', function ($resource) {
     return $resource('/report-api/full-list.json', {}, {});

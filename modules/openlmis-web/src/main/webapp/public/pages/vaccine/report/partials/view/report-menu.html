@@ -9,41 +9,10 @@
   ~
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<style>
-    .children  ul
-    {
-        margin: 10px;
-        padding: 0;
-        list-style-type: none;
-    }
-
-   .children  ul li { display: inline; list-style-type: square; }
-    .children  ul li a {
-        background: rgb(0, 185, 204);
-        color: white;
-        padding: 3px;
-        margin: 2px;}
-    .children {
-        text-align: left;
-        border-bottom: 1px solid #078f97;
-        margin-bottom: 12px;
-        font-size: 12px;
-    }
-
-     .children > a{
-        font-weight: bold;
-    }
-    #all-report-lists h3{
-        border-bottom: 3px solid #000;
-        margin-bottom: 21px;
-        text-transform: uppercase;
-    }
-
-</style>
 
     <ul id="all-report-lists">
         <h3 openlmis-message="title.main.reports"></h3>
-        <li ng-show="hasPermission('VIEW_VACCINE_REPORT')" class="children"  >
+        <li ng-show="hasPermission('VIEW_VACCINE_REPORT')" class="report-children"  >
             <a href="" openlmis-message="menu.report.routine.immunization"></a>
                 <ul>
                     <!--
@@ -84,7 +53,7 @@
 
         </li>
 
-        <li class="children">
+        <li class="report-children">
             <a href="" openlmis-message="link.stock.management"></a>
 
                 <ul>
@@ -131,7 +100,7 @@
 
         </li>
 
-        <li class="children">
+        <li class="report-children">
             <a href="" openlmis-message="link.report.cold.chain.equipment"></a>
 
                 <ul>
@@ -165,7 +134,7 @@
 
         <h3 openlmis-message="title.custom.report"></h3>
 
-        <li class="children" ng-repeat="category in customReports">
+        <li class="report-children" ng-repeat="category in customReports">
             <a href="javascript: void(0);">{{category[0].category}}</a>
             <ul >
                 <li ng-repeat="report in category"><a ng-href="/public/pages/reports/custom/index.html#/list?report_key={{report.reportkey}}">{{report.name}}</a></li>
@@ -173,7 +142,7 @@
         </li>
 
         <h3 openlmis-message="title.other.report"></h3>
-        <li class="children">
+        <li class="report-children">
             <a href="javascript: void(0);" openlmis-message="menu.report.admin"></a>
 
 
@@ -191,7 +160,7 @@
 
         </li>
 
-        <li class="children">
+        <li class="report-children">
             <a href="javascript: void(0);" openlmis-message="menu.report.consumption"></a>
 
 
@@ -213,7 +182,7 @@
 
         </li>
 
-        <li class="children">
+        <li class="report-children">
             <a href="javascript: void(0);" openlmis-message="menu.report.equipment"></a>
 
 
@@ -235,7 +204,7 @@
 
         </li>
 
-        <li class="children">
+        <li class="report-children">
             <a href="javascript: void(0);" openlmis-message="menu.report.order.fulfillment"></a>
 
 
@@ -272,7 +241,7 @@
 
         </li>
 
-        <li class="children">
+        <li class="report-children">
             <a href="javascript: void(0);" openlmis-message="menu.report.regimen"></a>
                 <ul>
                     <li ng-show="hasPermission('VIEW_REGIMEN_SUMMARY_REPORT')">
@@ -292,7 +261,7 @@
 
         </li>
 
-        <li class="children">
+        <li class="report-children">
             <a href="javascript: void(0);" openlmis-message="menu.report.status"></a>
 
 
@@ -316,7 +285,7 @@
 
         </li>
 
-        <li class="children">
+        <li class="report-children">
             <a href="javascript: void(0);" openlmis-message="menu.report.stock.keeping"></a>
 
 
@@ -350,7 +319,7 @@
 
         </li>
 
-    <li class="children">
+    <li class="report-children">
     <a href="javascript: void(0);" openlmis-message="menu.report.others"></a>
         <ul>
             <li ng-show="hasReportingPermission() || true">

@@ -492,4 +492,6 @@ services.factory('DeleteEquipmentInventory', function ($resource) {
   return $resource('/equipment/inventory/delete', {}, {});
 });
 
-
+services.factory('CustomReportList', function ($resource) {
+  return $resource('/report-api/list.json', {}, {});
+});
