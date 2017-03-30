@@ -23,6 +23,7 @@ angular.module('vaccine-inventory', ['openlmis','ngGrid', 'ngTable','ui.bootstra
             when('/vaccine-forecasting', {controller:VaccineForecastingController, templateUrl:'partials/vaccine-forecast.html',reloadOnSearch:false,resolve:VaccineForecastingController.resolve}).
             when('/transfer-out', {controller:TransferOutController, templateUrl:'partials/transfer-out-partial.html',reloadOnSearch:false,resolve:TransferOutController.resolve}).
             when('/view-issue-voucher', {controller:ViewIssueVoucherController, templateUrl:'partials/view-issue-voucher.html',reloadOnSearch:false,resolve:ViewIssueVoucherController.resolve}).
+            when('/transfer-issue-voucher', {controller:ViewTransferIssueVoucherController, templateUrl:'partials/transfer-issue-voucher.html',reloadOnSearch:false,resolve:ViewTransferIssueVoucherController.resolve}).
             otherwise({redirectTo:'/public/pages/vaccine/dashboard/index.html#/dashboard'});
     }]).run(function ($rootScope, AuthorizationService) {
 
