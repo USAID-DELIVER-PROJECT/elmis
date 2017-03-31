@@ -21,9 +21,6 @@ import org.openlmis.report.model.ReportParameter;
 @AllArgsConstructor
 public class PipelineExportParams
    extends BaseParam implements ReportParameter {
-
-    private int programId;
-    private int yearId;
-    private int periodId;
-
+    private Long program;
+    private Long period;
 }

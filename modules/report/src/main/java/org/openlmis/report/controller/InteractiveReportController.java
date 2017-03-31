@@ -27,6 +27,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -364,20 +365,35 @@ public class InteractiveReportController extends BaseController {
     }
 
 
-    @RequestMapping(value = "/reportdata/pipelineExport", method = GET, headers = BaseController.ACCEPT_JSON)
+    @RequestMapping(value = "/reportdata/pipelineExport", method = GET)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_PIPELINE_EXPORT')")
-    public Pages getPipelineExportData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
-                                       HttpServletRequest request) {
-
+    public ResponseEntity<OpenLmisResponse> getPipelineExportData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                              @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                              HttpServletRequest request) {
         Report report = reportManager.getReportByKey("pipeline_export");
         report.getReportDataProvider().setUserId(loggedInUserId(request));
         PipelineExportReportProvider provider = (PipelineExportReportProvider) report.getReportDataProvider();
-        List<PipelineExportReport> pipelineExportData = (List<PipelineExportReport>)
-                provider.getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
-
-        return new Pages(page, max, pipelineExportData);
+        Map<String, String[]> map = request.getParameterMap();
+        List<PipelineConsumptionLineItem> pipelineExportData = (List<PipelineConsumptionLineItem>)provider.getReportBody(map, map, page, max);
+       return OpenLmisResponse.response("rows", pipelineExportData);
     }
+
+  @RequestMapping(value = "/pipeline-export.xml", method = GET)
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_PIPELINE_EXPORT')")
+  public ModelAndView getPipelineExportDataXml(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                            @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                            HttpServletRequest request) {
+    ModelAndView pipelineXml = new ModelAndView("pipelineXml");
+    Report report = reportManager.getReportByKey("pipeline_export");
+    report.getReportDataProvider().setUserId(loggedInUserId(request));
+    PipelineExportReportProvider provider = (PipelineExportReportProvider) report.getReportDataProvider();
+    Map<String, String[]> map = request.getParameterMap();
+    List<PipelineConsumptionLineItem> pipelineExportData = (List<PipelineConsumptionLineItem>)provider.getReportBody(map, map, page, max);
+    pipelineXml.addObject("consumptions", pipelineExportData);
+    pipelineXml.addObject("products", provider.getProducts(map));
+    pipelineXml.addObject("period", provider.getPeriod(map));
+    return pipelineXml;
+  }
 
 
     @RequestMapping(value = "/reportdata/labEquipmentList", method = GET, headers = BaseController.ACCEPT_JSON)

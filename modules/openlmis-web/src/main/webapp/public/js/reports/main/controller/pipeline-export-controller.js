@@ -16,7 +16,7 @@ function PipelineExportController($scope, $window , PipelineExportReport) {
     $scope.exportReport   = function (type){
         $scope.filter.pdformat = 1;
         var params = jQuery.param($scope.getSanitizedParameter());
-        var url = '/reports/download/pipeline_export/' + type +'?' + params;
+        var url = '/reports/pipeline-export.xml?' + params;
         $window.open(url, '_blank');
     };
 
@@ -25,7 +25,7 @@ function PipelineExportController($scope, $window , PipelineExportReport) {
         $scope.data  = $scope.xml = $scope.datarows = [];
         $scope.filter.max = 10000;
         PipelineExportReport.get($scope.getSanitizedParameter(), function(data) {
-                $scope.data = data.pages.rows;
+                $scope.data = data.rows;
                 $scope.xml = '';
                 for(var i =0; i < $scope.data.length; i++){
                     $scope.xml += $scope.data[i].line + '\n';

@@ -41,6 +41,7 @@ public class BaseController {
   public static final String ACCEPT_JSON = "Accept=application/json";
   public static final String ACCEPT_PDF = "Accept=application/pdf";
   public static final String ACCEPT_CSV = "Accept=*/*";
+  public static final String ACCEPT_XML = "Accept=application/xml";
   private static Logger logger = LoggerFactory.getLogger(ApplicationLogger.class);
   @Autowired
   public MessageService messageService;
