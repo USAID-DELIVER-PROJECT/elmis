@@ -66,6 +66,12 @@ public class VaccineInventoryDistributionService {
         return getOneLevelSupervisedFacilities(facilityId);
     }
 
+    public List<Facility> getSameLevelFacilities(Long userId) {
+        Facility homeFacility = facilityService.getHomeFacility(userId);
+        Facility parentFacility = facilityService.getParentFacility(homeFacility.getId());
+        return getOneLevelSupervisedFacilities(parentFacility.getId());
+    }
+
     public List<Facility> getOneLevelSupervisedFacilities(Long facilityId) {
         return repository.getOneLevelSupervisedFacilities(facilityId);
     }
@@ -297,6 +303,10 @@ public class VaccineInventoryDistributionService {
 
     public List<VaccineDistribution> getDistributionsByDateRangeAndFacility(Long facilityId, String startDate, String endDate) {
         return repository.getDistributionsByDateRangeAndFacility(facilityId, startDate,endDate);
+    }
+
+    public List<VaccineDistribution> getDistributionsByDateRangeForFacility(Long facilityId, String startDate, String endDate) {
+        return repository.getDistributionsByDateRangeForFacility(facilityId, startDate, endDate);
     }
 
     public List<VaccineDistribution> searchDistributionsByDateRangeAndFacility(Long facilityId, String startDate, String endDate,String distributionType, String searchParam) {

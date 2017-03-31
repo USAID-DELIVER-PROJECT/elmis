@@ -323,4 +323,9 @@ public class FacilityService {
     String commaSeparatedList = "{" + String.join(",", facilityCodes) + "}";
     return facilityRepository.getFacilitiesByCommaSeparatedCodes(commaSeparatedList);
   }
+
+  public Facility getParentFacility(Long facilityId) {
+    return facilityRepository.getParentFacility(facilityId);
+
+  }
 }

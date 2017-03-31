@@ -319,8 +319,22 @@ public interface FacilityMapper {
   @Select("SELECT distinct id, code, name from facilities where code = ANY(#{codes}::varchar[])")
   List<Facility> getFacilitiesByCommaSeparatedCodes(@Param("codes") String commaSeparatedCodes);
 
+    @Select(" WITH Q AS (\n" +
+            " SELECT DISTINCT F.name,f.id,supervisory_nodes.*\n" +
+            " FROM role_assignments  \n" +
+            " JOIN supervisory_nodes on supervisory_nodes.id = role_assignments.supervisorynodeid  \n" +
+            " JOIN users on users.id = role_assignments.userid AND users.active = true \n" +
+            " JOIN facilities f on f.id = supervisory_nodes.facilityId\n" +
+            " WHERE users.facilityId = #{facilityId}\n" +
+            " ) \n" +
+            " SELECT f.id , f.name FROM Q\n" +
+            " JOIN supervisory_nodes s on s.id = q.parentId\n" +
+            " JOIN FACILITIES F ON S.facilityId = F.id ")
+    Facility getParentFacility(@Param("facilityId")Long facilityId);
 
-  public class SelectFacilities {
+
+
+    public class SelectFacilities {
     @SuppressWarnings(value = "unused")
     public static String getFacilitiesCountBy(Map<String, Object> params) {
       StringBuilder sql = new StringBuilder();

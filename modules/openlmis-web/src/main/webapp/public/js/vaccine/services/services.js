@@ -599,6 +599,10 @@ services.factory('GetAllOneLevelFacilities', function ($resource) {
     return $resource('/vaccine/inventory/distribution/getOneLevelSuperVisedFacility.json', {}, {});
 });
 
+services.factory('GetSameLevelFacilities', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/getSameLevelFacilities.json', {}, {});
+});
+
 services.factory('GetDistributionsByDateRangeAndFacility', function ($resource) {
     return $resource('/vaccine/inventory/distribution/getDistributionsByDateRangeAndFacility.json', {}, {});
 });
@@ -622,4 +626,8 @@ services.factory('VaccineDistributionProgramProduct', function ($resource) {
 
 services.factory('searchDistributionsByDateRange',function($resource){
     return $resource('/vaccine/inventory/distribution/searh-by-date-range/:facilityId',{facilityId:'@facilityId'},{});
+});
+
+services.factory('GetDistributionsByDateRangeForFacility', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/getDistributionsByDateRangeForFacility.json', {}, {});
 });

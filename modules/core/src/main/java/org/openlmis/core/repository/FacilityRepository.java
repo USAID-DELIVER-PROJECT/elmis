@@ -279,4 +279,8 @@ public class FacilityRepository {
   public List<Facility> getFacilitiesByCommaSeparatedCodes(String commaSeparatedCodes) {
     return mapper.getFacilitiesByCommaSeparatedCodes(commaSeparatedCodes);
   }
+
+  public Facility getParentFacility(Long facilityId) {
+    return mapper.getParentFacility(facilityId);
+  }
 }

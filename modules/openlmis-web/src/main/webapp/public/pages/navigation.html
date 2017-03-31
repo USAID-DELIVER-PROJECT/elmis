@@ -189,7 +189,6 @@
                    >Previous Issue Voucher</a>
             </li>
 
-
           <li ng-show="hasPermission('MASS_DISTRIBUTION')">
             <a href="/public/pages/vaccine/inventory/index.html#/mass-distribution"
                openlmis-message="link.vaccine.distribute"></a>
@@ -220,7 +219,13 @@
                    openlmis-message="link.vaccine.transfer.out"></a>
             </li>
 
-          <li>
+            <li ng-show="hasPermission('MANAGE_STOCK') ">
+                <a href="/public/pages/vaccine/inventory/index.html#/transfer-issue-voucher"
+                        >Transfer In/Out Issue Voucher</a>
+            </li>
+
+
+            <li>
             <a href="/public/pages/var/index.html#/">VAR</a>
           </li>
 

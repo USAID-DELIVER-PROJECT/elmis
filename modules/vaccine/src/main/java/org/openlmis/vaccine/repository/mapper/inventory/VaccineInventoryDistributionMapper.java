@@ -298,6 +298,26 @@ public interface VaccineInventoryDistributionMapper {
     List<VaccineDistribution> getDistributionsByDateRangeAndFacility(@Param("facilityId") Long facilityId,
                                                                      @Param("startDate") String startDate,
                                                                      @Param("endDate") String endDate);
+    @Select("SELECT * from vaccine_distributionS s   " +
+            "where tofacilityId = #{facilityId}  AND    " +
+            " ((SELECT FT.CODE FROM FACILITIES   " +
+            " JOIN FACILITY_TYPES FT ON facilities.typeId = FT.ID  " +
+            " WHERE facilities.ID = toFacilityId)  =  " +
+            "  (SELECT FT.CODE FROM FACILITIES  " +
+            " JOIN FACILITY_TYPES FT ON facilities.typeId = FT.ID   " +
+            " WHERE facilities.ID = FROMFacilityId)) AND ORDERID IS NULL  AND " +
+            " distributiondate::DATE >= #{startDate}::DATE  and " +
+            " distributiondate::DATE <= #{endDate}::DATE  " +
+            " order by createddate DESC")
+    @Results({@Result(property = "id", column = "id"),
+            @Result(property = "toFacilityId", column = "toFacilityId"),
+            @Result(property = "lineItems", column = "id", javaType = List.class,
+                    many = @Many(select = "getLineItems")),
+            @Result(property = "toFacility", column = "toFacilityId", javaType = Facility.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.FacilityMapper.getById"))})
+    List<VaccineDistribution> getDistributionsByDateRangeForFacility(@Param("facilityId") Long facilityId,
+                                                                     @Param("startDate") String startDate,
+                                                                     @Param("endDate") String endDate);
 
 
     @Select("SELECT *" +

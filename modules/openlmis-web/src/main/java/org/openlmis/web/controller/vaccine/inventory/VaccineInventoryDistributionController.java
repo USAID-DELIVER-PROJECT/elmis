@@ -293,11 +293,25 @@ public class VaccineInventoryDistributionController extends BaseController {
         return OpenLmisResponse.response("facilities", service.getFacilities(loggedInUserId(request)));
     }
 
+    @RequestMapping(value = "getSameLevelFacilities", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getSameLevelFacilities(HttpServletRequest request) {
+
+        return OpenLmisResponse.response("facilities", service.getSameLevelFacilities(loggedInUserId(request)));
+    }
+
     @RequestMapping(value = "getDistributionsByDateRangeAndFacility", method = GET, headers = ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
     public ResponseEntity<OpenLmisResponse> getDistributionsByDateRangeAndFacility(HttpServletRequest request,
             @Param("facilityId") Long facilityId,@Param("startDate") String startDate,@Param("endDate") String endDate) {
         return OpenLmisResponse.response("distributions", service.getDistributionsByDateRangeAndFacility(facilityId,startDate,endDate));
+    }
+
+    @RequestMapping(value = "getDistributionsByDateRangeForFacility", method = GET, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getDistributionsByDateRangeForFacility(HttpServletRequest request,
+            @Param("facilityId") Long facilityId,@Param("startDate") String startDate,@Param("endDate") String endDate) {
+        return OpenLmisResponse.response("distributions", service.getDistributionsByDateRangeForFacility(facilityId, startDate, endDate));
     }
 
     //Search Distribution by Date Range
