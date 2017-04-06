@@ -10,9 +10,10 @@
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<a id="reports-menu" ng-href="/public/pages/vaccine/report/index.html#/report-menu" openlmis-message="link.reports"></a>
+<a ng-if="useFlatReportMenu" id="reports-flat-menu" ng-href="/public/pages/vaccine/report/index.html#/report-menu" openlmis-message="link.reports"></a>
+<a ng-show="!useFlatReportMenu" id="reports-menu" href="javascript: void(0)" openlmis-message="link.reports"></a>
 
-<!-- div id="report-submenu" class="submenu" ui-nav>
+<div ng-if="!useFlatReportMenu" id="report-submenu" class="submenu" ui-nav>
   <ul>
     <li ng-show="hasPermission('VIEW_VACCINE_REPORT')" class="has-children">
       <a href="" openlmis-message="menu.report.routine.immunization"></a>
@@ -74,7 +75,7 @@
               On Time In Full reporting
             </a>
           </li> -->
-       <!--   <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
+          <li ng-show="hasPermission('VIEW_VACCINE_STOCK_STATUS_REPORT')">
             <a href="/public/pages/reports/main/index.html#on-time-in-full">
               On Time In Full reporting
             </a>
@@ -311,11 +312,11 @@
       </div>
     </li>
 
-    <li class="has-children"> -->
+    <li class="has-children">
 
       <!--<div><ng-include src="'/public/pages/reports/mozambique/reports.html'"/></div>-->
 
-   <!-- <li>
+    <li>
       <a ng-href="/public/pages/reports/custom/index.html" openlmis-message="menu.report.custom.reports"></a>
     </li>
 
@@ -327,4 +328,3 @@
 
   </ul>
 </div>
-   -->
