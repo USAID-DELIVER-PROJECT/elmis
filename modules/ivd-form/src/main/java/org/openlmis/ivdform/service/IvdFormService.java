@@ -167,14 +167,19 @@ public class IvdFormService {
   }
 
   private void updateEquipmentStatus(VaccineReport report, Long userId) {
-
-    for(ColdChainLineItem lineItem: emptyIfNull(report.getColdChainLineItems())){
-      EquipmentInventory inventory = equipmentInventoryService.getInventoryById(lineItem.getEquipmentInventoryId());
-      inventory.setOperationalStatusId(lineItem.getOperationalStatusId());
-      inventory.setModifiedBy(userId);
-      equipmentInventoryService.updateStatus(inventory);
+    Boolean requiresNotification = false;
+    for (ColdChainLineItem lineItem : emptyIfNull(report.getColdChainLineItems())) {
+      if (!lineItem.getSkipped()) {
+        EquipmentInventory inventory = equipmentInventoryService.getInventoryById(lineItem.getEquipmentInventoryId());
+        inventory.setOperationalStatusId(lineItem.getOperationalStatusId());
+        inventory.setModifiedBy(userId);
+        equipmentInventoryService.updateStatus(inventory);
+        requiresNotification = true;
+      }
     }
-    equipmentInventoryService.updateNonFunctionalEquipments();
+    if (requiresNotification) {
+      equipmentInventoryService.updateNonFunctionalEquipments();
+    }
   }
 
   private VaccineReport getVaccineReportFromDbForUpdate(VaccineReport report) {
@@ -243,7 +248,7 @@ public class IvdFormService {
     if (lastRequest != null) {
       lastRequest.setPeriod(periodService.getById(lastRequest.getPeriodId()));
       Date lastReportStartDate = lastRequest.getPeriod().getStartDate();
-      if(startDate.before(lastReportStartDate)){
+      if (startDate.before(lastReportStartDate)) {
         startDate = lastReportStartDate;
       }
     }
