@@ -29,9 +29,9 @@ public interface ProductDoseMapper {
       " order by pd.displayOrder")
   List<VaccineProductDose> getDoseSettingByProduct(@Param("programId") Long programId, @Param("productId") Long productId);
 
-  @Insert("insert into vaccine_product_doses (doseId, programId, productId, displayName, displayOrder, trackMale, trackFemale, denominatorEstimateCategoryId, productDisplayOrder, createdBy, modifiedBy) " +
+  @Insert("insert into vaccine_product_doses (doseId, programId, productId, displayName, displayOrder, trackMale, trackFemale, denominatorEstimateCategoryId, productDisplayOrder, useForWastageCalculations, createdBy, modifiedBy) " +
       " values " +
-      " ( #{doseId}, #{programId} , #{productId}, #{displayName}, #{displayOrder}, #{trackMale}, #{trackFemale}, #{denominatorEstimateCategoryId}, #{productDisplayOrder} , #{createdBy}, #{modifiedBy} )")
+      " ( #{doseId}, #{programId} , #{productId}, #{displayName}, #{displayOrder}, #{trackMale}, #{trackFemale}, #{denominatorEstimateCategoryId}, #{productDisplayOrder}, #{useForWastageCalculations}, #{createdBy}, #{modifiedBy} )")
   @Options(useGeneratedKeys = true)
   Integer insert(VaccineProductDose dose);
 
@@ -42,6 +42,7 @@ public interface ProductDoseMapper {
       " productId = #{productId}, " +
       " displayName = #{displayName}, " +
       " displayOrder = #{displayOrder}, " +
+      " useForWastageCalculations = #{useForWastageCalculations}, " +
       " denominatorEstimateCategoryId = #{denominatorEstimateCategoryId}," +
       " modifiedBy = #{modifiedBy}, " +
       " modifiedDate = CURRENT_TIMESTAMP" +
