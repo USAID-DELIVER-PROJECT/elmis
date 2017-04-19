@@ -27,10 +27,15 @@ function CustomReportDesignerController($scope, reports, SaveCustomReport, Custo
       $scope.column = ace.edit("columneditor");
       $scope.column.setTheme("ace/theme/chrome");
       $scope.column.getSession().setMode("ace/mode/json");
+
+      $scope.meta = ace.edit("metaeditor");
+      $scope.meta.setTheme("ace/theme/chrome");
+      $scope.meta.getSession().setMode("ace/mode/json");
     }
     $scope.sqleditor.setValue($scope.current.query);
     $scope.filter.setValue($scope.current.filters);
     $scope.column.setValue($scope.current.columnoptions);
+    $scope.meta.setValue($scope.current.meta);
   };
 
   $scope.select = function(report){
@@ -50,6 +55,7 @@ function CustomReportDesignerController($scope, reports, SaveCustomReport, Custo
     $scope.current.query = $scope.sqleditor.getValue();
     $scope.current.filters = $scope.filter.getValue();
     $scope.current.columnoptions = $scope.column.getValue();
+    $scope.current.meta = $scope.meta.getValue();
 
     var save = SaveCustomReport.save($scope.current);
     save.$promise.then(function(){

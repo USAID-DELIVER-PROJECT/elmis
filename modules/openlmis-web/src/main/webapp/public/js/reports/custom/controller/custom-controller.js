@@ -9,12 +9,15 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function CustomReportController($scope, $window, reports, CustomReportValue, $routeParams, $timeout) {
+function CustomReportController($scope, $window, $location, reports, CustomReportValue, $routeParams, $timeout) {
 
   var allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  function findByMonthName(a) {
-    return a.startsWith(allMonths[i]);
+  function findMonth(columnValues, indx) {
+
+    return _.find(columnValues, function (a) {
+      return a.startsWith(allMonths[indx]);
+    });
   }
 
   $scope.reports = reports;
@@ -24,6 +27,17 @@ function CustomReportController($scope, $window, reports, CustomReportValue, $ro
   $scope.OnReportTypeChanged = function (value) {
     $scope.filter.report_key = value;
     $scope.OnFilterChanged();
+  };
+
+  $scope.onLinkClicked = function (col, row) {
+    for (var i = 0; i < col.link.rowParams.length; i++) {
+      var valueField = _.values(col.link.rowParams[i])[0];
+      var key = _.keys(col.link.rowParams[i])[0];
+      $scope.filter[key] = row[valueField];
+    }
+    $scope.filter.report_key = col.link.report;
+    $location.search($scope.filter);
+    $scope.$broadcast('filter-changed');
   };
 
   function updateFilterSection($scope) {
@@ -65,7 +79,7 @@ function CustomReportController($scope, $window, reports, CustomReportValue, $ro
 
       $scope.report.hasPivot = true;
       var columns = [];
-
+      $scope.report.pivotSummary = {};
       for (var i = 0; i < d.length; i++) {
         var current = d[i];
 
@@ -92,7 +106,6 @@ function CustomReportController($scope, $window, reports, CustomReportValue, $ro
 
           $scope.report.pivotSummary[current[$scope.report.pivotValueColumn.classification]].p[current[columnName]] += 1;
 
-
         }
 
 
@@ -100,23 +113,27 @@ function CustomReportController($scope, $window, reports, CustomReportValue, $ro
         row.p[current[columnName]] = current;
       }
 
+      $scope.report.pivotSummaryArray = _.values($scope.report.pivotSummary);
+
 
       $scope.report.pivotColumns = [];
       var columnVals = _.values(columns);
 
-      for (i = 0; i < allMonths.length; i++) {
-        // try to find
-        var mont = _.find(columnVals, findByMonthName(a));
-        if (!mont) {
-          $scope.report.pivotColumns.push(allMonths[i] + ' ' + $scope.filter.year);
-        } else {
-          $scope.report.pivotColumns.push(mont);
+      if ($scope.report.pivotColumnDetail.pivotType != 'custom') {
+        for (i = 0; i < allMonths.length; i++) {
+          // try to find
+          var mont = findMonth(columnVals, i);
+          if (!mont) {
+            $scope.report.pivotColumns.push(allMonths[i] + ' ' + $scope.filter.year);
+          } else {
+            $scope.report.pivotColumns.push(mont);
+          }
         }
+      } else {
+        $scope.report.pivotColumns = columnVals.sort();
       }
 
-      $scope.report.pivotSummary = _.values($scope.report.pivotSummary);
-
-      $scope.data = _.values(rows);
+      $scope.data = _.sortBy(_.values(rows), $scope.report.columns[0].name);
     }
     else {
       $scope.data = d;
