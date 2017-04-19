@@ -11,11 +11,17 @@
  */
 function CustomReportController($scope, $window, reports, CustomReportValue, $routeParams, $timeout) {
 
+  var allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  function findByMonthName(a) {
+    return a.startsWith(allMonths[i]);
+  }
+
   $scope.reports = reports;
   $scope.displayReports = _.groupBy(reports, 'category');
   $scope.categories = _.uniq(_.pluck(reports, 'category'));
 
-  $scope.OnReportTypeChanged = function(value){
+  $scope.OnReportTypeChanged = function (value) {
     $scope.filter.report_key = value;
     $scope.OnFilterChanged();
   };
@@ -31,22 +37,95 @@ function CustomReportController($scope, $window, reports, CustomReportValue, $ro
       $scope.report.columns = angular.fromJson($scope.report.columnoptions);
       if ($scope.report.filters !== null && $scope.report.filters !== '') {
         $scope.report.currentFilters = angular.fromJson($scope.report.filters);
-        var required = _.pluck($scope.report.currentFilters,'name');
+        var required = _.pluck($scope.report.currentFilters, 'name');
         $scope.requiredFilters = [];
-        angular.forEach(required, function(r){
+        angular.forEach(required, function (r) {
           $scope.requiredFilters[r] = r;
         });
       } else {
         $scope.report.currentFilters = [];
-          $scope.requiredFilters = [];
+        $scope.requiredFilters = [];
       }
     }
   }
 
+
+  $scope.postProcess = function (d) {
+    var rows = [];
+    var columnOptions = JSON.parse($scope.report.columnoptions);
+    $scope.report.pivotRowColumn = _.findWhere(columnOptions, {"pivotRow": "true"});
+    $scope.report.pivotColumnDetail = _.findWhere(columnOptions, {"pivotColumn": "true"});
+    $scope.report.pivotValueColumn = _.findWhere(columnOptions, {"pivotValue": "true"});
+    $scope.report.pivotSummary = [];
+
+    if (!isUndefined($scope.report.pivotRowColumn) && !isUndefined($scope.report.pivotColumnDetail) && !isUndefined($scope.report.pivotValueColumn)) {
+      $scope.report.pivot = true;
+      var rowName = $scope.report.pivotRowColumn.name;
+      var columnName = $scope.report.pivotColumnDetail.name;
+
+      $scope.report.hasPivot = true;
+      var columns = [];
+
+      for (var i = 0; i < d.length; i++) {
+        var current = d[i];
+
+        if (columns[current[columnName]] === undefined) {
+          columns[current[columnName]] = current[columnName];
+        }
+
+        if (rows[current[rowName]] === undefined) {
+          current.p = [];
+          rows[current[rowName]] = current;
+        }
+
+        //classify here. &&
+        if ($scope.report.pivotValueColumn.classification !== undefined) {
+          if ($scope.report.pivotSummary[current[$scope.report.pivotValueColumn.classification]] === undefined) {
+            $scope.report.pivotSummary[current[$scope.report.pivotValueColumn.classification]] = {
+              classification: current[$scope.report.pivotValueColumn.classification],
+              p: {}
+            };
+          }
+          if ($scope.report.pivotSummary[current[$scope.report.pivotValueColumn.classification]].p[current[columnName]] === undefined) {
+            $scope.report.pivotSummary[current[$scope.report.pivotValueColumn.classification]].p[current[columnName]] = 0;
+          }
+
+          $scope.report.pivotSummary[current[$scope.report.pivotValueColumn.classification]].p[current[columnName]] += 1;
+
+
+        }
+
+
+        var row = rows[current[rowName]];
+        row.p[current[columnName]] = current;
+      }
+
+
+      $scope.report.pivotColumns = [];
+      var columnVals = _.values(columns);
+
+      for (i = 0; i < allMonths.length; i++) {
+        // try to find
+        var mont = _.find(columnVals, findByMonthName(a));
+        if (!mont) {
+          $scope.report.pivotColumns.push(allMonths[i] + ' ' + $scope.filter.year);
+        } else {
+          $scope.report.pivotColumns.push(mont);
+        }
+      }
+
+      $scope.report.pivotSummary = _.values($scope.report.pivotSummary);
+
+      $scope.data = _.values(rows);
+    }
+    else {
+      $scope.data = d;
+    }
+  };
+
   $scope.OnFilterChanged = function () {
 
     if (angular.isUndefined($scope.filter) || angular.isUndefined($scope.filter.report_key) || !$scope.isReady) {
-      console.log($scope.filter.report_key);
       return;
     }
     $scope.applyUrl();
@@ -57,11 +136,11 @@ function CustomReportController($scope, $window, reports, CustomReportValue, $ro
     $scope.meta = undefined;
     CustomReportValue.get($scope.getSanitizedParameter(), function (data) {
       $scope.meta = data;
-      $scope.data = data.values;
+      $scope.postProcess(data.values);
     });
   };
 
-  $scope.exportCSV = function() {
+  $scope.exportCSV = function () {
     var params = jQuery.param($scope.getSanitizedParameter());
     var url = '/report-api/report.csv?' + params;
     $window.open(url, '_blank');
@@ -72,14 +151,14 @@ function CustomReportController($scope, $window, reports, CustomReportValue, $ro
     $scope.OnFilterChanged();
   }
 
-  if(angular.isUndefined($scope.filter)){
+  if (angular.isUndefined($scope.filter)) {
     $scope.filter = {};
   }
 
   $scope.loadReportFromExternalUrl = function () {
-      if(!angular.isUndefined($routeParams.report_key))
-          $scope.filter.report_key=$routeParams.report_key;
-      $scope.OnFilterChanged();
+    if (!angular.isUndefined($routeParams.report_key))
+      $scope.filter.report_key = $routeParams.report_key;
+    $scope.OnFilterChanged();
   };
 
   $timeout($scope.loadReportFromExternalUrl, 0);
