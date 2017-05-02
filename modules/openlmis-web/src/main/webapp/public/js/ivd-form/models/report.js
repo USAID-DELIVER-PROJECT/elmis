@@ -29,6 +29,9 @@ var VaccineReport = function (report) {
     this.mainProducts = _.where(this.products, {fullSupply: true});
     this.coverageLineItems = getCoverageLineItems(this.coverageLineItems, this);
     this.logisticsLineItems = getLogisticsLineItems(this.logisticsLineItems, this);
+    this.vaccineLogisticsLineItems = _.filter(this.logisticsLineItems, function(obj) {
+      return obj.product.fullSupply;
+    });
     this.coverageLineItemViews = [];
     var coverages = _.groupBy(this.coverageLineItems, 'productId');
     var productIdsInOrder = _.uniq(_.pluck(this.coverageLineItems,'productId'));
