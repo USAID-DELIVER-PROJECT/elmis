@@ -157,9 +157,9 @@ function CustomReportController($scope, $window, $location, reports, CustomRepor
     });
   };
 
-  $scope.exportCSV = function () {
+  $scope.exportExcel = function () {
     var params = jQuery.param($scope.getSanitizedParameter());
-    var url = '/report-api/report.csv?' + params;
+    var url = '/report-api/excel.xlsx?' + params;
     $window.open(url, '_blank');
   };
 

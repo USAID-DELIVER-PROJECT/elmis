@@ -18,7 +18,8 @@ dependencies {
         exclude group: 'org.olap4j'
     }
     compile 'org.codehaus.groovy:groovy-all:2.4.7',
-          'org.apache.poi:poi:3.13',
+            'org.apache.poi:poi:3.13',
+            'org.apache.poi:poi-ooxml:3.13',
       project(':modules:authentication'),
       project(':modules:stock-management'),
       project(':modules:requisition'),
