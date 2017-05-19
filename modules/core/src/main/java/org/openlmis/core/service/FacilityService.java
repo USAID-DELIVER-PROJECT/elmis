@@ -328,4 +328,8 @@ public class FacilityService {
     return facilityRepository.getParentFacility(facilityId);
 
   }
+
+  public FacilityType getFacilityTypeById(Long id) {
+    return facilityRepository.getFaciltyTypeById(id);
+  }
 }

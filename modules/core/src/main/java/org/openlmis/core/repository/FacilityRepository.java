@@ -283,4 +283,8 @@ public class FacilityRepository {
   public Facility getParentFacility(Long facilityId) {
     return mapper.getParentFacility(facilityId);
   }
+
+  public FacilityType getFaciltyTypeById(Long id) {
+    return mapper.getFacilityTypeById(id);
+  }
 }
