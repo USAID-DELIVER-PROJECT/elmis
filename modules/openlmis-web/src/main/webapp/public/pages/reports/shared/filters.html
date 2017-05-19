@@ -685,7 +685,7 @@
 
 <script type="text/ng-template" id="filter-facility-level-without-program-template">
     <div>
-        <label for="facilityLevelWithoutProgram" class="labels" openlmis-message="label.facility.level"><span ng-show="requiredFilters.facilityLevel" class="label-required">*</span></label>
+        <label for="facilityLevelWithoutProgram" class="labels" openlmis-message="label.store.level"><span ng-show="requiredFilters.facilityLevel" class="label-required">*</span></label>
         <div>
             <select id="facilityLevelWithoutProgram" ui-select2 class="input-large" ng-model="filter.facilityLevel" ng-change="notifyFilterChanged('facility-level-changed');">
                 <option ng-repeat="level in facilityLevels | orderBy: 'display_order'" ng-selected="filter.facilityLevel == level.id" value="{{ level.id }}">{{level.name}}</option>

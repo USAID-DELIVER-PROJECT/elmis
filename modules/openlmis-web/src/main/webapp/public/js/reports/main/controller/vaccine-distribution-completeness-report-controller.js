@@ -24,8 +24,11 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
 
 
    });
-    $scope.OnFilterChanged = function () {
 
+    $scope.distributionTypes = [{'name':'EMERGENCE','id':1},{'name':'ROUTINE','id':2}];
+
+    $scope.OnFilterChanged = function () {
+        console.log($scope.filter.type);
         // prevent first time loading
         if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEndDate) || !utils.isEmpty($scope.perioderror))
             return;
@@ -35,6 +38,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
             range:       $scope.range,
             page:        $scope.page,
             district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
+            type:    utils.isEmpty($scope.filter.type) ? 0 : $scope.filter.type,
             product:     0
         };
         console.log(par);
@@ -47,6 +51,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                 range:       $scope.range,
                 page:        $scope.page,
                 district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
+                type:    utils.isEmpty($scope.filter.type) ? 0 : $scope.filter.type,
                 product:     0
             },
 

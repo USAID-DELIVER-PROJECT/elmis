@@ -1,0 +1,26 @@
+<!--<c3chart bindto-id="donut-plot1-chart">
+    <chart-column column-id="vaccineInventorySummaryData"
+                  column-values="70"
+                  column-type="donut"/>
+    <chart-column column-id="Data 2"
+                  column-values="35"
+                  column-type="donut"/>
+    <chart-column column-id="Data 3"
+                  column-values="60"
+                  column-type="donut"/>
+    <chart-donut title="Donut" width="60"/>
+    <chart-events on-click-data="showClick(data)"/>
+</c3chart>-->
+
+
+<c3chart bindto-id="donut-chart" show-labels="true"
+         chart-data="vaccineInventorySummaryData.dataPoints"
+         chart-columns="vaccineInventorySummaryData.dataColumns"
+        >
+    <chart-donut title="" width="60"/>
+      <chart-events on-click-data="showClick(data)"/>
+    <chart-legend show-legend="true" legend-position="right" />
+    <!--<chart-tooltip show-tooltip="true"/>-->
+
+    <!--<chart-pie expand="true"/>-->
+</c3chart>

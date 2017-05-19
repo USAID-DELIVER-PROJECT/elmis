@@ -47,7 +47,10 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
                                     EquipmentNonFunctional,
                                     VaccinePendingRequisitions,
                                     daysNotReceive,
-                                    batchToExpireNotification) {
+                                    batchToExpireNotification,
+                                    VaccineInventorySummaryData,
+                                    VaccineInventorySummaryDetails
+) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: false};
     $scope.coverage = {openPanel: false};
@@ -55,6 +58,7 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
     $scope.wastage = {openPanel: false};
     $scope.stockStatus = {openPanel: false};
     $scope.stockFacilityStatus = {openPanel: false};
+    $scope.vaccineInventory = {openPanel: false};
     $scope.homeFacility = homeFacility;
     $scope.sessions = {
         openPanel: true
@@ -67,6 +71,7 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
     $scope.sessions = {
         loadData: false
     };
+    $scope.vaccineInventory = {loadData:false};
 
     $scope.expandAllTabs = function (value) {
         $scope.actionBar = {openPanel: value};
@@ -76,6 +81,7 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
         $scope.wastage = {openPanel: value};
         $scope.stockStatus = {openPanel: value};
         $scope.stockFacilityStatus = {openPanel: value};
+        $scope.vaccineInventory = {openPanel: value};
 
         $scope.sessions = {
             openPanel: value
@@ -288,6 +294,7 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
             max: 6
         }
     };
+
 
 
 // bundling
@@ -1387,6 +1394,66 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
 
         }
     };
+    //Vaccine Inventory
+
+
+    var vaccineInventoryData = VaccineInventorySummaryData;
+ console.log(vaccineInventoryData);
+    $scope.vaccineInventorySummaryData = {
+
+        dataPoints:vaccineInventoryData,
+        dataColumns: [
+            {"id": "overstock", "name":"overstock", "type": "donut"},
+            {"id": 'sufficient', "name":"sufficient", "type": "donut"},
+            {"id": "minimum", "name":"Understock", "type": "donut"},
+            {"id": "zero", "name":"Zero stock", "type": "donut"}
+        ]
+    };
+
+
+
+    $scope.clicked = {};
+    $scope.showClick = function (data) {
+        console.log(data);
+        $scope.clicked = data;
+        dataV();
+        VaccineInventorySummaryDetails.get({status:$scope.clicked.id}, function(data){
+            console.log(data);
+            $scope.name = data.name;
+            $scope.vaccineInventoryStock = data.vaccineInventoryStockDetails;
+console.log(data.vaccineInventoryStockDetails);
+            var z = [{"product":"BCG","zero":10,name :"zero"}];
+          /*  $scope.inventory = {
+
+                dataPoints:z,
+                dataColumns:[{"id":"zero", name:"zero", type:"bar"}],
+                dataX:{
+                    "id":"product"
+                }
+
+
+            };*/
+
+
+
+
+        });
+
+        //console.log(data);
+    };
+function dataV(){
+    console.log(vaccineInventoryData);
+    $scope.vaccineInventorySummaryData2 = {
+
+        dataPoints:vaccineInventoryData,
+        dataColumns: [
+            {"id": "overstock", "name":"overstock", "type": "bar"},
+            {"id": 'sufficient', "name":"sufficient", "type": "bar"},
+            {"id": "minimum", "name":"Understock", "type": "bar"},
+            {"id": "zero", "name":"Zero stock", "type": "bar"}
+        ],
+        dataX:{"id":"overstock"}
+    };}
 
     $scope.openStockStatusHelp = function () {
         var modalInstance = $modal.open({
@@ -2032,6 +2099,28 @@ VaccineDashboardController.resolve = {
 
         return deferred.promise;
 
+    },
+    VaccineInventorySummaryData: function ($q, $timeout, VaccineInventorySummary) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            VaccineInventorySummary.get({}, function (data) {
+                var summary = [];
+                if (!isUndefined(data.stockOverView)) {
+                    summary = data.stockOverView;
+
+                }
+                console.log(summary);
+
+                deferred.resolve(summary);
+
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
     }
+
 
 };
