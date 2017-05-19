@@ -130,4 +130,7 @@ public interface ProductMapper {
   @Select("SELECT distinct id, code, primaryName from products where code = ANY(#{codes}::varchar[])")
   List<Product> getProductsByCommaSeparatedCodes(@Param("codes") String commaSeparatedCodes);
 
+  @Select("select * from products where primaryName = #{name}")
+  Product getByPrimaryName(@Param("name") String name);
+
 }

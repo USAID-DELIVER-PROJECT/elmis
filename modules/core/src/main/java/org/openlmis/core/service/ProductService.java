@@ -122,4 +122,8 @@ public class ProductService {
     String commaSeparatedCodes = "{" + String.join(",", codes) + "}";
     return repository.getProductsByCommaSeparatedCode(commaSeparatedCodes);
   }
+
+  public Product getByPrimaryName(String name) {
+    return repository.getByPrimaryName(name);
+  }
 }
