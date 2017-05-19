@@ -13,9 +13,10 @@ package org.openlmis.vaccine.service;
 
 import lombok.NoArgsConstructor;
 import org.joda.time.format.DateTimeFormat;
-import org.openlmis.core.domain.Program;
-import org.openlmis.core.domain.RightName;
+import org.openlmis.core.domain.*;
 import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProductCategoryService;
+import org.openlmis.core.service.ProductService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.report.util.StringHelper;
 import org.openlmis.vaccine.repository.VaccineDashboardRepository;
@@ -41,6 +42,10 @@ public class VaccineDashboardService {
     ProgramService programService;
     @Autowired
     private FacilityService facilityService;
+    @Autowired
+    private ProductCategoryService productCategoryService;
+    @Autowired
+    private ProductService productService;
 
     public Map<String, Object> getReportingSummary(Long userId) {
 
@@ -477,5 +482,54 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
         }
         return stockStatusList;
 
+    }
+
+    public List<HashMap<String, Object>> getStockStatusOverView(Long userId,Long category,  String dateString, String level) {
+        System.out.println(category);
+        Long categoryId = 0L;
+        Facility homeFacility = facilityService.getHomeFacility(userId);
+       // System.out.println(homeFacility);
+       // FacilityType ft = facilityService.getFacilityTypeById(homeFacility.getFacilityType().getId());
+        if(level == null){
+            level = "dvs";
+        }
+        if(category == null){
+            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+            category = pc.getId();
+        }
+        return repository.getStockStatusOverView(userId,category,dateString,level);
+    }
+
+    public List<HashMap<String, Object>> getInventoryStockStatusDetail(String category,Long userId, String status,String dateString, String level) {
+         if(category == null){
+             ProductCategory pc= productCategoryService.getByCode("Vaccine");
+             category = pc.getId().toString();
+         }
+
+        return repository.getInventoryStockStatusDetail(category,userId,status, dateString, level);
+    }
+
+
+    public List<HashMap<String, Object>> getVaccineInventoryStockByStatus(Long category, String level,Long userId) {
+        if(category == null){
+            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+            category = pc.getId();
+        }
+
+        return repository.getVaccineInventoryStockByStatus(category,level,userId);
+    }
+
+    public List<HashMap<String,Object>> getVaccineInventoryFacilitiesByProduct(Long category, String level, Long userId, String product, String color) {
+       Long productId = 0L;
+        if(category == null){
+            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+            category = pc.getId();
+        }
+        if(product !=null){
+            Product pr = productService.getByPrimaryName(product);
+            productId = pr.getId();
+        }
+
+        return  repository.getVaccineInventoryFacilitiesByProduct(category,level,userId, productId,color);
     }
 }

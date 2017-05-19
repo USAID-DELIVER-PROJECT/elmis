@@ -848,14 +848,19 @@ public interface VaccineDashboardMapper {
                 "  ELSE " +
                 "  (select SUM(quantity) from stock_card_entries sce " +
                 "      join stock_cards sc on sc.id=sce.stockcardid " +
-                "      where sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::integer " +
+                "      where " +
+                "   (SELECT date_part('YEAR',sce.createddate::DATE)) = ( SELECT date_part('YEAR', #{date}::DATE )) AND " +
+
+                "sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::integer  " +
                 "  END AS soh," +
                 "  CASE WHEN (select NOW()::DATE) =#{date}::DATE THEN " +
                 "       vvisc.mos" +
                 "  ELSE " +
                 "      round((select SUM(quantity) from stock_card_entries sce " +
                 "      join stock_cards sc on sc.id=sce.stockcardid " +
-                "      where sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::numeric(10,2) / vvisc.monthly_stock::numeric(10,2), 2) " +
+                "      where " +
+                "   (SELECT date_part('YEAR',sce.createddate::DATE)) = ( SELECT date_part('YEAR', #{date}::DATE )) AND " +
+                " sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::numeric(10,2) / vvisc.monthly_stock::numeric(10,2), 2) " +
                 "  END AS mos," +
                 "  CASE WHEN (select NOW()::DATE) =#{date}::DATE THEN " +
                 "       vvisc.color " +
@@ -864,7 +869,9 @@ public interface VaccineDashboardMapper {
                 "        COALESCE(vvisc.buffer_stock::integer, 0), " +
                 "        COALESCE((select SUM(quantity) from stock_card_entries sce" +
                 "      join stock_cards sc on sc.id=sce.stockcardid " +
-                "      where sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::integer, 0))) " +
+                "      where " +
+                "   (SELECT date_part('YEAR',sce.createddate::DATE)) = ( SELECT date_part('YEAR', #{date}::DATE )) AND " +
+                "  sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::integer, 0))) " +
                 "  END AS color " +
                 " FROM vw_vaccine_inventory_stock_status vvisc WHERE vvisc.facility_id=#{facilityId}")
         List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId, @Param("date") String date);
@@ -908,4 +915,315 @@ public interface VaccineDashboardMapper {
                                                                                 @Param("productId") Long productId,
                                                                                 @Param("date") String date,
                                                                                 @Param("level") String level);
+
+        @Select(" \n" +
+                "\n" +
+                "                       SELECT CASE WHEN total > 0 THEN  ROUND(overstock * 100 /total,1) else 0 end as overstock,\n" +
+                "                       \n" +
+                "\t\t\tCASE WHEN total > 0 THEN  ROUND(sufficient * 100 /total,1) else 0 end as sufficient,\n" +
+                "\t\t\tCASE WHEN total > 0 THEN  ROUND(minimum * 100 /total,1) else 0 end as minimum,\n" +
+                "\t\t\tCASE WHEN total > 0 THEN  ROUND(zero * 100 /total,1) else 0 end as zero\n" +
+                "\t\t\t\n" +
+                "                           from (\n" +
+                "\n" +
+                "                           WITH Q AS ( SELECT  x.* , r.isaValue,\n" +
+                "                           case when  (x.soh >0 ) and x.soh > r.maximumstock then 1 else 0 end as blue,\n" +
+                "                           case when  (x.soh >0 ) and x.soh <= r.maximumstock AND x.soh  >= r.reorderlevel then 1 else 0 end as green,\n" +
+                "                           case when (x.soh >0 ) and (x.soh < r.reorderlevel AND x.soh >= r.bufferstock ) or \n" +
+                "\t\t\t  ( (x.soh >0 ) and x.soh < r.bufferstock )\n" +
+                "                           then 1 else 0 end as yellow,\n" +
+                "                          \n" +
+                "                           case when  x.soh = 0 then 1 else 0 end as zero,\n" +
+                "                           (          \n" +
+                "                           select fn_get_vaccine_stock_color(r.maximumstock::int, reorderlevel::int, bufferstock::int, x.soh::int)\n" +
+                "                            )  color           \n" +
+                "                            FROM (             \n" +
+                "                            SELECT ROW_NUMBER() OVER (PARTITION BY facilityId,productId ORDER BY LastUpdate desc) AS r, t.* , N.*  \n" +
+                "                            FROM  (                             \n" +
+                "                            SELECT  facilityId, s.productId, f.name facilityName,district_id districtId, district_name district,region_id regionId, region_name region,  \n" +
+                "                            p.primaryName product,sum(e.quantity) OVER (PARTITION BY s.facilityId, s.productId) soh,   \n" +
+                "                            e.modifiedDate::timestamp lastUpdate \n" +
+                "  \n" +
+                "                            FROM stock_cards s   \n" +
+                "                            JOIN stock_card_entries e ON e.stockCardId = s.id     \n" +
+                "                            JOIN program_products pp ON s.productId = pp.productId   \n" +
+                "                            JOIN programs ON pp.programId = programs.id    \n" +
+                "                            JOIN products p ON pp.productId = p.id      \n" +
+                "                            JOIN facilities f ON s.facilityId = f.id  \n" +
+                "                            JOIN vw_districts d ON f.geographiczoneId = d.district_id  \n" +
+                "                            JOIN facility_types  ON f.typeId = facility_types.Id  \n" +
+                "                           where facility_types.code = 'dvs' " +
+                "                           AND pp.productCategoryId= #{category}     \n" +
+                "                            ORDER BY e.modifiedDate ) t,\n" +
+                "\t\t\t(select (m.total * Z.total ) totalVaccineAvailableInAllStore from\n" +
+                "\t\t\t(\n" +
+                "\t\t\tselect  count(*) total  from \n" +
+                "\t\t\tproducts P\n" +
+                "\t\t\tJoin program_products pp on P.ID =PP.productId\n" +
+                "\t\t\tjoin facility_APPROVED_PRODUCTS fap ON pp.id = fap.programproductId\n" +
+                "\t\t\tJOIN facility_types ft ON fap.facilityTypeID = ft.id\n" +
+                "\t\t\twhere " +
+                "  pp.productCategoryId= #{category} AND P.active =true AND programId= (fn_get_vaccine_program_id()) and ft.code = 'dvs'\n" +
+                "\t\t\t)M,(\n" +
+                "\t\t\tselect count(*) total from facilities f\n" +
+                "\t\t\tJOIN facility_types ft ON f.typeid = FT.ID\n" +
+                "\t\t\tWHERE FT.CODE = 'dvs' and f.active =true\n" +
+                "\t\t\t)Z\n" +
+                "\t\t\t) N\n" +
+                "                         ) x \n" +
+                "                            JOIN stock_requirements r on r.facilityid=x.facilityid and r.productid=x.productid\n" +
+                "                            WHERE  x.r <= 1       \n" +
+                "                            ORDER BY facilityId,productId )\n" +
+                "                            SELECT \n" +
+                "                             sum(bluE) * MAX(totalVaccineAvailableInAllStore) overstock,\n" +
+                "                             sum(green) * MAX(totalVaccineAvailableInAllStore)  sufficient,\n" +
+                "                             sum(yellow) * MAX(totalVaccineAvailableInAllStore)  minimum,\n" +
+                "                             sum(zero)* MAX(totalVaccineAvailableInAllStore)  zero,\n" +
+                "                             sum(bluE) * MAX(totalVaccineAvailableInAllStore) + sum(green) * MAX(totalVaccineAvailableInAllStore) +\n" +
+                "                             sum(yellow) * MAX(totalVaccineAvailableInAllStore) + sum(zero)* MAX(totalVaccineAvailableInAllStore) total\n" +
+                "                             from q\n" +
+                "\t\t      )M\n" +
+                "\n ")
+        List<HashMap<String,Object>> getStockStatusOverViewNotUsed(@Param("userId") Long userId, @Param("category") Long category,@Param("productId")  Long productId,@Param("dateString")  String dateString,@Param("level")  String level);
+
+
+        @Select("\n" +
+                "                                        SELECT\n" +
+                "                                   \n" +
+                "                                        SUM(y.yellow) minimum, SUM(y.blue) overstock, SUM(y.green) sufficient,SUM(y.red) zero ,SUM(y.blue + y.green +y.yellow \n" +
+                "                                         +red) total \n" +
+                "                                        \n" +
+                "                                         FROM (\n" +
+                "                                         \n" +
+                "                                         SELECT \n" +
+                "                                          SUM( case when  (x.soh >0 ) and x.soh > r.maximumstock then 1 else 0 end ) as  blue,  \n" +
+                "                                          SUM( case when  (x.soh >0 ) and x.soh <= r.maximumstock AND x.soh  >= r.reorderlevel then 1 else 0 end )as green,\n" +
+                "                                           SUM(case when (x.soh >0 ) and (x.soh < r.reorderlevel AND x.soh >= r.bufferstock ) or\n" +
+                "                                           ( (x.soh >0 ) and x.soh < r.bufferstock )\n" +
+                "                                           then 1 else 0 end) as yellow,\n" +
+                "                                           SUM( case when x.soh = 0 then 1 else 0 end) as red\n" +
+                "                                                   \n" +
+                "                                            FROM (             \n" +
+                "                                            SELECT ROW_NUMBER() OVER (PARTITION BY facilityId,productId ORDER BY LastUpdate desc) AS r, t.*  \n" +
+                "                                            FROM  (                             \n" +
+                "                                            SELECT  facilityId, s.productId, f.name facilityName,district_id districtId, district_name district,region_id regionId, region_name region,  \n" +
+                "                                            p.primaryName product,sum(e.quantity) OVER (PARTITION BY s.facilityId, s.productId) soh,\n" +
+                "                                            e.modifiedDate::timestamp lastUpdate \n" +
+                "                                            FROM stock_cards s   \n" +
+                "                                            JOIN stock_card_entries e ON e.stockCardId = s.id     \n" +
+                "                                            JOIN program_products pp ON s.productId = pp.productId\n" +
+                "                                            join facility_APPROVED_PRODUCTS fap ON pp.id = fap.programproductId\n" +
+                "                                            JOIN programs ON pp.programId = programs.id\n" +
+                "                                            JOIN products p ON pp.productId = p.id    \n" +
+                "                                            JOIN facilities f ON s.facilityId = f.id  \n" +
+                "                                            JOIN vw_districts d ON f.geographiczoneId = d.district_id  \n" +
+                "                                            JOIN facility_types  ON f.typeId = facility_types.Id  \n" +
+                "                                            where productcategoryId =#{category}  AND facility_types.code =#{level} aND\n" +
+                "                                            P.active =true AND programId= (fn_get_vaccine_program_id()) \n" +
+                "                                            AND d.district_id in (select district_id from vw_user_facilities where user_id = #{userId}::INT and program_id = fn_get_vaccine_program_id()) \n" +
+                "                                            ORDER BY e.modifiedDate ) t\n" +
+                "                                             ) x \n" +
+                "                                            JOIN stock_requirements r on r.facilityid=x.facilityid and r.productid=x.productid AND programId = (fn_get_vaccine_program_id()) \n" +
+                "                                            WHERE  x.r <= 1 \n" +
+                "                                            ) y")
+        List<HashMap<String,Object>> getStockStatusOverView(@Param("userId") Long userId, @Param("category") Long category,@Param("dateString")  String dateString,@Param("level")  String level);
+
+
+        @Select("           WITH Q AS (\n" +
+                "                                     SELECT k.overstock,k.sufficient,k.minimum,k.zero,product\n" +
+                "\n" +
+                "                                      FROM (\n" +
+                "                                      \n" +
+                "                                      SELECT \n" +
+                "                                      ROUND(100.0 * (CASE WHEN total > 0 THEN blue ELSE 0 END / total), 1) AS overstock,\n" +
+                "                                      ROUND(100.0 * (CASE WHEN total > 0 THEN green ELSE 0 END / total), 1) AS sufficient,\n" +
+                "                                      ROUND(100.0 * (CASE WHEN total > 0 THEN yellow ELSE 0 END / total), 1) AS minimum,\n" +
+                "                                      ROUND(100.0 * (CASE WHEN total > 0 THEN red ELSE 0 END / total), 1) AS zero,product\n" +
+                "                                     \n" +
+                "                                      from (\n" +
+                "\n" +
+                "                                      \n" +
+                "                                      SELECT SUM(y.yellow) yellow, SUM(y.blue) blue, SUM(y.green) green,SUM(y.red) red ,SUM(y.blue + y.green +y.yellow \n" +
+                "                                         +red) total,product from (\n" +
+                "                                         \n" +
+                "                                         SELECT  x.productId,x.facilityid,product,\n" +
+                "                                          \n" +
+                "                                          SUM( case when  (x.soh >0 ) and x.soh > r.maximumstock then 1 else 0 end ) as  blue,\n" +
+                "                                          SUM( case when  (x.soh >0 ) and x.soh <= r.maximumstock AND x.soh  >= r.reorderlevel then 1 else 0 end )as green,\n" +
+                "                                           SUM(case when (x.soh >0 ) and (x.soh < r.reorderlevel AND x.soh >= r.bufferstock ) or\n" +
+                "                                           ( (x.soh >0 ) and x.soh < r.bufferstock )\n" +
+                "                                           then 1 else 0 end) as yellow,\n" +
+                "                                           SUM( case when x.soh = 0 then 1 else 0 end) as red\n" +
+                "                                                   \n" +
+                "                                            FROM (             \n" +
+                "                                            SELECT ROW_NUMBER() OVER (PARTITION BY facilityId,productId ORDER BY LastUpdate desc) AS r, t.* \n" +
+                "                                            FROM  ( \n" +
+                "\n" +
+                "\t\t\t\t\tSELECT  facilityId, s.productId, f.name facilityName,district_id districtId, district_name district,region_id regionId,\n" +
+                "\t\t\t\t\t region_name region,  \n" +
+                "                                            p.primaryName product,sum(e.quantity) OVER (PARTITION BY s.facilityId, s.productId) soh, \n" +
+                "                                            e.modifiedDate::timestamp lastUpdate \n" +
+                "               \n" +
+                "                                            FROM stock_cards s   \n" +
+                "                                            JOIN stock_card_entries e ON e.stockCardId = s.id     \n" +
+                "                                            JOIN program_products pp ON s.productId = pp.productId  \n" +
+                "                                            JOIN programs ON pp.programId = programs.id \n" +
+                "                                            JOIN products p ON pp.productId = p.id      \n" +
+                "                                            JOIN facilities f ON s.facilityId = f.id  \n" +
+                "                                            JOIN vw_districts d ON f.geographiczoneId = d.district_id \n" +
+                "                                            JOIN facility_types  ON f.typeId = facility_types.Id  \n" +
+                "                                           where facility_types.code = 'dvs'   \n" +
+                "                                           AND programId= (fn_get_vaccine_program_id())\n" +
+                "                                            ORDER BY e.modifiedDate\n" +
+                "\n" +
+                "                                            )t\n" +
+                "\n" +
+                "                                                                        \n" +
+                "                                          --   SELECT  facilityId, s.productId, f.name facilityName,district_id districtId, district_name district,region_id regionId, region_name region,  \n" +
+                "--                                             p.primaryName product,sum(e.quantity) OVER (PARTITION BY s.facilityId, s.productId) soh,\n" +
+                "--                                             e.modifiedDate::timestamp lastUpdate \n" +
+                "--                 \n" +
+                "--                                             FROM stock_cards s   \n" +
+                "--                                             JOIN stock_card_entries e ON e.stockCardId = s.id     \n" +
+                "--                                             JOIN program_products pp ON s.productId = pp.productId\n" +
+                "--                                             join facility_APPROVED_PRODUCTS fap ON pp.id = fap.programproductId\n" +
+                "--                                             JOIN facility_types  ON fap.facilityTypeID = facility_types.id\n" +
+                "--                                             JOIN programs ON pp.programId = programs.id\n" +
+                "--                                             JOIN products p ON pp.productId = p.id    \n" +
+                "--                                             JOIN facilities f ON s.facilityId = f.id  \n" +
+                "--                                             JOIN vw_districts d ON f.geographiczoneId = d.district_id  \n" +
+                "--                                           \n" +
+                "--                                             where   pp.productCategoryId = #{category} and facility_types.code = 'dvs' and \n" +
+                "--                                             P.active =true AND programId= (fn_get_vaccine_program_id())\n" +
+                "--                                                \n" +
+                "--                                              \n" +
+                "--                                             ORDER BY e.modifiedDate ) t \n" +
+                "                                             ) x \n" +
+                "                                            JOIN stock_requirements r on r.facilityid=x.facilityid and r.productid=x.productid AND programId =(fn_get_vaccine_program_id()) \n" +
+                "                                            WHERE  x.r <= 1 \n" +
+                "                                            \n" +
+                "                                            group by 1,2,3 \n" +
+                "                                            ORDER BY facilityId,productId,product\n" +
+                "                                            ) y\n" +
+                "                                            group by productId,product\n" +
+                "                                            )l\n" +
+                "                                            )K\n" +
+                "                                            )\n" +
+                "                                            select * from q\n" +
+                "                                            where #{status} is not null" +
+                "                                             order by #{status} desc   ")
+        List<HashMap<String, Object>>getInventoryStockStatusDetail(@Param("category") String category,@Param("userId")  Long userId, @Param("status") String status,
+                                                                   @Param("dateString") String dateString,@Param("level") String level);
+
+
+        //Get Stock by STatus
+        @Select("\n" +
+                "\t\t\t\t      select *\n" +
+                "\t\t\t\t     \n" +
+                "\t\t\t\t       from (\n" +
+                "\n" +
+                "                                        SELECT\n" +
+                "                                   \n" +
+                "                                         productId,product,SUM(y.yellow) yellow, SUM(y.blue) blue, SUM(y.green) green,SUM(y.red) red ,SUM(y.blue + y.green +y.yellow \n" +
+                "                                         +red) total \n" +
+                "                                        \n" +
+                "                                         from (\n" +
+                "                                         \n" +
+                "                                         SELECT \n" +
+                "\t\t\t\n" +
+                "                                          x.productId,product,count(x.facilityId) prod,\n" +
+                "                                         \n" +
+                "                                          \n" +
+                "                                          SUM( case when  (x.soh >0 ) and x.soh > r.maximumstock then 1 else 0 end ) as  blue,  \n" +
+                "                                          SUM( case when  (x.soh >0 ) and x.soh <= r.maximumstock AND x.soh  >= r.reorderlevel then 1 else 0 end )as green,\n" +
+                "                                           SUM(case when (x.soh >0 ) and (x.soh < r.reorderlevel AND x.soh >= r.bufferstock ) or\n" +
+                "                                           ( (x.soh >0 ) and x.soh < r.bufferstock )\n" +
+                "                                           then 1 else 0 end) as yellow,\n" +
+                "                                           SUM( case when x.soh = 0 then 1 else 0 end) as red\n" +
+                "                                                   \n" +
+                "                                            FROM (             \n" +
+                "                                            SELECT ROW_NUMBER() OVER (PARTITION BY facilityId,productId ORDER BY LastUpdate desc) AS r, t.*  \n" +
+                "                                            FROM  (                             \n" +
+                "                                            SELECT  facilityId, s.productId, f.name facilityName,district_id districtId, district_name district,region_id regionId, region_name region,  \n" +
+                "                                            p.primaryName product,sum(e.quantity) OVER (PARTITION BY s.facilityId, s.productId) soh,\n" +
+                "                                            e.modifiedDate::timestamp lastUpdate \n" +
+                "                                            FROM stock_cards s   \n" +
+                "                                            JOIN stock_card_entries e ON e.stockCardId = s.id     \n" +
+                "                                            JOIN program_products pp ON s.productId = pp.productId\n" +
+                "                                            join facility_APPROVED_PRODUCTS fap ON pp.id = fap.programproductId\n" +
+                "                                            JOIN programs ON pp.programId = programs.id\n" +
+                "                                            JOIN products p ON pp.productId = p.id    \n" +
+                "                                            JOIN facilities f ON s.facilityId = f.id  \n" +
+                "                                            JOIN vw_districts d ON f.geographiczoneId = d.district_id  \n" +
+                "                                            JOIN facility_types  ON f.typeId = facility_types.Id  \n" +
+                "                                            where productcategoryId =#{category}  AND facility_types.code =#{level} and\n" +
+                "                                            P.active =true AND programId= (fn_get_vaccine_program_id()) \n" +
+                "                                            AND d.district_id in (select district_id from vw_user_facilities where user_id = #{userId}::INT and program_id = fn_get_vaccine_program_id()) \n" +
+                "                                            ORDER BY e.modifiedDate ) t\n" +
+                "                                             ) x \n" +
+                "                                            JOIN stock_requirements r on r.facilityid=x.facilityid and r.productid=x.productid AND programId = (fn_get_vaccine_program_id()) \n" +
+                "                                            WHERE  x.r <= 1 \n" +
+                "                                            group by 1,2\n" +
+                "                                            ORDER BY productId\n" +
+                "                                            ) y\n" +
+                "                                            group by 1,2\n" +
+                "                                            )l \n" +
+                "                                             WHERE red > 0\n" +
+                "                                             ORDER BY total desc")
+        List<HashMap<String,Object>>getVaccineInventoryStockByStatus(@Param("category") Long category,@Param("level")String level, @Param("userId")Long userId );
+
+
+
+
+        @Select(
+                "\t\t\t\t       SELECT *     \n" +
+                "\t\t\t\t       FROM (\n" +
+                "                                        SELECT\n" +
+                "                                          facilityName,facilityId,SUM(y.yellow) yellow, SUM(y.blue) blue, SUM(y.green) green,SUM(y.red) red ,SUM(y.blue + y.green +y.yellow \n" +
+                "                                         +red) total ,MAX(SOH) SOH\n" +
+                "                                        \n" +
+                "                                         from (\n" +
+                "                                         \n" +
+                "                                         SELECT \n" +
+                "\t\t\t\n" +
+                "                                          x.facilityName,X.facilityId,x.soh SOH ,\n" +
+                "                                 \n" +
+                "                                          SUM( case when  (x.soh >0 ) and x.soh > r.maximumstock then 1 else 0 end ) as  blue,  \n" +
+                "                                          SUM( case when  (x.soh >0 ) and x.soh <= r.maximumstock AND x.soh  >= r.reorderlevel then 1 else 0 end )as green,\n" +
+                "                                           SUM(case when (x.soh >0 ) and (x.soh < r.reorderlevel AND x.soh >= r.bufferstock ) or\n" +
+                "                                           ( (x.soh >0 ) and x.soh < r.bufferstock )\n" +
+                "                                           then 1 else 0 end) as yellow,\n" +
+                "                                           SUM( case when x.soh = 0 then 1 else 0 end) as red\n" +
+                "                                                   \n" +
+                "                                            FROM (             \n" +
+                "                                            SELECT ROW_NUMBER() OVER (PARTITION BY facilityId,productId ORDER BY LastUpdate desc) AS r, t.*  \n" +
+                "                                            FROM  (                             \n" +
+                "                                            SELECT  facilityId, s.productId, f.name facilityName,district_id districtId, district_name district,region_id regionId, region_name region,  \n" +
+                "                                            p.primaryName product,sum(e.quantity) OVER (PARTITION BY s.facilityId, s.productId) soh,\n" +
+                "                                            e.modifiedDate::timestamp lastUpdate \n" +
+                "                                            FROM stock_cards s   \n" +
+                "                                            JOIN stock_card_entries e ON e.stockCardId = s.id     \n" +
+                "                                            JOIN program_products pp ON s.productId = pp.productId\n" +
+                "                                            join facility_APPROVED_PRODUCTS fap ON pp.id = fap.programproductId\n" +
+                "                                            JOIN programs ON pp.programId = programs.id\n" +
+                "                                            JOIN products p ON pp.productId = p.id    \n" +
+                "                                            JOIN facilities f ON s.facilityId = f.id  \n" +
+                "                                            JOIN vw_districts d ON f.geographiczoneId = d.district_id  \n" +
+                "                                            JOIN facility_types  ON f.typeId = facility_types.Id  \n" +
+                "                                            WHERE productCategoryId =#{category}  AND facility_types.code =#{level} and s.productId = #{productId} AND\n" +
+                "                                            P.active =true AND programId= (fn_get_vaccine_program_id()) \n" +
+                "                                            AND d.district_id in (select district_id from vw_user_facilities where user_id = #{userId}::INT and program_id = fn_get_vaccine_program_id()) \n" +
+                "                                            ORDER BY e.modifiedDate ) t\n" +
+                "                                             ) x \n" +
+                "                                            JOIN stock_requirements r on r.facilityid=x.facilityid and r.productid=x.productid AND programId = (fn_get_vaccine_program_id()) \n" +
+                "                                            WHERE  x.r <= 1 \n" +
+                "                                            group by 1,2,3\n" +
+                "                                            ORDER BY facilityName\n" +
+                "                                            ) y\n" +
+                "                                            group by 1,2\n" +
+                "                                            )l \n" +
+                "                                             LEFT JOIN facilities f ON facilityId = f.id  \n" +
+                "                                             LEFT JOIN vw_districts d ON f.geographiczoneId = d.district_id \n" +
+                "                                             ORDER BY facilityName\n")
+        List<HashMap<String,Object>> getVaccineInventoryFacilitiesByProduct(@Param("category")Long category, @Param("level") String level,@Param("userId") Long userId, @Param("productId") Long productId,@Param("color") String color);
 }

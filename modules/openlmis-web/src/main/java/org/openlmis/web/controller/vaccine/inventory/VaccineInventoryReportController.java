@@ -38,11 +38,12 @@ public class VaccineInventoryReportController extends BaseController {
     public ResponseEntity<OpenLmisResponse> completenessAndTimeliness(@RequestParam(value = "periodStart", required = false) String periodStart,
                                                                       @RequestParam(value = "periodEnd", required = false) String periodEnd,
                                                                       @RequestParam("district") Long districtId,
+                                                                      @RequestParam("type") String type,
                                                                       @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                                       @Value("${search.page.size}") String limit) {
 
         Pagination pagination = new Pagination(page, parseInt(limit));
-        OpenLmisResponse openLdrResponse = new OpenLmisResponse("distributionCompleteness", service.getDistributionCompletenessReport(periodStart, periodEnd, districtId, pagination));
+        OpenLmisResponse openLdrResponse = new OpenLmisResponse("distributionCompleteness", service.getDistributionCompletenessReport(periodStart, periodEnd, districtId, type,pagination));
         pagination.setTotalRecords(service.getTotalDistributionCompletenessReport(periodStart, periodEnd, districtId));
         openLdrResponse.addData("pagination", pagination);
         return openLdrResponse.response(OK);

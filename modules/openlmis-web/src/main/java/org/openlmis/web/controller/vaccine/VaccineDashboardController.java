@@ -278,4 +278,58 @@ Long userId = this.loggedInUserId(request);
     }
 
 
+    @RequestMapping(value = "stock-status-over-view.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getStockStatusOverView(
+            @Param("category") Long category,@Param("level") String level,
+            HttpServletRequest request) {
+
+        Long userId = this.loggedInUserId(request);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString=formatter.format(new Date());
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("stockOverView", service.getStockStatusOverView(userId, category, dateString, level));
+        response.getBody().addData("date", dateString);
+        return response;
+    }
+
+@RequestMapping(value = "vaccineInventoryStockDetails.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> vaccineInventoryStockDetails(
+        @Param("status") String status,@Param("category") String category,
+        HttpServletRequest request) {
+        Long productId = 0L;
+        String level = " ";
+
+        Long userId = this.loggedInUserId(request);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString=formatter.format(new Date());
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("vaccineInventoryStockDetails", service.getInventoryStockStatusDetail(category,userId, status, dateString, level));
+        response.getBody().addData("date", dateString);
+        return response;
+    }
+
+    @RequestMapping(value = "vaccineInventoryDetails.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> vaccineInventoryStockDetails(
+        @Param("category") Long category,@Param("level") String level,
+        HttpServletRequest request) {
+        Long userId = this.loggedInUserId(request);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString=formatter.format(new Date());
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("vaccineInventoryStockDetails", service.getVaccineInventoryStockByStatus(category, level, userId));
+        response.getBody().addData("date", dateString);
+        return response;
+    }
+
+    @RequestMapping(value = "vaccineInventoryFacilityDetails.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> vaccineInventoryStockDetails(
+        @Param("category") Long category,@Param("level") String level,@Param("product")String product,String color,
+        HttpServletRequest request) {
+
+        Long userId = this.loggedInUserId(request);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString=formatter.format(new Date());
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("facilities", service.getVaccineInventoryFacilitiesByProduct(category, level, userId, product,color));
+        response.getBody().addData("date", dateString);
+        return response;
+    }
+
+
 }
