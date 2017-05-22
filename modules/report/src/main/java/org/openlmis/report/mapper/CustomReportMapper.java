@@ -22,7 +22,7 @@ import java.util.Map;
 @Repository
 public interface CustomReportMapper {
 
-  @Select("select id, reportKey, name, description, category, columnoptions, filters from custom_reports order by category, name")
+  @Select("select id, reportKey, name, description, category, columnoptions, filters, meta from custom_reports order by category, name")
   List<Map> getListOfReports();
 
   @Select("select * from custom_reports order by category, name")

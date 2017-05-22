@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function CustomReportController($scope, $window, $location, reports, CustomReportValue, $routeParams, $timeout) {
+function CustomReportController($scope, $sce, $window, $location, reports, CustomReportValue, $routeParams, $timeout) {
 
   var allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -67,6 +67,7 @@ function CustomReportController($scope, $window, $location, reports, CustomRepor
   $scope.postProcess = function (d) {
     var rows = [];
     var columnOptions = JSON.parse($scope.report.columnoptions);
+    $scope.report.trusted_meta = $sce.trustAsHtml($scope.report.meta);
     $scope.report.pivotRowColumn = _.findWhere(columnOptions, {"pivotRow": "true"});
     $scope.report.pivotColumnDetail = _.findWhere(columnOptions, {"pivotColumn": "true"});
     $scope.report.pivotValueColumn = _.findWhere(columnOptions, {"pivotValue": "true"});

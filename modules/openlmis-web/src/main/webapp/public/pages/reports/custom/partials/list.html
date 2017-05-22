@@ -130,44 +130,8 @@
                             {{col}}
                           </th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="row in data">
-                          <td style="width: 20px; max-width: 30px" ng-bind="($index + 1)"></td>
-                          <td style="min-width: 150px;" ng-show="col.pivotValue != 'true' && col.pivotColumn != 'true' && col.visible!='false'"
-                              class="span{{col.width}} {{col.formatting}} {{col.formatting == 'percent'? 'number': ''}}"
-                              ng-repeat="col in report.columns">
-                            <span
-                                ng-show="col.formatting != 'number' && col.formatting != 'percent'">
-                              <span ng-if="col.link">
-                                <a href="" ng-click="onLinkClicked(col, row);">{{row[col.name]}}</a>
-                              </span>
-                              <span ng-if="!col.link">
-                                {{row[col.name]}}
-                              </span>
-                            </span>
-                            <span ng-show="col.formatting == 'number'">{{row[col.name] | number}}</span>
-                            <span ng-show="col.formatting == 'percent'">{{row[col.name] | number}} %</span>
-                          </td>
-                          <td ng-if="report.pivot" ng-repeat="col in report.pivotColumns"
-                              class="cell-input right-justified number"
-                              style="padding: 0;">
-                            <span
-                                ng-show="row['p'][col][report.pivotValueColumn.name]  && report.pivotValueColumn.classification"
-                                class="cell-text {{row['p'][col][report.pivotValueColumn.classification]}}">
-                              <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name]  | number : 2}}%</span>
-                              <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name]}}</span>
-                            </span>
-                            <span class="cell-text"
-                                  ng-show="row['p'][col][report.pivotValueColumn.name] && !report.pivotValueColumn.classification">
-                              <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number : 2}}%</span>
-                              <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number}}</span>
-                            </span>
-                          </td>
-                        </tr>
-                        <tr ng-show="report.pivot && report.pivotValueColumn.classification">
-                          <td colspan="20">&nbsp;</td>
-                        </tr>
+
+
                         <tr ng-show="report.pivot && report.pivotValueColumn.classification">
                           <td colspan="20"><b>Summary</b></td>
                         </tr>
@@ -211,12 +175,52 @@
                             </span>
                           </td>
                         </tr>
+
+                        <tr ng-show="report.pivot && report.pivotValueColumn.classification">
+                          <td colspan="20">&nbsp;</td>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in data">
+                          <td style="width: 20px; max-width: 30px" ng-bind="($index + 1)"></td>
+                          <td style="min-width: 150px;" ng-show="col.pivotValue != 'true' && col.pivotColumn != 'true' && col.visible!='false'"
+                              class="span{{col.width}} {{col.formatting}} {{col.formatting == 'percent'? 'number': ''}}"
+                              ng-repeat="col in report.columns">
+                            <span
+                                ng-show="col.formatting != 'number' && col.formatting != 'percent'">
+                              <span ng-if="col.link">
+                                <a href="" ng-click="onLinkClicked(col, row);">{{row[col.name]}}</a>
+                              </span>
+                              <span ng-if="!col.link">
+                                {{row[col.name]}}
+                              </span>
+                            </span>
+                            <span ng-show="col.formatting == 'number'">{{row[col.name] | number}}</span>
+                            <span ng-show="col.formatting == 'percent'">{{row[col.name] | number}} %</span>
+                          </td>
+                          <td ng-if="report.pivot" ng-repeat="col in report.pivotColumns"
+                              class="cell-input right-justified number"
+                              style="padding: 0;">
+                            <span
+                                ng-show="row['p'][col][report.pivotValueColumn.name]  && report.pivotValueColumn.classification"
+                                class="cell-text {{row['p'][col][report.pivotValueColumn.classification]}}">
+                              <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name]  | number : 2}}%</span>
+                              <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name]}}</span>
+                            </span>
+                            <span class="cell-text"
+                                  ng-show="row['p'][col][report.pivotValueColumn.name] && !report.pivotValueColumn.classification">
+                              <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number : 2}}%</span>
+                              <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number}}</span>
+                            </span>
+                          </td>
+                        </tr>
                         </tbody>
                       </table>
                     </div>
+                    <div ng-if="data" ng-bind-html="report.trusted_meta"></div>
                   </div>
                 </div>
-
               </div>
             </div>
             <div class="clearfix"></div>
