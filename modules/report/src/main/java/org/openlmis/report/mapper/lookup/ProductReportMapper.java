@@ -82,7 +82,7 @@ public interface ProductReportMapper {
           "     order by name ")
   List<Product> getPushProgramProducts();
 
-  @Select("SELECT p.id, (coalesce(p.primaryname,'') || ' ' || coalesce(form.code,'') || ' ' || coalesce(p.strength,'') || ' ' || coalesce(du.code,'')) as name, p.code, pp.productcategoryid as categoryid, " +
+  @Select("SELECT p.id, p.primaryname, (coalesce(p.primaryname,'') || ' ' || coalesce(form.code,'') || ' ' || coalesce(p.strength,'') || ' ' || coalesce(du.code,'')) as name, p.code, pp.productcategoryid as categoryid, " +
     "CASE WHEN p.tracer = true THEN 'Indicator Product' ELSE 'Regular' END tracer" +
     " " +
     "   FROM " +

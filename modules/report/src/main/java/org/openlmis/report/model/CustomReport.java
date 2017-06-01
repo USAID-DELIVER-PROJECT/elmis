@@ -39,5 +39,6 @@ public class CustomReport extends BaseModel{
 
   private String meta;
 
+  private Boolean active;
 
 }

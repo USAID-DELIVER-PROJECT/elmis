@@ -31,7 +31,7 @@
                   <td>
                     <span class="red" ng-show="current.id == report.id">>></span>
                     {{$index + 1}}
-                    <a href="" ng-click="select(report)">{{report.name}}</a>
+                    {{report.active === true? '': 'X '}}<a href="" ng-click="select(report)">{{report.name}}</a>
                   </td>
                 </tr>
               </table>
@@ -57,6 +57,16 @@
                   <label>Report Key</label>
                   <div class="form-field">
                     <input ng-model="current.reportkey" placeholder="Key" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row row-fluid">
+              <div class="span6">
+                <div class="form-cell">
+                  <label>Active</label>
+                  <div class="form-field">
+                    <input ng-model="current.active" placeholder="Name" type="checkbox" />
                   </div>
                 </div>
               </div>
