@@ -45,4 +45,5 @@ public class StockImbalanceReportParam
   private Long year;
 
   private String status;
+  private String reportType;
 }
