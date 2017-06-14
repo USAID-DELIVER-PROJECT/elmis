@@ -65,7 +65,34 @@
                     </div>
                 </div>
                 <div class="content-body">
+                    <div class="box-header">
 
+                        <div class="form-cell span2">
+                            <div class="checkbox">
+                                <label for="allType"><input id="allType" class="checkbox" type="checkbox" value="allReportType"
+                                                            ng-change="onToggleReportTypeAll()" ng-model="allReportType">
+                                    <span>All</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-cell span2">
+                            <div class="checkbox">
+                                <label for="emergency"><input id="emergency" class="checkbox" type="checkbox" value="EM"
+                                                              ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.EM">
+                                    <span>Emergency</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-cell span2">
+                            <div class="checkbox">
+                                <label for="re"><input id="re" class="checkbox" type="checkbox" value="RE"
+                                                       ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.RE">
+                                    <span>Regular</span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
                     <table client-side-sort-pagination class="table table-bordered"
                            ng-show="data == undefined || data.length == 0">
                         <tr>

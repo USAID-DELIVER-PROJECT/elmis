@@ -40,5 +40,6 @@ public class StockedOutReportParam
   private Long facility;
 
   private Long zone;
+  private String reportType;
 
 }
