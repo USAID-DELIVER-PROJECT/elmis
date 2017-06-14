@@ -18,12 +18,42 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
       $scope.statuses[status] = true;
     });
   }
-
+  if ($routeParams.reportType !== undefined) {
+    var reportTypes = $routeParams.reportType.split(',');
+    $scope.reportTypes =  {};
+    reportTypes.forEach(function(reportType){
+      $scope.reportTypes[reportType] = true;
+    });
+  }
   $scope.exportReport = function (type) {
     $scope.filter.pdformat = 1;
     var params = jQuery.param($scope.getSanitizedParameter());
     var url = '/reports/download/stock_imbalance/' + type + '?' + params;
     $window.open(url, '_blank');
+  };
+  $scope.onToggleReportTypeAll = function () {
+    if ($scope.reportTypes === undefined) {
+      $scope.reportTypes =  {};
+    }
+
+    $scope.reportTypes.EM = $scope.reportTypes.RE = $scope.allReportType;
+    $scope.onReportTypeCheckboxChanged();
+  };
+  $scope.onReportTypeCheckboxChanged = function () {
+    var reportType = 'EM';
+    _.keys($scope.reportTypes).forEach(function (key) {
+      var value = $scope.reportTypes[key];
+      if (value === true && (key==='EM'|| key==='RE')) {
+        reportType += "," + key;
+      }
+    });
+    if($scope.filter === undefined){
+      $scope.filter = {reportType: reportType};
+    }else{
+      $scope.filter.reportType = reportType;
+    }
+    $scope.applyUrl();
+    $scope.OnFilterChanged();
   };
 
   $scope.onToggleAll = function () {
@@ -62,7 +92,7 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
       $scope.filter.status = 'SO';
       $scope.applyUrl();
     }
-
+alert(JSON.stringify($scope.getSanitizedParameter()))
     StockImbalanceReport.get($scope.getSanitizedParameter(), function (data) {
       $scope.data = data.pages.rows;
       $scope.paramsChanged($scope.tableParams);
