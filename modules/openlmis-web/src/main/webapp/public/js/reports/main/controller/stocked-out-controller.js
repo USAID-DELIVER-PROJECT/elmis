@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function StockedOutController($scope, $window, StockedOutReport) {
+function StockedOutController($scope, $window, StockedOutReport, $routeParams ) {
 
     $scope.OnFilterChanged = function() {
         // clear old data if there was any
@@ -23,7 +23,37 @@ function StockedOutController($scope, $window, StockedOutReport) {
             }
         });
     };
+    if ($routeParams.reportType !== undefined) {
+        var reportTypes = $routeParams.reportType.split(',');
+        $scope.reportTypes =  {};
+        reportTypes.forEach(function(reportType){
+            $scope.reportTypes[reportType] = true;
+        });
+    }
+    $scope.onToggleReportTypeAll = function () {
+        if ($scope.reportTypes === undefined) {
+            $scope.reportTypes =  {};
+        }
 
+        $scope.reportTypes.EM = $scope.reportTypes.RE = $scope.allReportType;
+        $scope.onReportTypeCheckboxChanged();
+    };
+    $scope.onReportTypeCheckboxChanged = function () {
+        var reportType = 'EM';
+        _.keys($scope.reportTypes).forEach(function (key) {
+            var value = $scope.reportTypes[key];
+            if (value === true && (key==='EM'|| key==='RE')) {
+                reportType += "," + key;
+            }
+        });
+        if($scope.filter === undefined){
+            $scope.filter = {reportType: reportType};
+        }else{
+            $scope.filter.reportType = reportType;
+        }
+        $scope.applyUrl();
+        $scope.OnFilterChanged();
+    };
     $scope.exportReport = function(type) {
         $scope.filter.pdformat = 1;
         var params = jQuery.param($scope.getSanitizedParameter());
