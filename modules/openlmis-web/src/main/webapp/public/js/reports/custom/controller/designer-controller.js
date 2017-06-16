@@ -30,7 +30,7 @@ function CustomReportDesignerController($scope, reports, SaveCustomReport, Custo
 
       $scope.meta = ace.edit("metaeditor");
       $scope.meta.setTheme("ace/theme/chrome");
-      $scope.meta.getSession().setMode("ace/mode/json");
+      $scope.meta.getSession().setMode("ace/mode/html");
     }
     $scope.sqleditor.setValue($scope.current.query);
     $scope.filter.setValue($scope.current.filters);

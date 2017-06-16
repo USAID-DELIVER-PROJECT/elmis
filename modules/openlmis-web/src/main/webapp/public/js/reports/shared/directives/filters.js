@@ -136,24 +136,17 @@ app.directive('programFilter', ['ReportUserPrograms', 'ReportProgramsWithBudgeti
             require: '^filterContainer',
             link: function (scope, elm, attr) {
                 scope.registerRequired('program', attr);
-
+                scope.program_filter_visible = attr.visible !== undefined ?attr.visible: true;
                 function bindPrograms(list) {
-
+                    if(list.length === 1 && !$routeParams.program){
+                        scope.filter.program = list[0].id;
+                    }
                     if (!attr.required && !$routeParams.program) {
                         scope.programs = scope.unshift(list, 'report.filter.all.programs');
                     } else {
                         scope.programs = scope.unshift(list, 'report.filter.select.program');
                     }
 
-                    makeVaccineProgramDefault(list);
-                }
-
-                function makeVaccineProgramDefault(list){
-                    if(utils.isEmpty(scope.filter.program)){
-                        vaccineProgram = _.find(list, function(program){ return program.code == 'Vaccine'; });
-                        if(!utils.isNullOrUndefined(vaccineProgram))
-                            scope.filter.program = vaccineProgram.id;
-                    }
                 }
 
                 var Service = (attr.regimen) ? ReportRegimenPrograms : (attr.budget) ? ReportProgramsWithBudgeting : ReportUserPrograms;
@@ -288,6 +281,8 @@ app.directive('scheduleFilter', ['ReportSchedules', 'ReportProgramSchedules', '$
             link: function (scope, elm, attr) {
                 scope.registerRequired('schedule', attr);
 
+                scope.schedule_filter_visible = (attr.visible !== undefined) ? attr.visible: true;
+
                 var loadSchedules = function () {
                     ReportProgramSchedules.get({
                         program: scope.filter.program
@@ -322,12 +317,18 @@ app.directive('scheduleFilter', ['ReportSchedules', 'ReportProgramSchedules', '$
     }
 ]);
 
-app.directive('zoneFilter', ['TreeGeographicZoneList', 'TreeGeographicZoneListByProgram', 'GetUserUnassignedSupervisoryNode', 'messageService',
-    function (TreeGeographicZoneList, TreeGeographicZoneListByProgram, GetUserUnassignedSupervisoryNode, messageService) {
+app.directive('zoneFilter', ['TreeGeographicZoneList', 'TreeGeographicZoneListByProgram', 'TreeGeographicTreeByProgramNoZones', 'GetUserUnassignedSupervisoryNode', 'messageService',
+    function (TreeGeographicZoneList, TreeGeographicZoneListByProgram,TreeGeographicTreeByProgramNoZones, GetUserUnassignedSupervisoryNode, messageService) {
 
         var onCascadedVarsChanged = function ($scope, attr) {
             if (!angular.isUndefined($scope.filter) && !angular.isUndefined($scope.filter.program)) {
-                TreeGeographicZoneListByProgram.get({
+
+                var service = TreeGeographicZoneListByProgram;
+                if(attr.nozone){
+                    service = TreeGeographicTreeByProgramNoZones;
+                }
+
+                service.get({
                     program: $scope.filter.program
                 }, function (data) {
                     $scope.zones = [data.zone];
@@ -644,7 +645,18 @@ app.directive('productFilter', ['ReportProductsByProgram', 'messageService', '$r
             ReportProductsByProgram.get({
                 programId: program
             }, function (data) {
-                $scope.products = data.productList;
+
+                if(attr.tracer && attr.tracer !== ''){
+                    $scope.products= _.where(data.productList, {tracer: attr.tracer});
+                }else{
+                    $scope.products = data.productList;
+                }
+                if(attr.label !== 'name'){
+                    $scope.products.forEach(function(p){
+                       p.name = p[attr.label];
+                    });
+                }
+
                 if (!attr.required) {
                     $scope.products.unshift({
                         'name': messageService.get('report.filter.select.indicator.product'),
