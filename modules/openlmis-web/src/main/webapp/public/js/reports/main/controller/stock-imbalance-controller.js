@@ -92,7 +92,6 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
       $scope.filter.status = 'SO';
       $scope.applyUrl();
     }
-alert(JSON.stringify($scope.getSanitizedParameter()))
     StockImbalanceReport.get($scope.getSanitizedParameter(), function (data) {
       $scope.data = data.pages.rows;
       $scope.paramsChanged($scope.tableParams);
