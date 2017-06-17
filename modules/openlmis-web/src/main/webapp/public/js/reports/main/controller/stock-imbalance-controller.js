@@ -40,11 +40,15 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
     $scope.onReportTypeCheckboxChanged();
   };
   $scope.onReportTypeCheckboxChanged = function () {
-    var reportType = 'EM';
+    var reportType = null;
     _.keys($scope.reportTypes).forEach(function (key) {
       var value = $scope.reportTypes[key];
       if (value === true && (key==='EM'|| key==='RE')) {
-        reportType += "," + key;
+
+        utils.isNullOrUndefined(reportType)? reportType=key:  reportType += "," + key;
+
+      }else if(value===false){
+        $scope.allReportType=false;
       }
     });
     if($scope.filter === undefined){
@@ -71,6 +75,8 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
       var value = $scope.statuses[key];
       if (value === true) {
         status += "," + key;
+      }else if(value===false){
+        $scope.all=false;
       }
     });
     if($scope.filter === undefined){

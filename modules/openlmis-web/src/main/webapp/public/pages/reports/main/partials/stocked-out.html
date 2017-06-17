@@ -70,7 +70,7 @@
                         <div class="form-cell span2">
                             <div class="checkbox">
                                 <label for="allType"><input id="allType" class="checkbox" type="checkbox" value="allReportType"
-                                                            ng-change="onToggleReportTypeAll()" ng-model="allReportType">
+                                                            ng-change="onToggleReportTypeAll('all')" ng-model="allReportType">
                                     <span>All</span>
                                 </label>
                             </div>
@@ -78,7 +78,7 @@
                         <div class="form-cell span2">
                             <div class="checkbox">
                                 <label for="emergency"><input id="emergency" class="checkbox" type="checkbox" value="EM"
-                                                              ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.EM">
+                                                              ng-change="onReportTypeCheckboxChanged('EM')" ng-model="reportTypes.EM">
                                     <span>Emergency</span>
                                 </label>
                             </div>
@@ -86,7 +86,7 @@
                         <div class="form-cell span2">
                             <div class="checkbox">
                                 <label for="re"><input id="re" class="checkbox" type="checkbox" value="RE"
-                                                       ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.RE">
+                                                       ng-change="onReportTypeCheckboxChanged('RE')" ng-model="reportTypes.RE">
                                     <span>Regular</span>
                                 </label>
                             </div>
