@@ -46,7 +46,7 @@
       <table class="table-bordered table table-striped" ng-table="tableParams">
         <tbody>
         <tr ng-show="data.length > 0" ng-repeat="row in data">
-
+          <td data-title="index">({{$index + 1}}) </td>
           <td data-title="getLocalMessage('label.product.code')" style="min-width:150px" sortable="productCode">
             {{
             row.productCode }}
