@@ -66,6 +66,7 @@ public static String getReportQuery(Map params){
   Map sortCriteria = (Map) params.get("SortCriteria");
     String reportType=filter.getReportType().replaceAll(",","','").replaceAll("EM","t").replaceAll("RE","f");
   String sql="";
+    String facilityParameterType=  filter.getFacilityType() != 0?" AND f.typeid=  '"+filter.getFacilityType()+"'::INT\n" :" ";
   sql="SELECT distinct \n" +
           "supplyingFacility, \n" +
           "facilityTypeName facilityType,  \n" +
@@ -128,7 +129,8 @@ public static String getReportQuery(Map params){
           " AND r.facilityId in (select facility_id from  vw_user_facilities where user_id =  '1'::INT and program_id =  '"+filter.getProgram()+"'::INT)  \n" +
           " AND r.status in ("+  filter.getAcceptedRnrStatuses()+" ) \n" +
           " AND r.facilityId in  (select facility_id from vw_user_facilities where  user_id= '1'::INT and program_id = '"+filter.getProgram()+"'::INT)  \n" +
-          " AND f.typeid=  '"+filter.getFacilityType()+"'::INT\n" +
+          facilityParameterType+
+
           " and r.emergency in ('"+reportType+"')\n" +
           " AND li.stockinhand IS NOT NULL AND li.skipped = false) a\n" +
           " WHERE status in ('" + filter.getStatus().replaceAll(",","','") + "')"+
