@@ -10,7 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 function StockImbalanceController($scope, $window, $routeParams, StockImbalanceReport) {
-
+  ( function init(){
+    $routeParams.reportType="RE";
+    $routeParams.status="SO";
+  })();
   if ($routeParams.status !== undefined) {
     var statuses = $routeParams.status.split(',');
     $scope.statuses =  {};

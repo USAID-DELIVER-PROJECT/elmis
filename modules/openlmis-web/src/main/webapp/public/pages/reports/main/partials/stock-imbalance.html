@@ -82,7 +82,7 @@
                   </div>
                   <div class="form-cell span2">
                     <div class="checkbox">
-                      <label for="re"><input id="re" class="checkbox" type="checkbox" value="RE"
+                      <label for="re"><input id="re" class="checkbox" type="checkbox" value="RE" ng-checked="true"
                                              ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.RE">
                         <span>Regular</span>
                       </label>
@@ -102,7 +102,7 @@
                   </div>
                   <div class="form-cell span2">
                     <div class="checkbox">
-                      <label for="so"><input id="so" class="checkbox" type="checkbox" value="SO"
+                      <label for="so"><input ng-checked="true" id="so" class="checkbox" type="checkbox" value="SO"
                                              ng-change="onCheckboxChanged()" ng-model="statuses.SO">
                         <span>Stocked Out</span>
                       </label>
