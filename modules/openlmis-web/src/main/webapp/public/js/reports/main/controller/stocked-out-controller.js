@@ -34,7 +34,7 @@ function StockedOutController($scope, $window, StockedOutReport, $routeParams) {
 
     }else{
         $scope.reportTypes = {};
-        $scope.reportTypes["RE"] = true;
+        $scope.reportTypes.RE = true;
     }
     ( function init(){
 
