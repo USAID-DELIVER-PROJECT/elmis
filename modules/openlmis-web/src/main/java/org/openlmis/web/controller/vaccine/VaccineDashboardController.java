@@ -331,5 +331,23 @@ Long userId = this.loggedInUserId(request);
         return response;
     }
 
+    @RequestMapping(value = "vaccineStockEvent.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> vaccineStockEventByMonth(
+            HttpServletRequest request,
+            @Param("product") Long product,
+            @Param("period") Long period,
+            @Param("year") Long year,
+            @Param("district") Long district
+            ) {
+
+        Long userId = this.loggedInUserId(request);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString=formatter.format(new Date());
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("events",
+                service.getStockEventByMonth(product,period,year,district));
+        response.getBody().addData("date", dateString);
+        return response;
+    }
+
 
 }

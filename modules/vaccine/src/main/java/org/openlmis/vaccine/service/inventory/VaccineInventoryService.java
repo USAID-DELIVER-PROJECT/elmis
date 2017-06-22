@@ -33,6 +33,9 @@ public class VaccineInventoryService {
     LotRepository lotRepository;
 
     @Autowired
+    SdpNotificationService sdpNotificationService;
+
+    @Autowired
     private FacilityApprovedProductRepository facilityApprovedProductRepository = null;
 
     public List<Lot> getLotsByProductId(Long productId) {

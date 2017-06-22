@@ -193,4 +193,13 @@ public class VaccineDashboardRepository {
 
         return mapper.getVaccineInventoryFacilitiesByProduct(category, level,userId, product,color);
     }
+
+    public List<HashMap<String, Object>> geStockEventByMonth() {
+
+        return mapper.getStockEventByMonth();
+    }
+
+    public List<HashMap<String, Object>> geStockEventByMonth(Long product, Long period, Long year, Long district) {
+        return mapper.geStockEventByMonth(product,period,year,district);
+    }
 }

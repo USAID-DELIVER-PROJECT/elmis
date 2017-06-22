@@ -1226,4 +1226,29 @@ public interface VaccineDashboardMapper {
                 "                                             LEFT JOIN vw_districts d ON f.geographiczoneId = d.district_id \n" +
                 "                                             ORDER BY facilityName\n")
         List<HashMap<String,Object>> getVaccineInventoryFacilitiesByProduct(@Param("category")Long category, @Param("level") String level,@Param("userId") Long userId, @Param("productId") Long productId,@Param("color") String color);
+
+        @Select(" select Max(MaximumStock)Maximum,MAX(isaValue) minimum,\n" +
+                "to_char(e.createddate, 'yyyy-mm-dd') \"days\",to_char(e.createddate, 'dd') \"day\", count(e.*) \"Events Recorded\",sum(e.quantity) quantity \n" +
+                "from stock_card_entries e\n" +
+                "join stock_cards sc on e.stockcardid = sc.id\n" +
+                "LEFT JOIN stock_requirements sr on sc.facilityId =SR.FACILITYID AND SC.PRODUCTiD = sr.productId AND YEAR =2017\n" +
+                "where  extract('year' from e.createddate) = 2017 and extract('month' from e.createddate) =1\n" +
+                "and sc.productId =2412 and sc.facilityId =19181\n" +
+                "group by to_char(e.createddate, 'yyyy-mm-dd'),to_char(e.createddate, 'dd'),sc.FACILITYiD\n" +
+                "order by to_char(e.createddate, 'yyyy-mm-dd') asc ")
+        List<HashMap<String,Object>> getStockEventByMonth();
+
+        @Select(" select Max(MaximumStock)Maximum,MAX(isaValue) minimum,\n" +
+                "to_char(e.createddate, 'yyyy-mm-dd') \"days\",to_char(e.createddate, 'dd') \"day\", count(e.*) \"Events Recorded\",sum(e.quantity) quantity \n" +
+                "from stock_card_entries e\n" +
+                "join stock_cards sc on e.stockcardid = sc.id\n" +
+                "LEFT JOIN stock_requirements sr on sc.facilityId =SR.FACILITYID AND SC.PRODUCTiD = sr.productId AND YEAR =#{year}\n" +
+                "where  extract('year' from e.createddate) = #{year} and extract('month' from e.createddate) =#{period}\n" +
+                "and sc.productId = #{product} and sc.facilityId =#{district}\n" +
+                "group by to_char(e.createddate, 'yyyy-mm-dd'),to_char(e.createddate, 'dd'),sc.FACILITYiD\n" +
+                "order by to_char(e.createddate, 'yyyy-mm-dd') asc ")
+        List<HashMap<String,Object>> geStockEventByMonth(@Param("product") Long product,
+                                                         @Param("period") Long period,
+                                                         @Param("year") Long year,
+                                                          @Param("district")Long district);
 }
