@@ -92,7 +92,7 @@
 					<textFieldExpression><![CDATA[$R{label.month}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="178" y="16" width="623" height="24" uuid="43d722a3-b03d-4a9a-9406-10c49079e791"/>
+					<reportElement x="178" y="16" width="198" height="24" uuid="43d722a3-b03d-4a9a-9406-10c49079e791"/>
 					<textElement verticalAlignment="Bottom">
 						<font isBold="true"/>
 						<paragraph leftIndent="3"/>
@@ -217,21 +217,21 @@
 				<textFieldExpression><![CDATA[$F{soh}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="false">
-				<reportElement x="178" y="0" width="198" height="20" uuid="53662ea6-f11e-48d2-94fe-043d6ff39cad"/>
+				<reportElement isPrintRepeatedValues="false" x="178" y="0" width="198" height="20" uuid="53662ea6-f11e-48d2-94fe-043d6ff39cad"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{storeName}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="false">
-				<reportElement x="376" y="0" width="147" height="20" uuid="2072277d-ffeb-4272-a618-06bcded54c4e"/>
+				<reportElement isPrintRepeatedValues="false" x="376" y="0" width="147" height="20" uuid="2072277d-ffeb-4272-a618-06bcded54c4e"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{minimumStock}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="false">
-				<reportElement x="524" y="0" width="145" height="20" uuid="603a699e-8781-4589-a2a5-d3096f8cb485"/>
+				<reportElement isPrintRepeatedValues="false" x="524" y="0" width="145" height="20" uuid="603a699e-8781-4589-a2a5-d3096f8cb485"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="3"/>
 				</textElement>
