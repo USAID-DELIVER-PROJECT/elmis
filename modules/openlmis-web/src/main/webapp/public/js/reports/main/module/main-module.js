@@ -53,6 +53,7 @@ angular.module('mainReport', ['openlmis', 'ngTable','ui.bootstrap.tpls', 'angula
         when('/distribution-summary-report', {controller: DistributionSummaryReportController, templateUrl:'partials/distribution-summary.html',reloadOnSearch:false}).
         when('/vaccine-received-summary-report', {controller: VaccineReceivedSummaryReportController, templateUrl:'partials/received-consignment.html',reloadOnSearch:false}).
         when('/inventory-status-summary', {controller: InventoryStatusSummary, templateUrl:'partials/inventory-stock-summary.html',reloadOnSearch:false, resolve:InventoryStatusSummary.resolve}).
+        when('/stock-event', {controller: StockInventoryEvent, templateUrl:'partials/stock-event.html',reloadOnSearch:false, resolve:StockInventoryEvent.resolve}).
           otherwise({redirectTo:'/adjustment-summary'});
     }]).config(function(angularCombineConfigProvider) {
     angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');

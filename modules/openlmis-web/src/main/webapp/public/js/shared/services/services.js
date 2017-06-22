@@ -495,3 +495,7 @@ services.factory('DeleteEquipmentInventory', function ($resource) {
 services.factory('CustomReportList', function ($resource) {
   return $resource('/report-api/list.json', {}, {});
 });
+
+services.factory('VaccineStockEvent', function ($resource) {
+  return $resource('/vaccine/dashboard/vaccineStockEvent.json', {}, {});
+});
