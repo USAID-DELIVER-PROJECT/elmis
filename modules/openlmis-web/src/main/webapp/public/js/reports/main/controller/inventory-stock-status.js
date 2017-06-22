@@ -1,5 +1,4 @@
-function InventoryStatusSummary($scope, VaccineInventorySummaryData, VaccineInventorySummaryDetails, GetVaccineInventoryFacilityDetails
-                              ,$http, $filter, InventoryEvent, ProductCategory, $q, $log, VaccineInventorySummary, GetVaccineInventoryDetails, $modal, $timeout) {
+function InventoryStatusSummary($scope,VaccineInventorySummaryData,VaccineInventorySummaryDetails,GetVaccineInventoryFacilityDetails,InventoryEvent, ProductCategory, $q, $log, VaccineInventorySummary, GetVaccineInventoryDetails, $modal, $timeout) {
 
     //Start Inventory Event
 
@@ -11,7 +10,7 @@ function InventoryStatusSummary($scope, VaccineInventorySummaryData, VaccineInve
     };
 
     function getDates(startDate, stopDate) {
-        var dateArray = new Array();
+        var dateArray = [];
         var currentDate = startDate;
         while (currentDate <= stopDate) {
 /*            dateArray.push(
@@ -171,14 +170,14 @@ console.log(iMin);
                 VaccineInventorySummary.get(param, function (data) {
                     summary = data;
                     deferred.resolve(summary);
-                })
+                });
             }, 100);
 
             return deferred.promise;
         }
 
         var summary = $scope.inventorySummary = [];
-        if ($scope.filter == null) {
+        if ($scope.filter === null) {
             param = {"category": null, "level": null};
         } else {
 
@@ -190,7 +189,7 @@ console.log(iMin);
         $scope.promise = asyncGreet(param);
     $scope.promise.then(function (data) {
             console.log(data);
-            $scope.myChart(data.stockOverView)
+            $scope.myChart(data.stockOverView);
         }, function (reason) {
             console.log(reason);
 
@@ -282,7 +281,7 @@ console.log(iMin);
         if (code !== null) {
             $scope.filter.category = code;
         } else {
-            $scope.filter.category = null
+            $scope.filter.category = null;
         }
 
         param = {"category": $scope.filter.category, "level": $scope.filter.facilityLevel};
@@ -323,7 +322,7 @@ console.log(iMin);
     $scope.productFormChange = function (data) {
         code = data.id;
         $scope.filter.category = data.id;
-        $scope.updateFilterChanged(parseInt(data.id));
+        $scope.updateFilterChanged(parseInt(data.id,10));
         $scope.callBack(parseInt(data.id, 10));
         $scope.vaccineInventoryStock = [];
         $scope.reference(data);
@@ -433,7 +432,7 @@ console.log(iMin);
             y: 10.38
         }]*/
     }]
-})
+});
 
 
  };
@@ -482,7 +481,7 @@ console.log(iMin);
             console.log(sortedDescAndFiltered);
             var dataSum = 0;
             for (var i = 0; i < preparePercentage.length; i++) {
-                dataSum += preparePercentage[i]
+                dataSum += preparePercentage[i];
             }
             var colorStatus = data2;
 
@@ -544,9 +543,9 @@ console.log(iMin);
                                     var point = series.points[i];
 
 
-                                    if (point.oldY == undefined)
+                                    if (point.oldY === undefined)
                                         point.oldY = point.data.id;
-                                    point.update({y: point.y != null ? null : point.oldY});
+                                    point.update({y: point.y !== null ? null : point.oldY});
                                 }
                             },
                             cursor: 'pointer',

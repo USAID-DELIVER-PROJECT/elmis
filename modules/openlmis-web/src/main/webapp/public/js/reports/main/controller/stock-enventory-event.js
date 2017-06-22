@@ -46,7 +46,7 @@ function StockInventoryEvent($scope,$http,VaccineStockEvent, $filter){
         };
 
         function getDates(startDate, stopDate) {
-            var dateArray = new Array();
+            var dateArray = [];
             var currentDate = startDate;
             while (currentDate <= stopDate) {
                 /*            dateArray.push(
@@ -100,7 +100,6 @@ function StockInventoryEvent($scope,$http,VaccineStockEvent, $filter){
         });
 
 
-      ;// InventoryEvent;
 
         //Stock Event Chart
         console.log(iMin);

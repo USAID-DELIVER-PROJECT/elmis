@@ -85,7 +85,7 @@ function ViewTransferIssueVoucherController($scope,homeFacility,programs,Distrib
                 $scope.distribution=undefined;
                 $scope.voucherNumberSearched=true;
             }
-        })},10);
+        });},10);
 
 
 

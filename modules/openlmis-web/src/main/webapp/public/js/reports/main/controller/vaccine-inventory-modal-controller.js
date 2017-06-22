@@ -50,7 +50,7 @@ function ModalInstanceCtrl($scope,$http, $modalInstance,items){
             var printwWindow = $window.open(pdfUrl);
             printwWindow.print();
         }).error(function(data, status, headers, config) {
-            alert('Sorry, something went wrong')
+            alert('Sorry, something went wrong');
         });
     };
 
