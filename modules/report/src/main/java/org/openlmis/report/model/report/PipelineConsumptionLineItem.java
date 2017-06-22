@@ -9,31 +9,20 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openlmis.report.builder;
-import org.openlmis.report.model.params.PipelineExportParams;
-
-import java.util.Map;
-
-import static org.apache.ibatis.jdbc.SqlBuilder.*;
-
-public class PipelineExportQueryBuilder {
-
-    public static String getQuery(Map params){
-
-     PipelineExportParams filter  = (PipelineExportParams)params.get("filterCriteria");
+package org.openlmis.report.model.report;
 
 
-     int programId  = filter.getProgramId();
-     int yearId     = filter.getYearId();
-     int periodId   = filter.getPeriodId();
+import lombok.*;
+import org.openlmis.report.model.ResultRow;
 
 
-     BEGIN();
-     SELECT("line");
-     FROM("fn_e2e_pipeline("+programId+","+yearId+","+periodId+")");
-     // copy the sql over to a variable, this makes the debugging much more possible.
-      String sql = SQL();
-        return sql;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class PipelineConsumptionLineItem implements ResultRow {
 
-    }
+    private String productCode;
+    private Long consumption;
+    private Long adjustment;
 }

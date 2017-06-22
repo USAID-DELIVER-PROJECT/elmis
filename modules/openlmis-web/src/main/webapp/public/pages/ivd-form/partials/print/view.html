@@ -278,34 +278,20 @@
                 </tr>
                 <tr>
                     <th openlmis-message="label.type.of.antigen"></th>
-                    <th openlmis-message="label.opening.balance.doses" style="text-align: center;"></th>
-                    <th openlmis-message="label.doses.of.vaccine.received" style="text-align: center;"></th>
-                    <th openlmis-message="label.doses.of.vaccine.used.during.vaccination" style="text-align: center;"> </th>
-                    <th openlmis-message="label.doses.discarded.unopened" style="text-align: center;" ></th>
-                    <th openlmis-message="label.reasons.for.discarding.unopened.vial" style="text-align: center;"></th>
-                    <th openlmis-message="label.doses.of.vaccine.stock.on.hand" style="text-align: center;"></th>
-                    <th openlmis-message="label.no.of.days.stocked.out" style="text-align: center;"></th>
-                    <th openlmis-message="label.children.immunized" style="text-align: center;"></th>
-                    <th openlmis-message="label.usage.rate.formula" style="text-align: center;"></th>
-                    <th openlmis-message="label.wastage.rate.formula" style="text-align: center;"></th>
+                    <th openlmis-message="label.opening.balance.doses" style="text-align: center;max-width: 100px;"></th>
+                    <th openlmis-message="label.doses.of.vaccine.received" style="text-align: center;max-width: 100px;"></th>
+                    <th openlmis-message="label.doses.of.vaccine.used.during.vaccination" style="text-align: center;max-width: 100px;"> </th>
+                    <th openlmis-message="label.doses.discarded.unopened" style="text-align: center;max-width: 100px;" ></th>
+                    <th openlmis-message="label.reasons.for.discarding.unopened.vial" style="text-align: center;max-width: 100px;"></th>
+                    <th openlmis-message="label.doses.of.vaccine.stock.on.hand" style="text-align: center;max-width: 100px;"></th>
+                    <th openlmis-message="label.no.of.days.stocked.out" style="text-align: center;max-width: 100px;"></th>
+                    <th openlmis-message="label.children.immunized" style="text-align: center;max-width: 100px;"></th>
+                    <th openlmis-message="label.usage.rate.formula" style="text-align: center;max-width: 100px;"></th>
+                    <th openlmis-message="label.wastage.rate.formula" style="text-align: center;max-width: 100px;"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <!--<tr>
-                    <td></td>
-                    <td>A</td>
-                    <td>B</td>
-                    <td>C</td>
-                    <td>D</td>
-                    <td></td>
-                    <td>E</td>
-                    <td></td>
-                    <td>F</td>
-                    <td>G</td>
-                    <td>H</td>
-                </tr>
-                -->
-                <tr style="height: 31px" ng-repeat="product in report.vaccineProductsLogisticsLineItems">
+                <tr style="height: 31px" ng-repeat="product in report.vaccineLogisticsLineItems">
                         <td><span class="cell-text">{{product.productName}}</span></td>
                         <td class="number"><span class="number">{{product.openingBalance | number}}</span></td>
                         <td class="number"><span class="cell-text number">{{product.quantityReceived | number}}</span></td>
@@ -314,13 +300,23 @@
                         <td><span class="cell-text">{{getDiscardingReasonName(product.discardingReasonId)}}</span></td>
                         <td class="number"><span class="cell-text number">{{product.closingBalance | number}}</span></td>
                         <td class="number"><span class="cell-text number">{{product.daysStockedOut | number}}</span></td>
-                        <td class="number">{{product.childrenImmunized | number}}*</td>
-                        <td class="number">{{product.usageRate | number}}</td>
-                        <td class="number">{{product.wastageRate | number}}</td>
+                        <td class="number">{{product.childrenImmunized() | number : 0}}</td>
+                        <td class="number">
+                            <span ng-show="product.usageRate() != '-'">
+                              {{product.usageRate() | number : 2}} %
+                            </span>
+                        </td>
+                        <td class="number">
+                            <span ng-show="product.usageRate() != '-'">
+                              {{product.wastageRate() | number : 2}} %
+                            </span>
+                        </td>
                 </tr>
                 </tbody>
             </table>
-            <div><h6 openlmis-message="label.reasons.for.discarding.unopened.vials.options"></h6></div>
+            <div>
+              <h6 openlmis-message="label.reasons.for.discarding.unopened.vials.options"></h6>
+            </div>
         </div>
     </div>
 

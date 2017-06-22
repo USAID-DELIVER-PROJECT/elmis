@@ -36,6 +36,7 @@
             <th width="150px"><span openlmis-message="label.vaccine.coverage.denominator"></span></th>
             <th><span openlmis-message="label.vaccine.coverage.track.male"></span></th>
             <th><span openlmis-message="label.vaccine.coverage.track.female"></span></th>
+            <th><span>Use for Calculation</span></th>
             <th style="width: 100px;"><span openlmis-message="label.vaccine.coverage.actions"></span></th>
           </tr>
           </thead>
@@ -49,6 +50,7 @@
             <td class="col-general cell-input"><span class="cell-text number padding2px" ng-bind="dose.displayOrder"></span>
             </td>
             <td class="col-general cell-input padding2px"><input type="text" ng-model="dose.displayName"></td>
+
             <td class="col-general cell-input">
               <select ng-model="dose.denominatorEstimateCategoryId">
                 <option ng-selected="c.id == dose.denominatorEstimateCategoryId" ng-repeat="c in demographicCategories" value="{{c.id}}" openlmis-message="c.name"></option>
@@ -60,6 +62,7 @@
             <td class="col-general cell-input padding2px" style="text-align: center;"><input type="checkbox"
                                                                                              ng-model="dose.trackFemale">
             </td>
+            <td class="col-general cell-input padding2px" style="text-align: center;"><input type="checkbox" ng-model="dose.useForWastageCalculations"></td>
             <td>
               <span ng-show="($index + 1) == product.doses.length">
                 <span ng-show="product.doses.length < protocol.possibleDoses.length">

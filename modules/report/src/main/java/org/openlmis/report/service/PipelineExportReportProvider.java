@@ -14,12 +14,12 @@ package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
-
+import org.openlmis.core.domain.ProcessingPeriod;
+import org.openlmis.core.domain.Product;
 import org.openlmis.report.mapper.PipelineExportReportMapper;
 import org.openlmis.report.model.ResultRow;
-
 import org.openlmis.report.model.params.PipelineExportParams;
-import org.openlmis.report.util.StringHelper;
+import org.openlmis.report.util.ParameterAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,9 +30,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class PipelineExportReportProvider extends ReportDataProvider{
     private PipelineExportReportMapper reportMapper;
-
-    private PipelineExportParams pipelineExportParam = null;
-
 
     @Autowired
     public PipelineExportReportProvider(PipelineExportReportMapper mapper) {
@@ -45,16 +42,17 @@ public class PipelineExportReportProvider extends ReportDataProvider{
         return reportMapper.getReport(getReportFilterData(filterCriteria),sortCriteria, rowBounds);
     }
 
+    public List<Product> getProducts(Map<String, String[]> filterCriteria){
+        return reportMapper.getProductsForProgram(getReportFilterData(filterCriteria));
+    }
+
+    public ProcessingPeriod getPeriod(Map<String, String[]> filterCriteria){
+        return reportMapper.getPeriod(getReportFilterData(filterCriteria));
+    }
+
+
     public PipelineExportParams getReportFilterData(Map<String, String[]> filterCriteria) {
-
-        if (filterCriteria != null) {
-            pipelineExportParam = new PipelineExportParams();
-            pipelineExportParam.setProgramId(StringHelper.isBlank(filterCriteria, "program") ? 0 : Integer.parseInt(filterCriteria.get("program")[0]));  //defaults to 0
-            pipelineExportParam.setYearId(filterCriteria.get("year") == null ? 0 : Integer.parseInt(filterCriteria.get("year")[0])); //defaults to 0
-            pipelineExportParam.setPeriodId(filterCriteria.get("period") == null ? 0 : Integer.parseInt(filterCriteria.get("period")[0])); //defaults to 0
-        }
-
-        return pipelineExportParam;
+        return ParameterAdaptor.parse(filterCriteria, PipelineExportParams.class);
     }
 
     @Override

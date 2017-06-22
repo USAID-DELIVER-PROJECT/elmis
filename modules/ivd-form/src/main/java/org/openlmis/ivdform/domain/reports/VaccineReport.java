@@ -62,6 +62,7 @@ public class VaccineReport extends BaseModel {
   private List<VaccineIvdTabVisibility> tabVisibilitySettings;
 
   private List<LogisticsLineItem> logisticsLineItems;
+  @Deprecated
   private List<LogisticsLineItem> vaccineProductsLogisticsLineItems;
   private List<AdverseEffectLineItem> adverseEffectLineItems;
   private List<CampaignLineItem> campaignLineItems;

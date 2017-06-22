@@ -35,13 +35,22 @@ public interface CustomReportMapper {
   Map getCustomReportByKey(@Param("key") String key);
 
   @Insert("insert into custom_reports " +
-      "   (name, reportkey, description, help, filters, query, category, columnoptions ) " +
+      "   (name, reportkey, description, help, filters, query, category, columnoptions, meta ) " +
       " values " +
-      " (#{name}, #{reportkey}, #{description}, #{help}, #{filters}, #{query}, #{category}, #{columnoptions})")
+      " (#{name}, #{reportkey}, #{description}, #{help}, #{filters}, #{query}, #{category}, #{columnoptions}, #{meta})")
   void insert(CustomReport report);
 
   @Update("update custom_reports " +
-      " set name = #{name}, reportKey = #{reportkey}, description = #{description}, help = #{help}, filters = #{filters}, query = #{query}, category = #{category} , columnOptions = #{columnoptions}" +
+      " set " +
+      "name = #{name}, " +
+      "reportKey = #{reportkey}, " +
+      "description = #{description}, " +
+      "help = #{help}, " +
+      "filters = #{filters}, " +
+      "query = #{query}, " +
+      "category = #{category} , " +
+      "columnOptions = #{columnoptions}," +
+      "meta = #{meta}" +
       " where id = #{id}")
   void update(CustomReport report);
 

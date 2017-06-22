@@ -63,6 +63,12 @@ $scope.homeLinkClicked=function(){
     }, {});
   };
 
+  ConfigSettingsByKey.get({key: 'USE_NEW_REPORT_MENU'}, function (data){
+    if(data.settings !== null)
+      $scope.useFlatReportMenu =  data.settings.value  == 'true' ? true : false;
+
+  });
+
   $scope.getCustomReportsList = function() {
       CustomReportList.get({}, function (list) {
           $scope.customReports =_.groupBy(list.reports,'category');
@@ -70,7 +76,13 @@ $scope.homeLinkClicked=function(){
   }();
 
   function hideEmptyReportCategory(){
-      $('#all-report-lists li.report-children ul li.ng-hide').parent().parent().hide();
+      $("#all-report-lists li.report-children ul").each(
+          function() {
+              var elem = $(this);
+              if(elem.children().filter(".ng-hide").length == elem.children().length)
+                  elem.parent().hide();
+          }
+      );
   }
   $timeout(hideEmptyReportCategory, 0);
 }

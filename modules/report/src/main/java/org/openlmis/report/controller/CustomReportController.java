@@ -82,6 +82,16 @@ public class CustomReportController extends BaseController {
     return view;
   }
 
+  @RequestMapping(value="excel.xlsx" , method = GET)
+  public ModelAndView getExcelReport( @RequestParam Map filter){
+    List<Map> report = reportRepository.getReportData(filter);
+    Map queryModel = reportRepository.getQueryModelByKey(filter.get("report_key").toString());
+    ModelAndView view = new ModelAndView("customExcelTemplate");
+    view.addObject(REPORT, report);
+    view.addObject(QUERY_MODEL, queryModel);
+    return view;
+  }
+
 
   @RequestMapping(value = "save", method = RequestMethod.POST)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_CUSTOM_REPORTS')")
