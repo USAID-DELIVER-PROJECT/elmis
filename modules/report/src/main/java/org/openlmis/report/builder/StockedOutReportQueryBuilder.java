@@ -50,7 +50,8 @@ public class StockedOutReportQueryBuilder {
                         "JOIN facility_types ft on ft.id = f.typeid  " +
                         "JOIN products p on p.code = li.productcode  " +
                         "JOIN vw_districts gz on gz.district_id = f.geographiczoneid  " +
-                        "JOIN programs pg on pg.id = r.programid  ");
+                        "JOIN programs pg on pg.id = r.programid " +
+                        "JOIN program_products pgp on r.programid = pgp.programid and p.id = pgp.productid \n");
 
 
         WHERE("li.stockinhand = 0 AND li.skipped = false ");
@@ -61,7 +62,7 @@ public class StockedOutReportQueryBuilder {
         WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
         WHERE("r.emergency in ('" + reportType + "')");
         if (filter.getProductCategory() != 0) {
-            WHERE(productCategoryIsFilteredBy("p.categoryId"));
+            WHERE(productCategoryIsFilteredBy("pgp.productcategoryid"));
         }
 
         if (filter.getFacility() != 0) {
