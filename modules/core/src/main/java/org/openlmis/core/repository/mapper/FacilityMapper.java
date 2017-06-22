@@ -529,4 +529,10 @@ public interface FacilityMapper {
             " WHERE sn.facilityId = #{facilityId} AND programId = #{program}  " +
             " ORDER BY username  ")
     List<FacilitySupervisor> getSuperVisedUserFacility(@Param("program") Long programId, @Param("facilityId") Long facilityId);
+
+    @Select(" select * from facilities f\n" +
+            "JOIN facility_types t on f.typeId = t.id\n" +
+            "where t.code in ('dvs','rvs','cvs') and geographiczoneid = #{district} and levelId =#{levelId}")
+    Facility getByGeographicZoneId(@Param("district") Long district, @Param("levelId") Long levelId);
+
 }

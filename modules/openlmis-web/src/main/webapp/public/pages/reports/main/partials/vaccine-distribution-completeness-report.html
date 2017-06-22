@@ -65,6 +65,17 @@
                                     />
                         </div>
                     </div>
+                    <div class="horizontalFilters form-cell">
+                        <label for="start" class="labels"><span>Distribution Type</span></label>
+
+                        <div>
+                            <select id="type" ui-select2 class="input-medium" ng-model="filter.type"  ng-change="OnFilterChanged()" ng-selected="ROUTINE">
+                                <option ng-repeat="type in distributionTypes" ng-selected="filter.type == type" value="{{ type.name }}">{{type.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+
 
                     <!--======================== filter end =========================-->
                 </div>
@@ -117,7 +128,7 @@
                             <td>{{ dataRows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                             <td>{{ dataRows[$index-1].district_name == row.district_name ? '' : row.district_name }}
                             </td>
-                            <td>{{row.period}}</td>
+                            <td>{{row.periodname}}</td>
                             <td class="number">{{row.expected | number}}</td>
                             <td class="number">
                                 <a ng-if="row.issued >0" href ng-click="showDistributionModal(row)">{{row.issued |number}}</a>

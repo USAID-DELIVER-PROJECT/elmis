@@ -29,13 +29,13 @@ public class VaccineInventoryReportService {
     @Autowired
     VaccineInventoryReportRepository repository;
 
-    public List<Map<String, String>> getDistributionCompletenessReport(String periodStart, String periodEnd, Long districtId, Pagination pagination) {
+    public List<Map<String, String>> getDistributionCompletenessReport(String periodStart, String periodEnd, Long districtId,String type, Pagination pagination) {
         Date startDate, endDate;
 
         startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodStart).toDate();
         endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(periodEnd).toDate();
 
-        return repository.getDistributionCompletenessReport(startDate, endDate, districtId, pagination);
+        return repository.getDistributionCompletenessReport(startDate, endDate, districtId,type, pagination);
     }
 
     public List<Map<String,String>> getDistributedFacilities(Long periodId, Long facilityId,Pagination pagination){

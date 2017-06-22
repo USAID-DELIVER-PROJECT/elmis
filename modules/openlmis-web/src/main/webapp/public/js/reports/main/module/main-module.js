@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle','ui.bootstrap.pagination', 'tree.dropdown'])
+angular.module('mainReport', ['openlmis', 'ngTable','ui.bootstrap.tpls', 'angularCombine', 'ui.bootstrap.modal','gridshore.c3js.chart', 'ui.bootstrap.dropdownToggle','ui.bootstrap.pagination', 'tree.dropdown'])
     .config(['$routeProvider', function ($routeProvider) {
       $routeProvider.
         when('/adjustment-summary', {controller: AdjustmentSummaryReportController, templateUrl:'partials/adjustment-summary.html',reloadOnSearch:false}).
@@ -52,6 +52,8 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
         when('/min-max-stock-report', {controller: MinMaxVaccineStockReportController, templateUrl:'partials/min-max-stock.html',reloadOnSearch:false}).
         when('/distribution-summary-report', {controller: DistributionSummaryReportController, templateUrl:'partials/distribution-summary.html',reloadOnSearch:false}).
         when('/vaccine-received-summary-report', {controller: VaccineReceivedSummaryReportController, templateUrl:'partials/received-consignment.html',reloadOnSearch:false}).
+        when('/inventory-status-summary', {controller: InventoryStatusSummary, templateUrl:'partials/inventory-stock-summary.html',reloadOnSearch:false, resolve:InventoryStatusSummary.resolve}).
+        when('/stock-event', {controller: StockInventoryEvent, templateUrl:'partials/stock-event.html',reloadOnSearch:false, resolve:StockInventoryEvent.resolve}).
           otherwise({redirectTo:'/adjustment-summary'});
     }]).config(function(angularCombineConfigProvider) {
     angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');

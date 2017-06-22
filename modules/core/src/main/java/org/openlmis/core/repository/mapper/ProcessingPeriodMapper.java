@@ -113,4 +113,10 @@ public interface ProcessingPeriodMapper {
   @Select("SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId} AND extract('year' from startdate) = #{year}  ORDER BY startDate DESC")
   List<ProcessingPeriod> getAllPeriodsForScheduleAndYear(@Param("scheduleId")Long scheduleId, @Param("year") Long year);
 
+    @Select("SELECT * FROM processing_periods " +
+            " join processing_schedules ps ON processing_periods.scheduleid = ps.id " +
+            " WHERE lower(ps.code) = lower('Monthly') AND extract('year' from startdate) = #{year} " +
+            " " +
+            " ORDER BY startDate DESC")
+    List<ProcessingPeriod> getAllPeriodsByYear(@Param("year") Long year);
 }

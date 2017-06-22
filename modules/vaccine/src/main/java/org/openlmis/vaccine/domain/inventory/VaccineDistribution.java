@@ -52,4 +52,6 @@ public class VaccineDistribution extends BaseModel {
     Date distributionDate;
 
     List<VaccineDistributionLineItem> lineItems;
+
+    Boolean isNotificationSent;
 }

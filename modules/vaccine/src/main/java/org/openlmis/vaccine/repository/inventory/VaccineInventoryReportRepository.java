@@ -17,8 +17,8 @@ public class VaccineInventoryReportRepository {
     @Autowired
     VaccineInventoryReportMapper mapper;
 
-    public List<Map<String, String>> getDistributionCompletenessReport(Date startDate, Date endDate, Long districtId, Pagination pagination) {
-        return mapper.getDistributionCompletenessReport(startDate, endDate, districtId, pagination);
+    public List<Map<String, String>> getDistributionCompletenessReport(Date startDate, Date endDate, Long districtId,String type, Pagination pagination) {
+        return mapper.getDistributionCompletenessReport(startDate, endDate, districtId,type, pagination);
     }
 
     public Integer getTotalDistributionCompletenessReport(Date startDate, Date endDate, Long districtId) {

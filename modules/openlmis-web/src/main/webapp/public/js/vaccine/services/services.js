@@ -631,3 +631,23 @@ services.factory('searchDistributionsByDateRange',function($resource){
 services.factory('GetDistributionsByDateRangeForFacility', function ($resource) {
     return $resource('/vaccine/inventory/distribution/getDistributionsByDateRangeForFacility.json', {}, {});
 });
+
+
+services.factory('VaccineInventorySummary', function($resource){
+
+    return $resource('/vaccine/dashboard/stock-status-over-view.json',{},{});
+});
+
+services.factory('VaccineInventorySummaryDetails', function($resource){
+
+    return $resource('/vaccine/dashboard/vaccineInventoryStockDetails.json',{},{});
+});
+services.factory('GetVaccineInventoryDetails', function($resource){
+
+    return $resource('/vaccine/dashboard/vaccineInventoryDetails.json',{},{});
+});
+
+services.factory('GetVaccineInventoryFacilityDetails', function($resource){
+
+    return $resource('/vaccine/dashboard/vaccineInventoryFacilityDetails.json',{},{});
+});

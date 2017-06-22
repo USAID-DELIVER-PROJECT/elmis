@@ -1,0 +1,1 @@
+ALTER TABLE vaccine_distributions ADD COLUMN isNotificationSent Boolean default false;

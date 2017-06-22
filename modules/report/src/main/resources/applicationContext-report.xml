@@ -528,6 +528,15 @@
                     <property name="version" value="1.0"/>
                 </bean>
 
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="stock_event"/>
+                    <property name="template" value="min-max-stock-adequacy.jasper"/>
+                    <property name="reportDataProvider" ref="stockEventReportDataProvider"/>
+                    <property name="id" value="RP-replacement-plan"/>
+                    <property name="name" value="Stock Adequacy Report"/>
+                    <property name="title" value="Stock Adequacy Report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

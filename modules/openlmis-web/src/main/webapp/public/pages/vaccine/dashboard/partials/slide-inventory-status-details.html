@@ -1,0 +1,51 @@
+
+<c3chart bindto-id="inventory"
+         chart-data="inventory.dataPoints"
+         chart-columns="inventory.dataColumns"
+         chart-x="inventory.dataX"
+        >
+    <chart-axis>
+        <chart-axis-x axis-position="outer-center"
+                      axis-label="Months"
+                      axis-type="category">
+        </chart-axis-x>
+        <chart-axis-y axis-position="outer-middle"
+                      axis-label="Tests">
+        </chart-axis-y>
+    </chart-axis>
+
+    <chart-line step-type="step" connect-null="true"/>
+</c3chart>
+
+
+
+
+<!--
+
+
+<div   class="modal-body">
+
+    <div style="font-weight: bold" ng-hide="vaccineInventoryStock" openlmis-message="label.report.no.data.to.show"></div>
+
+    <div class="row-fluid dashlet-scroll-table">
+        <table ng-show="vaccineInventoryStock" id="summary-table" class="table-bordered table">
+            <thead style="background-color: red" >
+            <tr class="gradient-header" style="background-color: red">
+                <th class="modal-table-div">product</th>
+                <th class="modal-table-div">Percentage </th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+                ng-repeat="detail in vaccineInventoryStock" >
+                <td>{{detail.product}}</td>
+                <td style="background-color: red">{{detail.zero}}</td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+-->

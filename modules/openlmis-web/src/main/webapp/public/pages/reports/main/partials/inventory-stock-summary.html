@@ -1,0 +1,199 @@
+<style>
+
+    input[type="radio"], input[type="checkbox"] {
+        margin: 0 0 0 !important;
+        margin-top: 1px \9;
+        line-height: normal;
+        cursor: pointer;
+    }
+
+    p {
+        line-height: 1;
+        font-weight: bold;
+        padding: 5px 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 4px;
+        line-height: 15px;
+        font-size: 12px;
+        min-width: 91px;
+    }
+
+    .modal {
+        display: block !important;
+    }
+
+    .tr td {
+        text-align: left !important;
+    }
+
+    th {
+        text-align: left !important;
+    }
+</style>
+
+
+<!--
+//Start
+-->
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header modal-header">
+        <button class="close" ng-click="ok()">X</button>
+        <h2><i class="flaticon-bar"></i>{{selectedItem}}</h2>
+
+
+    </div>
+    <div class="modal-body">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
+        <div class="row-fluid dashlet-scroll-table">
+            <table id="investigatingTable" ng-show="items.length > 0"
+                   class="rnr-table table-bordered table"
+                   ng-table="tableParams">
+                <thead>
+
+                <tr>
+                    <th style="  width: 40px">
+                        <span openlmis-message="label.region"> </span>
+                    </th>
+
+                    <th>
+                        <span openlmis-message="label.district"></span>
+
+                    </th>
+                    <th style="width:10px;">
+                        <span>Store Name</span>
+
+                    </th>
+                    <th style=" text-align: center; vertical-align: middle">
+                        <span>Quantity (Doses)</span>
+
+                    </th>
+
+
+                </tr>
+
+
+                </thead>
+                <tbody>
+                <tr ng-style="{'background-color': getBackGroundColor($index)}" ng-repeat="subRow in items">
+                    <td>{{ items[$index-1].region_name == subRow.region_name ? '' : subRow.region_name }}</td>
+                    <td ng-bind="subRow.district_name"></td>
+                    <td ng-bind="subRow.facilityname"/>
+                    <td ng-bind="subRow.soh | number"></td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <div class="modal-footer">
+
+            <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+        </div>
+    </div>
+
+</script>
+
+<!--
+//End
+-->
+
+
+<!--
+
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <button  class="close" ng-click="ok()">X</button>
+&lt;!&ndash;
+        <button ng-click="printPdf()" type="button" class="btn btn-primary">Print PDF</button>
+&ndash;&gt;
+        <h2 ><i class="flaticon-bar"></i>{{selectedItem}}</h2>
+    </div>
+    <div class="modal-body">
+
+        <div class="row-fluid dashlet-scroll-table">
+            <table class="table table-bordered">
+                <thead>
+
+                <tr>
+                    <th>Region</th>
+                    <th>District</th>
+                    <th>Store Name</th>
+                    <th>Quantity (Doses)</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr ng-repeat="details in facilityStockStatusDetails" class="tr">
+                    <td>{{details.region_name}}</td>
+                    <td>{{details.district_name}}</td>
+                    <td>{{details.facilityname}}</td>
+                    <td style="text-align: center !important;">{{details.soh | number}}</td>
+
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+
+        <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+    </div>
+</script>
+-->
+
+
+<div class="row-fluid" style="background-color: #eef1f5">
+    <div class="span12">
+        <form ng-submit="filterGrid()" name="filterForm" novalidate>
+            <div filter-container class="clearfix" style="padding-left: 1%">
+                <facility-level-without-program-filter class="form-cell horizontalFilters"
+                                                       required="true"></facility-level-without-program-filter>
+                <br/> <br/>
+                &nbsp;&nbsp;&nbsp;
+                <div class="form-cell horizontalFilters"><span ng-repeat="n in productCat | limitTo:2">
+
+       &nbsp;&nbsp;&nbsp;   <input type="radio" name="code" ng-model="$parent.code"
+                                   ng-init="$index==0?($parent.code=n.code):''"
+                                   ng-value="n.code"
+                                   ng-change="productFormChange(n)"
+                        />&nbsp;<span id="id">{{n.name}}</span>
+          </span>
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+
+    <div class="clearfix"></div>
+    <div>
+        <div class="span6">
+            <div id="summary"
+                 style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto;padding-left:2% float:left;"></div>
+
+        </div>
+
+        <div class="span6">
+            <div ng-show="vaccineInventoryStock.length > 0" id="container" style="height:400px;padding-right:2%;"></div>
+
+        </div>
+
+
+    </div>
+    <div class="clearfix"></div>
+    <br/>
+
+    <div class="span8">
+        <!--
+                <div style="float: left;" id="dash"></div>
+        -->
+        <div id="event" style="height: 600px; max-width: 1200px; margin: 0 auto;padding-left:1%;padding-right:1% float:left;"></div>
+
+    </div>
+    <div class="clearfix"><br/></div>
+    <div class="span12"></div>
+
+</div>
+

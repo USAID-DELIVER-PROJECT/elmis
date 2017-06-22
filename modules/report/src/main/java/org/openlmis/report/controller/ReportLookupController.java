@@ -615,4 +615,11 @@ public class ReportLookupController extends BaseController {
     List<org.openlmis.core.domain.Program> programList = programService.getAllIvdPrograms();
     return this.reportLookupService.getProductsActiveUnderProgramWithoutDescriptions(programList.get(0).getId());
   }
+
+  @RequestMapping(value = "/year/{year}/periods", method = GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getPeriodsByYear(@PathVariable("year") Long year) {
+    List<ProcessingPeriod> periodList = processingScheduleService.getAllPeriodsByYear(year);
+    return OpenLmisResponse.response(PERIODS, periodList);
+  }
+
 }

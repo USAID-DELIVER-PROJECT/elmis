@@ -176,4 +176,30 @@ public class VaccineDashboardRepository {
     public List<HashMap<String, Object>> getSupervisedFacilitiesVaccineInventoryStockStatus(String facilityIds, Long productId, String date, String level) {
         return mapper.getSupervisedFacilitiesProductStockStatus(facilityIds, productId, date, level);
     }
+
+    public List<HashMap<String, Object>> getStockStatusOverView(Long userId,Long category,  String dateString, String level) {
+        return mapper.getStockStatusOverView(userId,category,dateString,level);
+
+    }
+    public List<HashMap<String, Object>> getInventoryStockStatusDetail(String category,Long userId, String status, String dateString, String level) {
+        return mapper.getInventoryStockStatusDetail(category,userId,status, dateString,level);
+
+    }
+    public List<HashMap<String, Object>> getVaccineInventoryStockByStatus(Long category, String level,Long userId) {
+        return mapper.getVaccineInventoryStockByStatus(category,level,userId);
+    }
+
+    public List<HashMap<String, Object>> getVaccineInventoryFacilitiesByProduct(Long category, String level, Long userId, Long product, String color) {
+
+        return mapper.getVaccineInventoryFacilitiesByProduct(category, level,userId, product,color);
+    }
+
+    public List<HashMap<String, Object>> geStockEventByMonth() {
+
+        return mapper.getStockEventByMonth();
+    }
+
+    public List<HashMap<String, Object>> geStockEventByMonth(Long product, Long period, Long year, Long district) {
+        return mapper.geStockEventByMonth(product,period,year,district);
+    }
 }

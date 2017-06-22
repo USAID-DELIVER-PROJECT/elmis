@@ -13,10 +13,8 @@ package org.openlmis.vaccine.service;
 
 import lombok.NoArgsConstructor;
 import org.joda.time.format.DateTimeFormat;
-import org.openlmis.core.domain.Program;
-import org.openlmis.core.domain.RightName;
-import org.openlmis.core.service.FacilityService;
-import org.openlmis.core.service.ProgramService;
+import org.openlmis.core.domain.*;
+import org.openlmis.core.service.*;
 import org.openlmis.report.util.StringHelper;
 import org.openlmis.vaccine.repository.VaccineDashboardRepository;
 import org.slf4j.Logger;
@@ -24,10 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @NoArgsConstructor
@@ -41,6 +36,14 @@ public class VaccineDashboardService {
     ProgramService programService;
     @Autowired
     private FacilityService facilityService;
+    @Autowired
+    private ProductCategoryService productCategoryService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ProcessingPeriodService processingPeriodService;
+    @Autowired
+    private GeographicZoneService zoneService;
 
     public Map<String, Object> getReportingSummary(Long userId) {
 
@@ -476,6 +479,88 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
             }
         }
         return stockStatusList;
+
+    }
+
+    public List<HashMap<String, Object>> getStockStatusOverView(Long userId,Long category,  String dateString, String level) {
+        System.out.println(category);
+        Long categoryId = 0L;
+        Facility homeFacility = facilityService.getHomeFacility(userId);
+       // System.out.println(homeFacility);
+       // FacilityType ft = facilityService.getFacilityTypeById(homeFacility.getFacilityType().getId());
+        if(level == null){
+            level = "dvs";
+        }
+        if(category == null){
+            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+            category = pc.getId();
+        }
+        return repository.getStockStatusOverView(userId,category,dateString,level);
+    }
+
+    public List<HashMap<String, Object>> getInventoryStockStatusDetail(String category,Long userId, String status,String dateString, String level) {
+         if(category == null){
+             ProductCategory pc= productCategoryService.getByCode("Vaccine");
+             category = pc.getId().toString();
+         }
+
+        return repository.getInventoryStockStatusDetail(category,userId,status, dateString, level);
+    }
+
+
+    public List<HashMap<String, Object>> getVaccineInventoryStockByStatus(Long category, String level,Long userId) {
+        if(category == null){
+            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+            category = pc.getId();
+        }
+
+        return repository.getVaccineInventoryStockByStatus(category,level,userId);
+    }
+
+    public List<HashMap<String,Object>> getVaccineInventoryFacilitiesByProduct(Long category, String level, Long userId, String product, String color) {
+       Long productId = 0L;
+        if(category == null){
+            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+            category = pc.getId();
+        }
+        if(product !=null){
+            Product pr = productService.getByPrimaryName(product);
+            productId = pr.getId();
+        }
+
+        return  repository.getVaccineInventoryFacilitiesByProduct(category,level,userId, productId,color);
+    }
+
+  /*  public List<HashMap<String, Object>> getStockEventByMonth(Long ) {
+        return repository.geStockEventByMonth();
+    }*/
+
+    public List<HashMap<String, Object>> getStockEventByMonth(Long product, Long period, Long year, Long district) {
+
+        ProcessingPeriod period1= processingPeriodService.getById(period);
+       Long period2 =0L;
+        Date value;
+        if(period1 != null){
+            value = period1.getStartDate();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(value);
+            period2= Long.valueOf(cal.get(Calendar.MONTH));
+            System.out.println(period2 + 1);
+        }
+        Long levelId = 0L;
+        GeographicZone geographicZone =  zoneService.getById(district);
+        if(geographicZone !=null){
+            levelId = geographicZone.getLevel().getId();
+        }
+        Facility facility = facilityService.getByGeographicZoneId(district,levelId);
+
+        Long id;
+        if(facility !=null)
+            id = facility.getId();
+        else
+           id = 0L;
+        System.out.println(facility.getName());
+        return repository.geStockEventByMonth(product,period2+1,year,id);
 
     }
 }

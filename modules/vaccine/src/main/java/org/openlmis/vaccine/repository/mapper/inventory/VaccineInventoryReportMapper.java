@@ -20,6 +20,7 @@ public interface VaccineInventoryReportMapper {
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("districtId") Long districtId,
+             @Param("type") String type,
             RowBounds rowBounds
     );
 

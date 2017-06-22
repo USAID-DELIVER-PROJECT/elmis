@@ -1,5 +1,5 @@
 function ViewTransferIssueVoucherController($scope,homeFacility,programs,DistributionByVoucherNumber,
-                                    GetAllOneLevelFacilities,$window,
+                                    GetAllOneLevelFacilities,$window,$timeout,
                                     messageService,FacilityTypeAndProgramProducts,VaccineProgramProducts,GetSameLevelFacilities,GetDistributionsByDateRangeForFacility){
 
     $scope.viewIssueVoucher = "Issue Voucher";
@@ -21,7 +21,6 @@ function ViewTransferIssueVoucherController($scope,homeFacility,programs,Distrib
 
         GetDistributionsByDateRangeForFacility.get({facilityId:$scope.selectedFacilityId,
             startDate:$scope.startDate, endDate:$scope.endDate}, function(data){
-console.log(data);
             if(!isUndefined(data.distributions) && data.distributions.length > 0){
                 $scope.allData = data.distributions;
                 $scope.showDistribute = false;
@@ -73,7 +72,9 @@ console.log(data);
 
 
         $scope.distribution=undefined;
-        DistributionByVoucherNumber.get({voucherNumber:row.voucherNumber},function(data){
+        $timeout(function () {
+
+            DistributionByVoucherNumber.get({voucherNumber:row.voucherNumber},function(data){
             // console.log(data);
             if(data.distribution !==null){
                 $scope.distribution=data.distribution;
@@ -84,7 +85,8 @@ console.log(data);
                 $scope.distribution=undefined;
                 $scope.voucherNumberSearched=true;
             }
-        });
+        });},10);
+
 
 
         FacilityTypeAndProgramProducts.get({facilityId:homeFacilityId, programId:programId},function(data){

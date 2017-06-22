@@ -771,4 +771,21 @@ public class InteractiveReportController extends BaseController {
         return reportData;
     }
 
+
+    @RequestMapping(value = "/reportdata/stock-event", method = GET, headers = BaseController.ACCEPT_JSON)
+    public Pages getStockEvent(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                                  @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                                  HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("stock_event");
+
+        StockEventReportDataProvider dataProvider = (StockEventReportDataProvider) report.getReportDataProvider();
+
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+
+        List<StockEvent> reportData = (List<StockEvent>) dataProvider.getReportBody(request.getParameterMap(),
+                request.getParameterMap(), page, max);
+        return new Pages(page, max, reportData);
+    }
 }
