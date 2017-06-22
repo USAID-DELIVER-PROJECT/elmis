@@ -1,11 +1,12 @@
 <style>
 
-input[type="radio"], input[type="checkbox"] {
-    margin: 0 0 0 !important;
-    margin-top: 1px \9;
-    line-height: normal;
-    cursor: pointer;
-}
+    input[type="radio"], input[type="checkbox"] {
+        margin: 0 0 0 !important;
+        margin-top: 1px \9;
+        line-height: normal;
+        cursor: pointer;
+    }
+
     p {
         line-height: 1;
         font-weight: bold;
@@ -17,12 +18,15 @@ input[type="radio"], input[type="checkbox"] {
         font-size: 12px;
         min-width: 91px;
     }
+
     .modal {
         display: block !important;
     }
+
     .tr td {
-       text-align: left !important;
-   }
+        text-align: left !important;
+    }
+
     th {
         text-align: left !important;
     }
@@ -34,9 +38,8 @@ input[type="radio"], input[type="checkbox"] {
 -->
 <script type="text/ng-template" id="myModalContent.html">
     <div class="modal-header modal-header">
-        <button  class="close" ng-click="ok()">X</button>
-        <h2 ><i class="flaticon-bar"></i>{{selectedItem}}</h2>
-
+        <button class="close" ng-click="ok()">X</button>
+        <h2><i class="flaticon-bar"></i>{{selectedItem}}</h2>
 
 
     </div>
@@ -141,22 +144,21 @@ input[type="radio"], input[type="checkbox"] {
 -->
 
 
-
 <div class="row-fluid" style="background-color: #eef1f5">
     <div class="span12">
         <form ng-submit="filterGrid()" name="filterForm" novalidate>
             <div filter-container class="clearfix" style="padding-left: 1%">
-              <facility-level-without-program-filter class="form-cell horizontalFilters"
+                <facility-level-without-program-filter class="form-cell horizontalFilters"
                                                        required="true"></facility-level-without-program-filter>
-               <br/> <br/>
-               &nbsp;&nbsp;&nbsp;
-                <div  class="form-cell horizontalFilters"><span ng-repeat="n in productCat | limitTo:2">
+                <br/> <br/>
+                &nbsp;&nbsp;&nbsp;
+                <div class="form-cell horizontalFilters"><span ng-repeat="n in productCat | limitTo:2">
 
        &nbsp;&nbsp;&nbsp;   <input type="radio" name="code" ng-model="$parent.code"
-          ng-init="$index==0?($parent.code=n.code):''"
-          ng-value="n.code"
-          ng-change="productFormChange(n)"
-           />&nbsp;<span id="id">{{n.name}}</span>
+                                   ng-init="$index==0?($parent.code=n.code):''"
+                                   ng-value="n.code"
+                                   ng-change="productFormChange(n)"
+                        />&nbsp;<span id="id">{{n.name}}</span>
           </span>
                 </div>
 
@@ -168,7 +170,8 @@ input[type="radio"], input[type="checkbox"] {
     <div class="clearfix"></div>
     <div>
         <div class="span6">
-            <div id="summary" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto;padding-left:2% float:left;"></div>
+            <div id="summary"
+                 style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto;padding-left:2% float:left;"></div>
 
         </div>
 
@@ -180,15 +183,17 @@ input[type="radio"], input[type="checkbox"] {
 
     </div>
     <div class="clearfix"></div>
+    <br/>
 
-    <div class="span12">
-<!--
-        <div style="float: left;" id="dash"></div>
--->
-        <div id="container2" style="height: 400px; width: 500px"></div>
+    <div class="span8">
+        <!--
+                <div style="float: left;" id="dash"></div>
+        -->
+        <div id="event" style="height: 600px; max-width: 1200px; margin: 0 auto;padding-left:1%;padding-right:1% float:left;"></div>
+
     </div>
-
-
+    <div class="clearfix"><br/></div>
+    <div class="span12"></div>
 
 </div>
 

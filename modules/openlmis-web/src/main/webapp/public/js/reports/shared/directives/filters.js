@@ -2314,3 +2314,44 @@ app.directive('vaccineFacilityBySupervisoryNodeWithoutProgramFilter', ['UserFaci
 
         }]
 );
+
+
+
+app.directive('periodByYearFilter', ['ReportPeriods', 'ReportPeriodsByYear', '$routeParams',
+    function (ReportPeriods, ReportPeriodsByYear, $routeParams) {
+
+        var onCascadedVarsChanged = function ($scope) {
+            // don't call the server if you don't have all that it takes.
+            if (isUndefined($scope.filter) || isUndefined($scope.filter.year))
+                return;
+
+            if ($scope.filter.year !== undefined) {
+                ReportPeriodsByYear.get({
+                    year: $scope.filter.year
+                }, function (data) {
+                    $scope.periods = $scope.unshift(data.periods, 'report.filter.select.month');
+                });
+            }
+        };
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('period', attr);
+                if (!$routeParams.schedule) {
+                    scope.periods = scope.unshift([], 'report.filter.select.month');
+                }
+
+                function onParentChanged() {
+                    onCascadedVarsChanged(scope);
+                }
+
+               // scope.subscribeOnChanged('period', 'program', onParentChanged, false);
+                scope.subscribeOnChanged('period', 'year', onParentChanged, false);
+                //scope.subscribeOnChanged('period', 'schedule', onParentChanged, true);
+            },
+            templateUrl: 'filter-period-template'
+        };
+    }
+]);

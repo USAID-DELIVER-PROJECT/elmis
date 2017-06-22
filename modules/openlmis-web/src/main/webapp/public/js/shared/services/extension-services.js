@@ -1273,3 +1273,12 @@ services.factory('ReportProductsByProgramWithoutDescriptionsAndProgram', functio
 services.factory('ReportProductsWithoutDescriptionsAndWithoutProgram', function($resource){
     return $resource('/reports/program-products-with-no-descriptions-and-without-program.json', {}, {});
 }) ;
+
+
+services.factory('ReportPeriodsByYear', function ($resource) {
+    return $resource('/reports/year/:year/periods.json', {}, {});
+});
+
+services.factory('StockEventReport', function ($resource) {
+    return $resource('/reports/reportdata/stock-event.json', {}, {});
+});
