@@ -22,7 +22,7 @@ import java.util.Map;
 @Repository
 public interface CustomReportMapper {
 
-  @Select("select id, reportKey, name, description, category, columnoptions, filters from custom_reports order by category, name")
+  @Select("select id, reportKey, name, description, category, columnoptions, filters, meta from custom_reports where active = true order by category, name")
   List<Map> getListOfReports();
 
   @Select("select * from custom_reports order by category, name")
@@ -35,9 +35,9 @@ public interface CustomReportMapper {
   Map getCustomReportByKey(@Param("key") String key);
 
   @Insert("insert into custom_reports " +
-      "   (name, reportkey, description, help, filters, query, category, columnoptions, meta ) " +
+      "   (name, reportkey, description, help, filters, query, category, columnoptions, meta, active) " +
       " values " +
-      " (#{name}, #{reportkey}, #{description}, #{help}, #{filters}, #{query}, #{category}, #{columnoptions}, #{meta})")
+      " (#{name}, #{reportkey}, #{description}, #{help}, #{filters}, #{query}, #{category}, #{columnoptions}, #{meta}, #{active})")
   void insert(CustomReport report);
 
   @Update("update custom_reports " +
@@ -50,7 +50,8 @@ public interface CustomReportMapper {
       "query = #{query}, " +
       "category = #{category} , " +
       "columnOptions = #{columnoptions}," +
-      "meta = #{meta}" +
+      "meta = #{meta}," +
+      "active = #{active}" +
       " where id = #{id}")
   void update(CustomReport report);
 

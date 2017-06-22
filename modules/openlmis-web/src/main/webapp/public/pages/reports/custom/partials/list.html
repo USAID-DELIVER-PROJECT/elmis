@@ -41,7 +41,7 @@
                 <div class="">
                   <div ng-repeat="fltr in report.currentFilters">
                     <div class="row-fluid">
-                      <program-filter ng-if="fltr.name == 'program'"
+                      <program-filter ng-if="fltr.name == 'program'" visible="{{fltr.visible?fltr.visible:'true'}}"
                                       required="true"
                                       class="form-cell horizontalFilters">
                       </program-filter>
@@ -53,7 +53,7 @@
                                       required="true"
                                       class="form-cell horizontalFilters">
                       </quarter-filter>
-                      <schedule-filter ng-if="fltr.name == 'schedule'"
+                      <schedule-filter ng-if="fltr.name == 'schedule'" visible="{{fltr.visible?fltr.visible:'true'}}"
                                        required="true"
                                        class="form-cell horizontalFilters">
                       </schedule-filter>
@@ -63,6 +63,7 @@
                                      class="form-cell horizontalFilters">
                       </period-filter>
                       <zone-filter ng-if="fltr.name == 'zone'"
+                                   noZone="{{fltr.noZone?fltr.noZone: false}}"
                                    required="true"
                                    class="form-cell horizontalFilters">
                       </zone-filter>
@@ -89,9 +90,21 @@
                       </product-category-filter>
 
                       <product-filter ng-if="fltr.name == 'product'"
+                                      label="{{fltr.label? fltr.label: 'name'}}"
+                                      tracer="{{fltr.tracer? fltr.tracer :''}}"
                                       required="true"
                                       class="form-cell horizontalFilters">
                       </product-filter>
+                      <vaccine-product-filter
+                          ng-if="fltr.name == 'vaccine-product'"
+                          required="true"
+                          class="form-cell horizontalFilters">
+                      </vaccine-product-filter>
+                      <vaccine-zone-filter
+                          ng-if="fltr.name == 'vaccine-zone'"
+                          required="true"
+                          class="form-cell horizontalFilters">
+                      </vaccine-zone-filter>
                     </div>
                     <div class="clearfix"></div>
                   </div>
@@ -130,44 +143,8 @@
                             {{col}}
                           </th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="row in data">
-                          <td style="width: 20px; max-width: 30px" ng-bind="($index + 1)"></td>
-                          <td style="min-width: 150px;" ng-show="col.pivotValue != 'true' && col.pivotColumn != 'true' && col.visible!='false'"
-                              class="span{{col.width}} {{col.formatting}} {{col.formatting == 'percent'? 'number': ''}}"
-                              ng-repeat="col in report.columns">
-                            <span
-                                ng-show="col.formatting != 'number' && col.formatting != 'percent'">
-                              <span ng-if="col.link">
-                                <a href="" ng-click="onLinkClicked(col, row);">{{row[col.name]}}</a>
-                              </span>
-                              <span ng-if="!col.link">
-                                {{row[col.name]}}
-                              </span>
-                            </span>
-                            <span ng-show="col.formatting == 'number'">{{row[col.name] | number}}</span>
-                            <span ng-show="col.formatting == 'percent'">{{row[col.name] | number}} %</span>
-                          </td>
-                          <td ng-if="report.pivot" ng-repeat="col in report.pivotColumns"
-                              class="cell-input right-justified number"
-                              style="padding: 0;">
-                            <span
-                                ng-show="row['p'][col][report.pivotValueColumn.name]  && report.pivotValueColumn.classification"
-                                class="cell-text {{row['p'][col][report.pivotValueColumn.classification]}}">
-                              <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name]  | number : 2}}%</span>
-                              <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name]}}</span>
-                            </span>
-                            <span class="cell-text"
-                                  ng-show="row['p'][col][report.pivotValueColumn.name] && !report.pivotValueColumn.classification">
-                              <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number : 2}}%</span>
-                              <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number}}</span>
-                            </span>
-                          </td>
-                        </tr>
-                        <tr ng-show="report.pivot && report.pivotValueColumn.classification">
-                          <td colspan="20">&nbsp;</td>
-                        </tr>
+
+
                         <tr ng-show="report.pivot && report.pivotValueColumn.classification">
                           <td colspan="20"><b>Summary</b></td>
                         </tr>
@@ -211,12 +188,52 @@
                             </span>
                           </td>
                         </tr>
+
+                        <tr ng-show="report.pivot && report.pivotValueColumn.classification">
+                          <td colspan="20">&nbsp;</td>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in data">
+                          <td style="width: 20px; max-width: 30px" ng-bind="($index + 1)"></td>
+                          <td style="min-width: 150px;" ng-show="col.pivotValue != 'true' && col.pivotColumn != 'true' && col.visible!='false'"
+                              class="span{{col.width}} {{col.formatting}} {{col.formatting == 'percent'? 'number': ''}}"
+                              ng-repeat="col in report.columns">
+                            <span
+                                ng-show="col.formatting != 'number' && col.formatting != 'percent'">
+                              <span ng-if="col.link">
+                                <a href="" ng-click="onLinkClicked(col, row);">{{row[col.name]}}</a>
+                              </span>
+                              <span ng-if="!col.link">
+                                {{row[col.name]}}
+                              </span>
+                            </span>
+                            <span ng-show="col.formatting == 'number'">{{row[col.name] | number}}</span>
+                            <span ng-show="col.formatting == 'percent'">{{row[col.name] | number}} %</span>
+                          </td>
+                          <td ng-if="report.pivot" ng-repeat="col in report.pivotColumns"
+                              class="cell-input right-justified number"
+                              style="padding: 0;">
+                            <span
+                                ng-show="row['p'][col][report.pivotValueColumn.name]  && report.pivotValueColumn.classification"
+                                class="cell-text {{row['p'][col][report.pivotValueColumn.classification]}}">
+                              <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name]  | number : 2}}%</span>
+                              <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name]}}</span>
+                            </span>
+                            <span class="cell-text"
+                                  ng-show="row['p'][col][report.pivotValueColumn.name] && !report.pivotValueColumn.classification">
+                              <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number : 2}}%</span>
+                              <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number}}</span>
+                            </span>
+                          </td>
+                        </tr>
                         </tbody>
                       </table>
                     </div>
+                    <div ng-if="data" ng-bind-html="report.trusted_meta"></div>
                   </div>
                 </div>
-
               </div>
             </div>
             <div class="clearfix"></div>

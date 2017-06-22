@@ -219,12 +219,14 @@ public class CustomExcelTemplate extends AbstractView {
         int newColumnIndex = distinctPivotColumns.indexOf(column) + pivotStartColumn;
         Cell cell = sheet.getRow(rn).createCell(newColumnIndex);
         Object value = m.get(pivotValueFieldName);
-        if (value != null) {
-          cell.setCellValue(value.toString());
-        }
         if (NUMBER.equals(pivotValueColumn.getFormatting()) || PERCENT.equals(pivotValueColumn.getFormatting())) {
           cell.setCellType(Cell.CELL_TYPE_NUMERIC);
         }
+
+        if (value != null) {
+          cell.setCellValue(value.toString());
+        }
+
 
         if (pivotValueColumn.getClassification() != null && m.get(pivotValueColumn.getClassification()) != null) {
           String classifciation = m.get(pivotValueColumn.getClassification()).toString();

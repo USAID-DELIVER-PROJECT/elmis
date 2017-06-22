@@ -24,66 +24,69 @@ import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.mul
 
 public class StockedOutReportQueryBuilder {
 
-  public static String getQuery(Map params) {
-    StockedOutReportParam filter = (StockedOutReportParam) params.get("filterCriteria");
-    BEGIN();
-    SELECT_DISTINCT( " gz.region_name as supplyingfacility,  " +
-        " f.code as facilitycode,  " +
-        " li.productcode,  " +
-        " f.name as facility,  " +
-        " li.product as product,  " +
-        " ft.name facilitytypename,  " +
-        " gz.district_name as location,  " +
-        " pp.name as processing_period_name,  " +
-        " li.stockoutdays stockoutdays,   " +
-        " to_char(pp.startdate, 'Mon') as month,  " +
-        " extract(year from pp.startdate) as year,   " +
-        " pg.code as program  " +
-        "   ");
+    public static String getQuery(Map params) {
+        StockedOutReportParam filter = (StockedOutReportParam) params.get("filterCriteria");
+        String reportType = filter.getReportType().replaceAll(",", "','").replaceAll("EM", "t").replaceAll("RE", "f");
+        BEGIN();
+        SELECT_DISTINCT(" gz.region_name as supplyingfacility,  " +
+                " f.code as facilitycode,  " +
+                " li.productcode,  " +
+                " f.name as facility,  " +
+                " li.product as product,  " +
+                " ft.name facilitytypename,  " +
+                " gz.district_name as location,  " +
+                " pp.name as processing_period_name,  " +
+                " li.stockoutdays stockoutdays,   " +
+                " to_char(pp.startdate, 'Mon') as month,  " +
+                " extract(year from pp.startdate) as year,   " +
+                " pg.code as program  " +
+                "   ");
 
-      FROM(
-         " processing_periods pp  " +
-        "JOIN requisitions r ON pp. ID = r.periodid  " +
-        "JOIN requisition_line_items li ON li.rnrid = r. ID  " +
-        "JOIN facilities f on f.id = r.facilityId  " +
-        "JOIN facility_types ft on ft.id = f.typeid  " +
-        "JOIN products p on p.code = li.productcode  " +
-        "JOIN vw_districts gz on gz.district_id = f.geographiczoneid  " +
-        "JOIN programs pg on pg.id = r.programid  " );
+        FROM(
+                " processing_periods pp  " +
+                        "JOIN requisitions r ON pp. ID = r.periodid  " +
+                        "JOIN requisition_line_items li ON li.rnrid = r. ID  " +
+                        "JOIN facilities f on f.id = r.facilityId  " +
+                        "JOIN facility_types ft on ft.id = f.typeid  " +
+                        "JOIN products p on p.code = li.productcode  " +
+                        "JOIN vw_districts gz on gz.district_id = f.geographiczoneid  " +
+                        "JOIN programs pg on pg.id = r.programid " +
+                        "JOIN program_products pgp on r.programid = pgp.programid and p.id = pgp.productid \n");
 
 
-    WHERE("li.stockinhand = 0 AND li.skipped = false ");
-    WHERE("(li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0)");
-    WHERE(programIsFilteredBy("r.programId"));
-    WHERE(periodIsFilteredBy("r.periodId"));
-    WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
-    WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
+        WHERE("li.stockinhand = 0 AND li.skipped = false ");
+        WHERE("(li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0)");
+        WHERE(programIsFilteredBy("r.programId"));
+        WHERE(periodIsFilteredBy("r.periodId"));
+        WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
+        WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
+        WHERE("r.emergency in ('" + reportType + "')");
+        if (filter.getProductCategory() != 0) {
+            WHERE(productCategoryIsFilteredBy("pgp.productcategoryid"));
+        }
 
-    if (filter.getProductCategory() != 0) {
-      WHERE(productCategoryIsFilteredBy("p.categoryId"));
+        if (filter.getFacility() != 0) {
+            WHERE(facilityIsFilteredBy("r.facilityId"));
+        }
+
+        WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
+
+        if (filter.getFacilityType() != 0) {
+            WHERE(facilityTypeIsFilteredBy("f.typeid"));
+        }
+
+        if (multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer") != null) {
+            WHERE(multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer"));
+        }
+
+        if (filter.getZone() != 0) {
+            WHERE(geoZoneIsFilteredBy("gz"));
+        }
+        ORDER_BY("supplyingFacility asc, facility asc, product asc");
+        // copy the sql over to a variable, this makes the debugging much more possible.
+        String sqlStat=SQL();
+        return sqlStat;
     }
-
-    if(filter.getFacility() != 0){
-      WHERE(facilityIsFilteredBy("r.facilityId"));
-    }
-
-    WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
-
-    if (filter.getFacilityType() != 0) {
-      WHERE(facilityTypeIsFilteredBy("f.typeid"));
-    }
-
-    if (multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer") != null) {
-      WHERE(multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer"));
-    }
-
-    if (filter.getZone() != 0) {
-      WHERE(geoZoneIsFilteredBy("gz"));
-    }
-    ORDER_BY("supplyingFacility asc, facility asc, product asc");
-    // copy the sql over to a variable, this makes the debugging much more possible.
-    return SQL();
-  }
 
 
 }

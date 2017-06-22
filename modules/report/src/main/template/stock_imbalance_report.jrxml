@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-12-05T21:44:32 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2017-06-05T12:16:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_imbalance_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.1289478601075549"/>
 	<property name="ireport.x" value="0"/>
@@ -365,7 +365,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{months}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{months} != null)?new java.text.DecimalFormat("#,##0.0").format($F{months}):"0"]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="20">
@@ -417,12 +417,12 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{districtName}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField pattern="###0.0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="574" y="0" width="60" height="20" uuid="1f9ae58f-fb8e-42e4-b33c-abf3463d1b44"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{months}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{months} != null)?new java.text.DecimalFormat("#,##0.0").format($F{months}):"0"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="697" y="0" width="105" height="20" uuid="51fce8e7-6c96-4e97-af57-07b27c1f21a5"/>

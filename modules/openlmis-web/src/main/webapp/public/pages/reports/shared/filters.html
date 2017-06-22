@@ -11,7 +11,7 @@
   -->
 
 <script type="text/ng-template" id="filter-program-template">
-    <div>
+    <div ng-show="program_filter_visible">
         <label for="program" class="labels" openlmis-message="label.program"><span ng-show="requiredFilters.program" class="label-required">*</span></label>
         <div>
             <select id="program" ui-select2 class="input-large" ng-model="filter.program" ng-change="notifyFilterChanged('program-changed');">
@@ -90,7 +90,7 @@
 </script>
 
 <script type="text/ng-template" id="filter-schedule-template">
-    <div>
+    <div ng-show="schedule_filter_visible">
         <label for="schedule" class="labels" openlmis-message="label.schedule"><span ng-show="requiredFilters.schedule" class="label-required">*</span></label>
         <div>
         <select id="schedule" ui-select2 class="input-medium" ng-change="notifyFilterChanged('schedule-changed');" ng-model="filter.schedule">

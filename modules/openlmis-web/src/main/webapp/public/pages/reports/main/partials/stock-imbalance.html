@@ -34,12 +34,25 @@
                 <schedule-filter class="form-cell horizontalFilters" required="true"></schedule-filter>
                 <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
                 <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
+                <div ng-hide="showMoreFilters" class="clearfix form-cell horizontalFilters">
+                  <br/>
+                  <a class="button" href="javascript:void()" ng-click="toggleMoreFilters()"
+                     openlmis-message="label.show.more.filters"></a>
+                </div>
+                <div ng-hide="!showMoreFilters">
 
                 <zone-filter class="form-cell horizontalFilters"></zone-filter>
                 <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
                 <facility-filter class="form-cell horizontalFilters"></facility-filter>
                 <product-category-filter class="form-cell horizontalFilters"></product-category-filter>
                 <product-multi-filter class="form-cell horizontalFilters"></product-multi-filter>
+                <div class="clearfix form-cell horizontalFilters">
+                  <br/>
+                  <a class="button" href="javascript:void()"
+                     ng-click="toggleMoreFilters()"
+                     openlmis-message="label.show.less.filters"></a>
+                </div>
+                  </div>
               </div>
             </form>
             <div class="clearfix"></div>
@@ -50,6 +63,35 @@
             <div class="span12 ">
               <div>
                 <div class="box-header">
+
+                  <div class="form-cell span2">
+                    <div class="checkbox">
+                      <label for="allType"><input id="allType" class="checkbox" type="checkbox" value="allReportType"
+                                              ng-change="onToggleReportTypeAll()" ng-model="allReportType">
+                        <span>All</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-cell span2">
+                    <div class="checkbox">
+                      <label for="emergency"><input id="emergency" class="checkbox" type="checkbox" value="EM"
+                                             ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.EM">
+                        <span>Emergency</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-cell span2">
+                    <div class="checkbox">
+                      <label for="re"><input id="re" class="checkbox" type="checkbox" value="RE" ng-checked="true"
+                                             ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.RE">
+                        <span>Regular</span>
+                      </label>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="box-header">
+
                   <div class="form-cell span2">
                     <div class="checkbox">
                       <label for="all"><input id="all" class="checkbox" type="checkbox" value="ALL"
@@ -60,7 +102,7 @@
                   </div>
                   <div class="form-cell span2">
                     <div class="checkbox">
-                      <label for="so"><input id="so" class="checkbox" type="checkbox" value="SO"
+                      <label for="so"><input ng-checked="true" id="so" class="checkbox" type="checkbox" value="SO"
                                              ng-change="onCheckboxChanged()" ng-model="statuses.SO">
                         <span>Stocked Out</span>
                       </label>
@@ -140,7 +182,7 @@
                         sortable="physicalCount">{{ row.physicalCount | number }}
                     </td>
                     <td data-title="getLocalMessage('label.mos')" class="number" style="width:80px" sortable="months">{{
-                      row.months | number }}
+                      row.months | number: 1 }}
                     </td>
                     <td data-title="getLocalMessage('label.order.quantity')" class="number" style="width:80px"
                         sortable="orderQuantity">{{ row.orderQuantity | number }}

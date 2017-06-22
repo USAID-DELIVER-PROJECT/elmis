@@ -10,7 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 function StockImbalanceController($scope, $window, $routeParams, StockImbalanceReport) {
-
+  ( function init(){
+    $routeParams.reportType="RE";
+    $routeParams.status="SO";
+  })();
   if ($routeParams.status !== undefined) {
     var statuses = $routeParams.status.split(',');
     $scope.statuses =  {};
@@ -18,12 +21,46 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
       $scope.statuses[status] = true;
     });
   }
-
+  if ($routeParams.reportType !== undefined) {
+    var reportTypes = $routeParams.reportType.split(',');
+    $scope.reportTypes =  {};
+    reportTypes.forEach(function(reportType){
+      $scope.reportTypes[reportType] = true;
+    });
+  }
   $scope.exportReport = function (type) {
     $scope.filter.pdformat = 1;
     var params = jQuery.param($scope.getSanitizedParameter());
     var url = '/reports/download/stock_imbalance/' + type + '?' + params;
     $window.open(url, '_blank');
+  };
+  $scope.onToggleReportTypeAll = function () {
+    if ($scope.reportTypes === undefined) {
+      $scope.reportTypes =  {};
+    }
+
+    $scope.reportTypes.EM = $scope.reportTypes.RE = $scope.allReportType;
+    $scope.onReportTypeCheckboxChanged();
+  };
+  $scope.onReportTypeCheckboxChanged = function () {
+    var reportType = null;
+    _.keys($scope.reportTypes).forEach(function (key) {
+      var value = $scope.reportTypes[key];
+      if (value === true && (key==='EM'|| key==='RE')) {
+
+        utils.isNullOrUndefined(reportType)? reportType=key:  reportType += "," + key;
+
+      }else if(value===false){
+        $scope.allReportType=false;
+      }
+    });
+    if($scope.filter === undefined){
+      $scope.filter = {reportType: reportType};
+    }else{
+      $scope.filter.reportType = reportType;
+    }
+    $scope.applyUrl();
+    $scope.OnFilterChanged();
   };
 
   $scope.onToggleAll = function () {
@@ -41,6 +78,8 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
       var value = $scope.statuses[key];
       if (value === true) {
         status += "," + key;
+      }else if(value===false){
+        $scope.all=false;
       }
     });
     if($scope.filter === undefined){
@@ -62,7 +101,6 @@ function StockImbalanceController($scope, $window, $routeParams, StockImbalanceR
       $scope.filter.status = 'SO';
       $scope.applyUrl();
     }
-
     StockImbalanceReport.get($scope.getSanitizedParameter(), function (data) {
       $scope.data = data.pages.rows;
       $scope.paramsChanged($scope.tableParams);
