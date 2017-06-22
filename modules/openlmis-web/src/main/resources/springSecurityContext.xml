@@ -47,6 +47,7 @@
   </http>
 
   <http pattern="/odk-api/**" security="none" />
+  <http pattern="/log-tag-api/**" security="none" />
 
   <http use-expressions="true" entry-point-ref="restAuthenticationEntryPoint">
       <intercept-url pattern="/health/ping" access="permitAll" requires-channel="any"/>
