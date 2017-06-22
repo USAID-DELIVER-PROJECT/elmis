@@ -122,7 +122,7 @@ public class StockImbalanceQueryBuilder {
                 "  JOIN vw_districts gz on gz.district_id = f.geographiczoneid \n" +
                 "  JOIN programs pg on pg.id = r.programid\n" +
                 "  join program_products pgp on r.programid = pgp.programid and p.id = pgp.productid\n" +
-                "  JOIN facility_approved_products fap on ft.id = fap.facilitytypeid\n" +
+                "  JOIN facility_approved_products fap on ft.id = fap.facilitytypeid and fap.programproductid=pgp.id\n" +
                 "\n" +
                 "WHERE  li.skipped = false \n" +
                 " AND (li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0) \n" +
