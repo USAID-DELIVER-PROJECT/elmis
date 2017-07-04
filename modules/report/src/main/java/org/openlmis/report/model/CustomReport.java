@@ -41,4 +41,6 @@ public class CustomReport extends BaseModel{
 
   private Boolean active;
 
+  private Integer displayOrder;
+
 }
