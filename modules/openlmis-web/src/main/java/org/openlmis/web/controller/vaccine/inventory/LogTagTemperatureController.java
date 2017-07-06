@@ -20,6 +20,7 @@ import java.util.Arrays;
 import static java.lang.Integer.parseInt;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * Created by hassan on 5/27/17.
@@ -34,7 +35,7 @@ private VaccineInventoryService service;
 @Value("10")
 private String limit;
 
-    @RequestMapping(value="insert.json",method=GET, headers = ACCEPT_JSON)
+    @RequestMapping(value="insert.json",method=POST, headers = ACCEPT_JSON)
     public String save(@RequestBody String donor, HttpServletRequest request){
         System.out.println("Got the Rest API");
 
