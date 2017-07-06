@@ -1282,3 +1282,7 @@ services.factory('ReportPeriodsByYear', function ($resource) {
 services.factory('StockEventReport', function ($resource) {
     return $resource('/reports/reportdata/stock-event.json', {}, {});
 });
+
+services.factory('LogTagInfo', function ($resource) {
+    return $resource('/reports/reportdata/log-tag.json', {}, {});
+});
