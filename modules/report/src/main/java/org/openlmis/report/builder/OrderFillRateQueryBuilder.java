@@ -69,7 +69,8 @@ public class OrderFillRateQueryBuilder {
         "  quantityreceived,  productcode, " +
         "  facilityname ");
     ORDER_BY("facilityname");
-    return SQL();
+    String query=SQL();
+    return query;
   }
 
   public static String getTotalProductsReceived(Map param) {

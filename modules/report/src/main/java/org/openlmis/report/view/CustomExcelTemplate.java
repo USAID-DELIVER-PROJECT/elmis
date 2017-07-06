@@ -116,12 +116,20 @@ public class CustomExcelTemplate extends AbstractView {
         cell.setCellValue(col.getDisplayName());
         cell.setCellStyle(headerCellStyle);
       }
-      if (col.getPivotColumn() || col.getPivotRow() || col.getPivotValue()) {
-        this.isPivot = true;
-      }
+
     }
 
-    if (this.isPivot) {
+    //check if the pivot settings are all correct. otherwise - do not try to pivot this.
+    if (
+        columns.stream().filter(ColumnModel::getPivotColumn).findAny().isPresent()
+            &&
+            columns.stream().filter(ColumnModel::getPivotColumn).findAny().isPresent()
+            &&
+            columns.stream().filter(ColumnModel::getPivotRow).findAny().isPresent()
+        ) {
+
+      this.isPivot = true;
+
       //TODO: implement the isPivot headers here.
       List<String> pivotColumns = getPivotColumns(columns, reportContent);
       this.pivotStartColumn = columnIndex;
@@ -185,27 +193,37 @@ public class CustomExcelTemplate extends AbstractView {
   private void writeReportData(XSSFSheet sheet, Map queryModel, List reportContent) throws IOException {
     List<ColumnModel> columns = getColumnDefinitions(queryModel);
 
-    String pivotRowFieldName = columns.stream()
-        .filter(ColumnModel::getPivotRow)
-        .findFirst()
-        .get().getName();
+    String pivotRowFieldName = "";
+    String pivotValueFieldName = "";
+    String pivotColumnFieldName = "";
 
 
-    ColumnModel pivotValueColumn = columns.stream()
-        .filter(ColumnModel::getPivotValue)
-        .findFirst()
-        .get();
-    String pivotValueFieldName = columns.stream()
-        .filter(ColumnModel::getPivotValue)
-        .findFirst()
-        .get().getName();
+    ColumnModel pivotValueColumn = null;
 
-    String pivotColumnFieldName = columns.stream()
-        .filter(ColumnModel::getPivotColumn)
-        .findFirst()
-        .get()
-        .getName();
+    if (this.isPivot) {
+      pivotRowFieldName = columns.stream()
+          .filter(ColumnModel::getPivotRow)
+          .findFirst()
+          .get().getName();
 
+
+      if (this.isPivot) {
+        pivotValueColumn = columns.stream()
+            .filter(ColumnModel::getPivotValue)
+            .findFirst()
+            .get();
+        pivotValueFieldName = columns.stream()
+            .filter(ColumnModel::getPivotValue)
+            .findFirst()
+            .get().getName();
+
+        pivotColumnFieldName = columns.stream()
+            .filter(ColumnModel::getPivotColumn)
+            .findFirst()
+            .get()
+            .getName();
+      }
+    }
     for (Object o : reportContent) {
       Map m = (Map) o;
       if (this.isPivot) {
