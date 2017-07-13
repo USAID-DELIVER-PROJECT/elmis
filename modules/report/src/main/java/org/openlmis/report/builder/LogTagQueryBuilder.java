@@ -14,7 +14,7 @@ public class LogTagQueryBuilder {
 
         LogTagParam filter = (LogTagParam)params.get("filterCriteria");
         return " select * from log_tags where " +
-                " createdDate >='"+filter.getStartDate()+"'::DATE AND createdDate <='"+filter.getEndDate()+"'::DATE";
+                " logDate::date >='"+filter.getStartDate()+"'::DATE AND logDate::date <='"+filter.getEndDate()+"'::DATE";
 
     }
 
