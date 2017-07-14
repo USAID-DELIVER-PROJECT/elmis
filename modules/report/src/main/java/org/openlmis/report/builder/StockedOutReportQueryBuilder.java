@@ -13,22 +13,22 @@
 package org.openlmis.report.builder;
 
 import org.openlmis.report.model.params.StockedOutReportParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static org.apache.ibatis.jdbc.SqlBuilder.*;
 import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.*;
-import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.geoZoneIsFilteredBy;
-import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.multiProductFilterBy;
 
 
 public class StockedOutReportQueryBuilder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StockedOutReportQueryBuilder.class);
 
     public static String getQuery(Map params) {
         StockedOutReportParam filter = (StockedOutReportParam) params.get("filterCriteria");
-        String reportType = filter.getReportType().replaceAll(",", "','").replaceAll("EM", "t").replaceAll("RE", "f");
-        BEGIN();
-        SELECT_DISTINCT(" gz.region_name as supplyingfacility,  " +
+        String sqlQuery = " ";
+        String predicate = getPredicate(filter);
+        sqlQuery = "select  gz.region_name as supplyingfacility,  " +
                 " f.code as facilitycode,  " +
                 " li.productcode,  " +
                 " f.name as facility,  " +
@@ -39,54 +39,54 @@ public class StockedOutReportQueryBuilder {
                 " li.stockoutdays stockoutdays,   " +
                 " to_char(pp.startdate, 'Mon') as month,  " +
                 " extract(year from pp.startdate) as year,   " +
-                " pg.code as program  " +
-                "   ");
-
-        FROM(
+                " pg.code as program  FROM " +
                 " processing_periods pp  " +
-                        "JOIN requisitions r ON pp. ID = r.periodid  " +
-                        "JOIN requisition_line_items li ON li.rnrid = r. ID  " +
-                        "JOIN facilities f on f.id = r.facilityId  " +
-                        "JOIN facility_types ft on ft.id = f.typeid  " +
-                        "JOIN products p on p.code = li.productcode  " +
-                        "JOIN vw_districts gz on gz.district_id = f.geographiczoneid  " +
-                        "JOIN programs pg on pg.id = r.programid " +
-                        "JOIN program_products pgp on r.programid = pgp.programid and p.id = pgp.productid \n");
+                "JOIN requisitions r ON pp. ID = r.periodid  " +
+                "JOIN requisition_line_items li ON li.rnrid = r. ID  " +
+                "JOIN facilities f on f.id = r.facilityId  " +
+                "JOIN facility_types ft on ft.id = f.typeid  " +
+                "JOIN products p on p.code = li.productcode  " +
+                "JOIN vw_districts gz on gz.district_id = f.geographiczoneid  " +
+                "JOIN programs pg on pg.id = r.programid " +
+                "JOIN program_products pgp on r.programid = pgp.programid and p.id = pgp.productid \n"
+                + predicate;
 
+        return sqlQuery;
+    }
 
-        WHERE("li.stockinhand = 0 AND li.skipped = false ");
-        WHERE("(li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0)");
-        WHERE(programIsFilteredBy("r.programId"));
-        WHERE(periodIsFilteredBy("r.periodId"));
-        WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
-        WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
-        WHERE("r.emergency in ('" + reportType + "')");
+    private static String getPredicate(StockedOutReportParam filter) {
+        String predicate = "";
+        String reportType = filter.getReportType().replaceAll(",", "','").replaceAll("EM", "t").replaceAll("RE", "f");
+        predicate = " where li.stockinhand = 0 AND li.skipped = false " +
+                " and (li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0)\n"
+                + " and " + programIsFilteredBy("r.programId")
+                + " and " + periodIsFilteredBy("r.periodId")
+                + " and " + rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses())
+                + " and " + "r.emergency in ('" + reportType + "')";
         if (filter.getProductCategory() != 0) {
-            WHERE(productCategoryIsFilteredBy("pgp.productcategoryid"));
+            predicate += " and " + productCategoryIsFilteredBy("pgp.productcategoryid");
         }
 
         if (filter.getFacility() != 0) {
-            WHERE(facilityIsFilteredBy("r.facilityId"));
+            predicate += " and " + facilityIsFilteredBy("r.facilityId");
         }
 
-        WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
+        predicate += " and " + userHasPermissionOnFacilityBy("r.facilityId");
 
         if (filter.getFacilityType() != 0) {
-            WHERE(facilityTypeIsFilteredBy("f.typeid"));
+            predicate += " and " + facilityTypeIsFilteredBy("f.typeid");
         }
 
         if (multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer") != null) {
-            WHERE(multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer"));
+            predicate += " and " + multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer");
         }
 
         if (filter.getZone() != 0) {
-            WHERE(geoZoneIsFilteredBy("gz"));
+            predicate += " and " + geoZoneIsFilteredBy("gz");
         }
-        ORDER_BY("supplyingFacility asc, facility asc, product asc");
-        // copy the sql over to a variable, this makes the debugging much more possible.
-        String sqlStat=SQL();
-        return sqlStat;
+        predicate += " and " + userHasPermissionOnFacilityBy("r.facilityId")
+                + " order by supplyingFacility asc, facility asc, product asc";
+        return predicate;
     }
-
 
 }

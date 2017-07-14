@@ -68,7 +68,7 @@ public class StockImbalanceQueryBuilder {
         String reportType = filter.getReportType().replaceAll(",", "','").replaceAll("EM", "t").replaceAll("RE", "f");
         String sql = "";
         String facilityParameterType = filter.getFacilityType() != 0 ? " AND f.typeid=  '" + filter.getFacilityType() + "'::INT\n" : " ";
-        sql = "SELECT distinct \n" +
+        sql = "SELECT  \n" +
                 "supplyingFacility, \n" +
                 "facilityTypeName facilityType,  \n" +
                 "facility, \n" +
@@ -85,7 +85,7 @@ public class StockImbalanceQueryBuilder {
                 "a.status\n" +
                 "\n" +
                 " FROM (\n" +
-                "SELECT distinct gz.region_name as supplyingfacility, gz.region_name, gz.district_name, gz.zone_name, f.code as facilitycode,\n" +
+                "SELECT  gz.region_name as supplyingfacility, gz.region_name, gz.district_name, gz.zone_name, f.code as facilitycode,\n" +
                 "li.productcode,   f.name as facility,   li.product as product,   ft.name facilitytypename,\n" +
                 "gz.district_name as location,   pp.name as processing_period_name,  li.stockinhand,\n" +
                 "li.stockoutdays stockoutdays,    to_char(pp.startdate, 'Mon') asmonth, \n" +
@@ -157,7 +157,7 @@ public class StockImbalanceQueryBuilder {
         }
 
         if (filter.getZone() != 0) {
-            predicate += " AND " + geoZoneIsFilteredBy("d");
+            predicate += " AND " + geoZoneIsFilteredBy("gz");
         }
         String queryFilter = " AND (li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0) \n" +
                 predicate +
