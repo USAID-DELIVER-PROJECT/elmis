@@ -724,3 +724,13 @@
     </div>
     </div>
 </script>
+
+<script type="text/ng-template" id="filter-product-multi-without-description-and-program-template">
+    <div>
+        <label for="product" class="labels" ><span openlmis-message="label.product"></span><span ng-show="requiredFilters.product" class="label-required">*</span></label><div>
+        <select id="product"  ui-select2="wideOption" multiple data-placeholder="-- All Products --" class="input-large" ng-model="filter.products" ng-change="notifyFilterChanged('products-changed');">
+            <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.products == option.id">{{ option.name }}</option>
+        </select>
+    </div>
+    </div>
+</script>
