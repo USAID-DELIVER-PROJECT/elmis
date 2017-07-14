@@ -2368,3 +2368,66 @@ app.directive('periodByYearFilter', ['ReportPeriods', 'ReportPeriodsByYear', '$r
         };
     }
 ]);
+
+
+
+
+app.directive('productMultiWithoutDescriptionAndProgramFilter', ['ReportProductsByProgramWithoutDescriptionsAndProgram', 'messageService', '$routeParams',
+    function (ReportProductsByProgramWithoutDescriptionsAndProgram, messageService, $routeParams) {
+
+        var onPgCascadedVarsChanged = function ($scope, attr) {
+
+            ReportProductsByProgramWithoutDescriptionsAndProgram.get({
+            }, function (data) {
+                $scope.products = data.productList;
+                if (!attr.required) {
+                    $scope.products.unshift({
+                        'name': messageService.get('report.filter.select.indicator.product'),
+                        id: -1
+                    });
+                    $scope.products.unshift({
+                        'name': messageService.get('report.filter.all.products'),
+                        id: 0
+                    });
+                }
+
+            });
+
+        };
+
+        return {
+            restrict: 'E',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('products', attr);
+                if (!$routeParams.product && !attr.required) {
+                    scope.products = [{
+                        'name': messageService.get('report.filter.all.products'),
+                        id: 0
+                    }];
+                }
+
+                // this is what filters products based on product categories selected.
+                scope.productCFilter = function (option) {
+                    var show = (
+                        _.isEmpty(scope.filter.productCategory) ||
+                        _.isUndefined(scope.filter.productCategory) ||
+                        parseInt(scope.filter.productCategory, 10) === 0 ||
+                        option.categoryId == scope.filter.productCategory ||
+                        option.id === -1 ||
+                        option.id === 0
+                    );
+                    return show;
+                };
+
+                var onFiltersChanged = function () {
+                    onPgCascadedVarsChanged(scope, attr);
+                };
+                scope.subscribeOnChanged('products', 'product-category', onFiltersChanged, true);
+                // scope.subscribeOnChanged('product', 'program', onFiltersChanged, true);
+            },
+            //templateUrl: 'filter-product-without-description-and-program-template'
+            templateUrl: 'filter-product-multi-without-description-and-program-template'
+        };
+
+    }
+]);
