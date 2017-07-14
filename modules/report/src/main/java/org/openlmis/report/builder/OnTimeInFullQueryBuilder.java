@@ -3,6 +3,7 @@ package org.openlmis.report.builder;
 import org.openlmis.report.model.params.OnTimeInFullReportParam;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by hassan on 1/29/17.
@@ -57,7 +58,11 @@ public class OnTimeInFullQueryBuilder {
                 String predicate = " ";
 
                 predicate += " where pp.productCategoryId = " + params.getProductCategory();
-                    predicate += " and p.id = " + params.getProduct();
+             if(Objects.equals("0", params.getProducts())){
+                 System.out.println("reached here");
+                 predicate +="and p.id in (select productId from program_products where productCategoryID = "+params.getProductCategory()+") and active = true";
+             }else
+                 predicate += " and p.id IN( " + params.getProducts()+")";
                  String facilityLevel = params.getFacilityLevel();
                  predicate += " and facility_types.code = #{filterCriteria.facilityLevel}::text ";
 

@@ -1,7 +1,9 @@
 package org.openlmis.vaccine.repository.inventory;
 
 import lombok.NoArgsConstructor;
+import org.openlmis.core.domain.Pagination;
 import org.openlmis.stockmanagement.domain.Lot;
+import org.openlmis.vaccine.dto.LogTagDTO;
 import org.openlmis.vaccine.repository.mapper.inventory.VaccineInventoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,6 +52,22 @@ public class VaccineInventoryRepository {
     public Integer deleteLots() {
         return mapper.deleteLots();
     }
+
+
     //TODO End To delete this code on production
 
+    public void saveLogTagData(LogTagDTO dto) {
+        mapper.saveLogTagData(dto);
+    }
+
+    public LogTagDTO getByDateAndSerialNumber(String logDate, String serialNumber) {
+        return mapper.geByDateAndSerialNumber(logDate,serialNumber);
+    }
+    public void updateLogTag(LogTagDTO dto){
+        mapper.updateLogTag(dto);
+    }
+
+    public List<LogTagDTO> geLogTags(String startDate, String endDate, Pagination pagination) {
+        return mapper.getLogTags(startDate,endDate,pagination);
+    }
 }

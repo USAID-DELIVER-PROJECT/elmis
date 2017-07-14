@@ -788,4 +788,18 @@ public class InteractiveReportController extends BaseController {
                 request.getParameterMap(), page, max);
         return new Pages(page, max, reportData);
     }
+
+
+    @RequestMapping(value = "/reportdata/log-tag", method = GET, headers = BaseController.ACCEPT_JSON)
+    public Pages getLogTag(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                                  @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                                  HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("log_tag");
+
+        List<LogTagReport> reportData =
+                (List<LogTagReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+        return new Pages(page, max, reportData);
+    }
 }

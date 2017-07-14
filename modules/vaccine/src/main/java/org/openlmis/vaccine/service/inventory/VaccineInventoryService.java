@@ -12,9 +12,11 @@ package org.openlmis.vaccine.service.inventory;
 
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.FacilityTypeApprovedProduct;
+import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.repository.FacilityApprovedProductRepository;
 import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.stockmanagement.repository.LotRepository;
+import org.openlmis.vaccine.dto.LogTagDTO;
 import org.openlmis.vaccine.repository.inventory.VaccineInventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,5 +68,27 @@ public class VaccineInventoryService {
     public Integer deleteLots() {
         return repository.deleteLots();
     }
+
     //TODO End To delete
+
+
+    public void uploadLogTag(List<LogTagDTO> logTagDTOs) {
+        for (LogTagDTO dto :logTagDTOs) {
+            if (dto != null) {
+    /*  LogTagDTO logData;
+      logData = repository.getByDateAndSerialNumber(dto.getLogDate(), dto.getSerialNumber());
+      if (logData != null) {
+        logData.setId(logData.getId());
+        repository.updateLogTag(dto);
+      } else*/
+                repository.saveLogTagData(dto);
+
+            }
+
+        }
+    }
+
+    public List<LogTagDTO> getLogTags(String startDate, String endDate, Pagination pagination) {
+        return repository.geLogTags(startDate, endDate,pagination);
+    }
 }
