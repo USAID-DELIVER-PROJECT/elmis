@@ -148,8 +148,11 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
         String productCategory = StringHelper.isBlank(filterCriteria, "productCategory") ? null : ((String[]) filterCriteria.get("productCategory"))[0];
         param.setProductCategory(productCategory);
 
-        String product = StringHelper.isBlank(filterCriteria, "product") ? null : ((String[]) filterCriteria.get("product"))[0];
-        param.setProduct(product);
+      /*  String product = StringHelper.isBlank(filterCriteria, "product") ? null : ((String[]) filterCriteria.get("product"))[0];
+        param.setProduct(product);*/
+
+        String products = StringHelper.isBlank(filterCriteria, "products") ? null : ((String[]) filterCriteria.get("products"))[0];
+        param.setProducts(products);
 
         // param.setFacilityLevel(filterCriteria.get("facilityLevel")[0]);
       /*  String facilityLevel = StringHelper.isBlank(filterCriteria, "facilityLevel") ? null : ((String[]) filterCriteria.get("facilityLevel"))[0];
