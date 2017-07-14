@@ -72,8 +72,8 @@
                                 <product-category-without-program-filter class="form-cell horizontalFilters"
                                                          required="false"></product-category-without-program-filter>
 
-                                <product-without-description-and-program-filter class="form-cell horizontalFilters"
-                                                                    required="true"></product-without-description-and-program-filter>
+                              <product-multi-without-description-and-program-filter class="form-cell horizontalFilters"
+                                                                    required="true"></product-multi-without-description-and-program-filter>
 
                                 <facility-level-without-program-filter class="form-cell horizontalFilters"
                                                        required="false"></facility-level-without-program-filter>
@@ -127,7 +127,7 @@
                             tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of {{tableParams.total}}
                         </div>
 
-                        <div class="offset1">
+                       <!-- <div class="offset1">
 
                             <div>
                                 <div class="pull-left" style="font-size:13px; font-weight: bold;">
@@ -136,7 +136,7 @@
                                 </div>
                             </div>
 
-                        </div>
+                        </div>-->
 
                     </div>
 
@@ -168,6 +168,10 @@
 
                                         </span>
                                     </td>
+                                    <td class="number" data-title="'Product'" style="width:20% !important;"
+                                        sortable=" ">{{row.product }}
+                                    </td>
+
                                     <td class="number" data-title="'Date Requested'" style="width:20% !important;"
                                         sortable=" ">{{row.requestedDate | date:'dd-MM-yyyy' }}
                                     </td>
