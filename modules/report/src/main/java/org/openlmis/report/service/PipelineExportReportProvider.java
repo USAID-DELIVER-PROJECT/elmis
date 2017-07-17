@@ -39,7 +39,9 @@ public class PipelineExportReportProvider extends ReportDataProvider{
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
-        return reportMapper.getReport(getReportFilterData(filterCriteria),sortCriteria, rowBounds);
+        PipelineExportParams reportParam = getReportFilterData(filterCriteria);
+        reportParam.setUserId(this.getUserId());
+        return reportMapper.getReport(reportParam,sortCriteria, rowBounds);
     }
 
     public List<Product> getProducts(Map<String, String[]> filterCriteria){
