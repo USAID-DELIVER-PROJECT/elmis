@@ -96,16 +96,16 @@ public class StockImbalanceQueryBuilder {
                 "ELSE\n" +
                 "    CASE WHEN li.amc > 0 AND li.stockinhand > 0 THEN \n" +
                 "     CASE\n" +
-                "      WHEN round((li.stockinhand / li.amc)::numeric, 1) <= fap.minmonthsofstock THEN 'US'::text\n" +
-                "      WHEN round((li.stockinhand / li.amc)::numeric, 1) >= fap.minmonthsofstock::numeric " +
-                " AND round((li.stockinhand / li.amc)::numeric, 1) <= fap.maxmonthsofstock::numeric THEN 'SP'::text\n" +
-                "      WHEN round((li.stockinhand / li.amc)::numeric, 1) > fap.maxmonthsofstock THEN 'OS'::text  \n" +
+                "      WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) <= fap.minmonthsofstock THEN 'US'::text\n" +
+                "      WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) >= fap.minmonthsofstock::numeric " +
+                " AND round((li.stockinhand::decimal / li.amc)::numeric, 2) <= fap.maxmonthsofstock::numeric THEN 'SP'::text\n" +
+                "      WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) > fap.maxmonthsofstock THEN 'OS'::text  \n" +
                 "     END             \n" +
                 "    ELSE 'UK'::text END\n" +
                 "END AS status,\n" +
                 "CASE\n" +
                 "    WHEN COALESCE(li.amc, 0) = 0 THEN 0::numeric\n" +
-                "    ELSE round((li.stockinhand / li.amc)::numeric, 1)\n" +
+                "    ELSE round((li.stockinhand::decimal / li.amc)::numeric, 2)\n" +
                 "END AS mos,\n" +
                 "li.amc,\n" +
                 "COALESCE(\n" +
