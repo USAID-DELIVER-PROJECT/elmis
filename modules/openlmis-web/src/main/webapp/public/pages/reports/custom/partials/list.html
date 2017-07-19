@@ -216,13 +216,13 @@
                               class="cell-input right-justified number"
                               style="padding: 0;">
                             <span
-                                ng-show="row['p'][col][report.pivotValueColumn.name]  && report.pivotValueColumn.classification"
+                                ng-show="row['p'][col][report.pivotValueColumn.name] != undefined && report.pivotValueColumn.classification"
                                 class="cell-text {{row['p'][col][report.pivotValueColumn.classification]}}">
                               <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name]  | number : 2}}%</span>
                               <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name]}}</span>
                             </span>
                             <span class="cell-text"
-                                  ng-show="row['p'][col][report.pivotValueColumn.name] && !report.pivotValueColumn.classification">
+                                  ng-show="row['p'][col][report.pivotValueColumn.name] != undefined && !report.pivotValueColumn.classification">
                               <span ng-show="report.pivotValueColumn.formatting == 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number : 2}}%</span>
                               <span ng-show="report.pivotValueColumn.formatting != 'percent'">{{row['p'][col][report.pivotValueColumn.name] | number}}</span>
                             </span>
