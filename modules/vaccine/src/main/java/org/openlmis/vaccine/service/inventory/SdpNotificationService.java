@@ -1,8 +1,11 @@
 package org.openlmis.vaccine.service.inventory;
 
+import java.io.OutputStream;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openlmis.core.domain.ConfigurationSetting;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
@@ -31,8 +34,15 @@ import java.net.URL;
 @Async
 public class SdpNotificationService {
 
+    public  static final String TIIS_URL= "VIMS_TIMR_INTERGRATION";
+    public  static final String TIIS_USERNAME= "VIMS_TIMR_INTERGRATION";
+    public  static final String TIIS_PASSWORD= "VIMS_TIMR_INTERGRATION";
+
     @Autowired
     private VaccineInventoryDistributionMapper mapper;
+
+    @Autowired
+    private VaccineInventoryDistributionService distributionService;
 
     @Autowired
     ConfigurationSettingService configurationSettingService;
@@ -47,30 +57,52 @@ public class SdpNotificationService {
     }
 
     public void sendHttps(VaccineDistribution d) {
-        System.out.println("Reached Here");
-      //  configurationSettingService.getByKey("TIMR_INTERGRATION").getValue();
-        String url =
-                "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/HealthFacilityManagement.svc/receiveDelivery?vimsToFacilityId=" + d.getToFacilityId();
+
+        String url = configurationSettingService.getByKey(TIIS_URL).getValue();
+        String username = configurationSettingService.getByKey(TIIS_USERNAME).getValue();
+        String password = configurationSettingService.getByKey(TIIS_PASSWORD).getValue();
+
+        VaccineDistribution distribution = distributionService.getDistributionByToFacility(d.getToFacilityId());
+        ObjectMapper mapper = new ObjectMapper();
+
         System.out.println(url);
         try {
+            String jsonInString = mapper.writeValueAsString(distribution);
+
             URL obj = new URL(url);
 
-            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
-                public X509Certificate[] getAcceptedIssuers(){return null;}
-                public void checkClientTrusted(X509Certificate[] certs, String authType){}
-                public void checkServerTrusted(X509Certificate[] certs, String authType){}
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
             }};
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
-            String userCredentials = "lucy:Kaloleni12";
+            String userCredentials = username+":"+password;
             String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userCredentials.getBytes()));
             con.setRequestProperty("Authorization", basicAuth);
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Content-Type", "application/json");
-            System.out.println("all connection"+con);
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "text/plain");
+            System.out.println("all connection" + con);
+
+            con.setDoOutput(true);
+
+            System.out.println(jsonInString);
+
+            OutputStream wr = con.getOutputStream();
+            wr.write(jsonInString.getBytes("UTF-8"));
+
+            wr.flush();
+            wr.close();
 
             int responseCode = con.getResponseCode();
             System.out.println("\nSending 'GET' request to URL : " + url);
@@ -79,7 +111,7 @@ public class SdpNotificationService {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -89,9 +121,9 @@ public class SdpNotificationService {
             //print result
             System.out.println(response.toString());
         } catch (Exception e) {
-            System.out.println("e"+e.getMessage());
+            System.out.println("e" + e.getMessage());
             e.printStackTrace();
-    }
+        }
 
 
     }
