@@ -48,7 +48,8 @@ public class StockedOutReportQueryBuilder {
                 "JOIN products p on p.code = li.productcode  " +
                 "JOIN vw_districts gz on gz.district_id = f.geographiczoneid  " +
                 "JOIN programs pg on pg.id = r.programid " +
-                "JOIN program_products pgp on r.programid = pgp.programid and p.id = pgp.productid \n"
+                "JOIN program_products pgp on r.programid = pgp.programid and p.id = pgp.productid \n" +
+                " JOIN facility_approved_products fap on ft.id = fap.facilitytypeid and fap.programproductid=pgp.id"
                 + predicate;
 
         return sqlQuery;
