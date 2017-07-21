@@ -445,7 +445,6 @@
         </div>
     </div>
 </script>
-
 <script type="text/ng-template" id="filter-static-period">
     <div>
         <div  class="horizontalFilters form-cell">
@@ -469,6 +468,25 @@
             <label for="product" class="labels" ><span openlmis-message="label.end.date"></span></label>
             <div>
                 <input ng-model="periodEnddate" ui-date-format="yy-mm-dd" ui-date/>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/ng-template" id="filter-date-range">
+    <div>
+
+
+        <div class="horizontalFilters form-cell" ng-show="showCustomeDateInputs">
+            <label for="txtPeriodStartDate" class="labels" ><span openlmis-message="label.start.date"></span></label>
+            <div>
+                <input id="txtPeriodStartDate" ng-model="periodStartdate" ui-date-format="yy-mm-dd" ui-date/>
+            </div>
+        </div>
+
+        <div class="horizontalFilters form-cell" ng-show="showCustomeDateInputs">
+            <label for="txtPeriodEnddate" class="labels" ><span openlmis-message="label.end.date"></span></label>
+            <div>
+                <input id="txtPeriodEnddate" ng-model="periodEnddate" ui-date-format="yy-mm-dd" ui-date/>
             </div>
         </div>
     </div>

@@ -9,11 +9,13 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function ListFacilitiesController($scope, FacilityList) {
-
+function ListFacilitiesController($scope, FacilityList, $routeParams) {
+    $scope.perioderror = "";
+    $scope.allReportType=false;
     $scope.OnFilterChanged = function(){
         FacilityList.get($scope.getSanitizedParameter(), function(data) {
             $scope.data = data.pages.rows;
+
             $scope.paramsChanged($scope.tableParams);
         });
     };
@@ -22,8 +24,58 @@ function ListFacilitiesController($scope, FacilityList) {
         {'name': 'Active', 'value': "true"},
         {'name': 'Inactive', 'value': "false"}
     ];
+    if (!utils.isEmpty($routeParams.reportType)) {
+        var reportTypes = $routeParams.reportType.split(',');
+        $scope.reportTypes = {};
+        reportTypes.forEach(function (reportType) {
+            $scope.reportTypes[reportType] = true;
+        });
+
+    }else{
+        $scope.reportTypes = {};
+        $scope.reportTypes.AC = true;
+    }
+    ( function init(){
 
 
+        $routeParams.statusList="AC";
+
+
+
+
+    })();
+    $scope.onToggleReportTypeAll = function () {
+        if ($scope.reportTypes === undefined) {
+            $scope.reportTypes = {};
+        }
+
+        $scope.reportTypes.AC = $scope.reportTypes.IN = $scope.allReportType;
+        $scope.onReportTypeCheckboxChanged();
+    };
+    $scope.onReportTypeCheckboxChanged = function () {
+
+        var reportType = getReportType();
+
+        $scope.applyUrl();
+        $scope.OnFilterChanged();
+    };
+    function getReportType() {
+        var reportType = null;
+        _.keys($scope.reportTypes).forEach(function (key) {
+            var value = $scope.reportTypes[key];
+            if (value === true && (key === 'AC' || key === 'IN')) {
+                utils.isNullOrUndefined(reportType) ? reportType = key : reportType += "," + key;
+            } else if (value === false) {
+                $scope.allReportType = false;
+            }
+        });
+        if ($scope.filter === undefined) {
+            $scope.filter = {statusList: reportType};
+        } else {
+            $scope.filter.statusList = reportType;
+        }
+        return reportType!==null?reportType:"";
+    }
     $scope.exportReport   = function (type){
       var params = jQuery.param($scope.getSanitizedParameter());
       var url = '/reports/download/facility-list/' + type + '?' + params ;

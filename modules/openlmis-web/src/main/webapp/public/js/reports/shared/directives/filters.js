@@ -1384,6 +1384,89 @@ app.directive('vaccineMonthlyPeriodTreeFilter', ['GetVaccineReportPeriodFlat', '
     }
 ]);
 
+app.directive('dateRangeFilter', [function () {
+
+    return {
+        restrict: 'E',
+        scope: {
+            periodRange: '=range',
+            formateddate: '=formateddate',
+            periodStartdate: '=startdate',
+            periodEnddate: '=enddate',
+            periodRangeMax: '=rangemax',
+            perioderror: '=error',
+            default: '=default',
+            onChange: '&'
+        },
+
+        controller: function ($scope, SettingsByKey, $timeout) {
+            $scope.periodRange = 0;
+            $scope.periodStartdate = $scope.periodEnddate = "";
+
+            SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data, er) {
+                $scope.cutoffdate = data.settings.value;
+            });
+            if (!isUndefined($scope.default)) {
+                $scope.periodRange = $scope.default;
+            }
+
+            $scope.$watch('periodRange', function (newValues, oldValues) {
+
+
+
+                    $scope.showCustomeDateInputs = true;
+
+                $scope.perioderror = "";
+            });
+
+            $scope.$watchCollection('[periodStartdate, periodEnddate]', function (newValues, oldValues) {
+
+                if (utils.isEmpty($scope.periodStartdate) || utils.isEmpty($scope.periodEnddate))
+                    return;
+
+                else if (!((angular.isUndefined(newValues[0]) || newValues[0] === null) ||
+                    (angular.isUndefined(newValues[1]) || newValues[1] === null)) ) {
+
+                    var datediff = differenceInDays();
+
+                    if (!angular.isUndefined($scope.periodRangeMax) && datediff < 0)
+                        $scope.perioderror = 'Period start date must be before or equal to end date';
+
+                    else if (!angular.isUndefined($scope.periodRangeMax) && datediff > $scope.periodRangeMax)
+                        $scope.perioderror = 'Period start and end date selection are out of range';
+
+                    else {
+                        $scope.perioderror = "";
+                        $scope.$parent.OnFilterChanged();
+                    }
+                }
+            });
+
+            var differenceInDays = function () {
+
+                var one = new Date($scope.periodStartdate),
+                    two = new Date($scope.periodEnddate);
+
+                var millisecondsPerDay = 1000 * 60 * 60 * 24;
+                var millisBetween = two.getTime() - one.getTime();
+                var days = millisBetween / millisecondsPerDay;
+
+                return Math.floor(days);
+            };
+        },
+
+        link: function (scope, elm, attr) {
+            scope.periods = [
+                {key: 1, value: 'Current Period'},
+                {key: 2, value: 'Last 3 Months'},
+                {key: 3, value: 'Last 6 Months'},
+                {key: 4, value: 'Last 1 Year'},
+                {key: 5, value: 'Custom Range'}
+            ];
+        },
+        templateUrl: 'filter-date-range'
+    };
+}]);
 app.directive('staticPeriodFilter', [function () {
 
     return {

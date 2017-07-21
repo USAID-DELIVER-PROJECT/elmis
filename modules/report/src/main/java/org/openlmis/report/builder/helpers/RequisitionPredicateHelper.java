@@ -82,5 +82,7 @@ public class RequisitionPredicateHelper {
   public static String endDateFilteredBy(String field, String endDate) {
     return String.format("%1$s <= '%2$s'::DATE ", field, endDate);
   }
-
+  public static String facilityStatusFilteredBy(String field, String facilityStatusList) {
+    return String.format("%1$s in ('%2$s')", field, facilityStatusList);
+  }
 }

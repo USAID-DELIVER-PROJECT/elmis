@@ -28,21 +28,47 @@
         <div>
             <div class="app-form"  style="padding: 1px;">
               <form ng-submit="filterGrid()"  name="filterForm" novalidate>
-                  <filter-container no-required-param="true" class="clearfix">
+                  <div class="clearfix">
+                  <filter-container no-required-param="true" >
                       <program-filter class="form-cell horizontalFilters"></program-filter>
                       <zone-filter class="form-cell horizontalFilters"></zone-filter>
+                      <date-range-filter perioderror="error" year="staticYear" startdate="filter.periodStart" enddate="filter.periodEnd" class="form-cell horizontalFilters"></date-range-filter>
                       <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
+                  </filter-container>
                       <div class="form-cell horizontalFilters">
                             <label class="labels">Status</label>
-                            <div class="form-field">
-                                <select ng-select2 ng-model="filter.status" ng-change="filterChanged()" style="width:200px;" name="status"   >
-                                    <option  ng-repeat="option in statuses" value="{{ option.value }}" ng-selected="filter.status == option.value">{{ option.name }}</option>
-                                </select>
-                            </div>
-                        </div>
+                          <div class="checkbox">
+                              <label for="allType"><input id="allType" class="checkbox" type="checkbox" value="allReportType"
+                                                          ng-change="onToggleReportTypeAll('all')" ng-model="allReportType">
+                                  <span>All</span>
+                              </label>
+                          </div>
+
+                              <div class="checkbox">
+                                  <label for="AC"><input ng-checked="true" id="AC" class="checkbox" type="checkbox" value="AC"
+                                                                ng-change="onReportTypeCheckboxChanged('AC')" ng-model="reportTypes.AC">
+                                      <span>Active</span>
+                                  </label>
+                              </div>
+
+                              <div class="checkbox">
+                                  <label for="IN"><input  id="IN" class="checkbox" type="checkbox" value="IN"
+                                                         ng-change="onReportTypeCheckboxChanged('IN')" ng-model="reportTypes.IN">
+                                      <span>Inactive</span>
+                                  </label>
+                              </div>
+                          </div>
+                       
+
                   </div>
               </form>
+                <div style="margin:2px !important;font-size:10px;"  ng-show="perioderror" class="row">
+                    <div class="span11 ">
+                        <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                    </div>
+                </div>
             </div>
+
         </div>
         <table client-side-sort-pagination class="table table-bordered" ng-show="data == undefined || data.length == 0">
             <tr>
