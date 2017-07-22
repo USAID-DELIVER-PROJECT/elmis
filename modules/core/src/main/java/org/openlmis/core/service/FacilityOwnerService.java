@@ -8,6 +8,7 @@
 
 package org.openlmis.core.service;
 
+import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.FacilityOperator;
 import org.openlmis.core.domain.FacilityOwner;
@@ -15,11 +16,13 @@ import org.openlmis.core.repository.FacilityOwnerRepository;
 import org.openlmis.core.repository.FacilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
+@NoArgsConstructor
 public class FacilityOwnerService {
     @Autowired
     private FacilityRepository facilityRepository;

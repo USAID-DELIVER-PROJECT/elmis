@@ -26,6 +26,7 @@ import org.openlmis.core.domain.*;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.repository.mapper.FacilityMapper;
+import org.openlmis.core.repository.mapper.FacilityOwnerMapper;
 import org.openlmis.db.categories.UnitTests;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -62,10 +63,12 @@ public class FacilityRepositoryTest {
 
   @Mock
   private GeographicZoneRepository geographicZoneRepository;
-
+  @Mock
+  private FacilityOwnerMapper ownerMapper;
   @Mock
   private CommaSeparator commaSeparator;
-
+@Mock
+private FacilityRepository facilityRepository;
   @InjectMocks
   private FacilityRepository repository;
 

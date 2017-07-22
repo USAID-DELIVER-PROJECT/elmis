@@ -29,6 +29,7 @@ import org.openlmis.core.builder.FacilityBuilder;
 import org.openlmis.core.domain.*;
 import org.openlmis.core.dto.FacilityFeedDTO;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.core.repository.FacilityOwnerRepository;
 import org.openlmis.core.repository.FacilityRepository;
 import org.openlmis.core.repository.GeographicZoneRepository;
 import org.openlmis.core.repository.ProgramRepository;
@@ -75,6 +76,10 @@ public class FacilityServiceTest {
   private ProgramRepository programRepository;
   @Mock
   private ProgramSupportedService programSupportedService;
+  @Mock
+  private FacilityOwnerService facilityOwnerService;
+  @Mock
+  private FacilityOwnerRepository facilityOwnerRepository;
   @Mock
   private SupervisoryNodeService supervisoryNodeService;
   @Mock
