@@ -50,6 +50,11 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
   @Override
   public List<? extends ResultRow> getResultSet(Map<String, String[]> filterCriteria) {
     RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
+    if(filterCriteria.get("reportingStatus") != null) {
+      List<NonReportingFacilityDetail> detail =  reportMapper.getNonReportingFacilities(getFilterParameters(filterCriteria), rowBounds, this.getUserId());
+      detail.addAll(reportMapper.getReportingFacilities(getFilterParameters(filterCriteria), rowBounds, this.getUserId()));
+      return detail;
+    }
     return reportMapper.getNonReportingFacilities(getFilterParameters(filterCriteria), rowBounds, this.getUserId());
   }
 
