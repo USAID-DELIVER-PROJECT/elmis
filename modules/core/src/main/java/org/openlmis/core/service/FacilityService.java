@@ -66,6 +66,8 @@ public class FacilityService {
 
   @Autowired
   private EventService eventService;
+  @Autowired
+  private FacilityOwnerService facilityOwnerService;
 
   private static final Logger LOGGER = Logger.getLogger(FacilityService.class);
 
@@ -74,6 +76,7 @@ public class FacilityService {
     save(facility);
     programSupportedService.updateSupportedPrograms(facility);
     elmisInterfaceService.updateFacilityInterfaceMapping(facility);
+    facilityOwnerService.addFacilityOnwers(facility,facility.getOwners());
   }
 
   public List<FacilityType> getAllTypes() {
@@ -102,6 +105,7 @@ public class FacilityService {
     {
       facility.setSupportedPrograms(programSupportedService.getAllByFacilityId(id));
       facility.setInterfaceMappings(elmisInterfaceService.getFacilityInterfaceMappingById(id));
+      facility.setOwners(facilityOwnerService.loadFailityOwnerList(facility));
     }
     return facility;
   }
