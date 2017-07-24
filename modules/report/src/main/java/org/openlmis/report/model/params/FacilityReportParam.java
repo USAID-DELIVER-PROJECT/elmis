@@ -34,5 +34,6 @@ public class FacilityReportParam
   private String periodStart;
   private String periodEnd;
   private String statusList;
+  private Long facilityOwner;
 
 }

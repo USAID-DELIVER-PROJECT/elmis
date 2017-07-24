@@ -548,6 +548,8 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
             var requisitionGroup = (!utils.isEmpty($scope.filter.requisitionGroup)) ? $scope.filter.requisitionGroup : 0;
             var zone = (!utils.isEmpty($scope.filter.zone)) ? $scope.filter.zone : 0;
             var facilityOperator = (!utils.isEmpty($scope.filter.facilityOperator)) ? $scope.filter.facilityOperator : 0;
+            var facilityOwner = (!utils.isEmpty($scope.filter.facilityOwner)) ? $scope.filter.facilityOwner : 0;
+
 
             // load facilities
             FacilitiesByProgramParams.get({
@@ -2498,8 +2500,8 @@ app.directive('productMultiWithoutDescriptionAndProgramFilter', ['ReportProducts
     }
 ]);
 
-app.directive('facilityOwnerFilter', ['FacilityOnwerList',
-    function (FacilityOnwerList) {
+app.directive('facilityOwnerFilter', ['FacilityOnwerList','messageService',
+    function (FacilityOnwerList,messageService) {
         return {
             restrict: 'E',
             require: '^filterContainer',
@@ -2507,7 +2509,9 @@ app.directive('facilityOwnerFilter', ['FacilityOnwerList',
                 scope.registerRequired('program', attr);
                 scope.program_filter_visible = attr.visible !== undefined ? attr.visible : true;
                 function bindList(list) {
-                    scope.facilityOwnerList = scope.unshift(list, 'report.filter.select.facility.owner');
+                     list.unshift({id:0,text:messageService.get('report.filter.select.facility.owner')});
+                    scope.facilityOwnerList =list;
+
                 }
 
                 var Service = FacilityOnwerList;

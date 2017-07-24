@@ -24,7 +24,8 @@ public class FacilityReportQueryBuilder {
 
     FacilityReportParam filter = (FacilityReportParam) params.get("filterCriteria");
     Long userId = (Long) params.get("userId");
-    String reportType = filter.getStatusList().replaceAll(",", "','").replaceAll("AC", "t").replaceAll("IN", "f");
+    String reportType =filter.getStatusList()!=null&& !filter.getStatusList().isEmpty()?
+            filter.getStatusList().replaceAll(",", "','").replaceAll("AC", "t").replaceAll("IN", "f"):"f";
     BEGIN();
     SELECT("DISTINCT F.id, F.code, F.name, F.active as active, FT.name as facilityType, GZ.district_name as region, FO.code as owner,F.latitude::text ||',' ||  F.longitude::text  ||', ' || F.altitude::text gpsCoordinates,F.mainphone as phoneNumber, F.fax as fax ");
     FROM("facilities F");
@@ -32,10 +33,9 @@ public class FacilityReportQueryBuilder {
     LEFT_OUTER_JOIN("programs_supported ps on ps.facilityid = F.id");
     LEFT_OUTER_JOIN("vw_districts GZ on GZ.district_id = F.geographiczoneid");
     LEFT_OUTER_JOIN("facility_operators FO on FO.id = F.operatedbyid");
+    LEFT_OUTER_JOIN("facility_owners FS on FS.facilityid = F.id");
     WHERE("F.geographicZoneId in (select distinct district_id from vw_user_facilities where user_id = " + userId + " )");
-    if (filter.getStatusList() != null) {
       WHERE(facilityStatusFilteredBy("F.active",reportType));
-    }
     if (filter.getZone() != 0) {
       WHERE("( F.geographicZoneId = #{filterCriteria.zone} or GZ.region_id = #{filterCriteria.zone} or GZ.zone_id = #{filterCriteria.zone} or GZ.parent = #{filterCriteria.zone} ) ");
     }
@@ -47,6 +47,9 @@ public class FacilityReportQueryBuilder {
     }
     if(filter.getPeriodEnd()!=null && !filter.getPeriodEnd().trim().isEmpty()){
       WHERE(endDateFilteredBy("ps.startdate",filter.getPeriodEnd().trim()));
+    }
+    if(filter.getFacilityOwner()!=0){
+      WHERE(facilityOwnerIsFilteredBy("FS.ownerid"));
     }
     if (filter.getProgram() != 0) {
       WHERE(programIsFilteredBy("ps.programId"));
