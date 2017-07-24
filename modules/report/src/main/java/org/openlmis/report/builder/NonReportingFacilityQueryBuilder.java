@@ -35,6 +35,7 @@ public class NonReportingFacilityQueryBuilder {
     SELECT_DISTINCT("gz.district_name as location");
     SELECT_DISTINCT("gz.region_name as province");
     SELECT_DISTINCT("p.name as program");
+    SELECT_DISTINCT("period.name period");
     SELECT_DISTINCT("ft.name as facilityType");
     SELECT_DISTINCT("'REPORTED' as reportingStatus");
     SELECT_DISTINCT("r.status as rnrStatus");
@@ -71,6 +72,7 @@ public class NonReportingFacilityQueryBuilder {
     SELECT_DISTINCT("gz.district_name as location");
     SELECT_DISTINCT("gz.region_name as province");
     SELECT_DISTINCT("p.name as program");
+    SELECT_DISTINCT("period.name period");
     SELECT_DISTINCT("ft.name as facilityType");
     SELECT_DISTINCT("'NON_REPORTING' as reportingStatus");
     FROM("facilities");
@@ -109,8 +111,4 @@ public class NonReportingFacilityQueryBuilder {
     }
 
   }
-
-
-
-
 }
