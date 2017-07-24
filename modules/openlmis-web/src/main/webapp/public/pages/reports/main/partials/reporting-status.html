@@ -107,7 +107,7 @@
                 <td data-title="getLocalMessage('label.program')" style="width:30%" sortable="location">{{ row.program }}</td>
                 <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.month')" style="width:30%" sortable="location">{{ row.month || '-' }}</td>
                 <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.year')" style="width:30%" sortable="location">{{ row.year  || '-'}}</td>
-                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.status')" style="width:30%" sortable="location">{{ row.rnrStatus  || '-' }}</td>
+                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.status')" style="width:30%" sortable="location">{{ row.rnrStatus  || row.reportingStatus }}</td>
                 <!-- td ng-show="reporting" data-title="getLocalMessage('label.reported.date')" style="width:30%" sortable="location">{{ row.createdDate | date : 'dd MMM, yyyy'}}</td -->
               </tr>
               </tbody>

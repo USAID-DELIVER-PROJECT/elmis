@@ -37,6 +37,7 @@ public class NonReportingFacilityDetail implements ResultRow {
     private String program;
     private String month;
     private String year;
+    private String period;
 
 
     public String getYear(){
