@@ -21,7 +21,7 @@ CREATE TABLE owners
 (
   id integer NOT NULL DEFAULT nextval('owners_id_seq'::regclass),
   code character varying NOT NULL,
-  text character varying(20),
+  text character varying(50),
   displayorder integer,
   createddate timestamp without time zone DEFAULT now(),
   CONSTRAINT owners_pkey PRIMARY KEY (id),
