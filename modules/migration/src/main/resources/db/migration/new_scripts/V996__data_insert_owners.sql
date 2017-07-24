@@ -1,3 +1,4 @@
+alter TABLE  owners ALTER  COLUMN  text  TYPE  varchar(50);
 delete FROM  owners;
 INSERT INTO owners (id, code, text, displayorder, createddate) VALUES (1, 'ZPCT', ' ZPCT', 1, '2013-06-19 16:02:51.469682');
 INSERT INTO owners (id, code, text, displayorder, createddate) VALUES (2, 'CIDRZ', 'CIDRZ', 2, '2013-06-19 16:03:05.946976');
