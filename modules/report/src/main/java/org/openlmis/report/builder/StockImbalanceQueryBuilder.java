@@ -79,6 +79,7 @@ public class StockImbalanceQueryBuilder {
                 "product, productCode,  \n" +
                 "a.stockInHand as physicalCount,\n" +
                 "a.amc,  \n" +
+                "a.processing_period_name as period, \n"+
                 "a.mos months,  \n" +
                 "a.required, \n" +
                 "a.ordered as orderQuantity, \n" +

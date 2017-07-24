@@ -53,4 +53,6 @@ public class StockImbalanceReport implements ResultRow {
     private String status;
 
     private String supplyingFacility;
+
+    private String period;
 }
