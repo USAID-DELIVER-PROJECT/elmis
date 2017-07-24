@@ -13,7 +13,9 @@ package org.openlmis.core.repository;
 
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.FacilityOperator;
 import org.openlmis.core.domain.FacilityOwner;
+import org.openlmis.core.domain.Owner;
 import org.openlmis.core.repository.mapper.FacilityOwnerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,5 +36,10 @@ public class FacilityOwnerRepository {
 
     public List<FacilityOwner> loadFacilityOwners(Facility facility) {
         return mapper.loadFacilityOwners( facility);
+    }
+
+    public List<Owner> getAllOWners() {
+
+        return mapper.allOwners();
     }
 }

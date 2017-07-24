@@ -19,7 +19,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class FacilityOwner extends BaseModel{
     private String displayName;
-    private FacilityOperator owner;
+    private Owner owner;
     private Long facility;
     private boolean active=true;
     private String description;

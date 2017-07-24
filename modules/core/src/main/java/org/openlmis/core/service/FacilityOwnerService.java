@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.FacilityOperator;
 import org.openlmis.core.domain.FacilityOwner;
+import org.openlmis.core.domain.Owner;
 import org.openlmis.core.repository.FacilityOwnerRepository;
 import org.openlmis.core.repository.FacilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,9 @@ public class FacilityOwnerService {
     public List<FacilityOwner> loadFailityOwnerList(Facility facility) {
         List<FacilityOwner> facilityOwnerList = new ArrayList<>();
         List<FacilityOwner> assignedOwnerList = repository.loadFacilityOwners(facility);
-        List<FacilityOperator> operators = this.getAllOwners();
+        List<Owner> operators = this.getAllOwners();
         facilityOwnerList.addAll(assignedOwnerList);
-        for (FacilityOperator operator : operators) {
+        for (Owner operator : operators) {
             if (!isOwnerAssigned(assignedOwnerList, operator)) {
                 FacilityOwner facilityOwner = new FacilityOwner();
                 facilityOwner.setOwner(operator);
@@ -60,11 +61,11 @@ public class FacilityOwnerService {
 
     }
 
-    public List<FacilityOperator> getAllOwners() {
-        return facilityRepository.getAllOperators();
+    public List<Owner> getAllOwners() {
+        return repository.getAllOWners();
     }
 
-    public boolean isOwnerAssigned(List<FacilityOwner> facilityOwnerList, FacilityOperator operator) {
+    public boolean isOwnerAssigned(List<FacilityOwner> facilityOwnerList, Owner operator) {
         if (facilityOwnerList != null && !facilityOwnerList.isEmpty()) {
             for (FacilityOwner owner : facilityOwnerList) {
                 if (operator.getId() == owner.getId()) {
@@ -78,8 +79,8 @@ public class FacilityOwnerService {
 
     public List<FacilityOwner> getAllFacilityOwners() {
         List<FacilityOwner> facilityOwnerList = new ArrayList<>();
-        List<FacilityOperator> operators = this.getAllOwners();
-        for (FacilityOperator operator : operators) {
+        List<Owner> operators = this.getAllOwners();
+        for (Owner operator : operators) {
             FacilityOwner facilityOwner1 = new FacilityOwner();
             facilityOwner1.setOwner(operator);
             facilityOwner1.setActive(false);

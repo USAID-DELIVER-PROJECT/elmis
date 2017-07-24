@@ -12,6 +12,7 @@ package org.openlmis.core.repository.mapper;
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.FacilityOwner;
+import org.openlmis.core.domain.Owner;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,4 +40,6 @@ public interface FacilityOwnerMapper {
 
 
     List<FacilityOwner> loadFacilityOwners(Facility facility);
+    @Select("SELECT * FROM owners ORDER BY displayOrder")
+    List<Owner> allOwners();
 }
