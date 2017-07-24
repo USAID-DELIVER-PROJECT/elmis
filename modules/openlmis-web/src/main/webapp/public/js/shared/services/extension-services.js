@@ -1286,3 +1286,6 @@ services.factory('StockEventReport', function ($resource) {
 services.factory('LogTagInfo', function ($resource) {
     return $resource('/reports/reportdata/log-tag.json', {}, {});
 });
+services.factory('FacilityOnwerList', function ($resource) {
+    return $resource('/reports/facility_owners.json', {}, {});
+});

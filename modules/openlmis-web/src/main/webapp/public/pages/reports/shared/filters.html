@@ -752,3 +752,13 @@
     </div>
     </div>
 </script>
+<script type="text/ng-template" id="filter-facility-owner-template">
+    <div ng-show="program_filter_visible">
+        <label for="facilityOwner" class="labels" openlmis-message="create.facility.supporteddBy "><span ng-show="requiredFilters.program" class="label-required">*</span></label>
+        <div>
+            <select id="facilityOwner" ui-select2 class="input-large" ng-model="filter.facilityOwner" ng-change="notifyFilterChanged('faiclityOwner-changed');">
+                <option ng-repeat="owner in facilityOwnerList" value="{{ owner.id }}" ng-selected="owner.id == filter.facilityOwner">{{owner.text}}</option>
+            </select>
+        </div>
+    </div>
+</script>
