@@ -558,7 +558,8 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 type: facilityType,
                 requisitionGroup: requisitionGroup,
                 zone: zone,
-                facilityOperator: facilityOperator
+                facilityOperator: facilityOperator,
+                facilityOwner:facilityOwner
             }, function (data) {
                 $scope.facilities = $scope.unshift(data.facilities, filter_caption);
             });
@@ -575,11 +576,12 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 };
 
                 scope.subscribeOnChanged('facility', 'requisition-group', onChange, false);
-                scope.subscribeOnChanged('facility', 'zone', onChange, false);
+                scope.subscribeOnChanged('facility', 'zone', onChange, true);
                 scope.subscribeOnChanged('facility', 'schedule', onChange, false);
                 scope.subscribeOnChanged('facility', 'facility-type', onChange, false);
                 scope.subscribeOnChanged('facility', 'program', onChange, true);
                 scope.subscribeOnChanged('facility', 'facility-operator', onChange, true);
+                scope.subscribeOnChanged('facility', 'faiclity-owner', onChange, true);
             },
             templateUrl: 'filter-facility-template'
         };

@@ -50,6 +50,7 @@ public class NonReportingFacilityQueryBuilder {
     INNER_JOIN("processing_periods period on period.id = #{filterCriteria.period}");
     INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitionGroupId = rgm.requisitionGroupId and ps.programId = rgps.programId");
     INNER_JOIN("requisitions r on r.facilityId = facilities.id and r.programId = ps.programId and r.periodId = period.id and r.emergency = false");
+    LEFT_OUTER_JOIN(" facility_owners fo on fo.facilityid=facilities.id");
     WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
     WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = cast( #{userId} as int4) and program_id = cast( #{filterCriteria.program} as int4) )");
     WHERE("facilities.id in " +
@@ -83,6 +84,7 @@ public class NonReportingFacilityQueryBuilder {
     INNER_JOIN("programs p on p.id = ps.programId");
     INNER_JOIN("processing_periods period on period.id = #{filterCriteria.period}");
     INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitiongroupid = rgm.requisitiongroupid and ps.programid = rgps.programid");
+    LEFT_OUTER_JOIN(" facility_owners fo on fo.facilityid=facilities.id");
     WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
     WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = cast( #{userId} as int4) and program_id = cast( #{filterCriteria.program} as int4) )");
     WHERE("facilities.id not in " +
@@ -109,6 +111,8 @@ public class NonReportingFacilityQueryBuilder {
     if (filterParams.getFacilityType() != 0) {
       WHERE(facilityTypeIsFilteredBy("facilities.typeId"));
     }
-
+    if (filterParams.getFacilityOwner() != 0) {
+      WHERE(facilityOwnerIdFilteredBy("fo.ownerid"));
+    }
   }
 }

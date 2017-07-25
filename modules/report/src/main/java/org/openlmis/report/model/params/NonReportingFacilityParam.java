@@ -35,5 +35,6 @@ public class NonReportingFacilityParam
   private Long zone;
 
   private Long facilityType;
+  private  Long facilityOwner;
 
 }
