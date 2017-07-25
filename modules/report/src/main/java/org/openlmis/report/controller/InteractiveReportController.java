@@ -41,6 +41,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RequestMapping(value = "/reports")
 public class InteractiveReportController extends BaseController {
 
+    public static final String DISTRICT_CONSUMPTION = "districtData";
+    public static final String FACILITY_CONSUMPTION = "facilityData";
     @Autowired
     public ReportManager reportManager;
 
@@ -142,7 +144,7 @@ public class InteractiveReportController extends BaseController {
 
     @RequestMapping(value = "/reportdata/districtConsumption", method = GET, headers = BaseController.ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_DISTRICT_CONSUMPTION_REPORT')")
-    public Pages getDistrictConsumptionData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+    public Map<String, Pages> getDistrictConsumptionData(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                             @RequestParam(value = "max", required = false, defaultValue = "10") int max,
                                             HttpServletRequest request
 
@@ -150,10 +152,21 @@ public class InteractiveReportController extends BaseController {
 
         Report report = reportManager.getReportByKey("district_consumption");
         report.getReportDataProvider().setUserId(loggedInUserId(request));
-        List<DistrictConsumptionReport> districtConsumptionReportList =
-                (List<DistrictConsumptionReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
 
-        return new Pages(page, max, districtConsumptionReportList);
+        DistrictConsumptionReportDataProvider provider = (DistrictConsumptionReportDataProvider)report.getReportDataProvider();
+
+        List<DistrictConsumptionReport> districtConsumptionReportList =
+                (List<DistrictConsumptionReport>)provider.getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        List<DistrictConsumptionByFacilityReport> facilityConsumptionReportList =
+                (List<DistrictConsumptionByFacilityReport>)provider.getFacilityConsumptionReportBody(request.getParameterMap(),
+                        request.getParameterMap(), page, max);
+
+        Map<String, Pages> multiPages = new HashMap<String, Pages>();
+        multiPages.put(DISTRICT_CONSUMPTION, new Pages(page, max, districtConsumptionReportList));
+        multiPages.put(FACILITY_CONSUMPTION, new Pages(page, max, facilityConsumptionReportList));
+
+        return multiPages;
     }
 
     @RequestMapping(value = "/reportdata/aggregateConsumption", method = GET, headers = BaseController.ACCEPT_JSON)
