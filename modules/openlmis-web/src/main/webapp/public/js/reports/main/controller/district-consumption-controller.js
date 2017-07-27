@@ -19,12 +19,20 @@ function DistrictConsumptionReportController($scope,  DistrictConsumptionReport)
       $scope.filter.page = 1;
       $scope.filter.max = 10000;
       DistrictConsumptionReport.get($scope.getSanitizedParameter(), function(data) {
-
-        if(data.pages !== undefined){
-          $scope.data = data.pages.rows;//removeRowsWithNoPercentage(data.pages.rows); //data.pages.rows
+        if(data.districtData.page !== undefined){
+          $scope.data = chainParentChildReport(data);//.districtData.rows;
+            console.log($scope.data);
           $scope.paramsChanged($scope.tableParams);
         }
       });
+    };
+
+    var chainParentChildReport = function(data){
+
+        _.each(data.districtData.rows, function(row){
+            row.facilityConsumption = _.where(data.facilityData.rows, {district_id: row.district_id});
+        });
+        return data.districtData.rows;
     };
 
     var removeRowsWithNoPercentage = function (data){
@@ -41,6 +49,7 @@ function DistrictConsumptionReportController($scope,  DistrictConsumptionReport)
         var url = '/reports/download/district_consumption/' + type +'?' + params;
         window.open(url, '_BLANK');
     };
+
 
 
 }

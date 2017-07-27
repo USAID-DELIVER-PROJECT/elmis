@@ -12,24 +12,17 @@
 
 package org.openlmis.report.model.report;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.report.model.ResultRow;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DistrictConsumptionReport implements ResultRow {
+public class DistrictConsumptionByFacilityReport extends DistrictConsumptionReport  implements ResultRow {
 
-  private String product;
-  private String code;
-  private String level;
-  private String district;
-  private Double consumption;
-  private Double consumptionInPacks;
-  private Double adjustedConsumptionInPacks;
-  private Double dispensed;
-  private Double totalPercentage;
-  private Double district_id;
-
+  private String facility;
 }
