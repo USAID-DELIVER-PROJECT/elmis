@@ -651,7 +651,7 @@ app.directive('productFilter', ['ReportProductsByProgram', 'messageService', '$r
             ReportProductsByProgram.get({
                 programId: program
             }, function (data) {
-                alert(JSON.stringify(data.productList))
+
                 if (attr.tracer && attr.tracer !== '') {
 
                     $scope.products = _.where(data.productList, {tracer: attr.tracer});
