@@ -559,7 +559,7 @@ app.directive('facilityFilter', ['FacilitiesByProgramParams', '$routeParams',
                 requisitionGroup: requisitionGroup,
                 zone: zone,
                 facilityOperator: facilityOperator,
-                facilityOwner:facilityOwner
+                facilityOwner: facilityOwner
             }, function (data) {
                 $scope.facilities = $scope.unshift(data.facilities, filter_caption);
             });
@@ -651,19 +651,23 @@ app.directive('productFilter', ['ReportProductsByProgram', 'messageService', '$r
             ReportProductsByProgram.get({
                 programId: program
             }, function (data) {
-
+                alert(JSON.stringify(data.productList))
                 if (attr.tracer && attr.tracer !== '') {
+
                     $scope.products = _.where(data.productList, {tracer: attr.tracer});
                 } else {
+
                     $scope.products = data.productList;
                 }
-                if (attr.label !== 'name') {
+                if (!utils.isNullOrUndefined(attr.label) && attr.label !== 'name') {
+
                     $scope.products.forEach(function (p) {
                         p.name = p[attr.label];
                     });
                 }
 
                 if (!attr.required) {
+
                     $scope.products.unshift({
                         'name': messageService.get('report.filter.select.indicator.product'),
                         id: -1
@@ -2502,8 +2506,8 @@ app.directive('productMultiWithoutDescriptionAndProgramFilter', ['ReportProducts
     }
 ]);
 
-app.directive('facilityOwnerFilter', ['FacilityOnwerList','messageService',
-    function (FacilityOnwerList,messageService) {
+app.directive('facilityOwnerFilter', ['FacilityOnwerList', 'messageService',
+    function (FacilityOnwerList, messageService) {
         return {
             restrict: 'E',
             require: '^filterContainer',
@@ -2511,8 +2515,8 @@ app.directive('facilityOwnerFilter', ['FacilityOnwerList','messageService',
                 scope.registerRequired('program', attr);
                 scope.program_filter_visible = attr.visible !== undefined ? attr.visible : true;
                 function bindList(list) {
-                     list.unshift({id:0,text:messageService.get('report.filter.select.facility.owner')});
-                    scope.facilityOwnerList =list;
+                    list.unshift({id: 0, text: messageService.get('report.filter.select.facility.owner')});
+                    scope.facilityOwnerList = list;
 
                 }
 

@@ -143,8 +143,8 @@
         <!--end-->
 <script type="text/ng-template" id="filter-product-template">
     <div>
-        <label for="product" class="labels" ><span openlmis-message="label.product"></span><span ng-show="requiredFilters.product" class="label-required">*</span></label><div>
-          <select id="product" ui-select2 class="input-large" ng-model="filter.product" ng-change="notifyFilterChanged('product-changed');">
+        <label for="drpProduct" class="labels" ><span openlmis-message="label.product"></span><span ng-show="requiredFilters.product" class="label-required">*</span></label><div>
+          <select id="drpProduct" ui-select2 class="input-large" ng-model="filter.product" ng-change="notifyFilterChanged('product-changed');">
                  <option ng-repeat="option in products | filter:productCFilter" value="{{ option.id }}" ng-selected="filter.product == option.id">{{ option.name }}</option>
           </select>
         </div>
