@@ -59,10 +59,10 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 	<field name="facilityType" class="java.lang.String"/>
 	<field name="province" class="java.lang.String"/>
 	<field name="program" class="java.lang.String"/>
-	<field name="month" class="java.lang.String"/>
-	<field name="year" class="java.lang.String"/>
 	<field name="reportingStatus" class="java.lang.String"/>
 	<field name="rnrStatus" class="java.lang.String"/>
+	<field name="period" class="java.lang.String"/>
+	<field name="createdDate" class="java.util.Date"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -102,7 +102,7 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="26" splitType="Prevent">
+		<band height="32" splitType="Prevent">
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="772" height="20" backcolor="#F4F4F4" uuid="bbf6a8fa-7df0-4d74-a1c1-767deb62e0e0">
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
@@ -110,32 +110,32 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="772" height="26" forecolor="#FFFFFF" backcolor="#3D9297" uuid="a3f58159-3cb5-4422-8858-64f0b4f9c841">
+				<reportElement mode="Opaque" x="0" y="0" width="772" height="32" forecolor="#FFFFFF" backcolor="#3D9297" uuid="a3f58159-3cb5-4422-8858-64f0b4f9c841">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="0" width="40" height="26" uuid="bd93dec5-6d79-489a-a417-b20d9ad9fe08"/>
+				<reportElement x="0" y="0" width="40" height="32" uuid="bd93dec5-6d79-489a-a417-b20d9ad9fe08"/>
 				<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="40" y="0" width="72" height="26" uuid="dd539b8b-94c9-44ad-82a1-744516ede0fb"/>
+				<reportElement x="40" y="0" width="72" height="32" uuid="dd539b8b-94c9-44ad-82a1-744516ede0fb"/>
 				<textFieldExpression><![CDATA[$R{label.facility.code}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="112" y="0" width="143" height="26" uuid="7d10ecb6-9860-405d-a20b-7195a66e5a35"/>
+				<reportElement x="112" y="0" width="133" height="32" uuid="7d10ecb6-9860-405d-a20b-7195a66e5a35"/>
 				<textFieldExpression><![CDATA[$R{label.facility}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="255" y="0" width="109" height="26" uuid="1b42e11f-198a-4537-a2e7-6a23e560352c"/>
+				<reportElement x="245" y="0" width="87" height="32" uuid="1b42e11f-198a-4537-a2e7-6a23e560352c"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="364" y="0" width="102" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="e268b6f3-c02e-43cb-823b-bbef5370279b"/>
+				<reportElement mode="Transparent" x="332" y="0" width="59" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="e268b6f3-c02e-43cb-823b-bbef5370279b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -143,7 +143,7 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				<textFieldExpression><![CDATA[$R{label.province}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="466" y="0" width="88" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="aeada5ce-4e93-46e8-b533-effeee34485a"/>
+				<reportElement mode="Transparent" x="451" y="0" width="86" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="aeada5ce-4e93-46e8-b533-effeee34485a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -151,15 +151,15 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				<textFieldExpression><![CDATA[$R{label.program}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="622" y="0" width="50" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="8a35ebf3-7667-4510-9bfe-9e601dd8920c"/>
+				<reportElement mode="Transparent" x="594" y="0" width="78" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="8a35ebf3-7667-4510-9bfe-9e601dd8920c"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$R{label.year}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{label.date.report.received}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="672" y="0" width="100" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="655b3344-7710-46a4-807b-0e4eface5ff6"/>
+				<reportElement mode="Transparent" x="672" y="0" width="100" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="655b3344-7710-46a4-807b-0e4eface5ff6"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -167,21 +167,29 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				<textFieldExpression><![CDATA[$R{label.status}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="554" y="0" width="68" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="34855237-577e-4855-9c8c-35455750d400"/>
+				<reportElement mode="Transparent" x="537" y="0" width="57" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="34855237-577e-4855-9c8c-35455750d400"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$R{label.month}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{label.period}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="391" y="0" width="60" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="18806adb-d12b-4192-9e1f-7e805f31d6a9"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.district}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="40" y="0" width="72" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="737ff77e-08a6-46fa-87c6-90dde8a147f4"/>
+				<reportElement mode="Transparent" x="40" y="0" width="72" height="30" forecolor="#000000" backcolor="#FFFFFF" uuid="737ff77e-08a6-46fa-87c6-90dde8a147f4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -189,7 +197,7 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="112" y="0" width="143" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="2ed64d73-ed87-4e35-a5ad-0d4f0d7d977a">
+				<reportElement mode="Transparent" x="112" y="0" width="133" height="30" forecolor="#000000" backcolor="#FFFFFF" uuid="2ed64d73-ed87-4e35-a5ad-0d4f0d7d977a">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -200,7 +208,7 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="255" y="0" width="109" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="99773021-35ed-4897-bb47-a7a2e95ee643">
+				<reportElement mode="Transparent" x="245" y="0" width="87" height="30" forecolor="#000000" backcolor="#FFFFFF" uuid="99773021-35ed-4897-bb47-a7a2e95ee643">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -213,7 +221,7 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="364" y="0" width="102" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="56fa579b-f8be-4f08-bcb3-14f443e36267">
+				<reportElement mode="Transparent" x="332" y="0" width="59" height="30" forecolor="#000000" backcolor="#FFFFFF" uuid="56fa579b-f8be-4f08-bcb3-14f443e36267">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
@@ -221,10 +229,10 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{province}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="19" width="772" height="1" forecolor="#3D9297" uuid="8acf28da-0482-4ce0-b195-ddb1d5d99a5d">
+				<reportElement x="0" y="28" width="772" height="1" forecolor="#3D9297" uuid="8acf28da-0482-4ce0-b195-ddb1d5d99a5d">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
@@ -234,7 +242,7 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				</graphicElement>
 			</line>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="0" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="b3bdd5ec-3469-4195-ad41-352e168b0ce2"/>
+				<reportElement mode="Transparent" x="0" y="0" width="40" height="30" forecolor="#000000" backcolor="#FFFFFF" uuid="b3bdd5ec-3469-4195-ad41-352e168b0ce2"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single" leftIndent="5"/>
@@ -242,21 +250,33 @@ INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.p
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="466" y="0" width="88" height="20" uuid="2272c411-0906-483c-9221-b1104e0532b7"/>
+				<reportElement x="451" y="0" width="86" height="30" uuid="2272c411-0906-483c-9221-b1104e0532b7"/>
 				<textFieldExpression><![CDATA[$F{program}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="622" y="0" width="50" height="20" uuid="64def802-a8eb-4757-af4d-ab1c839a8669"/>
-				<textFieldExpression><![CDATA[$F{reportingStatus}.equals('REPORTED') ? $F{year} : '-']]></textFieldExpression>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="594" y="0" width="78" height="30" uuid="64def802-a8eb-4757-af4d-ab1c839a8669"/>
+				<textFieldExpression><![CDATA[$F{reportingStatus}.equals('REPORTED') ? $F{createdDate} : '-']]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="554" y="0" width="68" height="20" uuid="41fddc9d-19c1-437d-9096-a33148daf972"/>
+				<reportElement x="537" y="0" width="57" height="30" uuid="41fddc9d-19c1-437d-9096-a33148daf972"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{reportingStatus}.equals('REPORTED') ? $F{month} : '-']]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{period}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="672" y="0" width="100" height="20" uuid="f02cb463-d7f7-4ec0-8270-e9b893b84e3a"/>
+				<reportElement x="672" y="0" width="100" height="30" uuid="f02cb463-d7f7-4ec0-8270-e9b893b84e3a"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{reportingStatus}.equals('REPORTED') ? $F{rnrStatus} : $F{reportingStatus}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="391" y="0" width="60" height="28" forecolor="#000000" backcolor="#FFFFFF" uuid="5cffd7f1-db04-434e-85b7-8cba3cbfbcc9">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
