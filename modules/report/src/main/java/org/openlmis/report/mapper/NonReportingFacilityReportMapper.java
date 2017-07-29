@@ -14,10 +14,12 @@ package org.openlmis.report.mapper;
 
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.NonReportingFacilityQueryBuilder;
+import org.openlmis.report.model.dto.ProcessingPeriod;
 import org.openlmis.report.model.params.NonReportingFacilityParam;
 import org.openlmis.report.model.report.NonReportingFacilityDetail;
 import org.springframework.stereotype.Repository;
@@ -41,5 +43,8 @@ public interface NonReportingFacilityReportMapper {
                                              @Param("RowBounds") RowBounds rowBounds,
                                              @Param("userId") Long userId
   );
-
+  @Select("SELECT  * from processing_periods p\n" +
+          "WHERE p.startdate >=(select pp.startdate FROM  processing_periods pp where pp.id= #{filterCriteria.period})\n" +
+          "and  p.startdate <=(select pp.startdate FROM  processing_periods pp where pp.id= #{filterCriteria.periodEnd})")
+  List<ProcessingPeriod> getReportingPeriodList(@Param(value = "filterCriteria") NonReportingFacilityParam params);
 }

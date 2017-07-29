@@ -15,7 +15,6 @@ function NonReportingController($scope, NonReportingFacilities) {
     // clear old data if there was any
     $scope.data = $scope.datarows = [];
     $scope.filter.max = 10000;
-
     NonReportingFacilities.get($scope.getSanitizedParameter(), function (data) {
       if (data.pages !== undefined && data.pages.rows !== undefined) {
         $scope.summaries = data.pages.rows[0].summary;

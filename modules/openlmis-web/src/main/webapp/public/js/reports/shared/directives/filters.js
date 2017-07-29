@@ -2529,3 +2529,40 @@ app.directive('facilityOwnerFilter', ['FacilityOnwerList', 'messageService',
         };
     }
 ]);
+app.directive('periodSessionByYearFilter', ['ReportPeriods', 'ReportPeriodsByYear', '$routeParams','messageService',
+    function (ReportPeriods, ReportPeriodsByYear, $routeParams,messageService) {
+        return {
+            restrict: 'E',
+            scope: {
+                period: '=period',
+                year: '=year',
+                label:'=label',
+                onChange: '&'
+
+            },
+            controller: function ($scope) {
+                $scope.$watch('year', function (newValues, oldValues) {
+                    $scope.periodLabel = messageService.get($scope.label);
+                    ReportPeriodsByYear.get({
+                        year: $scope.year
+                    }, function (data) {
+                        var list=data.periods;
+                        list.unshift({id: 0, text: messageService.get('report.filter.select.period')});
+                        $scope.periods =list;
+
+                    });
+                });
+                $scope.$watch('period', function (newValues, oldValues){
+                    $scope.$parent.OnFilterChanged();
+                    $scope.onChange();
+                });
+    },
+        link: function (scope, elm, attr) {
+
+        },
+        templateUrl: 'filter-period-session-template'
+    };
+
+}
+])
+;
