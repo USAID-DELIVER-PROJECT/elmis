@@ -51,9 +51,17 @@
             {{
             row.productCode}}
           </td>
-          <td data-title="getLocalMessage('menu.report.consumption')" style="min-width:150px" sortable="consumption">
+          <td data-title="getLocalMessage('label.product.name')" style="min-width:150px" sortable="product">
+            {{
+            row.product}}
+          </td>
+          <td data-title="getLocalMessage('label.reported.consumption')" style="min-width:150px" sortable="consumption">
             {{
             row.consumption | number }}
+          </td>
+          <td data-title="getLocalMessage('label.period')" style="min-width:150px" sortable="period">
+            {{
+            row.period  }}
           </td>
           <td data-title="getLocalMessage('label.adjustments')" style="min-width:150px" sortable="adjustment">
             {{
