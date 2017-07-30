@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_imbalance_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="1.1289478601075549"/>
+	<property name="ireport.zoom" value="2.6620000000000017"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.1" value="groupHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.group.1" value="GroupBySupplyingFacility"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="groupHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.group.1" value="GroupBySupplyingFacility"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
 	</parameter>
@@ -20,13 +24,68 @@
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT supplyingfacility,  facility,'aa' districtName, 'zz' as zoneName,  product,  stockinhand physicalCount,  amc,
-mos months,  required orderQuantity, CASE WHEN status = 'SO' THEN  'Stocked Out' WHEN status ='US' then
-'Under Stocked' WHEN status ='OS' then  'Over Stocked' END AS status, 'asdf' as productCode, 'fcode' as facilityCode, 'rname' as regionName,
-'asdf' as period
-        FROM vw_stock_status
-        WHERE status <> 'SP'
-        ORDER BY supplyingfacility,facility limit 50]]>
+		<![CDATA[SELECT
+  supplyingFacility,
+  facilityTypeName facilityType,
+  facility,
+  facilityCode,
+  a.district_name districtName,
+  a.region_name as regionName,
+  a.zone_name zoneName,
+  product, productCode,
+  a.stockInHand as physicalCount,
+  a.amc,
+  a.processing_period_name as period,
+  a.mos months,
+  a.required,
+  a.ordered as orderQuantity,
+  a.status
+
+FROM (
+       SELECT  gz.region_name as supplyingfacility, gz.region_name, gz.district_name, gz.zone_name, f.code as facilitycode,
+         li.productcode,   f.name as facility,   li.product as product,   ft.name facilitytypename,
+         gz.district_name as location,   pp.name as processing_period_name,  li.stockinhand,
+         li.stockoutdays stockoutdays,    to_char(pp.startdate, 'Mon') asmonth,
+         extract(year from pp.startdate) as year,    pg.code as program,
+         CASE
+         -- stocked out when stockinhand
+         WHEN li.stockinhand = 0 THEN 'SO'::text
+         ELSE
+           CASE WHEN li.amc > 0 AND li.stockinhand > 0 THEN
+             CASE
+             WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) <= fap.minmonthsofstock THEN 'US'::text
+             WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) >= fap.minmonthsofstock::numeric  AND round((li.stockinhand::decimal / li.amc)::numeric, 2) <= fap.maxmonthsofstock::numeric THEN 'SP'::text
+             WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) > fap.maxmonthsofstock THEN 'OS'::text
+             END
+           ELSE 'UK'::text END
+         END AS status,
+         CASE
+         WHEN COALESCE(li.amc, 0) = 0 THEN 0::numeric
+         ELSE round((li.stockinhand::decimal / li.amc)::numeric, 1)
+         END AS mos,
+         li.amc,
+         COALESCE(
+                   CASE
+                   WHEN (COALESCE(li.amc, 0) * ft.nominalmaxmonth - li.stockinhand) < 0 THEN 0
+                   ELSE COALESCE(li.amc, 0) * ft.nominalmaxmonth - li.stockinhand
+                   END, 0) AS required,
+         li.quantityapproved AS ordered
+
+       FROM  processing_periods pp
+         JOIN requisitions r ON pp. ID = r.periodid
+         JOIN requisition_line_items li ON li.rnrid = r. ID    JOIN facilities f on f.id = r.facilityId
+         JOIN facility_types ft on ft.id = f.typeid  JOIN products p on p.code = li.productcode
+         JOIN vw_districts gz on gz.district_id = f.geographiczoneid
+         JOIN programs pg on pg.id = r.programid
+         join program_products pgp on r.programid = pgp.programid and p.id = pgp.productid
+         JOIN facility_approved_products fap on ft.id = fap.facilitytypeid and fap.programproductid=pgp.id
+
+       WHERE  li.skipped = false
+              AND (li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0)
+              AND (li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0)
+              AND status in ( 'IN_APPROVAL', 'RELEASED', 'APPROVED', 'RELEASED_NO_ORDER' ) AND  r.periodId  = 117 AND r.programId = 3 AND f.id in (select facility_id from vw_user_facilities where user_id = 53 and program_id = 3)  AND (gz.zone_id = 103 or gz.parent = 103 or gz.region_id = 103 or gz.district_id = 103) and r.emergency in ('f')
+              AND li.stockinhand IS NOT NULL AND li.skipped = false )a
+WHERE status in ('NS','OS') ORDER BY supplyingFacility asc, facility asc, product asc]]>
 	</queryString>
 	<field name="supplyingFacility" class="java.lang.String"/>
 	<field name="facility" class="java.lang.String"/>
@@ -45,7 +104,7 @@ mos months,  required orderQuantity, CASE WHEN status = 'SO' THEN  'Stocked Out'
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
-	<group name="GroupBySupplyingFacility" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+	<group name="GroupBySupplyingFacility" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{supplyingFacility}]]></groupExpression>
 		<groupHeader>
 			<band height="55">
