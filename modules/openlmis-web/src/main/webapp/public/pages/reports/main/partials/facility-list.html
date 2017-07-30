@@ -44,7 +44,6 @@
                             </filter-container>
 
 
-
                         </div>
                     </form>
                     <div style="margin:2px !important;font-size:10px;" ng-show="perioderror" class="row">
@@ -73,7 +72,8 @@
                                 </div>
                                 <div class="form-cell span1">
                                     <div class="checkbox">
-                                        <label for="AC"><input ng-checked="true" id="AC" class="checkbox" type="checkbox"
+                                        <label for="AC"><input ng-checked="true" id="AC" class="checkbox"
+                                                               type="checkbox"
                                                                value="AC"
                                                                ng-change="onReportTypeCheckboxChanged('AC')"
                                                                ng-model="reportTypes.AC">
@@ -91,48 +91,69 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                    <table client-side-sort-pagination class="table table-bordered"
-                           ng-show="data == undefined || data.length == 0">
-                        <tr>
-                            <td>No data to show under selected filters</td>
-                        </tr>
-                    </table>
-                    <div ng-show="datarows.length > 0">
-                        <div ng-if="datarows.length > 0" top-right-table-summary></div>
-                        <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right"
-                               ng-table="tableParams">
-                            <tbody>
-                            <tr ng-repeat="row in datarows">
-                                <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
-                                <td data-title="getLocalMessage('label.facility.code')" style="width:80px"
-                                    sortable="code">{{ row.code }}
-                                </td>
-                                <td data-title="getLocalMessage('label.facility.name')" style="width:150px"
-                                    sortable="facilityName">{{ row.facilityName }}
-                                </td>
-                                <td data-title="getLocalMessage('label.facility.type')" style="width:120px"
-                                    sortable="facilityType">{{ row.facilityType }}
-                                </td>
-                                <td data-title="getLocalMessage('label.district')" style="width:80px" sortable="region">
-                                    {{ row.region }}
-                                </td>
-                                <td data-title="getLocalMessage('label.phone')" style="width:100px"
-                                    sortable="phoneNumber">{{ row.phoneNumber }}
-                                </td>
-                                <td data-title="getLocalMessage('label.owner')" style="width:100px" sortable="owner">{{
-                                    row.owner }}
-                                </td>
-                                <td data-title="getLocalMessage('label.active')" style="width:100px" sortable="active">
-                                    {{ row.active == true?'Yes':'No' }}
-                                </td>
+                        </div>
+                        <table client-side-sort-pagination class="table table-bordered"
+                               ng-show="data == undefined || data.length == 0">
+                            <tr>
+                                <td>No data to show under selected filters</td>
                             </tr>
-                            </tbody>
                         </table>
+                        <div ng-show="datarows.length > 0">
+                            <div ng-if="datarows.length > 0" top-right-table-summary></div>
+                            <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right"
+                                   ng-table="tableParams">
+
+                                <tbody>
+                                <tr ng-repeat-start="row in datarows">
+                                    <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
+                                    <td style="width:80px" data-title="getLocalMessage('label.facility.code')"
+                                        sortable="code">{{ row.code }}
+                                    </td>
+                                    <td style="width:150px" data-title="getLocalMessage('label.facility.name')"
+                                        sortable="facilityName">{{ row.facilityName }}
+                                    </td>
+                                    <td style="width:120px" data-title="getLocalMessage('label.facility.type')"
+                                        sortable="facilityType">{{ row.facilityType }}
+                                    </td>
+                                    <td style="width:80px" data-title="getLocalMessage('label.district')"
+                                        sortable="region">
+                                        {{ row.region }}
+                                    </td>
+                                    <td style="width:100px" data-title="getLocalMessage('label.phone')"
+                                        sortable="phoneNumber">{{ row.phoneNumber }}
+                                    </td>
+                                    <td style="width:100px" data-title="getLocalMessage('label.owner')"
+                                        sortable="owner">{{
+                                        row.owner }}
+                                    </td>
+                                    <td style="width:100px" data-title="getLocalMessage('label.active')"
+                                        sortable="active">
+                                        {{ row.active == true?'Yes':'No' }}
+                                    </td>
+
+                                </tr>
+                                <tr style="background-color: #388C8F;" ng-show="row.facilityProgramReportList.length>0">
+
+                                    <td style="font-weight: bolder;text-align: left; padding-left: 135px;background-color: #388C8F;"  colspan="6">Program Name</td>
+                                    <td  style="background-color: #388C8F; font-weight: bolder;text-align: left" colspan="2">Start Date</td>
+                                </tr>
+                                <tr ng-repeat-end ng-repeat="p in row.facilityProgramReportList">
+
+                                    <td style="padding-left: 150px" colspan="6" data-title="getLocalMessage('label.phone')"
+                                    >{{ p.name }}
+                                    </td>
+                                    <td style="padding-left: 35px" colspan="2" data-title="getLocalMessage('label.phone')"
+                                    >{{ p.startDate|date:'MM/dd/yyyy' }}
+                                    </td>
+                                </tr>
+
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-                    </div>
         </div>
     </div>
 </div>

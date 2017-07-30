@@ -11,11 +11,10 @@
  */
 function ListFacilitiesController($scope, FacilityList, $routeParams) {
     $scope.perioderror = "";
-    $scope.allReportType=false;
-    $scope.OnFilterChanged = function(){
-        FacilityList.get($scope.getSanitizedParameter(), function(data) {
-            $scope.data = data.pages.rows;
-
+    $scope.allReportType = false;
+    $scope.OnFilterChanged = function () {
+        FacilityList.get($scope.getSanitizedParameter(), function (data) {
+            $scope.data = data.pages.rows;            
             $scope.paramsChanged($scope.tableParams);
         });
     };
@@ -31,16 +30,14 @@ function ListFacilitiesController($scope, FacilityList, $routeParams) {
             $scope.reportTypes[reportType] = true;
         });
 
-    }else{
+    } else {
         $scope.reportTypes = {};
         $scope.reportTypes.AC = true;
     }
-    ( function init(){
+    (function init() {
 
 
-        $routeParams.statusList="AC";
-
-
+        $routeParams.statusList = "AC";
 
 
     })();
@@ -74,16 +71,17 @@ function ListFacilitiesController($scope, FacilityList, $routeParams) {
         } else {
             $scope.filter.statusList = reportType;
         }
-        return reportType!==null?reportType:"";
+        return reportType !== null ? reportType : "";
     }
-    $scope.exportReport   = function (type){
-      var params = jQuery.param($scope.getSanitizedParameter());
-      var url = '/reports/download/facility-list/' + type + '?' + params ;
-      if(type === "mailing-list"){
-        url = '/reports/download/facility_mailing_list/pdf?' +  params ;
-      }
 
-      window.open(url, '_BLANK');
+    $scope.exportReport = function (type) {
+        var params = jQuery.param($scope.getSanitizedParameter());
+        var url = '/reports/download/facility-list/' + type + '?' + params;
+        if (type === "mailing-list") {
+            url = '/reports/download/facility_mailing_list/pdf?' + params;
+        }
+
+        window.open(url, '_BLANK');
     };
 
 
