@@ -96,19 +96,19 @@
             <table ng-show="datarows.length > 0" class="table-bordered table table-striped" ng-table="tableParams">
               <tbody>
               <tr ng-repeat="row in datarows">
-                <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
-                <td data-title="getLocalMessage('label.facility.code')" style="width:50px" sortable="code">{{ row.code }}
+                <td data-title="'#'" class="number" >{{ row.no }}</td>
+                <td data-title="getLocalMessage('label.facility.code')" sortable="code">{{ row.code }}
                 </td>
-                <td data-title="getLocalMessage('label.facility.name')" style="width:30%" sortable="name">{{ row.name }}
+                <td data-title="getLocalMessage('label.facility.name')"  sortable="name">{{ row.name }}
                 </td>
-                <td data-title="getLocalMessage('label.facility.type')" style="width:30%" sortable="facilityType">{{  row.facilityType }}
+                <td data-title="getLocalMessage('label.facility.type')"  sortable="facilityType">{{  row.facilityType }}
                 </td>
-                <td data-title="getLocalMessage('label.district')" style="width:30%" sortable="location">{{ row.location }}</td>
-                <td data-title="getLocalMessage('label.province')" style="width:30%" sortable="location">{{ row.province }}</td>
-                <td data-title="getLocalMessage('label.program')" style="width:30%" sortable="location">{{ row.program }}</td>
-                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.month')" style="width:30%" sortable="location">{{ row.month || '-' }}</td>
-                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.year')" style="width:30%" sortable="location">{{ row.year  || '-'}}</td>
-                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.status')" style="width:30%" sortable="location">{{ row.rnrStatus  || row.reportingStatus }}</td>
+                <td data-title="getLocalMessage('label.district')" sortable="location">{{ row.location }}</td>
+                <td data-title="getLocalMessage('label.province')"  sortable="location">{{ row.province }}</td>
+                <td data-title="getLocalMessage('label.program')"  sortable="location">{{ row.program }}</td>
+                <td  data-title="getLocalMessage('label.period')" sortable="location">{{ row.period || '-' }}</td>
+                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.date.report.received')"  sortable="location">{{ (row.createdDate | date)  || '-'}}</td>
+                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.status')"  sortable="location">{{ row.rnrStatus  || row.reportingStatus }}</td>
                 <!-- td ng-show="reporting" data-title="getLocalMessage('label.reported.date')" style="width:30%" sortable="location">{{ row.createdDate | date : 'dd MMM, yyyy'}}</td -->
               </tr>
               </tbody>

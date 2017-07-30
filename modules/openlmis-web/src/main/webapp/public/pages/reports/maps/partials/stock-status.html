@@ -81,10 +81,10 @@
 
                         <td style="width:180px !important;" class="number">
                             <div class="progress" style="margin-bottom:0px;width:90%">
-                                <div class="bar bar-danger leaflet-clickable" ng-click="StockedOutFacilities(feature, this)" style="width: {{((feature.stockedout / feature.period) * 100).toFixed(2)}}%">{{feature.stockedout}}</div>
-                                <div class="bar bar-warning leaflet-clickable" ng-click="UnderStockedFacilities(feature, this)" style="width: {{((feature.understocked / feature.period) * 100).toFixed(2)}}%">{{feature.understocked}}</div>
-                                <div class="bar bar-info leaflet-clickable" ng-click="OverStockedFacilities(feature, this)" style="width: {{((feature.overstocked / feature.period) * 100).toFixed(2)}}%">{{feature.overstocked}}</div>
-                                <div class="bar bar-success leaflet-clickable" ng-click="AdequatelyStockedFacilities(feature, this)" style="width: {{(100 - (((feature.stockedout + feature.understocked + feature.overstocked)/ feature.period) * 100).toFixed(2))}}%">{{ (feature.period - (feature.stockedout + feature.understocked + feature.overstocked)) }}</div>
+                                <div class="bar bar-danger leaflet-clickable" ng-click="StockedOutFacilities(feature, this)" style="width: {{((feature.stockedout / feature.period) * 100)}}%">{{feature.stockedout}}</div>
+                                <div class="bar bar-warning leaflet-clickable" ng-click="UnderStockedFacilities(feature, this)" style="width: {{((feature.understocked / feature.period) * 100)}}%">{{feature.understocked}}</div>
+                                <div class="bar bar-info leaflet-clickable" ng-click="OverStockedFacilities(feature, this)" style="width: {{((feature.overstocked / feature.period) * 100)}}%">{{feature.overstocked}}</div>
+                                <div class="bar bar-success leaflet-clickable" ng-click="AdequatelyStockedFacilities(feature, this)" style="width: {{(100 - (((feature.stockedout + feature.understocked + feature.overstocked)/ feature.period) * 100))}}%">{{ (feature.period - (feature.stockedout + feature.understocked + feature.overstocked)) }}</div>
                             </div>
                         </td>
                         <td style="width:70px !important;" class="number">{{((feature.stockedout / feature.period) * 100).toFixed(0)}} %</td>
@@ -124,10 +124,10 @@
                     <td style="width:70px !important;" class="number">{{product.reported}}</td>
                     <td style="width:180px !important;" class="number">
                         <div class="progress" style="margin-bottom:0px;width:180px;">
-                            <div class="bar bar-danger leaflet-clickable" ng-click="StockedOutProducts(product,this);" style="width: {{((product.stockedout / product.reported) * 100).toFixed(2)}}%">{{product.stockedout}}</div>
-                            <div class="bar bar-warning leaflet-clickable" ng-click="UnderStockedProducts(product, this)" style="width: {{((product.understocked / product.reported) * 100).toFixed(2)}}%">{{product.understocked}}</div>
-                            <div class="bar bar-info leaflet-clickable" ng-click="OverStockedProducts(product, this)" style="width: {{((product.overstocked / product.reported) * 100).toFixed(2)}}%">{{product.overstocked}}</div>
-                            <div class="bar bar-success leaflet-clickable" ng-click="AdequatelyStockedProducts(product, this)" style="width: {{(100 - (((product.stockedout + product.understocked + product.overstocked)/ product.reported) * 100).toFixed(2))}}%">{{ (product.reported - (product.stockedout + product.understocked + product.overstocked)) }}</div>
+                            <div class="bar bar-danger leaflet-clickable" ng-click="StockedOutProducts(product,this);" style="width: {{((product.stockedout / product.reported) * 100)}}%">{{product.stockedout}}</div>
+                            <div class="bar bar-warning leaflet-clickable" ng-click="UnderStockedProducts(product, this)" style="width: {{((product.understocked / product.reported) * 100)}}%">{{product.understocked}}</div>
+                            <div class="bar bar-info leaflet-clickable" ng-click="OverStockedProducts(product, this)" style="width: {{((product.overstocked / product.reported) * 100)}}%">{{product.overstocked}}</div>
+                            <div class="bar bar-success leaflet-clickable" ng-click="AdequatelyStockedProducts(product, this)" style="width: {{(100 - (((product.stockedout + product.understocked + product.overstocked)/ product.reported) * 100))}}%">{{ (product.reported - (product.stockedout + product.understocked + product.overstocked)) }}</div>
                         </div>
                     </td>
                     <td style="width: 91px !important;" class="number">{{((product.stockedout / product.reported) * 100).toFixed(0)}} %</td>
@@ -243,7 +243,7 @@
                 <td>{{ row.product }}</td>
                 <td>{{ row.amc }}</td>
                 <td>{{ row.stockinhand }}</td>
-                <td>{{ row.mos }}</td>
+                <td>{{ row.mos | number:1}}</td>
                 <td><a ng-href="/public/pages/logistics/rnr/index.html#/requisition/{{ row.rnrid }}/1?page=1&supplyType=fullSupply" onclick="popUp(this.href); return false;" target="newWin" openlmis-message="button.view.rnr"></a></td>
                 <td><a ng-href="/public/pages/reports/stock-imbalance/index.html#/list?max=10000&page=1&schedule=2&zone={{ filter.zone }}&facilityType=0&facility=0&productCategory=0&product={{ filter.product }}&year={{ filter.year }}&period={{ filter.period }}&program={{ filter.program }}" onclick="popUp(this.href); return false;" target="newWin" openlmis-message="button.view.stock.imbalance.report"></a></td>
             </tr>
@@ -355,7 +355,7 @@
                 <td>{{ row.product }}</td>
                 <td>{{ row.amc }}</td>
                 <td>{{ row.stockinhand }}</td>
-                <td>{{ row.mos }}</td>
+                <td>{{ row.mos | number:1}}</td>
                 <td><a ng-href="/public/pages/logistics/rnr/indexpop.html#/requisition/{{ row.rnrid }}/1?page=1&supplyType=fullSupply" onclick="popUp(this.href); return false;" target="newWin" openlmis-message="button.view.rnr"></a></td>
                 <td><a ng-href="/public/pages/reports/main/index.html#/stock-imbalance?max=10000&page=1&schedule=2&zone={{ filter.zone }}&facilityType=0&facility=0&productCategory=0&product={{ filter.product }}&year={{ filter.year }}&period={{ filter.period }}&program={{ filter.program }}" onclick="popUp(this.href); return false;" target="newWin" openlmis-message="button.view.stock.imbalance.report"></a></td>
 

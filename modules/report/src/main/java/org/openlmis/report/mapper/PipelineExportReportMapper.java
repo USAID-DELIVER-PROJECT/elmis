@@ -29,16 +29,18 @@ import java.util.Map;
 @Repository
 public interface PipelineExportReportMapper {
 
-  @Select("select productCode, sum(COALESCE(quantityDispensed,0)) as consumption, sum(COALESCE(totalLossesAndAdjustments,0)) as adjustment " +
+  @Select("select productCode, product, pp.name period, sum(COALESCE(quantityDispensed,0)) as consumption, sum(COALESCE(totalLossesAndAdjustments,0)) as adjustment " +
           " from requisition_line_items li \n" +
           " JOIN requisitions r on r.id = li.rnrid " +
+          " JOIN processing_periods pp on r.periodid = pp.id " +
           " JOIN facilities f on r.facilityId = f.id \n" +
           " JOIN vw_districts d on d.district_id = f.geographicZoneId \n" +
           " where r.programid = #{filterCriteria.program} " +
           " AND r.periodid = #{filterCriteria.period} " +
           " AND r.status in ( 'IN_APPROVAL', 'RELEASED', 'APPROVED', 'RELEASED_NO_ORDER' ) " +
-          " AND r.facilityId in (select facility_id from vw_user_facilities where user_id = #{filterCriteria.userId} and program_id = #{filterCriteria.program}) " +
-      " GROUP BY productCode")
+          " AND r.facilityId in (select facility_id from vw_user_facilities where user_id = #{filterCriteria.userId} and program_id = #{filterCriteria.program})" +
+          " GROUP BY productCode, product, pp.name" +
+          " order by product")
   @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
   List<PipelineConsumptionLineItem> getReport(@Param("filterCriteria") PipelineExportParams filterCriteria,
                                               @Param("SortCriteria") Map<String, String[]> sortCriteria,
