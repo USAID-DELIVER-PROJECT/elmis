@@ -106,7 +106,7 @@ public class StockImbalanceQueryBuilder {
                 "END AS status,\n" +
                 "CASE\n" +
                 "    WHEN COALESCE(li.amc, 0) = 0 THEN 0::numeric\n" +
-                "    ELSE round((li.stockinhand::decimal / li.amc)::numeric, 2)\n" +
+                "    ELSE round((li.stockinhand::decimal / li.amc)::numeric, 1)\n" +
                 "END AS mos,\n" +
                 "li.amc,\n" +
                 "COALESCE(\n" +
@@ -118,7 +118,8 @@ public class StockImbalanceQueryBuilder {
                 "\n" +
                 "FROM  processing_periods pp  \n" +
                 "  JOIN requisitions r ON pp. ID = r.periodid  \n" +
-                "  JOIN requisition_line_items li ON li.rnrid = r. ID  JOIN facilities f on f.id = r.facilityId  \n" +
+                "  JOIN requisition_line_items li ON li.rnrid = r. ID  " +
+                "  JOIN facilities f on f.id = r.facilityId  \n" +
                 "  JOIN facility_types ft on ft.id = f.typeid  JOIN products p on p.code = li.productcode \n" +
                 "  JOIN vw_districts gz on gz.district_id = f.geographiczoneid \n" +
                 "  JOIN programs pg on pg.id = r.programid\n" +
