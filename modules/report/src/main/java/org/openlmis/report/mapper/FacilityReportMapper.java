@@ -26,40 +26,6 @@ import java.util.List;
 @Repository
 public interface FacilityReportMapper {
 
-
-    @SelectProvider(type=FacilityReportQueryBuilder.class, method="getQuery")
-    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
-    @Results(value = {
-            @Result(column="id", property="id"),
-            @Result(column="code", property="code"),
-            @Result(column="name", property="facilityName"),
-            @Result(column="active", property="active"),
-            @Result(column="facilityType", property="facilityType"),
-            @Result(column="region", property="region"),
-            @Result(column="owner", property="owner"),
-            @Result(column = "gpsCoordinates", property = "gpsCoordinates"),
-            @Result(column="phoneNumber", property="phoneNumber"),
-            @Result(column="fax", property="fax")
-    })
-    List<FacilityReport> SelectFilteredSortedPagedFacilities(
-            @Param("filterCriteria") FacilityReportParam filterCriteria,
-            @Param("userId") Long userId
-    );
-
-    @SelectProvider(type=FacilityReportQueryBuilder.class, method="getProgramSupportedQuery")
-    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
-    @Results(value = {
-            @Result(column="id", property="id"),
-            @Result(column="code", property="code"),
-            @Result(column="name", property="name"),
-            @Result(column="active", property="active"),
-            @Result(column="programid", property="programId"),
-            @Result(column="startdate", property="startDate")
-    })
-    List<FacilityProgramReport> FacilityProgramSupportedList(
-            @Param("filterCriteria") FacilityReportParam filterCriteria,
-            @Param("userId") Long userId
-    );
     @SelectProvider(type=FacilityReportQueryBuilder.class, method="getExportQuery")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
     @Results(value = {
@@ -78,9 +44,10 @@ public interface FacilityReportMapper {
             @Result(column="programname", property="name"),
             @Result(column="activeprogram", property="activeProgram"),
             @Result(column="programid", property="programId"),
-            @Result(column="startdate", property="startDate")
+            @Result(column="startdate", property="startDate"),
+            @Result(column="province", property="province")
     })
-    List<FacilityReport> SelectFilteredSortedPagedFacilitiesForExport(
+    List<FacilityReport> SelectFilteredSortedPagedFacilities(
             @Param("filterCriteria") FacilityReportParam filterCriteria,
             @Param("userId") Long userId
     );

@@ -40,24 +40,16 @@ public class FacilityReportDataProvider extends ReportDataProvider {
     @Override
     public List<? extends ResultRow> getResultSet  (Map<String, String[]> filterCriteria) {
         FacilityReportParam facilityReportParam = getReportFilterData(filterCriteria);
-        return facilityReportMapper.SelectFilteredSortedPagedFacilitiesForExport(facilityReportParam, this.getUserId());
+        return facilityReportMapper.SelectFilteredSortedPagedFacilities(facilityReportParam, this.getUserId());
     }
     @Override
-    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria,
+                                                   Map<String, String[]> sortCriteria, int page, int pageSize) {
         FacilityReportParam facilityReportParam = getReportFilterData(filterCriteria);
-        List<FacilityReport> facilityReports = facilityReportMapper.SelectFilteredSortedPagedFacilities(facilityReportParam, this.getUserId());
-        if (facilityReports != null && !facilityReports.isEmpty() && isFilteredByDateRange(facilityReportParam)) {
-            for (FacilityReport facilityReport : facilityReports) {
-                facilityReportParam.setFacility(facilityReport.getId());
-                List<FacilityProgramReport> facilityProgramReportList = facilityReportMapper.FacilityProgramSupportedList(facilityReportParam, this.getUserId());
-                facilityReport.setFacilityProgramReportList(facilityProgramReportList);
-            }
-        }
-        return facilityReports;
+        return facilityReportMapper.SelectFilteredSortedPagedFacilities(facilityReportParam, this.getUserId());
     }
     private boolean isFilteredByDateRange(FacilityReportParam reportParam) {
         return !StringUtils.isEmpty(reportParam.getPeriodStart()) && !StringUtils.isEmpty(reportParam.getPeriodEnd());
-
     }
 
     public FacilityReportParam getReportFilterData(Map<String, String[]> filterCriteria) {

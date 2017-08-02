@@ -14,9 +14,19 @@ function ListFacilitiesController($scope, FacilityList, $routeParams) {
     $scope.allReportType = false;
     $scope.OnFilterChanged = function () {
         FacilityList.get($scope.getSanitizedParameter(), function (data) {
-            $scope.data = data.pages.rows;            
+            $scope.data = generateParentChildReport(data.pages.rows);
+            console.log($scope.data);
             $scope.paramsChanged($scope.tableParams);
         });
+    };
+
+    var generateParentChildReport = function(data) {
+        val = _.uniq(data, function (item, key, a) { return item.id; });
+
+        _.each(val, function(row){
+            row.facilityProgramReportList = _.chain(data).where({id: row.id}).map(function(row){ return {'name': row.name, 'startDate': row.startDate};}).value();
+        });
+        return val;
     };
 
     $scope.statuses = [

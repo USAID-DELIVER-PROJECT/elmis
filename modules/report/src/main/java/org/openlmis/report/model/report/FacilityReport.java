@@ -29,7 +29,7 @@ public class    FacilityReport implements ResultRow {
     private String facilityType;
     private boolean active;
     private String address1;
-    private String region;
+    private String district;
     private String owner;
     private String gpsCoordinates;
     private String email;
@@ -46,6 +46,7 @@ public class    FacilityReport implements ResultRow {
     private String name;
     private boolean activeProgram ;
     private Date startDate;
+    private String province;
     public FacilityReport(String code,String facilityName,String facilityType,boolean active){
         this.code  = code;
         this.facilityName = facilityName;

@@ -28,7 +28,7 @@ public class FacilityReportQueryBuilder {
                 filter.getStatusList().replaceAll(",", "','").replaceAll("AC", "t").replaceAll("IN", "f") : "f";
         BEGIN();
         SELECT("DISTINCT F.id, F.code, F.name, F.active as active, " +
-                "FT.name as facilityType, GZ.district_name as region, " +
+                "FT.name as facilityType, GZ.district_name as district, GZ.region_name as province," +
                 "FO.code as owner," +
                 "F.latitude::text ||',' ||  F.longitude::text  ||', ' || F.altitude::text gpsCoordinates," +
                 "F.mainphone as phoneNumber," +

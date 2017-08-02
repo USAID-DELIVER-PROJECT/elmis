@@ -59,7 +59,7 @@
                     <div class="span12 ">
                         <div>
                             <div class="box-header">
-                                <div class="form-cell span1">
+                                <div class="form-cell span2">
                                     <!--<label class="labels">Status</label>-->
                                     <div class="checkbox">
                                         <label for="allType"><input id="allType" class="checkbox" type="checkbox"
@@ -70,7 +70,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="form-cell span1">
+                                <div class="form-cell span2">
                                     <div class="checkbox">
                                         <label for="AC"><input ng-checked="true" id="AC" class="checkbox"
                                                                type="checkbox"
@@ -81,7 +81,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="form-cell span1">
+                                <div class="form-cell span2">
                                     <div class="checkbox">
                                         <label for="IN"><input id="IN" class="checkbox" type="checkbox" value="IN"
                                                                ng-change="onReportTypeCheckboxChanged('IN')"
@@ -115,9 +115,13 @@
                                     <td style="width:120px" data-title="getLocalMessage('label.facility.type')"
                                         sortable="facilityType">{{ row.facilityType }}
                                     </td>
+                                    <td style="width:80px" data-title="getLocalMessage('label.province')"
+                                        sortable="province">
+                                        {{ row.province }}
+                                    </td>
                                     <td style="width:80px" data-title="getLocalMessage('label.district')"
                                         sortable="region">
-                                        {{ row.region }}
+                                        {{ row.district }}
                                     </td>
                                     <td style="width:100px" data-title="getLocalMessage('label.phone')"
                                         sortable="phoneNumber">{{ row.phoneNumber }}
@@ -132,18 +136,23 @@
                                     </td>
 
                                 </tr>
-                                <tr style="background-color: #388C8F;" ng-show="row.facilityProgramReportList.length>0">
 
-                                    <td style="font-weight: bolder;text-align: left; padding-left: 135px;background-color: #388C8F;"  colspan="6">Program Name</td>
-                                    <td  style="background-color: #388C8F; font-weight: bolder;text-align: left" colspan="2">Start Date</td>
-                                </tr>
-                                <tr ng-repeat-end ng-repeat="p in row.facilityProgramReportList">
+                                <tr ng-repeat-end ng-show="row.facilityProgramReportList.length>0" >
+                                    <td colspan="9" class="sub-report">
+                                        <table>
+                                            <thead>
+                                            <tr>
+                                                <th openlmis-message="facility.program.areas"></th>
+                                                <th openlmis-message="facility.program.areas.start.data"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr  ng-repeat="p in row.facilityProgramReportList">
+                                                <td>{{ p.name }}</td><td>{{ p.startDate|date:'MM/dd/yyyy' }}</td>
 
-                                    <td style="padding-left: 150px" colspan="6" data-title="getLocalMessage('label.phone')"
-                                    >{{ p.name }}
-                                    </td>
-                                    <td style="padding-left: 35px" colspan="2" data-title="getLocalMessage('label.phone')"
-                                    >{{ p.startDate|date:'MM/dd/yyyy' }}
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </td>
                                 </tr>
 
@@ -157,3 +166,19 @@
         </div>
     </div>
 </div>
+
+<style>
+    .sub-report {
+        background-color: #d9d9d9;
+    }
+
+    .sub-report table{
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .sub-report table tr td{
+        background-color:#f9f9f9;
+    }
+
+    .sub-report
+</style>
