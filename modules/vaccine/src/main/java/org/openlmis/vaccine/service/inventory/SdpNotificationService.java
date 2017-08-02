@@ -50,21 +50,25 @@ public class SdpNotificationService {
     public void updateNotification(Long distributionId) {
         if (distributionId != null) {
             VaccineDistribution d = mapper.getDistributionById(distributionId);
-            sendHttps(d);
+            String url = configurationSettingService.getByKey(TIIS_URL).getValue();
+            String username = configurationSettingService.getByKey(TIIS_USERNAME).getValue();
+            String password = configurationSettingService.getByKey(TIIS_PASSWORD).getValue();
+            if(url != null && username != null && password !=null)
+            sendHttps(d,url,username,password);
             //sendNotification(d);
         }
 
     }
 
-    public void sendHttps(VaccineDistribution d) {
+    public void sendHttps(VaccineDistribution d,String url,String username,String password) {
 
-        String url = configurationSettingService.getByKey(TIIS_URL).getValue();
-        String username = configurationSettingService.getByKey(TIIS_USERNAME).getValue();
-        String password = configurationSettingService.getByKey(TIIS_PASSWORD).getValue();
+
 
         VaccineDistribution distribution = distributionService.getDistributionByToFacility(d.getToFacilityId());
         ObjectMapper mapper = new ObjectMapper();
 
+        System.out.println(username);
+        System.out.println(password);
         System.out.println(url);
         try {
             String jsonInString = mapper.writeValueAsString(distribution);
