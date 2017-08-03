@@ -11,7 +11,7 @@
 <div>
     <div ng-hide="page.nonFullSupply.length" class="alert alert-info" openlmis-message="label.no.products"></div>
     <div ng-show="page.nonFullSupply.length" id="viewRnr" class="rnr-table" adjust-height>
-        <div class="float-left left-table">
+        <div class="float-left left-table parent">
             <table id="nonFullSupplyFrozenTable" class="table table-bordered" fixed-table-header>
                 <thead>
                 <tr>
@@ -37,7 +37,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="float-left right-table" custom-horizontal-scroll>
+        <div class="float-left right-table parent" custom-horizontal-scroll>
             <table id="nonFullSupplyTable" fixed-table-header class="table table-bordered scrollable">
                 <thead>
                 <tr>
