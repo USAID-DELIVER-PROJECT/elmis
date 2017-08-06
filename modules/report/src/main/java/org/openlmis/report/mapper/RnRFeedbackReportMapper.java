@@ -42,7 +42,6 @@ public interface RnRFeedbackReportMapper {
       "  li.packstoship               AS packstoship, " +
       "  li.quantityrequested         AS quantityRequested, " +
       "  prl.stockinhand              AS previousStockInHand, " +
-      "  sli.quantityShipped," +
       "  COALESCE(sli.substitutedproductquantityshipped,0) as substituteProductQuantityShipped," +
       "  COALESCE(sli.quantityShipped,0) + COALESCE(sli.substitutedproductquantityshipped,0) as totalQuantityShipped, " +
       "  li.packsize, " +
@@ -50,10 +49,12 @@ public interface RnRFeedbackReportMapper {
       "  CASE WHEN (li.quantityrequested != li.calculatedorderquantity) THEN 1 ELSE 0 END as quantityRequestedWasChanged, " +
       "  CASE WHEN li.stockinhand <> ( COALESCE(li.beginningbalance, 0) + COALESCE(li.quantityreceived, 0) - " +
       "                      COALESCE(li.quantitydispensed, 0) + " +
-      "                      COALESCE(li.totallossesandadjustments, 0)) THEN 1 ELSE 0 END AS stockInHandError " +
-      " " +
-      " " +
-      "FROM " +
+      "                      COALESCE(li.totallossesandadjustments, 0)) THEN 1 ELSE 0 END AS stockInHandError, " +
+      "  sli.substitutedproductcode as substitutedProductCode, " +
+      "  sli.substitutedproductname as substitutedProductName, " +
+      "  sli.substitutedproductquantityshipped substitutedProductQuantityShipped, " +
+      "  sli.quantityshipped as quantityShipped" +
+      " FROM " +
       "  requisition_line_items li " +
       "  LEFT JOIN ( " +
       "              SELECT productCode, stockinhand " +
@@ -63,16 +64,40 @@ public interface RnRFeedbackReportMapper {
       "                                     id = #{rnrid}) " +
       "            )  as prl " +
       "       ON li.productcode = prl.productcode " +
-      "  LEFT JOIN (SELECT sum(quantityshipped) quantityShipped, " +
-      "               sum(substitutedproductquantityshipped) substitutedproductquantityshipped, " +
-      "               productcode " +
-      "             FROM " +
-      "               shipment_line_items WHERE orderid = #{rnrid} " +
-      "             GROUP BY productcode " +
-      "            ) sli " +
-      "      ON sli.productcode = li.productcode " +
-      "WHERE " +
-      "  li.rnrid = #{rnrid} and skipped = false")
+      "  LEFT JOIN ( " +
+      "              SELECT DISTINCT " +
+      "                productcode, " +
+      "                quantityshipped, " +
+      "                substitutedproductcode, " +
+      "                substitutedproductname, " +
+      "                substitutedproductquantityshipped " +
+      "              FROM " +
+      "                ( " +
+      "                  SELECT " +
+      "                    NULL    orderid, " +
+      "                    NULL AS quantityshipped, " +
+      "                    productcode, " +
+      "                    substitutedproductcode, " +
+      "                    substitutedproductname, " +
+      "                    substitutedproductquantityshipped " +
+      "                  FROM shipment_line_items li " +
+      "                  WHERE li.substitutedproductcode IS NOT NULL AND orderid = #{rnrid} " +
+      "                  UNION " +
+      "                  SELECT " +
+      "                    orderid, " +
+      "                    sum(quantityshipped) quantityshipped, " +
+      "                    productcode, " +
+      "                    NULL                 substitutedproductcode, " +
+      "                    NULL AS              substitutedproductname, " +
+      "                    NULL AS              substitutedproductquantityshipped " +
+      "                  FROM shipment_line_items " +
+      "                  WHERE orderid = #{rnrid} " +
+      "                  GROUP BY orderid, productcode " +
+      "                ) AS tr " +
+      "              ORDER BY productcode, substitutedproductcode DESC " +
+      "        ) sli on sli.productcode = li.productcode " +
+      " WHERE li.rnrid = #{rnrid} and skipped = false" +
+      " ORDER BY li.productCode")
   List<RnRFeedbackReport> getRnRFeedbackReport( @Param("rnrid") Long rnrId );
 
   @Select("SELECT id from requisitions where facilityId = #{facilityId} and programId = #{programId} and periodId = #{periodId} and emergency = false limit 1")

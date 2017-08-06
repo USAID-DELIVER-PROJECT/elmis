@@ -50,9 +50,11 @@ public interface SupplyStatusReportMapper {
       "  CASE WHEN (li.quantityrequested != li.calculatedorderquantity) THEN 1 ELSE 0 END as quantityRequestedWasChanged, " +
       "  CASE WHEN li.stockinhand <> ( COALESCE(li.beginningbalance, 0) + COALESCE(li.quantityreceived, 0) - " +
       "                      COALESCE(li.quantitydispensed, 0) + " +
-      "                      COALESCE(li.totallossesandadjustments, 0)) THEN 1 ELSE 0 END AS stockInHandError " +
-      " " +
-      " " +
+      "                      COALESCE(li.totallossesandadjustments, 0)) THEN 1 ELSE 0 END AS stockInHandError, " +
+      "  sli.substitutedproductcode, " +
+      "  sli.substitutedproductname, " +
+      "  sli.substitutedproductquantityshipped, " +
+      "  sli.quantityshipped " +
       "FROM " +
       "  requisition_line_items li " +
       "  LEFT JOIN ( " +
@@ -63,16 +65,40 @@ public interface SupplyStatusReportMapper {
       "                                     id = #{rnrid}) " +
       "            )  as prl " +
       "       ON li.productcode = prl.productcode " +
-      "  LEFT JOIN (SELECT sum(quantityshipped) quantityShipped, " +
-      "               sum(substitutedproductquantityshipped) substitutedproductquantityshipped, " +
-      "               productcode " +
-      "             FROM " +
-      "               shipment_line_items WHERE orderid = #{rnrid} " +
-      "             GROUP BY productcode " +
-      "            ) sli " +
-      "      ON sli.productcode = li.productcode " +
-      "WHERE " +
-      "  li.rnrid = #{rnrid} and skipped = false")
+      "  LEFT JOIN ( " +
+      "              SELECT DISTINCT " +
+      "                productcode, " +
+      "                quantityshipped, " +
+      "                substitutedproductcode, " +
+      "                substitutedproductname, " +
+      "                substitutedproductquantityshipped " +
+      "              FROM " +
+      "                ( " +
+      "                  SELECT " +
+      "                    NULL    orderid, " +
+      "                    NULL AS quantityshipped, " +
+      "                    productcode, " +
+      "                    substitutedproductcode, " +
+      "                    substitutedproductname, " +
+      "                    substitutedproductquantityshipped " +
+      "                  FROM shipment_line_items li " +
+      "                  WHERE li.substitutedproductcode IS NOT NULL AND orderid = #{rnrid} " +
+      "                  UNION " +
+      "                  SELECT " +
+      "                    orderid, " +
+      "                    sum(quantityshipped) quantityshipped, " +
+      "                    productcode, " +
+      "                    NULL                 substitutedproductcode, " +
+      "                    NULL AS              substitutedproductname, " +
+      "                    NULL AS              substitutedproductquantityshipped " +
+      "                  FROM shipment_line_items " +
+      "                  WHERE orderid = #{rnrid} " +
+      "                  GROUP BY orderid, productcode " +
+      "                ) AS tr " +
+      "              ORDER BY productcode, substitutedproductcode DESC " +
+      "        ) sli on sli.productcode = li.productcode" +
+      " WHERE " +
+      "  li.rnrid = #{rnrid} and skipped = false order by productCode")
   List<SupplyStatusReport> getSupplyStatus(Long rnrId);
 
 }

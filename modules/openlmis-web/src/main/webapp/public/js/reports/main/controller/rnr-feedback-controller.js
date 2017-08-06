@@ -48,7 +48,17 @@ function RnRFeedbackController($scope, RnRFeedbackReport,SettingsByKey) {
       $scope.filter.page = 1;
 
       RnRFeedbackReport.get($scope.getSanitizedParameter(), function(data) {
-          $scope.data         = data.pages.rows ;
+          allOrders      =  _.where(data.pages.rows, {substitutedProductName: null});
+          allSubstitutes =  _.difference(data.pages.rows, allOrders);
+
+          _.each(allOrders, function(row){
+              row.substitutes = _.chain(allSubstitutes).where({productCode : row.productCode}).map(function(row){ return row;}).value();
+              if(row.substitutes.length > 0)
+                  row.total = row.quantityShipped + _.chain(row.substitutes).pluck('substitutedProductQuantityShipped').reduce(function(memo, amt){ return memo + amt; }, 0).value();
+          });
+
+          $scope.data = allOrders;
+          console.log(allOrders);
           $scope.paramsChanged( $scope.tableParams );
       });
     };

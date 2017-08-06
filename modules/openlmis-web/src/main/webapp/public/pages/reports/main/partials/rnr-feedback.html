@@ -55,7 +55,7 @@
                       <div ng-show="datarows.length > 0" class="report-table-container">
                         <table class="table-bordered table table-striped" ng-table="tableParams">
                             <tbody>
-                            <tr ng-repeat="row in datarows | orderBy:['facility','productMain','productIndex']">
+                            <tr ng-repeat-start="row in datarows | orderBy:['facility','productMain','productIndex']">
                                 <td data-title="getLocalMessage('label.product.code')" style="width:50px" sortable="productCode" >{{ row.productCode }}</td>
                                 <td data-title="getLocalMessage('label.product.name')" style="min-width:350px" sortable="product"  >{{ row.product }}</td>
                                 <td data-title="getLocalMessage('label.unit')" style="width:120px" sortable="unit"  >{{ row.unit }}</td>
@@ -69,9 +69,19 @@
                                 <td data-title="getLocalMessage('label.quantity.requested')" class="number" style="{{ (row.quantityRequestedWasChanged == 1) ? 'font-style: italic;font-weight: bold;width: 80px;':'width: 80px;' }}" sortable="quantityRequested"  >{{ row.quantityRequested | number}}</td>
                                 <td data-title="getLocalMessage('label.quantity.approved')" class="number"  sortable="quantityApproved"  >{{ row.quantityApproved | number}}</td>
                                 <td data-title="getLocalMessage('label.quantity.supplied')" class="number" style="width:80px" sortable="quantityShipped"  >{{ row.quantityShipped | number }}</td>
-                                <td data-title="getLocalMessage('label.quantity.substitute.supplied')" class="number" style="width:80px" sortable="substituteProductQuantityShipped"  >{{ row.substituteProductQuantityShipped | number }}</td>
-                                <td data-title="getLocalMessage('label.total.quantity.supplied')" class="number" style="width:80px" sortable="totalQuantityShipped"  >{{ row.totalQuantityShipped | number }}</td>
+                                <!-- td data-title="getLocalMessage('label.total.quantity.supplied')" class="number" style="width:80px" sortable="totalQuantityShipped"  >{{ row.totalQuantityShipped | number }}</td -->
                                </tr>
+                            <tr class="substitutes" ng-repeat="r in row.substitutes">
+                                <td >{{r.substitutedProductCode}}</td>
+                                <td>{{r.substitutedProductName}}</td>
+                                <td colspan="9"></td>
+                                <td class="number"> {{r.substitutedProductQuantityShipped | number}}</td>
+                            </tr>
+                            <tr class="total" ng-repeat-end ng-if="row.substitutes.length > 0">
+                                <td colspan="10"></td>
+                                <td class="number"><strong>Total Supplied</strong></td>
+                                <td class="number"><strong>{{row.total | number}}</strong></td>
+                            </tr>
                             </tbody>
                         </table>
                       </div>

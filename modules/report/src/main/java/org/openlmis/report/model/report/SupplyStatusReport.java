@@ -37,5 +37,9 @@ public class SupplyStatusReport implements ResultRow {
   private Double maxMonthsOfStock;
   private Long maxStockQuantity;
   private Double totalQuantityShipped;
+  private String substitutedProductCode;
+  private String substitutedProductName;
+  private Double substitutedProductQuantityShipped;
+  private Double quantityShipped;
 
 }
