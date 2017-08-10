@@ -54,8 +54,8 @@ public interface RnRFeedbackReportMapper {
       "  sli.substitutedproductname as substitutedProductName, " +
       "  sli.substitutedproductquantityshipped substitutedProductQuantityShipped, " +
       "  sli.quantityshipped as quantityShipped" +
-      " FROM " +
-      "  requisition_line_items li " +
+      " FROM  requisitions r JOIN\n" +
+      "  requisition_line_items li ON r.id = li.rnrid" +
       "  LEFT JOIN ( " +
       "              SELECT productCode, stockinhand " +
       "              FROM  requisition_line_items rr " +
@@ -96,7 +96,7 @@ public interface RnRFeedbackReportMapper {
       "                ) AS tr " +
       "              ORDER BY productcode, substitutedproductcode DESC " +
       "        ) sli on sli.productcode = li.productcode " +
-      " WHERE li.rnrid = #{rnrid} and skipped = false" +
+      " WHERE li.rnrid = #{rnrid} and status = 'RELEASED'" +
       " ORDER BY li.productCode")
   List<RnRFeedbackReport> getRnRFeedbackReport( @Param("rnrid") Long rnrId );
 
