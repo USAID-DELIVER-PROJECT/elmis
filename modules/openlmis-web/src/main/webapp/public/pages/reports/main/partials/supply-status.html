@@ -54,7 +54,7 @@
             <div class="report-table-container">
               <table ng-show="datarows.length > 0" class="table-bordered table table-striped" ng-table="tableParams">
                 <tbody>
-                <tr ng-repeat-start="row in datarows">
+                <tr ng-repeat-start="row in datarows" ng-class="{'substitutes' : row.substitutes.length > 0}">
                   <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
                   <td data-title="getLocalMessage('label.product.code')" sortable="productCode">
                     <span style="width:80px">{{ row.productCode }}</span>

@@ -17,6 +17,7 @@ import lombok.Setter;
 import org.openlmis.report.model.ResultRow;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -25,5 +26,7 @@ public class MasterReport implements ResultRow {
   private List<? extends ResultRow> details;
 
   private List<? extends ResultRow> summary;
+
+  private Map<String, Object> keyValueSummary;
 
 }

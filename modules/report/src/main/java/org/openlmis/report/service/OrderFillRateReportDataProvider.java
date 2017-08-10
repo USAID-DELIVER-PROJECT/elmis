@@ -13,8 +13,10 @@
 package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.mapper.OrderFillRateReportMapper;
+import org.openlmis.report.mapper.RnRFeedbackReportMapper;
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.OrderFillRateReportParam;
 import org.openlmis.report.model.report.MasterReport;
@@ -39,11 +41,19 @@ public class OrderFillRateReportDataProvider extends ReportDataProvider {
   @Autowired
   private SelectedFilterHelper selectedFilterHelper;
 
+  @Autowired
+  private RnRFeedbackReportMapper feedbackReportMapper;
+
 
   @Override
   public List<? extends ResultRow> getResultSet(Map<String, String[]> filterCriteria) {
     RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-    return reportMapper.getReport(ParameterAdaptor.parse(filterCriteria, OrderFillRateReportParam.class), rowBounds, this.getUserId());
+
+    OrderFillRateReportParam parameter = ParameterAdaptor.parse(filterCriteria, OrderFillRateReportParam.class);
+    parameter.setRnrId(feedbackReportMapper.getRnrId(parameter.getProgram(), parameter.getFacility(), parameter.getPeriod()));
+    parameter.setUserId(this.getUserId());
+
+    return reportMapper.getReport(parameter, rowBounds, this.getUserId());
   }
 
   @Override
@@ -52,65 +62,42 @@ public class OrderFillRateReportDataProvider extends ReportDataProvider {
 
     OrderFillRateReportParam parameter = ParameterAdaptor.parse(filterCriteria, OrderFillRateReportParam.class);
     parameter.setUserId(this.getUserId());
+
     List<MasterReport> reportList = new ArrayList<MasterReport>();
     MasterReport report = new MasterReport();
-    report.setDetails(reportMapper.getReport(parameter, rowBounds, this.getUserId()));
-    List<OrderFillRateReport> summary = reportMapper.getReportSummary(parameter, this.getUserId());
-    OrderFillRateReport percentage = new OrderFillRateReport();
-    percentage.setName("Order Fill Rate:");
 
-    List<Integer> totalProductsReceivedList = reportMapper.getTotalProductsReceived(parameter, this.getUserId());
-    List<Integer> totalProductsOrderedList = reportMapper.getTotalProductsOrdered(parameter, this.getUserId());
+    parameter.setRnrId(feedbackReportMapper.getRnrId(parameter.getProgram(), parameter.getFacility(), parameter.getPeriod()));
+    List<OrderFillRateReport> detail = reportMapper.getReport(parameter, rowBounds, this.getUserId());
+    report.setDetails(detail);
 
-    if (totalProductsReceivedList.size() > 0 && totalProductsOrderedList.size() > 0) {
-      String totalProductsReceived = totalProductsReceivedList.get(0).toString();
-      String totalProductsOrdered = totalProductsOrderedList.get(0).toString();
+    // stateless lambdas doesn't create an overhead on memory
+    Long approved = detail.stream().filter(row -> row.getApproved()!= null && row.getApproved() > 0).count();
+    Long shipped = detail.stream().filter(row -> (row.getReceipts() != null && row.getReceipts() > 0)
+            || (row.getSubstitutedProductQuantityShipped() != null && row.getSubstitutedProductQuantityShipped() > 0)).count();
+    Float orderFillRate = ((approved == 0L || approved == null) ? 0L : ((float)shipped/approved)*100);
 
-      // Assume by default that the 100% of facilities didn't report
-      Long percent = Long.parseLong("0");
-      if (totalProductsOrdered != "0") {
-        percent = Math.round((Double.parseDouble(totalProductsReceived) / Double.parseDouble(totalProductsOrdered)) * 100);
-      }
-      percentage.setCount(percent.toString() + "%");
-    }
-
-    summary.add(0, percentage);
-
-    report.setSummary(summary);
+    report.setKeyValueSummary(new HashedMap(){{
+      put("ORDER_FILL_RATE", orderFillRate);
+      put("TOTAL_PRODUCTS_APPROVED", approved);
+      put("TOTAL_PRODUCT_SHIPPED", shipped);
+    }});
 
     reportList.add(report);
 
-    List<? extends ResultRow> list;
-    list = reportList;
-    return list;
+    return reportList;
   }
 
   @Override
   public HashMap<String, String> getExtendedHeader(Map params) {
     HashMap<String, String> result = new HashMap<String, String>();
     OrderFillRateReportParam parameter = ParameterAdaptor.parse(params, OrderFillRateReportParam.class);
-    // spit out the summary section on the report.
-    List<Integer> valueProductRecievedIntegerList = null;
-    List<Integer> valueProductOrderedIntegerList = null;
-    valueProductRecievedIntegerList = reportMapper.getTotalProductsReceived(parameter, this.getUserId());
-    valueProductOrderedIntegerList = reportMapper.getTotalProductsOrdered(parameter, this.getUserId());
-    String totalProductsReceived = (valueProductRecievedIntegerList == null ||
-        valueProductRecievedIntegerList.size() <= 0 || valueProductRecievedIntegerList.get(0) == null) ? "0" :
-        valueProductRecievedIntegerList.get(0).toString();
-    String totalProductsOrdered = (valueProductOrderedIntegerList == null || valueProductOrderedIntegerList.size() <= 0 || valueProductOrderedIntegerList.get(0) == null
-    ) ? "0" :
-        valueProductOrderedIntegerList.get(0).toString();
-    result.put("TOTAL_PRODUCTS_RECEIVED", totalProductsReceived);
+
+    /*result.put("TOTAL_PRODUCTS_RECEIVED", totalProductsReceived);
     result.put("TOTAL_PRODUCTS_APPROVED", totalProductsOrdered);
-
-    // Assume by default that the 100% of facilities didn't report
-    Long percent = Long.parseLong("100");
-    if (totalProductsOrdered != "0") {
-      percent = Math.round((Double.parseDouble(totalProductsReceived) / Double.parseDouble(totalProductsOrdered)) * 100);
-    }
-
     result.put("PERCENTAGE_ORDER_FILL_RATE", percent.toString());
+    */
     result.put("REPORT_FILTER_PARAM_VALUES", selectedFilterHelper.getProgramGeoZoneFacility(params));
     return result;
+
   }
 }

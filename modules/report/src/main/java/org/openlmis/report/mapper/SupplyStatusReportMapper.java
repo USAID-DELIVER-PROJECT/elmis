@@ -40,7 +40,7 @@ public interface SupplyStatusReportMapper {
       "  li.maxmonthsofstock          AS maxmonthsofstock, " +
       "  li.maxstockquantity          AS maxstockquantity, " +
       "  li.packstoship               AS packstoship, " +
-      "  li.quantityrequested         AS quantityRequested, " +
+      "  li.quantityapproved         AS quantityRequested, " +
       "  prl.stockinhand              AS previousStockInHand, " +
       "  sli.quantityShipped," +
       "  COALESCE(sli.substitutedproductquantityshipped,0) as substituteProductQuantityShipped," +
