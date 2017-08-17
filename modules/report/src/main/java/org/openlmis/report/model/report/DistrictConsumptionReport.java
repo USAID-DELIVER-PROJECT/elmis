@@ -30,4 +30,6 @@ public class DistrictConsumptionReport implements ResultRow {
   private Double adjustedConsumptionInPacks;
   private Double dispensed;
   private Double totalPercentage;
+  private Double district_id;
+
 }

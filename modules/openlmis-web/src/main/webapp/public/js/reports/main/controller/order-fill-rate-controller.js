@@ -18,8 +18,33 @@ function OrderFillRateController($scope, $window, OrderFillRateReport, GetPushed
         $scope.filter.max = 10000;
         OrderFillRateReport.get($scope.getSanitizedParameter(), function (data) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
-                $scope.summaries = data.pages.rows[0].summary;
-                $scope.data = data.pages.rows[0].details;
+                $scope.summaries = data.pages.rows[0].keyValueSummary;
+
+                //all orders
+                allOrders      =  _.where(data.pages.rows[0].details, {substitutedProductName: null});
+                //all substituted orders
+                allSubstitutes =  _.difference(data.pages.rows[0].details, allOrders);
+
+                // create primary-substitute product tree relationship
+                if(allSubstitutes.length > 0) {
+                    _.each(allOrders, function (row) {
+                        row.substitutes = _.chain(allSubstitutes).where({productcode: row.productcode}).map(function (row) {
+                            return row;
+                        }).value();
+                        if (row.substitutes.length > 0) {
+                            // substitutedProductsReceivedTotal =  _.chain(row.substitutes).pluck('substitutedProductQuantityShipped').reduce(function(memo, amt){ return memo + amt; }, 0).value();
+                            row.totalQuantityShipped = row.receipts + _.chain(row.substitutes).pluck('substitutedProductQuantityShipped').reduce(function (memo, amt) {
+                                    return memo + amt;
+                                }, 0).value();
+                            if (row.approved === 0)
+                                row.total_item_rate = 0;
+                            else
+                                row.total_item_rate = (row.totalQuantityShipped / row.approved)*100;
+                        }
+                    });
+                }
+
+                $scope.data = allOrders;
 
                 $scope.paramsChanged($scope.tableParams);
             }

@@ -36,6 +36,7 @@
               <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
               <zone-filter class="form-cell horizontalFilters"></zone-filter>
               <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
+              <facility-owner-filter class="form-cell horizontalFilters"></facility-owner-filter>
               <facility-filter class="form-cell horizontalFilters" required="true"></facility-filter>
             </div>
           </form>
@@ -53,7 +54,7 @@
             <div class="report-table-container">
               <table ng-show="datarows.length > 0" class="table-bordered table table-striped" ng-table="tableParams">
                 <tbody>
-                <tr ng-repeat="row in datarows">
+                <tr ng-repeat-start="row in datarows" ng-class="{'substitutes' : row.substitutes.length > 0}">
                   <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
                   <td data-title="getLocalMessage('label.product.code')" sortable="productCode">
                     <span style="width:80px">{{ row.productCode }}</span>
@@ -88,9 +89,21 @@
                   <td data-title="getLocalMessage('label.quantity.requested')" class="number" sortable="reorderAmount">
                     <span style="width:80px;display:inline-block" class="number">{{ row.quantityRequested | number }}</span>
                   </td>
-                  <td data-title="getLocalMessage('label.quantity.supplied')" sortable="totalQuantityShipped">
-                    <span style="width:80px;display:inline-block" class="number">{{ row.totalQuantityShipped | number}}</span>
+                  <td data-title="getLocalMessage('label.quantity.supplied')" class="number" sortable="totalQuantityShipped">
+                    <span style="width:80px;display:inline-block" >{{ row.quantityShipped | number}}</span>
                   </td>
+                </tr>
+                <tr  class="substitutes" ng-repeat="r in row.substitutes">
+                  <td ng-show="$index === 0" rowspan="{{row.substitutes.length}}"></td>
+                  <td >{{r.substitutedProductCode}}</td>
+                  <td>{{r.substitutedProductName}}</td>
+                  <td colspan="9"></td>
+                    <td class="number"> {{r.substitutedProductQuantityShipped | number}}</td>
+                </tr>
+                <tr class="total" ng-repeat-end ng-if="row.substitutes.length > 0">
+                  <td colspan="11"></td>
+                  <td class="number"><strong>Total Supplied</strong></td>
+                  <td class="number"><strong>{{row.total | number}}</strong></td>
                 </tr>
                 </tbody>
               </table>

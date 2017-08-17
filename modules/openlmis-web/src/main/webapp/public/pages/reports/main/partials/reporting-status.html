@@ -19,10 +19,10 @@
       <div class="box-icon">
         <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
         <a ng-click="section(1)" ng-show="show(0)" class="btn-minimize"><i class="icon-chevron-down"></i></a>
-        <!--<a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"-->
-           <!--class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>-->
-        <!--<a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"-->
-           <!--class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>-->
+         <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
+             class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+         <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+            class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
       </div>
     </div>
     <div>
@@ -34,6 +34,7 @@
             <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
             <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
             <zone-filter class="form-cell horizontalFilters"></zone-filter>
+            <facility-owner-filter class="form-cell horizontalFilters"></facility-owner-filter>
           </div>
         </form>
       </div>
@@ -56,23 +57,24 @@
                     <tbody>
                       <tr>
                         <td>
-                          <span ng-show="reporting"><i class="fa fa-check green"></i> *</span>
-                          <a ng-click="reporting=true;updateFacilityList()" href="">Facilities that Reported</a>
+                          <span ng-show="reporting === 'RP'"><i class="fa fa-check green" ng-class="{'emphasize'  : reporting==='RP'}"></i> *</span>
+                          <a ng-class="{'emphasize'  : reporting==='RP'}" ng-click="reporting='RP';updateFacilityList()" href="">Facilities that Reported</a>
                         </td>
-                        <td class="number">{{summary.reporting}}</td>
-                        <td class="number">{{summary.reportingPercent | number : 2}} %</td>
+                        <td class="number" ng-class="{'emphasize'  : reporting==='RP'}">{{summary.reporting}}</td>
+                        <td class="number" ng-class="{'emphasize'  : reporting==='RP'}">{{summary.reportingPercent | number : 2}} %</td>
                       </tr>
                       <tr>
-                        <td> <span ng-show="!reporting"><i class="fa fa-check green"></i> *</span>
-                          <a ng-click="reporting=false;updateFacilityList()" href="">Facilities that <b class="red">did not</b> Report</a>
+                        <td> <span ng-show="reporting === 'NRP'"><i class="fa fa-check green"></i> *</span>
+                          <a  ng-class="{'emphasize'  : reporting==='NRP'}" ng-click="reporting='NRP';updateFacilityList()" href="">Facilities that <b class="red">did not</b> Report</a>
                         </td>
-                        <td class="number">{{summary.nonReporting}}</td>
-                        <td class="number">{{summary.nonReportingPercent | number : 2}} %</td>
+                        <td class="number" ng-class="{'emphasize'  : reporting==='NRP'}">{{summary.nonReporting}}</td>
+                        <td class="number" ng-class="{'emphasize'  : reporting==='NRP'}">{{summary.nonReportingPercent | number : 2}} %</td>
                       </tr>
                       <tr>
-                        <th>Total</th>
-                        <td class="number">{{summary.total}}</td>
-                        <td class="number"></td>
+                        <td><span ng-show="reporting === 'TOT'" ng-class="{'emphasize'  : reporting==='TOT'}"><i class="fa fa-check green"></i> *</span>
+                          <a ng-click="reporting='TOT';updateFacilityList()" href=""  ng-class="{'emphasize'  : reporting==='TOT'}">Total</a></td>
+                        <td class="number" ng-class="{'emphasize'  : reporting==='TOT'}">{{summary.total}}</td>
+                        <td class="number"ng-class="{'emphasize'  : reporting==='TOT'}"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -83,8 +85,9 @@
           <div class="span8">
             <br />
             <div top-right-table-summary></div>
-            <div ng-show="reporting">Showing facilities that submitted R&R</div>
-            <div ng-show="!reporting">Showing facilities that <b class="red">did not</b> submit R&R</div>
+            <div ng-show="reporting === 'RP'">Showing facilities that submitted R&R</div>
+            <div ng-show="reporting === 'NRP'">Showing facilities that <b class="red">did not</b> submit R&R</div>
+            <div ng-show="reporting === 'TOT'">Showing all facilities either submitted or <b class="red">did not</b> submitted R&R</div>
             <table client-side-sort-pagination class="table table-bordered" ng-show="data == undefined || data.length == 0">
               <tr>
                 <td>No data to show under selected filters</td>
@@ -93,16 +96,20 @@
             <table ng-show="datarows.length > 0" class="table-bordered table table-striped" ng-table="tableParams">
               <tbody>
               <tr ng-repeat="row in datarows">
-                <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
-                <td data-title="getLocalMessage('label.facility.code')" style="width:50px" sortable="code">{{ row.code }}
+                <td data-title="'#'" class="number" >{{ row.no }}</td>
+                <td data-title="getLocalMessage('label.facility.code')" sortable="code">{{ row.code }}
                 </td>
-                <td data-title="getLocalMessage('label.facility.name')" style="width:30%" sortable="name">{{ row.name }}
+                <td data-title="getLocalMessage('label.facility.name')"  sortable="name">{{ row.name }}
                 </td>
-                <td data-title="getLocalMessage('label.facility.type')" style="width:30%" sortable="facilityType">{{  row.facilityType }}
+                <td data-title="getLocalMessage('label.facility.type')"  sortable="facilityType">{{  row.facilityType }}
                 </td>
-                <td data-title="getLocalMessage('label.location')" style="width:30%" sortable="location">{{ row.location }}</td>
-                <td ng-show="reporting" data-title="getLocalMessage('label.status')" style="width:30%" sortable="location">{{ row.rnrStatus }}</td>
-                <td ng-show="reporting" data-title="getLocalMessage('label.reported.date')" style="width:30%" sortable="location">{{ row.createdDate | date : 'dd MMM, yyyy'}}</td>
+                <td data-title="getLocalMessage('label.district')" sortable="location">{{ row.location }}</td>
+                <td data-title="getLocalMessage('label.province')"  sortable="location">{{ row.province }}</td>
+                <td data-title="getLocalMessage('label.program')"  sortable="location">{{ row.program }}</td>
+                <td  data-title="getLocalMessage('label.period')" sortable="location">{{ row.period || '-' }}</td>
+                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.date.report.received')"  sortable="location">{{ (row.createdDate | date)  || '-'}}</td>
+                <td ng-show="reporting !== 'NRP'" data-title="getLocalMessage('label.status')"  sortable="location">{{ row.rnrStatus  || row.reportingStatus }}</td>
+                <!-- td ng-show="reporting" data-title="getLocalMessage('label.reported.date')" style="width:30%" sortable="location">{{ row.createdDate | date : 'dd MMM, yyyy'}}</td -->
               </tr>
               </tbody>
             </table>

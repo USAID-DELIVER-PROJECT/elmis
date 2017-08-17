@@ -86,6 +86,7 @@ public class ReportLookupController extends BaseController {
   private static final String VACCINE_CUSTOM_PERIODS = "vaccineCustomPeriods";
   private static final String FACILITY_OPERATORS = "facilityOperators";
   private static final String FACILITY_LEVELS_WITHOUT_PROGRAM = "facility_levels_without_programs";
+  private static final String OWNERS="owners";
 
   @Autowired
   private ReportLookupService reportLookupService;
@@ -100,6 +101,8 @@ public class ReportLookupController extends BaseController {
   private SupervisoryNodeService supervisoryNodeService;
   @Autowired
   private ProgramService programService;
+  @Autowired
+  private FacilityOwnerService facilityOwnerService;
 
   @RequestMapping(value = "/programs", method = GET, headers = BaseController.ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getPrograms() {
@@ -299,11 +302,12 @@ public class ReportLookupController extends BaseController {
     @RequestParam(value = "requisitionGroup", defaultValue = "0", required = false) Long requisitionGroup,
     @RequestParam(value = ZONE, defaultValue = "0", required = false) Long zone,
     @RequestParam(value = "facilityOperator", defaultValue = "0", required = false) Long facilityOperator,
+    @RequestParam(value = "facilityOwner", defaultValue = "0", required = false) Long facilityOwner,
     HttpServletRequest request
 
   ) {
 
-    return OpenLmisResponse.response(FACILITIES, reportLookupService.getFacilities(program, schedule, type, requisitionGroup, zone, facilityOperator, loggedInUserId(request)));
+    return OpenLmisResponse.response(FACILITIES, reportLookupService.getFacilities(program, schedule, type, requisitionGroup, zone, facilityOperator,facilityOwner, loggedInUserId(request)));
   }
 
   @RequestMapping(value = "/facilitiesByType/{facilityTypeId}.json", method = GET, headers = BaseController.ACCEPT_JSON)
@@ -621,5 +625,10 @@ public class ReportLookupController extends BaseController {
     List<ProcessingPeriod> periodList = processingScheduleService.getAllPeriodsByYear(year);
     return OpenLmisResponse.response(PERIODS, periodList);
   }
+  @RequestMapping(value = "/facility_owners", method = GET, headers = BaseController.ACCEPT_JSON)
 
+  public ResponseEntity<OpenLmisResponse> getFacilitiesOwnerList() {
+    List<Owner> owners = facilityOwnerService.getAllOwners();
+    return OpenLmisResponse.response(OWNERS, owners);
+  }
 }

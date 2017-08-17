@@ -40,6 +40,17 @@
                 </div>
             </div>
             <div class="content-body" >
+                <div class="box-header">
+
+                    <div class="form-cell span8">
+                        <div class="checkbox">
+                            <label for="toggle-report">
+                               <input id="toggle-report" type="checkbox" class="form-cell horizontalFilters" ng-model="toggel">  <span  openlmis-message="label.show.facilities.consumption">Show facilities consumption</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <table client-side-sort-pagination  class="table table-bordered" ng-show="data == undefined || data.length == 0">
                     <tr>
                         <td>No data to show under selected filters</td>
@@ -49,13 +60,22 @@
                     <div top-right-table-summary></div>
                     <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right" ng-table="tableParams">
                         <tbody>
-                        <tr ng-repeat="row in datarows">
+                        <tr ng-class="{'consumption-parent' : toggel}" ng-repeat-start="row in datarows">
                             <td data-title="'#'" class="number" style="width:20px" >{{ row.no }}</td>
-                            <td data-title="getLocalMessage('label.district')" style="width:100px" sortable="district" >{{ row.district }}</td>
-                            <td data-title="getLocalMessage('label.product.name')" style="width:40%" sortable="product" >{{ row.product }}</td>
-                            <td data-title="getLocalMessage('label.consumption')" class="number" style="width:80px" sortable="consumption"  >{{ row.consumption | number }}</td>
-                          <td data-title="getLocalMessage('label.reported.consumption.per.packs')" class="number" style="width:80px" sortable="consumptionInPacks"  >{{ row.consumptionInPacks | number }}</td>
-                            <td data-title="getLocalMessage('label.percentage')" class="number" style="width:80px" sortable="totalPercentage"  >{{ row.totalPercentage | number : 2 }} %</td>
+                            <td data-title="getLocalMessage('label.district')"  ng-class="{'consumption-parent' : toggel}" style="width:100px" sortable="district" >{{ row.district }}</td>
+                            <td data-title="getLocalMessage('label.product.name')" ng-class="{'consumption-parent' : toggel}" style="width:40%" sortable="product" >{{ row.product }}</td>
+                            <td data-title="getLocalMessage('label.consumption')" ng-class="{'consumption-parent' : toggel}" class="number" style="width:80px" sortable="consumption"  >{{ row.consumption | number }}</td>
+                            <td data-title="getLocalMessage('label.reported.consumption.per.packs')" ng-class="{'consumption-parent' : toggel}" class="number" style="width:80px" sortable="consumptionInPacks"  >{{ row.consumptionInPacks | number }}</td>
+                            <td data-title="getLocalMessage('label.percentage')" ng-class="{'consumption-parent' : toggel}" class="number" style="width:80px" sortable="totalPercentage"  >{{ row.totalPercentage | number : 2 }} %</td>
+
+                        </tr>
+                        <tr ng-repeat-end ng-repeat="r in row.facilityConsumption" ng-show="toggel">
+                            <td  class="sub-child" rowspan="{{row.facilityConsumption.length}}" ng-if="$index == 0"></td>
+                            <td  class="sub-child"  >{{ r.facility }}</td>
+                            <td   class="sub-child">{{ r.product }}</td>
+                            <td   class="number sub-child" >{{ r.consumption | number }}</td>
+                            <td  class="number sub-child" >{{ r.consumptionInPacks | number }}</td>
+                            <td  class="number sub-child">{{ r.totalPercentage | number : 2 }} %</td>
                         </tr>
                         </tbody>
                     </table>
@@ -64,3 +84,12 @@
           </div>
    </div>
   </div>
+<style>
+    .sub-child{
+        background-color: #e2e3e4 !important;
+        border-top: 1px solid #cdcdcd;
+    }
+    .consumption-parent{
+        font-weight: bold !important;
+    }
+</style>

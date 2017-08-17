@@ -547,6 +547,16 @@
                     <property name="title" value="Log Tag Temperature Report"/>
                     <property name="version" value="1.0"/>
                 </bean>
+
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="reporting_status"/>
+                    <property name="template" value="reporting-status.jasper"/>
+                    <property name="reportDataProvider" ref="nonReportingFacilityReportDataProvider"/>
+                    <property name="id" value="RP-Reporting-Status"/>
+                    <property name="name" value="Reporting Status"/>
+                    <property name="title" value="header.report.reporting.status"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

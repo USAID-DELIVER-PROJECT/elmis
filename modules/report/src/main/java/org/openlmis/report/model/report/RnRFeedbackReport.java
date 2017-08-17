@@ -45,9 +45,11 @@ public class RnRFeedbackReport implements ResultRow {
     private Long openingBalanceError;
     private Long quantityRequestedWasChanged;
     private Long stockInHandError;
-    private Long quantityShipped;
     private Long substituteProductQuantityShipped;
     private Long totalQuantityShipped;
-  private Long productIndex;
-
+    private Long productIndex;
+    private String substitutedProductCode;
+    private String substitutedProductName;
+    private Double substitutedProductQuantityShipped;
+    private Double quantityShipped;
 }

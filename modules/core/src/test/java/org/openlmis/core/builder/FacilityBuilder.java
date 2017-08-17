@@ -41,6 +41,7 @@ public class FacilityBuilder {
   public static final Property<Facility, Long> parentFacilityId = newProperty();
   public static final Property<Facility, Boolean> enabled = newProperty();
   public static final Property<Facility, List<ProgramSupported>> programSupportedList = newProperty();
+  public static final Property<Facility, List<FacilityOwner>> facilityOwnerList = newProperty();
   public static final Property<Facility, Date> modifiedDate = newProperty();
 
   public static final String FACILITY_CODE = "F10010";
@@ -95,6 +96,7 @@ public class FacilityBuilder {
       facility.setParentFacilityId(lookup.valueOf(parentFacilityId, PARENT_FACILITY_ID));
       facility.setGoLiveDate(lookup.valueOf(goLiveDate, new LocalDate(2013, 10, 10).toDate()));
       facility.setSupportedPrograms(lookup.valueOf(programSupportedList, EMPTY_LIST));
+      facility.setOwners(lookup.valueOf(facilityOwnerList, EMPTY_LIST));
       facility.setModifiedBy(1L);
       facility.setModifiedDate(lookup.valueOf(modifiedDate, new Date()));
       return facility;

@@ -59,6 +59,7 @@ public class Report {
 
   private String clientSubmittedTime;
   private String clientSubmittedNotes;
+  private String sourceApplication = null;
 
   private Date periodStartDate;
 

@@ -11,7 +11,8 @@
 <div ng-controller="ViewFullSupplyController">
     <div ng-hide="page.fullSupply.length" class="alert alert-info" openlmis-message="label.no.products"></div>
     <div id="viewRnr" ng-show="page.fullSupply.length" class="rnr-table rnr-approval" adjust-height>
-        <div class="float-left left-table">
+        <div class="float-left left-table parent">
+
             <table id="fullSupplyFrozenTable" class="table table-bordered" fixed-table-header>
                 <thead>
                 <tr>
@@ -42,12 +43,12 @@
                 </tbody>
             </table>
         </div>
-        <div class="float-left right-table" custom-horizontal-scroll>
+        <div class="float-left right-table parent" custom-horizontal-scroll>
             <table id="fullSupplyTable" fixed-table-header class="table table-bordered scrollable">
                 <thead>
                 <tr>
                     <th class="col-{{column.name}}" ng-repeat="column in visibleColumns.fullSupply.scrollable"
-                        ng-bind="column.label"></th>
+                        ng-bind="(column.label)"></th>
                 </tr>
                 </thead>
                 <tbody ng-repeat="rnrLineItem in page.fullSupply">
@@ -62,13 +63,14 @@
               <span ng-switch-when="lossesAndAdjustments">
                 <div>
                     <a href="" ng-click="showLossesAndAdjustments(rnrLineItem)" class="rnr-adjustment">
-                        <span ng-bind="rnrLineItem.totalLossesAndAdjustments" class="adjustment-value"></span>
+                        <span ng-bind="(rnrLineItem.totalLossesAndAdjustments)" class="adjustment-value"></span>
                     </a>
                 </div>
               </span>
 
               <span ng-switch-when="price">
-                <span ng-bind='rnrLineItem[column.name] | currency:currency' id="{{getId(column.name, $parent)}}"
+                <span ng-bind="(rnrLineItem[column.name] | currency:currency)" id="{{getId(column.name, $parent)}}"
+
                       class="cell-text"></span>
               </span>
 
@@ -76,10 +78,16 @@
                 <span ng-bind='rnrLineItem[column.name] | currency:currency' id="{{getId(column.name, $parent)}}"
                       class="cell-text"></span>
               </span>
+ <span ng-switch-when="remarks">
+                <span ng-bind='rnrLineItem[column.name]' id="{{getId(column.name, $parent)}}"
+                      class="cell-text"></span>
+              </span>
 
-
-              <span ng-switch-default ng-bind="rnrLineItem[column.name]" id="{{getId(column.name, $parent)}}"
-                    class="cell-text"></span>
+              <span ng-switch-default id="{{getId(column.name, $parent)}}"
+                    class="cell-text">
+                  <span ng-if="rnrLineItem[column.name]" ng-bind="rnrLineItem[column.name]"></span>
+                   <span ng-if="!rnrLineItem[column.name]" ng-bind="'0'"></span>
+              </span>
             </span>
                     </td>
                 </tr>

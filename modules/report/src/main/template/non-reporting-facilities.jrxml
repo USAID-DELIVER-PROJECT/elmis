@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-12-05T14:08:58 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="non-reporting-facility" language="groovy" pageWidth="812" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="772" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="4.594972986357225"/>
-	<property name="ireport.x" value="2442"/>
-	<property name="ireport.y" value="625"/>
+	<property name="ireport.zoom" value="1.210000000000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
@@ -25,18 +23,26 @@
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT F.code, F.name facilityName, F.active as active, F.address1, F.address2 , FT.name as facilityType, GZ.name as region, FO.code as owner, F.latitude::text ||',' ||  F.longitude::text  ||', ' || F.altitude::text gpsCoordinates, CASE WHEN U.officePhone IS NULL THEN '' ELSE U.officePhone || ' ,' END || CASE WHEN U.cellPhone IS NULL THEN '' ELSE U.cellPhone || ' ,' END || F.mainPhone as phoneNumber, U.email email, F.fax as fax, U.firstName || ' ' || U.lastName || ', ' || jobtitle contact
-						FROM facilities F
-						JOIN facility_types FT on FT.id = F.typeid
-						LEFT OUTER JOIN geographic_zones GZ on GZ.id = F.geographiczoneid
-						LEFT OUTER JOIN facility_operators FO on FO.id = F.operatedbyid
-						LEFT OUTER JOIN Users U on U.facilityId = F.id
-						ORDER BY F.code asc, F.typeid asc]]>
+		<![CDATA[SELECT DISTINCT facilities.code, facilities.name, gz.district_name as location, gz.region_name as province, p.name as program, ft.name as facilityType, 'REPORTED' as reportingStatus, r.status as rnrStatus, r.id as rnrId,  (select max(rs.createdDate) from requisition_status_changes rs where rs.rnrid = r.id and rs.status = 'AUTHORIZED') as createdDate
+,'year' as year, 'month' as month, period.name as period
+FROM facilities
+INNER JOIN requisition_group_members rgm on rgm.facilityid = facilities.id
+INNER JOIN vw_districts gz on gz.district_id = facilities.geographiczoneid
+INNER JOIN facility_types ft on ft.id = facilities.typeid
+INNER JOIN programs_supported ps on ps.facilityId = facilities.id and ps.programId = 3
+INNER JOIN programs p on p.id = ps.programId
+INNER JOIN processing_periods period on period.id = 115
+INNER JOIN requisition_group_program_schedules rgps on rgps.requisitionGroupId = rgm.requisitionGroupId and ps.programId = rgps.programId
+INNER JOIN requisitions r on r.facilityId = facilities.id and r.programId = ps.programId and r.periodId = period.id and r.emergency = false
+ order by name]]>
 	</queryString>
 	<field name="code" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
 	<field name="location" class="java.lang.String"/>
 	<field name="facilityType" class="java.lang.String"/>
+	<field name="province" class="java.lang.String"/>
+	<field name="program" class="java.lang.String"/>
+	<field name="period" class="java.lang.String"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -46,7 +52,7 @@
 	<pageHeader>
 		<band height="80">
 			<subreport>
-				<reportElement x="0" y="0" width="751" height="80" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e">
+				<reportElement x="0" y="0" width="772" height="80" isRemoveLineWhenBlank="true" uuid="c576bd49-9432-4ebb-a897-b64a7ec0183e">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
 				</reportElement>
 				<subreportParameter name="PAGE_NO">
@@ -78,7 +84,7 @@
 	<columnHeader>
 		<band height="26" splitType="Prevent">
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="751" height="26" forecolor="#FFFFFF" backcolor="#3D9297" uuid="a3f58159-3cb5-4422-8858-64f0b4f9c841">
+				<reportElement mode="Opaque" x="0" y="0" width="772" height="26" forecolor="#FFFFFF" backcolor="#3D9297" uuid="a3f58159-3cb5-4422-8858-64f0b4f9c841">
 					<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 				</reportElement>
 				<text><![CDATA[]]></text>
@@ -92,32 +98,56 @@
 				<textFieldExpression><![CDATA[$R{label.facility.code}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="112" y="0" width="143" height="26" uuid="7d10ecb6-9860-405d-a20b-7195a66e5a35"/>
+				<reportElement x="112" y="0" width="172" height="26" uuid="7d10ecb6-9860-405d-a20b-7195a66e5a35"/>
 				<textFieldExpression><![CDATA[$R{label.facility}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="255" y="0" width="160" height="26" uuid="1b42e11f-198a-4537-a2e7-6a23e560352c"/>
+				<reportElement x="284" y="0" width="100" height="26" uuid="1b42e11f-198a-4537-a2e7-6a23e560352c"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12"/>
+					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="415" y="0" width="336" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="e268b6f3-c02e-43cb-823b-bbef5370279b"/>
+				<reportElement mode="Transparent" x="384" y="0" width="89" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="e268b6f3-c02e-43cb-823b-bbef5370279b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$R{label.location}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{label.province}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="554" y="0" width="115" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="aeada5ce-4e93-46e8-b533-effeee34485a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.program}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="669" y="0" width="103" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="09898108-31ef-495c-a334-4be737e05c16"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.period}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="473" y="0" width="81" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="bdb76751-091e-4743-84dd-a027fe16f213"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.district}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="751" height="20" backcolor="#F4F4F4" uuid="bbf6a8fa-7df0-4d74-a1c1-767deb62e0e0">
+				<reportElement mode="Opaque" x="0" y="0" width="772" height="20" backcolor="#F4F4F4" uuid="bbf6a8fa-7df0-4d74-a1c1-767deb62e0e0">
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
@@ -131,7 +161,7 @@
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="112" y="0" width="143" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="2ed64d73-ed87-4e35-a5ad-0d4f0d7d977a">
+				<reportElement mode="Transparent" x="112" y="0" width="172" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="2ed64d73-ed87-4e35-a5ad-0d4f0d7d977a">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -142,7 +172,7 @@
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="255" y="0" width="160" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="99773021-35ed-4897-bb47-a7a2e95ee643">
+				<reportElement mode="Transparent" x="284" y="0" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="99773021-35ed-4897-bb47-a7a2e95ee643">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -155,7 +185,7 @@
 				<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="415" y="0" width="336" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="56fa579b-f8be-4f08-bcb3-14f443e36267">
+				<reportElement mode="Transparent" x="384" y="0" width="89" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="56fa579b-f8be-4f08-bcb3-14f443e36267">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
@@ -163,10 +193,10 @@
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{province}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="19" width="751" height="1" forecolor="#3D9297" uuid="8acf28da-0482-4ce0-b195-ddb1d5d99a5d">
+				<reportElement x="0" y="19" width="772" height="1" forecolor="#3D9297" uuid="8acf28da-0482-4ce0-b195-ddb1d5d99a5d">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() == "PDF"]]></printWhenExpression>
@@ -182,6 +212,18 @@
 					<paragraph lineSpacing="Single" leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="554" y="0" width="115" height="20" uuid="2272c411-0906-483c-9221-b1104e0532b7"/>
+				<textFieldExpression><![CDATA[$F{program}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="669" y="0" width="103" height="20" uuid="81dcc839-5f96-432a-89da-fab38a9b728b"/>
+				<textFieldExpression><![CDATA[$F{period}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="473" y="0" width="81" height="20" uuid="e3fa95cc-3c21-4759-9c9f-7adfbc1f9dce"/>
+				<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

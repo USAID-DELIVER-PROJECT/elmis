@@ -15,6 +15,8 @@ package org.openlmis.report.model.params;
 import lombok.*;
 import org.openlmis.report.model.ReportParameter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,5 +31,10 @@ public class FacilityReportParam
   private Boolean status;
   
   private Long program;
+  private String periodStart;
+  private String periodEnd;
+  private String statusList;
+  private Long facilityOwner;
+  private Long facility;
 
 }

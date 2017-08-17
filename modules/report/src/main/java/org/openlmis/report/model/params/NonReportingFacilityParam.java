@@ -31,9 +31,11 @@ public class NonReportingFacilityParam
 
   @RequiredParam
   private Long period;
-
+  private Long periodEnd;
+private  String periodString;
   private Long zone;
 
   private Long facilityType;
+  private  Long facilityOwner;
 
 }

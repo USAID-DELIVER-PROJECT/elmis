@@ -27,7 +27,17 @@ function SupplyStatusController($scope, $window , SupplyStatusReport) {
 
     SupplyStatusReport.get($scope.getSanitizedParameter() , function(data) {
       if (data.pages !== undefined && data.pages.rows !== undefined) {
-        $scope.data = data.pages.rows;
+
+          allOrders      =  _.where(data.pages.rows, {substitutedProductName: null});
+          allSubstitutes =  _.difference(data.pages.rows, allOrders);
+
+          _.each(allOrders, function(row){
+                     row.substitutes = _.chain(allSubstitutes).where({productCode : row.productCode}).map(function(row){ return row;}).value();
+                  if(row.substitutes.length > 0)
+                     row.total = row.quantityShipped + _.chain(row.substitutes).pluck('substitutedProductQuantityShipped').reduce(function(memo, amt){ return memo + amt; }, 0).value();
+          });
+
+        $scope.data = allOrders;
         $scope.paramsChanged($scope.tableParams);
       }
     });

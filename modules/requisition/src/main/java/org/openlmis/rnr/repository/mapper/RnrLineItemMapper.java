@@ -138,19 +138,21 @@ public interface RnrLineItemMapper {
                                             @Param("productCode") String productCode,
                                             @Param("periodStartDate") Date periodStartDate);
 
-  @Select({"SELECT RLI.normalizedConsumption, RLI.stockInHand FROM requisition_line_items RLI",
+  @Select({"SELECT RLI.id, max(RLI.normalizedConsumption) normalizedConsumption, max(RLI.stockInHand) stockInHand FROM requisition_line_items RLI",
     "INNER JOIN requisitions R ON R.id = RLI.rnrId",
+    "INNER JOIN processing_periods pp on pp.id = R.periodid",
     "AND R.facilityId = #{rnr.facility.id}",
     "AND R.programId = #{rnr.program.id}",
     "AND RLI.productCode = #{productCode}",
     "INNER JOIN requisition_status_changes",
     "RSC ON RSC.rnrId = R.id",
     "AND RLI.skipped = false",
-    "AND RLI.normalizedConsumption is not null",
+    "AND RLI.normalizedConsumption is not null ",
+    "AND RLI.normalizedConsumption > 0 ",
     "AND RSC.status = 'AUTHORIZED'",
     "AND R.emergency = false",
-    "AND RSC.createdDate >= #{startDate}",
-    "ORDER BY RSC.createdDate DESC LIMIT #{count}"})
+    "GROUP BY RLI.id, pp.startDate",
+    "ORDER BY pp.startDate DESC LIMIT #{count}"})
   List<RnrLineItem> getAuthorizedRegularUnSkippedLineItems(@Param("productCode") String productCode,
                                                            @Param("rnr") Rnr rnr, @Param("count") Integer count,
                                                            @Param("startDate") Date startDate);

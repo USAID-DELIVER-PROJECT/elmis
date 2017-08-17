@@ -68,7 +68,7 @@ public class StockImbalanceQueryBuilder {
         String reportType = filter.getReportType().replaceAll(",", "','").replaceAll("EM", "t").replaceAll("RE", "f");
         String sql = "";
         String facilityParameterType = filter.getFacilityType() != 0 ? " AND f.typeid=  '" + filter.getFacilityType() + "'::INT\n" : " ";
-        sql = "SELECT distinct \n" +
+        sql = "SELECT  \n" +
                 "supplyingFacility, \n" +
                 "facilityTypeName facilityType,  \n" +
                 "facility, \n" +
@@ -79,13 +79,15 @@ public class StockImbalanceQueryBuilder {
                 "product, productCode,  \n" +
                 "a.stockInHand as physicalCount,\n" +
                 "a.amc,  \n" +
+                "a.processing_period_name as period, \n"+
                 "a.mos months,  \n" +
                 "a.required, \n" +
                 "a.ordered as orderQuantity, \n" +
                 "a.status\n" +
                 "\n" +
                 " FROM (\n" +
-                "SELECT distinct gz.region_name as supplyingfacility, gz.region_name, gz.district_name, gz.zone_name, f.code as facilitycode,\n" +
+                "SELECT  gz.region_name as supplyingfacility, gz.region_name, gz.district_name, gz.zone_name, " +
+                "f.code as facilitycode,\n" +
                 "li.productcode,   f.name as facility,   li.product as product,   ft.name facilitytypename,\n" +
                 "gz.district_name as location,   pp.name as processing_period_name,  li.stockinhand,\n" +
                 "li.stockoutdays stockoutdays,    to_char(pp.startdate, 'Mon') asmonth, \n" +
@@ -96,16 +98,16 @@ public class StockImbalanceQueryBuilder {
                 "ELSE\n" +
                 "    CASE WHEN li.amc > 0 AND li.stockinhand > 0 THEN \n" +
                 "     CASE\n" +
-                "      WHEN round((li.stockinhand / li.amc)::numeric, 1) <= fap.minmonthsofstock THEN 'US'::text\n" +
-                "      WHEN round((li.stockinhand / li.amc)::numeric, 1) >= fap.minmonthsofstock::numeric " +
-                " AND round((li.stockinhand / li.amc)::numeric, 1) <= fap.maxmonthsofstock::numeric THEN 'SP'::text\n" +
-                "      WHEN round((li.stockinhand / li.amc)::numeric, 1) > fap.maxmonthsofstock THEN 'OS'::text  \n" +
+                "      WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) < fap.minmonthsofstock THEN 'US'::text\n" +
+                "      WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) >= fap.minmonthsofstock::numeric " +
+                " AND round((li.stockinhand::decimal / li.amc)::numeric, 2) <= fap.maxmonthsofstock::numeric THEN 'SP'::text\n" +
+                "      WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) > fap.maxmonthsofstock THEN 'OS'::text  \n" +
                 "     END             \n" +
                 "    ELSE 'UK'::text END\n" +
                 "END AS status,\n" +
                 "CASE\n" +
                 "    WHEN COALESCE(li.amc, 0) = 0 THEN 0::numeric\n" +
-                "    ELSE round((li.stockinhand / li.amc)::numeric, 1)\n" +
+                "    ELSE trunc(round((li.stockinhand::decimal / li.amc)::numeric, 2),1)::numeric \n" +
                 "END AS mos,\n" +
                 "li.amc,\n" +
                 "COALESCE(\n" +
@@ -117,7 +119,8 @@ public class StockImbalanceQueryBuilder {
                 "\n" +
                 "FROM  processing_periods pp  \n" +
                 "  JOIN requisitions r ON pp. ID = r.periodid  \n" +
-                "  JOIN requisition_line_items li ON li.rnrid = r. ID  JOIN facilities f on f.id = r.facilityId  \n" +
+                "  JOIN requisition_line_items li ON li.rnrid = r. ID  " +
+                "  JOIN facilities f on f.id = r.facilityId  \n" +
                 "  JOIN facility_types ft on ft.id = f.typeid  JOIN products p on p.code = li.productcode \n" +
                 "  JOIN vw_districts gz on gz.district_id = f.geographiczoneid \n" +
                 "  JOIN programs pg on pg.id = r.programid\n" +
@@ -157,7 +160,7 @@ public class StockImbalanceQueryBuilder {
         }
 
         if (filter.getZone() != 0) {
-            predicate += " AND " + geoZoneIsFilteredBy("d");
+            predicate += " AND " + geoZoneIsFilteredBy("gz");
         }
         String queryFilter = " AND (li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0) \n" +
                 predicate +

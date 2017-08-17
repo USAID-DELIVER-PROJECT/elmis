@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-12-05T14:18:13 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facility_list" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="1.2100000000000009"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="2.593742460100003"/>
+	<property name="ireport.x" value="108"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -23,28 +21,169 @@
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT F.code, F.name facilityName, F.active as active, F.address1, F.address2 , FT.name as facilityType, GZ.name as region, FO.code as owner, F.latitude::text ||',' ||  F.longitude::text  ||', ' || F.altitude::text gpsCoordinates, CASE WHEN U.officePhone IS NULL THEN '' ELSE U.officePhone || ' ,' END || CASE WHEN U.cellPhone IS NULL THEN '' ELSE U.cellPhone || ' ,' END || F.mainPhone as phoneNumber, U.email email, F.fax as fax, U.firstName || ' ' || U.lastName || ', ' || jobtitle contact
+		<![CDATA[SELECT DISTINCT
+  F.id,
+  F.code,
+  F.name as facilityName,
+  F.active         AS                                                            active,
+  FT.name          AS                                                            facilityType,
+  GZ.district_name AS                                                            district,
+GZ.region_name as province,
+'aa' as address1,
+'asdas' as email,
+  FO.code          AS                                                            owner,
+  F.latitude :: TEXT || ',' || F.longitude :: TEXT || ', ' || F.altitude :: TEXT gpsCoordinates,
+  F.mainphone      AS                                                            phoneNumber,
+  F.fax            AS                                                            fax,
+  ps.id                                                                          supportprogramid,
+  ps.active                                                                      activeprogram,
+  ps.startdate,
+  p.id                                                                           programid,
+  p.code                                                                         programcode,
+  p.name as                                                                        name
 FROM facilities F
-JOIN facility_types FT on FT.id = F.typeid
-LEFT OUTER JOIN geographic_zones GZ on GZ.id = F.geographiczoneid
-LEFT OUTER JOIN facility_operators FO on FO.id = F.operatedbyid
-LEFT OUTER JOIN Users U on U.facilityId = F.id
-ORDER BY F.code asc, F.typeid asc]]>
+  JOIN facility_types FT ON FT.id = F.typeid
+  LEFT OUTER JOIN programs_supported ps ON ps.facilityid = F.id
+  LEFT OUTER JOIN programs p ON ps.programid = p.id
+  LEFT OUTER JOIN vw_districts GZ ON GZ.district_id = F.geographiczoneid
+  LEFT OUTER JOIN facility_operators FO ON FO.id = F.operatedbyid
+  LEFT OUTER JOIN facility_owners FS ON FS.facilityid = F.id
+WHERE (F.geographicZoneId IN (SELECT DISTINCT district_id
+                              FROM vw_user_facilities
+                              WHERE user_id = 98) AND F.active IN ('t', 'f') AND (
+         F.geographicZoneId = 17 OR GZ.region_id = 17 OR
+         GZ.zone_id = 17 OR GZ.parent = 17) AND
+            F.id IN (SELECT facility_id
+                                                             FROM vw_user_facilities
+                                                             WHERE user_id = cast(53 AS INT4) AND
+                                                                   program_id = cast(3 AS INT4))
+       AND F.id IN (SELECT m.facilityid
+                    FROM requisition_group_members m
+                    WHERE m.requisitionGroupId IN (SELECT rpgs.requisitionGroupId
+                                                   FROM requisition_group_program_schedules rpgs
+                                                   WHERE rpgs.programId = 3)) AND
+       ps.active = TRUE)]]>
 	</queryString>
 	<field name="code" class="java.lang.String"/>
 	<field name="facilityName" class="java.lang.String"/>
 	<field name="active" class="java.lang.Boolean"/>
 	<field name="address1" class="java.lang.String"/>
 	<field name="facilityType" class="java.lang.String"/>
-	<field name="region" class="java.lang.String"/>
+	<field name="district" class="java.lang.String"/>
 	<field name="owner" class="java.lang.String"/>
 	<field name="gpsCoordinates" class="java.lang.String"/>
 	<field name="phoneNumber" class="java.lang.String"/>
 	<field name="email" class="java.lang.String"/>
 	<field name="fax" class="java.lang.String"/>
+	<field name="startDate" class="java.util.Date"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="province" class="java.lang.String"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
+	<group name="ProgramAreas">
+		<groupExpression><![CDATA[$F{code}]]></groupExpression>
+		<groupHeader>
+			<band height="42">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="0" width="802" height="20" printWhenGroupChanges="ProgramAreas" backcolor="#F4F4F4" uuid="9a174af8-d2cb-46c8-b19f-0b17e1be585b">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0 && $P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
+					</reportElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="0" y="0" width="96" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="737ff77e-08a6-46fa-87c6-90dde8a147f4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="96" y="0" width="161" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="2ed64d73-ed87-4e35-a5ad-0d4f0d7d977a"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{facilityName}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="257" y="0" width="87" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="99773021-35ed-4897-bb47-a7a2e95ee643"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="410" y="0" width="60" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="56fa579b-f8be-4f08-bcb3-14f443e36267"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{district}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="470" y="0" width="78" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="59a3d167-b987-4be7-ba88-37db139fd2c4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{owner}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="548" y="0" width="89" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="95ee177b-33b1-4733-91bb-0546e8a46527"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="637" y="0" width="96" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="f273ee02-b78f-4369-8430-7315db848516"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{phoneNumber}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement positionType="Float" mode="Transparent" x="733" y="0" width="69" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="7df807f8-c34b-424e-97a6-7ca7b6152c74">
+						<property name="local_mesure_unitx" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fax}.toUpperCase() == "NULL"?"-":$F{fax}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="344" y="0" width="66" height="20" uuid="77e67e05-1eff-466c-8a2b-c84f3bd231e3"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{province}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="20" width="257" height="22" printWhenGroupChanges="ProgramAreas" uuid="f297524d-4da3-4e45-8ead-65bada3e528d"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{facility.program.areas}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="257" y="20" width="87" height="22" printWhenGroupChanges="ProgramAreas" uuid="f436d304-c240-490d-9b00-50a8325e106c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{facility.program.areas.start.data}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -97,16 +236,7 @@ ORDER BY F.code asc, F.typeid asc]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="0" width="39" height="27" uuid="ad627b93-8cc4-4fbd-9b90-6797083bfa7b">
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="39" y="0" width="57" height="27" uuid="55dd9fd2-252a-4d3e-a02b-c6890315a3cf"/>
+				<reportElement x="0" y="0" width="96" height="27" uuid="55dd9fd2-252a-4d3e-a02b-c6890315a3cf"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
@@ -120,28 +250,28 @@ ORDER BY F.code asc, F.typeid asc]]>
 				<textFieldExpression><![CDATA[$R{label.facility}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="257" y="0" width="99" height="27" uuid="4c723ac3-cf1d-4843-8e73-3ff1ef35addd"/>
+				<reportElement x="257" y="0" width="87" height="27" uuid="4c723ac3-cf1d-4843-8e73-3ff1ef35addd"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.facility.type}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="356" y="0" width="59" height="27" uuid="172d7d45-8a90-440a-ac15-4634af623433"/>
+				<reportElement x="410" y="0" width="60" height="27" uuid="172d7d45-8a90-440a-ac15-4634af623433"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.district}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="415" y="0" width="80" height="27" uuid="1a162b59-959e-4f20-932a-615bae98fdda"/>
+				<reportElement x="470" y="0" width="78" height="27" uuid="1a162b59-959e-4f20-932a-615bae98fdda"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.ownership}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="495" y="0" width="142" height="27" uuid="e147f2da-46a4-44cf-b4e0-640d83f4520a"/>
+				<reportElement x="548" y="0" width="89" height="27" uuid="e147f2da-46a4-44cf-b4e0-640d83f4520a"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
@@ -161,30 +291,19 @@ ORDER BY F.code asc, F.typeid asc]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{label.fax}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="344" y="0" width="66" height="27" uuid="270883bf-33d7-4b8b-aae9-a8dba205f172"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.province}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="802" height="20" backcolor="#F4F4F4" uuid="9a174af8-d2cb-46c8-b19f-0b17e1be585b">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0 && $P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
-				</reportElement>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="0" y="0" width="39" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="29ff9399-7f59-451b-b8df-f1f6240f4a60">
-					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single" leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement x="0" y="19" width="802" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7">
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -195,74 +314,13 @@ ORDER BY F.code asc, F.typeid asc]]>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="39" y="0" width="57" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="737ff77e-08a6-46fa-87c6-90dde8a147f4"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+			<textField>
+				<reportElement x="0" y="0" width="257" height="20" uuid="1c8bd599-c4d7-41a5-9af3-96d877e11dba"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="96" y="0" width="161" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="2ed64d73-ed87-4e35-a5ad-0d4f0d7d977a"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{facilityName}]]></textFieldExpression>
-			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="257" y="0" width="99" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="99773021-35ed-4897-bb47-a7a2e95ee643"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{facilityType}]]></textFieldExpression>
-			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="356" y="0" width="59" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="56fa579b-f8be-4f08-bcb3-14f443e36267"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{region}]]></textFieldExpression>
-			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="415" y="0" width="80" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="59a3d167-b987-4be7-ba88-37db139fd2c4"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{owner}]]></textFieldExpression>
-			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="495" y="0" width="142" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="95ee177b-33b1-4733-91bb-0546e8a46527"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
-			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="637" y="0" width="96" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="f273ee02-b78f-4369-8430-7315db848516"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{phoneNumber}]]></textFieldExpression>
-			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement positionType="Float" mode="Transparent" x="733" y="0" width="69" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="7df807f8-c34b-424e-97a6-7ca7b6152c74">
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{fax}.toUpperCase() == "NULL"?"-":$F{fax}]]></textFieldExpression>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="257" y="0" width="87" height="20" uuid="9fe3ad43-7e1d-4033-9e36-33362c7aafea"/>
+				<textFieldExpression><![CDATA[$F{startDate}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

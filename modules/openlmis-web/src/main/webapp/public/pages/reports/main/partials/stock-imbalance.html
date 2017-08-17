@@ -43,6 +43,7 @@
 
                 <zone-filter class="form-cell horizontalFilters"></zone-filter>
                 <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
+                  <facility-owner-filter class="form-cell horizontalFilters"></facility-owner-filter>
                 <facility-filter class="form-cell horizontalFilters"></facility-filter>
                 <product-category-filter class="form-cell horizontalFilters"></product-category-filter>
                 <product-multi-filter class="form-cell horizontalFilters"></product-multi-filter>
@@ -68,7 +69,7 @@
                     <div class="checkbox">
                       <label for="allType"><input id="allType" class="checkbox" type="checkbox" value="allReportType"
                                               ng-change="onToggleReportTypeAll()" ng-model="allReportType">
-                        <span>All</span>
+                        <span openlmis-message="label.all"></span>
                       </label>
                     </div>
                   </div>
@@ -76,7 +77,7 @@
                     <div class="checkbox">
                       <label for="emergency"><input id="emergency" class="checkbox" type="checkbox" value="EM"
                                              ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.EM">
-                        <span>Emergency</span>
+                        <span openlmis-message="requisition.type.emergency"></span>
                       </label>
                     </div>
                   </div>
@@ -84,7 +85,7 @@
                     <div class="checkbox">
                       <label for="re"><input id="re" class="checkbox" type="checkbox" value="RE" ng-checked="true"
                                              ng-change="onReportTypeCheckboxChanged()" ng-model="reportTypes.RE">
-                        <span>Regular</span>
+                        <span openlmis-message="requisition.type.regular"></span>
                       </label>
                     </div>
                   </div>
@@ -96,7 +97,7 @@
                     <div class="checkbox">
                       <label for="all"><input id="all" class="checkbox" type="checkbox" value="ALL"
                                               ng-change="onToggleAll()" ng-model="all">
-                        <span>All</span>
+                        <span openlmis-message="label.all"></span>
                       </label>
                     </div>
                   </div>
@@ -104,7 +105,7 @@
                     <div class="checkbox">
                       <label for="so"><input ng-checked="true" id="so" class="checkbox" type="checkbox" value="SO"
                                              ng-change="onCheckboxChanged()" ng-model="statuses.SO">
-                        <span>Stocked Out</span>
+                        <span openlmis-message="SO"></span>
                       </label>
                     </div>
                   </div>
@@ -112,7 +113,7 @@
                     <div class="checkbox">
                       <label for="us"><input id="us" class="checkbox" type="checkbox" value="US"
                                              ng-change="onCheckboxChanged()" ng-model="statuses.US">
-                        <span>Below Minimum</span>
+                        <span  openlmis-message="US"></span>
                       </label>
                     </div>
                   </div>
@@ -121,7 +122,7 @@
                       <label for="sp">
                         <input id="sp" class="check-box" type="checkbox" value="SP"
                                ng-change="onCheckboxChanged()" ng-model="statuses.SP">
-                        <span>Stocked According to Plan</span>
+                        <span openlmis-message="SP"></span>
                       </label>
                     </div>
                   </div>
@@ -129,7 +130,7 @@
                     <div class="checkbox">
                       <label for="os"><input id="os" class="checkbox" type="checkbox" value="OS"
                                              ng-change="onCheckboxChanged()" ng-model="statuses.OS">
-                        <span>Over Stocked</span>
+                        <span openlmis-message="OS"></span>
                       </label>
                     </div>
                   </div>
@@ -137,7 +138,7 @@
                     <div class="checkbox">
                       <label for="uk"><input id="uk" class="checkbox" type="checkbox" value="UK"
                                              ng-change="onCheckboxChanged()" ng-model="statuses.UK">
-                        <span>No Demand (AMC=0)</span>
+                        <span openlmis-message="label.no.demand"></span>
                       </label>
                     </div>
                   </div>
@@ -172,6 +173,10 @@
                       row.regionName
                       }}
                     </td>
+                    <td data-title="getLocalMessage('label.period')" style="width:100px" sortable="regionName">{{
+                      row.period
+                      }}
+                    </td>
                     <td data-title="getLocalMessage('label.product')" style="min-width:250px" sortable="product">{{
                       row.product }}
                     </td>
@@ -182,7 +187,7 @@
                         sortable="physicalCount">{{ row.physicalCount | number }}
                     </td>
                     <td data-title="getLocalMessage('label.mos')" class="number" style="width:80px" sortable="months">{{
-                      row.months | number: 1 }}
+                      row.months }}
                     </td>
                     <td data-title="getLocalMessage('label.order.quantity')" class="number" style="width:80px"
                         sortable="orderQuantity">{{ row.orderQuantity | number }}

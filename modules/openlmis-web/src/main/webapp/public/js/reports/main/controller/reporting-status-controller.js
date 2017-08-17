@@ -15,13 +15,17 @@ function ReportingStatusController($scope, NonReportingFacilities) {
     // clear old data if there was any
     $scope.data = $scope.datarows = [];
     $scope.filter.max = 10000;
+    $scope.reporting =  $scope.reporting || 'TOT';
 
     $scope.updateFacilityList = function () {
-      if ($scope.reporting) {
+      if ($scope.reporting === 'RP') {
         $scope.data = _.select($scope.responseData.pages.rows[0].details, {'reportingStatus': 'REPORTED'});
-      } else {
+      } else if ($scope.reporting === 'NRP') {
         $scope.data = _.select($scope.responseData.pages.rows[0].details, {'reportingStatus': 'NON_REPORTING'});
       }
+      else
+          $scope.data = $scope.responseData.pages.rows[0].details;
+
       $scope.paramsChanged($scope.tableParams);
     };
 
@@ -60,9 +64,10 @@ function ReportingStatusController($scope, NonReportingFacilities) {
 
   $scope.exportReport = function (type) {
     var paramString = jQuery.param($scope.filter);
-    var url = '/reports/download/non_reporting/' + type + '?' + paramString;
+    var url = '/reports/download/reporting_status/' + type + '?reportingStatus=true&' + paramString;
     window.open(url, "_BLANK");
   };
+
 
   // Summary pie chart options
   $scope.nonReportingReportSummaryPieChartOption = {

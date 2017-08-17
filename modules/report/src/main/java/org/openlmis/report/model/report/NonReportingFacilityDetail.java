@@ -13,6 +13,7 @@
 package org.openlmis.report.model.report;
 
 import lombok.*;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.report.model.ResultRow;
 
 import java.util.Date;
@@ -32,5 +33,8 @@ public class NonReportingFacilityDetail implements ResultRow {
     private String rnrStatus;
     private String reportingStatus;
     private Date createdDate;
+    private String  province;
+    private String program;
+    private String period;
 
 }
