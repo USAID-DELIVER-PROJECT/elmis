@@ -40,6 +40,7 @@ public class LogisticsLineItem extends BaseModel {
   private Integer displayOrder;
 
   private Long openingBalance;
+  private Boolean openingBalanceFromPreviousPeriod = false;
   private Long quantityReceived;
   private Long quantityIssued;
   private Long closingBalance;

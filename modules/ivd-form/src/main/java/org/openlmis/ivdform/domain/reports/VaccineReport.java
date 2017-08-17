@@ -105,6 +105,7 @@ public class VaccineReport extends BaseModel {
         LogisticsLineItem lineitem = previousLineItemMap.get(item.getProductCode());
         if (lineitem != null) {
           item.setOpeningBalance(lineitem.getClosingBalance());
+          item.setOpeningBalanceFromPreviousPeriod(true);
           item.setClosingBalance(item.getOpeningBalance());
         }
       }

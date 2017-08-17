@@ -88,7 +88,7 @@
               <input
                   ng-required="true"
                   ng-class="highlightRequired(report.validate, product[column.name], product.skipped)"
-                  ng-disabled="!report.editable || product.skipped"
+                  ng-disabled="!report.editable || product.skipped || product.openingBalanceFromPreviousPeriod"
                   maxlength="8"
                   ng-change="product.calculateClosingBalance()"
                   ng-model="product.openingBalance"
