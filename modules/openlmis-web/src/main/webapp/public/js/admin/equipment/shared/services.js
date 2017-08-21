@@ -294,7 +294,7 @@ services.factory('GetEquipmentByType', function($resource){
 
 //Energy Type
 services.factory("SaveEnergyType", function($resource){
-    return $resource('/equipment/energy-type/save.json',{},{});
+    return $resource('/equipment/energy-type/saveEquipmentEnergyType.json',{},{});
 });
 
 services.factory("GetEnergyTypeById", function($resource){

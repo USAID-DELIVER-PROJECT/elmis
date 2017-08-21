@@ -36,10 +36,27 @@ public class EquipmentEnergyTypeController extends BaseController {
 
   @RequestMapping(value = "save", method = POST, headers = ACCEPT_JSON)
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
+  public ResponseEntity<OpenLmisResponse> save(@RequestBody EquipmentEnergyType energyType){
+    try {
+      service.save(energyType);
+    }catch(DuplicateKeyException exp){
+      return OpenLmisResponse.error("Duplicate Energy Name Exists in DB.", HttpStatus.BAD_REQUEST);
+    }
+    return OpenLmisResponse.response("status","success");
+  }
+
+
+  @RequestMapping(method = GET, value = "{id}")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
+  public ResponseEntity<OpenLmisResponse> getById(@PathVariable(value="id") Long id){
+    return OpenLmisResponse.response("energyType",service.getById(id));
+  }
+  @RequestMapping(value = "saveEquipmentEnergyType", method = POST, headers = ACCEPT_JSON)
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
   public ResponseEntity<OpenLmisResponse> save(@RequestBody EquipmentEnergyType energyType,HttpServletRequest request){
     ResponseEntity<OpenLmisResponse> successResponse;
     try {
-       Long userId= loggedInUserId(request);
+      Long userId= loggedInUserId(request);
       System.out.println(userId);
       energyType.setModifiedBy(userId);
       energyType.setCreatedBy(userId);
@@ -51,16 +68,5 @@ public class EquipmentEnergyTypeController extends BaseController {
     successResponse = success(String.format("Energy Type '%s' has been successfully saved", energyType.getName()));
     successResponse.getBody().addData("energy_types", energyType);
     return  successResponse;
-
-
-    //return OpenLmisResponse.response("status","success");
   }
-
-
-  @RequestMapping(method = GET, value = "{id}")
-  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
-  public ResponseEntity<OpenLmisResponse> getById(@PathVariable(value="id") Long id){
-    return OpenLmisResponse.response("energyType",service.getById(id));
-  }
-
 }
