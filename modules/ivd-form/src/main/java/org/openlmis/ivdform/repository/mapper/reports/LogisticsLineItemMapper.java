@@ -22,10 +22,10 @@ import java.util.List;
 @Repository
 public interface LogisticsLineItemMapper {
 
-  @Insert("INSERT INTO vaccine_report_logistics_line_items " +
-      " (reportId, productId, productCode, productName, productCategory, displayOrder, openingBalance, quantityReceived, quantityIssued, closingBalance, quantityVvmAlerted, quantityFreezed, quantityExpired, quantityDiscardedUnopened, quantityDiscardedOpened, quantityWastedOther, daysStockedOut , discardingReasonId, discardingReasonExplanation, remarks, createdBy, createdDate, modifiedBy, modifiedDate)" +
-      " values " +
-      " (#{reportId}, #{productId}, #{productCode}, #{productName}, #{productCategory} , #{displayOrder}, #{openingBalance}, #{quantityReceived}, #{quantityIssued}, #{closingBalance}, #{quantityVvmAlerted}, #{quantityFreezed}, #{quantityExpired}, #{quantityDiscardedUnopened}, #{quantityDiscardedOpened}, #{quantityWastedOther},  #{daysStockedOut} , #{discardingReasonId}, #{discardingReasonExplanation}, #{remarks}, #{createdBy}, NOW(), #{modifiedBy}, NOW())")
+  @Insert({"INSERT INTO vaccine_report_logistics_line_items " ,
+      " (reportId, productId, productCode, productName, productCategory, displayOrder, openingBalance, quantityReceived, quantityIssued, closingBalance, quantityVvmAlerted, quantityFreezed, quantityExpired, quantityDiscardedUnopened, quantityDiscardedOpened, quantityWastedOther, daysStockedOut , discardingReasonId, discardingReasonExplanation, remarks, openingBalanceFromPreviousPeriod, createdBy, createdDate, modifiedBy, modifiedDate)" ,
+      " values ",
+      " (#{reportId}, #{productId}, #{productCode}, #{productName}, #{productCategory} , #{displayOrder}, #{openingBalance}, #{quantityReceived}, #{quantityIssued}, #{closingBalance}, #{quantityVvmAlerted}, #{quantityFreezed}, #{quantityExpired}, #{quantityDiscardedUnopened}, #{quantityDiscardedOpened}, #{quantityWastedOther},  #{daysStockedOut} , #{discardingReasonId}, #{discardingReasonExplanation}, #{remarks}, #{openingBalanceFromPreviousPeriod}, #{createdBy}, NOW(), #{modifiedBy}, NOW())" })
   @Options(useGeneratedKeys = true)
   Integer insert(LogisticsLineItem lineItem);
 
@@ -44,6 +44,7 @@ public interface LogisticsLineItemMapper {
       ", discardingReasonExplanation = #{discardingReasonExplanation} " +
       ", discardingReasonId = #{discardingReasonId} " +
       ", remarks = #{remarks} " +
+      ", openingBalanceFromPreviousPeriod = #{openingBalanceFromPreviousPeriod} " +
       ", quantityIssued = #{quantityIssued} " +
       ", closingBalance = #{closingBalance} " +
       ", quantityVvmAlerted = #{quantityVvmAlerted}" +
