@@ -25,11 +25,11 @@ public class VaccineInventoryReportRepository {
         return mapper.getTotalDistributionCompletenessReport(startDate, endDate, districtId);
     }
 
-    public List<Map<String,String>> getDistributedFacilities(Long periodId, Long facilityId,Pagination pagination){
-        return mapper.getDistributedFacilities(periodId,facilityId);
+    public List<Map<String,String>> getDistributedFacilities(Long periodId, Long facilityId, String type, Pagination pagination){
+        return mapper.getDistributedFacilities(periodId,facilityId,type);
     }
 
-    public Integer getTotalDistributedFacilities(Long periodId, Long facilityId) {
-        return mapper.getTotalDistributedFacilities(periodId,facilityId);
+    public Integer getTotalDistributedFacilities(Long periodId, Long facilityId, String type) {
+        return mapper.getTotalDistributedFacilities(periodId,facilityId,type);
     }
 }

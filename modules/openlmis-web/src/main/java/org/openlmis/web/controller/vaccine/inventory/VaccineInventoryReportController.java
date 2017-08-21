@@ -53,12 +53,13 @@ public class VaccineInventoryReportController extends BaseController {
     @RequestMapping(value = "/getDistributedFacilities", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getDistributedFacilities(@RequestParam("periodId") Long periodId,
                                                                       @RequestParam("facilityId") Long facilityId,
+                                                                      @RequestParam("type") String type,
                                                                       @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                                       @Value("${search.page.size}") String limit) {
 
         Pagination pagination = new Pagination(page, parseInt(limit));
-        OpenLmisResponse openLdrResponse = new OpenLmisResponse("distributedFacilities", service.getDistributedFacilities(periodId,facilityId, pagination));
-        pagination.setTotalRecords(service.getTotalDistributedFacilities(periodId,facilityId));
+        OpenLmisResponse openLdrResponse = new OpenLmisResponse("distributedFacilities", service.getDistributedFacilities(periodId,facilityId,type, pagination));
+        pagination.setTotalRecords(service.getTotalDistributedFacilities(periodId,facilityId,type));
         openLdrResponse.addData("pagination", pagination);
         return openLdrResponse.response(OK);
 //

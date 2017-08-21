@@ -38,8 +38,8 @@ public class VaccineInventoryReportService {
         return repository.getDistributionCompletenessReport(startDate, endDate, districtId,type, pagination);
     }
 
-    public List<Map<String,String>> getDistributedFacilities(Long periodId, Long facilityId,Pagination pagination){
-        return repository.getDistributedFacilities(periodId,facilityId,pagination);
+    public List<Map<String,String>> getDistributedFacilities(Long periodId, Long facilityId, String type, Pagination pagination){
+        return repository.getDistributedFacilities(periodId,facilityId,type,pagination);
     }
 
 
@@ -52,7 +52,7 @@ public class VaccineInventoryReportService {
         return repository.getTotalDistributionCompletenessReport(startDate, endDate, districtId);
     }
 
-    public Integer getTotalDistributedFacilities(Long periodId, Long facilityId) {
-        return repository.getTotalDistributedFacilities(periodId,facilityId);
+    public Integer getTotalDistributedFacilities(Long periodId, Long facilityId, String type) {
+        return repository.getTotalDistributedFacilities(periodId,facilityId,type);
     }
 }

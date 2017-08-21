@@ -33,13 +33,13 @@ public interface VaccineInventoryReportMapper {
             "join vaccine_distributions d on d.id=dl.distributionid\n" +
             "join facilities f on f.id=d.tofacilityid\n" +
             "join products p on p.id=dl.productid\n" +
-            "where d.periodid=#{periodId} and d.fromfacilityid=#{facilityId}\n" +
+            "where d.periodid=#{periodId} and d.fromfacilityid=#{facilityId} and DISTRIBUTIONTYPE=#{type}\n" +
             "group by f.name, p.primaryname\n" +
             "order by f.name, productid")
-    List<Map<String,String>> getDistributedFacilities(@Param("periodId")Long periodId, @Param("facilityId")Long facilityId
-                                               );
+    List<Map<String,String>> getDistributedFacilities(@Param("periodId") Long periodId, @Param("facilityId") Long facilityId,
+                                                    @Param("type") String type);
 
     @Select("select count(Distinct d.tofacilityid) total from vaccine_distributions d\n" +
-            "where d.periodid=#{periodId} and d.fromfacilityid=#{facilityId}")
-    Integer getTotalDistributedFacilities(@Param("periodId")Long periodId, @Param("facilityId")Long facilityId);
+            "where d.periodid=#{periodId} and d.fromfacilityid=#{facilityId} and DISTRIBUTIONTYPE=#{type}")
+    Integer getTotalDistributedFacilities(@Param("periodId")Long periodId, @Param("facilityId")Long facilityId,@Param("type") String type);
 }
