@@ -124,11 +124,12 @@
                         </tr>
                         </thead>
                         <tbody>
+
                         <tr ng-repeat="row in dataRows">
                             <td>{{ dataRows[$index-1].region_name == row.region_name ? '' : row.region_name }}</td>
                             <td>{{ dataRows[$index-1].district_name == row.district_name ? '' : row.district_name }}
                             </td>
-                            <td>{{row.periodname}}</td>
+                            <td>{{row.period}}</td>
                             <td class="number">{{row.expected | number}}</td>
                             <td class="number">
                                 <a ng-if="row.issued >0" href ng-click="showDistributionModal(row)">{{row.issued |number}}</a>
@@ -155,7 +156,7 @@
 
 <div  id="popup-box"  modal="distributionModal"
      options="{'backdrop':'static', 'escape':false}"
-     style="width:80% !important;margin-left:-40% !important;">
+     style="width:80% !important;margin-left:-40% !important;" ng-show="distributionModal">
 
     <div class="modal-header">
         <h3 >Facilities Distribution</h3>
@@ -192,6 +193,7 @@
                       </tr>
                     </tbody>
                 </table>
+
                 <pagination total-items="dTotalItems" page="dCurrentPage" max-size="5"
                             items-per-page="dPagination.limit"
                             direction-links="false" class="pagination-sm"></pagination>
