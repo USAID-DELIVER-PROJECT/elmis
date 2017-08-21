@@ -289,3 +289,18 @@ services.factory('GetEquipmentByDesignation', function($resource){
 services.factory('GetEquipmentByType', function($resource){
     return $resource('/equipment/manage/getEquipmentBy/:id.json',{id:'@id'},{});
 });
+
+
+
+//Energy Type
+services.factory("SaveEnergyType", function($resource){
+    return $resource('/equipment/energy-type/save.json',{},{});
+});
+
+services.factory("GetEnergyTypeById", function($resource){
+    return $resource('/equipment/energy-type/:id.json',{id:'@id'},{});
+});
+
+services.factory('EnergyTypes', function($resource){
+    return $resource('/equipment/energy-type/list.json',{},{});
+});
