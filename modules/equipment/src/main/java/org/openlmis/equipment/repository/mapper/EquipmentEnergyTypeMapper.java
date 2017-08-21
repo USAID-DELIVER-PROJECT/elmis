@@ -32,7 +32,7 @@ public interface EquipmentEnergyTypeMapper {
 
   @Update("UPDATE equipment_energy_types " +
       "set " +
-      "name = #{name},modifiedBy = #{modifiedby}, modifieddate = NOW() " +
+      "name = #{name},modifiedBy = #{modifiedBy}, modifieddate = NOW() " +
       "WHERE id = #{id}")
   void update(EquipmentEnergyType equipmentEnergyType);
 
