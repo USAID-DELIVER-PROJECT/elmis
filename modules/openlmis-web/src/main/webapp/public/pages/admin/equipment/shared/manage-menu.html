@@ -60,6 +60,11 @@
                 <span id="cold-chain-resignation" openlmis-message="link.manage.equipment.resignation" ></span>
             </a>
         </li>
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="manageEnergyTypeSelected">
+            <a href="/public/pages/admin/equipment/equipment-energe-type/index.html">
+                <span id="energy-Type">Energy Type</span>
+            </a>
+        </li>
 
     </ul>
 </div>
