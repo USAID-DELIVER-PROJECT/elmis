@@ -35,8 +35,8 @@ import java.net.URL;
 public class SdpNotificationService {
 
     public  static final String TIIS_URL= "VIMS_TIMR_INTERGRATION";
-    public  static final String TIIS_USERNAME= "VIMS_TIMR_INTERGRATION";
-    public  static final String TIIS_PASSWORD= "VIMS_TIMR_INTERGRATION";
+    public  static final String TIIS_USERNAME= "VIMS_TIMR_USERNAME";
+    public  static final String TIIS_PASSWORD= "VIMS_TIMR_PASSWORD";
 
     @Autowired
     private VaccineInventoryDistributionMapper mapper;
