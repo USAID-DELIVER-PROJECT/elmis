@@ -6,6 +6,8 @@ import org.openlmis.stockmanagement.domain.Lot;
 import org.openlmis.stockmanagement.domain.LotOnHand;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface LotMapper {
 
@@ -96,4 +98,16 @@ public interface LotMapper {
           ", modifiedDate = NOW()" +
       "WHERE id = #{id}")
   int updateLotOnHand(LotOnHand lotOnHand);
+
+    @Delete("delete from lots where id = #{id}")
+    void delete(@Param("id") Long id);
+
+    @Select("select * from lots")
+    @Results({
+            @Result(
+                    property = "product", column = "productId", javaType = Product.class,
+                    one = @One(select = "org.openlmis.core.repository.mapper.ProductMapper.getById")),
+            @Result(property = "lotCode", column = "lotnumber")
+    })
+    List<Lot> getAll();
 }
