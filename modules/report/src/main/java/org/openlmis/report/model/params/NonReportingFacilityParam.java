@@ -29,13 +29,14 @@ public class NonReportingFacilityParam
   @RequiredParam
   private Long schedule;
 
-  @RequiredParam
+  //@RequiredParam
   private Long period;
-  private Long periodEnd;
-private  String periodString;
+  private String periodEnd;
+  private  String periodString;
   private Long zone;
 
   private Long facilityType;
   private  Long facilityOwner;
+  private String periodStart;
 
 }
