@@ -19,33 +19,17 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
 
                 $scope.summaries = data.pages.rows[0].summary;
-                $scope.periodListForChart = data.pages.rows[0].keyValueSummary.periodsForChart;
-                $scope.data = _.select(data.pages.rows[0].details, {'reportingStatus': 'NON_REPORTING'});
-                $scope.reportingStatus = data.pages.rows[0].details;
+                $scope.periods = data.pages.rows[0].keyValueSummary.periodsForChart;
+                $scope.data = getDataWithRankedPeriod(data.pages.rows[0].details);
 
-                $scope.nonReportingStackedChartData = [];
-                $scope.nonReportingFacilitiesPieChartData = [
-                    {
-                        data: getOrderedTransformedCountByMonthChartData({'reportingStatus': 'REPORTED'}),
-                        label: "Reported",
-                        code: "REPORTED",
-                        color: 'green'
-                    },
-                    {
-                        data: getOrderedTransformedCountByMonthChartData({'reportingStatus': 'NON_REPORTING'}),
-                        label: "Non-Reported",
-                        code: "NON_REPORTING",
-                        color: 'red'
-                    }
-                ];
+                $scope.rawChartData = getChartData();
+                $scope.chart = {};
+                $scope.chart.data   = convertFacilityCountToReportingRate(); // chart data with reporting rate
+                $scope.chart.ticks  = getChartTicks();
+                $scope.chart.option = getChartOptions();
 
-                $scope.ticks = _.chain( $scope.periodListForChart)
-                    .map(function(item){return [item.rank, item.name]; } )
-                    .value();
-
-                $scope.initChart();
-                $("#non-reporting-facilities-summary").bind("plotclick", $scope.populateReportingStatusByFacilityData);
-                $("#non-reporting-facilities-summary").bind("plothover", $scope.hover);
+                $("#non-reporting-facilities-summary").bind("plotclick", chartItemClick);
+                $("#non-reporting-facilities-summary").bind("plothover", chartItemHover);
 
                 $scope.paramsChanged($scope.tableParams);
 
@@ -60,69 +44,117 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
         });
     };
 
-    function getOrderedTransformedCountByMonthChartData(reportTypeFilter){
-        return _.chain($scope.reportingStatus)
-            .select(reportTypeFilter)
-            .map(function(item){return {order:$scope.getPeriodOrder(item.period) , period:item.period }; })
-            .countBy('order')
-            .map(function(key, value) { return [parseInt(value, 10), key]; } )
-            .value();
+    /** Calculate and Replace Y value of the series data to percentage of combined series of the same data point **/
+    function convertFacilityCountToReportingRate(chartData) {
+       var x=0, y=1;
+       var REPORTING_SERIES = 0, NON_REPORTING_SERIES = 1;
+
+       var data = getChartData();
+
+        _.map(data[NON_REPORTING_SERIES].data, function(dataPoint){
+            dataPoint[y] = ((dataPoint[y] / (dataPoint[y] + getChartDataPointYvalue(data[REPORTING_SERIES], dataPoint[x]))) *100).toFixed(2); });
+
+        _.map(data[REPORTING_SERIES].data, function(dataPoint){
+          dataPoint[y] = (100 - getChartDataPointYvalue(data[NON_REPORTING_SERIES], dataPoint[x])); });
+
+        return data;
+
     }
 
-    $scope.getPeriodOrder = function(periodName){
-        var periodOrder =  _.findWhere($scope.periodListForChart, {name : periodName}) ;
-        return periodOrder !== undefined ?  periodOrder.rank : -1;
+    function getChartDataPointYvalue(series, dataPointXValue){
+       return _.chain(series.data)
+            .filter(function(dataPoint){  return dataPoint[0] == dataPointXValue; })
+            .map(function(item) { return item[1]; })
+            .value()[0] || 0;
+    }
+
+
+    function getChartData(){
+       return [
+            {
+                data: getFacilityCountPerPeriodAndByReportingStatus({'reportingStatus': 'REPORTED'}),
+                label: "Reported",
+                code: "REPORTED",
+                color: 'green'
+            },
+            {
+                data: getFacilityCountPerPeriodAndByReportingStatus({'reportingStatus': 'NON_REPORTING'}),
+                label: "Non-Reported",
+                code: "NON_REPORTING",
+                color: 'red'
+            }
+        ];
+    }
+
+    $scope.getNonReportingTableData = function(dataPointXValue){
+        return  getChartDataPointYvalue($scope.rawChartData[1], dataPointXValue);
+    };
+    $scope.getReportingTableData = function(dataPointXValue){
+        return  getChartDataPointYvalue($scope.rawChartData[0], dataPointXValue);
+    };
+    $scope.getExpectedFacilitiesTableData = function(dataPointXValue){
+        return  getChartDataPointYvalue($scope.rawChartData[1], dataPointXValue)  +
+            getChartDataPointYvalue($scope.rawChartData[0], dataPointXValue);
+
     };
 
-    $scope.populateReportingStatusByFacilityData = function(event, pos, item){
+    function getDataWithRankedPeriod(data){
+      return  _.chain(data)
+                .map(function(item){
+                    item.order = getPeriodOrder(item.period);
+                    return item; })
+                .value();
+    }
+
+    function getFacilityCountPerPeriodAndByReportingStatus(reportTypeFilter){
+        return _.chain($scope.data)
+                .select(reportTypeFilter)
+                .countBy('order')
+                .map(function(key, value) { return [parseInt(value, 10), key]; } )
+                .value();
+    }
+
+    function getPeriodOrder(periodName){
+        var periodOrder =  _.findWhere($scope.periods, {name : periodName}) ;
+        return periodOrder !== undefined ?  periodOrder.rank : -1;
+    }
+
+    function getChartTicks(){
+       return _.chain( $scope.periods)
+                .map(function(item){return [item.rank, item.name]; } )
+                .value();
+    }
+
+    function chartItemClick(event, pos, item){
         if(item) {
 
-            $scope.modalData = _.chain($scope.reportingStatus)
-                .select({'reportingStatus': item.series.code})
-                .map(function (data) {
-                    data.order = $scope.getPeriodOrder(data.period);
-                    return data;
-                })
-                .select({'order': item.datapoint[0]}).value();
-
-            $scope.tableParamsModal = new ngTableParams({
-                page: 1,
-                total: $scope.modalData.length,
-                count: 50
-            });
-
-            $scope.paramsChanged($scope.tableParamsModal);
+            $scope.modalData = _.chain($scope.data)
+                .select({'reportingStatus': item.series.code, 'order': item.datapoint[0]})
+                .value();
 
             $scope.title = (item.series.code === 'REPORTED') ? 'Reporting Facilities' :
                 'Non Reporting Facilities';
 
             $scope.successModal = true;
         }
-    };
+    }
 
-    $scope.exportReport = function (type) {
-        var paramString = jQuery.param($scope.filter);
-        var url = '/reports/download/non_reporting/' + type + '?' + paramString;
-        window.open(url, "_BLANK");
-    };
+    function chartItemHover(event, pos, item){
+        if (item) {
+            $("#tooltip").html(item.series.label + " : " +
+                (item.datapoint[1].toFixed(2) - item.datapoint[2].toFixed(2))+ " %")
+                .css({top: item.pageY+5, left: item.pageX+5})
+                .fadeIn(200);
+        } else {
+            $("#tooltip").hide();
+        }
+    }
 
-    $scope.hover = function(event, pos, item){
-            if (item) {
-                $("#tooltip").html(item.series.label + " : " +
-                    (item.datapoint[1].toFixed(2) - item.datapoint[2].toFixed(2)))
-                    .css({top: item.pageY+5, left: item.pageX+5})
-                    .fadeIn(200);
-            } else {
-                $("#tooltip").hide();
-            }
-    };
-
-    $scope.initChart = function () {
-
-        $scope.nonReportingReportSummaryPieChartOption = {
+    function getChartOptions() {
+        return {
             xaxis: {
                 minTickSize: 9,
-                ticks: $scope.ticks
+                ticks: $scope.chart.ticks
             },
             series: {
                 bars: {
@@ -137,9 +169,15 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
                 hoverable: true
             }
         };
-    };
+    }
 
     function bindChartEvent(elementSelector, eventType, callback){
         $(elementSelector).bind(eventType, callback);
     }
+
+    $scope.exportReport = function (type) {
+        var paramString = jQuery.param($scope.filter);
+        var url = '/reports/download/non_reporting/' + type + '?' + paramString;
+        window.open(url, "_BLANK");
+    };
 }
