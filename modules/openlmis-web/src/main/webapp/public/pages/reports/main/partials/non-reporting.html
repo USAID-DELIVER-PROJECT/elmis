@@ -32,9 +32,9 @@
           <div filter-container class="clearfix">
             <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
             <schedule-filter class="form-cell horizontalFilters" required="true"></schedule-filter>
-            <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
-            <period-session-by-year-filter label="'label.period.from'" year="filter.year" period="filter.period" class="form-cell horizontalFilters" ></period-session-by-year-filter>
-            <period-session-by-year-filter label="'label.period.to'"  year="filter.year" period="filter.periodEnd" class="form-cell horizontalFilters" ></period-session-by-year-filter>
+            <date-range-filter perioderror="error" year="staticYear" startdate="filter.periodStart"
+                               enddate="filter.periodEnd"
+                               class="form-cell horizontalFilters"></date-range-filter>
             <zone-filter class="form-cell horizontalFilters"></zone-filter>
             <facility-owner-filter class="form-cell horizontalFilters"></facility-owner-filter>
           </div>
@@ -48,14 +48,12 @@
     </table>
     <div ng-show="datarows.length > 0">
       <div top-right-table-summary></div>
-
-
       <div class="container-fluid">
         <div class="row-fluid">
-          <div class="span4">
+          <div class="span12">
             <div><br/><br/></div>
             <div class="row">
-              <div class="span6 offset3">
+              <div class="span3 offset4">
                 <div>
                   <div>
                     <span>Expected Facilities</span> :
@@ -79,14 +77,15 @@
               </div>
             </div>
             <div class="row">
-              <div class="span6 offset3">
+              <div class="span12">
                 <a-float id="non-reporting-facilities-summary" af-option="nonReportingReportSummaryPieChartOption"
-                         af-data="nonReportingFacilitiesPieChartData" class="chart"></a-float>
+                         af-data="nonReportingFacilitiesPieChartData" class="chart offset2 span7" style="height: 300px;" ></a-float>
+
                 <div id="nonReportingReportSummary" class="container-legend-drifted span12 chartLegend"></div>
               </div>
             </div>
           </div>
-          <div class="span8">
+          <div class="span12">
             <table ng-show="datarows.length > 0" class="table-bordered table table-striped" ng-table="tableParams">
               <tbody>
               <tr ng-repeat="row in datarows">
@@ -123,3 +122,48 @@
     </div>
   </div>
 </div>
+<div id="popup-box" modal="successModal" style="width: 850px;">
+
+  <div class="modal-header">
+    <h3>{{ title }}</h3>
+  </div>
+  <div class="modal-body">
+    <div class="span12">
+      <table ng-show="modalData.length > 0" class="table-bordered table table-striped" ng-table="tableParamsModal">
+        <tbody>
+        <tr ng-repeat="row in modalData">
+          <td data-title="'#'" class="number" style="width:20px">{{ $index+1 }}</td>
+          <td data-title="getLocalMessage('label.facility.code')"   sortable="code">{{ row.code
+            }}
+          </td>
+          <td data-title="getLocalMessage('label.facility.name')"   sortable="name">{{ row.name
+            }}
+          </td>
+          <td data-title="getLocalMessage('label.facility.type')"   sortable="facilityType">{{
+            row.facilityType }}
+          </td>
+          <td data-title="getLocalMessage('label.province')"   sortable="location">{{ row.province
+            }}
+          </td>
+          <td data-title="getLocalMessage('label.district')"   sortable="location">{{ row.location
+            }}
+          </td>
+          <td data-title="getLocalMessage('label.program')"   sortable="location">{{ row.program
+            }}
+          </td>
+          <td data-title="getLocalMessage('label.period')"   sortable="location">{{ row.period
+            }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <a class="btn btn-primary pull-right" ng-click="successModal=false;">Close</a>
+  </div>
+</div>
+
+<div id="tooltip"
+     style="position: absolute; display: none; border: 1px solid #fdd;padding: 2px;background-color: #fee;"></div>

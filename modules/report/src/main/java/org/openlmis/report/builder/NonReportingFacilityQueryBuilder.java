@@ -40,6 +40,7 @@ public class NonReportingFacilityQueryBuilder {
         SELECT_DISTINCT("'REPORTED' as reportingStatus");
         SELECT_DISTINCT("r.status as rnrStatus");
         SELECT_DISTINCT("r.id as rnrId");
+        SELECT_DISTINCT("extract('epoch' from period.startdate)::bigint  AS epoch");
         SELECT_DISTINCT(" (select max(rs.createdDate) from requisition_status_changes rs where rs.rnrid = r.id and rs.status = 'AUTHORIZED') as createdDate");
         FROM("facilities");
         INNER_JOIN("requisition_group_members rgm on rgm.facilityid = facilities.id");
@@ -67,6 +68,14 @@ public class NonReportingFacilityQueryBuilder {
         return sqlStatment;
     }
 
+    public static String getPeriodsTicksForChart(Map params){
+        BEGIN();
+        SELECT("name");
+        SELECT("rank() OVER (ORDER BY startdate ASC)");
+        FROM("processing_periods");
+        WHERE("id = any(#{filterCriteria.periodString}::int[])");
+        return SQL();
+    }
     private static String getQueryString(NonReportingFacilityParam filterParam) {
         BEGIN();
         SELECT_DISTINCT("facilities.code, facilities.name");
@@ -76,6 +85,7 @@ public class NonReportingFacilityQueryBuilder {
         SELECT_DISTINCT("period.name period");
         SELECT_DISTINCT("ft.name as facilityType");
         SELECT_DISTINCT("'NON_REPORTING' as reportingStatus");
+        SELECT_DISTINCT("extract('epoch' from period.startdate)::bigint  AS epoch");
         FROM("facilities");
         INNER_JOIN("requisition_group_members rgm on rgm.facilityid = facilities.id");
         INNER_JOIN("vw_districts gz on gz.district_id = facilities.geographiczoneid");

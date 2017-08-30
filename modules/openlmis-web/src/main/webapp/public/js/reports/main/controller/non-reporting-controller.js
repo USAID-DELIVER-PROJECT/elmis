@@ -9,94 +9,137 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function NonReportingController($scope, NonReportingFacilities) {
+function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
 
-  $scope.OnFilterChanged = function () {
-    // clear old data if there was any
-    $scope.data = $scope.datarows = [];
-    $scope.filter.max = 10000;
-    NonReportingFacilities.get($scope.getSanitizedParameter(), function (data) {
-      if (data.pages !== undefined && data.pages.rows !== undefined) {
-        $scope.summaries = data.pages.rows[0].summary;
+    $scope.OnFilterChanged = function () {
+        // clear old data if there was any
+        $scope.data = $scope.datarows = [];
+        $scope.filter.max = 10000;
+        NonReportingFacilities.get($scope.getSanitizedParameter(), function (data) {
+            if (data.pages !== undefined && data.pages.rows !== undefined) {
 
-        $scope.data = _.select(data.pages.rows[0].details, {'reportingStatus': 'NON_REPORTING'});
-        $scope.paramsChanged($scope.tableParams);
+                $scope.summaries = data.pages.rows[0].summary;
+                $scope.periodListForChart = data.pages.rows[0].keyValueSummary.periodsForChart;
+                $scope.data = _.select(data.pages.rows[0].details, {'reportingStatus': 'NON_REPORTING'});
+                $scope.reportingStatus = data.pages.rows[0].details;
 
-        $scope.nonReportingFacilitiesPieChartData = [];
-        $scope.summary = {
-          nonReporting: _.findWhere($scope.summaries, {name: 'TOTAL_NON_REPORTING'}).count,
-          reporting: _.findWhere($scope.summaries, {name: 'REPORTING_FACILITIES'}).count
-        };
+                $scope.nonReportingStackedChartData = [];
+                $scope.nonReportingFacilitiesPieChartData = [
+                    {
+                        data: getOrderedTransformedCountByMonthChartData({'reportingStatus': 'REPORTED'}),
+                        label: "Reported",
+                        code: "REPORTED",
+                        color: 'green'
+                    },
+                    {
+                        data: getOrderedTransformedCountByMonthChartData({'reportingStatus': 'NON_REPORTING'}),
+                        label: "Non-Reported",
+                        code: "NON_REPORTING",
+                        color: 'red'
+                    }
+                ];
 
-        $scope.summary.total = parseInt($scope.summary.nonReporting,10) + parseInt($scope.summary.reporting,10);
+                $scope.ticks = _.chain( $scope.periodListForChart)
+                    .map(function(item){return [item.rank, item.name]; } )
+                    .value();
 
-        $scope.nonReportingFacilitiesPieChartData.push({
-          label: 'Reported',
-          data: $scope.summary.reporting,
-          color: '#A3CC29'
+                $scope.initChart();
+                $("#non-reporting-facilities-summary").bind("plotclick", $scope.populateReportingStatusByFacilityData);
+                $("#non-reporting-facilities-summary").bind("plothover", $scope.hover);
+
+                $scope.paramsChanged($scope.tableParams);
+
+                $scope.summary = {
+                    nonReporting: _.findWhere($scope.summaries, {name: 'TOTAL_NON_REPORTING'}).count,
+                    reporting: _.findWhere($scope.summaries, {name: 'REPORTING_FACILITIES'}).count
+                };
+
+                $scope.summary.total = parseInt($scope.summary.nonReporting,10) +
+                    parseInt($scope.summary.reporting,10);
+            }
         });
+    };
 
-        $scope.nonReportingFacilitiesPieChartData.push({
-          label: 'Did not Report',
-          data: $scope.summary.nonReporting,
-          color: '#FFB445'
-        });
-      }
-    });
-  };
-
-
-  $scope.exportReport = function (type) {
-    var paramString = jQuery.param($scope.filter);
-    var url = '/reports/download/non_reporting/' + type + '?' + paramString;
-    window.open(url, "_BLANK");
-  };
-
-  // Summary pie chart options
-  $scope.nonReportingReportSummaryPieChartOption = {
-    series: {
-      pie: {
-        show: true,
-        radius: 1,
-        label: {
-          show: true,
-          radius: 2 / 3,
-          formatter: function (label, series) {
-            return '<div style="font-size:8pt;text-align:center;padding:2px;color:black;">' + Math.round(series.percent) + '%</div>';
-          },
-          threshold: 0.1
-        }
-      }
-    },
-    legend: {
-      container: $("#nonReportingReportSummary"),
-      noColumns: 0,
-      labelBoxBorderColor: "none",
-      sorted: "descending",
-      backgroundOpacity: 1,
-      labelFormatter: function (label, series) {
-        var percent = Math.round(series.percent);
-        var number = series.data[0][1];
-        return ('<b>' + label + '</b>');
-      }
-    },
-    grid: {
-      hoverable: true,
-      clickable: true,
-      borderWidth: 1,
-      borderColor: "#000",
-      backgroundColor: {
-        colors: ["red", "green", "yellow"]
-      }
-    },
-    tooltip: true,
-    tooltipOpts: {
-      content: "%p.0%, %s",
-      shifts: {
-        x: 20,
-        y: 0
-      },
-      defaultTheme: false
+    function getOrderedTransformedCountByMonthChartData(reportTypeFilter){
+        return _.chain($scope.reportingStatus)
+            .select(reportTypeFilter)
+            .map(function(item){return {order:$scope.getPeriodOrder(item.period) , period:item.period }; })
+            .countBy('order')
+            .map(function(key, value) { return [parseInt(value, 10), key]; } )
+            .value();
     }
-  };
+
+    $scope.getPeriodOrder = function(periodName){
+        var periodOrder =  _.findWhere($scope.periodListForChart, {name : periodName}) ;
+        return periodOrder !== undefined ?  periodOrder.rank : -1;
+    };
+
+    $scope.populateReportingStatusByFacilityData = function(event, pos, item){
+        if(item) {
+
+            $scope.modalData = _.chain($scope.reportingStatus)
+                .select({'reportingStatus': item.series.code})
+                .map(function (data) {
+                    data.order = $scope.getPeriodOrder(data.period);
+                    return data;
+                })
+                .select({'order': item.datapoint[0]}).value();
+
+            $scope.tableParamsModal = new ngTableParams({
+                page: 1,
+                total: $scope.modalData.length,
+                count: 50
+            });
+
+            $scope.paramsChanged($scope.tableParamsModal);
+
+            $scope.title = (item.series.code === 'REPORTED') ? 'Reporting Facilities' :
+                'Non Reporting Facilities';
+
+            $scope.successModal = true;
+        }
+    };
+
+    $scope.exportReport = function (type) {
+        var paramString = jQuery.param($scope.filter);
+        var url = '/reports/download/non_reporting/' + type + '?' + paramString;
+        window.open(url, "_BLANK");
+    };
+
+    $scope.hover = function(event, pos, item){
+            if (item) {
+                $("#tooltip").html(item.series.label + " : " +
+                    (item.datapoint[1].toFixed(2) - item.datapoint[2].toFixed(2)))
+                    .css({top: item.pageY+5, left: item.pageX+5})
+                    .fadeIn(200);
+            } else {
+                $("#tooltip").hide();
+            }
+    };
+
+    $scope.initChart = function () {
+
+        $scope.nonReportingReportSummaryPieChartOption = {
+            xaxis: {
+                minTickSize: 9,
+                ticks: $scope.ticks
+            },
+            series: {
+                bars: {
+                    show: true,
+                    barWidth: 0.9,
+                    align: "center"
+                },
+                stack: true
+            },
+            grid: {
+                clickable: true,
+                hoverable: true
+            }
+        };
+    };
+
+    function bindChartEvent(elementSelector, eventType, callback){
+        $(elementSelector).bind(eventType, callback);
+    }
 }
