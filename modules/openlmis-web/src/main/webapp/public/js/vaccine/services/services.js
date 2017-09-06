@@ -651,3 +651,22 @@ services.factory('GetVaccineInventoryFacilityDetails', function($resource){
 
     return $resource('/vaccine/dashboard/vaccineInventoryFacilityDetails.json',{},{});
 });
+
+//Log Tag API
+services.factory('GetAllLogTagTemperature', function($resource){
+
+    return $resource('/log-tag-api/getLogTagTemps.json',{},{});
+});
+
+services.factory('GetAllLogTagTemperatureById',function($resource){
+    return $resource('/log-tag-api/byId/:id',{id:'@id'},{});
+});
+
+services.factory('SaveLogTagTemperatureInfo', function ($resource) {
+    return $resource('/log-tag-api/save', {}, {});
+});
+
+services.factory('ReceiveNotification', function ($resource) {
+    return $resource('/vaccine/orderRequisition/receiveNotification', {}, {});
+});
+

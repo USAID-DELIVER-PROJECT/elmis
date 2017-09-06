@@ -304,3 +304,17 @@ services.factory("GetEnergyTypeById", function($resource){
 services.factory('EnergyTypes', function($resource){
     return $resource('/equipment/energy-type/list.json',{},{});
 });
+
+//LOT
+
+services.factory("SaveLOt", function($resource){
+    return $resource('/lot/save.json',{},{});
+});
+
+services.factory("GetLotById", function($resource){
+    return $resource('/lot/:id.json',{id:'@id'},{});
+});
+
+services.factory('LotLists', function($resource){
+    return $resource('/lot/lots.json',{},{});
+});
