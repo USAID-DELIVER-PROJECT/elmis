@@ -53,6 +53,7 @@ public class LotController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getLots( ){
         return OpenLmisResponse.response("lots",service.getAll());
     }
+
     @RequestMapping(value="lot/{id}",method = GET,headers = ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getById(@PathVariable(value="id") Long id){
         return OpenLmisResponse.response("lotsById",service.getById(id));
