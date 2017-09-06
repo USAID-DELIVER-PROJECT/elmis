@@ -36,5 +36,6 @@ public class NonReportingFacilityDetail implements ResultRow {
     private String  province;
     private String program;
     private String period;
+    private Long epoch;
 
 }

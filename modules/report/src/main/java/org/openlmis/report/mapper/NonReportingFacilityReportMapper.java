@@ -25,6 +25,7 @@ import org.openlmis.report.model.report.NonReportingFacilityDetail;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface NonReportingFacilityReportMapper {
@@ -44,7 +45,10 @@ public interface NonReportingFacilityReportMapper {
                                              @Param("userId") Long userId
   );
   @Select("SELECT  * from processing_periods p\n" +
-          "WHERE p.startdate >=(select pp.startdate FROM  processing_periods pp where pp.id= #{filterCriteria.period})\n" +
-          "and  p.startdate <=(select pp.startdate FROM  processing_periods pp where pp.id= #{filterCriteria.periodEnd})")
+          "WHERE p.startdate >= date_trunc('MONTH',#{filterCriteria.periodStart}::date)::DATE\n" +
+          "and  p.startdate <= date_trunc('MONTH',#{filterCriteria.periodEnd}::date)::DATE")
   List<ProcessingPeriod> getReportingPeriodList(@Param(value = "filterCriteria") NonReportingFacilityParam params);
+
+  @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getPeriodsTicksForChart")
+  List<Map<String, Object>> getPeriodsTicksForChart(@Param("filterCriteria") NonReportingFacilityParam params) ;
 }

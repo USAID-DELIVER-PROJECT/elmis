@@ -13,6 +13,7 @@
 package org.openlmis.report.service;
 
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.mapper.NonReportingFacilityReportMapper;
 import org.openlmis.report.model.ResultRow;
@@ -40,6 +41,7 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
     private static final String TOTAL_FACILITIES = "TOTAL_FACILITIES";
     private static final String REPORTING_FACILITIES = "REPORTING_FACILITIES";
     public static final String REPORTING_STATUS = "reportingStatus";
+    public static final String PERIODS_FOR_CHART = "periodsForChart";
 
     @Autowired
     private NonReportingFacilityReportMapper reportMapper;
@@ -53,23 +55,23 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
     public List<? extends ResultRow> getResultSet(Map<String, String[]> filterCriteria) {
         RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
 
+        NonReportingFacilityParam nonReportingFacilityParam = getFilterParameters(filterCriteria);
+        String periodListString = this.getPeriodParameter(nonReportingFacilityParam, rowBounds);
+        nonReportingFacilityParam.setPeriodString(periodListString);
+
         if (filterCriteria.get(REPORTING_STATUS) != null) {
-            NonReportingFacilityParam nonReportingFacilityParam = getFilterParameters(filterCriteria);
-            String periodListString = this.getPeriodParameter(nonReportingFacilityParam, rowBounds);
-            nonReportingFacilityParam.setPeriodString(periodListString);
-            System.out.println(nonReportingFacilityParam.getPeriodString());
             List<NonReportingFacilityDetail> detail = reportMapper.getNonReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
             detail.addAll(reportMapper.getReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId()));
             return detail;
         }
 
-        return reportMapper.getNonReportingFacilities(getFilterParameters(filterCriteria), rowBounds, this.getUserId());
+        return reportMapper.getNonReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
     }
 
     private String getPeriodParameter(NonReportingFacilityParam nonReportingFacilityParam, RowBounds rowBounds) {
         String periodListString = "";
         List<ProcessingPeriod> periodList = null;
-        if (nonReportingFacilityParam.getPeriodEnd() != null && nonReportingFacilityParam.getPeriodEnd() != 0) {
+        if (nonReportingFacilityParam.getPeriodEnd() != null && ! nonReportingFacilityParam.getPeriodEnd().isEmpty()){
             periodList = reportMapper.getReportingPeriodList(nonReportingFacilityParam);
         } else {
             return "{" + nonReportingFacilityParam.getPeriod().toString() + "}";
@@ -93,13 +95,16 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
         NonReportingFacilityParam nonReportingFacilityParam = getFilterParameters(filterCriteria);
         String periodListString = this.getPeriodParameter(nonReportingFacilityParam, rowBounds);
         nonReportingFacilityParam.setPeriodString(periodListString);
+
         List<MasterReport> reportList = new ArrayList<>();
         MasterReport report = new MasterReport();
 
         List<NonReportingFacilityDetail> nonReportingFacilityDetails = reportMapper.getNonReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
         Double nonReporting = Double.parseDouble(String.valueOf(nonReportingFacilityDetails.size()));
+
         List<NonReportingFacilityDetail> reportingFacilities = reportMapper.getReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
         nonReportingFacilityDetails.addAll(reportingFacilities);
+
         report.setDetails(nonReportingFacilityDetails);
 
         Double totalFacilities = Double.parseDouble(String.valueOf(nonReportingFacilityDetails.size()));
@@ -108,6 +113,10 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
         summary.add(new NameCount(TOTAL_FACILITIES, totalFacilities.toString()));
         summary.add(new NameCount(TOTAL_NON_REPORTING, nonReporting.toString()));
         summary.add(new NameCount(REPORTING_FACILITIES, Double.toString(totalFacilities - nonReporting)));
+
+        report.setKeyValueSummary(new HashedMap(){{
+            put(PERIODS_FOR_CHART, reportMapper.getPeriodsTicksForChart(nonReportingFacilityParam));
+        }});
 
 
         report.setSummary(summary);

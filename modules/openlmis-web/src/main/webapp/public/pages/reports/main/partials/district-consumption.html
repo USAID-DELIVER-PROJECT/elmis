@@ -65,7 +65,7 @@
                             <td data-title="getLocalMessage('label.district')"  ng-class="{'consumption-parent' : toggel}" style="width:100px" sortable="district" >{{ row.district }}</td>
                             <td data-title="getLocalMessage('label.product.name')" ng-class="{'consumption-parent' : toggel}" style="width:40%" sortable="product" >{{ row.product }}</td>
                             <td data-title="getLocalMessage('label.consumption')" ng-class="{'consumption-parent' : toggel}" class="number" style="width:80px" sortable="consumption"  >{{ row.consumption | number }}</td>
-                            <td data-title="getLocalMessage('label.reported.consumption.per.packs')" ng-class="{'consumption-parent' : toggel}" class="number" style="width:80px" sortable="consumptionInPacks"  >{{ row.consumptionInPacks | number }}</td>
+
                             <td data-title="getLocalMessage('label.percentage')" ng-class="{'consumption-parent' : toggel}" class="number" style="width:80px" sortable="totalPercentage"  >{{ row.totalPercentage | number : 2 }} %</td>
 
                         </tr>
@@ -74,7 +74,7 @@
                             <td  class="sub-child"  >{{ r.facility }}</td>
                             <td   class="sub-child">{{ r.product }}</td>
                             <td   class="number sub-child" >{{ r.consumption | number }}</td>
-                            <td  class="number sub-child" >{{ r.consumptionInPacks | number }}</td>
+
                             <td  class="number sub-child">{{ r.totalPercentage | number : 2 }} %</td>
                         </tr>
                         </tbody>
