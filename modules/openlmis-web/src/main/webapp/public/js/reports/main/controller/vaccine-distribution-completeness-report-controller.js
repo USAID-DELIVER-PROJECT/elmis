@@ -60,8 +60,11 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                 console.log($scope.dataRows);
 
                 $scope.pagination = data.pagination;
+                console.log(data.pagination);
+
                 $scope.totalItems = $scope.pagination.totalRecords;
                 $scope.currentPage = $scope.pagination.page;
+
 
             });
     };
