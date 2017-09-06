@@ -78,7 +78,7 @@ public class UploadController extends BaseController {
 
       RecordHandler recordHandler = uploadBeansMap.get(model).getRecordHandler();
       ModelClass modelClass = new ModelClass(uploadBeansMap.get(model).getImportableClass());
-      AuditFields auditFields = new AuditFields(loggedInUserId(request), currentTimestamp,null);
+      AuditFields auditFields = new AuditFields(loggedInUserId(request), currentTimestamp);
       int recordsToBeUploaded = csvParser.process(csvFile.getInputStream(), modelClass, recordHandler, auditFields);
 
       return successPage(recordsToBeUploaded);
@@ -150,7 +150,7 @@ public class UploadController extends BaseController {
 
       RecordHandler recordHandler = uploadBeansMap.get(model).getRecordHandler();
       ModelClass modelClass = new ModelClass(uploadBeansMap.get(model).getImportableClass());
-      AuditFields auditFields = new AuditFields(loggedInUserId(request), currentTimestamp,route);
+      AuditFields auditFields = new AuditFields(loggedInUserId(request), currentTimestamp);
       int recordsToBeUploaded = csvParser.process(csvFile.getInputStream(), modelClass, recordHandler, auditFields);
 
       return successPage(recordsToBeUploaded);

@@ -42,7 +42,6 @@ public class LogTagTemperatureDTOHandler extends AbstractModelPersistenceHandler
     @Override
     public void postProcess(AuditFields auditFields) {
         tagService.addFacilitySent(auditFields);
-        System.out.println(auditFields.getRoute());
         System.out.println(auditFields.getUser());
         System.out.println(auditFields.getCurrentTimestamp());
        // programService.notifyProgramChange();

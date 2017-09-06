@@ -27,7 +27,6 @@ public class AuditFields {
 
   private Long user;
   private Date currentTimestamp;
-  private String route;
   public AuditFields(Date currentTimestamp) {
     this.currentTimestamp = currentTimestamp;
   }

@@ -63,7 +63,7 @@ public class FacilityTemperatureLogTagService {
 
     public void addFacilitySent(AuditFields auditFields) {
         Facility facility = facilityService.getHomeFacility(auditFields.getUser());
-        repository.updateInserted(facility.getId(),auditFields.getCurrentTimestamp(),auditFields.getRoute());
+        repository.updateInserted(facility.getId(),auditFields.getCurrentTimestamp(),null);
 
     }
 }
