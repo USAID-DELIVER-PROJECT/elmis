@@ -1,77 +1,42 @@
 package org.openlmis.vaccine.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.openlmis.core.domain.BaseModel;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.upload.Importable;
+import org.openlmis.upload.annotation.ImportField;
 
 import java.util.Date;
-
-import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.NON_EMPTY;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 /**
  * Created by hassan on 7/5/17.
  */
 
-
-
-
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@JsonSerialize(include = NON_EMPTY)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class LogTagDTO extends BaseModel {
+public class LogTagDTO extends BaseModel implements Importable{
 
-    @JsonProperty(value = "logdate")
+    @ImportField(name = "Date",type = "String")
     private String logDate;
 
-    @JsonProperty(value = "logtime")
+    @ImportField(name = "Time",type = "String")
     private String logTime;
 
     /*private String sampleId;*/
-
+    @ImportField(name = "Temperature",type = "String")
     private String temperature;
 
+    @ImportField(name = "Events", type = "String")
     private String events;
 
-    @JsonProperty(value = "serialnumber")
+    private Long facilityId;
+
     private String serialNumber;
 
     private Date createdDate;
 
-    public LogTagDTO(String logDate, String logTime, String temperature, String events, String serialnumber) {
-
-        this.logDate = logDate;
-        this.logTime = logTime;
-        this.temperature = temperature;
-        this.events = events;
-        this.serialNumber = serialnumber;
-
-    }
-/*
-    public Date getLogDate() {
-        try {
-            DateFormat df = new SimpleDateFormat("yyyy/mm/dd HH:mm:ss");
-
-            return df.parse(String.valueOf(this.logDate));
-        }catch (Exception e){
-            return new Date();
-        }
-    }
-    DateFormat df = new SimpleDateFormat("yyyy/mm/dd HH:mm:ss");
-    public Date getLogTime()  {
-        try {
-            return df.parse(String.valueOf(this.logTime));
-        }catch (Exception e){
-            return new Date();
-        }
-    }*/
+    private String route;
 
     public void validateMandatoryFields() {
         if (isBlank(this.temperature)  || isBlank(this.temperature)) {

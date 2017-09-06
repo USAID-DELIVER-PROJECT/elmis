@@ -15,6 +15,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class LogTagReport implements ResultRow {
+
     private String logDate;
 
     private String logTime;
@@ -28,5 +29,9 @@ public class LogTagReport implements ResultRow {
     private Date createdDate;
 
     private String storeName;
+
+    private String name;
+
+    private String route;
 
 }
