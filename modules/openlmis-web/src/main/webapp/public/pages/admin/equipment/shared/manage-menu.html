@@ -65,6 +65,11 @@
                 <span id="energy-Type">Energy Type</span>
             </a>
         </li>
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="lotSelected">
+            <a href="/public/pages/admin/equipment/lot/index.html">
+                <span id="lot">Manage Lot</span>
+            </a>
+        </li>
 
     </ul>
 </div>
