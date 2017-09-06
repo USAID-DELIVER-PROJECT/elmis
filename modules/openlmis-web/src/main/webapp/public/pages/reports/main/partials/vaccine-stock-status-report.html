@@ -129,7 +129,7 @@
                 <div class="clearfix"></div>
 
                 <div class="form-cell">
-                    <Strong class="labels"><span>Show SOH</span> </Strong>
+                    <Strong class="labels"><span>Show Monthly Needs</span> </Strong>
                     <input type="checkbox" ng-model="filter.isMOS" ng-change="filterChanged()"/>
 
                 </div>
@@ -158,11 +158,13 @@
                         <th openlmis-message="label.region" style="text-align: left"></th>
                         <th openlmis-message="label.district" style="text-align: left"></th>
                         <th openlmis-message="label.dvs.name" style="width:10%;!important;text-align: left;"></th>
+<!--
                         <th style="width:10%;!important;  text-align: left;">Adequacy</th>
+-->
 
                         <th ng-repeat-start="p in facilityProduct" openlmis-message="header.status.soh"
                             class="p-column"></th>
-                        <th openlmis-message="header.vaccine.mos" class="p-column" ng-hide="filter.isMOS == true"></th>
+                        <th openlmis-message="header.monthly.needs" class="p-column" ng-hide="filter.isMOS == true"></th>
                         <th ng-repeat-end openlmis-message="header.status.last.update"
                             ng-hide="filter.isMOS == true" class="p-column"></th>
 
@@ -179,7 +181,9 @@
                         </td>
                         <td>{{f.products[0].district}}</td>
                         <td>{{f.products[0].facilityName}}</td>
+<!--
                         <td> {{getTotal(f.products).toFixed(0)}} %</td>
+-->
                         <td ng-repeat-start="p in facilityProduct"
                             ng-style="{'background-color':getProductQuantity(f.facilityName,p.programProduct.product.primaryName).color}"
                             class="p-column">
@@ -187,8 +191,11 @@
                         </td>
 
                         <td class="p-column" ng-hide="filter.isMOS == true">
-                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).mos | number}}
+                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).isaValue | number }}
                         </td>
+                        <!--  <td class="p-column" ng-hide="filter.isMOS == true">
+                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).mos | number}}
+                        </td>-->
 
                         <td ng-repeat-end ng-hide="filter.isMOS == true" class="p-column">
                             {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).lastUpdate}}
