@@ -108,7 +108,8 @@ public class StockRequirements extends BaseModel
     if(maximumStock == null) {
         if (getIsaValue() == null || maxMonthsOfStock == null)
             return null;
-        Double value = (getIsaValue() * maxMonthsOfStock +getBufferStock());
+        Double value2= ((getSupplyPeriodNeed() * isa.getBufferPercentage()) / 100);
+        Double value = (getIsaValue() * maxMonthsOfStock +value2);
         return maximumStock = getMultipleOfPresentation(value.intValue());
     }
       else{
@@ -154,9 +155,9 @@ public class StockRequirements extends BaseModel
 
   public Integer getBufferStock(){
       if(bufferStock ==null) {
-          if (getSupplyPeriodNeed() == null && isa == null)
+          if (getMaximumStock() == null && isa == null)
               return null;
-          Double value=((getSupplyPeriodNeed() * isa.getBufferPercentage()) / 100);
+          Double value=((getMaximumStock() * isa.getBufferPercentage()) / 100);
           return getMultipleOfPresentation(value.intValue());
       }
       else{

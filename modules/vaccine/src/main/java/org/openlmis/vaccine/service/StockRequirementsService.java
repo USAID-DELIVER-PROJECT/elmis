@@ -215,9 +215,9 @@ public class StockRequirementsService
                     existingRequirement.setAnnualNeed(existingRequirement.getAnnualNeed() + newSupplyRequirements.getAnnualNeed());
                         existingRequirement.setSupplyPeriodNeed(existingRequirement.getSupplyPeriodNeed() + newSupplyRequirements.getSupplyPeriodNeed());
                         existingRequirement.setReorderLevel(existingRequirement.getReorderLevel() + newSupplyRequirements.getReorderLevel());
-                        existingRequirement.setBufferStock(existingRequirement.getBufferStock() + newSupplyRequirements.getBufferStock());
                         existingRequirement.setMaximumStock(existingRequirement.getMaximumStock() + newSupplyRequirements.getMaximumStock());
-                        existingRequirement.setIsaValue(existingRequirement.getIsaValue() + newSupplyRequirements.getIsaValue());
+                    existingRequirement.setBufferStock(existingRequirement.getBufferStock() + newSupplyRequirements.getBufferStock());
+                    existingRequirement.setIsaValue(existingRequirement.getIsaValue() + newSupplyRequirements.getIsaValue());
                         updateBundling(existingRequirement);
 
                 } else {
