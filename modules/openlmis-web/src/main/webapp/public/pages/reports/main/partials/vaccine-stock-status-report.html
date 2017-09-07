@@ -53,7 +53,7 @@
                                                              required="false"></product-category-without-program-filter>
                     <facility-level-without-program-filter class="form-cell horizontalFilters"
                                                            required="false"></facility-level-without-program-filter>
-               
+
 
                     <div class="form-cell horizontalFilters">
                         <label for="startTime" class="labels">
@@ -74,7 +74,7 @@
                     <div  class="form-cell" ng-show="distributedFacilities.length > 0">
 
                         <label class="labels" style="float:right;">
-                          <span style="font-size: medium"><Strong>Indicators</Strong></span><br/>
+                            <span style="font-size: medium"><Strong>Indicators</Strong></span><br/>
 
 
                            <span  data-toggle="tooltip" title="Indicate that you have Insufficient Stock in your stock ">
@@ -91,9 +91,9 @@
 
                             <span data-toggle="tooltip" title="Indicate that you have more than your have supposed to have."> <i class="icon-stop blue fa-lg" aria-hidden="true"></i>  Over Stock</span>
 
-<!--
-                            <span ><i class="icon-warning-sign red"></i></span> Order Now
--->
+                            <!--
+                                                        <span ><i class="icon-warning-sign red"></i></span> Order Now
+                            -->
 
                         </label>
                         <!--<fieldset>
@@ -129,7 +129,7 @@
                 <div class="clearfix"></div>
 
                 <div class="form-cell">
-                    <Strong class="labels"><span>Show Monthly Needs</span> </Strong>
+                    <Strong class="labels"><span>Show SOH Only</span> </Strong>
                     <input type="checkbox" ng-model="filter.isMOS" ng-change="filterChanged()"/>
 
                 </div>
@@ -139,11 +139,13 @@
                 <table class="table table-bordered" table-striped scrollable ng-table="tableParams">
                     <thead>
                     <tr>
+<!--
+                        <th></th>
+-->
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th></th>
-                        <th ng-repeat="p in facilityProduct" colspan="{p.length}" style="text-align: center;"
+                        <th ng-repeat="p in facilityProduct" colspan="2" style="text-align: center;"
                             ng-show="filter.isMOS == true" class="p-column" id="p-column-r">
                             {{p.programProduct.product.primaryName}}
                         </th>
@@ -164,7 +166,7 @@
 
                         <th ng-repeat-start="p in facilityProduct" openlmis-message="header.status.soh"
                             class="p-column"></th>
-                        <th openlmis-message="header.monthly.needs" class="p-column" ng-hide="filter.isMOS == true"></th>
+                        <th openlmis-message="header.buffer.stock" class="p-column"></th>
                         <th ng-repeat-end openlmis-message="header.status.last.update"
                             ng-hide="filter.isMOS == true" class="p-column"></th>
 
@@ -190,12 +192,9 @@
                             {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).soh | number}}
                         </td>
 
-                        <td class="p-column" ng-hide="filter.isMOS == true">
-                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).isaValue | number }}
+                        <td class="p-column">
+                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).bufferStock | number}}
                         </td>
-                        <!--  <td class="p-column" ng-hide="filter.isMOS == true">
-                            {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).mos | number}}
-                        </td>-->
 
                         <td ng-repeat-end ng-hide="filter.isMOS == true" class="p-column">
                             {{getProductQuantity(f.facilityName,p.programProduct.product.primaryName).lastUpdate}}
