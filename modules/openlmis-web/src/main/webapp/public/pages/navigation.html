@@ -237,6 +237,10 @@
 
           <div class="submenu">
               <ul>
+                  <li>
+                      <a id='log-tag-menu' href="/public/pages/admin/upload-log-tag/index.html"
+                              >Upload Log Tag</a>
+                  </li>
                   <li ng-show="hasPermission('MANAGE_EQUIPMENT_INVENTORY')">
                       <a id="equipment-inventory"
                          href="/public/pages/admin/equipment/inventory/index.html"
@@ -497,10 +501,6 @@
         <a
             href="/public/pages/ils-gateway/index.html#/dashboard"
             openlmis-message="link.ils"></a>
-    </li>
-    <li>
-        <a id='log-tag-menu' href="/public/pages/admin/upload-log-tag/index.html"
-          >Upload Log Tag</a>
     </li>
 
     <li ng-show="hasPermission('ACCESS_NEW_DASHBOARD')">
