@@ -290,4 +290,14 @@ public class FacilityController extends BaseController {
   public ResponseEntity<OpenLmisResponse> getFacilitySupervisors(@RequestParam("programId") Long program,@RequestParam("facilityId") Long facilityId) {
     return OpenLmisResponse.response("supervisors",facilityService.getFacilitySuperVisorBy(program,facilityId));
   }
+
+
+  @RequestMapping(value = "/getDistrictGeoTree", method = GET)
+  public ResponseEntity<OpenLmisResponse> getDistrictGeoTree(HttpServletRequest httpServletRequest) {
+
+    ResponseEntity<OpenLmisResponse> response;
+    response = OpenLmisResponse.success("");
+    response.getBody().addData("regionFacilityTree", facilityService.getDistrictGeoTree(loggedInUserId(httpServletRequest)));
+    return response;
+  }
 }

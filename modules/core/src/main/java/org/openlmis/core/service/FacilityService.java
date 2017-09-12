@@ -340,4 +340,8 @@ public class FacilityService {
   public Facility getByGeographicZoneId(Long district, Long levelId) {
     return facilityRepository.getByGeographicZoneId(district,levelId);
   }
+
+  public List<DistrictGeoTree> getDistrictGeoTree(Long userId) {
+    return facilityRepository.getDistrictGeoTree(userId);
+  }
 }

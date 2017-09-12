@@ -499,3 +499,8 @@ services.factory('CustomReportList', function ($resource) {
 services.factory('VaccineStockEvent', function ($resource) {
   return $resource('/vaccine/dashboard/vaccineStockEvent.json', {}, {});
 });
+
+services.factory('GeoDistrictTree',function ($resource){
+
+  return $resource('/getDistrictGeoTree.json', {}, {});
+});

@@ -16,6 +16,7 @@ import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.FacilityOperator;
 import org.openlmis.core.domain.FacilityType;
 import org.openlmis.core.domain.PriceSchedule;
+import org.openlmis.core.dto.DistrictGeoTree;
 import org.openlmis.core.dto.FacilityContact;
 import org.openlmis.core.dto.FacilityGeoTreeDto;
 import org.openlmis.core.dto.FacilitySupervisor;
@@ -534,5 +535,38 @@ public interface FacilityMapper {
             "JOIN facility_types t on f.typeId = t.id\n" +
             "where t.code in ('dvs','rvs','cvs') and geographiczoneid = #{district} and levelId =#{levelId}")
     Facility getByGeographicZoneId(@Param("district") Long district, @Param("levelId") Long levelId);
+
+
+
+    @Select("select distinct region.id, region.name as text, 0 as facility, vw_user_districts.user_id as userId \n" +
+            "from geographic_zones region \n" +
+            "inner join geographic_levels ON region.levelid = geographic_levels.id AND geographic_levels.code = 'reg'\n" +
+            "inner join geographic_zones district ON district.parentid = region.id\n" +
+            "inner join vw_user_districts ON vw_user_districts.district_id = district.id where vw_user_districts.user_id = #{userId} order by region.name")
+    @Results(value = {
+            @Result(property = "nodes", column = "{id=id, userId=userId}", javaType = List.class,  many = @Many(select = "getGeoTreeDistrictsByRegionTree"))
+    })
+    List<DistrictGeoTree> getDistrictGeoTree(@Param(value = "userId") Long userId);
+
+    @Select("select distinct district.id, district.name as text, 0 as facility, vw_user_districts.user_id as userId \n" +
+            "from geographic_zones district \n" +
+            "inner join vw_user_districts ON vw_user_districts.district_id = district.id AND district.parentid = #{id}\n" +
+            "where vw_user_districts.user_id = #{userId} order by district.name")
+    @Results(value = {
+            @Result(property = "nodes",  column = "{id=id, userId=userId}", javaType = List.class,  many = @Many(select = "getGeoDistrictTreeFacilities"))
+    })
+    List<DistrictGeoTree> getGeoTreeDistrictsByRegionTree(Map params);
+
+    @Select("select facilities.id, facilities.name as text, 1 as facility from facilities inner join \n" +
+            "vw_user_facilities ON facilities.id = vw_user_facilities.facility_id AND vw_user_facilities.user_id = #{userId} " +
+            "AND vw_user_facilities.district_id = #{id}")
+    List<DistrictGeoTree> getGeoDistrictTreeFacilities(Map params);
+
+
+
+
+
+
+
 
 }

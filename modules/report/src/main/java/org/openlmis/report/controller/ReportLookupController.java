@@ -28,6 +28,7 @@ import org.openlmis.report.model.dto.Program;
 import org.openlmis.report.model.dto.Regimen;
 import org.openlmis.report.model.dto.RequisitionGroup;
 import org.openlmis.report.model.report.OrderFillRateSummaryReport;
+import org.openlmis.report.service.StockOnHandSummaryService;
 import org.openlmis.report.service.lookup.ReportLookupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +105,8 @@ public class ReportLookupController extends BaseController {
   private ProgramService programService;
   @Autowired
   private FacilityOwnerService facilityOwnerService;
+  @Autowired
+  private StockOnHandSummaryService stockOnHandSummaryService;
 
   @RequestMapping(value = "/programs", method = GET, headers = BaseController.ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getPrograms() {
@@ -626,9 +630,15 @@ public class ReportLookupController extends BaseController {
     return OpenLmisResponse.response(PERIODS, periodList);
   }
   @RequestMapping(value = "/facility_owners", method = GET, headers = BaseController.ACCEPT_JSON)
-
   public ResponseEntity<OpenLmisResponse> getFacilitiesOwnerList() {
     List<Owner> owners = facilityOwnerService.getAllOwners();
     return OpenLmisResponse.response(OWNERS, owners);
   }
+
+  @RequestMapping(value = "/stock_on_hand", method = GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getStockOnHandSummary(HttpServletRequest request) {
+    return OpenLmisResponse.response("stockOnHand",
+            stockOnHandSummaryService.getStockOnHandSummary(loggedInUserId(request),new Date().toString()));
+  }
+
 }
