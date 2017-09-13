@@ -318,4 +318,8 @@ public class RequisitionRepository {
   public Rnr getRnrBy(Long facilityId, Long periodId, Long programId, boolean emergency) {
     return requisitionMapper.getRnrBy(facilityId, periodId, programId, emergency);
   }
+
+  public List<Rnr> getUnreleasedPreviousRequisitions(Rnr rnr) {
+    return requisitionMapper.getUnreleasedPreviousRequisitions(rnr);
+  }
 }
