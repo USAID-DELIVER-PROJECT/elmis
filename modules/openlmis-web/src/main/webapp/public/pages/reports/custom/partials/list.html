@@ -46,6 +46,8 @@
                                       class="form-cell horizontalFilters">
                       </program-filter>
                       <year-filter ng-if="fltr.name == 'year'"
+                                   default="{{ (fltr.default != undefined) ?fltr.default:undefined}}"
+                                   visible="{{fltr.visible?fltr.visible:'true'}}"
                                    required="true"
                                    class="form-cell horizontalFilters">
                       </year-filter>
@@ -54,6 +56,7 @@
                                       class="form-cell horizontalFilters">
                       </quarter-filter>
                       <schedule-filter ng-if="fltr.name == 'schedule'" visible="{{fltr.visible?fltr.visible:'true'}}"
+                                       default="{{ (fltr.default != undefined) ? fltr.default : undefined}}"
                                        required="true"
                                        class="form-cell horizontalFilters">
                       </schedule-filter>

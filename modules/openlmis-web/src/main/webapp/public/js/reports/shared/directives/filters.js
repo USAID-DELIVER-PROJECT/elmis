@@ -167,6 +167,21 @@ app.directive('yearFilter', ['OperationYears',
             link: function (scope, elm, attr) {
                 scope.registerRequired('year', attr);
 
+                if(attr.visible !== undefined && attr.visible === 'false'){
+                    scope.year_filter_visible = false;
+                }else{
+                    scope.year_filter_visible = true;
+                }
+
+                if(attr.default){
+                    if(attr.default == 'current'){
+                      var d = new Date();
+                      scope.filter.year = d.getFullYear();
+                    }else{
+                        scope.filter.year = attr.default;
+                    }
+                }
+
                 OperationYears.get(function (data) {
                     scope.years = data.years;
                     if (scope.filter.year === undefined) {
@@ -283,11 +298,14 @@ app.directive('scheduleFilter', ['ReportSchedules', 'ReportProgramSchedules', '$
 
                 scope.schedule_filter_visible = (attr.visible !== undefined) ? attr.visible : true;
 
+              if (attr.default !== undefined){
+                scope.filter.schedule = attr.default;
+              }
                 var loadSchedules = function () {
                     ReportProgramSchedules.get({
                         program: scope.filter.program
                     }, function (data) {
-                        if (data.schedules.length === 1) {
+                        if (attr.default === undefined && data.schedules.length === 1) {
                             scope.filter.schedule = data.schedules[0].id;
                             scope.notifyFilterChanged('schedule-changed');
                         }
