@@ -72,6 +72,7 @@ public class Rnr extends BaseModel {
   private List<Comment> comments = new ArrayList<>();
 
   private List<Signature> rnrSignatures;
+  private List<ManualTestesLineItem> manualTestLineItems = new ArrayList<>();
 
   public Rnr(Facility facility, Program program, ProcessingPeriod period, Boolean emergency, Long modifiedBy, Long createdBy) {
     this.facility = facility;

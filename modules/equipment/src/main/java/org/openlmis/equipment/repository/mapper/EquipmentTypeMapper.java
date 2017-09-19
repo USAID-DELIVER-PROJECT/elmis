@@ -31,14 +31,14 @@ public interface EquipmentTypeMapper {
   @Select("select * from equipment_types order by name")
   List<EquipmentType> getAll();
 
-  @Insert("insert into equipment_types (code, name, createdBy, createdDate, modifiedBy, modifiedDate, isColdChain) " +
+  @Insert("insert into equipment_types (code, name, createdBy, createdDate, modifiedBy, modifiedDate, isColdChain, IsBioChemistry) " +
       " values " +
-      " (#{code}, #{name}, #{createdBy},COALESCE(#{createdDate}, NOW()), #{modifiedBy}, NOW(), #{isColdChain} )")
+      " (#{code}, #{name}, #{createdBy},COALESCE(#{createdDate}, NOW()), #{modifiedBy}, NOW(), #{isColdChain}, #{isBioChemistry})")
   @Options(useGeneratedKeys = true)
   void insert(EquipmentType type);
 
   @Update("UPDATE equipment_types SET " +
-      "name = #{name}, code = #{code}, modifiedBy = #{modifiedBy}, modifiedDate = NOW(),isColdChain = #{isColdChain} " +
+      "name = #{name}, code = #{code}, modifiedBy = #{modifiedBy}, modifiedDate = NOW(),isColdChain = #{isColdChain}, IsBioChemistry = #{isBioChemistry} " +
       " WHERE id = #{id}")
   void update(EquipmentType type);
 }

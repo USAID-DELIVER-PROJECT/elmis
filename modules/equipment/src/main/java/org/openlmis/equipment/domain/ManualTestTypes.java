@@ -12,7 +12,7 @@
 
 package org.openlmis.equipment.domain;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,14 +23,10 @@ import org.openlmis.core.domain.BaseModel;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EquipmentType extends BaseModel {
-
-  private String name;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ManualTestTypes extends BaseModel {
 
   private String code;
-
-  private boolean isColdChain;
-
-  private Boolean isBioChemistry;
-
+  private String name;
+  private Long displayOrder;
 }

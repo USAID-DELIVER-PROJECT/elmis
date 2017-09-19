@@ -10,6 +10,7 @@ import org.openlmis.equipment.service.EquipmentInventoryService;
 import org.openlmis.rnr.domain.*;
 import org.openlmis.rnr.dto.RnrDTO;
 import org.openlmis.rnr.repository.RequisitionRepository;
+import org.openlmis.rnr.repository.mapper.ManualTestsLineItemMapper;
 import org.openlmis.rnr.search.criteria.RequisitionSearchCriteria;
 import org.openlmis.rnr.search.factory.RequisitionSearchStrategyFactory;
 import org.openlmis.rnr.search.strategy.RequisitionSearchStrategy;
@@ -53,6 +54,9 @@ public class RequisitionService {
   public static final String SEARCH_SUPPLYING_DEPOT_NAME = "supplyingDepot";
   public static final String CONVERT_TO_ORDER_PAGE_SIZE = "order.page.size";
   public static final String NUMBER_OF_PAGES = "number_of_pages";
+  public static final String TESTTYPES = "testtypes";
+  public static final String TESTPRODUCTS = "testproducts";
+  public static final String MANUALTESTTYPES = "manualtesttypes";
 
   @Autowired
   private RequisitionRepository requisitionRepository;
@@ -108,6 +112,9 @@ public class RequisitionService {
   private SupplyPartnerService supplyPartnerService;
 
   @Autowired
+  private ManualTestsLineItemMapper manualTestMapper;
+
+  @Autowired
   public void setRequisitionSearchStrategyFactory(RequisitionSearchStrategyFactory requisitionSearchStrategyFactory) {
     this.requisitionSearchStrategyFactory = requisitionSearchStrategyFactory;
   }
@@ -160,6 +167,7 @@ public class RequisitionService {
     // if program supports equipments, initialize it here.
     if (program.getIsEquipmentConfigured()) {
       populateEquipments(requisition);
+      populateManualTests(requisition);
     }
     requisition.setSourceApplication(sourceApplication);
     insert(requisition);
@@ -200,9 +208,15 @@ public class RequisitionService {
       lineItem.setOperationalStatusId(inv.getOperationalStatusId());
       lineItem.setEquipmentName(inv.getEquipment().getName());
       lineItem.setDaysOutOfUse(0L);
+      lineItem.setIsBioChemistryEquipment(inv.getEquipment().getEquipmentType().getIsBioChemistry());
 
       requisition.getEquipmentLineItems().add(lineItem);
     }
+  }
+
+  private void populateManualTests(Rnr requisition){
+    List<ManualTestesLineItem> generatedManualTestLineItem = manualTestMapper.getGeneratedEmptyManualTestLineItem();
+    requisition.setManualTestLineItems(generatedManualTestLineItem);
   }
 
   private void populateAllocatedBudget(Rnr requisition) {
@@ -232,6 +246,7 @@ public class RequisitionService {
       savedRnr.copyCreatorEditableFields(rnr, rnrTemplate, regimenTemplate, programProducts);
       //TODO: copy only the editable fields.
       savedRnr.setEquipmentLineItems(rnr.getEquipmentLineItems());
+      savedRnr.setManualTestLineItems(rnr.getManualTestLineItems());
     }
 
     requisitionRepository.update(savedRnr);
@@ -777,5 +792,15 @@ public class RequisitionService {
       requisitionRepository.logStatusChange(requisition, user.getUserName());
     }
   }
+
+  public Map<String, Object> getLabEquipmentReferenceData(){
+    Map<String, Object> referenceData = new HashMap<>();
+    referenceData.put(TESTTYPES, equipmentInventoryService.getBioChemistryEquipmentTestTypes());
+    referenceData.put(MANUALTESTTYPES, equipmentInventoryService.getManualTestTypes());
+
+    return referenceData;
+
+  }
+
 }
 

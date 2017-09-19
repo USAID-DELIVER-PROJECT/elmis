@@ -10,27 +10,28 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.equipment.domain;
 
+package org.openlmis.rnr.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EquipmentType extends BaseModel {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ManualTestesLineItem extends BaseModel {
 
-  private String name;
-
-  private String code;
-
-  private boolean isColdChain;
-
-  private Boolean isBioChemistry;
+    private Long rnrId;
+    private Integer testTypeId;
+    private String testTypeName;
+    private Integer testCount;
+    private String remark;
 
 }
