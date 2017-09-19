@@ -12,25 +12,28 @@
 
 package org.openlmis.equipment.domain;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
+import org.openlmis.core.domain.Facility;
+import org.openlmis.core.utils.DateUtil;
+import org.openlmis.equipment.dto.ColdChainEquipmentTemperatureStatusDTO;
+
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EquipmentType extends BaseModel {
-
-  private String name;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class NonFunctionalTestTypes extends BaseModel {
 
   private String code;
-
-  private boolean isColdChain;
-
-  private Boolean isBioChemistry;
-
+  private String name;
+  private Long displayOrder;
+  List<NonFunctionalTestProducts> testProducts;
 }

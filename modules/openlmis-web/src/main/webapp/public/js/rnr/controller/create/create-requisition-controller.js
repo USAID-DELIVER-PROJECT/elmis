@@ -9,7 +9,8 @@
  */
 
 function CreateRequisitionController($scope, requisitionData, comments , pageSize, rnrColumns, lossesAndAdjustmentsTypes, facilityApprovedProducts, requisitionRights, equipmentOperationalStatus ,
-                                     regimenTemplate, showMaxStock, $location, DeleteRequisition, SkipRequisition,Requisitions, $routeParams, $dialog, requisitionService, $q) {
+                                     regimenTemplate, showMaxStock, $location, DeleteRequisition, SkipRequisition,Requisitions, $routeParams, $dialog, requisitionService, $q,
+                                     labReferenceData) {
 
   var NON_FULL_SUPPLY = 'nonFullSupply';
   var FULL_SUPPLY = 'fullSupply';
@@ -92,6 +93,7 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
   $scope.errorPages = {fullSupply: [], nonFullSupply: [], regimen: [], equipment: []};
   $scope.regimenCount = $scope.rnr.regimenLineItems.length;
   $scope.equipmentCount = $scope.rnr.equipmentLineItems.length;
+  $scope.labReferenceData =  labReferenceData;
 
   requisitionService.populateScope($scope, $location, $routeParams);
   resetFlags();
@@ -128,6 +130,36 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
       $scope.toggleSkipFlag();
     }
   };
+
+  /*$scope.toggleEquipmentNonFunctionalType = function (lineItem, checked, testType){
+      if($scope.lineItemSwap == null) $scope.lineItemSwap = [];
+      console.log(checked)
+          if(!checked) {
+              $scope.lineItemSwap.push(angular.copy(lineItem));
+               testType == null ? lineItem.analytesDaysOutOfUse = 0 : lineItem.electrolytesDaysOutOfUse = 0;
+              _.chain(lineItem.bioChemistryTestes)
+                  .where({testTypeCode: testType == null ? 'ANALYTES' : 'ELECTROLYTES'})
+                  .map(function (item) {
+                      item.numberOfTestes = 0;
+                      return item;
+                  });
+          }
+          else
+          {
+            val = _.findWhere($scope.lineItemSwap, {id : lineItem.id});
+
+             _.chain($scope.page.equipment)
+                 .where({id : lineItem.id})
+                 .map(function (item) {
+                     item.analytesDaysOutOfUse = val.analytesDaysOutOfUse;
+                     item.electrolytesDaysOutOfUse = val.electrolytesDaysOutOfUse;
+                     item.bioChemistryTestes.length = 0;
+                     Array.prototype.push.apply(item.bioChemistryTestes, val.bioChemistryTestes);
+                  })
+
+          }
+  }
+  */
 
   $scope.checkErrorOnPage = function (page) {
     return $scope.visibleTab === NON_FULL_SUPPLY ?
@@ -313,7 +345,7 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
   }
 
   function removeExtraDataForPostFromRnr() {
-    var rnr = {"id": $scope.rnr.id, "fullSupplyLineItems": [], "nonFullSupplyLineItems": [], "regimenLineItems": []};
+    var rnr = {"id": $scope.rnr.id, "fullSupplyLineItems": [], "nonFullSupplyLineItems": [], "regimenLineItems": [], "manualTestLineItems": []};
     if (!$scope.page[$scope.visibleTab].length) return rnr;
 
     var nonLineItemFields = ['rnr', 'programRnrColumnList', 'numberOfMonths', 'rnrStatus', 'cost', 'productName', 'hasError','equipments','IsRemarkRequired','isEquipmentValid','isEquipmentValid', 'unskip' ];
@@ -327,6 +359,7 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
     //Who wrote this? This is awesome!!
     rnr[$scope.visibleTab + 'LineItems'] = transform($scope.page[$scope.visibleTab]);
     rnr.nonFullSupplyLineItems = transform($scope.rnr.nonFullSupplyLineItems);
+    if($scope.visibleTab === EQUIPMENT) rnr.manualTestLineItems = transform($scope.rnr.manualTestLineItems);
 
     return rnr;
   }
@@ -437,6 +470,17 @@ CreateRequisitionController.resolve = {
       }, {});
     }, 100);
     return deferred.promise;
+  },
+
+  labReferenceData: function ($q, $timeout, $route, LabEquipmentRnrReferenceData) {
+      var deferred = $q.defer();
+      $timeout(function () {
+          LabEquipmentRnrReferenceData.get({}, function (data) {
+              deferred.resolve(data.lab_refrence_data);
+          }, {});
+      }, 100);
+      return deferred.promise;
   }
+
 };
 

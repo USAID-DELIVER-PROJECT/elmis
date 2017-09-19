@@ -72,7 +72,7 @@ services.factory('requisitionService', function (messageService) {
     };
     if (save) $scope.saveRnr();
 
-    $scope.page = {fullSupply: [], nonFullSupply: [], regimen: [], equipment:[]};
+    $scope.page = {fullSupply: [], nonFullSupply: [], regimen: [], equipment:[], manualTest: []};
     $scope.visibleTab = ($routeParams.supplyType === NON_FULL_SUPPLY) ? NON_FULL_SUPPLY : ($routeParams.supplyType === REGIMEN && $scope.regimenCount) ? REGIMEN : ($routeParams.supplyType === EQUIPMENT && $scope.equipmentCount)?EQUIPMENT : FULL_SUPPLY;
 
     $location.search('supplyType', $scope.visibleTab);
@@ -84,6 +84,8 @@ services.factory('requisitionService', function (messageService) {
 
     $scope.page[$scope.visibleTab] = lineItemMap[$scope.visibleTab].slice($scope.pageSize * ($scope.currentPage - 1),
       $scope.pageSize * $scope.currentPage);
+
+    if($scope.visibleTab === EQUIPMENT) $scope.page.manualTest = $scope.rnr.manualTestLineItems;
 
   };
 

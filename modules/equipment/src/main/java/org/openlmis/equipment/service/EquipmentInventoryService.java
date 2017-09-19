@@ -16,8 +16,7 @@ import org.apache.log4j.Logger;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.service.FacilityService;
-import org.openlmis.equipment.domain.Equipment;
-import org.openlmis.equipment.domain.EquipmentInventory;
+import org.openlmis.equipment.domain.*;
 import org.openlmis.equipment.dto.ColdChainEquipmentTemperatureStatusDTO;
 import org.openlmis.equipment.repository.EquipmentInventoryRepository;
 import org.openlmis.equipment.repository.EquipmentRepository;
@@ -140,4 +139,11 @@ public List<ColdChainEquipmentTemperatureStatusDTO>getAllbyId(Long equipmentId){
     return repository.getInventoryByFacilityAndProgram(facilityId,programId);
   }
 
+  public List<NonFunctionalTestTypes> getBioChemistryEquipmentTestTypes(){
+    return equipmentService.getBioChemistryEquipmentTestTypes();
+  }
+
+  public List<ManualTestTypes> getManualTestTypes(){
+    return equipmentService.getManualTestTypes();
+  }
 }

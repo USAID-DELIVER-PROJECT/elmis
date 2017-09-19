@@ -499,3 +499,6 @@ services.factory('CustomReportList', function ($resource) {
 services.factory('VaccineStockEvent', function ($resource) {
   return $resource('/vaccine/dashboard/vaccineStockEvent.json', {}, {});
 });
+services.factory('LabEquipmentRnrReferenceData', function ($resource) {
+    return $resource('/requisitions/lab/reference-data.json', {}, {});
+});
