@@ -145,7 +145,7 @@ public class Facility extends BaseModel implements Importable {
 
   //TODO : change supportedPrograms to programsSupported
   List<ProgramSupported> supportedPrograms = new ArrayList<>();
-
+private  List<FacilityOwner> owners= new ArrayList<>();
   public Facility(Long id) {
     this.id = id;
   }

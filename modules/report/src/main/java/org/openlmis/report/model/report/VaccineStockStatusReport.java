@@ -54,6 +54,7 @@ public class VaccineStockStatusReport implements ResultRow {
 
     private Integer adequacy3;
     //private JSONPObject products;
+    private Integer bufferStock;
 
     public String getLastUpdate(){
         return DateUtil.getFormattedDate(this.lastUpdate, "dd-MM-yyyy");

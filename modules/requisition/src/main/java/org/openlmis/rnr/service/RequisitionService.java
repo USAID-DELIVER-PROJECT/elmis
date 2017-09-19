@@ -777,5 +777,9 @@ public class RequisitionService {
       requisitionRepository.logStatusChange(requisition, user.getUserName());
     }
   }
+
+  public List<Rnr> getUnreleasedRequisitionsFor(Rnr rnr) {
+    return requisitionRepository.getUnreleasedPreviousRequisitions(rnr);
+  }
 }
 

@@ -49,7 +49,8 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
                                     daysNotReceive,
                                     batchToExpireNotification,
                                     VaccineInventorySummaryData,
-                                    VaccineInventorySummaryDetails
+                                    VaccineInventorySummaryDetails,
+                                    receiveNotification
 ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: false};
@@ -108,6 +109,7 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
     $scope.label = {zone: messageService.get('label.zone'), period: messageService.get('label.period')};
     $scope.userPreferences = userPreferences;
     $scope.daysForUnreceivedNotification = daysNotReceive;
+    $scope.receiveNotification = receiveNotification;
     /////////////////////////////////////////////////////////////////////////
     // coverage - Monthly, District, Facility
     //////////////////////////////////////////////////////////////////////////
@@ -2113,6 +2115,26 @@ VaccineDashboardController.resolve = {
 
                 deferred.resolve(summary);
 
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    },
+    receiveNotification: function ($q, $timeout, ReceiveNotification) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            ReceiveNotification.get({}, function (data) {
+                var summary = [];
+                if (!isUndefined(data)) {
+                    summary = data;
+
+                }
+                console.log(summary);
+
+                deferred.resolve(summary);
 
             });
 

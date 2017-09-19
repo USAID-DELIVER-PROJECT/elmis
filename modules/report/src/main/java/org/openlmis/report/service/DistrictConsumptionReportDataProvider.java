@@ -45,6 +45,11 @@ public class DistrictConsumptionReportDataProvider extends ReportDataProvider {
     return reportMapper.getFilteredSortedPagedAdjustmentSummaryReport(getReportFilterData(filterCriteria), sortCriteria, rowBounds, this.getUserId());
   }
 
+  public List<? extends ResultRow> getFacilityConsumptionReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
+    RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
+    return reportMapper.getAdjustmentSummaryFacilityDetailReport(getReportFilterData(filterCriteria), sortCriteria, rowBounds, this.getUserId());
+  }
+
   public DistrictConsumptionReportParam getReportFilterData(Map<String, String[]> filterCriteria) {
     DistrictConsumptionReportParam param =  ParameterAdaptor.parse(filterCriteria, DistrictConsumptionReportParam.class);
     param.setAcceptedRnrStatuses(configuredAcceptedRnrStatuses);

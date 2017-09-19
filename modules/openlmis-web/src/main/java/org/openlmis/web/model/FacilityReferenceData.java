@@ -10,10 +10,7 @@
 
 package org.openlmis.web.model;
 
-import org.openlmis.core.domain.FacilityOperator;
-import org.openlmis.core.domain.FacilityType;
-import org.openlmis.core.domain.GeographicZone;
-import org.openlmis.core.domain.Program;
+import org.openlmis.core.domain.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -29,6 +26,7 @@ public class FacilityReferenceData {
   public static final String FACILITY_OPERATORS = "facilityOperators";
   public static final String GEOGRAPHIC_ZONES = "geographicZones";
   public static final String PROGRAMS = "programs";
+  public static  final String FACILITY_OWNERS="facilityOwners";
   MultiValueMap referenceData = new LinkedMultiValueMap<>();
 
 
@@ -53,6 +51,10 @@ public class FacilityReferenceData {
 
   public FacilityReferenceData addPrograms(List<Program> programs) {
     referenceData.put(PROGRAMS, programs);
+    return this;
+  }
+  public FacilityReferenceData addFacilityOwners(List<FacilityOwner> facilityOwners) {
+    referenceData.put(FACILITY_OWNERS, facilityOwners);
     return this;
   }
 }

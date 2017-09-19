@@ -348,6 +348,16 @@
                     </bean>
                 </entry>
 
+                <entry key="logTagDTO">
+                    <bean class="org.openlmis.web.model.UploadBean">
+                        <property name="displayName" value="label.log.tag.temperature"/>
+                        <property name="importableClass">
+                            <value type="java.lang.Class">org.openlmis.vaccine.dto.LogTagDTO</value>
+                        </property>
+                        <property name="recordHandler" ref="logTagTemperatureDTOHandler"/>
+                    </bean>
+                </entry>
+
 
             </map>
         </constructor-arg>

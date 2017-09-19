@@ -43,6 +43,8 @@
 	<field name="mos" class="java.lang.Float"/>
 	<field name="lastUpdate" class="java.lang.String"/>
 	<field name="adequacy2" class="java.lang.Integer"/>
+	<field name="isaValue" class="java.lang.Integer"/>
+	<field name="bufferStock" class="java.lang.Integer"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
@@ -99,7 +101,7 @@
 						<cellContents/>
 					</crosstabTotalRowHeader>
 				</rowGroup>
-				<rowGroup name="adequacy" width="95">
+				<rowGroup name="adequacy" width="0">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[new BigDecimal(new java.math.BigDecimal($F{adequacy2}.doubleValue()/
 $F{total}.doubleValue()).multiply(100)).setScale(0,BigDecimal.ROUND_HALF_UP) +"%"]]></bucketExpression>
@@ -109,11 +111,6 @@ $F{total}.doubleValue()).multiply(100)).setScale(0,BigDecimal.ROUND_HALF_UP) +"%
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 							</box>
-							<textField pattern="###0">
-								<reportElement style="Crosstab Data Text" x="0" y="0" width="95" height="28" uuid="a28f8e27-88e2-4dab-9be8-0a80a636cd5a"/>
-								<textElement textAlignment="Left" verticalAlignment="Bottom"/>
-								<textFieldExpression><![CDATA[$V{adequacy}]]></textFieldExpression>
-							</textField>
 						</cellContents>
 					</crosstabRowHeader>
 					<crosstabTotalRowHeader>
@@ -148,7 +145,7 @@ $F{total}.doubleValue()).multiply(100)).setScale(0,BigDecimal.ROUND_HALF_UP) +"%
 								<textElement textAlignment="Right" verticalAlignment="Bottom">
 									<font size="8" isBold="true"/>
 								</textElement>
-								<text><![CDATA[MOS]]></text>
+								<text><![CDATA[Buffer Stock]]></text>
 							</staticText>
 							<staticText>
 								<reportElement style="Crosstab Data Text" x="0" y="20" width="53" height="22" uuid="5067def5-8f8c-43ee-81af-8925024e7b9c"/>
@@ -166,8 +163,8 @@ $F{total}.doubleValue()).multiply(100)).setScale(0,BigDecimal.ROUND_HALF_UP) +"%
 				<measure name="sohMeasure" class="java.lang.Integer">
 					<measureExpression><![CDATA[$F{soh}]]></measureExpression>
 				</measure>
-				<measure name="mosMeasure" class="java.lang.Float">
-					<measureExpression><![CDATA[$F{mos}]]></measureExpression>
+				<measure name="mosMeasure" class="java.lang.Integer">
+					<measureExpression><![CDATA[$F{bufferStock}]]></measureExpression>
 				</measure>
 				<measure name="lastUpdateMeasure" class="java.lang.String">
 					<measureExpression><![CDATA[$F{lastUpdate}]]></measureExpression>

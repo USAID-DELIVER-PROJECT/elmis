@@ -55,17 +55,12 @@
                             <td>No data to show under selected filters</td>
                         </tr>
                     </table>
-
-                    <div ng-show="datarows.length>0">
-
-
-                        <div ng-repeat="summary in summaries track by $index" class="pull-right">
-
-                             <span class="report-label "> <strong>{{summary.nameLabel}}</strong></stromg></span> {{summary.facility}}
-                            <span class="report-label "> <strong>{{summary.name}}</strong></span><span class="report-data">{{summary.count}}</span>
-
-
-                        </div>
+                    <br/>
+                    <div ng-show="datarows.length>0">&nbsp;&nbsp;
+                        <strong><span openlmis-message="no.of.products.approved"></span></strong><span class="report-data">{{summaries.TOTAL_PRODUCTS_APPROVED}}</span>
+                        <strong><span openlmis-message="no.of.products.shipped"></span></strong><span class="report-data"> {{summaries.TOTAL_PRODUCT_SHIPPED}}</span>
+                        <strong><span openlmis-message="percent.order.fill.rate"></span></strong><span class="report-data">{{summaries.ORDER_FILL_RATE | number : 2}}&nbsp;%</span>
+                    </div>
                         <br/>
 
                         <div class="pull-right legend">Page: {{tableParams.page}}, Showing records {{ ((tableParams.page
@@ -77,10 +72,10 @@
                         <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right"
                                ng-table="tableParams">
                             <tbody>
-                            <tr ng-repeat="row in datarows">
+                            <tr ng-repeat-start="row in datarows" ng-class="{'substitutes' : row.substitutes.length > 0}">
 
                                 <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
-                                <td data-title="getLocalMessage('label.product.code')" style="width:80px" sortable="productcode">{{
+                                <td data-title="getLocalMessage('label.product.code')" style="width:80px" sortable="productcode">{{row.substitutes.length}}{{
                                     row.productcode }}
                                 </td>
                                 <td data-title="getLocalMessage('label.product.name')" style="width:30%" sortable="product">{{ row.product }}
@@ -88,15 +83,28 @@
                                 <td data-title="getLocalMessage('header.quantity.ordered')" class="number" style="width:80px"
                                     sortable="approved">{{ row.approved | number }}
                                 </td>
-                                <td data-title="getLocalMessage('header.quantity.received')" class="number" style="width:80px"
+                                <td data-title="getLocalMessage('label.qty.shipped')" class="number" style="width:80px"
                                     sortable="receipts">{{ row.receipts | number }}
                                 </td>
                                 <td data-title="getLocalMessage('label.item.fill.rate')" class="number" ng-class="{ red:'Item Fill Rate'}"
                                     style="width:120px" sortable="item_fill_rate">
-                                    <div class="{{(row.item_fill_rate == 'Item Fill rate')?'red':(row.item_fill_rate < 50)?'red':(row.item_fill_rate > 110)?'blue':'black'}}">
+                                    <div class="{{(row.item_fill_rate == 100) ?  'black' : 'red'}}" ng-hide="row.substitutes.length > 0">
                                         {{ row.item_fill_rate | number}} %
                                     </div>
                                 </td>
+                            </tr>
+                            <tr  class="substitutes" ng-repeat="r in row.substitutes">
+                                <td ng-show="$index === 0" rowspan="{{row.substitutes.length}}"></td>
+                                <td >{{r.substitutedProductCode}}</td>
+                                <td>{{r.substitutedProductName}}</td>
+                                <td ></td>
+                                <td class="number"> {{r.substitutedProductQuantityShipped | number}}</td>
+                                <td ></td>
+                            </tr>
+                            <tr class="total" ng-repeat-end ng-if="row.substitutes.length > 0">
+                                <td colspan="4"></td>
+                                <td class="number">{{row.totalQuantityShipped | number}}</td>
+                                <td class="number "><span class="{{(row.total_item_rate == 100) ? 'black' : 'red'}}">{{row.total_item_rate | number : 2}} %</span></td>
                             </tr>
                             </tbody>
                         </table>
@@ -113,3 +121,8 @@
             Report</a>
     </div>
 </div>
+<style>
+    .report-data {
+        padding-left:6px;
+    }
+</style>

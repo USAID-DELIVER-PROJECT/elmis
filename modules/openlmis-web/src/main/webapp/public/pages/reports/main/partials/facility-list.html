@@ -15,57 +15,170 @@
     <div class="box span12">
         <div class="box-header">
             <h2>
-              <span openlmis-message="report.title.facility.list"></span>
+                <span openlmis-message="report.title.facility.list"></span>
             </h2>
             <div class="box-icon">
-              <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
-              <a ng-click="section(1)"  ng-show="show(0)" class="btn-minimize"><i class="icon-chevron-down"></i></a>
-              <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')" class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
-              <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')" class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
-              <a id="mailing-button" href="#facility-list" ng-click="exportReport('mailing-list')" class='btn-small btn-info'>Mailing Label</a>
+                <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                <a ng-click="section(1)" ng-show="show(0)" class="btn-minimize"><i class="icon-chevron-down"></i></a>
+                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+                <a id="mailing-button" href="#facility-list" ng-click="exportReport('mailing-list')"
+                   class='btn-small btn-info'>Mailing Label</a>
             </div>
         </div>
-        <div>
-            <div class="app-form"  style="padding: 1px;">
-              <form ng-submit="filterGrid()"  name="filterForm" novalidate>
-                  <filter-container no-required-param="true" class="clearfix">
-                      <program-filter class="form-cell horizontalFilters"></program-filter>
-                      <zone-filter class="form-cell horizontalFilters"></zone-filter>
-                      <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
-                      <div class="form-cell horizontalFilters">
-                            <label class="labels">Status</label>
-                            <div class="form-field">
-                                <select ng-select2 ng-model="filter.status" ng-change="filterChanged()" style="width:200px;" name="status"   >
-                                    <option  ng-repeat="option in statuses" value="{{ option.value }}" ng-selected="filter.status == option.value">{{ option.name }}</option>
-                                </select>
+        <div class="row-fluid">
+            <div class="sidebar">
+                <div class="app-form" style="padding: 5px;">
+                    <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                        <div class="clearfix">
+                            <filter-container no-required-param="true">
+                                <program-filter class="form-cell horizontalFilters"></program-filter>
+                                <zone-filter class="form-cell horizontalFilters"></zone-filter>
+                                <date-range-filter perioderror="error" year="staticYear" startdate="filter.periodStart"
+                                                   enddate="filter.periodEnd"
+                                                   class="form-cell horizontalFilters"></date-range-filter>
+                                <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
+                                <facility-owner-filter class="form-cell horizontalFilters"></facility-owner-filter>
+                            </filter-container>
+
+
+                        </div>
+                    </form>
+                    <div style="margin:2px !important;font-size:10px;" ng-show="perioderror" class="row">
+                        <div class="span11 ">
+                            <p style="background-color: #EC4F67;color: #fff;font-size: 11px;">{{perioderror}}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="content-body">
+                <div class="row-fluid">
+                    <div class="span12 ">
+                        <div>
+                            <div class="box-header">
+                                <div class="form-cell span2">
+                                    <!--<label class="labels">Status</label>-->
+                                    <div class="checkbox">
+                                        <label for="allType"><input id="allType" class="checkbox" type="checkbox"
+                                                                    value="allReportType"
+                                                                    ng-change="onToggleReportTypeAll('all')"
+                                                                    ng-model="allReportType">
+                                            <span>All</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="AC"><input ng-checked="true" id="AC" class="checkbox"
+                                                               type="checkbox"
+                                                               value="AC"
+                                                               ng-change="onReportTypeCheckboxChanged('AC')"
+                                                               ng-model="reportTypes.AC">
+                                            <span>Active</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="IN"><input id="IN" class="checkbox" type="checkbox" value="IN"
+                                                               ng-change="onReportTypeCheckboxChanged('IN')"
+                                                               ng-model="reportTypes.IN">
+                                            <span>Inactive</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                  </div>
-              </form>
+                        <table client-side-sort-pagination class="table table-bordered"
+                               ng-show="data == undefined || data.length == 0">
+                            <tr>
+                                <td>No data to show under selected filters</td>
+                            </tr>
+                        </table>
+                        <div ng-show="datarows.length > 0">
+                            <div ng-if="datarows.length > 0" top-right-table-summary></div>
+                            <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right"
+                                   ng-table="tableParams">
+
+                                <tbody>
+                                <tr ng-repeat-start="row in datarows">
+                                    <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
+                                    <td style="width:80px" data-title="getLocalMessage('label.facility.code')"
+                                        sortable="code">{{ row.code }}
+                                    </td>
+                                    <td style="width:150px" data-title="getLocalMessage('label.facility.name')"
+                                        sortable="facilityName">{{ row.facilityName }}
+                                    </td>
+                                    <td style="width:120px" data-title="getLocalMessage('label.facility.type')"
+                                        sortable="facilityType">{{ row.facilityType }}
+                                    </td>
+                                    <td style="width:80px" data-title="getLocalMessage('label.province')"
+                                        sortable="province">
+                                        {{ row.province }}
+                                    </td>
+                                    <td style="width:80px" data-title="getLocalMessage('label.district')"
+                                        sortable="region">
+                                        {{ row.district }}
+                                    </td>
+                                    <td style="width:100px" data-title="getLocalMessage('label.phone')"
+                                        sortable="phoneNumber">{{ row.phoneNumber }}
+                                    </td>
+                                    <td style="width:100px" data-title="getLocalMessage('label.owner')"
+                                        sortable="owner">{{
+                                        row.owner }}
+                                    </td>
+                                    <td style="width:100px" data-title="getLocalMessage('label.active')"
+                                        sortable="active">
+                                        {{ row.active == true?'Yes':'No' }}
+                                    </td>
+
+                                </tr>
+
+                                <tr ng-repeat-end ng-show="row.facilityProgramReportList.length>0" >
+                                    <td colspan="9" class="sub-report">
+                                        <table>
+                                            <thead>
+                                            <tr>
+                                                <th openlmis-message="facility.program.areas"></th>
+                                                <th openlmis-message="facility.program.areas.start.data"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr  ng-repeat="p in row.facilityProgramReportList">
+                                                <td>{{ p.name }}</td><td>{{ p.startDate|date:'MM/dd/yyyy' }}</td>
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <table client-side-sort-pagination class="table table-bordered" ng-show="data == undefined || data.length == 0">
-            <tr>
-                <td>No data to show under selected filters</td>
-            </tr>
-        </table>
-        <div ng-show="datarows.length > 0">
-          <div ng-if="datarows.length > 0" top-right-table-summary></div>
-          <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right" ng-table="tableParams">
-                <tbody>
-                <tr ng-repeat="row in datarows">
-                    <td data-title="'#'" class="number" style="width:20px" >{{ row.no }}</td>
-                    <td data-title="getLocalMessage('label.facility.code')" style="width:80px" sortable="code" >{{ row.code }}</td>
-                    <td data-title="getLocalMessage('label.facility.name')" style="width:150px" sortable="facilityName" >{{ row.facilityName }}</td>
-                    <td data-title="getLocalMessage('label.facility.type')" style="width:120px" sortable="facilityType" >{{ row.facilityType }}</td>
-                    <td data-title="getLocalMessage('label.district')" style="width:80px" sortable="region"  >{{ row.region }}</td>
-                    <td data-title="getLocalMessage('label.phone')" style="width:100px" sortable="phoneNumber"  >{{ row.phoneNumber }}</td>
-                    <td data-title="getLocalMessage('label.owner')" style="width:100px" sortable="owner"  >{{ row.owner }}</td>
-                    <td data-title="getLocalMessage('label.active')" style="width:100px" sortable="active"  >{{ row.active == true?'Yes':'No' }}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
     </div>
 </div>
+
+<style>
+    .sub-report {
+        background-color: #d9d9d9;
+    }
+
+    .sub-report table{
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .sub-report table tr td{
+        background-color:#f9f9f9;
+    }
+
+    .sub-report
+</style>

@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
-  ~
-  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-07-29T15:25:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_fill_rate_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="1.3310000000000015"/>
-	<property name="ireport.x" value="78"/>
+	<property name="ireport.zoom" value="1.5026296018031562"/>
+	<property name="ireport.x" value="206"/>
 	<property name="ireport.y" value="0"/>
 	<style name="ColorField">
 		<conditionalStyle>
@@ -31,7 +17,14 @@
 	</style>
 	<style name="item_fill_rate_style">
 		<conditionalStyle>
-			<conditionExpression><![CDATA[Boolean.valueOf($F{item_fill_rate} < 50)]]></conditionExpression>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{item_fill_rate} != 100)]]></conditionExpression>
+			<style forecolor="#FF0000" backcolor="#FF0000"/>
+		</conditionalStyle>
+	</style>
+	<style name="total_item_fill_rate_style">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf(((
+    ($V{receipts_1} + $V{substitutedProductQuantityShipped_1})/$V{approved_1})*100) != 100)]]></conditionExpression>
 			<style forecolor="#FF0000" backcolor="#FF0000"/>
 		</conditionalStyle>
 	</style>
@@ -61,7 +54,40 @@
 	<parameter name="REPORT_FILTER_PARAM_VALUES_1" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[]]>
+		<![CDATA[SELECT f.name as facility,
+  li.productCode,
+  li.product,
+       li.quantityrequested                                                                  AS order,
+'ff' as facilityType,
+'supplyingFacility' supplyingFacility,
+       li.quantityapproved   AS approved,
+       sli.quantityshipped        AS receipts,
+  sli.substitutedproductcode,
+  sli.substitutedproductname,
+  sli.substitutedproductquantityshipped,
+       CASE WHEN COALESCE(li.quantityapproved, 0 :: NUMERIC) = 0 :: NUMERIC  THEN 0 :: NUMERIC
+       ELSE round((COALESCE(sli.quantityshipped, 0)::numeric / COALESCE(li.quantityapproved, 0)) * 100, 2)  END  AS item_fill_rate
+FROM requisitions r JOIN
+  requisition_line_items li ON r.id = li.rnrid
+  JOIN products p on li.productcode = p.code
+  JOIN facilities f on f.id = r.facilityid
+  LEFT OUTER JOIN  ( SELECT DISTINCT  productcode, quantityshipped, substitutedproductcode,  substitutedproductname, substitutedproductquantityshipped
+                     FROM
+                       (
+                         SELECT NULL as orderid, NULL AS quantityshipped, productcode, substitutedproductcode, substitutedproductname,
+                           substitutedproductquantityshipped
+                         FROM shipment_line_items li
+                         WHERE li.substitutedproductcode IS NOT NULL AND orderid = 456911
+                         UNION
+                         SELECT orderid, sum(quantityshipped) quantityshipped, productcode, NULL substitutedproductcode, NULL AS substitutedproductname,
+                                         NULL AS substitutedproductquantityshipped
+                         FROM shipment_line_items
+                         WHERE orderid = 456911
+                         GROUP BY orderid, productcode
+                       ) AS substitutes
+                     ORDER BY productcode, substitutedproductcode DESC
+                   ) sli on sli.productcode = li.productcode
+WHERE ( li.rnrid = 456911 AND  status = 'RELEASED' AND  li.quantityapproved > 0 AND f.id = 1138::INT) order by productCode]]>
 	</queryString>
 	<field name="facility" class="java.lang.String"/>
 	<field name="facilityType" class="java.lang.String"/>
@@ -70,10 +96,34 @@
 	<field name="receipts" class="java.lang.Integer"/>
 	<field name="supplyingFacility" class="java.lang.String"/>
 	<field name="approved" class="java.lang.Integer"/>
-	<field name="item_fill_rate" class="java.lang.Integer"/>
-	<field name="ORDER_FILL_RATE" class="java.lang.Integer"/>
+	<field name="item_fill_rate" class="java.lang.Double"/>
+	<field name="substitutedProductCode" class="java.lang.String"/>
+	<field name="substitutedProductName" class="java.lang.String"/>
+	<field name="substitutedProductQuantityShipped" class="java.lang.Long"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<variable name="Total_products" class="java.lang.Long" resetType="Group" resetGroup="GroupByFacilityReport" calculation="Sum">
+		<variableExpression><![CDATA[$F{approved}]]></variableExpression>
+	</variable>
+	<variable name="totalApprovedProducts" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{approved} > 0 ? 1 : 0]]></variableExpression>
+	</variable>
+	<variable name="totalShippedProducts" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[($F{substitutedProductQuantityShipped} > 0
+|| $F{receipts} > 0) ? 1 : 0]]></variableExpression>
+	</variable>
+	<variable name="orderFillRate" class="java.lang.Double">
+		<variableExpression><![CDATA[$V{totalApprovedProducts} == 0 ? 0 : ($V{totalShippedProducts} /$V{totalApprovedProducts}) *100]]></variableExpression>
+	</variable>
+	<variable name="substitutedProductQuantityShipped_1" class="java.lang.Long" resetType="Group" resetGroup="ProductCodeGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{substitutedProductQuantityShipped}]]></variableExpression>
+	</variable>
+	<variable name="receipts_1" class="java.lang.Integer" resetType="Group" resetGroup="ProductCodeGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{receipts} == null ? 0 : $F{receipts}]]></variableExpression>
+	</variable>
+	<variable name="approved_1" class="java.lang.Integer" resetType="Group" resetGroup="ProductCodeGroup">
+		<variableExpression><![CDATA[$F{approved} == null ? 0 : $F{approved}]]></variableExpression>
 	</variable>
 	<group name="GroupByFacilityReport" isStartNewPage="true" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{facility}+$F{facilityType}]]></groupExpression>
@@ -93,40 +143,6 @@
 					</textElement>
 					<text><![CDATA[]]></text>
 				</staticText>
-				<textField>
-					<reportElement positionType="Float" x="729" y="20" width="70" height="18" uuid="d327b68a-98c1-4a8e-ac2e-5b65b12e710b">
-						<property name="local_mesure_unitheight" value="pixel"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="9"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$P{TOTAL_PRODUCTS_RECEIVED}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement positionType="Float" x="729" y="38" width="70" height="18" uuid="27c7ce7b-ff11-48aa-88d9-b37aa5389328">
-						<property name="local_mesure_unitheight" value="pixel"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="local_mesure_unity" value="pixel"/>
-						<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					</reportElement>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="9"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$P{TOTAL_PRODUCTS_APPROVED}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement positionType="Float" x="729" y="56" width="70" height="18" uuid="bbb5e20e-8461-4856-9f76-9e393946b7e4">
-						<property name="local_mesure_unitheight" value="pixel"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="local_mesure_unity" value="pixel"/>
-						<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					</reportElement>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="9"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$P{PERCENTAGE_ORDER_FILL_RATE} + " %"]]></textFieldExpression>
-				</textField>
 				<textField>
 					<reportElement x="0" y="73" width="40" height="20" uuid="cf7de1a4-f163-46be-a8b3-57531443a519"/>
 					<textElement verticalAlignment="Middle">
@@ -160,10 +176,10 @@
 					<textElement verticalAlignment="Middle">
 						<font size="12"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$R{header.quantity.received}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{label.qty.shipped}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="656" y="73" width="143" height="20" uuid="965e210b-7d8e-448f-b43a-208337557650"/>
+					<reportElement x="656" y="73" width="146" height="20" uuid="965e210b-7d8e-448f-b43a-208337557650"/>
 					<textElement verticalAlignment="Middle">
 						<font size="12"/>
 					</textElement>
@@ -184,8 +200,114 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$R{label.percent.order.fill.rate}+':']]></textFieldExpression>
 				</textField>
+				<textField evaluationTime="Group" evaluationGroup="GroupByFacilityReport" pattern="#,##0">
+					<reportElement x="729" y="38" width="73" height="18" uuid="081b2e6f-e30a-412a-94b1-f05792d2dc71"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{totalApprovedProducts}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="GroupByFacilityReport" pattern="#,##0">
+					<reportElement x="729" y="20" width="73" height="18" uuid="d1efad26-e706-4411-8579-5b976eb09158"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{totalShippedProducts}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report" pattern="#,##0.00">
+					<reportElement x="728" y="56" width="74" height="17" uuid="d2edc7b8-1a3f-479c-9605-7101361420d6"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{orderFillRate}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
+	</group>
+	<group name="ProductCodeGroup">
+		<groupExpression><![CDATA[$F{productcode}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement x="40" y="0" width="759" height="20" forecolor="#006666" uuid="6d1fb982-14d5-4ec9-babe-3f491ad3ee2f">
+						<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="0" width="802" height="20" backcolor="#F4F4F4" uuid="fb1b77a0-4d61-465c-9e55-2aa5da7933ea">
+						<property name="local_mesure_unitx" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
+					</reportElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField pattern="#,##0" isBlankWhenNull="true">
+					<reportElement x="352" y="0" width="148" height="20" uuid="d8596805-00b4-4490-9ede-7ac22f213601">
+						<property name="local_mesure_unitx" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="local_mesure_unitwidth" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{approved}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="40" height="20" uuid="29ff9399-7f59-451b-b8df-f1f6240f4a60"/>
+					<textElement verticalAlignment="Middle">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}+1]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Auto" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement style="item_fill_rate_style" x="656" y="0" width="146" height="20" uuid="7fa33077-7077-4fe4-8f1c-3c3e864ed87b">
+						<property name="local_mesure_unitx" value="pixel"/>
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<printWhenExpression><![CDATA[!($V{ProductCodeGroup_COUNT}>1)]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{item_fill_rate}+" %"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="500" y="0" width="156" height="20" uuid="4369c371-9e2d-4dba-a3be-5a5d1001e6ba"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{receipts} == null ? 0 : $F{receipts}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="40" y="0" width="119" height="20" uuid="59787138-53b0-463e-9f84-2e9ce5a14990"/>
+					<textElement verticalAlignment="Middle">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{productcode}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="159" y="0" width="193" height="20" uuid="a286a183-289b-4fc8-a14c-e600a5023660"/>
+					<textElement verticalAlignment="Middle">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{product}=="NULL"?" ":$F{product})]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="25">
+				<printWhenExpression><![CDATA[$V{substitutedProductQuantityShipped_1} != null]]></printWhenExpression>
+				<textField pattern="#,##0">
+					<reportElement x="500" y="0" width="156" height="25" uuid="7503fc95-4fee-493b-8e0a-01c0c63fd661"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{substitutedProductQuantityShipped_1} + $V{receipts_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="ProductCodeGroup" pattern="#,##0.00 %">
+					<reportElement style="total_item_fill_rate_style" x="656" y="0" width="143" height="25" uuid="03e865bb-1eb3-41cc-b7e7-fa90c84a7ab9"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[(($V{substitutedProductQuantityShipped_1} + $V{receipts_1})/$V{approved_1})]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
@@ -227,29 +349,20 @@
 	</title>
 	<detail>
 		<band height="20" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{substitutedProductCode} != null]]></printWhenExpression>
 			<textField>
-				<reportElement x="40" y="0" width="759" height="20" forecolor="#006666" uuid="6d1fb982-14d5-4ec9-babe-3f491ad3ee2f">
-					<printWhenExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="802" height="20" backcolor="#F4F4F4" uuid="fb1b77a0-4d61-465c-9e55-2aa5da7933ea">
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
-				</reportElement>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="0" y="0" width="40" height="20" uuid="29ff9399-7f59-451b-b8df-f1f6240f4a60"/>
+				<reportElement x="40" y="0" width="119" height="20" uuid="3eacc4e5-487e-40da-9b04-e8f85eb96977"/>
 				<textElement verticalAlignment="Middle">
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{substitutedProductCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="159" y="0" width="193" height="20" uuid="a967f4b6-988b-4c75-b18f-4c45d2ae3f1f"/>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{substitutedProductName}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="19" width="802" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7">
@@ -259,50 +372,12 @@
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="352" y="0" width="148" height="20" uuid="d8596805-00b4-4490-9ede-7ac22f213601">
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-				</reportElement>
+			<textField pattern="">
+				<reportElement x="500" y="0" width="156" height="20" uuid="7a36c83c-ef73-4b49-9606-b1e36b17795f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{approved}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement style="err_received" x="500" y="0" width="156" height="20" uuid="f832e7d8-65b1-404a-9349-a14bad5d30c6">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<paragraph leftIndent="5" rightIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{receipts}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement style="item_fill_rate_style" x="656" y="0" width="146" height="20" uuid="7fa33077-7077-4fe4-8f1c-3c3e864ed87b">
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<paragraph leftIndent="5" rightIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{item_fill_rate}+" %"]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="40" y="0" width="119" height="20" uuid="59787138-53b0-463e-9f84-2e9ce5a14990"/>
-				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{productcode}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="159" y="0" width="193" height="20" uuid="a286a183-289b-4fc8-a14c-e600a5023660"/>
-				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{product}=="NULL"?" ":$F{product})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{substitutedProductQuantityShipped}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

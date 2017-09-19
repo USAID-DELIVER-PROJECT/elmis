@@ -11,6 +11,7 @@
 package org.openlmis.restapi.service;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
@@ -151,7 +152,10 @@ public class RestRequisitionService {
       rnr = requisitionService.getFullRequisitionById( rnrs.get(0).getId() );
 
     }else{
-      rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, report.getEmergency(), period, SOURCE_APPLICATION_ELMIS_FE);
+      //by default, this API is being called from ELMIS_FE
+      //if not, the application would have specified it's name.
+      String sourceApplication = Strings.isNullOrEmpty( report.getSourceApplication()) ? SOURCE_APPLICATION_ELMIS_FE : report.getSourceApplication();
+      rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, report.getEmergency(), period, sourceApplication);
     }
 
     List<RnrLineItem> fullSupplyProducts = new ArrayList<>();

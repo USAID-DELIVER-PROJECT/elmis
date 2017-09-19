@@ -40,7 +40,8 @@ public class VaccineInventoryReportQueryBuilder {
                 "\n" +
                 "\n" +
                 "With q as (\n" +
-                "select count (x.facilityId) issued,x.period ,X.DISTRIBUTIONTYPE from (\n" +
+                "select count (x.facilityId) issued,x.period ,X.DISTRIBUTIONTYPE " +
+                "from (\n" +
                 "select DISTINCT f.id facilityId,DISTRIBUTIONTYPE,max(d.periodid) period, f.name toFacility\n" +
                 "            FROM vaccine_distributions d \n" +
                 "            JOIN facilities f on f.id=d.tofacilityid\n" +
@@ -72,6 +73,27 @@ public class VaccineInventoryReportQueryBuilder {
                 "\n";
 
 
+        //last Query
+
+        sql= "select vd.region_name, vd.district_name,f.id facilityId, f.name facilityname,pp.id periodId,pp.name period,\n" +
+                "(Select count(facilityid) from requisition_group_members where requisitiongroupid=rg.id) as expected,\n" +
+                "(SELECT COUNT(*) FROM (SELECT DISTINCT tofacilityid FROM vaccine_distributions where fromfacilityid=f.id and periodid=pp.id" +
+                "  and distributionDate >='" +startDate+ "' and distributionDate::DATE <= '"+endDate+ "'"+
+                " AND DISTRIBUTIONTYPE ='"+type+"'"
+                +"   ) AS temp) as issued,\n" +
+                "f.id facilityid,\n" +
+                "pp.id periodid\n" +
+                "from processing_periods pp\n" +
+                "join processing_schedules ps on ps.id=pp.scheduleid\n" +
+                "join requisition_group_program_schedules rgps on rgps.scheduleid=ps.id\n" +
+                "join requisition_groups rg on rg.id=rgps.requisitiongroupid\n" +
+                "join supervisory_nodes sn on sn.id=rg.supervisorynodeid\n" +
+                "join facilities f on f.id=sn.facilityid\n" +
+                "join facility_types ft on ft.id=f.typeid\n" +
+                "left join vw_districts vd on vd.district_id=f.geographiczoneid\n" +
+                "where ft.code='dvs' and pp.startdate::DATE >='" + startDate + "' and pp.enddate::DATE <='" + endDate + "' " + writeDistrictPredicate(zone) + " \n" +
+                " order by vd.region_name,vd.district_name, pp.id";
+
         return sql;
 
     }
@@ -90,7 +112,7 @@ public class VaccineInventoryReportQueryBuilder {
                 "join facilities f on f.id=sn.facilityid\n" +
                 "join facility_types ft on ft.id=f.typeid\n" +
                 "left join vw_districts vd on vd.district_id=f.geographiczoneid\n" +
-                "where ft.code='dvs' and pp.startdate::DATE >='" + startDate + "' and pp.enddate::DATE <='" + endDate + "' " + writeDistrictPredicate(zone) + " \n";
+                "where ft.code='rvs' and pp.startdate::DATE >='" + startDate + "' and pp.enddate::DATE <='" + endDate + "' " + writeDistrictPredicate(zone) + " \n";
 
         return sql;
 

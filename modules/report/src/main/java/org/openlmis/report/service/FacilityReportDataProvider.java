@@ -16,10 +16,13 @@ import lombok.NoArgsConstructor;
 import org.openlmis.report.mapper.FacilityReportMapper;
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.FacilityReportParam;
+import org.openlmis.report.model.report.FacilityProgramReport;
+import org.openlmis.report.model.report.FacilityReport;
 import org.openlmis.report.util.ParameterAdaptor;
 import org.openlmis.report.util.SelectedFilterHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -28,23 +31,33 @@ import java.util.Map;
 @NoArgsConstructor
 public class FacilityReportDataProvider extends ReportDataProvider {
 
-  @Autowired
-  SelectedFilterHelper filterHelper;
+    @Autowired
+    SelectedFilterHelper filterHelper;
 
-  @Autowired
-  private FacilityReportMapper facilityReportMapper;
+    @Autowired
+    private FacilityReportMapper facilityReportMapper;
 
-  @Override
-  public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
-    return facilityReportMapper.SelectFilteredSortedPagedFacilities(getReportFilterData(filterCriteria), this.getUserId());
-  }
+    @Override
+    public List<? extends ResultRow> getResultSet  (Map<String, String[]> filterCriteria) {
+        FacilityReportParam facilityReportParam = getReportFilterData(filterCriteria);
+        return facilityReportMapper.SelectFilteredSortedPagedFacilities(facilityReportParam, this.getUserId());
+    }
+    @Override
+    public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria,
+                                                   Map<String, String[]> sortCriteria, int page, int pageSize) {
+        FacilityReportParam facilityReportParam = getReportFilterData(filterCriteria);
+        return facilityReportMapper.SelectFilteredSortedPagedFacilities(facilityReportParam, this.getUserId());
+    }
+    private boolean isFilteredByDateRange(FacilityReportParam reportParam) {
+        return !StringUtils.isEmpty(reportParam.getPeriodStart()) && !StringUtils.isEmpty(reportParam.getPeriodEnd());
+    }
 
-  public FacilityReportParam getReportFilterData(Map<String, String[]> filterCriteria) {
-    return ParameterAdaptor.parse(filterCriteria, FacilityReportParam.class);
-  }
+    public FacilityReportParam getReportFilterData(Map<String, String[]> filterCriteria) {
+        return ParameterAdaptor.parse(filterCriteria, FacilityReportParam.class);
+    }
 
-  @Override
-  public String getFilterSummary(Map<String, String[]> params) {
-    return filterHelper.getProgramPeriodGeoZone(params);
-  }
+    @Override
+    public String getFilterSummary(Map<String, String[]> params) {
+        return filterHelper.getProgramPeriodGeoZone(params);
+    }
 }

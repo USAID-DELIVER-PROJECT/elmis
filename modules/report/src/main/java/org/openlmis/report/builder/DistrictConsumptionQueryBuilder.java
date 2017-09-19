@@ -26,11 +26,11 @@ public class DistrictConsumptionQueryBuilder {
 
     DistrictConsumptionReportParam filter = (DistrictConsumptionReportParam) params.get("filterCriteria");
 
-
     BEGIN();
     SELECT("p.code");
     SELECT("p.primaryName || ' (' || coalesce(p.dispensingunit, '-') || ')' as product");
     SELECT("d.district_name as district");
+    SELECT(" d.district_id ");
     SELECT("sum(li.quantityDispensed) dispensed");
     SELECT("sum(li.normalizedConsumption) consumption");
     SELECT("ceil(sum(li.quantityDispensed) / (sum(li.packsize)/count(li.productCode))::float) consumptionInPacks");
@@ -60,11 +60,56 @@ public class DistrictConsumptionQueryBuilder {
       WHERE( geoZoneIsFilteredBy("d") );
     }
 
-    GROUP_BY("p.code, p.primaryName, p.dispensingunit, d.district_name");
+    GROUP_BY("p.code, p.primaryName, p.dispensingunit, d.district_name, d.district_id");
     return String.format( "select sq.*, " +
         " (sq.consumption / sum(sq.consumption) over ()) * 100 as totalPercentage " +
         "from ( %s ) as sq " +
         "order by coalesce(sq.consumption,0) desc", SQL());
+  }
+
+  public static String getFacilityDetailQuery(Map params) {
+    DistrictConsumptionReportParam filter = (DistrictConsumptionReportParam) params.get("filterCriteria");
+
+    BEGIN();
+    SELECT("p.code");
+    SELECT("p.primaryName || ' (' || coalesce(p.dispensingunit, '-') || ')' as product");
+    SELECT("d.district_name as district");
+    SELECT(" d.district_id ");
+    SELECT(" f.name as facility ");
+    SELECT("sum(li.quantityDispensed) dispensed");
+    SELECT("sum(li.normalizedConsumption) consumption");
+    SELECT("ceil(sum(li.quantityDispensed) / (sum(li.packsize)/count(li.productCode))::float) consumptionInPacks");
+    SELECT("ceil(sum(li.normalizedConsumption) / (sum(li.packsize)/count(li.productCode))::float) adjustedConsumptionInPacks ");
+    FROM("requisition_line_items li");
+    INNER_JOIN("requisitions r on r.id = li.rnrid");
+    INNER_JOIN("facilities f on r.facilityId = f.id ");
+    INNER_JOIN("vw_districts d on d.district_id = f.geographicZoneId ");
+    INNER_JOIN("requisition_group_members rgm on rgm.facilityId = r.facilityId");
+    INNER_JOIN("processing_periods pp on pp.id = r.periodId");
+    INNER_JOIN("products p on p.code::text = li.productCode::text");
+    INNER_JOIN("program_products ppg on ppg.programId = r.programId and ppg.productId = p.id");
+
+
+    WHERE(programIsFilteredBy("r.programId"));
+    WHERE(periodIsFilteredBy("r.periodId"));
+    WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
+    WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
+
+    if(filter.getProductCategory() != 0){
+      WHERE( productCategoryIsFilteredBy("ppg.productCategoryId"));
+    }
+
+    WHERE(productFilteredBy("p.id"));
+
+    if (filter.getZone() != 0) {
+      WHERE( geoZoneIsFilteredBy("d") );
+    }
+
+    GROUP_BY("p.code, p.primaryName, p.dispensingunit, d.district_name, d.district_id, f.name");
+    return String.format( "select sq.*, " +
+            " (sq.consumption / sum(sq.consumption) over ()) * 100 as totalPercentage " +
+            "from ( %s ) as sq " +
+            "order by district, facility, product desc", SQL());
   }
 
 }

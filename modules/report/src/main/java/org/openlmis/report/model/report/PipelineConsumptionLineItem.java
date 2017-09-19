@@ -25,4 +25,6 @@ public class PipelineConsumptionLineItem implements ResultRow {
     private String productCode;
     private Long consumption;
     private Long adjustment;
+    private String product;
+    private String period;
 }

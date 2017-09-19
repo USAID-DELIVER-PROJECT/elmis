@@ -382,4 +382,13 @@ public class VaccineOrderRequisitionController extends BaseController {
         return response(ORDER_REQUISITION_SEARCH, service.getSearchedDataForOnTimeReportingBy(facilityId, dateRangeStart, dateRangeEnd));
 
     }
+
+
+    @RequestMapping(value = "receiveNotification", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getReceiveNotification(HttpServletRequest request
+    ) {
+        Facility facility = facilityService.getHomeFacility(loggedInUserId(request));
+        return response("receiveNotification", inventoryDistributionService.getReceiveNotification(facility.getId()));
+    }
+
 }

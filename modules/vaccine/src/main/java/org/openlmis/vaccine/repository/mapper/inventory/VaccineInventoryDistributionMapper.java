@@ -353,4 +353,7 @@ public interface VaccineInventoryDistributionMapper {
                                                                      @Param("endDate") String endDate,
                                                                        @Param("distributionType") String distributionType,
                                                                        @Param("searchParam") String searchParam);
+
+    @Select(" select * from vaccine_distributions where status='PENDING' and toFacilityId=#{facilityId}")
+    List<VaccineDistribution>getReeceiveNotiication(@Param("facilityId")Long facilityId);
 }

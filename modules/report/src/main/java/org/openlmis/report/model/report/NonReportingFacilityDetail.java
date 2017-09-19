@@ -35,18 +35,7 @@ public class NonReportingFacilityDetail implements ResultRow {
     private Date createdDate;
     private String  province;
     private String program;
-    private String month;
-    private String year;
-
-
-    public String getYear(){
-        return createdDate != null
-                ? DateUtil.getFormattedDate(createdDate,"yyyy") : "";
-    }
-
-    public String getMonth(){
-        return createdDate != null
-                ? DateUtil.getFormattedDate(createdDate,"MMMM") : "";
-    }
+    private String period;
+    private Long epoch;
 
 }

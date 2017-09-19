@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2017-06-05T12:16:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_imbalance_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="1.1289478601075549"/>
+	<property name="ireport.zoom" value="2.6620000000000017"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.1" value="groupHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.group.1" value="GroupBySupplyingFacility"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="groupHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.group.1" value="GroupBySupplyingFacility"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
 	</parameter>
@@ -22,10 +24,68 @@
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT supplyingfacility,  facility,'aa' districtName, 'zz' as zoneName,  product,  stockinhand physicalCount,  amc,  mos months,  required orderQuantity, CASE WHEN status = 'SO' THEN  'Stocked Out' WHEN status ='US' then  'Under Stocked' WHEN status ='OS' then  'Over Stocked' END AS status
-        FROM vw_stock_status
-        WHERE status <> 'SP'
-        ORDER BY supplyingfacility,facility]]>
+		<![CDATA[SELECT
+  supplyingFacility,
+  facilityTypeName facilityType,
+  facility,
+  facilityCode,
+  a.district_name districtName,
+  a.region_name as regionName,
+  a.zone_name zoneName,
+  product, productCode,
+  a.stockInHand as physicalCount,
+  a.amc,
+  a.processing_period_name as period,
+  a.mos months,
+  a.required,
+  a.ordered as orderQuantity,
+  a.status
+
+FROM (
+       SELECT  gz.region_name as supplyingfacility, gz.region_name, gz.district_name, gz.zone_name, f.code as facilitycode,
+         li.productcode,   f.name as facility,   li.product as product,   ft.name facilitytypename,
+         gz.district_name as location,   pp.name as processing_period_name,  li.stockinhand,
+         li.stockoutdays stockoutdays,    to_char(pp.startdate, 'Mon') asmonth,
+         extract(year from pp.startdate) as year,    pg.code as program,
+         CASE
+         -- stocked out when stockinhand
+         WHEN li.stockinhand = 0 THEN 'SO'::text
+         ELSE
+           CASE WHEN li.amc > 0 AND li.stockinhand > 0 THEN
+             CASE
+             WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) <= fap.minmonthsofstock THEN 'US'::text
+             WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) >= fap.minmonthsofstock::numeric  AND round((li.stockinhand::decimal / li.amc)::numeric, 2) <= fap.maxmonthsofstock::numeric THEN 'SP'::text
+             WHEN round((li.stockinhand::decimal / li.amc)::numeric, 2) > fap.maxmonthsofstock THEN 'OS'::text
+             END
+           ELSE 'UK'::text END
+         END AS status,
+         CASE
+         WHEN COALESCE(li.amc, 0) = 0 THEN 0::numeric
+         ELSE round((li.stockinhand::decimal / li.amc)::numeric, 1)
+         END AS mos,
+         li.amc,
+         COALESCE(
+                   CASE
+                   WHEN (COALESCE(li.amc, 0) * ft.nominalmaxmonth - li.stockinhand) < 0 THEN 0
+                   ELSE COALESCE(li.amc, 0) * ft.nominalmaxmonth - li.stockinhand
+                   END, 0) AS required,
+         li.quantityapproved AS ordered
+
+       FROM  processing_periods pp
+         JOIN requisitions r ON pp. ID = r.periodid
+         JOIN requisition_line_items li ON li.rnrid = r. ID    JOIN facilities f on f.id = r.facilityId
+         JOIN facility_types ft on ft.id = f.typeid  JOIN products p on p.code = li.productcode
+         JOIN vw_districts gz on gz.district_id = f.geographiczoneid
+         JOIN programs pg on pg.id = r.programid
+         join program_products pgp on r.programid = pgp.programid and p.id = pgp.productid
+         JOIN facility_approved_products fap on ft.id = fap.facilitytypeid and fap.programproductid=pgp.id
+
+       WHERE  li.skipped = false
+              AND (li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0)
+              AND (li.beginningbalance > 0 or li.quantityreceived > 0 or li.quantitydispensed > 0 or abs(li.totallossesandadjustments) > 0 or li.amc > 0)
+              AND status in ( 'IN_APPROVAL', 'RELEASED', 'APPROVED', 'RELEASED_NO_ORDER' ) AND  r.periodId  = 117 AND r.programId = 3 AND f.id in (select facility_id from vw_user_facilities where user_id = 53 and program_id = 3)  AND (gz.zone_id = 103 or gz.parent = 103 or gz.region_id = 103 or gz.district_id = 103) and r.emergency in ('f')
+              AND li.stockinhand IS NOT NULL AND li.skipped = false )a
+WHERE status in ('NS','OS') ORDER BY supplyingFacility asc, facility asc, product asc]]>
 	</queryString>
 	<field name="supplyingFacility" class="java.lang.String"/>
 	<field name="facility" class="java.lang.String"/>
@@ -40,10 +100,11 @@
 	<field name="productCode" class="java.lang.String"/>
 	<field name="facilityCode" class="java.lang.String"/>
 	<field name="regionName" class="java.lang.String"/>
+	<field name="period" class="java.lang.String"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
-	<group name="GroupBySupplyingFacility" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+	<group name="GroupBySupplyingFacility" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{supplyingFacility}]]></groupExpression>
 		<groupHeader>
 			<band height="55">
@@ -105,7 +166,7 @@
 					<textFieldExpression><![CDATA[$R{label.product.name}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement mode="Transparent" x="523" y="20" width="51" height="30" forecolor="#000000" backcolor="#333333" uuid="02228610-f504-4311-9507-9789162b9d2a">
+					<reportElement mode="Transparent" x="564" y="20" width="43" height="30" forecolor="#000000" backcolor="#333333" uuid="02228610-f504-4311-9507-9789162b9d2a">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -115,7 +176,7 @@
 					<textFieldExpression><![CDATA[$R{label.amc}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement mode="Transparent" x="574" y="20" width="60" height="30" forecolor="#000000" backcolor="#333333" uuid="e7a60035-6a9c-4790-864c-7a3ee7ed516d">
+					<reportElement mode="Transparent" x="607" y="20" width="50" height="30" forecolor="#000000" backcolor="#333333" uuid="e7a60035-6a9c-4790-864c-7a3ee7ed516d">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -125,7 +186,7 @@
 					<textFieldExpression><![CDATA[$R{label.mos}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="634" y="20" width="63" height="30" forecolor="#000000" backcolor="#333333" uuid="34cbbdc9-0c1d-4d6f-9fe3-30ec2b1d9b99">
+					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="657" y="20" width="58" height="30" forecolor="#000000" backcolor="#333333" uuid="34cbbdc9-0c1d-4d6f-9fe3-30ec2b1d9b99">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -135,7 +196,7 @@
 					<textFieldExpression><![CDATA[$R{label.order.quantity}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="697" y="20" width="105" height="30" forecolor="#000000" backcolor="#333333" uuid="3972ac75-7a8f-4290-977e-3cde3c555c64">
+					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="715" y="20" width="87" height="30" forecolor="#000000" backcolor="#333333" uuid="3972ac75-7a8f-4290-977e-3cde3c555c64">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box leftPadding="2"/>
@@ -146,7 +207,7 @@
 					<textFieldExpression><![CDATA[$R{label.status}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="458" y="20" width="65" height="30" forecolor="#000000" backcolor="#333333" uuid="fbfc75f4-6197-4923-8bac-68b3009c59e0">
+					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="512" y="20" width="52" height="30" forecolor="#000000" backcolor="#333333" uuid="fbfc75f4-6197-4923-8bac-68b3009c59e0">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -216,6 +277,16 @@
 						<paragraph lineSpacing="Single"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$R{label.facility.code}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="458" y="20" width="54" height="30" forecolor="#000000" backcolor="#333333" uuid="c6fbbcb5-6181-4995-9aa1-7412fad0d8c9">
+						<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
+					</reportElement>
+					<textElement verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.period}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -314,14 +385,14 @@
 				</graphicElement>
 			</line>
 			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="523" y="0" width="51" height="20" uuid="873de690-e086-4f26-8f34-63807934ed39"/>
+				<reportElement stretchType="RelativeToTallestObject" x="564" y="0" width="43" height="20" uuid="873de690-e086-4f26-8f34-63807934ed39"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{amc}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="697" y="0" width="105" height="20" uuid="bf911ea9-6984-4e09-a671-6c7f68ca77e7"/>
+				<reportElement stretchType="RelativeToTallestObject" x="715" y="0" width="87" height="20" uuid="bf911ea9-6984-4e09-a671-6c7f68ca77e7"/>
 				<box leftPadding="1"/>
 				<textElement verticalAlignment="Middle">
 					<paragraph leftIndent="5"/>
@@ -329,7 +400,7 @@
 				<textFieldExpression><![CDATA[str($F{status})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="458" y="0" width="65" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="c0437e6c-491e-46ed-8439-313cc762e462"/>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="512" y="0" width="52" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="c0437e6c-491e-46ed-8439-313cc762e462"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single" leftIndent="10"/>
@@ -354,14 +425,14 @@
 				<textFieldExpression><![CDATA[$F{facility}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="634" y="0" width="63" height="20" uuid="ad6bdf5e-6728-45a7-94aa-c0a1cf580105"/>
+				<reportElement stretchType="RelativeToTallestObject" x="657" y="0" width="58" height="20" uuid="ad6bdf5e-6728-45a7-94aa-c0a1cf580105"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="10" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{orderQuantity}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="574" y="0" width="60" height="20" uuid="ed08043f-f542-478d-8ced-736a103e45bb"/>
+				<reportElement stretchType="RelativeToTallestObject" x="607" y="0" width="50" height="20" uuid="ed08043f-f542-478d-8ced-736a103e45bb"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="10"/>
 				</textElement>
@@ -418,14 +489,14 @@
 				<textFieldExpression><![CDATA[$F{districtName}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="574" y="0" width="60" height="20" uuid="1f9ae58f-fb8e-42e4-b33c-abf3463d1b44"/>
+				<reportElement stretchType="RelativeToTallestObject" x="607" y="0" width="50" height="20" uuid="1f9ae58f-fb8e-42e4-b33c-abf3463d1b44"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{months} != null)?new java.text.DecimalFormat("#,##0.0").format($F{months}):"0"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="697" y="0" width="105" height="20" uuid="51fce8e7-6c96-4e97-af57-07b27c1f21a5"/>
+				<reportElement stretchType="RelativeToTallestObject" x="715" y="0" width="87" height="20" uuid="51fce8e7-6c96-4e97-af57-07b27c1f21a5"/>
 				<box leftPadding="1"/>
 				<textElement verticalAlignment="Middle">
 					<paragraph leftIndent="5"/>
@@ -433,7 +504,7 @@
 				<textFieldExpression><![CDATA[str($F{status})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="458" y="0" width="65" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="5f945386-f902-46f5-bb9e-511705db6eb4"/>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="512" y="0" width="52" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="5f945386-f902-46f5-bb9e-511705db6eb4"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single" leftIndent="10"/>
@@ -441,14 +512,14 @@
 				<textFieldExpression><![CDATA[$F{physicalCount}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="523" y="0" width="51" height="20" uuid="47ec517c-d917-4b06-a11e-811ee126df9f"/>
+				<reportElement stretchType="RelativeToTallestObject" x="564" y="0" width="43" height="20" uuid="47ec517c-d917-4b06-a11e-811ee126df9f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{amc}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="634" y="0" width="63" height="20" uuid="6ef385ee-0d38-418b-af01-5d2675127a00"/>
+				<reportElement stretchType="RelativeToTallestObject" x="657" y="0" width="58" height="20" uuid="6ef385ee-0d38-418b-af01-5d2675127a00"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph leftIndent="10" rightIndent="5"/>
 				</textElement>
@@ -461,6 +532,12 @@
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{facilityCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="458" y="0" width="54" height="20" uuid="21a125e6-5752-4f0b-b70f-952835749152">
+					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "PDF"]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{period}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -79,7 +79,6 @@ public class UploadController extends BaseController {
       RecordHandler recordHandler = uploadBeansMap.get(model).getRecordHandler();
       ModelClass modelClass = new ModelClass(uploadBeansMap.get(model).getImportableClass());
       AuditFields auditFields = new AuditFields(loggedInUserId(request), currentTimestamp);
-
       int recordsToBeUploaded = csvParser.process(csvFile.getInputStream(), modelClass, recordHandler, auditFields);
 
       return successPage(recordsToBeUploaded);
@@ -134,6 +133,34 @@ public class UploadController extends BaseController {
     String message = messageService.message(errorMessage);
     responseMessages.put(ERROR, message);
     return response(responseMessages, OK, TEXT_HTML_VALUE);
+  }
+
+
+
+  @RequestMapping(value = "/upload-temperature-log", method = POST)
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'UPLOADS')")
+  public ResponseEntity<OpenLmisResponse> uploadTemperatureLog(MultipartFile csvFile, String model,String route, HttpServletRequest request) {
+    try {
+      OpenLmisMessage errorMessage = validateFile(model, csvFile);
+      if (errorMessage != null) {
+        return errorResponse(errorMessage);
+      }
+
+      Date currentTimestamp = dbService.getCurrentTimestamp();
+
+      RecordHandler recordHandler = uploadBeansMap.get(model).getRecordHandler();
+      ModelClass modelClass = new ModelClass(uploadBeansMap.get(model).getImportableClass());
+      AuditFields auditFields = new AuditFields(loggedInUserId(request), currentTimestamp);
+      int recordsToBeUploaded = csvParser.process(csvFile.getInputStream(), modelClass, recordHandler, auditFields);
+
+      return successPage(recordsToBeUploaded);
+    } catch (DataException dataException) {
+      return errorResponse(dataException.getOpenLmisMessage());
+    } catch (UploadException e) {
+      return errorResponse(new OpenLmisMessage(messageService.message(e.getCode(), (Object[])e.getParams())));
+    } catch (IOException e) {
+      return errorResponse(new OpenLmisMessage(e.getMessage()));
+    }
   }
 
 }

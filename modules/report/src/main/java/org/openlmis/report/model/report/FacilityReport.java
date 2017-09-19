@@ -15,17 +15,21 @@ package org.openlmis.report.model.report;
 import lombok.*;
 import org.openlmis.report.model.ResultRow;
 
+import java.util.Date;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class    FacilityReport implements ResultRow {
+    private Long id;
     private String code;
     private String facilityName;
     private String facilityType;
     private boolean active;
     private String address1;
-    private String region;
+    private String district;
     private String owner;
     private String gpsCoordinates;
     private String email;
@@ -33,8 +37,16 @@ public class    FacilityReport implements ResultRow {
     private String MSLMSDCode;
     private String fax;
     private String requisitionGroup;
+    List<FacilityProgramReport> facilityProgramReportList;
    // private String contact;
-
+   private Long supportprogramid;
+    private Long programId;
+    private Long facilityId;
+    private String programCode;
+    private String name;
+    private boolean activeProgram ;
+    private Date startDate;
+    private String province;
     public FacilityReport(String code,String facilityName,String facilityType,boolean active){
         this.code  = code;
         this.facilityName = facilityName;

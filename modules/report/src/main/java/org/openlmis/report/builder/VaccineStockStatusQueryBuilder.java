@@ -13,7 +13,7 @@ public class VaccineStockStatusQueryBuilder {
         Long userId = (Long) params.get("userId");
 
         return (
-                        "   WITH Q AS (  SELECT  x.* , r.isaValue, \n" +
+                        "   WITH Q AS (  SELECT  x.* , r.isaValue,r.bufferStock, \n" +
                         "   case when x.soh > r.maximumstock then 1 else 0 end as blue,\n" +
                         "   case when x.soh <= maximumstock AND x.soh  >= reorderlevel then 1 else 0 end as green,\n" +
                         "   case when x.soh < reorderlevel AND x.soh >= r.bufferstock then 1 else 0 end as yellow,\n" +
@@ -42,7 +42,7 @@ public class VaccineStockStatusQueryBuilder {
                         "    JOIN stock_requirements r on r.facilityid=x.facilityid and r.productid=x.productid\n" +
                         "    WHERE  x.r <= 1 and r.year = (SELECT date_part('YEAR', #{filterCriteria.statusDate}::date ))         " +
                         "    ORDER BY facilityId,productId )  \n" +
-                        "    SELECT facilityId,districtId,regionId, productId, facilityName,district,region,product,lastUpdate,soh,isaValue,   \n" +
+                        "    SELECT facilityId,districtId,regionId, productId, facilityName,district,region,product,lastUpdate,soh,isaValue,bufferStock,   \n" +
                         "    CASE WHEN isaValue > 0 THEN  ROUND((soh::numeric(10,2) / isaValue::numeric(10,2)),2) else 0 end as mos,color, adequacy," +
                         "    sum(adequacy) OVER (PARTITION BY facilityId) adequacy2, count(productId) OVER (PARTITION BY facilityId) total,\n  " +
                         "    CASE WHEN count(productId) OVER (PARTITION BY facilityId) > 0 THEN ROUND( sum(adequacy) OVER (PARTITION BY facilityId) / count(productId) OVER (PARTITION BY facilityId),0) ELSE 0 END AS adequacy3 " +

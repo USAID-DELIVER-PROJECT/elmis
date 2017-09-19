@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module( 'vaccine-dashboard',['openlmis',  'angularCombine','ui.bootstrap','gridshore.c3js.chart','textAngular']).config(['$routeProvider', function ($routeProvider) {
+angular.module( 'vaccine-dashboard',['openlmis',  'angularCombine','ui.bootstrap','gridshore.c3js.chart','textAngular','ngAnimate']).config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.
         when('/dashboard', {controller: VaccineDashboardController, templateUrl: 'partials/dashboard.html', resolve: VaccineDashboardController.resolve}).otherwise({redirectTo: '/dashboard'});

@@ -7,6 +7,7 @@ import org.openlmis.stockmanagement.repository.mapper.LotMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -44,5 +45,21 @@ public class LotRepository {
     } else {
       mapper.updateLotOnHand(lotOnHand);
     }
+  }
+
+  public void updateLot(Lot lot) {
+    mapper.update(lot);
+  }
+
+  public void deleteLot(Long id) {
+    mapper.delete(id);
+  }
+
+  public Lot getById(Long id) {
+    return mapper.getById(id);
+  }
+
+  public List<Lot> getAll() {
+    return mapper.getAll();
   }
 }

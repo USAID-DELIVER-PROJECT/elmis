@@ -1,0 +1,51 @@
+
+<div xmlns="http://www.w3.org/1999/html">
+    <h2><span>Lot List</span>
+        <a href="#/create" class="pull-right btn btn-primary"><span id="resignation-add-new"
+                                                                                       openlmis-message="button.add.new"></span></a>
+    </h2>
+
+    <div class="alert alert-success" id="saveSuccessMsgDiv" ng-show="id">
+        <span ng-bind="message"></span>
+    </div>
+
+    <div class="alert alert-error" id="equipmentSaveFailMessage" openlmis-message="equipmentErrorMessage"
+         ng-show="equipmentError">
+
+    </div>
+    <input id="txtFilterDonors" class="search-query input-xlarge" type="text" ng-model="query"
+           placeholder="Enter Lot/Manufacture Name"/>
+
+    <div class="clearfix"></div>
+    <br>
+
+    <div>
+        <h3 ng-show="query.length>0">
+            <ng-pluralize count="resultCount"
+                          when="{ 0: 'No matches found for \'{{query}}\'',
+                        1: '1 match found for \'{{query}}\'',
+                        other: '{} matches found for \'{{query}}\''}">
+            </ng-pluralize>
+        </h3>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr class="gradient-header">
+                <th class="col-row-number">#</th>
+                <th><span>Product</span></th>
+                <th><span>Lot Code</span></th>
+                <th><span>Manufacture</span></th>
+                <th><span>Expiration Date</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="lot in lots | filter : query">
+                <td>{{$index + 1}}</td>
+                <td><a href="" ng-click="editLot(lot.id)">{{lot.lotCode}}</a></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>

@@ -24,7 +24,7 @@ public class OrderFillRateQueryBuilder {
 
   public static String getQuery(Map params) {
     OrderFillRateReportParam queryParam = (OrderFillRateReportParam) params.get("filterCriteria");
-    return getQueryString(queryParam, queryParam.getUserId());
+    return getQueryStringV2(queryParam, queryParam.getUserId());
   }
 
   private static void writePredicates(OrderFillRateReportParam param) {
@@ -51,10 +51,63 @@ public class OrderFillRateQueryBuilder {
     if (multiProductFilterBy(param.getProducts(), "productId", "tracer") != null) {
       WHERE(multiProductFilterBy(param.getProducts(), "productId", "tracer"));
     }
-
-
   }
 
+  private static String getQueryStringV2(OrderFillRateReportParam param, Long userId) {
+    BEGIN();
+    SELECT("f.name as facility,\n" +
+            "  li.productCode,\n" +
+            "  li.product,\n" +
+            "  li.quantityrequested                                                                  AS order,\n" +
+            "  li.quantityapproved                                                                   AS approved,\n" +
+            "  sli.quantityshipped                                                                   AS receipts,\n" +
+            "  sli.substitutedproductcode,\n" +
+            "  sli.substitutedproductname,\n" +
+            "  sli.substitutedproductquantityshipped,\n" +
+            "  CASE WHEN COALESCE(li.quantityapproved, 0 :: NUMERIC) = 0 :: NUMERIC  THEN 0 :: NUMERIC\n" +
+            "   ELSE round((COALESCE(sli.quantityshipped, 0)::numeric / COALESCE(li.quantityapproved, 0)) * 100, 2)  END  AS item_fill_rate ");
+    FROM("requisitions r JOIN\n" +
+            "  requisition_line_items li ON r.id = li.rnrid\n" +
+            "  JOIN products p on li.productcode = p.code\n" +
+            "  JOIN facilities f on f.id = r.facilityid ");
+
+    if(param.getProductCategory() != 0)// gives a overhead on a query performance. Unless category is selected don't do the join
+    JOIN(" (SELECT * FROM program_products where programid =  #{filterCriteria.program}) pp ON p.id = pp.productid");
+
+    LEFT_OUTER_JOIN(  " ( SELECT DISTINCT  productcode, quantityshipped, substitutedproductcode,  substitutedproductname, substitutedproductquantityshipped\n" +
+            "              FROM\n" +
+            "                (\n" +
+            "                  SELECT NULL as orderid, NULL AS quantityshipped, productcode, substitutedproductcode, substitutedproductname, \n" +
+            "                    substitutedproductquantityshipped\n" +
+            "                  FROM shipment_line_items li\n" +
+            "                  WHERE li.substitutedproductcode IS NOT NULL AND orderid = #{filterCriteria.rnrId}\n" +
+            "                    UNION\n" +
+            "                  SELECT orderid, sum(quantityshipped) quantityshipped, productcode, NULL substitutedproductcode, NULL AS substitutedproductname, \n" +
+            "                    NULL AS substitutedproductquantityshipped\n" +
+            "                  FROM shipment_line_items\n" +
+            "                  WHERE orderid = #{filterCriteria.rnrId}\n" +
+            "                  GROUP BY orderid, productcode\n" +
+            "                ) AS substitutes\n" +
+            "              ORDER BY productcode, substitutedproductcode DESC\n" +
+            "            ) sli on sli.productcode = li.productcode");
+        WHERE(" li.rnrid = #{filterCriteria.rnrId}");
+        WHERE(" status = 'RELEASED'");
+        WHERE(" li.quantityapproved > 0");
+
+        if(param.getFacilityType() != 0)
+          WHERE(facilityTypeIsFilteredBy("f.type"));
+        if(param.getFacility() != 0)
+          WHERE(facilityIsFilteredBy("f.id"));
+        if(param.getProductCategory() != 0)
+          WHERE(productCategoryIsFilteredBy("pp.productcategoryid"));
+        if (multiProductFilterBy(param.getProducts(), "p.id", "tracer") != null)
+          WHERE(multiProductFilterBy(param.getProducts(), "p.id", "tracer"));
+      ORDER_BY(" productCode ");
+    String query=SQL();
+    return query;
+  }
+
+  @Deprecated
   private static String getQueryString(OrderFillRateReportParam param, Long userId) {
     BEGIN();
     SELECT_DISTINCT("facilityname facility,quantityapproved as Approved,quantityreceived receipts ,productcode, product, " +

@@ -146,4 +146,7 @@ public class VaccineInventoryDistributionRepository {
 
         return mapper.searchDistributionAndFacilityByDateRange(facilityId,startDate,endDate,distributionType,searchParam);
     }
+    public List<VaccineDistribution>getReceiveNotification(Long facilityId){
+        return mapper.getReeceiveNotiication(facilityId);
+    }
 }

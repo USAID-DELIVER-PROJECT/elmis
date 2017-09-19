@@ -60,8 +60,11 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                 console.log($scope.dataRows);
 
                 $scope.pagination = data.pagination;
+                console.log(data.pagination);
+
                 $scope.totalItems = $scope.pagination.totalRecords;
                 $scope.currentPage = $scope.pagination.page;
+
 
             });
     };
@@ -76,6 +79,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
     $scope.loadDistributedFacilities=function(){
         VaccineDistributedFacilitiesReport.get({periodId: $scope.query.periodid,
                                                       facilityId: $scope.query.facilityid,
+                                                      type:$scope.filter.type,
                                                       page:$scope.dPage},
                                                       function(data){
 
@@ -92,6 +96,8 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                                                         $scope.distributedFacilities=$.map(byFacility,function(value, index){
                                                            return [{"facilityName":index,"products":value}];
                                                         });
+
+                                                          console.log($scope.distributedFacilities);
 
                                                       });
 
@@ -111,7 +117,8 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
       $scope.query=row;
        console.log('Modal Data');
        console.log(row);
-      $scope.loadDistributedFacilities();
+       console.log($scope.filter.type);
+       $scope.loadDistributedFacilities();
 
    };
    $scope.$watch('dCurrentPage', function () {

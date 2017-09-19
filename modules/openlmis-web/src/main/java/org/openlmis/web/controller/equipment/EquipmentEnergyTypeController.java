@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
+import static org.openlmis.core.web.OpenLmisResponse.success;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -48,5 +51,22 @@ public class EquipmentEnergyTypeController extends BaseController {
   public ResponseEntity<OpenLmisResponse> getById(@PathVariable(value="id") Long id){
     return OpenLmisResponse.response("energyType",service.getById(id));
   }
+  @RequestMapping(value = "saveEquipmentEnergyType", method = POST, headers = ACCEPT_JSON)
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_EQUIPMENT_SETTINGS')")
+  public ResponseEntity<OpenLmisResponse> save(@RequestBody EquipmentEnergyType energyType,HttpServletRequest request){
+    ResponseEntity<OpenLmisResponse> successResponse;
+    try {
+      Long userId= loggedInUserId(request);
+      System.out.println(userId);
+      energyType.setModifiedBy(userId);
+      energyType.setCreatedBy(userId);
+      service.save(energyType);
+    }catch(DuplicateKeyException exp){
+      return OpenLmisResponse.error("Duplicate Energy Name Exists in DB.", HttpStatus.BAD_REQUEST);
+    }
 
+    successResponse = success(String.format("Energy Type '%s' has been successfully saved", energyType.getName()));
+    successResponse.getBody().addData("energy_types", energyType);
+    return  successResponse;
+  }
 }

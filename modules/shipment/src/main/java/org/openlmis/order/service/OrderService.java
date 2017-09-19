@@ -54,11 +54,18 @@ import static org.openlmis.order.domain.OrderStatus.*;
 @NoArgsConstructor
 public class OrderService {
 
+  private static final String RELEASE_PREVIOUS_RANDRS_WITHOUT_ORDER = "AUTO_RELEASE_PREVIOUS_REQUISITIONS_WITHOUT_ORDER";
+
+  private static String SUPPLY_LINE_MISSING_COMMENT = "order.ftpComment.supplyline.missing";
+
   @Autowired
   private OrderConfigurationRepository orderConfigurationRepository;
 
   @Autowired
   private OrderRepository orderRepository;
+
+  @Autowired
+  private ConfigurationSettingService configurationSettingService;
 
   @Autowired
   private RequisitionService requisitionService;
@@ -89,8 +96,6 @@ public class OrderService {
 
   @Autowired
   private CommaSeparator commaSeparator;
-
-  public static String SUPPLY_LINE_MISSING_COMMENT = "order.ftpComment.supplyline.missing";
 
   private Integer pageSize;
 
@@ -130,6 +135,17 @@ public class OrderService {
 
       sendOrderStatusChangeMail(order);
       orderEventService.notifyForStatusChange(order);
+      checkAndReleaseWithoutForOrder(rnr, userId);
+    }
+  }
+
+  private void checkAndReleaseWithoutForOrder(Rnr rnr, Long userId) {
+    Boolean releasePreviousRandRs = configurationSettingService.getBoolValue(RELEASE_PREVIOUS_RANDRS_WITHOUT_ORDER);
+    if(releasePreviousRandRs) {
+      List<Rnr> releasableRnrs = requisitionService.getUnreleasedRequisitionsFor(rnr);
+      if(!releasableRnrs.isEmpty()){
+        releaseWithoutOrder(releasableRnrs, userId);
+      }
     }
   }
 
