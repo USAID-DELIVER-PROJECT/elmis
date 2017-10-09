@@ -75,6 +75,7 @@ function ViewRnrController($scope, requisitionData , rnrColumns, regimenTemplate
   $scope.visibleColumns = requisitionService.getMappedVisibleColumns(rnrColumns, RegularRnrLineItem.frozenColumns, []);
   $scope.regimenCount = $scope.rnr.regimenLineItems.length;
   $scope.equipmentCount = $scope.rnr.equipmentLineItems.length;
+  $scope.manualTestCount = $scope.rnr.manualTestLineItems.length;
 
   $scope.equipmentOperationalStatus = equipmentOperationalStatus;
 

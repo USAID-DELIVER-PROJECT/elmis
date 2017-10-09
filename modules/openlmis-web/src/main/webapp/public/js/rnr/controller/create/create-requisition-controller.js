@@ -9,8 +9,7 @@
  */
 
 function CreateRequisitionController($scope, requisitionData, comments , pageSize, rnrColumns, lossesAndAdjustmentsTypes, facilityApprovedProducts, requisitionRights, equipmentOperationalStatus ,
-                                     regimenTemplate, showMaxStock, $location, DeleteRequisition, SkipRequisition,Requisitions, $routeParams, $dialog, requisitionService, $q,
-                                     labReferenceData) {
+                                     regimenTemplate, showMaxStock, $location, DeleteRequisition, SkipRequisition,Requisitions, $routeParams, $dialog, requisitionService, $q) {
 
   var NON_FULL_SUPPLY = 'nonFullSupply';
   var FULL_SUPPLY = 'fullSupply';
@@ -93,7 +92,7 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
   $scope.errorPages = {fullSupply: [], nonFullSupply: [], regimen: [], equipment: []};
   $scope.regimenCount = $scope.rnr.regimenLineItems.length;
   $scope.equipmentCount = $scope.rnr.equipmentLineItems.length;
-  $scope.labReferenceData =  labReferenceData;
+  $scope.manualTestCount = $scope.rnr.manualTestLineItems.length;
 
   requisitionService.populateScope($scope, $location, $routeParams);
   resetFlags();
@@ -440,17 +439,6 @@ CreateRequisitionController.resolve = {
       }, {});
     }, 100);
     return deferred.promise;
-  },
-
-  labReferenceData: function ($q, $timeout, $route, LabEquipmentRnrReferenceData) {
-      var deferred = $q.defer();
-      $timeout(function () {
-          LabEquipmentRnrReferenceData.get({}, function (data) {
-              deferred.resolve(data.lab_refrence_data);
-          }, {});
-      }, 100);
-      return deferred.promise;
   }
-
 };
 

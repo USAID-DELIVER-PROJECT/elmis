@@ -28,7 +28,7 @@
                 <a href="" ng-click="switchSupplyType('equipment')" id="equipmentTab" openlmis-message="label.equipments"></a>
             </li>
             <li ng-class="{'selected': visibleTab == 'manualTest', 'has-error': manualTestTabError}"
-                ng-show="equipmentCount">
+                ng-show="manualTestCount">
                 <a href="" ng-click="switchSupplyType('manualTest')" id="manualTestTab" openlmis-message="label.manual.tests"></a>
             </li>
         </ul>
