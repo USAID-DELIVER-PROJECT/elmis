@@ -131,36 +131,6 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
     }
   };
 
-  /*$scope.toggleEquipmentNonFunctionalType = function (lineItem, checked, testType){
-      if($scope.lineItemSwap == null) $scope.lineItemSwap = [];
-      console.log(checked)
-          if(!checked) {
-              $scope.lineItemSwap.push(angular.copy(lineItem));
-               testType == null ? lineItem.analytesDaysOutOfUse = 0 : lineItem.electrolytesDaysOutOfUse = 0;
-              _.chain(lineItem.bioChemistryTestes)
-                  .where({testTypeCode: testType == null ? 'ANALYTES' : 'ELECTROLYTES'})
-                  .map(function (item) {
-                      item.numberOfTestes = 0;
-                      return item;
-                  });
-          }
-          else
-          {
-            val = _.findWhere($scope.lineItemSwap, {id : lineItem.id});
-
-             _.chain($scope.page.equipment)
-                 .where({id : lineItem.id})
-                 .map(function (item) {
-                     item.analytesDaysOutOfUse = val.analytesDaysOutOfUse;
-                     item.electrolytesDaysOutOfUse = val.electrolytesDaysOutOfUse;
-                     item.bioChemistryTestes.length = 0;
-                     Array.prototype.push.apply(item.bioChemistryTestes, val.bioChemistryTestes);
-                  })
-
-          }
-  }
-  */
-
   $scope.checkErrorOnPage = function (page) {
     return $scope.visibleTab === NON_FULL_SUPPLY ?
         _.contains($scope.errorPages.nonFullSupply, page) :
