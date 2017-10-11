@@ -1,10 +1,8 @@
 package org.openlmis.restapi.service;
 
-import org.openlmis.core.domain.Facility;
-import org.openlmis.core.domain.Product;
-import org.openlmis.core.domain.Program;
-import org.openlmis.core.domain.ProgramProduct;
+import org.openlmis.core.domain.*;
 import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProcessingPeriodService;
 import org.openlmis.core.service.ProgramProductService;
 import org.openlmis.core.service.ProgramService;
 import org.openlmis.restapi.domain.ProgramWithProducts;
@@ -26,6 +24,9 @@ public class RestProgramsService {
     @Autowired
     private ProgramProductService programProductService;
 
+    @Autowired
+    private ProcessingPeriodService periodService;
+
     public List<ProgramWithProducts> getAllProgramsWithProductsByFacilityCode(String facilityCode) {
         Facility facility = facilityService.getFacilityByCode(facilityCode);
 
@@ -43,5 +44,9 @@ public class RestProgramsService {
         }
 
         return programsWithProducts;
+    }
+
+    public List<ProcessingPeriod> getProgramPeriodsByCode(String code) {
+        return periodService.getPeriodsByProgramCode(code);
     }
 }

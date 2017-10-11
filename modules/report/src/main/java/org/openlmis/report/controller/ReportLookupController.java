@@ -632,10 +632,4 @@ public class ReportLookupController extends BaseController {
     return OpenLmisResponse.response(OWNERS, owners);
   }
 
-  @RequestMapping(value = "/periods-by-program", method = GET, headers = BaseController.ACCEPT_JSON)
-  public ResponseEntity<OpenLmisResponse> getPeriodsByProgram(@RequestParam(value = "program", required = true, defaultValue = "0") String program) {
-    return OpenLmisResponse.response(PERIODS,
-            this.reportLookupService.getPeriodsByProgram(program));
-  }
-
 }

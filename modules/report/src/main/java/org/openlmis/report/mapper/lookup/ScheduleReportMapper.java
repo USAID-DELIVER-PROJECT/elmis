@@ -35,13 +35,4 @@ public interface ScheduleReportMapper {
     "     order by name")
   List<Schedule> getSchedulesForProgram(@Param("programId")long programId);
 
-  @Select("SELECT pp.* " +
-          "       FROM " +
-          "           processing_schedules s " +
-          "         inner join processing_periods pp ON pp.scheduleid = s.id " +
-          "       where s.id in " +
-          "             (select scheduleId from requisition_group_program_schedules sc " +
-          "             join programs p on p.id = sc.programid where p.code = #{program}) " +
-          "         order by name")
-  List<ProcessingPeriod> getPeriodsByProgram(String program);
 }
