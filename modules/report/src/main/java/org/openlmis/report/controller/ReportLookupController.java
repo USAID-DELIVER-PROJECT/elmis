@@ -625,10 +625,17 @@ public class ReportLookupController extends BaseController {
     List<ProcessingPeriod> periodList = processingScheduleService.getAllPeriodsByYear(year);
     return OpenLmisResponse.response(PERIODS, periodList);
   }
-  @RequestMapping(value = "/facility_owners", method = GET, headers = BaseController.ACCEPT_JSON)
 
+  @RequestMapping(value = "/facility_owners", method = GET, headers = BaseController.ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getFacilitiesOwnerList() {
     List<Owner> owners = facilityOwnerService.getAllOwners();
     return OpenLmisResponse.response(OWNERS, owners);
   }
+
+  @RequestMapping(value = "/periods-by-program", method = GET, headers = BaseController.ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getPeriodsByProgram(@RequestParam(value = "program", required = true, defaultValue = "0") String program) {
+    return OpenLmisResponse.response(PERIODS,
+            this.reportLookupService.getPeriodsByProgram(program));
+  }
+
 }

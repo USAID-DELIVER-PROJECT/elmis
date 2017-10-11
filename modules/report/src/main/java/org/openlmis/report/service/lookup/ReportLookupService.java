@@ -764,4 +764,8 @@ public class ReportLookupService {
 
     return facilityTypeMapper.getLevelsWithoutProgram(program.get(0).getId(), facilityIds);
   }
+
+  public Object getPeriodsByProgram(String program) {
+    return scheduleMapper.getPeriodsByProgram(program);
+  }
 }

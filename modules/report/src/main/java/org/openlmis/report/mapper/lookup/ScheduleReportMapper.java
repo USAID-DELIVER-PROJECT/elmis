@@ -14,6 +14,7 @@ package org.openlmis.report.mapper.lookup;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.report.model.dto.Schedule;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -33,4 +34,14 @@ public interface ScheduleReportMapper {
     "         (select scheduleId from requisition_group_program_schedules where programId = #{programId}) " +
     "     order by name")
   List<Schedule> getSchedulesForProgram(@Param("programId")long programId);
+
+  @Select("SELECT pp.* " +
+          "       FROM " +
+          "           processing_schedules s " +
+          "         inner join processing_periods pp ON pp.scheduleid = s.id " +
+          "       where s.id in " +
+          "             (select scheduleId from requisition_group_program_schedules sc " +
+          "             join programs p on p.id = sc.programid where p.code = #{program}) " +
+          "         order by name")
+  List<ProcessingPeriod> getPeriodsByProgram(String program);
 }
