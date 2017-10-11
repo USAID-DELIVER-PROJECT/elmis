@@ -27,6 +27,6 @@ function ManualTestTypeController($scope, $routeParams, ManualTestType, $locatio
             $location.path('');
         });
 
-    }
+    };
 
 }
