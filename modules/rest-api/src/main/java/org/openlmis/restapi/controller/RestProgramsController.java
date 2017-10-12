@@ -37,7 +37,7 @@ public class RestProgramsController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/program-periods", method = GET, headers = org.openlmis.core.web.controller.BaseController.ACCEPT_JSON)
+    @RequestMapping(value = "/rest-api/program-periods", method = GET, headers = org.openlmis.core.web.controller.BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getPeriodsByProgram(@RequestParam(value = "program", required = true, defaultValue = "0") String program) {
         return OpenLmisResponse.response(PERIODS,
                 programService.getProgramPeriodsByCode(program));
