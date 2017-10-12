@@ -11,11 +11,16 @@ package org.openlmis.core.service;
 
 
 import org.openlmis.core.domain.ManualTestType;
+import org.openlmis.core.exception.DataException;
 import org.openlmis.core.repository.ManualTestTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.openlmis.core.web.OpenLmisResponse.error;
 
 @Service
 public class ManualTestTypeService {
@@ -40,11 +45,15 @@ public class ManualTestTypeService {
     }
 
     public void save(ManualTestType testType) {
-        if(testType.getId() == null)
-            repository.insert(testType);
-        else
-            repository.update(testType);
-
+        try
+        {
+            if(testType.getId() == null)
+                repository.insert(testType);
+            else
+                repository.update(testType);
+        } catch (DuplicateKeyException e) {
+                throw new DataException("Invalid code, the provided code already exists");
+        }
     }
 
     public void remove(Long id) {

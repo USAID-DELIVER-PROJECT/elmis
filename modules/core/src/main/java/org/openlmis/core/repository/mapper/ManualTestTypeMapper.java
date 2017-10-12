@@ -24,7 +24,7 @@ import java.util.List;
 @Repository
 public interface ManualTestTypeMapper {
 
-    @Select("select * from manual_test_types")
+    @Select("select * from manual_test_types order by displayorder")
     List<ManualTestType> getAll();
 
     @Select("select * from manual_test_types where id = #{id}")
@@ -33,9 +33,9 @@ public interface ManualTestTypeMapper {
     @Insert("insert into manual_test_types (code, name, displayorder) values (#{code}, #{name}, #{displayOrder})")
     void insert(ManualTestType type);
 
-    @Update("update manual_test_types set code=#{code}, name=#{name}, displayorder = #{displayOrder}")
+    @Update("update manual_test_types set code=#{code}, name=#{name}, displayorder = #{displayOrder} where id = #{id}")
     void update(ManualTestType type);
 
-    @Delete("delete from manual_test_types where id = id")
+    @Delete("delete from manual_test_types where id = #{id}")
     void remove(Long id);
 }

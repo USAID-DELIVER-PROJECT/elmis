@@ -16,6 +16,8 @@ import org.openlmis.core.service.ManualTestTypeService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,26 +65,28 @@ public class ManualTestTypeController extends BaseController {
         ResponseEntity<OpenLmisResponse> successResponse;
 
         testType.setModifiedBy(loggedInUserId(request));
-        try {
-            manualTestService.save(testType);
-        } catch (DataException e) {
-            return error(e, HttpStatus.BAD_REQUEST);
-        }
+
+        manualTestService.save(testType);
+
         successResponse = success(String.format("Test type '%s' has been successfully saved", testType.getName()));
         successResponse.getBody().addData(MANUAL_TEST_TYPE, testType);
         return successResponse;
     }
 
-    @RequestMapping(value="remove/{id}",method = DELETE,headers = ACCEPT_JSON)
+    @RequestMapping(value="types/{tid}",method = DELETE,headers = ACCEPT_JSON)
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_MANUAL_TEST_TYPES')")
-    public ResponseEntity<OpenLmisResponse> remove(@PathVariable(value="id") Long id, HttpServletRequest request){
+    public ResponseEntity<OpenLmisResponse> remove(@PathVariable(value="tid") Long id, HttpServletRequest request){
         ResponseEntity<OpenLmisResponse> successResponse;
         try {
             manualTestService.remove(id);
+        } catch (DataIntegrityViolationException ex){
+            return error("Can not delete test type. Its already in use", HttpStatus.BAD_REQUEST);
         } catch (DataException e) {
             return error(e, HttpStatus.BAD_REQUEST);
         }
         successResponse = success(String.format("Test type has been successfully removed"));
         return successResponse;
     }
+
+
 }

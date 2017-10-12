@@ -10,10 +10,10 @@
  *   You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-angular.module('manualTestTypes',  ['openlmis','ui.bootstrap', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.pagination']).config(['$routeProvider', function ($routeProvider) {
+angular.module('manualTestTypes',  ['openlmis','ui.bootstrap', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.pagination','ui.bootstrap.modal', 'ui.bootstrap.dialog']).config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
-            when('/create', {controller: ManualTestTypeController, templateUrl: 'partials/create.html', resolve: ManualTestTypeController.resolve}).
-            when('/list', {controller: ManualTestTypeController, templateUrl: 'partials/list.html', resolve: ManualTestTypeController.resolve}).
-            when('/edit/:id', {controller: ManualTestTypeController, templateUrl: 'partials/create.html', resolve: ManualTestTypeController.resolve}).
+            when('/create', {controller: ManualTestTypeController, templateUrl: 'partials/create.html', mode: 'NEW'}).
+            when('/list', {controller: ManualTestTypeController, templateUrl: 'partials/list.html', mode: 'LIST'}).
+            when('/edit/:id', {controller: ManualTestTypeController, templateUrl: 'partials/create.html', mode: 'EDIT'}).
             otherwise({redirectTo: '/list'});
     }]);

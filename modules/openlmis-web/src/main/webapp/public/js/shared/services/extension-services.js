@@ -1291,6 +1291,6 @@ services.factory('FacilityOnwerList', function ($resource) {
 });
 
 services.factory('ManualTestType', function ($resource) {
-    return $resource('/manualTestTypes/types/:id', {id:'@id'}, {});
+    return $resource('/manualTestTypes/types/:tid', {tid:'@tid'}, {});
 });
 

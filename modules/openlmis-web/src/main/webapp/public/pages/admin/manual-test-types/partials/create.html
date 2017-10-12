@@ -13,11 +13,11 @@
 <div xmlns="http://www.w3.org/1999/html" tab-scroll>
 
   <h2>
-    <span ng-hide="donor.id" openlmis-message="label.manual.test.type.add"></span>
-    <span ng-show="donor.id" openlmis-message="label.manual.test.type.edit"></span>
+    <span ng-show="viewMode === 'NEW'" openlmis-message="label.manual.test.type.add"></span>
+    <span ng-show="viewMode === 'EDIT'" openlmis-message="label.manual.test.type.edit"></span>
   </h2>
-
-  <form ng-submit="saveManualTestType()" id="manualTestTypeForm" name="manualTestTypeForm" select2-blur>
+  <form ng-submit="saveManualTestType()" id="manualTestTypeForm"
+        name="manualTestTypeForm" ng-init="initEditPage();">
     <div class="app-form">
       <div>
         <div class="form-row clearfix">
@@ -61,7 +61,7 @@
               <div class="form-cell button-row">
                 <input ng-disabled="manualTestTypeForm.$invalid" type="submit" class="btn btn-primary save-button" value="Save" />
                 <a href="#/list"  class="btn btn-cancel cancel-button">Cancel</a>
-                <input type="button" class="btn btn-danger delete-button" value="Delete" ng-click="showRemoveDonorConfirmDialog()" />
+                <input type="button" class="btn btn-danger delete-button" value="Delete" ng-click="showRemoveManualTestTypeConfirmDialog()" />
               </div>
               <div class="toolbar-error" id="saveErrorMsgDiv" ng-bind="error" ng-show="error" />
             </div>

@@ -11,21 +11,64 @@
  */
 
 
-function ManualTestTypeController($scope, $routeParams, ManualTestType, $location, $rootScope) {
+function ManualTestTypeController($scope, $routeParams, ManualTestType, $location, $dialog, $route, messageService) {
 
-    ManualTestType.get(function(data){
-        $scope.manualTestTypeList = data.manualTestTypeList;
-    });
 
-    if ($routeParams.id) {
+    $scope.viewMode = $route.current.$$route.mode;
+
+    if ($scope.viewMode === 'LIST') {
+        ManualTestType.get(function(data){
+            $scope.manualTestTypeList = data.manualTestTypeList;
+        });
+    }
+
+    else if($scope.viewMode === 'EDIT' && $routeParams.id){
+        $scope.$parent.message = '';
+        var manualTestTypeId = $routeParams.id;
+        ManualTestType.get({'tid':manualTestTypeId},
+        function(response){
+               $scope.testType = response.manualTestType;
+        });
+    }
+    else //NEW
+    {
         $scope.$parent.message = '';
     }
+
 
     $scope.saveManualTestType = function(){
         ManualTestType.save($scope.testType, function(response){
             $scope.$parent.message = response.success;
             $location.path('');
-        });
+        },
+       function(errorResponse){
+                $scope.error =  messageService.get(errorResponse.data.error);
+            });
+    };
+
+    $scope.showRemoveManualTestTypeConfirmDialog = function () {
+
+
+        var options = {
+            id: "removeManualTestTypeMemberConfirmDialog",
+            header: "Confirmation",
+            body: "Are you sure you want to remove the manual test type: " + $scope.testType.name
+        };
+        OpenLmisDialog.newDialog(options, $scope.removeManualTestTypeConfirm, $dialog, messageService);
+    };
+
+    $scope.removeManualTestTypeConfirm = function (result) {
+        if (result) {
+
+            ManualTestType.delete({'tid': $scope.testType.id}, function (data) {
+                $scope.$parent.message = data.success;
+                $location.path('');
+                $scope.testType = undefined;
+            }, function (error) {
+                $scope.error = error.data.error;
+            });
+
+        }
 
     };
 
