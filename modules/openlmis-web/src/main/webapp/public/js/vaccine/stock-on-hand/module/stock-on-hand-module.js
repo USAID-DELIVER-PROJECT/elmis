@@ -22,31 +22,64 @@ angular.module('stock_on_hand', ['openlmis','ui.router', 'ngGrid', 'ui.bootstrap
             {
                 name: 'home',
                 url: '/home',
-                templateUrl: 'partials/list.html',
+                templateUrl: 'partials/stock-on-hand.html',
                 controller:StockOnHandControllerFunc,
                 resolve:StockOnHandControllerFunc.resolve,
                 ncyBreadcrumb: {
-                    label: 'Home'
+                    label: 'My Stock On Hand'
                 }
             },
             {
                 name: 'element',
-                url: '/element:idElement?:facilityId',
+                url: '/element:idElement/:facilityId',
                 templateUrl: 'partials/stock-ledger.html',
-                controller: 'StockLedgerFunction',
+                controller: 'MyFacilityStockLedgerFunction',
                 ncyBreadcrumb: {
-                    label: 'Stock Ledger for {{idElement}}',
+                    label: 'Stock Ledger',
                     parent: 'home'
                 }
             },
             {
-                name: 'element.detail',
-                url: '/detail',
+                name: 'detail',
+                url: '/detail:referer',
                 templateUrl: 'partials/detail.html',
                 ncyBreadcrumb: {
                     label: 'Details'
                 }
+            },
+         {
+                name:'toState',
+                url: '/supervisedFacility:facilityId/:facilityName',
+                templateUrl:'partials/stock-on-hand2.html',
+                controller:'ManageStockOnHandControllerFunc',
+                 ncyBreadcrumb: {
+                     label: 'Stock on Hand for {{facilityName}}',
+                     parent: 'supervisedFacility'
+                 }
+            },
+
+            {
+                name: 'ledger',
+                url: '/ledger:productId/:facilityId/:facilityName/:product',
+                templateUrl: 'partials/stock-ledger.html',
+                controller: 'StockLedgerFunction2',
+                ncyBreadcrumb: {
+                    label: 'Stock Ledger of {{productName}} in {{facilityName}} Store',
+                    parent: 'toState'
+                }
+            },
+            {
+                name:'supervisedFacility',
+                url: '/supervisedFacility?:etc',
+                templateUrl:'partials/stock-on-hand3.html',
+                controller:'SupervisedFacilityControllerFunc',
+                resolve:SupervisedFacilityControllerFunc.resolve,
+                ncyBreadcrumb: {
+                    label: 'My Supervised Stores',
+                    parent: 'home'
+                }
             }
+
         ];
 
         states.forEach($stateProvider.state);

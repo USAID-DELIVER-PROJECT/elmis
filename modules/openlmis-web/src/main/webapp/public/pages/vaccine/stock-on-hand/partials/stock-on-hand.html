@@ -1,0 +1,155 @@
+<style>
+    .tree {
+        height: 300px !important;
+        overflow-y: scroll;
+    }
+
+    ​
+
+</style>
+
+
+<div class="container">
+
+    <h2 id="podPageTitle"><span></span></h2>
+
+    <div class="row">
+        <div class="col-sm-3">
+     <span>
+                              <span> <Strong class="pull-left"
+                                             openlmis-message="label.facility.type"></Strong></span><br/><br/>
+
+                              <input type="radio" name="options" id="option1" ng-model="facilityType" value="0"
+                                     autocomplete="on" ng-checked="true"/>
+                             <span openlmis-message="label.myFacility"> </span><br/><br/>
+                               <input ng-hide="showMyFacility" type="radio" name="options" id="option2"
+                                      ng-click="showMySupervised()"
+                                      ng-model="facilityType" value="1"/>
+                               <span ng-hide="showMyFacility" openlmis-message="label.supervised.Facility"></span>
+     </span>
+            <br/>
+            <br/>
+
+            <!--    <div class="tree" ng-show="facilityType">
+                    <span ng-show="facilityType" id="tree"></span>
+
+                </div>-->
+
+        </div>
+        <span class="pull-right print-button" style="background-color:#4897BA !important;">
+    <a id="printButton" style="background-color:#4897BA !important;"
+       class="btn btn-primary"
+       openlmis-message="button.print" ng-click="print(homeFacility)"
+       target="_blank"></a>
+         </span>
+
+        <div class="col-sm-9" style="background-color:whitesmoke;">
+
+            <div class="row">
+                <div id="pod" class="rnr-table" tab-scroll bottom-offset="180">
+                    <table id="equipmentTable" fixed-table-header class="table-bordered scrollable">
+                        <thead>
+                        <tr>
+
+                            <th class="col-product">
+                                <div class="regimen-heading">
+                                    <span>Product</span>
+                                </div>
+                            </th>
+                            <th class="span1">
+                                <div class="regimen-heading">
+                                    <span>Batch #</span>
+                                </div>
+                            </th>
+                            <th class="col-quantity">
+                                <div class="regimen-heading">
+                                    <span>Quantity/Batch (Doses)</span>
+                                </div>
+                            </th>
+                            <th class="span1">
+                                <div class="regimen-heading">
+                                    <span>Expiry Date</span>
+                                </div>
+                            </th>
+                            <th class="span1">
+                                <div class="regimen-heading">
+                                    <span>Last Updated</span>
+                                </div>
+                            </th>
+
+                            <th class="span1">
+                                <div class="regimen-heading">
+                                    <span>Total Quantity (Doses)</span>
+                                </div>
+                            </th>
+                            <th class="span1">
+                                <div class="regimen-heading">
+                                    <span>Action</span>
+                                </div>
+                            </th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr ng-repeat-start="c in stockCards" ng-class-odd="'odd'" ng-class-even="'even'"
+                            ng-init="$index%2==0?(color='odd'): (color='even')">
+                        <tr ng-repeat-start="k in c.lotsOnHand" ng-class-odd="'odd'" ng-class-even="'even'"
+                            ng-init="$index%2==0?(color='odd'): (color='even')">
+
+                            <td ng-if="$index == 0" rowspan="{{c.lotsOnHand.length * 2}}"
+                                class="col-product cell-input last-row disabled padding2px ">
+                                <span ng-bind="c.product.primaryName" class="padding2px"></span>
+                            </td>
+
+                            <td class="col-lot cell-input  disabled"
+                                ng-class="{'lot-expired':c.lotsOnHand[0].hasExpired}"
+                                ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <span ng-show="c.lotsOnHand.length >0" class="cell-text"
+                          ng-bind="k.lot.lotCode"></span>
+                                <span ng-show="c.lotsOnHand.length >0 && c.lotsOnHand[0].hasExpired" class="cell-text">&nbsp;(Expired)</span>
+                            </td>
+
+                            <td class="cell-input padding2px ">
+                                <span ng-bind="k.quantityOnHand | number" class="cell-text"></span>
+                            </td>
+
+                            <td class="col-lot cell-input  disabled"
+                                ng-class="{'lot-expired':c.lotsOnHand[0].hasExpired}"
+                                ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <span ng-show="c.lotsOnHand.length >0" class="cell-text"
+                          ng-bind="k.lot.expirationDate"></span>
+                                <span ng-show="c.lotsOnHand.length >0 && c.lotsOnHand[0].hasExpired" class="cell-text">&nbsp;(Expired)</span>
+                            </td>
+
+                            <td class="col-lot cell-input  disabled">
+                                <span ng-show="c.lotsOnHand.length >0" class="cell-text"
+                                      ng-bind="k.customProps.occurred | date:'dd-MM-yyyy'"></span>
+                                <span ng-show="c.lotsOnHand.length >0 && c.lotsOnHand[0].hasExpired" class="cell-text">&nbsp;(Expired)</span>
+                            </td>
+
+                            <td ng-if="$index == 0" class="cell-input padding2px" rowspan="{{c.lotsOnHand.length * 2}}">
+                  <span class="col-product cell-text">
+                    <span ng-bind="c.totalQuantityOnHand | number" class="padding2px"></span>
+                  </span>
+                            </td>
+                            <td ng-if="$index == 0" class="cell-input padding2px" rowspan="{{c.lotsOnHand.length * 2}}">
+                              <span style="padding-left: 18px;height: 10px !important;">
+                            <a id="printButton" ui-sref="element({idElement:c.product.id,facilityId:{{homeFacility}}})"
+                               class="btn btn-primary">
+                                View</a>
+                              </span>
+                            </td>
+
+                        </tr>
+                        <tr ng-repeat-end></tr>
+                        <tr ng-repeat-end></tr>
+
+                        </tbody>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

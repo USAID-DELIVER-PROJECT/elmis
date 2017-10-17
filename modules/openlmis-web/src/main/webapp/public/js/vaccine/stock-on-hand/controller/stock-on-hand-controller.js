@@ -1,153 +1,68 @@
-function StockOnHandControllerFunc($scope,$compile,homeFacilityId,GetStockCards,UserGeographicZoneTree,FacilityGeoTree,GeoDistrictTree){
-    console.log(homeFacilityId);
-$scope.homeFacility = homeFacilityId;
+function StockOnHandControllerFunc($scope,$state,$window, homeFacilityId,$location, StockCards, GetStockCards, GetByDistrict, facilityTypeCode, GeoDistrictTree) {
 
-$scope.stockCards = [];
+    $scope.homeFacility = homeFacilityId;
+    $scope.facilityCode = facilityTypeCode;
 
-if(GetStockCards !== undefined)
-$scope.stockCards = GetStockCards.stockCards;
+    $scope.showMyFacility = facilityTypeCode === 'dvs';
 
-  //  console.log(JSON.stringify($scope.stockCards));
-    var tree = [
-        {
-            text: "Parent 1",
-            nodes: [
-                {
-                    text: "Child 1",
-                    nodes: [
-                        {
-                            text: "Grandchild 1"
-                        },
-                        {
-                            text: "Grandchild 2"
-                        }
-                    ]
-                },
-                {
-                    text: "Child 2"
-                }
-            ]
-        },
-        {
-            text: "Parent 2"
-        },
-        {
-            text: "Parent 3"
-        },
-        {
-            text: "Parent 4"
-        },
-        {
-            text: "Parent 5"
+    $scope.stockCards = [];
+
+
+    $scope.$watch('facilityType', function(value) {
+        if(parseInt(value,10)===1){
+            $state.go('supervisedFacility', { 'etc':'My Supervised Facilities' });
+
         }
-
-    ];
-
-    $('#tree').treeview({data: tree/*,
-
-        text: "Node 1",
-        icon: "glyphicon glyphicon-stop",
-        selectedIcon: "glyphicon glyphicon-stop",
-        color: "#000000",
-        backColor: "#Red",
-        href: "#node-1",
-        selectable: true,
-        state: {
-            checked: false,
-            disabled: false,
-            expanded: true,
-            selected: true
-        }*/
     });
 
 
+    $scope.print = function(param){
+        console.log(param);
+        var url = '/vaccine/inventory/distribution/stock-on-hand/print/'+param;
+        $window.open(url, "_BLANK");
+    };
+
+    if (GetStockCards !== undefined)
+        $scope.stockCards = GetStockCards.stockCards;
+
+    var getDataForDisplay = function (data) {
+        var district;
+       // $state.go('/home', { 'referer':'jimbob', 'param2':37, 'etc':'bluebell' });
+
+        if (data.id === null) {
+            district = data.regionId;
+        } else
+            district = data.id;
+
+        var facilityName = data.text;
+
+        GetByDistrict.get({districtId: parseInt(district, 10)}, function (data) {
+
+            $state.go('toState', { 'facilityId':parseInt(data.facility.id, 10), 'facilityName':facilityName, 'etc':'bluebell' });
 
 
+        });
+    };
 
-    GeoDistrictTree.get({}, function(data){
-        var data2=data.regionFacilityTree;
-        $('#tree').treeview({data: data2,
-            levels: 1,
-            color: "red",
-            onhoverColor:'red',
-            onNodeSelected: function(event, data) {
-        //console.log(data);
+    GeoDistrictTree.get({}, function (data) {
+
+        var data2 = data.regionFacilityTree;
+        $('#tree').treeview({
+            data: data2,
+            levels: 2,
+            color: "#398085",
+            onhoverColor: 'lightblue',
+            onNodeSelected: function (event, data) {
+                getDataForDisplay(data);
             }
-            /*,
-
-            text: "Node 1",
-            icon: "glyphicon glyphicon-stop",
-            selectedIcon: "glyphicon glyphicon-stop",
-            color: "red",
-            backColor: "red",
-            href: "#node-1",
-            selectable: true,
-            state: {
-                checked: false,
-                disabled: false,
-                expanded: false,
-                selected: false
-            }
-*/
-
 
         });
 
     });
 
-
-
-
-    $scope.mainGridOptions = {
-
-        dataSource: {
-            type: "odata",
-            transport: {
-                read: "//demos.telerik.com/kendo-ui/service/Northwind.svc/Employees"
-            },
-            pageSize: 5,
-            serverPaging: true,
-            serverSorting: true
-        },
-        sortable: true,
-        pageable: true,
-        dataBound: function() {
-            this.expandRow(this.tbody.find("tr.k-master-row").first());
-        },
-        columns: [{
-            field: "FirstName",
-            title: "First Name",
-            width: "120px"
-        },{
-            field: "LastName",
-            title: "Last Name",
-            width: "120px"
-        },{ command: { text: "Add Tab", click: insertContent }, title: " ", width: "180px" }]
-    };
-
-
-
-
-    function insertContent(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        $scope.tabstrip.insertAfter(
-            { text: dataItem.FirstName + ' ' + dataItem.LastName + ' <button ng-click="removeTab($event)" class="k-button-icon"><span class="k-icon k-i-close"></span></button>',
-                encoded: false,
-                content: dataItem.Notes
-            },
-            $scope.tabstrip.tabGroup.children("li:last")
-        );
-        $compile($scope.tabstrip.tabGroup.children("li:last"))($scope);
-    }
-    $scope.removeTab = function(event){
-        var item = $(event.currentTarget).closest(".k-item");
-        $scope.tabstrip.remove(item.index());
-    };
 }
 
-
-StockOnHandControllerFunc.resolve= {
+StockOnHandControllerFunc.resolve = {
 
     homeFacilityId: function ($q, $timeout, UserHomeFacility) {
         var deferred = $q.defer();
@@ -155,7 +70,6 @@ StockOnHandControllerFunc.resolve= {
         $timeout(function () {
 
             UserHomeFacility.get({}, function (data) {
-
                 deferred.resolve(data.homeFacility.id);
             });
 
@@ -163,8 +77,28 @@ StockOnHandControllerFunc.resolve= {
 
         return deferred.promise;
     },
+    facilityTypeCode: function ($q, $timeout, UserHomeFacility, FacilityTypeByFacility) {
+        var deferred = $q.defer();
 
-    GetStockCards: function ($q, $timeout, UserHomeFacility,StockCards) {
+        $timeout(function () {
+            UserHomeFacility.get({}, function (data) {
+
+                FacilityTypeByFacility.get({facilityId: data.homeFacility.id},
+                    function (data) {
+                        console.log(data);
+                        deferred.resolve(data.facilityTypes.code);
+
+                    }
+                );
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+    },
+
+    GetStockCards: function ($q, $timeout, UserHomeFacility, StockCards) {
         var deferred = $q.defer();
 
         $timeout(function () {
