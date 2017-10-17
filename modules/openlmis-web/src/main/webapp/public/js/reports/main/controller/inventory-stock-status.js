@@ -175,15 +175,14 @@ console.log(iMin);
 
             return deferred.promise;
         }
-
         var summary = $scope.inventorySummary = [];
-        if ($scope.filter === null) {
+        if ($scope.filter === null || $scope.filter===undefined ) {
             param = {"category": null, "level": null};
         } else {
 
             param = {
-                "category": $scope.filter.category,
-                "level": $scope.filter.facilityLevel
+                "category": null/* $scope.filter.category*/,
+                "level": null
             };
         }
         $scope.promise = asyncGreet(param);
