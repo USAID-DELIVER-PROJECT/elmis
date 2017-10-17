@@ -17,13 +17,11 @@ public class VaccineOrderRequisitionLineItemService {
 
     public void saveVaccineOrderRequisitionLineItems(List<VaccineOrderRequisitionLineItem> lineItems, Long reportId) {
 
-        System.out.println(lineItems.get(0).getId());
         for (VaccineOrderRequisitionLineItem lineItem : emptyIfNull(lineItems)) {
             if (lineItem.getId() == null) {
                 lineItem.setOrderId(reportId);
                 itemRepository.Insert(lineItem);
             } else {
-                System.out.println(lineItem);
                 if(lineItem.getMaximumStock() < lineItem.getStockOnHand()) {
                     lineItem.setQuantityRequested(0L);
                     itemRepository.Update(lineItem);
