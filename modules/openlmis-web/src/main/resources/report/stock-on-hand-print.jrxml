@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="a0a4e861-0726-422f-b3d5-54b1aefe96ce">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="47"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1" uuid="bbcb7615-87a9-4cf2-8f0e-a80773ab7ae1"/>
+	<parameter name="ORDER_ID" class="java.lang.Integer"/>
+	<parameter name="image_dir" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
+	<parameter name="ISSUE_ID" class="java.lang.Integer"/>
+	<parameter name="facilityId" class="java.lang.Integer"/>
+	<parameter name="facilityName" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select p.primaryName productName,l.LOTNumber batchNumber,sum(se.quantity) QUANTITY,Max(s.totalQuantityOnHand) stockOnHand,
+                MAX(to_char(l.expirationDate, 'DD-MM-YYYY')) expirationDate,MAX(to_char(se.modifiedDate,'DD-MM-YYYY')) lastUpdated
+                from stock_card_entries se
+                JOIN stock_cards s ON se.stockcardId = S.ID
+                join lots_on_hand lo ON se.lotonhandid = lo.id
+                join lots l on l.id=lo.lotid
+                join products p on p.id=s.productid
+                where s.facilityId = $P{facilityId}
+                and lo.quantityOnHand >0
+                group by p.primaryName,l.LOTNumber,p.id
+                order by p.id]]>
+	</queryString>
+	<field name="productName" class="java.lang.String"/>
+	<field name="stockOnHand" class="java.lang.Integer"/>
+	<field name="batchNumber" class="java.lang.String"/>
+	<field name="expirationDate" class="java.lang.String"/>
+	<field name="quantity" class="java.lang.Integer"/>
+	<field name="lastUpdated" class="java.lang.String"/>
+	<variable name="vFirstName" class="java.lang.String">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="vLastName" class="java.lang.String">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<group name="Header">
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1? new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+				<textField isStretchWithOverflow="true">
+					<reportElement stretchType="RelativeToTallestObject" x="11" y="0" width="730" height="20" uuid="212194e9-72ca-4321-8f61-a735ab2074b7"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="14" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{link.stock.on.hand}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="63">
+				<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1? new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+				<frame>
+					<reportElement style="table_TH" x="11" y="0" width="815" height="62" forecolor="#3D9297" backcolor="#FFFFFF" uuid="605cceed-5add-40d1-aab0-863025404974"/>
+					<textField>
+						<reportElement x="4" y="14" width="108" height="20" isPrintInFirstWholeBand="true" uuid="3d3d4b94-82f7-4b5b-a962-6dd2252913ef"/>
+						<textElement>
+							<font size="12" isBold="true" isUnderline="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$R{option.value.facility.name}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="4" y="34" width="108" height="20" isPrintInFirstWholeBand="true" uuid="e9ad75ff-e3a0-4d90-95e3-4a3d34d62cde"/>
+						<textElement>
+							<font size="12" isBold="true" isUnderline="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$R{label.printed.date}]]></textFieldExpression>
+					</textField>
+					<staticText>
+						<reportElement x="112" y="14" width="15" height="20" uuid="0ddeb019-12d8-4bb9-b104-18c61404d546"/>
+						<textElement textAlignment="Center" verticalAlignment="Top">
+							<font size="13" isBold="true"/>
+						</textElement>
+						<text><![CDATA[  :  ]]></text>
+					</staticText>
+					<staticText>
+						<reportElement x="112" y="34" width="15" height="20" uuid="86d20271-1f40-4af9-af35-6388283b2d2c"/>
+						<textElement textAlignment="Center" verticalAlignment="Top">
+							<font size="13" isBold="true"/>
+						</textElement>
+						<text><![CDATA[  :  ]]></text>
+					</staticText>
+					<textField>
+						<reportElement x="127" y="14" width="236" height="20" isPrintInFirstWholeBand="true" uuid="9a331883-a24f-45fa-bbf2-b5ba76b47242"/>
+						<textElement>
+							<font size="12" isUnderline="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$P{facilityName}]]></textFieldExpression>
+					</textField>
+					<textField isStretchWithOverflow="true" pattern="dd-MM-yyyy">
+						<reportElement x="127" y="34" width="236" height="20" isPrintInFirstWholeBand="true" uuid="219fe371-17e1-4ab4-acfb-8e262215827d"/>
+						<textElement verticalAlignment="Middle">
+							<font size="12" isUnderline="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+					</textField>
+				</frame>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement x="619" y="0" width="179" height="12" uuid="c6758d1a-4ca3-4899-843f-39a0c2e70009"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[msg($R{label.page.of}, $V{PAGE_NUMBER})]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement x="798" y="0" width="28" height="12" uuid="477ffc9d-22bf-46f5-bbf9-a5527705d801"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Group by ProductCategory">
+		<groupExpression><![CDATA[]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement mode="Opaque" x="11" y="0" width="815" height="20" forecolor="#FFFFFF" backcolor="#3D9297" uuid="424bfe2a-ed04-4613-8bcb-2b288460cec0">
+						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+					</reportElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="11" y="0" width="43" height="20" uuid="9504ccc6-4b9f-46d4-8544-0aa452e2bc1a"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="54" y="1" width="114" height="19" forecolor="#000000" backcolor="#333333" uuid="d5ba5f52-522e-4dc3-b206-fb110a9077be"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.product}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="168" y="1" width="123" height="19" forecolor="#000000" backcolor="#333333" uuid="f339fff1-96f2-45be-8623-ed452732b0d5"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{header.batch.number}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="378" y="0" width="123" height="19" forecolor="#000000" backcolor="#333333" uuid="607e2e66-57b0-4dca-b6c4-133c9db85870"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{label.expiryDate}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="501" y="0" width="116" height="19" forecolor="#000000" backcolor="#333333" uuid="990a518e-4e72-4caa-a862-e3d96339d460"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{header.status.last.update}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="290" y="0" width="88" height="19" forecolor="#000000" backcolor="#333333" uuid="0e4e9948-83af-4cb0-babd-6296d6ce3bb2"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{header.quantity}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="617" y="0" width="116" height="19" forecolor="#000000" backcolor="#333333" uuid="2f04ff00-37dc-49f1-a15b-27f42cffeec9"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{header.total.quantity}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="50"/>
+	</title>
+	<pageHeader>
+		<band height="64">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1? new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<image>
+				<reportElement x="11" y="2" width="80" height="62" uuid="595f0764-0a19-42cc-a6c1-f5d3ce283103"/>
+				<imageExpression><![CDATA[$P{image_dir}+ "logo-tz.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="754" y="0" width="74" height="64" uuid="c383c1bc-a48f-40dd-a20f-d7916e3d3bea"/>
+				<imageExpression><![CDATA[$P{image_dir}+ "vims-logo-tz.png"]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="100" y="22" width="641" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="881bfb2f-2c68-420a-9f84-b67427c46920"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="16" isBold="true"/>
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{OPERATOR_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="100" y="2" width="641" height="20" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="150ee578-dd77-4a5e-b74a-450bb0260069"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.title.united.republic.tanzania}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="100" y="43" width="641" height="21" isPrintInFirstWholeBand="true" forecolor="#3D9297" uuid="b7f47698-1462-44d8-ac98-448b9ffc09a0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{label.title.immunization}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="19">
+			<staticText>
+				<reportElement mode="Opaque" x="11" y="1" width="815" height="16" backcolor="#F4F4F4" uuid="0b32f974-31ce-4dd1-b3d9-0ea0f9d2f879">
+					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<line>
+				<reportElement x="13" y="17" width="815" height="1" forecolor="#3D9297" uuid="826bc27d-c9f1-49cb-bfe7-8f35bf02676c">
+					<printWhenExpression><![CDATA[]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="54" y="0" width="114" height="17" uuid="8defe30e-b64e-4735-a8a8-3cb2644861a3"/>
+				<textFieldExpression><![CDATA[$F{productName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="168" y="0" width="123" height="16" uuid="a295cc26-fddc-4b69-8156-4241daa02c6c"/>
+				<textFieldExpression><![CDATA[$F{batchNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="378" y="0" width="123" height="16" uuid="96c00dd4-a1ca-423d-8b1e-4dd2215ee2e6"/>
+				<textFieldExpression><![CDATA[$F{expirationDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="501" y="0" width="116" height="16" uuid="699d01bb-c49a-43d2-81e7-431a00ec999f"/>
+				<textFieldExpression><![CDATA[$F{lastUpdated}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="11" y="0" width="43" height="17" forecolor="#000000" backcolor="#333333" uuid="8e910cc5-50ce-4966-833f-67e15559039f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="0" width="88" height="16" uuid="f04da71d-5073-4ec5-a2fa-2fec6858939a"/>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="617" y="0" width="116" height="16" uuid="41a2bdf3-fa72-41de-b5aa-919ec5c73c9c"/>
+				<textFieldExpression><![CDATA[$F{stockOnHand}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
