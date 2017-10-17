@@ -533,12 +533,12 @@ public interface FacilityMapper {
 
     @Select(" select * from facilities f\n" +
             "JOIN facility_types t on f.typeId = t.id\n" +
-            "where t.code in ('dvs','rvs','cvs') and geographiczoneid = #{district} and levelId =#{levelId}")
+            "where t.code in ('dvs','rvs','cvs') and geographiczoneid = #{district} and levelId =#{levelId} limit 1")
     Facility getByGeographicZoneId(@Param("district") Long district, @Param("levelId") Long levelId);
 
 
 
-    @Select("select distinct region.id, region.name as text, 0 as facility, vw_user_districts.user_id as userId \n" +
+    @Select("select distinct region.id,region.id regionId,region.name,concat(region.name ,' Region') as text, 0 as facility, vw_user_districts.user_id as userId \n" +
             "from geographic_zones region \n" +
             "inner join geographic_levels ON region.levelid = geographic_levels.id AND geographic_levels.code = 'reg'\n" +
             "inner join geographic_zones district ON district.parentid = region.id\n" +
@@ -550,11 +550,13 @@ public interface FacilityMapper {
 
     @Select("select distinct district.id, district.name as text, 0 as facility, vw_user_districts.user_id as userId \n" +
             "from geographic_zones district \n" +
-            "inner join vw_user_districts ON vw_user_districts.district_id = district.id AND district.parentid = #{id}\n" +
+            "inner join vw_user_districts ON vw_user_districts.district_id = district.id AND district.parentId = #{id}\n" +
             "where vw_user_districts.user_id = #{userId} order by district.name")
-    @Results(value = {
+  /*  @Results(value = {
             @Result(property = "nodes",  column = "{id=id, userId=userId}", javaType = List.class,  many = @Many(select = "getGeoDistrictTreeFacilities"))
-    })
+    }
+
+    )*/
     List<DistrictGeoTree> getGeoTreeDistrictsByRegionTree(Map params);
 
     @Select("select facilities.id, facilities.name as text, 1 as facility from facilities inner join \n" +
@@ -562,8 +564,17 @@ public interface FacilityMapper {
             "AND vw_user_facilities.district_id = #{id}")
     List<DistrictGeoTree> getGeoDistrictTreeFacilities(Map params);
 
+    @Select("\n" +
+            " SELECT * FROM facility_types ft\n" +
+            " JOIN FACILITIES F ON f.typeId = ft.id\n" +
+            " where f.id = #{facilityId} ")
+    FacilityType getFacilityTypeByFac(@Param("facilityId") Long facilityId);
 
-
+    @Select("                         SELECT fm.*  from geographic_zones gzz \n" +
+            "                        JOIN facilities FM on gzz.id = FM.GEOGRAPHICZONEID\n" +
+            "                        join FACILITY_TYPES ft ON FM.typeid = ft.id\n" +
+            "                        WHERE GZZ.parentId = #{parentId} and ft.code = 'rvs' ")
+    Facility getFacilityByParentGeoZone(@Param("parentId")Long parentId);
 
 
 

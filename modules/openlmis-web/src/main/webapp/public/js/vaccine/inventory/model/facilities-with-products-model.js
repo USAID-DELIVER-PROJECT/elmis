@@ -12,7 +12,8 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
     $.extend(this, facility);
     var productsToIssue=[];
     var distribution=distributionForecastAndPeriod.distribution;
-    var currentPeriod=distributionForecastAndPeriod.currentPeriod;
+    var currentPeriod=distributionForecastAndPeriod.lasPeriodAllData;
+   // var currentPeriod=distributionForecastAndPeriod.currentPeriod;
     var forecast=distributionForecastAndPeriod.forecast;
     var programProducts=distributionForecastAndPeriod.programProductList;
 

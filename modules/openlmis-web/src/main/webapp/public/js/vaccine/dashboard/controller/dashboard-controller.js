@@ -50,7 +50,8 @@ function VaccineDashboardController($scope, $q, $timeout, VaccineDashboardSummar
                                     batchToExpireNotification,
                                     VaccineInventorySummaryData,
                                     VaccineInventorySummaryDetails,
-                                    receiveNotification
+                                    receiveNotification,receiveDistributionDetailList,
+                                    minimumStockNotification
 ) {
     $scope.actionBar = {openPanel: true};
     $scope.performance = {openPanel: false};
@@ -1737,6 +1738,64 @@ function dataV(){
         return dropoutList;
     }
 
+
+//For Receiving Notification
+      $scope.totalReceive = receiveDistributionDetailList.receiveNotification.length;
+
+    $scope.toggleSlider = function () {
+
+        var modalInstance = $modal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'receiveDistributionNotification.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'lg',
+            windowClass: 'my-modal-popup',
+            resolve: {
+                items: function () {
+
+                    return receiveDistributionDetailList.receiveNotification;
+                }
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+
+
+    };
+
+
+
+    //For MinimumStock Notification
+
+   $scope.totalMinimumStock= minimumStockNotification.minimumStock.length;
+
+    $scope.toggleSlider2 = function () {
+
+        var modalInstance = $modal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'minimumStockNotification.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'lg',
+            windowClass: 'my-modal-popup',
+            resolve: {
+                items: function () {
+
+                    return minimumStockNotification.minimumStock;
+                }
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+
+
+    };
+
 }
 VaccineDashboardController.resolve = {
     userPreferences: function ($q, $timeout, VaccineCurrentPeriod, UserGeographicZonePereference) {
@@ -2044,6 +2103,22 @@ VaccineDashboardController.resolve = {
 
     },
 
+    receiveDistributionDetailList: function ($q, $timeout, ReceiveDistributionAlert) {
+        var deferred = $q.defer();
+        $timeout(function () {
+
+            ReceiveDistributionAlert.get(function (data) {
+                deferred.resolve(data);
+
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    },
+
     isDistrictUser: function ($q, $timeout, IsDistrictUser) {
         var deferred = $q.defer();
         $timeout(function () {
@@ -2134,6 +2209,24 @@ VaccineDashboardController.resolve = {
                 }
                 console.log(summary);
 
+                deferred.resolve(summary);
+
+            });
+
+        }, 100);
+
+        return deferred.promise;
+
+    },
+    minimumStockNotification: function ($q, $timeout, MinimumStockNotification) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            MinimumStockNotification.get({}, function (data) {
+                var summary = [];
+                if (!isUndefined(data)) {
+                    summary = data;
+
+                }
                 deferred.resolve(summary);
 
             });

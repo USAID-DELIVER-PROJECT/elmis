@@ -13,6 +13,36 @@
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <style>
+    #noti_Button {
+
+        width:22px;
+        height:22px;
+        line-height:22px;
+        border-radius:50%;
+        -moz-border-radius:50%;
+        -webkit-border-radius:50%;
+        background:lightblue;
+        margin:-3px 10px 0 10px;
+        cursor:pointer;
+    }
+    #noti_Counter1 {
+
+        display:block;
+        position:absolute;
+        background:#E1141E;
+        color:#FFF;
+        font-size:12px;
+        font-weight:normal;
+        padding:1px 3px;
+        margin:-8px 0 0 25px;
+        border-radius:2px;
+        -moz-border-radius:2px;
+        -webkit-border-radius:2px;
+        z-index:1;
+        cursor:pointer;
+
+    }
+
     .left{float:left; width:33%; }
     .dashlet-container{
         min-height: 450px;
@@ -29,7 +59,14 @@
     tr.lot-expired td {
     color:#d58512;
     }
+    .btn2 {
+        display:block;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        border: 1px solid red;
 
+    }
 </style>
 <script type="text/ng-template" id="myModalContent.html">
     <div style="width: 800px;" class="modal-header modal-header">
@@ -588,6 +625,165 @@
     </div>
 
 </script>
+<script type="text/ng-template" id="receiveDistributionNotification.html">
+    <div class="modal-header modal-header">
+        <button  class="close" ng-click="ok()">X</button>
+        <h2 ><i class="flaticon-bar"></i>Receive Vaccine Distribution Details</h2>
+
+
+    </div>
+    <div class="modal-body">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
+        <div class="row-fluid dashlet-scroll-table">
+        <table id="investigatingTable" ng-show="items.length > 0"
+               class="rnr-table table-bordered table"
+               ng-table="tableParams">
+            <thead>
+            <tr>
+
+                <th
+                        style="  width: 40px">
+                    <span openlmis-message="label.facility"></span>
+                </th>
+
+                <th>
+                    <span>Ordered Date</span>
+
+                </th>
+                <th style="width: 10px">
+                    <span>Status</span>
+
+                </th>
+                <th style=" text-align: center; vertical-align: middle">
+                    <span>Issued Date</span>
+
+                </th>
+                <th style=" text-align: center; vertical-align: middle">
+                    <span>Issued By</span>
+
+                </th>
+             <th style=" text-align: center; vertical-align: middle">
+                    <span>Action</span>
+                </th>
+                <!--   <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.adverse.effect.manufacturer"></span>
+                </th>
+
+
+                <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.dashboard.note"></span>
+
+                </th>
+-->
+
+            </tr>
+
+
+            </thead>
+            <tbody>
+            <tr ng-style="{'background-color': getBackGroundColor($index)}" ng-repeat="subRow in items">
+                <td>{{subRow.toFacilityName }}</td>
+                <td ng-bind="subRow.orderDate"></td>
+                <td ng-bind="subRow.status"></td>
+                <td ng-bind="subRow.distributionDate| date:'dd-MMM-yyyy'"/>
+                <td ng-bind="subRow.modifiedBy"></td>
+               <td><a href="/public/pages/vaccine/inventory/index.html#/receive">Receive</a></td>
+                <!-- <td ng-bind="subRow.manufacturer"></td>
+                <td ng-bind="subRow.aefi_notes"></td>-->
+            </tr>
+            </tbody>
+
+        </table>
+        </div>
+        <div class="modal-footer">
+
+            <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+        </div>
+    </div>
+
+</script>
+<script type="text/ng-template" id="minimumStockNotification.html">
+    <div class="modal-header modal-header" style="background-color: red !important;border-color: red !important;">
+        <button  class="close" ng-click="ok()">X</button>
+        <h2 ><i class="flaticon-bar"></i>Products Need to be Ordered Now</h2>
+
+
+    </div>
+    <div class="modal-body">
+        <div style="font-weight: bold" ng-hide="items.length > 0" openlmis-message="label.report.no.data.to.show"></div>
+        <div class="row-fluid dashlet-scroll-table">
+        <table id="investigatingTable" ng-show="items.length > 0"
+               class="rnr-table table-bordered table"
+               ng-table="tableParams">
+            <thead>
+            <tr>
+
+                <th
+                        style="  width: 40px">
+                    <span openlmis-message="label.product.name"></span>
+                </th>
+
+                <th>
+                    <span>Remaining Quantity</span>
+
+                </th>
+                <th style="width: 10px">
+                    <span>Last Updated</span>
+
+                </th>
+                <th style="">
+                    <span>Monthly Needs</span>
+
+                </th>
+                <th style="">
+                    <span>Reorder Level</span>
+
+                </th>
+                <th style="vertical-align: middle">
+                    <span>Maximum Stock</span>
+
+                </th>
+             <th style="">
+                    <span>Action</span>
+                </th>
+                <!--   <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.adverse.effect.manufacturer"></span>
+                </th>
+
+
+                <th style=" text-align: center; vertical-align: middle">
+                    <span openlmis-message="label.vaccine.dashboard.note"></span>
+
+                </th>
+-->
+
+            </tr>
+
+
+            </thead>
+            <tbody>
+            <tr ng-style="{'background-color': getBackGroundColor($index)}" ng-repeat="subRow in items">
+                <td>{{subRow.primaryname}}</td>
+                <td ng-bind="subRow.totalquantityonhand" style="text-align: center; vertical-align: middle"></td>
+                <td ng-bind="subRow.effectivedate| date:'dd-MMM-yyyy'"/>
+                <td ng-bind="subRow.isavalue" style="text-align: center; vertical-align: middle"></td>
+                <td ng-bind="subRow.reorderlevel" style="text-align: center; vertical-align: middle"></td>
+                <td ng-bind="subRow.maximumstock" style="text-align: center; vertical-align: middle"></td>
+               <td><a href="/public/pages/vaccine/order-requisition/index.html#/initiate">Order Now</a></td>
+                <!-- <td ng-bind="subRow.manufacturer"></td>
+                <td ng-bind="subRow.aefi_notes"></td>-->
+            </tr>
+            </tbody>
+
+        </table>
+        </div>
+        <div class="modal-footer">
+
+            <button class="btn btn-primary pull-right" type="button" ng-click="ok()">Close</button>
+        </div>
+    </div>
+
+</script>
 <script id="template/accordion/accordion.html" type="text/ng-template">
     <div class="accordion" ng-transclude></div>
 </script>
@@ -663,9 +859,26 @@
                     <!--<span openlmis-message="label.refrigerator.repair.tickets"></span>:-->
                     <!--<span class="box-value"><a ng-click="openRepairingDetailDialog()" href=""> {{repairing.repairing}}</a></span>-->
 
-                    <span openlmis-message="label.equipment.status.non.functional"></span>:
+                  <!--  <span openlmis-message="label.equipment.status.non.functional"></span>:
                     <span class="box-value"><a ng-click="openRepairingDetailDialog()" href="">
-                        {{totalNonFunctionalEquipments}}</a></span>
+                        {{totalNonFunctionalEquipments}}</a></span>-->
+
+                    <div class="box-value">
+<!--
+                        <span>  <a class="btn2" href="#"><i class="ion-ios-arrow-down"></i></a></span>
+-->
+                        <div class="span6" ng-show="totalReceive > 0">
+                        <div id="noti_Counter1"><span>{{totalReceive}}</span></div>   <!--SHOW NOTIFICATIONS COUNT.-->
+                        <div id="noti_Button" ng-click="toggleSlider()" class="cleafix"></div>
+                       </div>
+                        <div class="span6" ng-show="totalMinimumStock > 0">
+                            <div id="noti_Counter1"><span>{{totalMinimumStock}}</span></div>   <!--SHOW NOTIFICATIONS COUNT.-->
+                            <div id="noti_Button" ng-click="toggleSlider2()" class="cleafix"></div>
+                        </div>
+
+
+                    </div>
+
 
                 </div>
               <!-- Investigating-->

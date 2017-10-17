@@ -26,12 +26,26 @@ function FacilityDistributionController($scope,$location,FacilitiesSameType, $do
         });
     };
 
+    $scope.onParamChanged = function(){
+ console.log($scope.routineFacility.current);
+           var param = ($scope.routineFacility.current !== null)?$scope.routineFacility.current:undefined;
+        if($scope.routineFacility.current !== null) {
+
+            $scope.routineFacility = undefined;
+            $scope.message = false;
+            $scope.podMessage = false;
+            if ($scope.selectedRoutineFacility !== null)
+                FacilityWithProducts.get($scope.selectedProgram, $scope.selectedRoutineFacility, $scope.homeFacility.id, param).then(function (data) {
+                    $scope.routineFacility = data;
+                });
+        }
+    };
     $scope.loadFacilityDistributionData=function(){
         $scope.routineFacility=undefined;
         $scope.message=false;
         $scope.podMessage=false;
         if($scope.selectedRoutineFacility !== null)
-            FacilityWithProducts.get($scope.selectedProgram,$scope.selectedRoutineFacility,$scope.homeFacility.id).then(function(data){
+            FacilityWithProducts.get($scope.selectedProgram,$scope.selectedRoutineFacility,$scope.homeFacility.id,undefined).then(function(data){
                 $scope.routineFacility=data;
             });
     };

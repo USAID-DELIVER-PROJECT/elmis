@@ -123,7 +123,25 @@
                         <tr>
                             <th colspan="2">
                                 <span openlmis-message="label.period" class="cell-text"></span>:
-                                <strong id='periodLabel' ng-bind="routineFacility.currentPeriod.name"> </strong><br/>&nbsp;
+<!--
+                                <strong id='periodLabel' ng-bind="routineFacility.currentPeriod.name"> </strong>
+-->
+
+<!--
+                                <label openlmis-message="label.program"></label>
+-->
+
+                             <!--   <select  style="width:200px"  ui-select ng-init="routineFacility.current = routineFacility.currentPeriod[0]"
+                                        ng-model="routineFacility.current"
+                                        ng-options="option.name for option in routineFacility.currentPeriod track by $index">
+                                </select>
+-->
+                                <select style="width:200px" ui-select2="{dropdownAutoWidth : true}" ng-model="routineFacility.current"
+                                        ng-change="onParamChanged()">
+                                    <option ng-repeat="p in routineFacility.currentPeriod" value="{{p.id}}">{{p.name}}</option>
+                                </select>
+
+                                <br/>&nbsp;
                             </th>
                         </tr>
                         <tr>

@@ -15,4 +15,5 @@ public class DistrictGeoTree {
     private String text;
     private long facility;
     private List<DistrictGeoTree> nodes;
+    private Long regionId;
 }

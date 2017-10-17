@@ -2566,3 +2566,276 @@ app.directive('periodSessionByYearFilter', ['ReportPeriods', 'ReportPeriodsByYea
 }
 ])
 ;
+
+
+app.directive('productCategory2WithoutProgramFilter', ['ProductCategoriesWithoutProgram', '$routeParams',
+    function (ProductCategoriesWithoutProgram, $routeParams) {
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('productCategory', attr);
+               ProductCategoriesWithoutProgram.get({}, function (data) {
+
+                    scope.productCategories = data.productCategoryList;
+                    scope.filter.productCategory = data.productCategoryList[0].id;
+
+                });
+                //scope.subscribeOnChanged('productCategory',  onProgramChanged, false);
+            },
+            templateUrl: 'filter-product-category-without-program-template2'
+        };
+    }
+]);
+
+
+
+app.directive('periodChangeYearFilter', ['ReportPeriods', 'ReportPeriodsByYear', '$routeParams',
+    function (ReportPeriods, ReportPeriodsByYear, $routeParams) {
+
+        var onCascadedVarsChanged = function ($scope) {
+            // don't call the server if you don't have all that it takes.
+            console.log($scope.filter);
+            if (isUndefined($scope.filter) || isUndefined($scope.filter.year))
+                return;
+
+            $scope.filter.period = (isUndefined($routeParams.period) || $routeParams.period === '') ? 0 : $routeParams.period;
+
+            if ($scope.filter.year !== undefined) {
+                ReportPeriodsByYear.get({
+                    year: $scope.filter.year
+                }, function (data) {
+                    $scope.periods = $scope.unshift(data.periods, '-- All --');
+                });
+            }
+        };
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('period', attr);
+                if (!$routeParams.schedule) {
+                    scope.periods = scope.unshift([], '-- All --');
+                }
+
+
+                function onParentChanged() {
+                    onCascadedVarsChanged(scope);
+                }
+
+                // scope.subscribeOnChanged('period', 'program', onParentChanged, false);
+                scope.subscribeOnChanged('period', 'year', onParentChanged, true);
+                //scope.subscribeOnChanged('period', 'schedule', onParentChanged, true);
+            },
+            templateUrl: 'filter-period-template'
+        };
+    }
+]);
+
+app.directive('periodChangeYearFilter1', ['ReportPeriods', 'ReportPeriodsByYear', '$routeParams',
+    function (ReportPeriods, ReportPeriodsByYear, $routeParams) {
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+
+                if (attr.required) {
+                    scope.requiredFilters.year = 'year';
+                }
+
+                scope.filter.period = (isUndefined($routeParams.period) || $routeParams.period === '') ? 0 : $routeParams.period;
+
+                scope.$evalAsync(function () {
+
+                        ReportPeriodsByYear.get({
+                            year: scope.filter.year
+                        }, function (data) {
+                            scope.periods = data.periods;
+                        });
+
+
+                });
+
+            },
+            templateUrl: 'filter-period-template'
+        };
+    }
+]);
+
+
+
+/*
+app.directive('yearFilter', ['OperationYears',
+    function (OperationYears) {
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('year', attr);
+
+                OperationYears.get(function (data) {
+                    scope.years = data.years;
+                    if (scope.filter.year === undefined) {
+                        scope.filter.year = data.years[data.years.length - 1];
+                    }
+                });
+            },
+            templateUrl: 'filter-year-template'
+        };
+    }
+]);*/
+
+
+app.directive('staticYearMonthForStockFilter', ['StaticYears', 'SettingsByKey', function (StaticYears, SettingsByKey) {
+
+    return {
+        restrict: 'E',
+        scope: {
+            staticYear: '=year',
+            periodStartdate: '=startdate',
+            periodEnddate: '=enddate',
+            perioderror: '=perioderror',
+            onChange: '&'
+        },
+
+        controller: function ($scope, $timeout) {
+
+            $scope.periodStartdate = $scope.periodEnddate = "";
+            $scope.years = [];
+            $scope.monthNames = [{id: 0, value: "Jan"},
+                {id: 1, value: "Feb"},
+                {id: 2, value: "Mar"},
+                {id: 3, value: "Apr"},
+                {id: 4, value: "May"},
+                {id: 5, value: "Jun"},
+                {id: 6, value: "Jul"},
+                {id: 7, value: "Aug"},
+                {id: 8, value: "Sep"},
+                {id: 9, value: "Oct"},
+                {id: 10, value: "Nov"},
+                {id: 11, value: "Dec"}];
+            $scope.startMonth = 0;
+            $scope.endMonth = 11;
+            SettingsByKey.get({key: 'VACCINE_LATE_REPORTING_DAYS'}, function (data, er) {
+                if (!utils.isNullOrUndefined(data.settings.value)) {
+                    $scope.cutoffdate = data.settings.value;
+                } else {
+                    $scope.cutoffdate = 0;
+                }
+            });
+            StaticYears.get({}, function (data) {
+
+                data.years.forEach(function (value) {
+                    $scope.years.push(value);
+                });
+                $scope.staticYear = $scope.years[0].id;
+
+            });
+
+
+            $scope.$watch('staticYear', function (newValues, oldValues) {
+                if (!utils.isNullOrUndefined($scope.staticYear) && $scope.staticYear >= 0) {
+                    periods = utils.getYearStartAndEnd($scope.staticYear, $scope.startMonth, $scope.endMonth, $scope.cutoffdate, 1);
+                    $scope.startMonth = 0;
+                    $scope.endMonth = 11;
+                    $scope.periodStartdate = periods.startdate;
+                    $scope.periodEnddate = periods.enddate;
+
+                    $timeout(function () {
+                        $scope.onChange();
+                        $scope.$parent.OnFilterChanged();
+                    }, 10);
+                }
+            });
+
+            $scope.$watchCollection('[startMonth,endMonth]', function (newValues, oldValues) {
+                if (utils.isEmpty($scope.startMonth) || utils.isEmpty($scope.endMonth))
+                    return;
+                var end = parseInt($scope.endMonth, 10) + 1;
+                periods = utils.getYearStartAndEnd($scope.staticYear, $scope.startMonth, end, $scope.cutoffdate, 1);
+                $scope.periodStartdate = periods.startdate;
+                $scope.periodEnddate = periods.enddate;
+                $scope.$apply();
+                var datediff = differenceInDays();
+                var yearDif = yearDifference();
+
+                if (datediff < 0) {
+                    $scope.perioderror = 'Period start date must be before or equal to end date';
+                }
+                else if (yearDif !== 0) {
+                    $scope.perioderror = 'Start and End date should be in same year';
+                }
+                else
+                    $scope.perioderror = "";
+                $scope.$parent.OnFilterChanged();
+
+            });
+            var differenceInDays = function () {
+
+                var one = new Date($scope.periodStartdate),
+                    two = new Date($scope.periodEnddate);
+
+                var millisecondsPerDay = 1000 * 60 * 60 * 24;
+                var millisBetween = two.getTime() - one.getTime();
+                var days = millisBetween / millisecondsPerDay;
+
+                return Math.floor(days);
+            };
+            var yearDifference = function () {
+                var one = new Date($scope.periodStartdate),
+                    two = new Date($scope.periodEnddate);
+                var startyear = one.getFullYear(),
+                    endYear = two.getFullYear();
+                var dif = startyear - endYear;
+                return Math.floor(dif);
+
+            };
+        },
+        templateUrl: 'filter-static-year-month-2'
+    };
+}]);
+
+
+
+app.directive('facilityLevelWithoutProgramForStockFilter', ['ReportFacilityLevelWithoutProgram','$filter',
+    function (ReportFacilityLevelWithoutProgram,$filter) {
+
+        var onCascadedPVarsChanged = function ($scope) {
+            ReportFacilityLevelWithoutProgram.get({}, function (data) {
+                $scope.facilityLevels = [];
+                if (data.facility_levels_without_programs.length > 0) {
+                    $scope.facilityLevels.unshift({
+                        'id': 'hf',
+                        'name': 'Health Facilities (HF)'
+                    });
+                    _.each(data.facility_levels_without_programs, function (item) {
+                        if (
+                        item.code === 'rvs' ||
+                        item.code === 'dvs') {
+                            $scope.facilityLevels.unshift({
+                                'id': item.code,
+                                'name': item.name + ' (' + item.code.toUpperCase() + ')',
+                                'display_order': item.displayOrder
+                            });
+                        }
+                    });
+
+                    $scope.filter.facilityLevel =  $filter('orderBy')($scope.facilityLevels,'display_order')[0].id;
+
+                }
+            });
+
+        };
+
+        return {
+            restrict: 'E',
+            link: function (scope, elm, attr) {
+                scope.registerRequired('facilityLevel', attr);
+                onCascadedPVarsChanged(scope);
+            },
+            templateUrl: 'filter-facility-level-without-program-template'
+        };
+    }
+]);

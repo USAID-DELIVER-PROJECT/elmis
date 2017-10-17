@@ -296,4 +296,12 @@ public class FacilityRepository {
   public List<DistrictGeoTree> getDistrictGeoTree(Long userId) {
     return mapper.getDistrictGeoTree(userId);
   }
+
+  public FacilityType getFacilityTypeByFac(Long facilityId){
+    return mapper.getFacilityTypeByFac(facilityId);
+  }
+
+  public Facility getFacilityByParentGeoZone(Long parentId){
+    return mapper.getFacilityByParentGeoZone(parentId);
+  }
 }
