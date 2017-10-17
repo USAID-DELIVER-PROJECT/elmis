@@ -88,7 +88,12 @@
           </li>
             <li>
                 <a href="/public/pages/vaccine/stock-on-hand/index.html#/initiate"
-                   openlmis-message="link.vaccine.stock.on.hand"></a>
+                   openlmis-message="link.stock.on.hand"></a>
+
+            </li>
+            <li ng-show="hasPermission('VIEW_STOCK_SUMMARY')">
+                <a href="/public/pages/vaccine/stock-summary/index.html#/initiate"
+                   >Stock Status</a>
 
             </li>
           <li class="beak"></li>
