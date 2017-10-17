@@ -300,4 +300,22 @@ public class FacilityController extends BaseController {
     response.getBody().addData("regionFacilityTree", facilityService.getDistrictGeoTree(loggedInUserId(httpServletRequest)));
     return response;
   }
+
+  @RequestMapping(value = "/getFacilityTypeByFac/{facilityId}", method = GET)
+  public ResponseEntity<OpenLmisResponse> getFacilityTypeByFac(HttpServletRequest httpServletRequest,@PathVariable Long facilityId) {
+
+    ResponseEntity<OpenLmisResponse> response;
+    response = OpenLmisResponse.success("");
+    response.getBody().addData("facilityTypes", facilityService.getFacilityTypeByFac(facilityId));
+    return response;
+  }
+
+  @RequestMapping(value = "/getByDistrict/{districtId}", method = GET)
+  public ResponseEntity<OpenLmisResponse> getByDistrict(HttpServletRequest httpServletRequest,@PathVariable Long districtId) {
+
+    ResponseEntity<OpenLmisResponse> response;
+    response = OpenLmisResponse.success("");
+    response.getBody().addData("facility", facilityService.getByDistrict(districtId));
+    return response;
+  }
 }
