@@ -27,11 +27,14 @@ import org.openlmis.vaccine.repository.inventory.VaccineDistributionStatusChange
 import org.openlmis.vaccine.repository.inventory.VaccineInventoryDistributionRepository;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @NoArgsConstructor
@@ -59,6 +62,8 @@ public class VaccineInventoryDistributionService {
     private VaccineDistributionStatusChangeRepository statusChangeRepository;
     @Autowired
     private VaccineNotificationService notificationService;
+    @Autowired
+    private SdpNotificationService sdpNotificationService;
 
     public List<Facility> getFacilities(Long userId) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
@@ -79,12 +84,14 @@ public class VaccineInventoryDistributionService {
 
     public Long save(VaccineDistribution distribution, Long userId) {
         //Get supervised facility period
-
+        System.out.println(distribution.getPeriodId());
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long homeFacilityId = homeFacility.getId();
         ProcessingPeriod period = null;
         if (null != distribution.getToFacilityId() && null != distribution.getProgramId()) {
-            period = getCurrentPeriod(distribution.getToFacilityId(), distribution.getProgramId());
+            period = getCurrentPeriod_new(distribution.getToFacilityId(), distribution.getProgramId(), distribution.getDistributionDate());
+           // System.out.println(period.getId());
+            System.out.println(distribution.getDistributionDate());
         }
         if (period != null) {
             distribution.setPeriodId(period.getId());
@@ -102,11 +109,14 @@ public class VaccineInventoryDistributionService {
             statusChangeRepository.insert(statusChange);
         } else {
             distribution.setCreatedBy(userId);
-            repository.saveDistribution(distribution);
+             repository.saveDistribution(distribution);
+            System.out.println("Distribution Id");
 
             //Update status changes to keep distribution log
             VaccineDistributionStatusChange statusChange = new VaccineDistributionStatusChange(distribution,userId);
             statusChangeRepository.insert(statusChange);
+            sdpNotificationService.updateNotification(distribution.getId());
+
         }
 
         for (VaccineDistributionLineItem lineItem : distribution.getLineItems()) {
@@ -197,8 +207,21 @@ public class VaccineInventoryDistributionService {
     }
 
     public ProcessingPeriod getCurrentPeriod(Long facilityId, Long programId) {
+        System.out.println("FCILITY");
+        System.out.println(facilityId);
         Date programStartDate = programService.getProgramStartDate(facilityId, programId);
         return processingScheduleService.getCurrentPeriod(facilityId, programId, programStartDate);
+    }
+
+  public List<ProcessingPeriod> getALlBelowPeriod(Long facilityId, Long programId) {
+
+        Date programStartDate = programService.getProgramStartDate(facilityId, programId);
+        return processingScheduleService.getCurrentPeriodForDistribution(facilityId, programId,programStartDate);
+    }
+
+    public ProcessingPeriod getCurrentPeriod_new(Long facilityId, Long programId,Date distributionDate) {
+        Date programStartDate = programService.getProgramStartDate(facilityId, programId);
+        return processingScheduleService.getCurrentPeriodNew(facilityId, programId, distributionDate);
     }
 
     public ProcessingPeriod getSupervisedCurrentPeriod(Long userId) {
@@ -314,5 +337,13 @@ public class VaccineInventoryDistributionService {
     }
     public List<VaccineDistribution>getReceiveNotification(Long facilityId){
         return repository.getReceiveNotification(facilityId);
+    }
+
+    public List<VaccineDistributionAlertDTO>getReceiveDistributionAlert(Long facilityId){
+        return repository.getReceiveDistributionAlert(facilityId);
+    }
+
+    public List<Map<String,Object>>getMinimumStockNotification(Long userId,Long facilityId){
+        return repository.getMinimumStockNotification(facilityId);
     }
 }

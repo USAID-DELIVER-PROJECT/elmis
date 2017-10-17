@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface VaccineInventoryDistributionMapper {
@@ -356,4 +357,30 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select(" select * from vaccine_distributions where status='PENDING' and toFacilityId=#{facilityId}")
     List<VaccineDistribution>getReeceiveNotiication(@Param("facilityId")Long facilityId);
+
+
+    @Select("     SELECT \n" +
+            "            (select name toFacilityName from facilities where id =toFacilityId ),  \n" +
+            "            (select name fromFacilityName from facilities where id =fromFacilityId ),\n" +
+            "            (select cellphone from users where id=s.modifiedby),\n" +
+            "            (select concat(firstname,' ',lastName) as modifiedBy from users where id=s.modifiedby),\n" +
+            "            s.modifieddate,distributionDate,s.modifiedBy,voucherNumber,d.status,orderdate  \n" +
+            "            FROM vaccine_distributions d  \n" +
+            "            JOIN vaccine_distribution_status_changes s ON d.id = s.distributionId \n" +
+            "            JOIN vaccine_order_requisitions o ON d.orderId = o.id \n" +
+            "            WHERE d.status = 'PENDING' AND \n" +
+            "            toFacilityId = #{facilityId} ")
+    List<VaccineDistributionAlertDTO>getReceiveDistributionAlert(@Param("facilityId") Long facilityId);
+
+@Select(" WITH r AS(\n" +
+        "                             select * from stock_requirements R\n" +
+        "                            JOIN stock_cards s ON  r.facilityId = S.FACILITYiD and r.productId = S.PRODUCTiD \n" +
+        "                            JOIN products p ON s.productId = p.id\n" +
+        "                            where s.facilityId=#{facilityId} and year = extract(year from NOW()::Date)\n" +
+        "                            )SELECT * FROM r\n" +
+        "                            WHERE( select fn_get_vaccine_stock_color(r.maximumstock::int, r.reorderlevel::int, r.bufferstock::int, R.TOTALQUANTITYONHAND::int) \n" +
+        "                           = (SELECT value FROM configuration_settings WHERE LOWER(key) = LOWER('STOCK_LESS_THAN_BUFFER_COLOR') LIMIT 1))\n")
+    List<Map<String,Object>>getMinimumStockNotification(@Param("facilityId")Long facilityId);
+
+
 }

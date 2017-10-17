@@ -559,7 +559,7 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
             id = facility.getId();
         else
            id = 0L;
-        System.out.println(facility.getName());
+//        System.out.println(facility.getName());
         return repository.geStockEventByMonth(product,period2+1,year,id);
 
     }
