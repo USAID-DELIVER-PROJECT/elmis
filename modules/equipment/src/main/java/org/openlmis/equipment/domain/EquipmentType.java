@@ -31,4 +31,6 @@ public class EquipmentType extends BaseModel {
 
   private boolean isColdChain;
 
+  private Boolean isBioChemistry;
+
 }

@@ -81,6 +81,9 @@ public class OrderServiceTest {
   private OrderRepository orderRepository;
 
   @Mock
+  private ConfigurationSettingService configurationSettingService;
+
+  @Mock
   private RequisitionService requisitionService;
 
   @Mock
@@ -127,6 +130,7 @@ public class OrderServiceTest {
     supplyLine.setSupplyingFacility(new Facility(99L));
     supplyLine.setExportOrders(Boolean.TRUE);
 
+    when(configurationSettingService.getBoolValue(anyString())).thenReturn(false);
     when(requisitionService.getLWById(1L)).thenReturn(rnr);
     SupervisoryNode supervisoryNode = new SupervisoryNode(1L);
     whenNew(SupervisoryNode.class).withArguments(1l).thenReturn(supervisoryNode);
@@ -173,6 +177,7 @@ public class OrderServiceTest {
     supplyLine.setSupplyingFacility(supplyingFacility);
     supplyLine.setExportOrders(Boolean.FALSE);
 
+    when(configurationSettingService.getBoolValue(anyString())).thenReturn(false);
     when(requisitionService.getLWById(1L)).thenReturn(rnr);
     whenNew(SupervisoryNode.class).withArguments(1l).thenReturn(supervisoryNode);
     when(supplyLineService.getSupplyLineBy(supervisoryNode, program)).thenReturn(supplyLine);

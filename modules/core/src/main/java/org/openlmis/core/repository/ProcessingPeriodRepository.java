@@ -122,4 +122,8 @@ public class ProcessingPeriodRepository {
   public List<ProcessingPeriod>  getAllPeriodsByYear(Long year) {
       return mapper.getAllPeriodsByYear(year);
   }
+
+    public List<ProcessingPeriod> getPeriodsByProgramCode(String code) {
+      return mapper.getPeriodsByProgramCode(code);
+    }
 }

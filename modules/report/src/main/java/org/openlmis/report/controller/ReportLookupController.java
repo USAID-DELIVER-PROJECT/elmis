@@ -629,6 +629,7 @@ public class ReportLookupController extends BaseController {
     List<ProcessingPeriod> periodList = processingScheduleService.getAllPeriodsByYear(year);
     return OpenLmisResponse.response(PERIODS, periodList);
   }
+
   @RequestMapping(value = "/facility_owners", method = GET, headers = BaseController.ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> getFacilitiesOwnerList() {
     List<Owner> owners = facilityOwnerService.getAllOwners();

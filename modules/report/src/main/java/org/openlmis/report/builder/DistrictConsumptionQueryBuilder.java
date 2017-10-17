@@ -39,7 +39,6 @@ public class DistrictConsumptionQueryBuilder {
     INNER_JOIN("requisitions r on r.id = li.rnrid");
     INNER_JOIN("facilities f on r.facilityId = f.id ");
     INNER_JOIN("vw_districts d on d.district_id = f.geographicZoneId ");
-    INNER_JOIN("requisition_group_members rgm on rgm.facilityId = r.facilityId");
     INNER_JOIN("processing_periods pp on pp.id = r.periodId");
     INNER_JOIN("products p on p.code::text = li.productCode::text");
     INNER_JOIN("program_products ppg on ppg.programId = r.programId and ppg.productId = p.id");
@@ -84,7 +83,6 @@ public class DistrictConsumptionQueryBuilder {
     INNER_JOIN("requisitions r on r.id = li.rnrid");
     INNER_JOIN("facilities f on r.facilityId = f.id ");
     INNER_JOIN("vw_districts d on d.district_id = f.geographicZoneId ");
-    INNER_JOIN("requisition_group_members rgm on rgm.facilityId = r.facilityId");
     INNER_JOIN("processing_periods pp on pp.id = r.periodId");
     INNER_JOIN("products p on p.code::text = li.productCode::text");
     INNER_JOIN("program_products ppg on ppg.programId = r.programId and ppg.productId = p.id");

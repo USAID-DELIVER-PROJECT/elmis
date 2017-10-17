@@ -92,6 +92,7 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
   $scope.errorPages = {fullSupply: [], nonFullSupply: [], regimen: [], equipment: []};
   $scope.regimenCount = $scope.rnr.regimenLineItems.length;
   $scope.equipmentCount = $scope.rnr.equipmentLineItems.length;
+  $scope.manualTestCount = $scope.rnr.manualTestLineItems.length;
 
   requisitionService.populateScope($scope, $location, $routeParams);
   resetFlags();
@@ -313,7 +314,7 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
   }
 
   function removeExtraDataForPostFromRnr() {
-    var rnr = {"id": $scope.rnr.id, "fullSupplyLineItems": [], "nonFullSupplyLineItems": [], "regimenLineItems": []};
+    var rnr = {"id": $scope.rnr.id, "fullSupplyLineItems": [], "nonFullSupplyLineItems": [], "regimenLineItems": [], "manualTestLineItems": []};
     if (!$scope.page[$scope.visibleTab].length) return rnr;
 
     var nonLineItemFields = ['rnr', 'programRnrColumnList', 'numberOfMonths', 'rnrStatus', 'cost', 'productName', 'hasError','equipments','IsRemarkRequired','isEquipmentValid','isEquipmentValid', 'unskip' ];
@@ -327,6 +328,7 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
     //Who wrote this? This is awesome!!
     rnr[$scope.visibleTab + 'LineItems'] = transform($scope.page[$scope.visibleTab]);
     rnr.nonFullSupplyLineItems = transform($scope.rnr.nonFullSupplyLineItems);
+    if($scope.visibleTab === EQUIPMENT) rnr.manualTestLineItems = transform($scope.rnr.manualTestLineItems);
 
     return rnr;
   }

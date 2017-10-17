@@ -511,3 +511,7 @@ services.factory('FacilityTypeByFacility', function ($resource) {
 services.factory('GetByDistrict', function ($resource) {
     return $resource('/getByDistrict/:districtId.json', {}, {});
 });
+
+services.factory('LabEquipmentRnrReferenceData', function ($resource) {
+    return $resource('/requisitions/lab/reference-data.json', {}, {});
+});

@@ -1289,3 +1289,8 @@ services.factory('LogTagInfo', function ($resource) {
 services.factory('FacilityOnwerList', function ($resource) {
     return $resource('/reports/facility_owners.json', {}, {});
 });
+
+services.factory('ManualTestType', function ($resource) {
+    return $resource('/manualTestTypes/types/:tid', {tid:'@tid'}, {});
+});
+
