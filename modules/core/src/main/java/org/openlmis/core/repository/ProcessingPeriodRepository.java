@@ -100,6 +100,13 @@ public class ProcessingPeriodRepository {
     return mapper.getCurrentPeriod(scheduleId, programStartDate);
   }
 
+  public List<ProcessingPeriod> getCurrentPeriodForDistribution(Long scheduleId, Date programStartDate) {
+    return mapper.getCurrentPeriodForDistribution(scheduleId, programStartDate);
+  }
+  public ProcessingPeriod getCurrentPeriodNew(Long scheduleId, Date programStartDate) {
+    return mapper.getCurrentPeriodNew(scheduleId, programStartDate);
+  }
+
   public List<ProcessingPeriod> getNPreviousPeriods(ProcessingPeriod currentPeriod, Integer n) {
     return mapper.getNPreviousPeriods(currentPeriod, n);
   }

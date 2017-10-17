@@ -119,4 +119,14 @@ public interface ProcessingPeriodMapper {
             " " +
             " ORDER BY startDate DESC")
     List<ProcessingPeriod> getAllPeriodsByYear(@Param("year") Long year);
+
+
+    @Select({"SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId} AND startDate<=#{programStartDate} AND endDate>= #{programStartDate}"})
+    ProcessingPeriod getCurrentPeriodNew(@Param("scheduleId") Long scheduleId, @Param("programStartDate") Date programStartDate);
+
+    @Select({" SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId}\n" +
+            " AND startDate<=now() and extract('year' from startDate) = extract('year' from NOW()) order by id desc "})
+    List<ProcessingPeriod> getCurrentPeriodForDistribution(@Param("scheduleId") Long scheduleId, @Param("programStartDate") Date programStartDate);
+
+
 }
