@@ -1,5 +1,5 @@
 function ManageStockOnHandControllerFunc($window, $scope, $state, StockCards, $stateParams) {
-
+    "use strict";
     $scope.print = function (param) {
         var url = '/vaccine/inventory/distribution/stock-on-hand/print/' + param;
         $window.open(url, "_BLANK");

@@ -60,7 +60,7 @@ angular
                         csv += row + '\r\n';
                     }
 
-                    if (csv == '') {
+                    if (csv === '') {
                         throwError("Invalid Data");
                     }
 
@@ -83,7 +83,7 @@ angular
 
                     function throwError(message) {
                         throw message;
-                        return;
+                       // return;
                     }
 
                     function filterArrayKeys(array, keys) {
@@ -100,7 +100,7 @@ angular
                             result.push(new_object);
                         }
                         return result;
-                    };
+                    }
 
                     function convertToUppercase(array) {
                         var result = [];

@@ -12,7 +12,7 @@ function StockLedgerFunction($scope, $window, $filter, $stateParams, StockLedger
         endDate: $filter('date')(endYear, "yyyy-MM-dd"), max: 10000
     };
 
-    if ($scope.filter == undefined || $scope.filter == undefined) {
+    if ($scope.filter === undefined || $scope.filter === undefined) {
 
         $scope.data = $scope.datarows = [];
 

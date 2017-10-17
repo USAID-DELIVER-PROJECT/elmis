@@ -1,5 +1,6 @@
 function SupervisedFacilityControllerFunc($scope,$state,$window, homeFacilityId,$location, StockCards, GetStockCards, GetByDistrict, facilityTypeCode, GeoDistrictTree) {
-$scope.superVised = true;
+    "use strict";
+    $scope.superVised = true;
    // $scope.homeFacility = homeFacilityId;
     $scope.facilityCode = facilityTypeCode;
 

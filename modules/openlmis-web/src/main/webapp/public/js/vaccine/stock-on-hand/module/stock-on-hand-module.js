@@ -1,4 +1,4 @@
-'use strict';
+
 /*
  * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
@@ -9,14 +9,14 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
  */
 
-angular.module('stock_on_hand', ['openlmis','ui.router', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion',
+var app  = angular.module('stock_on_hand', ['openlmis','ui.router', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion',
     'ui.bootstrap.modal','ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle','kendo.directives',
-    'angularUtils.directives.uiBreadcrumbs','ng-breadcrumbs','ncy-angular-breadcrumb','angularCombine'
-    , 'ngTable','ui.bootstrap.pagination', 'tree.dropdown'
-    ]).
+    'angularUtils.directives.uiBreadcrumbs','ng-breadcrumbs','ncy-angular-breadcrumb','angularCombine',
+    'ngTable','ui.bootstrap.pagination', 'tree.dropdown'
+    ]);
 ///Start
 
-    config(function($stateProvider, $urlRouterProvider, $breadcrumbProvider){
+    app.config(function($stateProvider, $urlRouterProvider, $breadcrumbProvider){
 
         var states = [
             {

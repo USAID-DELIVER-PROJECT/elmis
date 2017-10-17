@@ -1,5 +1,5 @@
 function StockLedgerFunction2($scope, $window, $filter, $stateParams, StockLedgerReport) {
-
+    "use strict";
     $scope.stateParams = $stateParams;
     var endYear = new Date(new Date().getFullYear(), 11, 31);
     var starYear = new Date(new Date().getFullYear(), 0, 1);
@@ -20,7 +20,8 @@ function StockLedgerFunction2($scope, $window, $filter, $stateParams, StockLedge
 
 
         // clear old data if there was any
-        $scope.data = $scope.datarows = [];
+        $scope.data = [];
+            $scope.datarows = [];
         $scope.filter.max = 10000;
 
         var endYear = new Date($scope.filter.year, 11, 31);
@@ -64,7 +65,7 @@ function StockLedgerFunction2($scope, $window, $filter, $stateParams, StockLedge
         endDate: $filter('date')(endYear, "yyyy-MM-dd"), max: 10000
     };
 
-    if ($scope.filter == undefined || $scope.filter == undefined) {
+    if ($scope.filter === undefined || $scope.filter === undefined) {
 
         $scope.data = $scope.datarows = [];
 
