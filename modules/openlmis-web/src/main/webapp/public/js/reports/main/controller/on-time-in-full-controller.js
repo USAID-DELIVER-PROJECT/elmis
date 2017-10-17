@@ -31,13 +31,14 @@ function OnTimeInFullReportController($scope, $filter, $window, OnTimeInFullRepo
             periodStart: $scope.periodStartDate,
             periodEnd:   $scope.periodEnddate,
             facilityLevel:$scope.getSanitizedParameter().facilityLevel,
-            productCategory:  $scope.getSanitizedParameter().productCategory
+            productCategory:  $scope.getSanitizedParameter().productCategory,
+            max:100000
 
         };
 
         // clear old data if there was any
         $scope.data = $scope.datarows = [];
-        $scope.filter.max = 1000000;
+        //$scope.filter.max = 1000000;
 
         OnTimeInFullReport.get($scope.onTimeInFullReportParams, function (data) {
             console.log(data);
