@@ -1,0 +1,85 @@
+<style>
+
+    input[type="radio"], input[type="checkbox"] {
+        margin: 0 0 0 !important;
+        margin-top: 1px \9;
+        line-height: normal;
+        cursor: pointer;
+    }
+
+    p {
+        line-height: 1;
+        font-weight: bold;
+        padding: 5px 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 4px;
+        line-height: 15px;
+        font-size: 12px;
+        min-width: 91px;
+    }
+
+    .modal {
+        display: block !important;
+    }
+
+    .tr td {
+        text-align: left !important;
+    }
+
+    th {
+        text-align: left !important;
+    }
+</style>
+
+
+<div class="row-fluid" style="background-color: #eef1f5">
+    <div class="span12" style="padding-left: 5% !important;">
+        <form ng-submit="filterGrid()" name="filterForm" novalidate>
+            <div filter-container class="clearfix" style="padding-left: 1%">
+             <!--   <facility-level-without-program-filter class="form-cell horizontalFilters"
+                                                       required="true"></facility-level-without-program-filter>-->
+
+                <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
+                                     faccility="false" pro="filter.program" user_geo_level="user_geo_level"
+                                     zones="zones" val="filter.zone"></vaccine-zone-filter>
+                <product-without-description-and-without-program-filter class="form-cell horizontalFilters" required="false"></product-without-description-and-without-program-filter>
+
+                <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
+                <period-by-year-filter
+                               required="true"
+                               class="form-cell horizontalFilters"></period-by-year-filter>
+                </period-filter>
+
+                <br/> <br/>
+                &nbsp;&nbsp;&nbsp;
+                <div class="form-cell horizontalFilters"><span ng-repeat="n in productCat | limitTo:2">
+
+       &nbsp;&nbsp;&nbsp;   <input type="radio" name="code" ng-model="$parent.code"
+                                   ng-init="$index==0?($parent.code=n.code):''"
+                                   ng-value="n.code"
+                                   ng-change="productFormChange(n)"
+                        />&nbsp;<span id="id">{{n.name}}</span>
+          </span>
+                </div>
+                <span class="pull-right" style="padding-right: 2% !important;"><a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
+                   class='btn-small btn-info'><span>Export Excel</span></a></span>
+
+            </div>
+        </form>
+    </div>
+
+    <div class="clearfix"></div>
+
+
+    <div class="span12">
+
+        <div id="event" style="height: 500px; width: 1200px; margin: 0 auto;padding-left:1%;padding-right:1% float:left;"></div>
+
+    </div>
+    <br/>
+    <div class="clearfix"></div>
+    <div class="span12"></div>
+
+</div>
+
