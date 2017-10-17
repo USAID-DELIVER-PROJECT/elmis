@@ -35,16 +35,17 @@ public class VaccineInventoryReportController extends BaseController {
     VaccineInventoryReportService service;
 
     @RequestMapping(value = "/distributionCompleteness", method = RequestMethod.GET)
-    public ResponseEntity<OpenLmisResponse> completenessAndTimeliness(@RequestParam(value = "periodStart", required = false) String periodStart,
-                                                                      @RequestParam(value = "periodEnd", required = false) String periodEnd,
+    public ResponseEntity<OpenLmisResponse> completenessAndTimeliness(@RequestParam(value = "year", required = false) String year,
+                                                                      @RequestParam(value = "period", required = false) String period,
                                                                       @RequestParam("district") Long districtId,
                                                                       @RequestParam("type") String type,
                                                                       @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                                       @Value("${search.page.size}") String limit) {
+        String type2 = (type == null)?"ROUTINE":type;
 
         Pagination pagination = new Pagination(page, parseInt(limit));
-        OpenLmisResponse openLdrResponse = new OpenLmisResponse("distributionCompleteness", service.getDistributionCompletenessReport(periodStart, periodEnd, districtId, type,pagination));
-        pagination.setTotalRecords(service.getTotalDistributionCompletenessReport(periodStart, periodEnd, districtId));
+        OpenLmisResponse openLdrResponse = new OpenLmisResponse("distributionCompleteness", service.getDistributionCompletenessReport(year, period, districtId, type2,pagination));
+        pagination.setTotalRecords(service.getTotalDistributionCompletenessReport(year, period, districtId));
         openLdrResponse.addData("pagination", pagination);
         return openLdrResponse.response(OK);
 //
