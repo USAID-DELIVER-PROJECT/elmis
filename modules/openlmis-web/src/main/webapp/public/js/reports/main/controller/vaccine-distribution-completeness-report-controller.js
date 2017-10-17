@@ -24,50 +24,66 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
 
 
    });
+    $scope.currentPage = 1;
+    $scope.pageSize = 50;
 
-    $scope.distributionTypes = [{'name':'EMERGENCE','id':1},{'name':'ROUTINE','id':2}];
+    $scope.distributionTypes = [{'name':'ROUTINE','id':1},{'name':'EMERGENCE','id':2}];
 
     $scope.OnFilterChanged = function () {
-        console.log($scope.filter.type);
-        // prevent first time loading
-        if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEndDate) || !utils.isEmpty($scope.perioderror))
+
+        console.log($scope.getSanitizedParameter());
+
+        if (utils.isEmpty($scope.getSanitizedParameter().period) || utils.isEmpty($scope.getSanitizedParameter().year))
             return;
 
-        var par = {    periodStart: $scope.periodStartDate,
-            periodEnd:   $scope.periodEndDate,
-            range:       $scope.range,
-            page:        $scope.page,
-            district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
-            type:    utils.isEmpty($scope.filter.type) ? 0 : $scope.filter.type,
-            product:     0
-        };
-        console.log(par);
 
         VaccineDistributionCompletenessReport.get(
             {
 
-                periodStart: $scope.periodStartDate,
-                periodEnd:   $scope.periodEndDate,
+                year:$scope.getSanitizedParameter().year ,
+                period:  $scope.getSanitizedParameter().period,
                 range:       $scope.range,
                 page:        $scope.page,
-                district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
-                type:    utils.isEmpty($scope.filter.type) ? 0 : $scope.filter.type,
+                district:    utils.isEmpty($scope.getSanitizedParameter().zone) ? 0 : $scope.getSanitizedParameter().zone.id,
+                type:    utils.isEmpty($scope.getSanitizedParameter().type) ? 'ROUTINE' : $scope.getSanitizedParameter().type,
                 product:     0
             },
 
             function (data) {
-                $scope.dataRows=data.distributionCompleteness;
-                console.log($scope.dataRows);
+                $scope.dataR =[];
+                $scope.dataR=data.distributionCompleteness;
+               // console.log(JSON.stringify($scope.dataRows));
+                 var d =  $scope.dataR;
+                 var arr = [];
+                angular.forEach(d,function(value,key){
+                    var ed = {'percentage':(percentage(value.issued,value.expected)*100).toFixed(0)};
+                    var ed2 ={'percentageNotIssued':100-(percentage(value.issued,value.expected)*100).toFixed(0) };
+                    arr.push(angular.extend(value,ed,ed2));
+                });
 
                 $scope.pagination = data.pagination;
-                console.log(data.pagination);
-
+                $scope.dataRows = arr;
                 $scope.totalItems = $scope.pagination.totalRecords;
+                $scope.pageCount=
                 $scope.currentPage = $scope.pagination.page;
 
 
             });
     };
+    function percentage(num, per)
+    {
+        return (num/per);
+    }
+
+    $scope.pageLineItems = function () {
+        $scope.pageCount = Math.ceil($scope.dataRows.length / $scope.pageSize);
+        if ($scope.dataRows.length > $scope.pageSize) {
+            $scope.dataRows =   $scope.dataRows.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * Number($scope.currentPage));
+        } else {
+            $scope.dataRows =   $scope.dataRows;
+        }
+    };
+
 
     $scope.$watch('currentPage', function () {
          if ($scope.currentPage > 0) {
