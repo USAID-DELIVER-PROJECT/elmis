@@ -39,4 +39,15 @@ public class OnTimeInFullReportParam extends BaseParam {
 
     private String facilityIds;
 
+    private Long year;
+
+    private String periodString;
+
+    private Integer periods;
+
+    private String periodStart;
+
+    private String periodEnd;
+
+
 }

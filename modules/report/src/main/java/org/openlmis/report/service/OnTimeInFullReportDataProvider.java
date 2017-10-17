@@ -4,8 +4,10 @@ import lombok.NoArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.joda.time.Days;
 import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProcessingPeriodService;
 import org.openlmis.report.mapper.OnTimeInFullReportMapper;
 import org.openlmis.report.model.ResultRow;
 import org.openlmis.report.model.params.DistributionSummaryReportParam;
@@ -44,13 +46,16 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
     @Autowired
     private ConfigurationSettingService configurationSettingService;
 
+    @Autowired
+    private ProcessingPeriodService periodService;
+
     @Override
     public List<? extends ResultRow> getReportBody(Map<String, String[]> filterCriteria, Map<String, String[]> sortCriteria, int page, int pageSize) {
         RowBounds rowBounds = new RowBounds((page - 1) * pageSize, pageSize);
         OnTimeInFullReportParam params = getReportFilterData(filterCriteria);
 
-       params.setUserId(this.getUserId());
-        List<OnTimeInFullReport> onTimeInFullReports = reportMapper.getReport(getReportFilterData(filterCriteria),this.getUserId(), rowBounds);
+        params.setUserId(this.getUserId());
+        List<OnTimeInFullReport> onTimeInFullReports = reportMapper.getReport(getReportFilterData(filterCriteria), this.getUserId(), rowBounds);
 
         List<OnTimeInFullReport> arr = new ArrayList<>();
         OnTimeInFullReport onTimeInFullReport;
@@ -76,10 +81,10 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
 
                 String reportInFull = getInFull(less, greater, fullReport.getQuantityReceived());
                 onTimeInFullReport.setOnFull(reportInFull);
-                if((Objects.equals("Yes", onTimeInFullReport.getOnTime())) &&( Objects.equals(onTimeInFullReport.getOnFull(), "Yes")))
+                if ((Objects.equals("Yes", onTimeInFullReport.getOnTime())) && (Objects.equals(onTimeInFullReport.getOnFull(), "Yes")))
                     onTimeInFullReport.setOnTimeAndOnFull("Yes");
                 else
-                    onTimeInFullReport.setOnTimeAndOnFull( "No");
+                    onTimeInFullReport.setOnTimeAndOnFull("No");
                 arr.add(onTimeInFullReport);
             }
 
@@ -103,10 +108,10 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
                 Date dateStart = readFormat.parse(String.valueOf(requestedDate));
                 Date dateEnd = readFormat.parse(String.valueOf(receivedDate));
 
-                System.out.println(dateStart);
-                System.out.println(dateEnd);
+               // System.out.println(dateStart);
+               // System.out.println(dateEnd);
                 diff = Math.round((dateEnd.getTime() - dateStart.getTime()) / (double) 86400000);
-                System.out.println(diff);
+               // System.out.println(diff);
 
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -134,13 +139,28 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
         return (configurationSettingService.getConfigurationIntValue("ON_TIME_IN_FULL_CONF_NUMBER") * quantityRequested) / 100L;
     }
 
+    public Integer getMonth(Date d) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        return cal.get(Calendar.MONTH)+1;
+    }
 
     public OnTimeInFullReportParam getReportFilterData(Map<String, String[]> filterCriteria) {
 
         OnTimeInFullReportParam param = new OnTimeInFullReportParam();
 
+
         Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
         param.setProgram(programId);
+        Long period = StringHelper.isBlank(filterCriteria, "period") ? 0L : Long.parseLong(filterCriteria.get("period")[0]);
+       // ProcessingPeriod p = periodService.getById(period);
+       // System.out.println(getMonth(p.getEndDate()));
+        //param.setPeriods(getMonth(p.getEndDate()));
+
+        // param.setPeriod(period);
+
+        Long year = StringHelper.isBlank(filterCriteria, "year") ? 0L : Long.parseLong(filterCriteria.get("year")[0]);
+        param.setYear(year);
 
       /*  Long product = StringHelper.isBlank(filterCriteria, "product") ? 0L : Long.parseLong(filterCriteria.get("product")[0]);
         param.setProduct(product);*/
@@ -161,10 +181,11 @@ public class OnTimeInFullReportDataProvider extends ReportDataProvider {
         String facilityLevel = StringHelper.isBlank(filterCriteria, "facilityLevel") ? null : ((String[]) filterCriteria.get("facilityLevel"))[0];
         param.setFacilityLevel(facilityLevel);
 
-        String startDate = StringHelper.isBlank(filterCriteria, "startDate") ? null : ((String[]) filterCriteria.get("startDate"))[0];
+        String startDate = StringHelper.isBlank(filterCriteria, "periodStart") ? null : ((String[]) filterCriteria.get("periodStart"))[0];
         param.setStartDate(startDate);
+        System.out.println(param.getStartDate());
 
-        String endDate = StringHelper.isBlank(filterCriteria, "endDate") ? null : ((String[]) filterCriteria.get("endDate"))[0];
+        String endDate = StringHelper.isBlank(filterCriteria, "periodEnd") ? null : ((String[]) filterCriteria.get("periodEnd"))[0];
         param.setEndDate(endDate);
 
        /* String products = StringHelper.isBlank(filterCriteria, "products") ? null : ((String[]) filterCriteria.get("products"))[0];
