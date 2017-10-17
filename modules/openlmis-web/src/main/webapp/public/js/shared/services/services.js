@@ -14,493 +14,500 @@ var update = {update: {method: 'PUT'}};
 services.value('version', '@version@');
 
 services.factory('Programs', function ($resource) {
-  return $resource('/programs/:type.json', {type: '@type'}, {});
+    return $resource('/programs/:type.json', {type: '@type'}, {});
 });
 
 services.factory('UpdateProgram', function ($resource) {
-  return $resource('/programs/save.json', {}, update);
+    return $resource('/programs/save.json', {}, update);
 });
 
 services.factory('RnRColumnList', function ($resource) {
-  return $resource('/program/:programId/rnr-template.json', {}, {});
+    return $resource('/program/:programId/rnr-template.json', {}, {});
 });
 
 services.factory('ProgramRnRColumnList', function ($resource) {
-  return $resource('/rnr/:programId/columns.json', {}, {});
+    return $resource('/rnr/:programId/columns.json', {}, {});
 });
 
 services.factory('Facility', function ($resource) {
-  var resource = $resource('/facilities/:id.json', {id: '@id'}, update);
+    var resource = $resource('/facilities/:id.json', {id: '@id'}, update);
 
-  resource.restore = function (pathParams, success, error) {
-    $resource('/facilities/:id/restore.json', {}, update).update(pathParams, {}, success, error);
-  };
+    resource.restore = function (pathParams, success, error) {
+        $resource('/facilities/:id/restore.json', {}, update).update(pathParams, {}, success, error);
+    };
 
-  return resource;
+    return resource;
 });
 
 services.factory("Facilities", function ($resource) {
-  return $resource('/filter-facilities.json', {}, {});
+    return $resource('/filter-facilities.json', {}, {});
 });
 
 services.factory("FacilityTypes", function ($resource) {
-  return $resource('/facility-types.json', {}, {});
+    return $resource('/facility-types.json', {}, {});
 });
 
 services.factory('UserContext', function ($resource) {
-  return $resource('/user-context.json', {}, {});
+    return $resource('/user-context.json', {}, {});
 });
 
 services.factory('Users', function ($resource) {
-  var resource = $resource('/users/:id.json', {id: '@id'}, update);
+    var resource = $resource('/users/:id.json', {id: '@id'}, update);
 
-  resource.disable = function (pathParams, success, error) {
-    $resource('/users/:id.json', {}, {update: {method: 'DELETE'}}).update(pathParams, {}, success, error);
-  };
+    resource.disable = function (pathParams, success, error) {
+        $resource('/users/:id.json', {}, {update: {method: 'DELETE'}}).update(pathParams, {}, success, error);
+    };
 
-  return resource;
+    return resource;
 });
 
 services.factory('UserFacilityList', function ($resource) {
-  return $resource('/user/facilities.json', {}, {});
+    return $resource('/user/facilities.json', {}, {});
 });
 
 services.factory('UserFacilityWithViewRequisition', function ($resource) {
-  return $resource('/user/facilities/view.json', {}, {});
+    return $resource('/user/facilities/view.json', {}, {});
 });
 
 services.factory('ProgramsToViewRequisitions', function ($resource) {
-  return $resource('/facility/:facilityId/view/requisition/programs.json', {}, {});
+    return $resource('/facility/:facilityId/view/requisition/programs.json', {}, {});
 });
 
 services.factory('ProgramSupportedByFacility', function ($resource) {
-  return $resource('/facilities/:facilityId/programs.json', {}, {});
+    return $resource('/facilities/:facilityId/programs.json', {}, {});
 });
 
 services.factory('ManageEquipmentInventoryProgramList', function ($resource) {
-  return $resource('/equipment/inventory/programs.json', {}, {});
+    return $resource('/equipment/inventory/programs.json', {}, {});
 });
 
 
 services.factory('FacilityReferenceData', function ($resource) {
-  return $resource('/facilities/reference-data.json', {}, {});
+    return $resource('/facilities/reference-data.json', {}, {});
 });
 
 services.factory('Rights', function ($resource) {
-  return $resource('/rights.json', {}, {});
+    return $resource('/rights.json', {}, {});
 });
 
 services.factory('Roles', function ($resource) {
-  return $resource('/roles/:id.json', {id: '@id'}, update);
+    return $resource('/roles/:id.json', {id: '@id'}, update);
 });
 
 services.factory('RolesFlat', function ($resource) {
-  return $resource('/roles-flat', {id: '@id'}, update);
+    return $resource('/roles-flat', {id: '@id'}, update);
 });
 
 services.factory('CreateRequisitionProgramList', function ($resource) {
-  return $resource('/create/requisition/programs.json', {}, {});
+    return $resource('/create/requisition/programs.json', {}, {});
 });
 
 services.factory('PodProgramList', function ($resource) {
-  return $resource('/manage-pod/programs.json', {}, {});
+    return $resource('/manage-pod/programs.json', {}, {});
 });
 
 services.factory('ManagePodFacilitiesForProgram', function ($resource) {
-  return $resource('/manage-pod/supervised/:programId/facilities.json', {}, {});
+    return $resource('/manage-pod/supervised/:programId/facilities.json', {}, {});
 });
 
 services.factory('UserSupervisedFacilitiesForProgram', function ($resource) {
-  return $resource('/create/requisition/supervised/:programId/facilities.json', {}, {});
+    return $resource('/create/requisition/supervised/:programId/facilities.json', {}, {});
 });
 
 services.factory('ReferenceData', function ($resource) {
-  return $resource('/reference-data/currency.json', {}, {});
+    return $resource('/reference-data/currency.json', {}, {});
 });
 
 services.factory('LineItemsPerPage', function ($resource) {
-  return $resource('/reference-data/pageSize.json', {}, {});
+    return $resource('/reference-data/pageSize.json', {}, {});
 });
 
 services.factory('Requisitions', function ($resource) {
-  return $resource('/requisitions/:id/:operation.json', {id: '@id', operation: '@operation'}, update);
+    return $resource('/requisitions/:id/:operation.json', {id: '@id', operation: '@operation'}, update);
 });
 
 services.factory('RequisitionForApproval', function ($resource) {
-  return $resource('/requisitions-for-approval.json', {}, {});
+    return $resource('/requisitions-for-approval.json', {}, {});
 });
 
 services.factory('RequisitionsForViewing', function ($resource) {
-  return $resource('/requisitions.json', {}, {});
+    return $resource('/requisitions.json', {}, {});
 });
 
 services.factory('RequisitionForConvertToOrder', function ($resource) {
-  return $resource('/requisitions-for-convert-to-order.json', {}, {});
+    return $resource('/requisitions-for-convert-to-order.json', {}, {});
 });
 
 services.factory('LossesAndAdjustmentsReferenceData', function ($resource) {
-  return $resource('/requisitions/lossAndAdjustments/reference-data.json', {}, {});
+    return $resource('/requisitions/lossAndAdjustments/reference-data.json', {}, {});
 });
 
 services.factory('DeleteRequisition', function ($resource) {
-  return $resource('/requisitions/delete/:id.json', {id: '@id'}, {post: {method: 'POST', isArray: false}});
+    return $resource('/requisitions/delete/:id.json', {id: '@id'}, {post: {method: 'POST', isArray: false}});
 });
 
 services.factory('SkipRequisition', function ($resource) {
-  return $resource('/requisitions/skip/:id.json', {id: '@id'}, {post: {method: 'POST', isArray: false}});
+    return $resource('/requisitions/skip/:id.json', {id: '@id'}, {post: {method: 'POST', isArray: false}});
 });
 
 services.factory('ReOpenRequisition', function ($resource) {
-  return $resource('/requisitions/reopen/:id.json', {id: '@id'}, {post: {method: 'POST', isArray: false}});
+    return $resource('/requisitions/reopen/:id.json', {id: '@id'}, {post: {method: 'POST', isArray: false}});
 });
 
 services.factory('RejectRequisition', function ($resource) {
-  return $resource('/requisitions/reject/:id.json', {id: '@id'}, {post: {method: 'POST', isArray: false}});
+    return $resource('/requisitions/reject/:id.json', {id: '@id'}, {post: {method: 'POST', isArray: false}});
 });
 
 services.factory('Schedule', function ($resource) {
-  return $resource('/schedules/:id.json', {id: '@id'}, update);
+    return $resource('/schedules/:id.json', {id: '@id'}, update);
 });
 
 services.factory('Periods', function ($resource) {
-  return $resource('/schedules/:scheduleId/periods.json', {}, {});
+    return $resource('/schedules/:scheduleId/periods.json', {}, {});
 });
 
 services.factory('PeriodsForFacilityAndProgram', function ($resource) {
-  return $resource('/logistics/periods.json', {}, {});
+    return $resource('/logistics/periods.json', {}, {});
 });
 
 services.factory('Period', function ($resource) {
-  return $resource('/periods/:id.json', {}, {});
+    return $resource('/periods/:id.json', {}, {});
 });
 
 services.factory('Program', function ($resource) {
-  return $resource('/programs/:id.json', {id: '@id'}, {});
+    return $resource('/programs/:id.json', {id: '@id'}, {});
 });
 
 services.factory('SupportedUploads', function ($resource) {
-  return $resource('/supported-uploads.json', {}, {});
+    return $resource('/supported-uploads.json', {}, {});
 });
 
 services.factory('ForgotPassword', function ($resource) {
-  return $resource('/forgot-password.json', {}, {});
+    return $resource('/forgot-password.json', {}, {});
 });
 
 services.factory('FacilityApprovedProducts', function ($resource) {
-  return $resource('/facilityApprovedProducts/facility/:facilityId/program/:programId/nonFullSupply.json', {}, {});
+    return $resource('/facilityApprovedProducts/facility/:facilityId/program/:programId/nonFullSupply.json', {}, {});
 });
 
 services.factory('RequisitionLineItem', function ($resource) {
-  return $resource('/logistics/requisition/lineItem.json', {}, {});
+    return $resource('/logistics/requisition/lineItem.json', {}, {});
 });
 
 services.factory('UpdateUserPassword', function ($resource) {
-  return $resource('/user/resetPassword/:token.json', {}, update);
+    return $resource('/user/resetPassword/:token.json', {}, update);
 });
 
 services.factory('ValidatePasswordToken', function ($resource) {
-  return $resource('/user/validatePasswordResetToken/:token.json', {}, {});
+    return $resource('/user/validatePasswordResetToken/:token.json', {}, {});
 });
 
 services.factory('Messages', function ($resource) {
-  return $resource('/messages.json', {}, {});
+    return $resource('/messages.json', {}, {});
 });
 
 services.factory('SupervisoryNodesPagedSearch', function ($resource) {
-  return $resource('/paged-search-supervisory-nodes.json', {}, {});
+    return $resource('/paged-search-supervisory-nodes.json', {}, {});
 });
 
 services.factory('FacilityProgramRights', function ($resource) {
-  return $resource('/facility/:facilityId/program/:programId/rights.json');
+    return $resource('/facility/:facilityId/program/:programId/rights.json');
 });
 
 services.factory('RequisitionComment', function ($resource) {
-  return $resource('/requisitions/:id/comments.json', {}, {});
+    return $resource('/requisitions/:id/comments.json', {}, {});
 });
 
 services.factory('Orders', function ($resource) {
-  return $resource('/orders.json', {}, {post: {isArray: true, method: 'POST'}});
+    return $resource('/orders.json', {}, {post: {isArray: true, method: 'POST'}});
 });
 
 services.factory('ReleaseWithoutOrders', function ($resource) {
-  return $resource('/release-without-order.json', {}, {post: {isArray: true, method: 'POST'}});
+    return $resource('/release-without-order.json', {}, {post: {isArray: true, method: 'POST'}});
 });
 
 services.factory('OrdersForManagePOD', function ($resource) {
-  return $resource('/manage-pod-orders', {}, {});
+    return $resource('/manage-pod-orders', {}, {});
 });
 
 services.factory('ReportTemplates', function ($resource) {
-  return $resource('/report-templates.json', {}, {});
+    return $resource('/report-templates.json', {}, {});
 });
 
 //Allocation
 
 services.factory('ProgramProducts', function ($resource) {
-  return $resource('/programProducts/programId/:programId.json', {}, {});
+    return $resource('/programProducts/programId/:programId.json', {}, {});
 });
 
 services.factory('FacilityProgramProducts', function ($resource) {
-  return $resource('/facility/:facilityId/program/:programId.json', {}, {update: {method: 'PUT'}});
+    return $resource('/facility/:facilityId/program/:programId.json', {}, {update: {method: 'PUT'}});
 });
 
 services.factory('ProgramProductsISA', function ($resource) {
-  return $resource('/programProducts/:programProductId/isa/:isaId.json', {isaId: '@isaId'}, update);
+    return $resource('/programProducts/:programProductId/isa/:isaId.json', {isaId: '@isaId'}, update);
 });
 
-services.factory('FacilityProgramProductsISA', function ($resource)
-{
-  //return $resource('/facility/:facilityId/programProducts/:programProductId/isa/:isaId.json', {isaId: '@isaId', facilityId: '@facilityId'}, update);
-  return $resource('/facility/:facilityId/programProducts/:programProductId/isa.json', {}, update);
+services.factory('FacilityProgramProductsISA', function ($resource) {
+    //return $resource('/facility/:facilityId/programProducts/:programProductId/isa/:isaId.json', {isaId: '@isaId', facilityId: '@facilityId'}, update);
+    return $resource('/facility/:facilityId/programProducts/:programProductId/isa.json', {}, update);
 });
 
 services.factory('AllocationProgramProducts', function ($resource) {
-  return $resource('/facility/:facilityId/programProduct/:programProductId.json', {}, update);
+    return $resource('/facility/:facilityId/programProduct/:programProductId.json', {}, update);
 });
 
 services.factory('UserDeliveryZones', function ($resource) {
-  return $resource('/user/deliveryZones.json', {}, {});
+    return $resource('/user/deliveryZones.json', {}, {});
 });
 
 services.factory('DeliveryZone', function ($resource) {
-  return $resource('/deliveryZones/:id.json', {id: '@id'}, {});
+    return $resource('/deliveryZones/:id.json', {id: '@id'}, {});
 });
 
 services.factory('DeliveryZoneActivePrograms', function ($resource) {
-  return $resource('/deliveryZones/:zoneId/activePrograms.json', {}, {});
+    return $resource('/deliveryZones/:zoneId/activePrograms.json', {}, {});
 });
 
 services.factory('DeliveryZonePrograms', function ($resource) {
-  return $resource('/deliveryZones/:zoneId/programs.json', {}, {});
+    return $resource('/deliveryZones/:zoneId/programs.json', {}, {});
 });
 
 services.factory('DeliveryZoneProgramPeriods', function ($resource) {
-  return $resource('/deliveryZones/:zoneId/programs/:programId/periods.json', {}, {});
+    return $resource('/deliveryZones/:zoneId/programs/:programId/periods.json', {}, {});
 });
 
 services.factory('DeliveryZoneFacilities', function ($resource) {
-  return $resource('/deliveryZones/:deliveryZoneId/programs/:programId/facilities.json', {}, {});
+    return $resource('/deliveryZones/:deliveryZoneId/programs/:programId/facilities.json', {}, {});
 });
 
 services.factory('ProgramRegimens', function ($resource) {
-  return $resource('/programId/:programId/regimens.json', {}, {});
+    return $resource('/programId/:programId/regimens.json', {}, {});
 });
 
 services.factory('RegimenCategories', function ($resource) {
-  return $resource('/regimenCategories.json', {}, {});
+    return $resource('/regimenCategories.json', {}, {});
 });
-services.factory('ProductCombinations',function ($resource){
+services.factory('ProductCombinations', function ($resource) {
 
-  return $resource('/regimens/all-product-combinations.json', {}, {});
+    return $resource('/regimens/all-product-combinations.json', {}, {});
 });
-services.factory('RegimenTree',function ($resource){
+services.factory('RegimenTree', function ($resource) {
 
-  return $resource('/regimens/regimens-tree.json', {}, {});
+    return $resource('/regimens/regimens-tree.json', {}, {});
 });
-services.factory('DosageFrequencies',function ($resource){
+services.factory('DosageFrequencies', function ($resource) {
 
-  return $resource('/regimens/dosage-frequencies.json', {}, {});
+    return $resource('/regimens/dosage-frequencies.json', {}, {});
 });
-services.factory('DosageUnits',function ($resource){
+services.factory('DosageUnits', function ($resource) {
 
-  return $resource('/regimens/dosage-units.json', {}, {});
+    return $resource('/regimens/dosage-units.json', {}, {});
 });
 services.factory('Regimens', function ($resource) {
-  return $resource('/programId/:programId/regimens.json', {}, {post: {method: 'POST', isArray: true}});
+    return $resource('/programId/:programId/regimens.json', {}, {post: {method: 'POST', isArray: true}});
 });
 
 services.factory('RegimenColumns', function ($resource) {
-  return $resource('/programId/:programId/regimenColumns.json', {}, {});
+    return $resource('/programId/:programId/regimenColumns.json', {}, {});
 });
 
 services.factory('RegimenTemplate', function ($resource) {
-  return $resource('/programId/:programId/configureRegimenTemplate.json', {}, {});
+    return $resource('/programId/:programId/configureRegimenTemplate.json', {}, {});
 });
 
 services.factory('ProgramRegimenTemplate', function ($resource) {
-  return $resource('/programId/:programId/programRegimenTemplate.json', {}, {});
+    return $resource('/programId/:programId/programRegimenTemplate.json', {}, {});
 });
 
 services.factory('GeographicZones', function ($resource) {
-  return $resource('/geographicZones/:id.json', {id: '@id'}, update);
+    return $resource('/geographicZones/:id.json', {id: '@id'}, update);
 });
 
 services.factory("GeographicZoneSearch", function ($resource) {
-  return $resource('/filtered-geographicZones.json', {}, {});
+    return $resource('/filtered-geographicZones.json', {}, {});
 });
 
 services.factory('Distributions', function ($resource) {
-  return $resource('/distributions.json', {}, {});
+    return $resource('/distributions.json', {}, {});
 });
 
 services.factory('SyncFacilityDistributionData', function ($resource) {
-  return $resource('/distributions/:id/facilities/:facilityId.json', {}, update);
+    return $resource('/distributions/:id/facilities/:facilityId.json', {}, update);
 });
 
 services.factory('Locales', function ($resource) {
-  return $resource('/locales.json', {}, {});
+    return $resource('/locales.json', {}, {});
 });
 
 services.factory('ChangeLocale', function ($resource) {
-  return $resource('/changeLocale.json', {}, update);
+    return $resource('/changeLocale.json', {}, update);
 });
 
 services.factory('UpdatePassword', function ($resource) {
-  return $resource('/admin/resetPassword/:userId.json', {}, update);
+    return $resource('/admin/resetPassword/:userId.json', {}, update);
 });
 
 services.factory('OrderFileTemplate', function ($resource) {
-  return $resource('/order-file-template.json', {}, {post: {method: 'POST', isArray: true}});
+    return $resource('/order-file-template.json', {}, {post: {method: 'POST', isArray: true}});
 });
 
 services.factory('DateFormats', function ($resource) {
-  return $resource('/date-formats.json', {}, {});
+    return $resource('/date-formats.json', {}, {});
 });
 
 services.factory('ShipmentFileTemplate', function ($resource) {
-  return $resource('/shipment-file-template.json', {}, {post: {method: 'POST', isArray: true}});
+    return $resource('/shipment-file-template.json', {}, {post: {method: 'POST', isArray: true}});
 });
 
 
 services.factory('BudgetFileTemplate', function ($resource) {
-  return $resource('/budget-file-template.json', {}, {post: {method: 'POST', isArray: true}});
+    return $resource('/budget-file-template.json', {}, {post: {method: 'POST', isArray: true}});
 });
 
 services.factory('EnabledWarehouse', function ($resource) {
-  return $resource('/enabledWarehouses.json', {}, {});
+    return $resource('/enabledWarehouses.json', {}, {});
 });
 
 services.factory('OrderPOD', function ($resource) {
-  return $resource('/pods/:action/:id.json', {id: '@id', action: '@action'}, update);
+    return $resource('/pods/:action/:id.json', {id: '@id', action: '@action'}, update);
 });
 
 services.factory('OrderNumberConfiguration', function ($resource) {
-  return $resource('/order-number-configuration.json', {}, {post: {method: 'POST'}});
+    return $resource('/order-number-configuration.json', {}, {post: {method: 'POST'}});
 });
 
 services.factory('GeoLevels', function ($resource) {
-  return $resource('/geographicLevels.json', {}, {});
+    return $resource('/geographicLevels.json', {}, {});
 });
 
 services.factory('GeographicZonesAboveLevel', function ($resource) {
-  return $resource('/parentGeographicZones/:geoLevelCode.json', {}, {});
+    return $resource('/parentGeographicZones/:geoLevelCode.json', {}, {});
 });
 
 services.factory('SupervisoryNodes', function ($resource) {
-  return $resource('/supervisory-nodes/:id.json', {}, update);
+    return $resource('/supervisory-nodes/:id.json', {}, update);
 });
 
 services.factory('SupplyLines', function ($resource) {
-  return $resource('/supplyLines/:id.json', {}, update);
+    return $resource('/supplyLines/:id.json', {}, update);
 });
 
 services.factory('ParentSupervisoryNodes', function ($resource) {
-  return $resource('/search-supervisory-nodes.json', {}, {});
+    return $resource('/search-supervisory-nodes.json', {}, {});
 });
 
 services.factory('RequisitionGroups', function ($resource) {
-  return $resource('/requisitionGroups/:id.json', {id: '@id'}, update);
+    return $resource('/requisitionGroups/:id.json', {id: '@id'}, update);
 });
 
 services.factory('SupervisoryNodesSearch', function ($resource) {
-  return $resource('/search-supervisory-nodes.json', {}, {});
+    return $resource('/search-supervisory-nodes.json', {}, {});
 });
 
 services.factory('TopLevelSupervisoryNodes', function ($resource) {
-  return $resource('/topLevelSupervisoryNodes.json', {}, {});
+    return $resource('/topLevelSupervisoryNodes.json', {}, {});
 });
 
 services.factory('SupplyLinesSearch', function ($resource) {
-  return $resource('/supplyLines/search.json', {}, {});
+    return $resource('/supplyLines/search.json', {}, {});
 });
 
 services.factory('ProgramProductsFilter', function ($resource) {
-  return $resource('/programProducts/filter/programId/:programId/facilityTypeId/:facilityTypeId.json',
-      {programId: '@programId', facilityTypeId: '@facilityTypeId'}, {}, {});
+    return $resource('/programProducts/filter/programId/:programId/facilityTypeId/:facilityTypeId.json',
+        {programId: '@programId', facilityTypeId: '@facilityTypeId'}, {}, {});
 });
 
 services.factory('FacilityTypeApprovedProducts', function ($resource) {
-  return $resource('/facilityApprovedProducts/:id.json', {id: '@id'}, update);
+    return $resource('/facilityApprovedProducts/:id.json', {id: '@id'}, update);
 });
 
 services.factory('ProgramProductsSearch', function ($resource) {
-  return $resource('/programProducts/search.json', {}, {});
+    return $resource('/programProducts/search.json', {}, {});
 });
 
 services.factory('Reports', function ($resource) {
-  return $resource('/reports/:id/:format.json', {}, {});
+    return $resource('/reports/:id/:format.json', {}, {});
 });
 
 services.factory('ProductGroups', function ($resource) {
-  return $resource('/products/groups.json', {}, {});
+    return $resource('/products/groups.json', {}, {});
 });
 
 services.factory('ProductForms', function ($resource) {
-  return $resource('/products/forms.json', {}, {});
+    return $resource('/products/forms.json', {}, {});
 });
 
 services.factory('DosageUnits', function ($resource) {
-  return $resource('/products/dosageUnits.json', {}, {});
+    return $resource('/products/dosageUnits.json', {}, {});
 });
 
 services.factory('Products', function ($resource) {
-  return $resource('/products/:id.json', {id: '@id'}, update);
+    return $resource('/products/:id.json', {id: '@id'}, update);
 });
 
 services.factory('ProductCategories', function ($resource) {
-  return $resource('/products/categories.json', {}, {});
+    return $resource('/products/categories.json', {}, {});
 });
 
 
 services.factory('EquipmentOperationalStatus', function ($resource) {
-  return $resource('/equipment/type/operational-status.json',{},  {});
+    return $resource('/equipment/type/operational-status.json', {}, {});
 });
 
-services.factory('FacilityImages', function($resource){
-  return $resource('/facility-images.json', {},{});
+services.factory('FacilityImages', function ($resource) {
+    return $resource('/facility-images.json', {}, {});
 });
 
-services.factory('ConfigSettingsByKey',function($resource){
-  return $resource('/settings/:key.json',{},{});
+services.factory('ConfigSettingsByKey', function ($resource) {
+    return $resource('/settings/:key.json', {}, {});
 });
 
 services.factory('Supplylines', function ($resource) {
-  return $resource('/supplylines.json', {});
+    return $resource('/supplylines.json', {});
 });
 
 services.factory('SupplyingDepots', function ($resource) {
-  return $resource('/supplyLines/supplying-depots.json', {});
+    return $resource('/supplyLines/supplying-depots.json', {});
 });
 
 services.factory('UserFacilityWithViewVaccineOrderRequisition', function ($resource) {
-  return $resource('/vaccine/orderRequisition/view-order-requisition.json', {}, {});
+    return $resource('/vaccine/orderRequisition/view-order-requisition.json', {}, {});
 });
 
 services.factory('ProgramsToViewVaccineOrderRequisitions', function ($resource) {
-  return $resource('/facility/:facilityId/view/vaccine-order-requisition/programs.json', {}, {});
+    return $resource('/facility/:facilityId/view/vaccine-order-requisition/programs.json', {}, {});
 });
 
 services.factory('VaccineOrderRequisitionsForViewing', function ($resource) {
-  return $resource('/vaccine/orderRequisition/search.json', {}, {});
+    return $resource('/vaccine/orderRequisition/search.json', {}, {});
 });
 
 services.factory('UserFacilityWithViewStockLedgerReport', function ($resource) {
-  return $resource('/user/facilities/view-ledger-report-facilities.json', {}, {});
+    return $resource('/user/facilities/view-ledger-report-facilities.json', {}, {});
 });
 
 services.factory('DeleteEquipmentInventory', function ($resource) {
-  return $resource('/equipment/inventory/delete', {}, {});
+    return $resource('/equipment/inventory/delete', {}, {});
 });
 
 services.factory('CustomReportList', function ($resource) {
-  return $resource('/report-api/list.json', {}, {});
+    return $resource('/report-api/list.json', {}, {});
 });
 
 services.factory('VaccineStockEvent', function ($resource) {
-  return $resource('/vaccine/dashboard/vaccineStockEvent.json', {}, {});
+    return $resource('/vaccine/dashboard/vaccineStockEvent.json', {}, {});
 });
 
-services.factory('GeoDistrictTree',function ($resource){
+services.factory('GeoDistrictTree', function ($resource) {
 
-  return $resource('/getDistrictGeoTree.json', {}, {});
+    return $resource('/getDistrictGeoTree.json', {}, {});
+});
+
+services.factory('FacilityTypeByFacility', function ($resource) {
+    return $resource('/getFacilityTypeByFac/:facilityId.json', {}, {});
+});
+
+services.factory('GetByDistrict', function ($resource) {
+    return $resource('/getByDistrict/:districtId.json', {}, {});
 });

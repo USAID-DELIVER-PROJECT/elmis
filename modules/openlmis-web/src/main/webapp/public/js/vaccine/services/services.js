@@ -670,3 +670,11 @@ services.factory('ReceiveNotification', function ($resource) {
     return $resource('/vaccine/orderRequisition/receiveNotification', {}, {});
 });
 
+services.factory('ReceiveDistributionAlert', function ($resource) {
+    return $resource('/vaccine/orderRequisition/receiveDistributionAlert', {}, {});
+});
+
+services.factory('MinimumStockNotification', function ($resource) {
+    return $resource('/vaccine/orderRequisition/getMinimumStock', {}, {});
+});
+
