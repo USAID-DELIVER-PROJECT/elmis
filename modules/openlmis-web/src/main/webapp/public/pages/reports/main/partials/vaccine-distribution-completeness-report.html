@@ -42,42 +42,16 @@
                     <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
                                          faccility="false" pro="filter.program" user_geo_level="user_geo_level"
                                          zones="zones" val="filter.zone"></vaccine-zone-filter>
-                    <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
 
                     <year-filter class="form-cell horizontalFilters"></year-filter>
 
-                    <period-change-year-Filter class="form-cell horizontalFilters"  required="true"></period-change-year-Filter>
-<!--
-                    <div class="horizontalFilters form-cell">
-                        <label for="start" class="labels"><span openlmis-message="label.start.date"></span></label>
-
-                        <div>
-                            <input id="start"
-                                   ng-model="periodStartDate"
-                                   ui-date-format="yy-mm-dd"
-                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
-                                   ng-change="OnFilterChanged()"
-                                    />
-                        </div>
-                    </div>
+                    <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>
 
                     <div class="horizontalFilters form-cell">
-                        <label for="end" class="labels"><span openlmis-message="label.end.date"></span></label>
 
                         <div>
-                            <input id="end"
-                                   ng-model="periodEndDate"
-                                   ui-date-format="yy-mm-dd"
-                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
-                                   ng-change="OnFilterChanged()"
-                                    />
-                        </div>
-                    </div>-->
-                    <div class="horizontalFilters form-cell">
-                        <label for="type" class="labels"><span>Distribution Type</span></label>
-
-                        <div>
-                            <select id="type" ui-select2 class="input-medium" ng-model="filter.type"  ng-change="OnFilterChanged()" ng-selected="ROUTINE">
+                            <label for="type" class="labels"><span>Distribution Type</span></label>
+                            <select id="type" ui-select2 class="input-medium" ng-model="filter.type"  ng-change="OnFilterChanged()" ng-selected="distributionTypes">
                                 <option ng-repeat="type in distributionTypes" ng-selected="filter.type == type" value="{{ type.name }}">{{type.name}}</option>
                             </select>
                         </div>
