@@ -35,50 +35,66 @@ public class VaccineInventoryReportService {
     private ProcessingPeriodService periodService;
 
 
-    public String formatDate(Date requestDate){
+    public String formatDate(Date requestDate) {
         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String date = "";
-        date=outputFormat.format(requestDate);
+        date = outputFormat.format(requestDate);
         return date;
     }
 
-    public List<Map<String, String>> getDistributionCompletenessReport(String year, String period, Long districtId,String type, Pagination pagination) {
+    public List<Map<String, String>> getDistributionCompletenessReport(String year, String period, Long districtId, String type, Pagination pagination) {
 
+        String newStartDate = " ";
+        String newEndDate = " ";
+        if (Long.valueOf(period) == 0L) {
+
+            newStartDate = year + "-01-01";
+            newEndDate = year + "-12-31";
+
+        } else {
+
+            ProcessingPeriod processingPeriod = periodService.getById(Long.valueOf(period));
+
+            newStartDate = String.valueOf(formatDate(processingPeriod.getStartDate()));
+            newEndDate = String.valueOf(formatDate(processingPeriod.getEndDate()));
+        }
         Date startDate, endDate;
-        ProcessingPeriod processingPeriod = periodService.getById(Long.valueOf(period));
 
-        String newStartDate = year+"-01-01";
-        String newEndDate =   year+"-12-31";
-        String start = String.valueOf(formatDate(processingPeriod.getStartDate()));
-        String end = String.valueOf(formatDate(processingPeriod.getEndDate()));
+        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(newStartDate).toDate();
+        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(newEndDate).toDate();
 
-        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime((period == null)?newStartDate:start).toDate();
-        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime((period == null)?newEndDate:end).toDate();
-
-        return repository.getDistributionCompletenessReport(startDate,endDate,districtId,type,pagination);
+        return repository.getDistributionCompletenessReport(startDate, endDate, districtId, type, pagination);
     }
 
-    public List<Map<String,String>> getDistributedFacilities(Long periodId, Long facilityId, String type, Pagination pagination){
-        return repository.getDistributedFacilities(periodId,facilityId,type,pagination);
+    public List<Map<String, String>> getDistributedFacilities(Long periodId, Long facilityId, String type, Pagination pagination) {
+        return repository.getDistributedFacilities(periodId, facilityId, type, pagination);
     }
 
 
     public Integer getTotalDistributionCompletenessReport(String year, String period, Long districtId) {
+
+        String newStartDate = " ";
+        String newEndDate = " ";
+        if (Long.valueOf(period) == 0L) {
+
+            newStartDate = year + "-01-01";
+            newEndDate = year + "-12-31";
+
+        } else {
+
+            ProcessingPeriod processingPeriod = periodService.getById(Long.valueOf(period));
+
+            newStartDate = String.valueOf(formatDate(processingPeriod.getStartDate()));
+            newEndDate = String.valueOf(formatDate(processingPeriod.getEndDate()));
+        }
         Date startDate, endDate;
-       // String newStartDate = year+"-01-01";
-        ProcessingPeriod processingPeriod = periodService.getById(Long.valueOf(period));
-        String newStartDate = year+"-01-01";
-        String newEndDate =   year+"-12-31";
-        String start = String.valueOf(formatDate(processingPeriod.getStartDate()));
-        String end = String.valueOf(formatDate(processingPeriod.getEndDate()));
 
-        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime((period == null)?newStartDate:start).toDate();
-        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime((period == null)?newEndDate:end).toDate();
-
+        startDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(newStartDate).toDate();
+        endDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(newEndDate).toDate();
         return repository.getTotalDistributionCompletenessReport(startDate, endDate, districtId);
     }
 
     public Integer getTotalDistributedFacilities(Long periodId, Long facilityId, String type) {
-        return repository.getTotalDistributedFacilities(periodId,facilityId,type);
+        return repository.getTotalDistributedFacilities(periodId, facilityId, type);
     }
 }
