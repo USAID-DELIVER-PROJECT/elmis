@@ -40,7 +40,12 @@ public class VaccineInventoryReportController extends BaseController {
                                                                       @RequestParam("district") Long districtId,
                                                                       @RequestParam("type") String type,
                                                                       @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                                      @Value("${search.page.size}") String limit) {
+/*
+                                                                      @Value("${search.page.size}") String limit,
+*/
+                                                                      @RequestParam(value = "limit", defaultValue="${search.page.size}") String limit
+
+                                                                      ) {
         String type2 = (type == null)?"ROUTINE":type;
 
         Pagination pagination = new Pagination(page, parseInt(limit));
