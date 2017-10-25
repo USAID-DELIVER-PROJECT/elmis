@@ -628,7 +628,7 @@
 <script type="text/ng-template" id="receiveDistributionNotification.html">
     <div class="modal-header modal-header">
         <button  class="close" ng-click="ok()">X</button>
-        <h2 ><i class="flaticon-bar"></i>Receive Vaccine Distribution Details</h2>
+        <h2 ><i class="flaticon-bar"></i>Pending Consignment:Please Receive</h2>
 
 
     </div>
@@ -641,25 +641,26 @@
             <thead>
             <tr>
 
-                <th
+                <!--<th
                         style="  width: 40px">
                     <span openlmis-message="label.facility"></span>
-                </th>
+                </th>-->
 
                 <th>
                     <span>Ordered Date</span>
 
                 </th>
-                <th style="width: 10px">
-                    <span>Status</span>
 
-                </th>
                 <th style=" text-align: center; vertical-align: middle">
                     <span>Issued Date</span>
 
                 </th>
                 <th style=" text-align: center; vertical-align: middle">
                     <span>Issued By</span>
+
+                </th>
+                <th style="width: 10px">
+                    <span>Status</span>
 
                 </th>
              <th style=" text-align: center; vertical-align: middle">
@@ -682,12 +683,14 @@
             </thead>
             <tbody>
             <tr ng-style="{'background-color': getBackGroundColor($index)}" ng-repeat="subRow in items">
+<!--
                 <td>{{subRow.toFacilityName }}</td>
+-->
                 <td ng-bind="subRow.orderDate"></td>
-                <td ng-bind="subRow.status"></td>
                 <td ng-bind="subRow.distributionDate| date:'dd-MMM-yyyy'"/>
                 <td ng-bind="subRow.modifiedBy"></td>
-               <td><a href="/public/pages/vaccine/inventory/index.html#/receive">Receive</a></td>
+                <td ng-bind="subRow.status"></td>
+                <td><a href="/public/pages/vaccine/inventory/index.html#/receive">Receive</a></td>
                 <!-- <td ng-bind="subRow.manufacturer"></td>
                 <td ng-bind="subRow.aefi_notes"></td>-->
             </tr>
@@ -705,7 +708,7 @@
 <script type="text/ng-template" id="minimumStockNotification.html">
     <div class="modal-header modal-header" style="background-color: red !important;border-color: red !important;">
         <button  class="close" ng-click="ok()">X</button>
-        <h2 ><i class="flaticon-bar"></i>Products Need to be Ordered Now</h2>
+        <h2 ><i class="flaticon-bar"></i>These Products have Extremely Low Stock:Please Order Now</h2>
 
 
     </div>
@@ -724,14 +727,14 @@
                 </th>
 
                 <th>
-                    <span>Remaining Quantity</span>
+                    <span>Stock On Hand (Doses)</span>
 
                 </th>
                 <th style="width: 10px">
                     <span>Last Updated</span>
 
                 </th>
-                <th style="">
+                <!--<th style="">
                     <span>Monthly Needs</span>
 
                 </th>
@@ -742,7 +745,7 @@
                 <th style="vertical-align: middle">
                     <span>Maximum Stock</span>
 
-                </th>
+                </th>-->
              <th style="">
                     <span>Action</span>
                 </th>
@@ -766,9 +769,9 @@
                 <td>{{subRow.primaryname}}</td>
                 <td ng-bind="subRow.totalquantityonhand" style="text-align: center; vertical-align: middle"></td>
                 <td ng-bind="subRow.effectivedate| date:'dd-MMM-yyyy'"/>
-                <td ng-bind="subRow.isavalue" style="text-align: center; vertical-align: middle"></td>
+              <!--  <td ng-bind="subRow.isavalue" style="text-align: center; vertical-align: middle"></td>
                 <td ng-bind="subRow.reorderlevel" style="text-align: center; vertical-align: middle"></td>
-                <td ng-bind="subRow.maximumstock" style="text-align: center; vertical-align: middle"></td>
+                <td ng-bind="subRow.maximumstock" style="text-align: center; vertical-align: middle"></td>-->
                <td><a href="/public/pages/vaccine/order-requisition/index.html#/initiate">Order Now</a></td>
                 <!-- <td ng-bind="subRow.manufacturer"></td>
                 <td ng-bind="subRow.aefi_notes"></td>-->
