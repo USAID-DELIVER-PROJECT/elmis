@@ -35,10 +35,10 @@
         </div>
         <div class="app-form">
             <form ng-submit="filterGrid()" name="filterForm" novalidate>
-                <div filter-container class="clearfix">
+                <div  class="clearfix">
 
                     <!--================================ filter start ====================-->
-
+                   <div filter-container>
                     <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
                                          faccility="false" pro="filter.program" user_geo_level="user_geo_level"
                                          zones="zones" val="filter.zone"></vaccine-zone-filter>
@@ -46,14 +46,18 @@
                     <year-filter class="form-cell horizontalFilters"></year-filter>
 
                     <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>
+                       </div>
 
                     <div class="horizontalFilters form-cell">
 
                         <div>
                             <label for="type" class="labels"><span>Distribution Type</span></label>
-                            <select id="type" ui-select2 class="input-medium" ng-model="filter.type"  ng-change="OnFilterChanged()" ng-selected="distributionTypes">
-                                <option ng-repeat="type in distributionTypes" ng-selected="filter.type == type" value="{{ type.name }}">{{type.name}}</option>
+                            <select style="width: 200px !important;" id =type ui-select2="{allowClear: true}" class="pull-left" ng-model="typeValue" ng-change="OnFilterChanged()">
+                                <option value="ROUTINE">ROUTINE</option>
+                                <option value="EMERGENCE">EMERGENCE</option>
                             </select>
+
+
                         </div>
                     </div>
 
@@ -126,12 +130,12 @@
                     </table>
                     <div class="clear-both"></div>
                     <br />
-                  <!--  <select ui-select2 class="pull-left" ng-model="pageSize" ng-change="OnFilterChanged()">
+                    <select ui-select2 class="pull-left" ng-model="pageSize" ng-change="OnFilterChanged()">
                         <option value="10">10 per page</option>
                         <option value="20">20 per page</option>
                         <option value="50">50 per page</option>
                         <option value="100">100 per page</option>
-                    </select>-->
+                    </select>
 
                     <pagination total-items="totalItems" page="currentPage" max-size="10"
                                 items-per-page="pagination.limit"

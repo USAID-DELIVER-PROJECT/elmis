@@ -23,10 +23,12 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
     });
     $scope.currentPage = 1;
     $scope.pageSize = 50;
+    $scope.typeValue = "ROUTINE";
 
-    //$scope.type ='ROUTINE';
+  //  $scope.type ='ROUTINE';
 
     $scope.distributionTypes = [{'name': 'ROUTINE', 'id': 1}, {'name': 'EMERGENCE', 'id': 2}];
+
 
     $scope.OnFilterChanged = function () {
 
@@ -40,10 +42,11 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                 year: $scope.getSanitizedParameter().year,
                 period: periodFilter,
                 range: $scope.range,
-                page: $scope.page,
+                page: $scope.page ,
                 district: utils.isEmpty($scope.getSanitizedParameter().zone) ? 0 : $scope.getSanitizedParameter().zone.id,
-                type: utils.isEmpty($scope.getSanitizedParameter().type) ? 'ROUTINE' : $scope.getSanitizedParameter().type,
-                product: 0
+                type: utils.isEmpty($scope.typeValue) ? 'ROUTINE' : $scope.typeValue,
+                product: 0,
+                limit:$scope.pageSize
             },
 
             function (data) {
@@ -61,6 +64,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                 $scope.pagination = data.pagination;
                 $scope.dataRows = arr;
                 $scope.totalItems = $scope.pagination.totalRecords;
+
                 /*
                  $scope.pageCount=
                  */
@@ -72,15 +76,6 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
     function percentage(num, per) {
         return (num / per);
     }
-
-    $scope.pageLineItems = function () {
-        $scope.pageCount = Math.ceil($scope.dataRows.length / $scope.pageSize);
-        if ($scope.dataRows.length > $scope.pageSize) {
-            $scope.dataRows = $scope.dataRows.slice($scope.pageSize * ($scope.currentPage - 1), $scope.pageSize * Number($scope.currentPage));
-        } else {
-            $scope.dataRows = $scope.dataRows;
-        }
-    };
 
 
     $scope.$watch('currentPage', function () {
