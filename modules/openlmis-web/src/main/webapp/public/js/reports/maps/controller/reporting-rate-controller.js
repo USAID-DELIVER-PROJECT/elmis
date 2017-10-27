@@ -11,73 +11,87 @@
  */
 function ReportingRateController($scope, leafletData) {
 
-  $scope.geojson = {};
+    $scope.geojson = {};
 
-  $scope.default_indicator = "period_over_expected";
+    $scope.default_indicator = "period_over_expected";
 
-  $scope.expectedFilter = function (item) {
-    return item.expected > 0;
-  };
-
-  $scope.style = function (feature) {
-    if ($scope.filter !== undefined && $scope.filter.indicator_type !== undefined) {
-      $scope.indicator_type = $scope.filter.indicator_type;
-    }
-    else {
-      $scope.indicator_type = $scope.default_indicator;
-    }
-    var color = ($scope.indicator_type === 'ever_over_total') ? interpolate(feature.ever, feature.total) : ($scope.indicator_type === 'ever_over_expected') ? interpolate(feature.ever, feature.expected) : interpolate(feature.period, feature.expected);
-
-    return {
-      fillColor: color,
-      weight: 1,
-      opacity: 1,
-      color: 'white',
-      dashArray: '1',
-      fillOpacity: 0.7
+    $scope.expectedFilter = function (item) {
+        return item.expected > 0;
     };
-  };
 
-  $scope.drawMap = function (json) {
+    $scope.style = function (feature) {
+        if ($scope.filter !== undefined && $scope.filter.indicator_type !== undefined) {
+            $scope.indicator_type = $scope.filter.indicator_type;
+        }
+        else {
+            $scope.indicator_type = $scope.default_indicator;
+        }
+        var color = ($scope.indicator_type === 'ever_over_total') ? interpolate(feature.ever, feature.total) : ($scope.indicator_type === 'ever_over_expected') ? interpolate(feature.ever, feature.expected) : interpolate(feature.period, feature.expected);
 
-    angular.extend($scope, {
-      geojson: {
-        data: json,
-        style: $scope.style,
-        onEachFeature: onEachFeature,
-        resetStyleOnMouseout: true
-      }
-    });
-    $scope.$apply();
-  };
+        return {
+            fillColor: color,
+            weight: 1,
+            opacity: 1,
+            color: 'white',
+            dashArray: '1',
+            fillOpacity: 0.7
+        };
+    };
 
-  $scope.OnFilterChanged = function () {
+    $scope.drawMap = function (json) {
 
-    $.getJSON('/gis/reporting-rate.json', $scope.filter, function (data) {
-      $scope.features = data.map;
+        angular.extend($scope, {
+            geojson: {
+                data: json,
+                style: $scope.style,
+                onEachFeature: onEachFeature,
+                resetStyleOnMouseout: true
+            }
+        });
+        $scope.$apply();
+    };
 
-      angular.forEach($scope.features, function (feature) {
-        feature.geometry_text = feature.geometry;
-        feature.geometry = JSON.parse(feature.geometry);
-        feature.type = "Feature";
-        feature.properties = {};
-        feature.properties.name = feature.name;
-        feature.properties.id = feature.id;
-      });
+    function getExportDataFunction(features) {
 
-      $scope.drawMap({
-        "type": "FeatureCollection",
-        "features": $scope.features
-      });
-      zoomAndCenterMap(leafletData, $scope);
-    });
+        var arr = [];
+        angular.forEach(features, function (value, key) {
+            if (value.expected > 0) {
+                var percentage = {'percentage': ((value.period / value.expected) * 100).toFixed(0) + ' %'};
+                arr.push(angular.extend(value, percentage));
+            }
+        });
+        $scope.exportData = arr;
+    }
 
-  };
 
-  initiateMap($scope);
+    $scope.OnFilterChanged = function () {
 
-  $scope.onDetailClicked = function(feature){
-    $scope.currentFeature = feature;
-    $scope.$broadcast('openDialogBox');
-  };
+        $.getJSON('/gis/reporting-rate.json', $scope.filter, function (data) {
+            $scope.features = data.map;
+            getExportDataFunction($scope.features);
+            angular.forEach($scope.features, function (feature) {
+                feature.geometry_text = feature.geometry;
+                feature.geometry = JSON.parse(feature.geometry);
+                feature.type = "Feature";
+                feature.properties = {};
+                feature.properties.name = feature.name;
+                feature.properties.id = feature.id;
+            });
+
+            $scope.drawMap({
+                "type": "FeatureCollection",
+                "features": $scope.features
+            });
+            zoomAndCenterMap(leafletData, $scope);
+        });
+
+
+    };
+
+    initiateMap($scope);
+
+    $scope.onDetailClicked = function (feature) {
+        $scope.currentFeature = feature;
+        $scope.$broadcast('openDialogBox');
+    };
 }
