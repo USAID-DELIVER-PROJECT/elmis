@@ -102,8 +102,8 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
         List<NonReportingFacilityDetail> nonReportingFacilityDetails = reportMapper.getNonReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
         Double nonReporting = Double.parseDouble(String.valueOf(nonReportingFacilityDetails.size()));
 
-        List<NonReportingFacilityDetail> reportingFacilities = reportMapper.getReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
-        nonReportingFacilityDetails.addAll(reportingFacilities);
+        //List<NonReportingFacilityDetail> reportingFacilities = reportMapper.getReportingFacilities(nonReportingFacilityParam, rowBounds, this.getUserId());
+        //nonReportingFacilityDetails.addAll(reportingFacilities);
 
         report.setDetails(nonReportingFacilityDetails);
 
@@ -116,6 +116,7 @@ public class NonReportingFacilityReportDataProvider extends ReportDataProvider {
 
         report.setKeyValueSummary(new HashedMap(){{
             put(PERIODS_FOR_CHART, reportMapper.getPeriodsTicksForChart(nonReportingFacilityParam));
+            put("chartData", reportMapper.getReportingStatusChartData(nonReportingFacilityParam, rowBounds, getUserId()));
         }});
 
 
