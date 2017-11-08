@@ -14,21 +14,33 @@ function OnTimeInFullReportController($scope, $filter, $window, OnTimeInFullRepo
 
     $scope.exportReport = function (type) {
         $scope.filter.pdformat = 1;
-        var params = jQuery.param($scope.getSanitizedParameter());
+        var params = jQuery.param($scope.onTimeInFullReportParams);
         var url = '/reports/download/vaccine_on_time_in_full_report/' + type + '?' + params;
         $window.open(url, "_BLANK");
     };
 
+    $scope.onTimeInFullReportParams ={};
+
     $scope.OnFilterChanged = function () {
+
+        if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEnddate) || !utils.isEmpty($scope.perioderror))
+            return;
+
+        $scope.onTimeInFullReportParams =  {
+
+            periodStart: $scope.periodStartDate,
+            periodEnd:   $scope.periodEnddate,
+            facilityLevel:$scope.getSanitizedParameter().facilityLevel,
+            productCategory:  $scope.getSanitizedParameter().productCategory,
+            max:100000
+
+        };
+
         // clear old data if there was any
         $scope.data = $scope.datarows = [];
-        $scope.filter.max = 10000;
+        //$scope.filter.max = 1000000;
 
-        $scope.filter.startDate = $filter('date')($scope.filter.startTime, "yyyy-MM-dd");
-
-        $scope.filter.endDate = $filter('date')($scope.filter.endTime, "yyyy-MM-dd");
-
-        OnTimeInFullReport.get($scope.getSanitizedParameter(), function (data) {
+        OnTimeInFullReport.get($scope.onTimeInFullReportParams, function (data) {
             console.log(data);
             if (data.pages !== undefined && data.pages.rows !== undefined) {
                 $scope.data = data.pages.rows;

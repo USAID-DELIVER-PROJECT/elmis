@@ -83,7 +83,6 @@ public class RequisitionRepositoryTest {
   @Mock
   private PatientQuantificationLineItemMapper patientQuantificationLineItemMapper;
 
-
   @InjectMocks
   private RequisitionRepository requisitionRepository;
 
@@ -96,6 +95,9 @@ public class RequisitionRepositoryTest {
 
   @Mock
   private SignatureMapper signatureMapper;
+
+  @Mock
+  private EquipmentLineItemMapper equipmentLineItemMapper;
 
   @Before
   public void setUp() throws Exception {

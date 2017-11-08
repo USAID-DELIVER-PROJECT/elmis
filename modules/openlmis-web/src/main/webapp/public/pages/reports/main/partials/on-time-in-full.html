@@ -67,18 +67,30 @@
                     <div class="app-form">
 
                         <form ng-submit="filterGrid()" name="filterForm" novalidate>
-                            <div filter-container class="clearfix">
+                            <div  class="clearfix">
+                                <div filter-container>
+                                <product-category-2-without-program-filter class="form-cell horizontalFilters"
+                                                         required="false"></product-category-2-without-program-filter>
 
-                                <product-category-without-program-filter class="form-cell horizontalFilters"
-                                                         required="false"></product-category-without-program-filter>
+                            <!--  <product-multi-without-description-and-program-filter class="form-cell horizontalFilters"
+                                                                    required="true"></product-multi-without-description-and-program-filter>-->
 
-                              <product-multi-without-description-and-program-filter class="form-cell horizontalFilters"
-                                                                    required="true"></product-multi-without-description-and-program-filter>
+                                <facility-level-without-program-for-stock-filter class="form-cell horizontalFilters"
+                                                       required="false"></facility-level-without-program-for-stock-filter>
+                                    </div>
+<!--
 
-                                <facility-level-without-program-filter class="form-cell horizontalFilters"
-                                                       required="false"></facility-level-without-program-filter>
+
+                                <year-filter class="form-cell horizontalFilters"></year-filter>
+-->
+
+<!--
+                                <period-change-year-Filter class="form-cell horizontalFilters"  required="false"></period-change-year-Filter>
+-->
+                                <static-year-month-for-stock-filter perioderror="perioderror" year="year" startdate="periodStartDate" enddate="periodEnddate" ></static-year-month-for-stock-filter>
 
 
+<!--
                                 <div class="form-cell horizontalFilters">
                                     <label for="startTime" class="labels">
                                         <span>Start Date</span>
@@ -112,7 +124,7 @@
                                                ng-disabled="!filter.startTime"/>
 
                                     </div>
-                                </div>
+                                </div>-->
 
                             </div>
                         </form>
@@ -163,9 +175,8 @@
                                     <td data-title="'Store Name '" style="width:30%" sortable="">
                                         <span>
 
-                                            {{ datarows[$index-1].storeName == datarows[$index].storeName ?'':row.storeName }}
-
-
+                                            {{row.storeName }}
+                                            
                                         </span>
                                     </td>
                                     <td class="number" data-title="'Product'" style="width:20% !important;"

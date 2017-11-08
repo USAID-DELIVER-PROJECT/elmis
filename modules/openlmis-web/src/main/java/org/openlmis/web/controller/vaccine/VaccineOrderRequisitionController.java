@@ -391,4 +391,17 @@ public class VaccineOrderRequisitionController extends BaseController {
         return response("receiveNotification", inventoryDistributionService.getReceiveNotification(facility.getId()));
     }
 
+ @RequestMapping(value = "receiveDistributionAlert", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getReceiveDistributionAlert(HttpServletRequest request
+    ) {
+        Facility facility = facilityService.getHomeFacility(loggedInUserId(request));
+        return response("receiveNotification", inventoryDistributionService.getReceiveDistributionAlert(facility.getId()));
+    }
+@RequestMapping(value = "getMinimumStock", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getMinimumStockNotification(HttpServletRequest request
+    ) {
+        Facility facility = facilityService.getHomeFacility(loggedInUserId(request));
+        return response("minimumStock", inventoryDistributionService.getMinimumStockNotification(loggedInUserId(request), facility.getId()));
+    }
+
 }

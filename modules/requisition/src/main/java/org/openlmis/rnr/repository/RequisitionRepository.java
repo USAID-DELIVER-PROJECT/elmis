@@ -22,6 +22,7 @@ import org.openlmis.rnr.repository.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,6 +68,8 @@ public class RequisitionRepository {
   @Autowired
   private SignatureMapper signatureMapper;
 
+  @Autowired
+  private ManualTestsLineItemMapper manualTestMapper;
 
   public void insert(Rnr requisition) {
     requisition.setStatus(INITIATED);
@@ -75,6 +78,7 @@ public class RequisitionRepository {
     insertLineItems(requisition, requisition.getNonFullSupplyLineItems());
     insertRegimenLineItems(requisition, requisition.getRegimenLineItems());
     insertEquipmentStatus(requisition, requisition.getEquipmentLineItems());
+    insertManualTestsLineItems(requisition, requisition.getManualTestLineItems());
   }
 
   public void insertPatientQuantificationLineItems(Rnr rnr) {
@@ -87,6 +91,10 @@ public class RequisitionRepository {
   }
 
   private void insertEquipmentStatus(Rnr requisition, List<EquipmentLineItem> equipmentLineItems) {
+
+    List<EquipmentLineItemBioChemistryTests> generatedNonFunctionalTestes =
+            equipmentLineItemMapper.getEmptyBioChemistryEquipmentTestWithProducts();
+
     for (EquipmentLineItem equipmentLineItem : equipmentLineItems) {
       EquipmentInventoryStatus status = getStatusFromEquipmentLineItem(equipmentLineItem);
       equipmentInventoryStatusMapper.insert(status);
@@ -95,7 +103,30 @@ public class RequisitionRepository {
       equipmentLineItem.setRnrId(requisition.getId());
       equipmentLineItem.setModifiedBy(requisition.getModifiedBy());
       equipmentLineItemMapper.insert(equipmentLineItem);
+
+      List<EquipmentLineItemBioChemistryTests> newNonFunctionalTestes;
+      newNonFunctionalTestes = generatedNonFunctionalTestes;
+
+      if(equipmentLineItem.getIsBioChemistryEquipment() != null && equipmentLineItem.getIsBioChemistryEquipment()) {
+          newNonFunctionalTestes.stream().forEach(test -> {
+              test.setEquipmentLineItemId(equipmentLineItem.getId().intValue());
+              test.setModifiedBy(requisition.getModifiedBy());
+              test.setCreatedBy(requisition.getModifiedBy());
+              test.setCreatedDate(requisition.getCreatedDate());
+              test.setModifiedDate(requisition.getModifiedDate());
+              equipmentLineItemMapper.insertEquipmentLineItemBioChemistryTests(test);
+          });
+      }
     }
+  }
+
+  private void insertManualTestsLineItems(Rnr requisition, List<ManualTestesLineItem> manualTestLineItems) {
+    manualTestLineItems.stream().forEach(item -> {
+          item.setRnrId(requisition.getId());
+          item.setModifiedBy(requisition.getModifiedBy());
+          item.setCreatedBy(requisition.getCreatedBy());
+          manualTestMapper.insertManualTestLineItem(item);
+    });
   }
 
   private EquipmentInventoryStatus getStatusFromEquipmentLineItem(EquipmentLineItem equipmentLineItem) {
@@ -129,12 +160,31 @@ public class RequisitionRepository {
     if (!(rnr.getStatus() == AUTHORIZED || rnr.getStatus() == IN_APPROVAL)) {
       updateRegimenLineItems(rnr);
       updateEquipmentLineItems(rnr);
+      updateManualTestsLineItems(rnr);
     }
+  }
+
+  private void updateManualTestsLineItems(Rnr rnr) {
+    if(rnr.getManualTestLineItems() == null) return;
+
+    rnr.getManualTestLineItems().stream().forEach(item ->{
+      item.setModifiedBy(rnr.getModifiedBy());
+      item.setModifiedDate(rnr.getModifiedDate());
+      manualTestMapper.updateManualTestLineItem(item);
+    });
   }
 
   private void updateEquipmentLineItems(Rnr rnr) {
     for(EquipmentLineItem item : rnr.getEquipmentLineItems()){
       equipmentLineItemMapper.update(item);
+
+      if(item.getBioChemistryTestes() != null) {
+        item.getBioChemistryTestes().stream().forEach(test -> {
+          test.setModifiedBy(item.getModifiedBy());
+          test.setModifiedDate(item.getModifiedDate());
+          equipmentLineItemMapper.updateEquipmentLineItemBioChemistryTests(test);
+        });
+      }
 
       EquipmentInventoryStatus status = getStatusFromEquipmentLineItem(item);
       equipmentInventoryStatusMapper.update(status);

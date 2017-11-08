@@ -287,9 +287,11 @@ public class CustomExcelTemplate extends AbstractView {
     for (ColumnModel col : columns) {
       if (col.getVisible() && !col.getPivotValue() && !col.getPivotColumn()) {
         Cell cell = row.createCell(index);
-        cell.setCellValue(m.get(col.getName()).toString());
-        if (NUMBER.equals(col.getFormatting())) {
-          cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+        if(m.get(col.getName()) != null) {
+          cell.setCellValue(m.get(col.getName()).toString());
+          if (NUMBER.equals(col.getFormatting())) {
+            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+          }
         }
         index++;
       }

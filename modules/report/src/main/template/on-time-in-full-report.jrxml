@@ -233,7 +233,7 @@
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField pattern="dd-MM-yyyy" isBlankWhenNull="true">
+			<textField pattern="" isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="42" y="0" width="88" height="20" uuid="c9bc60cb-abde-4dcf-a88e-06c431a49abc"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{region}]]></textFieldExpression>
@@ -260,7 +260,7 @@
 				<textFieldExpression><![CDATA[$F{inFullLessRange}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="130" y="0" width="91" height="20" uuid="b6dc2c35-3773-4414-901f-9e556aaa81d3"/>
+				<reportElement x="130" y="0" width="91" height="20" uuid="b6dc2c35-3773-4414-901f-9e556aaa81d3"/>
 				<textElement verticalAlignment="Middle">
 					<paragraph leftIndent="3"/>
 				</textElement>

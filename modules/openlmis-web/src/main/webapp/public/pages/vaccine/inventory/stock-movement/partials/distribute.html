@@ -126,9 +126,14 @@
                 <td rowspan="{{(c.lotsOnHand.length ===0)?1:c.lotsOnHand.length}}"
                     class="col-product cell-input last-row disabled">
                     <span class="cell-text" ng-bind="c.product.primaryName"></span>
+                    {{ stock.quantityRequested}}
+
                 </td>
+<!--
+                ng-init="c.lotsOnHand[0].hasExpired=lotHasExpired(c.lotsOnHand[0].lot.expirationDate)"
+-->
                 <td class="col-lot cell-input  disabled number" style="text-align: left;!important;"
-                    ng-init="c.lotsOnHand[0].hasExpired=lotHasExpired(c.lotsOnHand[0].lot.expirationDate)"
+
                     ng-class="{'last-row':c.lotsOnHand.length===1,'skip':c.lotsOnHand.length===0,'lot-expired':c.lotsOnHand[0].hasExpired} ">
                     <span class="cell-text" ng-bind="c.lotsOnHand[0].lot.lotCode"></span>
                     <span class="cell-text" ng-show="c.lotsOnHand[0].hasExpired">&nbsp;(Expired)</span>

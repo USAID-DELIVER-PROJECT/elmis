@@ -1,5 +1,6 @@
 package org.openlmis.vaccine.repository.inventory;
 
+import com.sun.javafx.collections.MappingChange;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
@@ -11,11 +12,13 @@ import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
 import org.openlmis.vaccine.dto.BatchExpirationNotificationDTO;
 import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
 import org.openlmis.vaccine.repository.mapper.inventory.VaccineInventoryDistributionMapper;
+import org.openlmis.vaccine.service.inventory.SdpNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @NoArgsConstructor
@@ -23,12 +26,15 @@ public class VaccineInventoryDistributionRepository {
 
     @Autowired
     VaccineInventoryDistributionMapper mapper;
+    @Autowired
+    private SdpNotificationService notificationService;
 
     public List<Facility> getOneLevelSupervisedFacilities(Long facilityId) {
         return mapper.getOneLevelSupervisedFacilities(facilityId);
     }
     public Integer saveDistribution(VaccineDistribution vaccineDistribution) {
-        return mapper.saveDistribution(vaccineDistribution);
+       return mapper.saveDistribution(vaccineDistribution);
+
     }
 
     public Integer updateDistribution(VaccineDistribution vaccineDistribution) {
@@ -148,5 +154,14 @@ public class VaccineInventoryDistributionRepository {
     }
     public List<VaccineDistribution>getReceiveNotification(Long facilityId){
         return mapper.getReeceiveNotiication(facilityId);
+    }
+
+    public List<VaccineDistributionAlertDTO>getReceiveDistributionAlert(Long facilityId){
+        return mapper.getReceiveDistributionAlert(facilityId);
+    }
+
+    public List<Map<String,Object>>getMinimumStockNotification(Long facilityId){
+        return mapper.getMinimumStockNotification(facilityId);
+
     }
 }

@@ -92,6 +92,11 @@
                     ng-options="f as f.name for f in supervisedFacilities">
                 <option value="" openlmis-message="placeholder.select.facility"></option>
             </select>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="alert alert-info" style="width: 80% !important;" ng-show="showInfo">
+                <strong>Info!</strong>
+                Click On Period to Choose the Month for Distribution
+            </span>
 
             <br/>
             <br/>
@@ -123,7 +128,16 @@
                         <tr>
                             <th colspan="2">
                                 <span openlmis-message="label.period" class="cell-text"></span>:
-                                <strong id='periodLabel' ng-bind="routineFacility.currentPeriod.name"> </strong><br/>&nbsp;
+
+                                <select style="width:200px" ui-select2  ng-model="selectedPeriod"
+                                        ng-change="onParamChanged()"
+                                        ng-options="f.id as f.name for f in routineFacility.currentPeriod"
+                                        ng-selected="selectedPeriod == option.id"
+                                        >
+                                    <option value="">Select Month</option>
+                                </select>
+
+                                <br/>&nbsp;
                             </th>
                         </tr>
                         <tr>
@@ -143,17 +157,17 @@
                                 <input ng-show="(routineFacility.status !== 'RECEIVED' && routineFacility.status === undefined && routineFacility.status !=='PENDING')"
                                        ng-click="showIssueModal(routineFacility,'ROUTINE')"
                                        type="submit" class="btn btn-primary" openlmis-message="button.add"
-                                       title="Add Products to distribute"
+                                       title="Add Products to distribute" ng-disabled="disableAddButton"
                                         >
                                 <input ng-show="routineFacility.status ==='RECEIVED'"
                                        ng-click="showIssueModal(routineFacility,'EMERGENCE')"
-                                       type="submit" class="btn btn-primary" openlmis-message="button.add">
+                                       type="submit" class="btn btn-primary" openlmis-message="button.add" ng-disabled="disableAddButton">
                                 <input
                                         ng-show="routineFacility.status === 'PENDING'"
                                         ng-click="showPODModal(routineFacility)"
                                         type="submit"
                                         class="btn btn-primary" value="POD" title="Proof of Delivery"
-                                        openlmis-message="button.vaccine.stock.pod">
+                                        openlmis-message="button.vaccine.stock.pod" ng-disabled="disableAddButton">
                             </td>
                         </tr>
                         </tbody>
@@ -392,7 +406,7 @@
                                class="receivingDate"
                                name="issueDate"
                                type="text"
-                               ui-date="{dateFormat: 'dd/mm/yy', changeYear: false, maxDate:'today'}"
+                               ui-date="dateOptions"
                                ng-model="facilityToIssue.issueDate"
                                ui-date-format="yy-mm-dd"/>
                     </div>

@@ -2,6 +2,7 @@ package org.openlmis.restapi.controller;
 
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.restapi.domain.ProgramWithProducts;
 import org.openlmis.restapi.response.RestResponse;
 import org.openlmis.restapi.service.RestProgramsService;
@@ -22,6 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @NoArgsConstructor
 public class RestProgramsController extends BaseController {
 
+    public static final String PERIODS = "periods";
     @Autowired
     private RestProgramsService programService;
 
@@ -33,5 +35,11 @@ public class RestProgramsController extends BaseController {
         } catch (DataException e) {
             return error(e.getOpenLmisMessage(), BAD_REQUEST);
         }
+    }
+
+    @RequestMapping(value = "/rest-api/program-periods", method = GET, headers = org.openlmis.core.web.controller.BaseController.ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getPeriodsByProgram(@RequestParam(value = "program", required = true, defaultValue = "0") String program) {
+        return OpenLmisResponse.response(PERIODS,
+                programService.getProgramPeriodsByCode(program));
     }
 }

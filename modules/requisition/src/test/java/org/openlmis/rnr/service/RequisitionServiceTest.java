@@ -35,6 +35,7 @@ import org.openlmis.db.repository.mapper.DbMapper;
 import org.openlmis.rnr.builder.RequisitionBuilder;
 import org.openlmis.rnr.domain.*;
 import org.openlmis.rnr.repository.RequisitionRepository;
+import org.openlmis.rnr.repository.mapper.ManualTestsLineItemMapper;
 import org.openlmis.rnr.search.criteria.RequisitionSearchCriteria;
 import org.openlmis.rnr.search.factory.RequisitionSearchStrategyFactory;
 import org.openlmis.rnr.search.strategy.RequisitionSearchStrategy;
@@ -142,6 +143,9 @@ public class RequisitionServiceTest {
   private RequisitionSearchStrategyFactory requisitionSearchStrategyFactory;
   @InjectMocks
   private RequisitionService requisitionService;
+
+  @Mock
+  private ManualTestsLineItemMapper manualTestMapper;
 
   @Before
   public void setup() {

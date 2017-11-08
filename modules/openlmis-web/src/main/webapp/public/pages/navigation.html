@@ -86,6 +86,16 @@
                href="/public/pages/logistics/distribution/index.html#/manage"
                openlmis-message="link.distributions"></a>
           </li>
+            <li>
+                <a href="/public/pages/vaccine/stock-on-hand/index.html#/initiate"
+                   openlmis-message="link.stock.on.hand"></a>
+
+            </li>
+            <li ng-show="hasPermission('VIEW_STOCK_SUMMARY')">
+                <a href="/public/pages/vaccine/stock-summary/index.html#/initiate"
+                   >Stock Status</a>
+
+            </li>
           <li class="beak"></li>
             <li ng-show="hasPermission('MANAGE_VACCINE_PRODUCTS_CONFIGURATION')">
                 <a href="/public/pages/vaccine/inventory/index.html#/configuration"
@@ -364,6 +374,10 @@
                   <li ng-show="hasPermission('MANAGE_ELMIS_INTERFACE')">
                       <a href="/public/pages/admin/interfaces/index.html"
                          openlmis-message="link.admin.elmis.interface"></a>
+                  </li>
+                  <li ng-show="hasPermission('MANAGE_MANUAL_TEST_TYPES')">
+                      <a href="/public/pages/admin/manual-test-types/index.html"
+                         openlmis-message="link.admin.manage.manual.tests"></a>
                   </li>
                 <li class="beak"></li>
               </ul>

@@ -25,53 +25,39 @@
         <div class="box-header">
             <h2 openlmis-message="report.title.vaccine.distribution.completeness"><i class="icon-edit"></i><span
                     class="break"></span></h2>
+            <div class="box-icon pull-right">
+                <a class="btn btn-primary" export export-data="dataRows"
+                   export-keys="['region_name','district_name','period','expected','issued','notissued','percentage','percentageNotIssued']" export-headers="['Region','District','Period','Expected','Issued','Not Issued','Percentage Issued','Percentage Not Issued']"
 
-            <div class="box-icon">
-
+                        >Export Excel</a>
             </div>
+            <div class="clearfix"></div>
         </div>
         <div class="app-form">
             <form ng-submit="filterGrid()" name="filterForm" novalidate>
-                <div class="clearfix">
+                <div  class="clearfix">
 
                     <!--================================ filter start ====================-->
-
+                   <div filter-container>
                     <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
                                          faccility="false" pro="filter.program" user_geo_level="user_geo_level"
                                          zones="zones" val="filter.zone"></vaccine-zone-filter>
-                    <!--<static-period-filter range="range" startdate="periodStartDate" enddate="periodEnddate" formateddate="my" rangemax="365" error="perioderror"></static-period-filter>-->
-                    <div class="horizontalFilters form-cell">
-                        <label for="start" class="labels"><span openlmis-message="label.start.date"></span></label>
 
-                        <div>
-                            <input id="start"
-                                   ng-model="periodStartDate"
-                                   ui-date-format="yy-mm-dd"
-                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
-                                   ng-change="OnFilterChanged()"
-                                    />
-                        </div>
-                    </div>
+                    <year-filter class="form-cell horizontalFilters"></year-filter>
+
+                    <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>
+                       </div>
 
                     <div class="horizontalFilters form-cell">
-                        <label for="end" class="labels"><span openlmis-message="label.end.date"></span></label>
 
                         <div>
-                            <input id="end"
-                                   ng-model="periodEndDate"
-                                   ui-date-format="yy-mm-dd"
-                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
-                                   ng-change="OnFilterChanged()"
-                                    />
-                        </div>
-                    </div>
-                    <div class="horizontalFilters form-cell">
-                        <label for="start" class="labels"><span>Distribution Type</span></label>
-
-                        <div>
-                            <select id="type" ui-select2 class="input-medium" ng-model="filter.type"  ng-change="OnFilterChanged()" ng-selected="ROUTINE">
-                                <option ng-repeat="type in distributionTypes" ng-selected="filter.type == type" value="{{ type.name }}">{{type.name}}</option>
+                            <label for="type" class="labels"><span>Distribution Type</span></label>
+                            <select style="width: 200px !important;" id =type ui-select2="{allowClear: true}" class="pull-left" ng-model="typeValue" ng-change="OnFilterChanged()">
+                                <option value="ROUTINE">ROUTINE</option>
+                                <option value="EMERGENCE">EMERGENCE</option>
                             </select>
+
+
                         </div>
                     </div>
 
@@ -142,10 +128,25 @@
 
                         </tbody>
                     </table>
+                    <div class="clear-both"></div>
+                    <br />
+                    <select ui-select2 class="pull-left" ng-model="pageSize" ng-change="OnFilterChanged()">
+                        <option value="10">10 per page</option>
+                        <option value="20">20 per page</option>
+                        <option value="50">50 per page</option>
+                        <option value="100">100 per page</option>
+                    </select>
 
-                    <pagination total-items="totalItems" page="currentPage" max-size="5"
+                    <pagination total-items="totalItems" page="currentPage" max-size="10"
                                 items-per-page="pagination.limit"
                                 direction-links="false" class="pagination-sm"></pagination>
+
+<!--
+                    <openlmis-pagination num-pages="pageCount" current-page="currentPage" max-size="10"></openlmis-pagination>
+-->
+
+                    <br />
+                    <div class="clear-top"></div>
 
                 </div>
             </div>

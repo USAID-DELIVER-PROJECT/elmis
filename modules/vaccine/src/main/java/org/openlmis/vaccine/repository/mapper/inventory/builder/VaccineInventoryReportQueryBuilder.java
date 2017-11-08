@@ -75,7 +75,8 @@ public class VaccineInventoryReportQueryBuilder {
 
         //last Query
 
-        sql= "select vd.region_name, vd.district_name,f.id facilityId, f.name facilityname,pp.id periodId,pp.name period,\n" +
+        sql= "  WITH Q as( " +
+                "select vd.region_name, vd.district_name,f.id facilityId, f.name facilityname,pp.id periodId,pp.name period,\n" +
                 "(Select count(facilityid) from requisition_group_members where requisitiongroupid=rg.id) as expected,\n" +
                 "(SELECT COUNT(*) FROM (SELECT DISTINCT tofacilityid FROM vaccine_distributions where fromfacilityid=f.id and periodid=pp.id" +
                 "  and distributionDate >='" +startDate+ "' and distributionDate::DATE <= '"+endDate+ "'"+
@@ -92,7 +93,8 @@ public class VaccineInventoryReportQueryBuilder {
                 "join facility_types ft on ft.id=f.typeid\n" +
                 "left join vw_districts vd on vd.district_id=f.geographiczoneid\n" +
                 "where ft.code='dvs' and pp.startdate::DATE >='" + startDate + "' and pp.enddate::DATE <='" + endDate + "' " + writeDistrictPredicate(zone) + " \n" +
-                " order by vd.region_name,vd.district_name, pp.id";
+                " order by vd.region_name,vd.district_name, pp.id " +
+                ") SELECT q.*,(expected-issued) notIssued, ( issued / Max(expected) OVER() ) * 100 as percentageIssued FROM Q";
 
         return sql;
 
@@ -112,7 +114,7 @@ public class VaccineInventoryReportQueryBuilder {
                 "join facilities f on f.id=sn.facilityid\n" +
                 "join facility_types ft on ft.id=f.typeid\n" +
                 "left join vw_districts vd on vd.district_id=f.geographiczoneid\n" +
-                "where ft.code='rvs' and pp.startdate::DATE >='" + startDate + "' and pp.enddate::DATE <='" + endDate + "' " + writeDistrictPredicate(zone) + " \n";
+                "where ft.code='dvs' and pp.startdate::DATE >='" + startDate + "' and pp.enddate::DATE <='" + endDate + "' " + writeDistrictPredicate(zone) + " \n";
 
         return sql;
 

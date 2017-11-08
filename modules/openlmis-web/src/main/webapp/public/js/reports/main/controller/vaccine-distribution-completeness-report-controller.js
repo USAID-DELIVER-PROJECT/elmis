@@ -1,136 +1,146 @@
-
-
 function VaccineDistributionCompletenessReportController($scope, $routeParams, VaccineDistributionCompletenessReport, Settings,
-                                                    ReportProductsByProgram, TreeGeographicZoneList,
-                                                    messageService,VaccineDistributedFacilitiesReport,
-                                                    VaccineHomeFacilityIvdPrograms,FacilityTypeAndProgramProducts,
-                                                    UserFacilityList
-                                                   ) {
+                                                         ReportProductsByProgram, TreeGeographicZoneList,
+                                                         messageService, VaccineDistributedFacilitiesReport,
+                                                         VaccineHomeFacilityIvdPrograms, FacilityTypeAndProgramProducts,
+                                                         UserFacilityList) {
 
     $scope.perioderror = "";
 
-   VaccineHomeFacilityIvdPrograms.get({},function(p){
-       var programId=p.programs[0].id;
-       UserFacilityList.get({},function(f){
-         var facilityId=f.facilityList[0].id;
-         FacilityTypeAndProgramProducts.get({facilityId:facilityId,programId:programId},function(data){
-                 var facilityProduct=data.facilityProduct;
+    VaccineHomeFacilityIvdPrograms.get({}, function (p) {
+        var programId = p.programs[0].id;
+        UserFacilityList.get({}, function (f) {
+            var facilityId = f.facilityList[0].id;
+            FacilityTypeAndProgramProducts.get({facilityId: facilityId, programId: programId}, function (data) {
+                var facilityProduct = data.facilityProduct;
 
-                 $scope.facilityProduct=facilityProduct.sort(function(a,b){
-                      return (a.programProduct.product.id > b.programProduct.product.id) ? 1 : ((b.programProduct.product.id > a.programProduct.product.id) ? -1 : 0);
-                  });
-          });
-       });
+                $scope.facilityProduct = facilityProduct.sort(function (a, b) {
+                    return (a.programProduct.product.id > b.programProduct.product.id) ? 1 : ((b.programProduct.product.id > a.programProduct.product.id) ? -1 : 0);
+                });
+            });
+        });
 
 
-   });
+    });
+    $scope.currentPage = 1;
+    $scope.pageSize = 50;
+    $scope.typeValue = "ROUTINE";
 
-    $scope.distributionTypes = [{'name':'EMERGENCE','id':1},{'name':'ROUTINE','id':2}];
+  //  $scope.type ='ROUTINE';
+
+    $scope.distributionTypes = [{'name': 'ROUTINE', 'id': 1}, {'name': 'EMERGENCE', 'id': 2}];
+
 
     $scope.OnFilterChanged = function () {
-        console.log($scope.filter.type);
-        // prevent first time loading
-        if (utils.isEmpty($scope.periodStartDate) || utils.isEmpty($scope.periodEndDate) || !utils.isEmpty($scope.perioderror))
-            return;
 
-        var par = {    periodStart: $scope.periodStartDate,
-            periodEnd:   $scope.periodEndDate,
-            range:       $scope.range,
-            page:        $scope.page,
-            district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
-            type:    utils.isEmpty($scope.filter.type) ? 0 : $scope.filter.type,
-            product:     0
-        };
-        console.log(par);
+        if (utils.isEmpty($scope.getSanitizedParameter().year))
+            return;
+        var periodFilter = ($scope.getSanitizedParameter().period === null || isUndefined($scope.getSanitizedParameter().period) || utils.isEmpty($scope.getSanitizedParameter().period)) ? 0 : $scope.getSanitizedParameter().period;
 
         VaccineDistributionCompletenessReport.get(
             {
 
-                periodStart: $scope.periodStartDate,
-                periodEnd:   $scope.periodEndDate,
-                range:       $scope.range,
-                page:        $scope.page,
-                district:    utils.isEmpty($scope.filter.zone) ? 0 : $scope.filter.zone.id,
-                type:    utils.isEmpty($scope.filter.type) ? 0 : $scope.filter.type,
-                product:     0
+                year: $scope.getSanitizedParameter().year,
+                period: periodFilter,
+                range: $scope.range,
+                page: $scope.page ,
+                district: utils.isEmpty($scope.getSanitizedParameter().zone) ? 0 : $scope.getSanitizedParameter().zone.id,
+                type: utils.isEmpty($scope.typeValue) ? 'ROUTINE' : $scope.typeValue,
+                product: 0,
+                limit:$scope.pageSize
             },
 
             function (data) {
-                $scope.dataRows=data.distributionCompleteness;
-                console.log($scope.dataRows);
+                $scope.dataR = [];
+                $scope.dataR = data.distributionCompleteness;
+                // console.log(JSON.stringify($scope.dataRows));
+                var d = $scope.dataR;
+                var arr = [];
+                angular.forEach(d, function (value, key) {
+                    var ed = {'percentage': (percentage(value.issued, value.expected) * 100).toFixed(0)};
+                    var ed2 = {'percentageNotIssued': 100 - (percentage(value.issued, value.expected) * 100).toFixed(0)};
+                    arr.push(angular.extend(value, ed, ed2));
+                });
 
                 $scope.pagination = data.pagination;
-                console.log(data.pagination);
-
+                $scope.dataRows = arr;
                 $scope.totalItems = $scope.pagination.totalRecords;
+
+                /*
+                 $scope.pageCount=
+                 */
                 $scope.currentPage = $scope.pagination.page;
 
 
             });
     };
+    function percentage(num, per) {
+        return (num / per);
+    }
+
 
     $scope.$watch('currentPage', function () {
-         if ($scope.currentPage > 0) {
-               $scope.page = $scope.currentPage;
-                $scope.OnFilterChanged();
-         }
+        if ($scope.currentPage > 0) {
+            $scope.page = $scope.currentPage;
+            $scope.OnFilterChanged();
+        }
     });
 
-    $scope.loadDistributedFacilities=function(){
-        VaccineDistributedFacilitiesReport.get({periodId: $scope.query.periodid,
-                                                      facilityId: $scope.query.facilityid,
-                                                      type:$scope.filter.type,
-                                                      page:$scope.dPage},
-                                                      function(data){
+    $scope.loadDistributedFacilities = function () {
+        VaccineDistributedFacilitiesReport.get({
+                periodId: $scope.query.periodid,
+                facilityId: $scope.query.facilityid,
+                type: $scope.filter.type,
+                page: $scope.dPage
+            },
+            function (data) {
 
-                                                        var distributedFacilities=data.distributedFacilities;
-                                                          console.log(data.pagination);
-                                                        $scope.dPagination = data.pagination;
+                var distributedFacilities = data.distributedFacilities;
+                console.log(data.pagination);
+                $scope.dPagination = data.pagination;
 
-                                                        $scope.dTotalItems = $scope.dPagination.totalRecords;
-                                                        $scope.dCurrentPage = $scope.dPagination.page;
+                $scope.dTotalItems = $scope.dPagination.totalRecords;
+                $scope.dCurrentPage = $scope.dPagination.page;
 
-                                                        var byFacility=_.groupBy(distributedFacilities,function(f){
-                                                            return f.tofacility;
-                                                        });
-                                                        $scope.distributedFacilities=$.map(byFacility,function(value, index){
-                                                           return [{"facilityName":index,"products":value}];
-                                                        });
+                var byFacility = _.groupBy(distributedFacilities, function (f) {
+                    return f.tofacility;
+                });
+                $scope.distributedFacilities = $.map(byFacility, function (value, index) {
+                    return [{"facilityName": index, "products": value}];
+                });
 
-                                                          console.log($scope.distributedFacilities);
+                console.log($scope.distributedFacilities);
 
-                                                      });
+            });
 
     };
 
-    $scope.getProductQuantity=function(facilityName,productName){
-        var f=_.findWhere($scope.distributedFacilities,{facilityName:facilityName});
-        if(f !== undefined)
-        p =_.findWhere(f.products,{product:productName});
-        if(p !== undefined)
-        return p.quantity;
+    $scope.getProductQuantity = function (facilityName, productName) {
+        var f = _.findWhere($scope.distributedFacilities, {facilityName: facilityName});
+        if (f !== undefined)
+            p = _.findWhere(f.products, {product: productName});
+        if (p !== undefined)
+            return p.quantity;
         else
-        return null;
+            return null;
     };
-   $scope.showDistributionModal=function(row){
-      $scope.distributionModal=true;
-      $scope.query=row;
-       console.log('Modal Data');
-       console.log(row);
-       console.log($scope.filter.type);
-       $scope.loadDistributedFacilities();
+    $scope.showDistributionModal = function (row) {
+        $scope.distributionModal = true;
+        $scope.query = row;
+        console.log('Modal Data');
+        console.log(row);
+        console.log($scope.filter.type);
+        $scope.loadDistributedFacilities();
 
-   };
-   $scope.$watch('dCurrentPage', function () {
-            if ($scope.dCurrentPage > 0) {
-                  $scope.dPage = $scope.dCurrentPage;
-                   $scope.loadDistributedFacilities();
-            }
-   });
-   $scope.closeDistributionModal=function(){
-       $scope.distributionModal=false;
-   };
-
+    };
+    $scope.$watch('dCurrentPage', function () {
+        if ($scope.dCurrentPage > 0) {
+            $scope.dPage = $scope.dCurrentPage;
+            $scope.loadDistributedFacilities();
+        }
+    });
+    $scope.closeDistributionModal = function () {
+        $scope.distributionModal = false;
+    };
 
 
 }

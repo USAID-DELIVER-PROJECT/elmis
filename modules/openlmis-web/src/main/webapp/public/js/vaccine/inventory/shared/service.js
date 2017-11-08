@@ -86,13 +86,16 @@ return {
 });
 
 services.factory('FacilityWithProducts', function($resource,$timeout,$q,StockCards,FacilityDistributionForecastAndLastPeriod,QuantityRequired){
-     function get(program,facility, homeFacilityId) {
+     function get(program,facility, homeFacilityId,selectedPeriod) {
          var deferred =$q.defer();
                      $timeout(function(){
                          if(program !== null){
                                 StockCards.get({facilityId:homeFacilityId},function(s){
                                     FacilityDistributionForecastAndLastPeriod.get({facilityId:facility.id,programId:program.id},function(distributionForecastAndPeriod){
-                                        QuantityRequired.get({facilityCode:facility.code,programCode:program.code,periodId:distributionForecastAndPeriod.lastPeriod[0].id},function(report){
+                                        //distributionForecastAndPeriod.lastPeriod[0].id,
+
+                                        var param = (selectedPeriod === undefined)?distributionForecastAndPeriod.lastPeriod[0].id:selectedPeriod;
+                                        QuantityRequired.get({facilityCode:facility.code,programCode:program.code,periodId:param},function(report){
                                              var facilityWithProducts=new FacilitiesWithProducts(facility,s.stockCards,distributionForecastAndPeriod,report);
                                              deferred.resolve(facilityWithProducts);
                                         });
@@ -337,6 +340,8 @@ services.factory('StockCardsForProgramByCategory', function ($resource,StockCard
                         periodId: periodId,
                         facilityId: toFacilityId
                     }, function (data) {
+
+                        console.log(toFacilityId);
                         if(!isUndefined(data.requisitionList) || data.requisitionList !== null){
 
                             quantityRequested = data.requisitionList;
@@ -383,6 +388,7 @@ services.factory('StockCardsForProgramByCategory', function ($resource,StockCard
                                             s.productCategory = product[0].productCategory;
                                             s.presentation = product[0].product.dosesPerDispensingUnit;
                                             s.quantityRequested = quantityToRequest[0].quantityRequested;
+                                            console.log(s.quantityRequested);
 
                                         }
                                     }

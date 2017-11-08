@@ -6,6 +6,8 @@ import org.openlmis.core.repository.ProcessingPeriodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @NoArgsConstructor
 public class ProcessingPeriodService {
@@ -17,4 +19,7 @@ public class ProcessingPeriodService {
     return repository.getById(id);
   }
 
+    public List<ProcessingPeriod> getPeriodsByProgramCode(String code) {
+      return repository.getPeriodsByProgramCode(code);
+    }
 }

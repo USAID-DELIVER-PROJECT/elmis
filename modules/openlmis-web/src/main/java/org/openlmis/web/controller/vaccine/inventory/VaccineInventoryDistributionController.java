@@ -12,6 +12,7 @@
 package org.openlmis.web.controller.vaccine.inventory;
 
 
+import lombok.NoArgsConstructor;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import org.apache.ibatis.annotations.Param;
@@ -57,6 +58,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
+@NoArgsConstructor
 @RequestMapping(value = "/vaccine/inventory/distribution")
 public class VaccineInventoryDistributionController extends BaseController {
     private static final String PROGRAMS = "programs";
@@ -104,7 +106,7 @@ public class VaccineInventoryDistributionController extends BaseController {
     public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineDistribution distribution, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
         Long distributionId = service.save(distribution,userId);
-        sdpNotificationService.updateNotification(distributionId);
+       // sdpNotificationService.updateNotification(distributionId);
         return OpenLmisResponse.response("distributionId", distributionId);
     }
 
@@ -175,6 +177,7 @@ public class VaccineInventoryDistributionController extends BaseController {
                                                               HttpServletRequest request) {
         ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(DISTRIBUTION, service.getDistributionForFacilityByPeriod(facilityId, programId));
         response.getBody().addData(LAST_PERIOD, service.getLastPeriod(facilityId, programId));
+        response.getBody().addData("lasPeriodAllData",service.getALlBelowPeriod(facilityId,programId));
         response.getBody().addData(CURRENT_PERIOD, service.getCurrentPeriod(facilityId, programId));
         response.getBody().addData(FORECAST, requirementsService.getStockRequirements(facilityId, programId));
         response.getBody().addData(PROGRAM_PRODUCT_LIST, programProductService.getByProgram(new Program(programId)));
@@ -341,5 +344,52 @@ public class VaccineInventoryDistributionController extends BaseController {
         }
     }
 
+
+    @RequestMapping(value = "stock-on-hand/print/{facilityId}", method = GET, headers = ACCEPT_JSON)
+    public ModelAndView printStockOnHand(@PathVariable Long facilityId,HttpServletRequest request) throws JRException, IOException, ClassNotFoundException {
+       Long facility = null;
+        Facility facility1 = facilityService.getHomeFacility(loggedInUserId(request));
+
+        Facility f = facilityService.getById(facilityId);
+
+        if (f != null) {
+            facility = facilityId;
+        } else {
+            facility = facility1.getId();
+        }
+
+        Template orPrintTemplate = templateService.getByName("stock_on_hand_repo");
+        JasperReportsMultiFormatView jasperView = jasperReportsViewFactory.getJasperReportsView(orPrintTemplate);
+        Map<String, Object> map = new HashMap<>();
+        map.put("format", "pdf");
+        Locale currentLocale = messageService.getCurrentLocale();
+        map.put(JRParameter.REPORT_LOCALE, currentLocale);
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", currentLocale);
+        map.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+        Resource reportResource = new ClassPathResource("report");
+        Resource imgResource = new ClassPathResource("images");
+        ConfigurationSetting configuration = settingService.getByKey(Constants.OPERATOR_NAME);
+        map.put(Constants.OPERATOR_NAME, configuration.getValue());
+
+        String separator = System.getProperty("file.separator");
+        map.put("image_dir", imgResource.getFile().getAbsolutePath() + separator);
+        map.put("facilityId", f.getId().intValue());
+        map.put("facilityName",f.getName());
+
+        return new ModelAndView(jasperView, map);
+    }
+
+    @RequestMapping(value = "distribution/{distributionId}", method = GET)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    public ResponseEntity<OpenLmisResponse> getDistributionByDistributionId(@PathVariable Long distributionId,
+                                                                          HttpServletRequest request) {
+        if (null == distributionId) {
+            return OpenLmisResponse.error(messageService.message("error.facility.unknown"), HttpStatus.BAD_REQUEST);
+        } else {
+            ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response(DISTRIBUTION, service.getDistributionById(distributionId));
+           // response.getBody().addData(SUPERVISOR_ID, service.getSupervisorFacilityId(distributionId));
+            return response;
+        }
+    }
 
 }

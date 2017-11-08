@@ -9,209 +9,273 @@
  */
 
 
-function FacilityDistributionController($scope,$location,FacilitiesSameType, $document,$window,configurations,$timeout,homeFacility,OneLevelSupervisedFacilities,FacilityWithProducts,DistributionsByDateRange,searchDistributionsByDateRange,StockCards,StockCardsByCategory,StockEvent,SaveDistribution,localStorageService,$anchorScroll) {
+function FacilityDistributionController($scope, Period, $location, FacilitiesSameType, $document, $window, configurations, $timeout, homeFacility, OneLevelSupervisedFacilities, FacilityWithProducts, DistributionsByDateRange, searchDistributionsByDateRange, StockCards, StockCardsByCategory, StockEvent, SaveDistribution, localStorageService, $anchorScroll) {
 
-    $scope.userPrograms=configurations.programs;
-    $scope.period=configurations.period;
-    $scope.homeFacility=homeFacility;
-    $scope.facilityDisplayName=homeFacility.name;
-    $scope.toIssue=[];
-    $scope.distributionType='ROUTINE';
-    $scope.UnScheduledFacility=undefined;
-    $scope.toDay=new Date();
-    $scope.maxModalBodyHeight='max-height:'+parseInt($document.height() * 0.35,10)+'px !important;height:'+parseInt($document.height() * 0.35,10)+'px !important';
-    $scope.loadSupervisedFacilities=function(programId){
-        OneLevelSupervisedFacilities.get({programId:programId},function(data){
-            $scope.supervisedFacilities=data.facilities;
+    $scope.userPrograms = configurations.programs;
+    $scope.period = configurations.period;
+    $scope.homeFacility = homeFacility;
+    $scope.facilityDisplayName = homeFacility.name;
+    $scope.toIssue = [];
+    $scope.distributionType = 'ROUTINE';
+    $scope.UnScheduledFacility = undefined;
+    $scope.toDay = new Date();
+    $scope.maxModalBodyHeight = 'max-height:' + parseInt($document.height() * 0.35, 10) + 'px !important;height:' + parseInt($document.height() * 0.35, 10) + 'px !important';
+    $scope.loadSupervisedFacilities = function (programId) {
+        OneLevelSupervisedFacilities.get({programId: programId}, function (data) {
+            $scope.supervisedFacilities = data.facilities;
         });
     };
+    $scope.disableAddButton = true;
 
-    $scope.loadFacilityDistributionData=function(){
-        $scope.routineFacility=undefined;
-        $scope.message=false;
-        $scope.podMessage=false;
-        if($scope.selectedRoutineFacility !== null)
-            FacilityWithProducts.get($scope.selectedProgram,$scope.selectedRoutineFacility,$scope.homeFacility.id).then(function(data){
-                $scope.routineFacility=data;
+    $scope.onParamChanged = function () {
+
+        if ($scope.selectedPeriod === null) {
+            $scope.disableAddButton = true;
+        }
+
+        if ($scope.selectedPeriod !== null) {
+
+            Period.get({id: parseInt($scope.selectedPeriod, 10)}, function (data) {
+
+                $scope.startDate = data.period.startDate;
+                $scope.endDate = data.period.endDate;
+
+                $scope.dateOptions = {
+                    dateFormat: 'dd/mm/yy',
+                    changeYear: false,
+                    minDate: new Date($scope.startDate),
+                    maxDate: new Date($scope.endDate)
+                };
+
+            });
+
+
+        }
+
+        var param = ($scope.selectedPeriod !== null) ? $scope.selectedPeriod : undefined;
+
+        if ($scope.selectedPeriod !== null) {
+
+            $scope.routineFacility = undefined;
+            $scope.message = false;
+            $scope.podMessage = false;
+            //$scope.selectedPeriod=undefined;
+            $scope.disableAddButton = false;
+
+            if ($scope.selectedRoutineFacility !== null)
+                FacilityWithProducts.get($scope.selectedProgram, $scope.selectedRoutineFacility, $scope.homeFacility.id, param).then(function (data) {
+                    $scope.routineFacility = data;
+                });
+        }
+
+
+    };
+    var showInfo=function() {
+
+        $timeout(function () {
+            $scope.showInfo = false;
+        }, 6000);
+    };
+
+    $scope.loadFacilityDistributionData = function () {
+
+        $scope.routineFacility = undefined;
+        $scope.message = false;
+        $scope.podMessage = false;
+        $scope.selectedPeriod = undefined;
+        $scope.disableAddButton = true;
+        $scope.showInfo = true;
+        showInfo();
+        if ($scope.selectedRoutineFacility !== null)
+            FacilityWithProducts.get($scope.selectedProgram, $scope.selectedRoutineFacility, $scope.homeFacility.id, undefined).then(function (data) {
+                $scope.routineFacility = data;
             });
     };
 
-    $scope.loadStockCards=function(){
-        StockCards.get({facilityId:$scope.homeFacility.id},function(data){
-            $scope.stockCards=data.stockCards;
+    $scope.loadStockCards = function () {
+        StockCards.get({facilityId: $scope.homeFacility.id}, function (data) {
+            $scope.stockCards = data.stockCards;
         });
     };
-    $scope.loadDistributionsByDate=function(){
+    $scope.loadDistributionsByDate = function () {
 
-        $scope.distributionsByDate=[];
-        DistributionsByDateRange.get({facilityId:$scope.homeFacility.id,date:$scope.searchDate, endDate:$scope.endDate,type:$scope.type},function(data){
+        $scope.distributionsByDate = [];
+        DistributionsByDateRange.get({
+            facilityId: $scope.homeFacility.id,
+            date: $scope.searchDate,
+            endDate: $scope.endDate,
+            type: $scope.type
+        }, function (data) {
             console.log(data);
-            $scope.distributionsByDate=data.distributions;
+            $scope.distributionsByDate = data.distributions;
         });
     };
 
-    $scope.searchDistributions=function(){
-        $scope.dateChange=true;
+    $scope.searchDistributions = function () {
+        $scope.dateChange = true;
         $scope.loadDistributionsByDate();
     };
 
-    $scope.getMinDate=function(period){
-        var max=new Date(period.startDate);
-        max.setDate(max.getDate() -30);
+    $scope.getMinDate = function (period) {
+        var max = new Date(period.startDate);
+        max.setDate(max.getDate() - 30);
         return max;
     };
 
-    $scope.enableSearchChange=function(){
+    $scope.enableSearchChange = function () {
 
-        if($scope.enableSearch ===false)
-        {
-            $scope.searchDate=$scope.toDay;
+        if ($scope.enableSearch === false) {
+            $scope.searchDate = $scope.toDay;
             $scope.loadDistributionsByDate($scope.toDay);
         }
     };
 
-    $scope.showFacilitySearchResults=function(){
+    $scope.showFacilitySearchResults = function () {
         if ($scope.query === undefined || $scope.query.length < 3) return;
 
         if (compareQuery()) {
-            $scope.distributionsByDate=[];
-            searchDistributionsByDateRange.get({facilityId:$scope.homeFacility.id,startDate:$scope.searchDate, endDate:$scope.endDate,type:$scope.type,searchParam:$scope.query},function(data){
-                $scope.distributionsByDate=data.distributions;
+            $scope.distributionsByDate = [];
+            searchDistributionsByDateRange.get({
+                facilityId: $scope.homeFacility.id,
+                startDate: $scope.searchDate,
+                endDate: $scope.endDate,
+                type: $scope.type,
+                searchParam: $scope.query
+            }, function (data) {
+                $scope.distributionsByDate = data.distributions;
 
-                $scope.hasSearch=true;
+                $scope.hasSearch = true;
             });
 
-         /*   FacilitiesSameType.get({facilityId:homeFacility.id,query:$scope.query}, function(data){
-                $scope.facilities = data.facilities;
-                $scope.filteredFacilityList = $scope.facilities;
-                $scope.previousQuery = $scope.query;
-                $scope.facilityResultCount = $scope.filteredFacilityList.length;
-                $scope.hasSearch=true;
-            });
-*/
+            /*   FacilitiesSameType.get({facilityId:homeFacility.id,query:$scope.query}, function(data){
+             $scope.facilities = data.facilities;
+             $scope.filteredFacilityList = $scope.facilities;
+             $scope.previousQuery = $scope.query;
+             $scope.facilityResultCount = $scope.filteredFacilityList.length;
+             $scope.hasSearch=true;
+             });
+             */
         }
         else {
 
-            $scope.searchDate=$scope.toDay;
+            $scope.searchDate = $scope.toDay;
             $scope.loadDistributionsByDate($scope.toDay);
 
 
         }
     };
 
-    var compareQuery=function(){
+    var compareQuery = function () {
         if (!isUndefined($scope.previousQuery)) {
             return $scope.query.substr(0, 3) !== $scope.previousQuery.substr(0, 3);
         }
         return true;
     };
 
-    $scope.printAll=function(distributions){
-        var ids='';
-        distributions.forEach(function(d){
-            if(d.isSelected)
-                ids=ids + d.id + ',';
+    $scope.printAll = function (distributions) {
+        var ids = '';
+        distributions.forEach(function (d) {
+            if (d.isSelected)
+                ids = ids + d.id + ',';
         });
         ids = ids.slice(0, -1);
-        if(ids !=='')
-        {
-            var url='/vaccine/inventory/distribution/summary/print/'+ids+'.json';
-            $window.open(url,'_blank');
+        if (ids !== '') {
+            var url = '/vaccine/inventory/distribution/summary/print/' + ids + '.json';
+            $window.open(url, '_blank');
         }
-        else{alert('No facility selected');}
+        else {
+            alert('No facility selected');
+        }
     };
-    $scope.getQuantityDistributionForProduct=function(distribution,stockCard){
-        var product= _.findWhere(distribution.lineItems,{productId:stockCard.product.id});
-        var quantity=(product !== undefined)?product.quantity:null;
+    $scope.getQuantityDistributionForProduct = function (distribution, stockCard) {
+        var product = _.findWhere(distribution.lineItems, {productId: stockCard.product.id});
+        var quantity = (product !== undefined) ? product.quantity : null;
         return quantity;
     };
 
-    $scope.getTotalDistributionForProduct=function(stockCard){
-        var total=0;
-        $scope.distributionsByDate.forEach(function(distribution){
-            if(distribution.isSelected)
-            {
-                var product= _.findWhere(distribution.lineItems,{productId:stockCard.product.id});
-                var quantity=(product !== undefined)?product.quantity:0;
-                total=total+quantity;
+    $scope.getTotalDistributionForProduct = function (stockCard) {
+        var total = 0;
+        $scope.distributionsByDate.forEach(function (distribution) {
+            if (distribution.isSelected) {
+                var product = _.findWhere(distribution.lineItems, {productId: stockCard.product.id});
+                var quantity = (product !== undefined) ? product.quantity : 0;
+                total = total + quantity;
             }
         });
         return total;
     };
 
-    $scope.closeModal=function(){
-        $scope.currentProduct.lots=$scope.oldProductLots;
+    $scope.closeModal = function () {
+        $scope.currentProduct.lots = $scope.oldProductLots;
         evaluateTotal($scope.currentProduct);
         evaluateSOH($scope.currentProduct);
-        $scope.currentFacility=undefined;
-        $scope.lotsModal=false;
+        $scope.currentFacility = undefined;
+        $scope.lotsModal = false;
     };
-    $scope.saveCurrent=function(){
+    $scope.saveCurrent = function () {
         evaluateTotal($scope.currentProduct);
         evaluateSOH($scope.currentProduct);
-        $scope.currentFacility=undefined;
-        $scope.lotsModal=false;
+        $scope.currentFacility = undefined;
+        $scope.lotsModal = false;
     };
-    $scope.updateCurrentTotal=function(product){
+    $scope.updateCurrentTotal = function (product) {
         var totalCurrentLots = 0;
-        if(product.lots !== undefined)
-        {
+        if (product.lots !== undefined) {
             $(product.lots).each(function (index, lotObject) {
-                if(lotObject.quantity !== undefined && lotObject.quantity !== null){
-                    totalCurrentLots = totalCurrentLots + parseInt(lotObject.quantity,10);
+                if (lotObject.quantity !== undefined && lotObject.quantity !== null) {
+                    totalCurrentLots = totalCurrentLots + parseInt(lotObject.quantity, 10);
                 }
             });
-            product.quantity=totalCurrentLots;
+            product.quantity = totalCurrentLots;
         }
-        else{
-            product.quantity=product.quantity;
+        else {
+            product.quantity = product.quantity;
         }
 
     };
-    $scope.updateCurrentPOD=function(product){
+    $scope.updateCurrentPOD = function (product) {
         var totalCurrentLots = 0;
         product.podLots.forEach(function (lot) {
-            if(lot.quantity !== undefined){
-                totalCurrentLots = totalCurrentLots + parseInt(lot.quantity,10);
+            if (lot.quantity !== undefined) {
+                totalCurrentLots = totalCurrentLots + parseInt(lot.quantity, 10);
             }
         });
-        product.quantity=totalCurrentLots;
+        product.quantity = totalCurrentLots;
     };
-    function evaluateTotal(product){
+    function evaluateTotal(product) {
         var totalLots = 0;
-        if(product.lots !== undefined)
-        {
+        if (product.lots !== undefined) {
             $(product.lots).each(function (index, lotObject) {
-                if(lotObject.quantity !== undefined){
-                    totalLots = totalLots + parseInt(lotObject.quantity,10);
+                if (lotObject.quantity !== undefined) {
+                    totalLots = totalLots + parseInt(lotObject.quantity, 10);
                 }
 
             });
-            $scope.currentProduct.quantity=totalLots;
+            $scope.currentProduct.quantity = totalLots;
         }
-        else{
+        else {
             //$scope.currentProduct.quantity=totalLots;
         }
 
     }
-    function getLotSum(_product,_lot){
-        var total=0;
-        ($scope.allScheduledFacilities).forEach(function(facility){
-            var product=_.find(facility.productsToIssue,function(p){
-                return p.productId ===_product.productId;
+
+    function getLotSum(_product, _lot) {
+        var total = 0;
+        ($scope.allScheduledFacilities).forEach(function (facility) {
+            var product = _.find(facility.productsToIssue, function (p) {
+                return p.productId === _product.productId;
             });
-            if(product.lots !== undefined){
-                var lot=_.find(product.lots,function(l){
+            if (product.lots !== undefined) {
+                var lot = _.find(product.lots, function (l) {
                     return l.lotId === _lot.lotId;
                 });
-                if(lot && lot.quantity !==undefined)
-                {
-                    total=total+parseInt(lot.quantity,10);
+                if (lot && lot.quantity !== undefined) {
+                    total = total + parseInt(lot.quantity, 10);
                 }
             }
-            else{
-                if(product.quantity !== undefined){
-                    total=total+parseInt(product.quantity,10);
+            else {
+                if (product.quantity !== undefined) {
+                    total = total + parseInt(product.quantity, 10);
                 }
 
             }
@@ -219,80 +283,79 @@ function FacilityDistributionController($scope,$location,FacilitiesSameType, $do
         });
         return total;
     }
-    function evaluateSOH(_product)
-    {
-        ($scope.allScheduledFacilities).forEach(function(facility){
-            facility.productsToIssue.forEach(function(product){
-                if(product.lots !== undefined)
-                {
-                    product.lots.forEach(function(lot){
-                        lot.quantityOnHand=lot.quantityOnHand2-getLotSum(product,lot);
+
+    function evaluateSOH(_product) {
+        ($scope.allScheduledFacilities).forEach(function (facility) {
+            facility.productsToIssue.forEach(function (product) {
+                if (product.lots !== undefined) {
+                    product.lots.forEach(function (lot) {
+                        lot.quantityOnHand = lot.quantityOnHand2 - getLotSum(product, lot);
                     });
                 }
-                else{
-                    product.totalQuantityOnHand=product.totalQuantityOnHand2-getLotSum(product,undefined);
+                else {
+                    product.totalQuantityOnHand = product.totalQuantityOnHand2 - getLotSum(product, undefined);
                 }
 
             });
 
         });
     }
-    if($scope.userPrograms.length > 1)
-    {
-        $scope.showPrograms=true;
+
+    if ($scope.userPrograms.length > 1) {
+        $scope.showPrograms = true;
         //TODO: load stock cards on program change
-        $scope.selectedProgram=$scope.userPrograms[0];
+        $scope.selectedProgram = $scope.userPrograms[0];
         $scope.loadSupervisedFacilities($scope.userPrograms[0]);
         $scope.loadStockCards();
-        $scope.searchDate=$scope.toDay;
+        $scope.searchDate = $scope.toDay;
         $scope.loadDistributionsByDate($scope.toDay);
     }
-    else if($scope.userPrograms.length === 1){
-        $scope.showPrograms=false;
-        $scope.selectedProgram=$scope.userPrograms[0];
+    else if ($scope.userPrograms.length === 1) {
+        $scope.showPrograms = false;
+        $scope.selectedProgram = $scope.userPrograms[0];
         $scope.loadSupervisedFacilities($scope.userPrograms[0].id);
         $scope.loadStockCards();
-        $scope.searchDate=$scope.toDay;
+        $scope.searchDate = $scope.toDay;
         $scope.loadDistributionsByDate($scope.toDay);
     }
 
-    $scope.showIssueModal=function(facility, type){
-        $scope.facilityToIssue=angular.copy(facility);
-        $scope.facilityToIssue.type=type;
-        $scope.issueModal=true;
+    $scope.showIssueModal = function (facility, type) {
+        $scope.facilityToIssue = angular.copy(facility);
+        $scope.facilityToIssue.type = type;
+        $scope.issueModal = true;
     };
-    $scope.closeIssueModal=function(){
-        $scope.facilityToIssue=undefined;
+    $scope.closeIssueModal = function () {
+        $scope.facilityToIssue = undefined;
         $scope.clearErrorMessages();
-        $scope.issueModal=false;
+        $scope.issueModal = false;
     };
-    $scope.resetUnscheduledFacility=function(){
-        $scope.UnScheduledFacilityId=undefined;
-        $scope.UnScheduledFacility=undefined;
+    $scope.resetUnscheduledFacility = function () {
+        $scope.UnScheduledFacilityId = undefined;
+        $scope.UnScheduledFacility = undefined;
     };
-    $scope.showNoProductError=function(){
-        $scope.showNoProductErrorMessage=true;
+    $scope.showNoProductError = function () {
+        $scope.showNoProductErrorMessage = true;
     };
-    $scope.showFormError=function(){
-        $scope.showFormErrorMessage=true;
+    $scope.showFormError = function () {
+        $scope.showFormErrorMessage = true;
     };
-    $scope.clearErrorMessages=function(){
+    $scope.clearErrorMessages = function () {
         $scope.showFormErrorMessage = false;
-        $scope.showNoProductErrorMessage=false;
+        $scope.showNoProductErrorMessage = false;
     };
 
-    $scope.showPODModal=function(facility){
-        $scope.podModal=true;
-        $scope.facilityPOD=facility;
+    $scope.showPODModal = function (facility) {
+        $scope.podModal = true;
+        $scope.facilityPOD = facility;
     };
 
-    $scope.closePODModal=function(){
-        $scope.podModal=false;
-        $scope.facilityPOD=undefined;
+    $scope.closePODModal = function () {
+        $scope.podModal = false;
+        $scope.facilityPOD = undefined;
     };
 
-    $scope.print = function(distributionId){
-        var url = '/vaccine/orderRequisition/issue/print/'+distributionId;
+    $scope.print = function (distributionId) {
+        var url = '/vaccine/orderRequisition/issue/print/' + distributionId;
         $window.open(url, '_blank');
     };
 
@@ -309,31 +372,27 @@ function FacilityDistributionController($scope,$location,FacilitiesSameType, $do
         return false;
     };
 
-    $scope.cancel=function(){
-        $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
+    $scope.cancel = function () {
+        $window.location = '/public/pages/vaccine/dashboard/index.html#/dashboard';
     };
 
-    $scope.setSelectedFacility=function(facility)
-    {
-        if(facility)
-        {
-            $scope.selectedFacilityId=facility.id;
+    $scope.setSelectedFacility = function (facility) {
+        if (facility) {
+            $scope.selectedFacilityId = facility.id;
         }
-        else
-        {
-            $scope.selectedFacilityId=null;
+        else {
+            $scope.selectedFacilityId = null;
         }
 
     };
 
     $scope.getSelectedFacilityColor = function (facility) {
-        if(facility !== undefined)
-        {
+        if (facility !== undefined) {
             if (!$scope.selectedFacilityId) {
                 return 'none';
             }
 
-            if ($scope.selectedFacilityId== facility.id) {
+            if ($scope.selectedFacilityId == facility.id) {
                 return "background-color :#dff0d8; color: white !important";
             }
             else {
@@ -342,25 +401,20 @@ function FacilityDistributionController($scope,$location,FacilitiesSameType, $do
         }
 
     };
-    $scope.loadUnScheduledFacilities=function(){
-        $scope.UnScheduledFacilities=_.where($scope.allUnScheduledFacilities,{name:$scope.facilityQuery});
+    $scope.loadUnScheduledFacilities = function () {
+        $scope.UnScheduledFacilities = _.where($scope.allUnScheduledFacilities, {name: $scope.facilityQuery});
     };
-    $scope.hasProductToIssue=function(facility)
-    {
-        var hasAtLeastOne=false;
-        var hasError=false;
+    $scope.hasProductToIssue = function (facility) {
+        var hasAtLeastOne = false;
+        var hasError = false;
 
-        if(facility !==undefined && facility.productsToIssue !== undefined)
-        {
-            facility.productsToIssue.forEach(function(p)
-            {
-                if(p.quantity >0 )
-                {
-                    hasAtLeastOne=true;
+        if (facility !== undefined && facility.productsToIssue !== undefined) {
+            facility.productsToIssue.forEach(function (p) {
+                if (p.quantity > 0) {
+                    hasAtLeastOne = true;
                 }
-                if(p.quantity >0 && p.quantityOnHand < p.quantity)
-                {
-                    hasError=true;
+                if (p.quantity > 0 && p.quantityOnHand < p.quantity) {
+                    hasError = true;
                 }
             });
             return (hasAtLeastOne && !hasError);
@@ -385,30 +439,30 @@ function FacilityDistributionController($scope,$location,FacilitiesSameType, $do
         });
         //  $scope.page();
     };
-    $scope.saveAll=function(){
-        $scope.allScheduledFacilities.forEach(function(facility){
-            if($scope.hasProductToIssue(facility) && facility.status !== "PENDING"){
-                $scope.showIssueModal(facility,"SCHEDULED");
+    $scope.saveAll = function () {
+        $scope.allScheduledFacilities.forEach(function (facility) {
+            if ($scope.hasProductToIssue(facility) && facility.status !== "PENDING") {
+                $scope.showIssueModal(facility, "SCHEDULED");
             }
         });
     };
-    $scope.showMessages=function(){
-        $scope.message=true;
+    $scope.showMessages = function () {
+        $scope.message = true;
         $scope.selectedRoutineFacility = null;
-        $scope.routineFacility=false;
+        $scope.routineFacility = false;
     };
-    $scope.showPODMessages=function(){
-        $scope.podMessage=true;
+    $scope.showPODMessages = function () {
+        $scope.podMessage = true;
         $scope.selectedRoutineFacility = null;
-        $scope.routineFacility=false;
+        $scope.routineFacility = false;
     };
 
 }
 FacilityDistributionController.resolve = {
 
-    homeFacility: function ($q, $timeout,UserFacilityList) {
+    homeFacility: function ($q, $timeout, UserFacilityList) {
         var deferred = $q.defer();
-        var homeFacility={};
+        var homeFacility = {};
 
         $timeout(function () {
             UserFacilityList.get({}, function (data) {
@@ -419,13 +473,12 @@ FacilityDistributionController.resolve = {
         }, 100);
         return deferred.promise;
     },
-    configurations:function($q, $timeout, AllVaccineInventoryConfigurations) {
+    configurations: function ($q, $timeout, AllVaccineInventoryConfigurations) {
         var deferred = $q.defer();
-        var configurations={};
+        var configurations = {};
         $timeout(function () {
-            AllVaccineInventoryConfigurations.get(function(data)
-            {
-                configurations=data;
+            AllVaccineInventoryConfigurations.get(function (data) {
+                configurations = data;
                 deferred.resolve(configurations);
             });
         }, 100);

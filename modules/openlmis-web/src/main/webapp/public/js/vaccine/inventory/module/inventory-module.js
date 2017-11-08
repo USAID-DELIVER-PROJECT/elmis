@@ -37,4 +37,8 @@ angular.module('vaccine-inventory', ['openlmis','ngGrid', 'ngTable','ui.bootstra
 
                    return Math.abs(input);
                };
-    });
+    }).directive(
+
+
+
+);

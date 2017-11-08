@@ -1,0 +1,208 @@
+<!--
+* Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+*
+* Copyright (C) 2015 Clinton Health Access Initiative (CHAI)/MoHCDGEC Tanzania.
+*
+* This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
+*
+-->
+<style>
+
+    .table-bordered > thead > tr > th {
+        border-bottom-width: 0px !important;
+    }
+
+    /* .table-bordered>tbody>tr>td{
+
+         border:1px !important;
+     }*/
+    .table-bordered {
+        border-collapse: collapse !important;
+    }
+
+    th {
+
+        padding-top: 0px !important;
+        width: 2% !important;
+    }
+
+    a {
+        position: relative;
+    }
+
+    .popover {
+        text-decoration: none;
+        color: black;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        display: block;
+        padding: 0 40px;
+        max-width: 150px;
+    }
+
+    .popover span {
+        display: block;
+        font-weight: 700;
+    }
+
+    h4 {
+        text-decoration: underline;
+    }
+
+</style>
+
+<div class="container-fluid">
+    <div class="box row-fluid">
+
+        <div class="box-header">
+            <h2><i class="icon-edit"></i><span class="break" openlmis-message="report.title.stock.ledger.report"></span>
+            </h2>
+
+            <div class="box-icon pull-right">
+
+                <a ng-click="section(0)" ng-show="show(1)" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                <a ng-click="section(1)" ng-show="show(0)" class="btn-minimize"><i class="icon-chevron-down"></i></a>
+                <a id="pdf-button" ng-show="filterForm.$valid && isChanged==false" href=""
+                   ng-click="exportReport1('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid && isChanged==false" href=""
+                   ng-click="exportReport1('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+
+                <a id="pdf-button" ng-show="filterForm.$valid && isChanged==true" href=""
+                   ng-click="exportReport2('PDF')"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" ng-show="filterForm.$valid && isChanged==true" href=""
+                   ng-click="exportReport2('XLS')"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
+            <br/>
+        </div>
+        <div>
+            <div class="row-fluid">
+                <div style="">
+                    <div class="app-form">
+
+                        <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                            <div filter-container class="clearfix">
+                                <year-filter required="true"></year-filter>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="clearfix">
+                        <br>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="pull-right legend">Page: {{tableParams.page}}, Showing records {{ ((tableParams.page
+                            - 1) *
+                            tableParams.count) + 1 }} to {{ (tableParams.page ) * tableParams.count }} of
+                            {{tableParams.total}}
+                        </div>
+
+                        <!--
+                                                <div class="offset1">
+                        -->
+
+                        <div>
+                            <div class="pull-left" style="font-size:13px;">
+                                <span openlmis-message="label.product"></span> :<Strong> <span style="width:300px;"
+                                                                                               class="report-data">{{datarows[0].product}}</span></strong>
+                            </div>
+                        </div>
+
+                        <!--
+                                                </div>
+                        -->
+
+                    </div>
+
+
+                    <div class="content-body" style="width:100% !important;" id="pod" class="rnr-table">
+
+                        <div class="row-fluid">
+                            <table client-side-sort-pagination class="table table-bordered"
+                                   ng-show="data == undefined || data.length == 0">
+                                <tr>
+                                    <td>No data to show under selected filters</td>
+                                </tr>
+                            </table>
+
+                            <table ng-show="datarows.length > 0" class="table-bordered table table-striped scrollable"
+                                   id="podTable"
+                                   ng-table="tableParams">
+                                <tbody>
+                                <tr ng-repeat="row in datarows">
+                                    <td data-title="'#'" class="number"
+                                        style="width:2% !important; text-align: left !important;">{{ row.no }}
+                                    </td>
+                                    <td data-title="getLocalMessage('label.date')" style="min-width:100px !important;">{{
+                                        row.date | date:'dd-MM-yyyy' }}
+                                    </td>
+                                    <td data-title="'Store (To/From)'" style="min-width:80px !important;" sortable="">
+                                        <span ng-bind="($index==0)?'B/F':row.storeName"></span>
+                                    </td>
+                                    <td class="number" data-title="'Received Quantity'" style="min-width:80px !important;"
+                                        sortable=" ">{{row.received > 0 && (row.received | number) || '' }}
+                                    </td>
+                                    <td class="number" data-title="'Issued Quantity'" style="width:20% !important;"
+                                        sortable=" ">
+                                        {{ row.issued != 0 && (row.issued | positive) || '' }}
+                                    </td>
+                                    <td class="number" data-title="'Adjusted Quantity'" style="width:10% !important;"
+                                        sortable="adjustment">
+                                        {{ row.adjustment != 0 && (row.adjustment | positive) || '' }}
+                                    </td>
+
+                                    <!-- <td data-title="'voucherNumber'" style="width:10% !important;"
+                                         sortable="adjustment">
+                                         <span>{{ row.voucherNumber  }}</span>
+                                     </td>-->
+                                    <td data-title="'Batch Number'" style="width:20%" sortable=" ">
+                                        <a href="" ng-mouseover="showPopover=true;" ng-mouseleave="showPopover=false;">{{row.lotNumber}}
+                                            <div class="popover" ng-show="showPopover">
+                                                <h4>{{ popover.title }}</h4>
+                                                {{ row.manufacturerName }}
+                                            </div>
+                                        </a>
+                                    </td>
+
+                                    <td data-title="'Expiration Date'" style="width:30%" sortable=" ">
+                                        {{row.expirationDate | date:'dd-MM-yyyy'}}
+                                    </td>
+
+
+                                    <td data-title="'VVM Status'" style="width:30%" sortable="vvmStatus">
+                                        {{
+                                        row.vvmStatus
+                                        }}
+                                    </td>
+                                    <td class="number" data-title="'SOH per Batch'" style="width:30%" sortable=" ">{{
+                                        row.loh > 0 && (row.loh | number) || '' }}
+                                    </td>
+
+                                    <td class="number" data-title="getLocalMessage('label.stock.on.hand')"
+                                        style="width:30%"
+                                        sortable=" ">{{ row.soh > 0 && (row.soh | number) || ''}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>

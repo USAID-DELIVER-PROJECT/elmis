@@ -13,14 +13,16 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
 
     $scope.OnFilterChanged = function () {
         // clear old data if there was any
-        $scope.data = $scope.datarows = [];
+        $scope.datarows = [];
+        $scope.data =  $scope.datarows;
         $scope.filter.max = 10000;
         NonReportingFacilities.get($scope.getSanitizedParameter(), function (data) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
 
                 $scope.summaries = data.pages.rows[0].summary;
                 $scope.periods = data.pages.rows[0].keyValueSummary.periodsForChart;
-                $scope.data = getDataWithRankedPeriod(data.pages.rows[0].details);
+                $scope.chartDataRows = getDataWithRankedPeriod(data.pages.rows[0].keyValueSummary.chartData);
+                $scope.data = data.pages.rows[0].details;
 
                 $scope.rawChartData = getChartData();
                 $scope.chart = {};
@@ -45,7 +47,7 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
     };
 
     /** Calculate and Replace Y value of the series data to percentage of combined series of the same data point **/
-    function convertFacilityCountToReportingRate(chartData) {
+    function convertFacilityCountToReportingRate() {
        var x=0, y=1;
        var REPORTING_SERIES = 0, NON_REPORTING_SERIES = 1;
 
@@ -72,13 +74,13 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
     function getChartData(){
        return [
             {
-                data: getFacilityCountPerPeriodAndByReportingStatus({'reportingStatus': 'REPORTED'}),
+                data: getFacilityCountPerPeriodAndByReportingStatus({'reportingstatus': 'REPORTED'}),
                 label: "Reported",
                 code: "REPORTED",
                 color: 'green'
             },
             {
-                data: getFacilityCountPerPeriodAndByReportingStatus({'reportingStatus': 'NON_REPORTING'}),
+                data: getFacilityCountPerPeriodAndByReportingStatus({'reportingstatus': 'NON_REPORTING'}),
                 label: "Non-Reported",
                 code: "NON_REPORTING",
                 color: 'red'
@@ -107,7 +109,7 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
     }
 
     function getFacilityCountPerPeriodAndByReportingStatus(reportTypeFilter){
-        return _.chain($scope.data)
+        return _.chain($scope.chartDataRows)
                 .select(reportTypeFilter)
                 .countBy('order')
                 .map(function(key, value) { return [parseInt(value, 10), key]; } )
@@ -128,8 +130,8 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
     function chartItemClick(event, pos, item){
         if(item) {
 
-            $scope.modalData = _.chain($scope.data)
-                .select({'reportingStatus': item.series.code, 'order': item.datapoint[0]})
+            $scope.modalData = _.chain($scope.chartDataRows)
+                .select({'reportingstatus': item.series.code, 'order': item.datapoint[0]})
                 .value();
 
             $scope.title = (item.series.code === 'REPORTED') ? 'Reporting Facilities' :

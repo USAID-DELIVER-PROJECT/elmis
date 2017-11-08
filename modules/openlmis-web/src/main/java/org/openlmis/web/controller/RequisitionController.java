@@ -76,6 +76,7 @@ public class RequisitionController extends BaseController {
   public static final String NUMBER_OF_MONTHS = "numberOfMonths";
   public static final String CAN_APPROVE_RNR = "canApproveRnr";
   private static final Logger logger = LoggerFactory.getLogger(RequisitionController.class);
+  public static final String LAB_REFRENCE_DATA = "lab_refrence_data";
   @Autowired
   private RequisitionService requisitionService;
   @Autowired
@@ -328,4 +329,12 @@ public class RequisitionController extends BaseController {
     requisitionService.reOpenRnR(rnrId, loggedInUserId(request));
     return OpenLmisResponse.success(messageService.message("msg.rnr.reopened"));
   }
+
+  @RequestMapping(value = "/requisitions/lab/reference-data", method = GET, headers = ACCEPT_JSON)
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal, 'CREATE_REQUISITION')")
+  public ResponseEntity<OpenLmisResponse> labEquipmentReferenceData() {
+
+   return response(LAB_REFRENCE_DATA, requisitionService.getLabEquipmentReferenceData());
+  }
+
 }

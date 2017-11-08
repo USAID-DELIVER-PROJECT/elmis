@@ -30,7 +30,6 @@ atlassian-ide-plugin.xml
 /shipment/
 .sonar/
 docker/Dockerfile
-lib/
 local-buget-ftp-data/
 modules/.sonar/
 modules/core/.sonar/

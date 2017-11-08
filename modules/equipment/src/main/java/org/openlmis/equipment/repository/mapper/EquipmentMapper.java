@@ -15,12 +15,10 @@ package org.openlmis.equipment.repository.mapper;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.core.domain.Product;
-import org.openlmis.equipment.domain.ColdChainEquipmentDesignation;
-import org.openlmis.equipment.domain.Equipment;
-import org.openlmis.equipment.domain.EquipmentEnergyType;
-import org.openlmis.equipment.domain.EquipmentType;
+import org.openlmis.equipment.domain.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -141,6 +139,22 @@ public interface EquipmentMapper {
       "WHERE id = #{id}")
   void update(Equipment equipment);
 
+
     @Delete("DELETE FROM equipments WHERE id = #{Id}")
     void remove(Long Id);
+
+  @Select("select * from equipment_bio_chemistry_test_types")
+  @Results({
+          @Result(property = "id", column = "id"),
+          @Result(
+                  property = "testProducts", column = "id", javaType = List.class,
+                  many = @Many(select = "getBioChemistryEquipmentTestProducts"))
+  })
+  List<NonFunctionalTestTypes> getBioChemistryEquipmentTestTypes();
+
+  @Select("select * from equipment_bio_chemistry_products where testtypeid = #{id}")
+  List<NonFunctionalTestProducts> getBioChemistryEquipmentTestProducts(Long id);
+
+  @Select("select * from manual_test_types")
+  List<ManualTestTypes> getManualTestTypes();
 }

@@ -99,4 +99,20 @@ public class RestRequisitionController extends BaseController {
       return error(e.getOpenLmisMessage(), BAD_REQUEST);
     }
   }
+
+  @RequestMapping(value = "/rest-api/requisitions/initiate", method = POST, headers = ACCEPT_JSON)
+  public ResponseEntity<RestResponse> initiateRnr(@RequestParam("facilityId") Long facilityId,
+                                                    @RequestParam("programId") Long programId,
+                                                    @RequestParam("periodId") Long periodId,
+                                                    @RequestParam("sourceApplication") String sourceApplication,
+                                                    @RequestParam("emergency") Boolean emergency,
+                                                    Principal principal) {
+    try {
+      Rnr initiatedRnr = restRequisitionService.initiateRnr(facilityId, programId, loggedInUserId(principal), emergency, periodId, sourceApplication);
+      ResponseEntity<RestResponse> response = response(RNR, initiatedRnr);
+      return response;
+    } catch (DataException e) {
+      return error(e, BAD_REQUEST);
+    }
+  }
 }

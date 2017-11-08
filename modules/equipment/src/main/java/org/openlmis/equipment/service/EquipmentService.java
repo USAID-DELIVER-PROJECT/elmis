@@ -14,10 +14,7 @@ package org.openlmis.equipment.service;
 
 import org.openlmis.core.domain.Pagination;
 import org.openlmis.core.domain.Product;
-import org.openlmis.equipment.domain.ColdChainEquipment;
-import org.openlmis.equipment.domain.Equipment;
-import org.openlmis.equipment.domain.EquipmentType;
-import org.openlmis.equipment.domain.EquipmentProduct;
+import org.openlmis.equipment.domain.*;
 import org.openlmis.equipment.repository.ColdChainEquipmentRepository;
 import org.openlmis.equipment.repository.EquipmentRepository;
 import org.openlmis.equipment.repository.EquipmentProductRepository;
@@ -132,5 +129,14 @@ public class EquipmentService {
 
   public List<ColdChainEquipment>getEquipmenentBy(Long equipmentTypeId){
     return coldChainEquipmentRepository.getEquipmentBy(equipmentTypeId);
+  }
+
+   public List<NonFunctionalTestTypes> getBioChemistryEquipmentTestTypes() {
+      return repository.getBioChemistryEquipmentTestTypes();
+   }
+
+  public List<ManualTestTypes> getManualTestTypes() {
+
+    return repository.getManualTestTypes();
   }
 }

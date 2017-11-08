@@ -1,0 +1,256 @@
+<style>
+    /* Style the list */
+    ul.breadcrumb {
+        padding: 10px 16px;
+        list-style: none;
+        background-color: #eee;
+    }
+
+    /* Display list items side by side */
+    ul.breadcrumb li {
+        display: inline;
+        font-size: 18px;
+    }
+
+    /* Add a slash symbol (/) before/behind each list item */
+    ul.breadcrumb li + li:before {
+        padding: 8px;
+        color: black;
+        content: "/\00a0";
+    }
+
+    /* Add a color to all links inside the list */
+    ul.breadcrumb li a {
+        color: #0275d8;
+        text-decoration: none;
+    }
+
+    /* Add a color on mouse-over */
+    ul.breadcrumb li a:hover {
+        color: #01447e;
+        text-decoration: underline;
+    }
+
+    .content {
+
+        min-height: 1000px !important;
+
+    }
+
+    td[rowspan] {
+        vertical-align: middle !important;
+    }
+
+    .content h3 {
+        margin-top: 2px;
+        border-bottom: 1px solid lightblue;
+        font-size: 1.2em;
+        font-weight: normal;
+        color: #17888f;
+        padding-bottom: 5px !important;
+    }
+
+    .breadcrumb {
+        background-color: #eee !important;
+    }
+
+    td.lot-expired span {
+        color: #d58512;
+    }
+
+    .rnr-table {
+        overflow: auto;
+        padding-top: 10px;
+        /* padding-right: 10px; */
+        padding-left: 10px;
+        min-width: 100% !important;
+    }
+
+    .span8 {
+        width: 950px !important;
+    }
+
+    .odd {
+    }
+
+    .rnr-table th.col-product, .rnr-table td.col-product {
+        min-width: 200px;
+        overflow: auto;
+    }
+
+</style>
+   <div class="container" id="wrapper">
+    <breadcrumbs item-display-name-resolver="myResolver(defaultResolver, state, isCurrent)"></breadcrumbs>
+
+    <h3 id="podPageTitle"><span></span></h3>
+
+     <div class="row-fluid span12">
+         <div class="span4">
+             <div class="row-fluid">
+                 <div class="form-row">
+
+                          <span>
+                              <span> <Strong class="pull-left"
+                                             openlmis-message="label.facility.type"></Strong></span><br/><br/>
+
+                              <input type="radio" name="options" id="option1" ng-model="facilityType" value="0"
+                                     autocomplete="on" ng-checked="true"/>
+                             <span openlmis-message="label.myFacility"> </span><br/><br/>
+                               <input ng-hide="showMyFacility" type="radio" name="options" id="option2"
+                                      ng-model="facilityType" value="1"/>
+                               <span ng-hide="showMyFacility" openlmis-message="label.supervised.Facility"></span>
+                         </span>
+
+                 </div>
+                 <div class="form-row pull-left" >
+                     <div ng-show="facilityType" id="tree"></div>
+                 </div>
+             </div>
+
+         </div>
+
+         <div class="span8">
+             <!--
+             Starting
+             -->
+             <div style="width: 100% !important;">
+
+         <span class="pull-right print-button" style="background-color:#4897BA !important;">
+    <a id="printButton" style="background-color:#4897BA !important;"
+       class="btn btn-primary" ng-href="/requisitions/{{rnr.id}}/print.pdf"
+       openlmis-message="button.print"
+       target="_blank"></a>
+         </span>
+
+                 <div class="clearfix"></div>
+                 <form name="stockOnHandForm">
+                     <div id="pod" class="rnr-table" tab-scroll bottom-offset="180" style="padding-right: 0 !important;">
+                         <table id="equipmentTable" fixed-table-header class="table-bordered scrollable">
+                             <thead>
+                             <tr>
+
+                                 <th class="col-product">
+                                     <div class="regimen-heading">
+                                         <span>Product</span>
+                                     </div>
+                                 </th>
+                                 <th class="span1">
+                                     <div class="regimen-heading">
+                                         <span>Batch #</span>
+                                     </div>
+                                 </th>
+                                 <th class="col-quantity">
+                                     <div class="regimen-heading">
+                                         <span>Quantity (Doses)</span>
+                                     </div>
+                                 </th>
+                                 <th class="span1">
+                                     <div class="regimen-heading">
+                                         <span>Expiry Date</span>
+                                     </div>
+                                 </th>
+                                 <th class="span1">
+                                     <div class="regimen-heading">
+                                         <span>Last Updated</span>
+                                     </div>
+                                 </th>
+
+                                 <th class="span1">
+                                     <div class="regimen-heading">
+                                         <span>Stock On Hand (Doses)</span>
+                                     </div>
+                                 </th>
+                                 <th class="span1">
+                                     <div class="regimen-heading">
+                                         <span>Action</span>
+                                     </div>
+                                 </th>
+                                 <!--
+                                                         <th class="span1">
+                                                             <div class="regimen-heading">
+                                                                 <span openlmis-message="rnr.equipment.days.out.of.use"></span>
+                                                             </div>
+                                                         </th>
+                                                         <th class="col-remarks">
+                                                             <div class="regimen-heading">
+                                                                 <span openlmis-message="rnr.equipment.remarks"></span>
+                                                             </div>
+                                                         </th>-->
+                             </tr>
+                             </thead>
+                             <tbody>
+                             <!--   <tr ng-show="showCategory($index)">
+                                    <td class="productCategory" colspan="9" ng-show="showCategory($index)"
+                                        ng-bind="stock.product.form.code"></td>
+                                </tr>-->
+                             <tr ng-repeat-start="c in stockCards" ng-class-odd="'odd'" ng-class-even="'even'"
+                                 ng-init="$index%2==0?(color='odd'): (color='even')">
+                             <tr ng-repeat-start="k in c.lotsOnHand" ng-class-odd="'odd'" ng-class-even="'even'"
+                                 ng-init="$index%2==0?(color='odd'): (color='even')">
+
+                                 <td ng-if="$index == 0" rowspan="{{c.lotsOnHand.length * 2}}"
+                                     class="col-product cell-input last-row disabled padding2px ">
+                                     <span ng-bind="c.product.primaryName" class="padding2px"></span>
+                                 </td>
+
+                                 <td class="col-lot cell-input  disabled"
+                                     ng-class="{'lot-expired':c.lotsOnHand[0].hasExpired}"
+                                     ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <span ng-show="c.lotsOnHand.length >0" class="cell-text"
+                          ng-bind="k.lot.lotCode"></span>
+                                     <span ng-show="c.lotsOnHand.length >0 && c.lotsOnHand[0].hasExpired" class="cell-text">&nbsp;(Expired)</span>
+                                 </td>
+
+                                 <td class="cell-input padding2px ">
+                                     <span ng-bind="k.quantityOnHand | number" class="cell-text"></span>
+                                 </td>
+
+                                 <td class="col-lot cell-input  disabled"
+                                     ng-class="{'lot-expired':c.lotsOnHand[0].hasExpired}"
+                                     ng-class="{'last-row':c.lotsOnHand.length===1}">
+                    <span ng-show="c.lotsOnHand.length >0" class="cell-text"
+                          ng-bind="k.lot.expirationDate"></span>
+                                     <span ng-show="c.lotsOnHand.length >0 && c.lotsOnHand[0].hasExpired" class="cell-text">&nbsp;(Expired)</span>
+                                 </td>
+
+                                 <td class="col-lot cell-input  disabled">
+                                <span ng-show="c.lotsOnHand.length >0" class="cell-text"
+                                      ng-bind="k.customProps.occurred | date:'dd-MM-yyyy'"></span>
+                                     <span ng-show="c.lotsOnHand.length >0 && c.lotsOnHand[0].hasExpired" class="cell-text">&nbsp;(Expired)</span>
+                                 </td>
+
+                                 <td ng-if="$index == 0" class="cell-input padding2px" rowspan="{{c.lotsOnHand.length * 2}}">
+                  <span class="col-product cell-text">
+                    <span ng-bind="c.totalQuantityOnHand | number" class="padding2px"></span>
+                  </span>
+                                 </td>
+                                 <td ng-if="$index == 0" class="cell-input padding2px" rowspan="{{c.lotsOnHand.length * 2}}">
+                              <span style="padding-left: 18px;height: 10px !important;">
+                            <a id="printButton" ui-sref="element({idElement:c.product.id,facilityId:{{homeFacility}}})"
+                               class="btn btn-primary">
+                                View</a>
+                              </span>
+                                 </td>
+
+                             </tr>
+                             <tr ng-repeat-end></tr>
+                             <tr ng-repeat-end></tr>
+
+                             </tbody>
+                             <tbody></tbody>
+                         </table>
+                     </div>
+                 </form>
+
+                 <!--ending-->
+             </div>
+
+         </div>
+
+     </div>
+
+    </div>
+
+
+
+

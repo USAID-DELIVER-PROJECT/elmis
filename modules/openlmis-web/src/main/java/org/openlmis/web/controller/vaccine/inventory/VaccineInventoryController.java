@@ -13,10 +13,7 @@ package org.openlmis.web.controller.vaccine.inventory;
 
 
 import net.sf.jasperreports.engine.JRParameter;
-import org.openlmis.core.domain.ConfigurationSetting;
-import org.openlmis.core.domain.FacilityTypeApprovedProduct;
-import org.openlmis.core.domain.Program;
-import org.openlmis.core.domain.ProgramProduct;
+import org.openlmis.core.domain.*;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProgramProductService;
@@ -165,6 +162,7 @@ public class VaccineInventoryController extends BaseController {
                  FILE_NAME
     );
      // add parameters used by the report
+     Facility facility = facilityService.getHomeFacility(userId);
      Locale currentLocale = messageService.getCurrentLocale();
      map.put(JRParameter.REPORT_LOCALE, currentLocale);
      ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", currentLocale);
@@ -177,7 +175,8 @@ public class VaccineInventoryController extends BaseController {
      map.put(Constants.REPORT_PROGRAM_TITLE, configuration.getValue());
      String separator = System.getProperty("file.separator");
      map.put("image_dir", imgResource.getFile().getAbsolutePath() + separator);
-     map.put("FACILITY_ID", facilityService.getHomeFacility(userId).getId());
+     map.put("FACILITY_ID", facility.getId());
+     map.put("FACILITY_NAME",facility.getName());
 
      return new ModelAndView(jasperView, map);
  }

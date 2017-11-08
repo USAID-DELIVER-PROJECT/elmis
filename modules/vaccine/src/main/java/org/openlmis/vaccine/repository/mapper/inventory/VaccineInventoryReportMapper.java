@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
+import org.openlmis.vaccine.dto.VaccineDistributionDTO;
 import org.openlmis.vaccine.repository.mapper.inventory.builder.VaccineInventoryReportQueryBuilder;
 import org.springframework.stereotype.Repository;
 
@@ -42,4 +43,13 @@ public interface VaccineInventoryReportMapper {
     @Select("select count(Distinct d.tofacilityid) total from vaccine_distributions d\n" +
             "where d.periodid=#{periodId} and d.fromfacilityid=#{facilityId} and DISTRIBUTIONTYPE=#{type}")
     Integer getTotalDistributedFacilities(@Param("periodId")Long periodId, @Param("facilityId")Long facilityId,@Param("type") String type);
+
+    @Select(" \n" +
+            "               SELECT periodId FROM vaccine_distributions d \n" +
+            "               JOIN processing_periods p ON  d.periodID = p.id\n" +
+            "                WHERE tofacilityId=#{facilityId}  AND \n" +
+            "                periodid = (SELECT max(periodID) FROM vaccine_distributions WHERE tofacilityId=#{facilityId} and distributionDate <=#{distributionDate} LIMIT1)\n" +
+            "                LIMIT 1 ")
+    VaccineDistributionDTO getDistributionPeriod(@Param("distributionDate") String distributionDate,@Param("facilityId")Long facilityId);
+
 }

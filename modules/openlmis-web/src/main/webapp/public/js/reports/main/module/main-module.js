@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle','ui.bootstrap.pagination', 'tree.dropdown'])
+angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle','ui.bootstrap.pagination', 'tree.dropdown','export.csv'])
     .config(['$routeProvider', function ($routeProvider) {
       $routeProvider.
           when('/adjustment-summary', {controller: AdjustmentSummaryReportController, templateUrl:'partials/adjustment-summary.html',reloadOnSearch:false}).

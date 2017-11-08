@@ -51,4 +51,10 @@ public interface NonReportingFacilityReportMapper {
 
   @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getPeriodsTicksForChart")
   List<Map<String, Object>> getPeriodsTicksForChart(@Param("filterCriteria") NonReportingFacilityParam params) ;
+
+  @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getFacilitiesWithByReportingStatus")
+  @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
+  List<Map<String, Object>> getReportingStatusChartData(@Param("filterCriteria") NonReportingFacilityParam params,
+                                                        @Param("RowBounds") RowBounds rowBounds,
+                                                        @Param("userId") Long userId);
 }

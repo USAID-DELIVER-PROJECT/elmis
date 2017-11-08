@@ -14,6 +14,7 @@ services.factory('requisitionService', function (messageService) {
   var FULL_SUPPLY = 'fullSupply';
   var REGIMEN = 'regimen';
   var EQUIPMENT = 'equipment';
+  var MANUAL_TEST = 'manualTest';
 
   var populateScope = function ($scope, $location, $routeParams) {
     $scope.visibleTab = $routeParams.supplyType;
@@ -68,12 +69,13 @@ services.factory('requisitionService', function (messageService) {
       'nonFullSupply': $scope.rnr.nonFullSupplyLineItems,
       'fullSupply': $scope.rnr.fullSupplyLineItems,
       'regimen': $scope.rnr.regimenLineItems,
-      'equipment': $scope.rnr.equipmentLineItems
+      'equipment': $scope.rnr.equipmentLineItems,
+      'manualTest': $scope.rnr.manualTestLineItems
     };
     if (save) $scope.saveRnr();
 
-    $scope.page = {fullSupply: [], nonFullSupply: [], regimen: [], equipment:[]};
-    $scope.visibleTab = ($routeParams.supplyType === NON_FULL_SUPPLY) ? NON_FULL_SUPPLY : ($routeParams.supplyType === REGIMEN && $scope.regimenCount) ? REGIMEN : ($routeParams.supplyType === EQUIPMENT && $scope.equipmentCount)?EQUIPMENT : FULL_SUPPLY;
+    $scope.page = {fullSupply: [], nonFullSupply: [], regimen: [], equipment:[], manualTest: []};
+    $scope.visibleTab = ($routeParams.supplyType === NON_FULL_SUPPLY) ? NON_FULL_SUPPLY : ($routeParams.supplyType === REGIMEN && $scope.regimenCount) ? REGIMEN : ($routeParams.supplyType === EQUIPMENT && $scope.equipmentCount) ? EQUIPMENT :  ($routeParams.supplyType === MANUAL_TEST &&  $scope.manualTestCount) ? MANUAL_TEST : FULL_SUPPLY;
 
     $location.search('supplyType', $scope.visibleTab);
 
