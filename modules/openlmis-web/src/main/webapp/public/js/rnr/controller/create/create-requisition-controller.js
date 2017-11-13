@@ -192,9 +192,11 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
     var fullSupplyError = $scope.rnr.validateFullSupply();
     var nonFullSupplyError = $scope.rnr.validateNonFullSupply();
     var equipmentError = $scope.rnr.validateEquipments();
+    var manualTestError = $scope.rnr.validateManualTest();
     $scope.fullSupplyTabError = !!fullSupplyError;
     $scope.nonFullSupplyTabError = !!nonFullSupplyError;
     $scope.equipmentTabError = !!equipmentError;
+    $scope.manualTestTabError = !!manualTestError;
     
     if ($scope.rnr.regimenLineItems)
       validateRegimenLineItems();
@@ -202,7 +204,7 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
     if ($scope.regimenLineItemInValid) {
       regimenError = "error.rnr.validation";
     }
-    var errorMessage = fullSupplyError || nonFullSupplyError || regimenError || equipmentError;
+    var errorMessage = fullSupplyError || nonFullSupplyError || regimenError || equipmentError || manualTestError;
     if (errorMessage) {
       requisitionService.setErrorPages($scope);
       $scope.submitError = errorMessage;

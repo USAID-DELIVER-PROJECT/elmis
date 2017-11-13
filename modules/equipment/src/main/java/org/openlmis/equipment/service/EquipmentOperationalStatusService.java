@@ -39,4 +39,8 @@ public class EquipmentOperationalStatusService {
         return repository.getAll();
     }
 
+    public EquipmentOperationalStatus getObsoleteEquipmentOperationalStatus(){
+        return repository.getObsoleteEquipmentOperationalStatus();
+    }
+
 }

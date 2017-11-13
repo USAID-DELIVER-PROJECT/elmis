@@ -6,7 +6,9 @@ import org.openlmis.core.message.OpenLmisMessage;
 import org.openlmis.core.service.*;
 import org.openlmis.db.repository.mapper.DbMapper;
 import org.openlmis.equipment.domain.EquipmentInventory;
+import org.openlmis.equipment.domain.EquipmentOperationalStatus;
 import org.openlmis.equipment.service.EquipmentInventoryService;
+import org.openlmis.equipment.service.EquipmentOperationalStatusService;
 import org.openlmis.rnr.domain.*;
 import org.openlmis.rnr.dto.RnrDTO;
 import org.openlmis.rnr.repository.RequisitionRepository;
@@ -115,6 +117,9 @@ public class RequisitionService {
   private ManualTestsLineItemMapper manualTestMapper;
 
   @Autowired
+  private EquipmentOperationalStatusService equipmentOperationalStatusService;
+
+  @Autowired
   public void setRequisitionSearchStrategyFactory(RequisitionSearchStrategyFactory requisitionSearchStrategyFactory) {
     this.requisitionSearchStrategyFactory = requisitionSearchStrategyFactory;
   }
@@ -200,7 +205,14 @@ public class RequisitionService {
   private void populateEquipments(Rnr requisition) {
     List<EquipmentInventory> inventories = equipmentInventoryService.getInventoryForFacility(requisition.getFacility().getId(), requisition.getProgram().getId());
     requisition.setEquipmentLineItems(new ArrayList<EquipmentLineItem>());
+
+    EquipmentOperationalStatus obsoleteEquipmentStatus =
+            equipmentOperationalStatusService.getObsoleteEquipmentOperationalStatus();
+
     for (EquipmentInventory inv : inventories) {
+      if(inv.getOperationalStatusId() == obsoleteEquipmentStatus.getId())
+        continue;
+
       EquipmentLineItem lineItem = new EquipmentLineItem();
       lineItem.setRnrId(requisition.getId());
       lineItem.setEquipmentSerial(inv.getSerialNumber());
