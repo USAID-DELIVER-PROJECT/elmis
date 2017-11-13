@@ -38,6 +38,7 @@ public class DistrictConsumptionQueryBuilder {
     FROM("requisition_line_items li");
     INNER_JOIN("requisitions r on r.id = li.rnrid");
     INNER_JOIN("facilities f on r.facilityId = f.id ");
+    INNER_JOIN("facility_types ft ON f.typeid = ft.id ");
     INNER_JOIN("vw_districts d on d.district_id = f.geographicZoneId ");
     INNER_JOIN("processing_periods pp on pp.id = r.periodId");
     INNER_JOIN("products p on p.code::text = li.productCode::text");
@@ -48,12 +49,14 @@ public class DistrictConsumptionQueryBuilder {
     WHERE(periodIsFilteredBy("r.periodId"));
     WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
     WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
+    WHERE(productFilteredBy("p.id"));
 
     if(filter.getProductCategory() != 0){
       WHERE( productCategoryIsFilteredBy("ppg.productCategoryId"));
     }
 
-    WHERE(productFilteredBy("p.id"));
+    if(filter.getExcludeDHO())
+      WHERE("ft.code not in ('DHO','DHTM') "); // exclude DHOs and DHMTs
 
     if (filter.getZone() != 0) {
       WHERE( geoZoneIsFilteredBy("d") );
@@ -82,6 +85,7 @@ public class DistrictConsumptionQueryBuilder {
     FROM("requisition_line_items li");
     INNER_JOIN("requisitions r on r.id = li.rnrid");
     INNER_JOIN("facilities f on r.facilityId = f.id ");
+    INNER_JOIN("facility_types ft ON f.typeid = ft.id ");
     INNER_JOIN("vw_districts d on d.district_id = f.geographicZoneId ");
     INNER_JOIN("processing_periods pp on pp.id = r.periodId");
     INNER_JOIN("products p on p.code::text = li.productCode::text");
@@ -92,16 +96,18 @@ public class DistrictConsumptionQueryBuilder {
     WHERE(periodIsFilteredBy("r.periodId"));
     WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
     WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
+    WHERE(productFilteredBy("p.id"));
 
     if(filter.getProductCategory() != 0){
       WHERE( productCategoryIsFilteredBy("ppg.productCategoryId"));
     }
 
-    WHERE(productFilteredBy("p.id"));
-
     if (filter.getZone() != 0) {
       WHERE( geoZoneIsFilteredBy("d") );
     }
+
+    if(filter.getExcludeDHO())
+      WHERE("ft.code not in ('DHO','DHTM') "); // exclude DHOs and DHMTs
 
     GROUP_BY("p.code, p.primaryName, p.dispensingunit, d.district_name, d.district_id, f.name");
     return String.format( "select sq.*, " +

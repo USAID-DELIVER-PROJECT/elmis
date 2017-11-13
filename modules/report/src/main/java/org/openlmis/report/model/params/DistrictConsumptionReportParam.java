@@ -35,5 +35,7 @@ public class DistrictConsumptionReportParam
 
   private Long productCategory;
 
+  private Boolean excludeDHO;
+
 
 }
