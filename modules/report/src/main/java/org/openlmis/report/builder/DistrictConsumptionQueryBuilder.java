@@ -22,7 +22,7 @@ import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.*;
 
 public class DistrictConsumptionQueryBuilder {
 
-  public static String getQuery(Map params) {
+  public static String getDistrictConsumptionQuery(Map params) {
 
     DistrictConsumptionReportParam filter = (DistrictConsumptionReportParam) params.get("filterCriteria");
 
@@ -69,7 +69,7 @@ public class DistrictConsumptionQueryBuilder {
         "order by coalesce(sq.consumption,0) desc", SQL());
   }
 
-  public static String getFacilityDetailQuery(Map params) {
+  public static String getFacilityConsumptionQuery(Map params) {
     DistrictConsumptionReportParam filter = (DistrictConsumptionReportParam) params.get("filterCriteria");
 
     BEGIN();

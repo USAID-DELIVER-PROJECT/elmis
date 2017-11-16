@@ -156,11 +156,11 @@ public class InteractiveReportController extends BaseController {
         DistrictConsumptionReportDataProvider provider = (DistrictConsumptionReportDataProvider)report.getReportDataProvider();
 
         List<DistrictConsumptionReport> districtConsumptionReportList =
-                (List<DistrictConsumptionReport>)provider.getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+                (List<DistrictConsumptionReport>)provider.getDistrictConsumptionReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
 
         List<DistrictConsumptionByFacilityReport> facilityConsumptionReportList =
-                (List<DistrictConsumptionByFacilityReport>)provider.getFacilityConsumptionReportBody(request.getParameterMap(),
-                        request.getParameterMap(), page, max);
+                (List<DistrictConsumptionByFacilityReport>)provider.getFacilityConsumption(request.getParameterMap(),
+                request.getParameterMap(), page, max);
 
         Map<String, Pages> multiPages = new HashMap<String, Pages>();
         multiPages.put(DISTRICT_CONSUMPTION, new Pages(page, max, districtConsumptionReportList));
