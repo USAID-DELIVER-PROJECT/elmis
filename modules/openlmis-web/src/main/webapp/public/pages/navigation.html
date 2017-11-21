@@ -8,6 +8,8 @@
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
   -->
 
+
+
 <div class="navigation toggleFullScreen" ng-controller="NavigationController" ui-nav>
   <ul class="clearfix" style="display:none">
     <li >
@@ -89,6 +91,12 @@
             <li>
                 <a href="/public/pages/vaccine/stock-on-hand/index.html#/initiate"
                    openlmis-message="link.stock.on.hand"></a>
+
+            </li>
+
+            <li>
+                <a href="/public/pages/vaccine/stock-availability/index.html#/initiate"
+                   >Stock Availability Summary</a>
 
             </li>
             <li ng-show="hasPermission('VIEW_STOCK_SUMMARY')">
@@ -269,6 +277,8 @@
           </div>
       </li>
     <li ng-include="'/public/pages/reports/navigation.html'"></li>
+
+
     <li>
       <a id="administration-menu" href="javascript: void(0)" openlmis-message="link.administration"></a>
 
@@ -512,12 +522,46 @@
       </div>
 
     <li ng-show="hasPermission('ACCESS_ILS_GATEWAY')">
-        <a
+    <!--    <a
             href="/public/pages/ils-gateway/index.html#/dashboard"
-            openlmis-message="link.ils"></a>
+            openlmis-message="link.ils">
+
+        </a>-->
+
+
     </li>
 
-    <li ng-show="hasPermission('ACCESS_NEW_DASHBOARD')">
+
+<!--
+          <a href="/public/pages/vaccine/stock-availability/index.html#/dashboard">
+-->
+            <!--  <a href="#">
+                  <span class="glyphicon glyphicon-envelope"></span>
+              </a>-->
+
+         <!-- <a>
+        <i class="flaticon-alert" style=""></i>
+          </a>-->
+
+<!--
+          <a href="" style="height: 50% !important;"><i class="flaticon-alert"></i></a>
+-->
+<!--<li>
+
+
+    <div id="circle"><span style="font-size: 100% !important;text-align: center !important;
+vertical-align: top !important;">
+    <strong>78</strong>
+    </span></div>
+
+   <a href="#" class="ico">&nbsp;&nbsp;&nbsp;
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alerts</a>
+
+</li>-->
+
+
+
+      <li ng-show="hasPermission('ACCESS_NEW_DASHBOARD')">
       <a
               href="/public/pages/dashboard/index_new.html#/dashboard-new"
               openlmis-message="link.dashboard"></a>
@@ -527,6 +571,11 @@
                   href="/public/pages/dashboard/index.html#/dashboard"
                   openlmis-message="link.dashboard"></a>
       </li>
+
+      <li ng-hide="false">
+          <ng-include src="'/public/pages/notification.html'"></ng-include>
+      </li>
+
   </ul>
 </div>
 <div class="navigation-locale-bar">

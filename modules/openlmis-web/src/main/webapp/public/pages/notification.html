@@ -1,0 +1,343 @@
+<style>
+
+
+    .bell
+    @include translate( -50% , -50% )
+    background-color: hsl( 210, 40%, 40% )
+    position: absolute
+    width: 20px
+    height: 20px
+    top: 50%
+    left: 50%
+    border-top-right-radius: 50%
+    border-top-left-radius: 50%
+    cursor: pointer
+
+    &:hover
+    background-color: white
+
+    &:before , &:after
+    content: ""
+    position: absolute
+    background-color: inherit
+
+    &:before
+    border-top-right-radius: 1000px
+    border-top-left-radius: 1000px
+    width: 140%
+    height: 70%
+    top: 50%
+    left: -20%
+
+    &:after
+    border-bottom-right-radius: 1000px
+    border-bottom-left-radius: 1000px
+    width: 50%
+    height: 25%
+    top: 130%
+    left: 25%;
+
+
+
+    .glyphicon-bell:before {
+        content: "\e123" !important;
+
+    }
+
+    .dropdown-menu{
+/*
+        font-size:17 !important;
+*/
+    }
+    .ul li.beak {
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 8px solid #FFF;
+        position: absolute;
+        top: 3px;
+        left: 20px;
+        border-top: 0;
+    }
+
+    /* CSS used here will be applied after bootstrap.css */
+    /*
+    start
+    */
+    .dropdown {
+        display: inline-block;
+        margin-left: 20px;
+        padding: 10px;
+    }
+
+    .glyphicon-bell {
+
+        font-size: 1.9rem !important;
+        color: #003b54 !important;
+    }
+
+    .notifications {
+        min-width: 420px;
+    }
+
+    .notifications-wrapper {
+        overflow: auto;
+        max-height: 250px;
+    }
+
+    .menu-title {
+        color: blue;
+        font-size: 1.5rem;
+        display: inline-block;
+    }
+
+    .glyphicon-circle-arrow-right {
+        margin-left: 10px;
+    }
+
+    .notification-heading, .notification-footer {
+        padding: 2px 10px;
+    }
+
+    .dropdown-menu.divider {
+        margin: 5px 0;
+    }
+
+    .item-title {
+
+        font-size: 1.3rem;
+        color: #eef1f5;
+
+    }
+
+    .notifications a.content {
+        text-decoration: none;
+        background: white;
+
+    }
+
+    .notification-item {
+        padding: 10px;
+        margin: 5px;
+        background: #ccc;
+        border-radius: 4px;
+    }
+
+    /*
+    end
+    */
+
+    .ico:after {
+        content: '';
+        display: block;
+        height: 30px; /*height of icon */
+        width: 30px; /*width of icon */
+        position: absolute;
+        /*where to replace the icon */
+        top: 0px;
+        left: 10px;
+        /*background */
+        /* background: url(/public/images/Bell-321.png) no-repeat 0px 0px;
+         background-size:cover;*/
+    }
+
+    #noti_Counter1 {
+
+        position: absolute;
+        background: #E1141E;
+        color: #FFF;
+        font-size: 14px !important;
+        font-weight: normal;
+        padding: 1px 3px;
+        margin: -8px 0 0 25px !important;
+
+        border-radius: 50% !important;
+        -moz-border-radius: 50% !important;
+        -webkit-border-radius: 50% !important;
+        z-index: 1;
+        cursor: pointer;
+        width: 20px;
+
+    }
+
+    #circle {
+        position: absolute;
+        background-color: #E1141E;
+        border: 1px solid red;
+        color: #FFF;
+        height: 18px;
+        font-size: 12px;
+        font-weight: normal;
+        text-align: center !important;
+
+        padding: 1px 3px;
+        margin: -13px 0 0 25px;
+
+        cursor: pointer;
+        border-radius: 50%;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        z-index: 1;
+        /*
+                width:20px;
+        */
+    }
+
+
+    .glyphicon {
+
+        display: inline-block;
+        font-family: 'Glyphicons Halflings' !important;
+        font-style: normal !important;
+        font-weight: 400 !important;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+
+
+
+
+   /*     position: relative !important;
+        color: #eef1f5 !important;
+        top: 0px;
+        left: 1px;
+        font-size: 20px;
+        margin: -4px 0 0 10px;
+*/
+
+
+
+    }
+    .button {
+        color: white;
+        display: inline-block; /* Inline elements with width and height. TL;DR they make the icon buttons stack from left-to-right instead of top-to-bottom */
+        position: relative; /* All 'absolute'ly positioned elements are relative to this one */
+        padding: 2px 5px; /* Add some padding so it looks nice */
+    }
+
+    /* Make the badge float in the top right corner of the button */
+
+    .IMAGE {
+        float: left;
+        margin:0 0 30px 0;
+        padding: 5px 0 0 0 ;
+        width: 100%;
+        background-image:url('/public/images/Bell-321.png');
+    }
+
+</style>
+
+<div ng-controller="NavigationController">
+
+
+    <div class="dropdown">
+        <div id="circle">
+         <span ng-hide="false">
+            {{ supplying.orders  +
+                (supplyingPendingReceive.supplyingPendingToReceive.length +
+                supplyingPendingReceive.supplyingPendingToReceiveLowerLevel.length)
+                + totalNonFunctionalEquipments + totalReceive + totalMinimumStock + investigating.count
+                + totalBatchToExpire
+                | number }}
+
+         </span>
+        </div>
+<!--
+        <button type="submit" style="color: blue"><img src="/public/images/Bell-321.png"> </img></button>
+-->
+<!--
+        <button style="background:url(/public/images/Bell-321.png)   no-repeat 0px 0px height:800px !important;" />
+-->
+        <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
+      <!--      <i class="fa fa-bell" style=" position: relative !important;
+        color: #eef1f5 !important;
+        top: 0px;
+        left: 1px;
+        font-size: 20px;
+        margin: -4px 0 0 10px;"></i>-->
+<!--
+            <i class="fa fa-bell" aria-hidden="true"></i>
+-->
+
+
+        </a>
+        <div class="IMAGE"></div>
+
+
+
+        <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
+
+            <div class="notification-heading"><h2 class="menu-title" style="color: #17888f !important;
+            font-size: 1.2em !important;">Notifications</h2><!--<h4
+                    class="menu-title pull-right">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4>-->
+            </div>
+            <li class="divider"></li>
+            <div class="notifications-wrapper">
+                  <div class="content">
+                    <div class="notification-item">
+                        <h2 class="item-title" style="font-size: 1.2em !important;">Pending Orders</h2>
+
+                        <span class="alert alert-info">
+                            You have <a href="/public/pages/vaccine/order-requisition/index.html#/view" style="display: inline !important;color:blue !important;" > <strong>{{supplying.orders}}</strong></a>
+                            Pending Orders. <a href="/public/pages/vaccine/order-requisition/index.html#/view"  style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
+                        </span>
+
+                    </div>
+</div>
+<!--
+                </a>
+-->
+           <!--     <a class="content" href="#">
+                    <div class="notification-item">
+                        <h4 class="item-title">Evaluation Deadline 1 · day ago</h4>
+
+                        <p class="item-info">Marketing 101, Video Assignment</p>
+                    </div>
+                </a>
+                <a class="content" href="#">
+                    <div class="notification-item">
+                        <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+
+                        <p class="item-info">Marketing 101, Video Assignment</p>
+                    </div>
+                </a>
+                <a class="content" href="#">
+                    <div class="notification-item">
+                        <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+
+                        <p class="item-info">Marketing 101, Video Assignment</p>
+                    </div>
+
+                </a>
+                <a class="content" href="#">
+                    <div class="notification-item">
+                        <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+
+                        <p class="item-info">Marketing 101, Video Assignment</p>
+                    </div>
+                </a>
+                <a class="content" href="#">
+                    <div class="notification-item">
+                        <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+
+                        <p class="item-info">Marketing 101, Video Assignment</p>
+                    </div>
+                </a>-->
+
+            </div>
+            <li class="divider"></li>
+            <div class="notification-footer"><!--<h4 class="menu-title">View all<i
+                    class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
+            <li class="beak"></li>-->
+
+        </ul>
+    </div>
+    </div>
+
+    <span style="color: white" ng-hide="true">Alerts</span>
+
+    <!--
+    <a href="/public/pages/vaccine/stock-availability/index.html#/notification" class="ico">&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alerts</a>-->
+
+</div>

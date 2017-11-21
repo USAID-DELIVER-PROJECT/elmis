@@ -1,0 +1,70 @@
+<style>
+
+    .ico:after{
+        content: '';
+        display: block;
+        height: 30px;  /*height of icon */
+        width: 30px;  /*width of icon */
+        position: absolute;
+        /*where to replace the icon */
+        top: 0px;
+        left: 10px;
+        /*background */
+        background: url(/public/images/Bell-321.png) no-repeat 0px 0px;
+        background-size:cover;
+    }
+
+    #noti_Counter1 {
+
+        display:block;
+        position:absolute;
+        background:#E1141E;
+        color:#FFF;
+        font-size:12px;
+        font-weight:normal;
+        padding:1px 3px;
+        margin:-8px 0 0 25px;
+        border-radius:1px;
+        -moz-border-radius:2px;
+        -webkit-border-radius:2px;
+        z-index:1;
+        cursor:pointer;
+
+    }
+
+    #circle {
+        position:absolute;
+        background-color:#E1141E;
+        border:1px solid red;
+        color:#FFF;
+        height:14px;
+        font-size:12px;
+        font-weight:normal;
+        text-align: center;
+
+        padding:1px 3px;
+        margin:-6px 0 0 25px;
+
+        cursor:pointer;
+        border-radius:50%;
+        -moz-border-radius:50%;
+        -webkit-border-radius:50%;
+        z-index:1;
+        width:14px;
+    }
+
+
+</style>
+
+
+<div id="circle" ng-controller="NavigationController">
+ <span style="font-size: 100% !important;text-align: center !important;
+               vertical-align: top !important;">
+    <strong>{{investigating.count}}</strong>
+ </span>
+</div>
+
+<a href="/public/pages/vaccine/stock-availability/index.html#/notification" class="ico">&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alerts</a>
+
+
