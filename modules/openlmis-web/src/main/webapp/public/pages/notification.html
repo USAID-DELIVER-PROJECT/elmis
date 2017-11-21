@@ -2,6 +2,7 @@
 
 
     .bell
+
     @include translate( -50% , -50% )
     background-color: hsl( 210, 40%, 40% )
     position: absolute
@@ -37,18 +38,17 @@
     top: 130%
     left: 25%;
 
-
-
     .glyphicon-bell:before {
         content: "\e123" !important;
 
     }
 
-    .dropdown-menu{
-/*
-        font-size:17 !important;
-*/
+    .dropdown-menu {
+        /*
+                font-size:17 !important;
+        */
     }
+
     .ul li.beak {
         width: 0;
         height: 0;
@@ -88,7 +88,7 @@
 
     .menu-title {
         color: blue;
-        font-size: 1.5rem;
+        font-size: 1.0rem;
         display: inline-block;
     }
 
@@ -184,7 +184,6 @@
         */
     }
 
-
     .glyphicon {
 
         display: inline-block;
@@ -194,20 +193,16 @@
         line-height: 1;
         -webkit-font-smoothing: antialiased;
 
-
-
-
-   /*     position: relative !important;
-        color: #eef1f5 !important;
-        top: 0px;
-        left: 1px;
-        font-size: 20px;
-        margin: -4px 0 0 10px;
-*/
-
-
+        /*     position: relative !important;
+             color: #eef1f5 !important;
+             top: 0px;
+             left: 1px;
+             font-size: 20px;
+             margin: -4px 0 0 10px;
+     */
 
     }
+
     .button {
         color: white;
         display: inline-block; /* Inline elements with width and height. TL;DR they make the icon buttons stack from left-to-right instead of top-to-bottom */
@@ -217,14 +212,30 @@
 
     /* Make the badge float in the top right corner of the button */
 
-    .IMAGE {
-        float: left;
-        margin:0 0 30px 0;
-        padding: 5px 0 0 0 ;
-        width: 100%;
-        background-image:url('/public/images/Bell-321.png');
+    #Library {
+        background: url('/public/images/Bell-321.png') no-repeat center;
+        width: 20px;
+        height: 20px;
+        position: relative !important;
+        background-size: 49px;
+        color: white;
+        color: white !important;
+        /*
+                margin: -4px 0 0 10px;
+        */
+
+        margin-top: -0.5em;
+        padding-right: 18px
     }
 
+    h2 {
+        font-size: 30px;
+        line-height: 20px !important;
+    }
+
+.alert{
+    padding: 8px 5px 8px 14px !important;
+}
 </style>
 
 <div ng-controller="NavigationController">
@@ -242,102 +253,114 @@
 
          </span>
         </div>
-<!--
-        <button type="submit" style="color: blue"><img src="/public/images/Bell-321.png"> </img></button>
--->
-<!--
-        <button style="background:url(/public/images/Bell-321.png)   no-repeat 0px 0px height:800px !important;" />
--->
-        <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
-      <!--      <i class="fa fa-bell" style=" position: relative !important;
-        color: #eef1f5 !important;
-        top: 0px;
-        left: 1px;
-        font-size: 20px;
-        margin: -4px 0 0 10px;"></i>-->
-<!--
-            <i class="fa fa-bell" aria-hidden="true"></i>
--->
 
-
+        <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
+            <div id="Library"></div>
         </a>
-        <div class="IMAGE"></div>
-
 
 
         <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
 
             <div class="notification-heading"><h2 class="menu-title" style="color: #17888f !important;
-            font-size: 1.2em !important;">Notifications</h2><!--<h4
+            font-size: 1.0em !important;">Notifications</h2><!--<h4
                     class="menu-title pull-right">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4>-->
             </div>
+<!--
             <li class="divider"></li>
+-->
             <div class="notifications-wrapper">
-                  <div class="content">
+                <div class="content">
                     <div class="notification-item">
-                        <h2 class="item-title" style="font-size: 1.2em !important;">Pending Orders</h2>
+                        <h2 class="item-title" style="font-size: 1.0em !important;">Supplying</h2>
 
                         <span class="alert alert-info">
-                            You have <a href="/public/pages/vaccine/order-requisition/index.html#/view" style="display: inline !important;color:blue !important;" > <strong>{{supplying.orders}}</strong></a>
-                            Pending Orders. <a href="/public/pages/vaccine/order-requisition/index.html#/view"  style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
+                             You have <a href="/public/pages/vaccine/order-requisition/index.html#/view"
+                                        style="display: inline !important;color:blue !important;"> <strong>{{supplying.orders}}</strong></a>
+                            Pending Orders. <a href="/public/pages/vaccine/order-requisition/index.html#/view"
+                                               style="display: inline !important;color:blue !important;"><strong> Resolve</strong></a>
+                        </span>
+                        <div class="divider"></div>
+                        <span class="alert alert-info" style="">
+                             <a href="/public/pages/vaccine/order-requisition/index.html#/view"
+                                        style="display: inline !important;color:blue !important;"> <strong>
+
+                                 {{   supplyingPendingReceive.supplyingPendingToReceiveLowerLevel.length}}
+                             </strong></a>
+                           Order(s) Not Received Yet. <a href="/public/pages/vaccine/order-requisition/index.html#/view"
+                                               style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
                         </span>
 
                     </div>
-</div>
+
+                    <div class="notification-item">
+                        <h2 class="item-title" style="font-size: 1.0em !important;">Products With Extremely Low Stock</h2>
+
+                        <span class="alert alert-info">
+                            You have <a href="/public/pages/vaccine/order-requisition/index.html#/view"
+                                        style="display: inline !important;color:blue !important;"> <strong>{{supplying.orders}}</strong></a>
+                            Pending Orders. <a href="/public/pages/vaccine/order-requisition/index.html#/view"
+                                               style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
+                        </span>
+
+                    </div>
+
+                </div>
+                <!--
+                                </a>
+                -->
+                <!--     <a class="content" href="#">
+                         <div class="notification-item">
+                             <h4 class="item-title">Evaluation Deadline 1 · day ago</h4>
+
+                             <p class="item-info">Marketing 101, Video Assignment</p>
+                         </div>
+                     </a>
+                     <a class="content" href="#">
+                         <div class="notification-item">
+                             <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+
+                             <p class="item-info">Marketing 101, Video Assignment</p>
+                         </div>
+                     </a>
+                     <a class="content" href="#">
+                         <div class="notification-item">
+                             <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+
+                             <p class="item-info">Marketing 101, Video Assignment</p>
+                         </div>
+
+                     </a>
+                     <a class="content" href="#">
+                         <div class="notification-item">
+                             <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+
+                             <p class="item-info">Marketing 101, Video Assignment</p>
+                         </div>
+                     </a>
+                     <a class="content" href="#">
+                         <div class="notification-item">
+                             <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+
+                             <p class="item-info">Marketing 101, Video Assignment</p>
+                         </div>
+                     </a>-->
 <!--
-                </a>
+                <li class="divider"></li>
 -->
-           <!--     <a class="content" href="#">
-                    <div class="notification-item">
-                        <h4 class="item-title">Evaluation Deadline 1 · day ago</h4>
-
-                        <p class="item-info">Marketing 101, Video Assignment</p>
-                    </div>
-                </a>
-                <a class="content" href="#">
-                    <div class="notification-item">
-                        <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
-
-                        <p class="item-info">Marketing 101, Video Assignment</p>
-                    </div>
-                </a>
-                <a class="content" href="#">
-                    <div class="notification-item">
-                        <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
-
-                        <p class="item-info">Marketing 101, Video Assignment</p>
-                    </div>
-
-                </a>
-                <a class="content" href="#">
-                    <div class="notification-item">
-                        <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
-
-                        <p class="item-info">Marketing 101, Video Assignment</p>
-                    </div>
-                </a>
-                <a class="content" href="#">
-                    <div class="notification-item">
-                        <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
-
-                        <p class="item-info">Marketing 101, Video Assignment</p>
-                    </div>
-                </a>-->
 
             </div>
-            <li class="divider"></li>
-            <div class="notification-footer"><!--<h4 class="menu-title">View all<i
-                    class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
-            <li class="beak"></li>-->
+            <!--  <div class="notification-footer"><h4 class="menu-title">View all<i
+                      class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
+              <li class="beak"></li>-->
 
         </ul>
     </div>
-    </div>
+</div>
 
-    <span style="color: white" ng-hide="true">Alerts</span>
+<span style="color: white" ng-hide="true">Alerts</span>
 
-    <!--
-    <a href="/public/pages/vaccine/stock-availability/index.html#/notification" class="ico">&nbsp;&nbsp;&nbsp;
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alerts</a>-->
+<!--
+<a href="/public/pages/vaccine/stock-availability/index.html#/notification" class="ico">&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alerts</a>-->
 
 </div>
