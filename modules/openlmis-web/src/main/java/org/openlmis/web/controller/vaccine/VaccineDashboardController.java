@@ -11,6 +11,8 @@
  */
 package org.openlmis.web.controller.vaccine;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.openlmis.core.web.OpenLmisResponse;
@@ -31,6 +33,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/vaccine/dashboard/")
+@Api("Immunization Rest APIs")
 public class VaccineDashboardController  extends BaseController {
 
     private static final Logger LOGGER = Logger.getLogger(VaccineDashboardController.class);
@@ -346,6 +349,38 @@ Long userId = this.loggedInUserId(request);
         ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("events",
                 service.getStockEventByMonth(product,period,year,district));
         response.getBody().addData("date", dateString);
+        return response;
+    }
+
+  @RequestMapping(value = "availableStock.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getAvailableStockForDashboard(
+            HttpServletRequest request,
+            @Param("product") Long product,
+            @Param("period") Long period,
+            @Param("year") Long year,
+            @Param("district") Long district
+            ) {
+
+        Long userId = this.loggedInUserId(request);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString=formatter.format(new Date());
+        ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("availableStock",
+                service.getAvailableStockForDashboard(product,period,year,userId));
+        response.getBody().addData("date", dateString);
+        return response;
+    }
+
+
+    @RequestMapping(value = "immunizationAPI.json", method = RequestMethod.GET)
+    @ApiOperation(position = 1, value = "Get All Monthly Vaccine Immunization ")
+    public ResponseEntity<OpenLmisResponse> getImmmunizationAPI(
+            HttpServletRequest request
+
+            ) {
+
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.response("immunization",
+                service.getVaccineImmunization());
         return response;
     }
 

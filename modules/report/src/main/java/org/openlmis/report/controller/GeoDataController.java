@@ -254,4 +254,14 @@ public class GeoDataController extends BaseController {
 
         return OpenLmisResponse.response(GEO_ZONE, this.geographicZoneReportMapper.getGeoZoneGeometryJson());
     }
+
+    @RequestMapping(value = "/vaccine-coverage", method = GET, headers = BaseController.ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getGeoZoneVaccineCoverage(@RequestParam(value = "product", required = false, defaultValue = "0") Long product,
+                                                                   @RequestParam(value = "period", required = false, defaultValue = "0") Long period,
+                                                                   @RequestParam(value = "year", required = false, defaultValue = "0") Long year,
+                                                                   HttpServletRequest request) {
+        Long userId = loggedInUserId(request);
+
+        return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoZoneVaccineCoverage(userId, product,year, period));
+    }
 }

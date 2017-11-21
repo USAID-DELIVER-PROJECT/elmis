@@ -600,4 +600,127 @@ public interface GeographicZoneReportMapper {
 
     @Select("select * from geographic_zone_geojson")
     List<GeographicZoneJsonDto> getGeoZoneGeometryJson();
+
+
+        @Select("select gzz.id, gzz.name, gjson.geometry,\n" +
+                "\n" +
+                "COALESCE(ever.count) ever,\n" +
+                "    COALESCE(expected.count) expected,\n" +
+                "     COALESCE(total.count) total, COALESCE(period.count,0) as period ,\n" +
+                "      round(coverage.coveragePercentage::int,0) coveragePercentage, coveRage.coverageClassification\n" +
+                "      ,coveRage.monthlyestimate monthlyestimate,coverage.cumulativeMonthlyRegular Vaccinated\n" +
+                "     from  \n" +
+                "     geographic_zones gzz \n" +
+                "     left join  \n" +
+                "     geographic_zone_geojson gjson on  \n" +
+                "     gzz.id = gjson.zoneId \n" +
+                "     left join \n" +
+                "    (select geographicZoneId, count(*) from facilities  \n" +
+                "     join programs_supported ps on ps.facilityId = facilities.id \n" +
+                "     join geographic_zones gz on gz.id = facilities.geographicZoneId \n" +
+                "     join requisition_group_members rgm on rgm.facilityId = facilities.id \n" +
+                "     join requisition_group_program_schedules rgps on rgps.requisitionGroupId = rgm.requisitionGroupId and rgps.programId = ps.programId  \n" +
+                "    join processing_periods pp on pp.scheduleId = rgps.scheduleId and pp.id = #{processingPeriodId}::INT\n" +
+                "     where gz.levelId = (select max(id) from geographic_levels) and ps.programId = 82\n" +
+                "     group by geographicZoneId\n" +
+                "     ) expected \n" +
+                "    on gzz.id = expected.geographicZoneId \n" +
+                "     left join \n" +
+                "     (select geographicZoneId, count(*) from facilities  \n" +
+                "    join geographic_zones gz on gz.id = facilities.geographicZoneId \n" +
+                "     where gz.levelId = (select max(id) from geographic_levels)  \n" +
+                "     and facilities.active =true \n" +
+                "     group by geographicZoneId\n" +
+                "     ) total \n" +
+                "     on gzz.id = total.geographicZoneId\n" +
+                "  left join \n" +
+                "     (select geographicZoneId, count(*) from facilities  \n" +
+                "     join programs_supported ps on ps.facilityId = facilities.id \n" +
+                "     join geographic_zones gz on gz.id = facilities.geographicZoneId \n" +
+                "     where  ps.programId = 82 and facilities.id in  \n" +
+                "      (select facilityId from vaccine_reports where periodId = #{processingPeriodId}::INT and programId = 82 and \n" +
+                "      status not in ('DRAFT') )\n" +
+                "     group by geographicZoneId\n" +
+                "     ) period\n" +
+                "    on gzz.id = period.geographicZoneId \n" +
+                "     left join  \n" +
+                "     (select geographicZoneId, count(*) from facilities \n" +
+                "     join programs_supported ps on ps.facilityId = facilities.id \n" +
+                "    join geographic_zones gz on gz.id = facilities.geographicZoneId \n" +
+                "     where ps.programId = 82 and facilities.id not in  \n" +
+                "    (select facilityId from vaccine_reports where programId = 82)\n" +
+                "    group by geographicZoneId\n" +
+                "     ) ever \n" +
+                "     on gzz.id = ever.geographicZoneId \n" +
+                "\n" +
+                "     left join\n" +
+                "\n" +
+                "     (\n" +
+                "\n" +
+                "SELECT X.geographiczoneid,\n" +
+                " x.coveragePercentage,x.district_name,\n" +
+                " CASE\n" +
+                "  WHEN x.coveragePercentage IS NULL\n" +
+                "    THEN NULL\n" +
+                "  WHEN x.coveragepercentage > x.targetcoverageGood\n" +
+                "    THEN 'good'\n" +
+                "  WHEN x.coveragepercentage > x.targetcoveragewarn\n" +
+                "    THEN 'normal'\n" +
+                "  WHEN x.coveragepercentage > x.targetcoveragebad\n" +
+                "    THEN 'warn'\n" +
+                "  ELSE 'bad' END                   AS coverageClassification,\n" +
+                "  monthlyestimate * num monthlyestimate,cumulativeMonthlyRegular\n" +
+                "from (\n" +
+                "SELECT\n" +
+                "   (select extract(month from startdate) from processing_periods where id = #{processingPeriodId}::INT) num,\n" +
+                "         CASE WHEN (a.monthlyestimate IS NOT NULL AND a.monthlyestimate != 0)\n" +
+                "           THEN (cumulativeMonthlyRegular * 100) / (monthlyestimate * (select extract(month from startdate) from processing_periods where id = #{processingPeriodId}::INT))\n" +
+                "         ELSE NULL END       AS coveragePercentage,\n" +
+                "         \n" +
+                "  a.*,\n" +
+                "  case when a.productid = #{product} then p.primaryname else p.primaryname || ' - ' || replace(vd.displayname,'Dose ','') end AS product_dose,\n" +
+                "  d.district_name,\n" +
+                "  d.district_id,\n" +
+                "  d.region_name,\n" +
+                "  pt.*  \n" +
+                "  FROM (\n" +
+                "       SELECT         \n" +
+                "         f.geographiczoneid,\n" +
+                "         d.doseid,\n" +
+                "         d.productid,\n" +
+                "         d.year,\n" +
+                "         e.monthlyestimate monthlyestimate,\n" +
+                "         sum(monthlyregular) monthlyregular,\n" +
+                "         sum(monthlyregular) AS cumulativeMonthlyRegular\n" +
+                "       FROM\n" +
+                "         vw_vaccine_cumulative_coverage_by_dose d\n" +
+                "         JOIN facilities f ON f.id = d.facilityid\n" +
+                "         JOIN vw_monthly_district_estimate e ON e.districtid = f.geographiczoneid AND d.year = e.year AND\n" +
+                "                                                d.denominatorestimatecategoryid = e.demographicestimateid\n" +
+                "\t\twhere d.year = #{year}::INT and d.month <= \n" +
+                "\t\t(select extract(month from startdate) from processing_periods where id = #{processingPeriodId}::INT) and  productId = #{product}\n" +
+                "\t\t\t\t\t\t\t\t\t\t\n" +
+                "       GROUP BY d.year, f.geographiczoneid, d.productid, d.doseid, e.monthlyestimate\n" +
+                "\n" +
+                "     ) a\n" +
+                "  JOIN vw_districts d ON d.district_id = a.geographiczoneid\n" +
+                "  JOIN products p ON p.id = a.productid\n" +
+                "  JOIN vaccine_product_targets pt ON pt.productid = a.productid\n" +
+                "  JOIN vaccine_product_doses vd on vd.doseid = a.doseid and a.productid = vd.productid\n" +
+                ") x \n" +
+                "order by region_name,district_name\n" +
+                "     )coverage  \n" +
+                "     on gzz.id = coverage.geographicZoneId  \n" +
+                "\n" +
+                "        order by gzz.name\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n")
+
+        List<GeoZoneVaccineCoverage>getGeoZoneVaccineCoverage(@Param("userId") Long userId, @Param("product") Long product,@Param("year") Long year, @Param("processingPeriodId") Long processingPeriodId);
+
+
+
+
 }

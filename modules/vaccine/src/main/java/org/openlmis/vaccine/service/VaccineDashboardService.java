@@ -563,4 +563,14 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
         return repository.geStockEventByMonth(product,period2+1,year,id);
 
     }
+
+    public List<HashMap<String,Object>>getAvailableStockForDashboard(Long product, Long period,
+                                                                     Long year, Long userId){
+        System.out.println(product);
+        return repository.getAvailableStockForDashboard(product,period,year,userId);
+    }
+
+    public List<HashMap<String,Object>>getVaccineImmunization(){
+        return repository.getVaccineImmunization();
+    }
 }

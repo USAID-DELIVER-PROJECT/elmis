@@ -1,6 +1,8 @@
 package org.openlmis.web.controller.vaccine;
 
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import org.openlmis.core.domain.*;
@@ -42,6 +44,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
 @RequestMapping(value = "/vaccine/orderRequisition/")
+@Api("Vaccine Order Requisition Rest APIs")
 public class VaccineOrderRequisitionController extends BaseController {
 
     private static final String PROGRAM_PRODUCT_LIST = "programProductList";
@@ -86,19 +89,22 @@ public class VaccineOrderRequisitionController extends BaseController {
         return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
     }
 
-    @RequestMapping(value = "periods/{facilityId}/{programId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"periods/{facilityId}/{programId}", "/rest-api/orderRequisition/periods/{facilityId}/{programId}"}, method = RequestMethod.GET)
+    @ApiOperation(position = 1, value = "Get Open Vaccine Order Requisition Periods for Facility")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> getPeriods(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
         return response("periods", service.getPeriodsFor(facilityId, programId, new Date()));
     }
 
-    @RequestMapping(value = "view-periods/{facilityId}/{programId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"view-periods/{facilityId}/{programId}", "/rest-api/orderRequisition/view-periods/{facilityId}/{programId}"}, method = RequestMethod.GET)
+    @ApiOperation(position = 2, value = "Get Periods for Which facility has Order Requisition Submissions")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> getViewPeriods(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
         return response("periods", service.getReportedPeriodsFor(facilityId, programId));
     }
 
     @RequestMapping(value = "initialize/{periodId}/{programId}/{facilityId}")
+    @ApiOperation(position = 3, value = "Initiate and Order Requisition form")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> initialize(
             @PathVariable Long periodId,
@@ -110,6 +116,7 @@ public class VaccineOrderRequisitionController extends BaseController {
     }
 
     @RequestMapping(value = "initializeEmergency/{periodId}/{programId}/{facilityId}")
+    @ApiOperation(position = 4, value = "Initiate Emergence Order Requisition form")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> initializeEmergency(
             @PathVariable Long periodId,
@@ -121,6 +128,7 @@ public class VaccineOrderRequisitionController extends BaseController {
     }
 
     @RequestMapping(value = "submit")
+    @ApiOperation(position = 5, value = "Submit Order Requisition form")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> submit(@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request) {
         service.submit(orderRequisition, loggedInUserId(request));
@@ -128,6 +136,7 @@ public class VaccineOrderRequisitionController extends BaseController {
     }
 
     @RequestMapping(value = "save")
+    @ApiOperation(position = 5, value = "Save Requisition form")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> save(@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request) {
         service.save(orderRequisition);

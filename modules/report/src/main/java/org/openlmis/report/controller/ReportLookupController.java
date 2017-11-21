@@ -642,4 +642,14 @@ public class ReportLookupController extends BaseController {
             stockOnHandSummaryService.getStockOnHandSummary(loggedInUserId(request),new Date().toString()));
   }
 
+
+  @RequestMapping(value = "/program-products-with-no-descriptions-and-program-and-syringes.json", method = GET, headers = BaseController.ACCEPT_JSON)
+  public List<Product> getProgramProductsWithoutDescriptionsAndSyringes() {
+
+    List<org.openlmis.core.domain.Program> programList = programService.getAllIvdPrograms();
+
+    return this.reportLookupService.getProgramProductsWithoutDescriptionsAndSyringes(programList.get(0).getId());
+  }
+
+
 }
