@@ -45,4 +45,7 @@ public class EquipmentOperationalStatusRepository {
   }
 
 
+    public EquipmentOperationalStatus getObsoleteEquipmentOperationalStatus() {
+        return mapper.getObsoleteEquipmentOperationalStatus();
+    }
 }

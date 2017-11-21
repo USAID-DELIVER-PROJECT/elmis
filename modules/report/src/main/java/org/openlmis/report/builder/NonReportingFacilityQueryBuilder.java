@@ -48,8 +48,8 @@ public class NonReportingFacilityQueryBuilder {
         INNER_JOIN("facility_types ft on ft.id = facilities.typeid");
         INNER_JOIN("programs_supported ps on ps.facilityId = facilities.id and ps.programId = #{filterCriteria.program}");
         INNER_JOIN("programs p on p.id = ps.programId");
-        INNER_JOIN("processing_periods period on period.id = any(#{filterCriteria.periodString}::int[])");
         INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitionGroupId = rgm.requisitionGroupId and ps.programId = rgps.programId");
+        INNER_JOIN("processing_periods period on period.scheduleid = rgps.scheduleid ");
         INNER_JOIN("requisitions r on r.facilityId = facilities.id and r.programId = ps.programId and r.periodId = period.id and r.emergency = false");
         LEFT_OUTER_JOIN(" facility_owners fo on fo.facilityid=facilities.id");
         WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
@@ -62,10 +62,44 @@ public class NonReportingFacilityQueryBuilder {
                 "and r.periodId  =any(#{filterCriteria.periodString}::int[]) " +
                 "and r.programId = cast( #{filterCriteria.program} as int4) " +
                 ")");
+        WHERE("period.id = any(#{filterCriteria.periodString}::int[])");
         writePredicates(filterParam);
         ORDER_BY("name");
         String sqlStatment = SQL();
         return sqlStatment;
+    }
+
+    public static String getFacilitiesWithByReportingStatus(Map params) {
+        NonReportingFacilityParam filterParam = (NonReportingFacilityParam) params.get(FILTER_CRITERIA);
+        BEGIN();
+        BEGIN();
+        SELECT_DISTINCT("facilities.code, facilities.name");
+        SELECT_DISTINCT("gz.district_name as location");
+        SELECT_DISTINCT("gz.region_name as province");
+        SELECT_DISTINCT("p.name as program");
+        SELECT_DISTINCT("period.name period");
+        SELECT_DISTINCT("ft.name as facilityType");
+        SELECT_DISTINCT("extract('epoch' from period.startdate)::bigint  AS epoch");
+        SELECT_DISTINCT("case when r.id is null then 'NON_REPORTING' else 'REPORTED' end as reportingStatus ");
+        FROM("facilities");
+        INNER_JOIN("requisition_group_members rgm on rgm.facilityid = facilities.id");
+        INNER_JOIN("vw_districts gz on gz.district_id = facilities.geographiczoneid");
+        INNER_JOIN("facility_types ft on ft.id = facilities.typeid");
+        INNER_JOIN("programs_supported ps on ps.facilityid = facilities.id and ps.programId = #{filterCriteria.program}");
+        INNER_JOIN("programs p on p.id = ps.programId");
+        INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitiongroupid = rgm.requisitiongroupid and ps.programid = rgps.programid");
+        INNER_JOIN("processing_periods period on period.scheduleid = rgps.scheduleid ");
+        LEFT_OUTER_JOIN(" requisitions r on r.facilityId = facilities.id and r.programId = ps.programId and r.periodId = period.id " +
+                "and r.emergency = false AND r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') ");
+        LEFT_OUTER_JOIN(" facility_owners fo on fo.facilityid=facilities.id");
+        WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) " +
+                "or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
+        WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = cast( #{userId} as int4) and program_id = cast( #{filterCriteria.program} as int4) )");
+        WHERE("period.id = any(#{filterCriteria.periodString}::int[])");
+        writePredicates(filterParam);
+        ORDER_BY("name");
+        String query = SQL();
+        return query;
     }
 
     public static String getPeriodsTicksForChart(Map params){
@@ -92,21 +126,16 @@ public class NonReportingFacilityQueryBuilder {
         INNER_JOIN("facility_types ft on ft.id = facilities.typeid");
         INNER_JOIN("programs_supported ps on ps.facilityid = facilities.id and ps.programId = #{filterCriteria.program}");
         INNER_JOIN("programs p on p.id = ps.programId");
-        INNER_JOIN("processing_periods period on period.id = any(#{filterCriteria.periodString}::int[])");
         INNER_JOIN("requisition_group_program_schedules rgps on rgps.requisitiongroupid = rgm.requisitiongroupid and ps.programid = rgps.programid");
+        INNER_JOIN("processing_periods period on period.scheduleid = rgps.scheduleid ");
+        LEFT_OUTER_JOIN(" requisitions r on r.facilityId = facilities.id and r.programId = ps.programId and r.periodId = period.id " +
+                "and r.emergency = false AND r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') ");
         LEFT_OUTER_JOIN(" facility_owners fo on fo.facilityid=facilities.id");
         WHERE("( (facilities.active = true and ps.active = true and ps.startDate <= period.startDate) or (facilities.active = false and period.startDate <= facilities.modifiedDate) " +
                 "or (facilities.active = true and ps.active = false and ps.modifiedDate >= period.startDate and ps.startDate <= period.startDate) )");
         WHERE("facilities.id in (select facility_id from vw_user_facilities where user_id = cast( #{userId} as int4) and program_id = cast( #{filterCriteria.program} as int4) )");
-        WHERE("facilities.id not in " +
-                "( select r.facilityId from requisitions r " +
-                "  where " +
-                "r.status not in ('INITIATED', 'SUBMITTED', 'SKIPPED') " +
-                "and r.emergency = false " +
-                "and r.periodId = any(#{filterCriteria.periodString}::int[])" +
-                "and r.programId = cast( #{filterCriteria.program} as int4) " +
-                ")");
-
+        WHERE("period.id = any(#{filterCriteria.periodString}::int[])");
+        WHERE(" r.id is null");
         writePredicates(filterParam);
         ORDER_BY("name");
         String query = SQL();

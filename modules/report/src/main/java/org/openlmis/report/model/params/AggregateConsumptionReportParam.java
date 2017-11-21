@@ -26,13 +26,18 @@ public class AggregateConsumptionReportParam
   @RequiredParam
   private Long program;
 
-  @RequiredParam
   private Long period;
 
   private Long zone;
 
   private String products;
+
   private Long productCategory;
 
+  @RequiredParam
+  private String periodStart;
+
+  @RequiredParam
+  private String periodEnd;
 
 }

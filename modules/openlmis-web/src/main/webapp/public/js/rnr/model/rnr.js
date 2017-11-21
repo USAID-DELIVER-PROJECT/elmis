@@ -189,6 +189,17 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
     return error;
   };
 
+  Rnr.prototype.validateManualTest = function(){
+      var error = '';
+      $(this.manualTestLineItems).each(function (i, lineItem) {
+          if (isUndefined(lineItem.testCount)) {
+              error = 'error.rnr.validation';
+              return false;
+          }
+      });
+      return error;
+  };
+
   var calculateTotalCost = function (rnrLineItems) {
     if (rnrLineItems === null) return;
 

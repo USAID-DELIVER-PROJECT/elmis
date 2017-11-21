@@ -26,14 +26,23 @@ public class DistrictConsumptionReportParam
   @RequiredParam
   private Long program;
 
-  @RequiredParam
+
   private Long period;
 
   private Long zone;
 
+  @RequiredParam
   private String product;
 
   private Long productCategory;
+
+  private Boolean excludeDHO;
+
+  @RequiredParam
+  private String periodStart;
+
+  @RequiredParam
+  private String periodEnd;
 
 
 }
