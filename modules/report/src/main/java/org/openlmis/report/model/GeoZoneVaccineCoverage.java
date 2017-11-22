@@ -37,4 +37,20 @@ public class GeoZoneVaccineCoverage {
 
     private Integer monthlyEstimate;
 
+    private float mos;
+    private String region;
+
+    private Integer planned;
+
+    private Integer outReachSession;
+
+    private Integer prevOutReachSession;
+
+    private Integer prevPlanned;
+
+    private Integer prevSOH;
+
+    private Integer soh;
+
+    private float prevMOS;
 }
