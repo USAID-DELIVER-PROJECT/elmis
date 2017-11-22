@@ -2,7 +2,7 @@ function GeoVaccineCoverageController($scope,leafletData,GetProductById){
 
     $scope.filter = {};
 
-    $scope.filter.product=2412;
+    $scope.filter.product=2421;
     $scope.filter.period=121;
 
     $scope.filter.year= (new Date()).getFullYear();
@@ -78,7 +78,6 @@ function GeoVaccineCoverageController($scope,leafletData,GetProductById){
                 feature.properties.name = feature.name;
                 feature.properties.id = feature.id;
             });
-
             $scope.drawMap({
                 "type": "FeatureCollection",
                 "features": $scope.features
