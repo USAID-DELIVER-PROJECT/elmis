@@ -275,21 +275,21 @@
 
                         <span class="alert alert-info">
                              You have <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                         style="display: inline !important;color:blue !important;"> <strong>{{supplying.orders}}</strong></a>
+                                         style="display: inline !important;color:red !important;"> <strong>{{supplying.orders}}</strong></a>
                             Pending Orders. <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                               style="display: inline !important;color:blue !important;"><strong>
+                                               style="display: inline !important;color:red !important;"><strong>
                             Resolve</strong></a>
                         </span>
 
                         <div class="divider"></div>
-                        <span class="alert alert-info" style="">
+                        <span class="alert alert-info" style=  "padding: 8px 19px 8px 14px; !important;">
                              <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                style="display: inline !important;color:blue !important;"> <strong>
+                                style="display: inline !important;color:red !important;"> <strong>
 
                                  {{ supplyingPendingReceive.supplyingPendingToReceiveLowerLevel.length}}
                              </strong></a>
                            Order(s) Not Received <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                                         style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
+                                                         style="display: inline !important;color:red !important;"><strong>Resolve</strong></a>
                         </span>
 
                     </div>
@@ -298,8 +298,8 @@
                         <h2 class="item-title" style="font-size: 1.0em !important;">Stock</h2>
 
                         <span class="alert alert-info">
-                            <a href="/public/pages/vaccine/order-requisition/index.html#/initiate" style="display: inline !important;color:blue !important;"> <strong>{{totalMinimumStock}}</strong></a>
-                           Product(s) Have Extremely Low  Stock<a href="/public/pages/vaccine/order-requisition/index.html#/initiate" style="display: inline !important;color:blue !important;"></a>
+                            <a href="/public/pages/vaccine/order-requisition/index.html#/initiate" style="display: inline !important;color:red !important;"> <strong>{{totalMinimumStock}}</strong></a>
+                           Product(s) Have Extremely Low  Stock<a href="/public/pages/vaccine/order-requisition/index.html#/initiate" style="display: inline !important;color:red !important;"></a>
                         </span>
 
                     </div>
@@ -309,7 +309,7 @@
                         <h2 class="item-title" style="font-size: 1.0em !important;">Batch Expiries</h2>
 
                         <span class="alert alert-info">
-                            <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment" style="display: inline !important;color:blue !important;"> <strong>{{totalBatchToExpire}}</strong></a>
+                            <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment" style="display: inline !important;color:red !important;"> <strong>{{totalBatchToExpire}}</strong></a>
                            Batches to Expire<a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment" style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
                         </span>
 
