@@ -73,7 +73,7 @@ function initiateCoverageMap(scope) {
 function popupFormatForCoverageMap(feature) {
     return '<table class="table table-bordered" style="width: 500px">' +
         '<tr><th><strong>Region</strong></th>' +
-        '<th><strong>Mwanza</strong></th>' +
+        '<th><strong> '+feature.region+'</strong></th>' +
         '</tr>' +
         '<tr>' +
         '<th><strong>District</strong></th>' +
@@ -94,22 +94,23 @@ function popupFormatForCoverageMap(feature) {
         '</tr>' +
         '<tr><td>Stock Status</td>' +
         '<td class="number">DVS Stock On Hand</td>' +
-        '<td class="number">' + feature.ever + '</td>' +
-        '<td class="number">' + feature.ever + '</td>' +
+        '<td class="number">' + feature.prevSOH + '</td>' +
+        '<td class="number">' + feature.soh + '</td>' +
         '</tr>' +
         '<tr><td class="bold"></b></td><td class="number bold">MOS</td>' +
-        '<td class="number bold">' + feature.total + '</td>' +
-        '<td class="number bold">' + feature.total + '</td>' +
+        '<td class="number bold">' + feature.prevMOS + '</td>' +
+        '<td class="number bold">' + feature.mos + '</td>' +
         '</tr>' +
         '<tr><td>Out Reach</td>' +
         '<td class="number">Planned Session</td>' +
-        '<td class="number">' + feature.ever + '</td>' +
-        '<td class="number">' + feature.ever + '</td>' +
+        '<td class="number">' + feature.prevPlanned + '</td>' +
+        '<td class="number">' + feature.planned + '</td>' +
         '</tr>' +
         '<tr><td class="bold"></b></td><td class="number bold">Conducted Session</td>' +
-        '<td class="number bold">' + feature.total + '</td>' +
-        '<td class="number bold">' + feature.total + '</td>' +
-        '</tr>' +
+        '<td class="number bold">' + feature.prevOutReachSession + '</td>' +
+        '<td class="number bold">' + feature.outReachSession + '</td>' +
+        '</tr>';
+        /* +
         '<tr><td>Equipment Status</td>' +
         '<td class="number">Functional</td>' +
         '<td class="number">' + feature.ever + '</td>' +
@@ -118,7 +119,7 @@ function popupFormatForCoverageMap(feature) {
         '<tr><td class="bold"></b></td><td class="number bold">Non Functional</td>' +
         '<td class="number bold">' + feature.total + '</td>' +
         '<td class="number bold">' + feature.total + '</td>' +
-        '</tr>';
+        '</tr>';*/
 }
 
 function onEachFeatureForCoverageMap(feature, layer) {
