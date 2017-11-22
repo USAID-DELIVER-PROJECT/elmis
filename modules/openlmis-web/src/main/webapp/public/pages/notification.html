@@ -233,9 +233,9 @@
         line-height: 20px !important;
     }
 
-.alert{
-    padding: 8px 5px 8px 14px !important;
-}
+   /* .alert {
+        padding: 8px 5px 8px 14px !important;
+    }*/
 </style>
 
 <div ng-controller="NavigationController">
@@ -265,9 +265,9 @@
             font-size: 1.0em !important;">Notifications</h2><!--<h4
                     class="menu-title pull-right">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4>-->
             </div>
-<!--
-            <li class="divider"></li>
--->
+            <!--
+                        <li class="divider"></li>
+            -->
             <div class="notifications-wrapper">
                 <div class="content">
                     <div class="notification-item">
@@ -275,31 +275,42 @@
 
                         <span class="alert alert-info">
                              You have <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                        style="display: inline !important;color:blue !important;"> <strong>{{supplying.orders}}</strong></a>
+                                         style="display: inline !important;color:blue !important;"> <strong>{{supplying.orders}}</strong></a>
                             Pending Orders. <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                               style="display: inline !important;color:blue !important;"><strong> Resolve</strong></a>
+                                               style="display: inline !important;color:blue !important;"><strong>
+                            Resolve</strong></a>
                         </span>
+
                         <div class="divider"></div>
                         <span class="alert alert-info" style="">
                              <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                        style="display: inline !important;color:blue !important;"> <strong>
+                                style="display: inline !important;color:blue !important;"> <strong>
 
-                                 {{   supplyingPendingReceive.supplyingPendingToReceiveLowerLevel.length}}
+                                 {{ supplyingPendingReceive.supplyingPendingToReceiveLowerLevel.length}}
                              </strong></a>
-                           Order(s) Not Received Yet. <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                               style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
+                           Order(s) Not Received <a href="/public/pages/vaccine/order-requisition/index.html#/view"
+                                                         style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
                         </span>
 
                     </div>
 
                     <div class="notification-item">
-                        <h2 class="item-title" style="font-size: 1.0em !important;">Products With Extremely Low Stock</h2>
+                        <h2 class="item-title" style="font-size: 1.0em !important;">Stock</h2>
 
                         <span class="alert alert-info">
-                            You have <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                        style="display: inline !important;color:blue !important;"> <strong>{{supplying.orders}}</strong></a>
-                            Pending Orders. <a href="/public/pages/vaccine/order-requisition/index.html#/view"
-                                               style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
+                            <a href="/public/pages/vaccine/order-requisition/index.html#/initiate" style="display: inline !important;color:blue !important;"> <strong>{{totalMinimumStock}}</strong></a>
+                           Product(s) Have Extremely Low  Stock<a href="/public/pages/vaccine/order-requisition/index.html#/initiate" style="display: inline !important;color:blue !important;"></a>
+                        </span>
+
+                    </div>
+
+
+                    <div class="notification-item">
+                        <h2 class="item-title" style="font-size: 1.0em !important;">Batch Expiries</h2>
+
+                        <span class="alert alert-info">
+                            <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment" style="display: inline !important;color:blue !important;"> <strong>{{totalBatchToExpire}}</strong></a>
+                           Batches to Expire<a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment" style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
                         </span>
 
                     </div>
@@ -344,9 +355,9 @@
                              <p class="item-info">Marketing 101, Video Assignment</p>
                          </div>
                      </a>-->
-<!--
-                <li class="divider"></li>
--->
+                <!--
+                                <li class="divider"></li>
+                -->
 
             </div>
             <!--  <div class="notification-footer"><h4 class="menu-title">View all<i
