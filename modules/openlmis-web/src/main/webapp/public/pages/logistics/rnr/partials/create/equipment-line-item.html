@@ -64,35 +64,43 @@
                                 <span openlmis-message="rnr.label.select.non.functional.test.type"></span>
                                 <span class="caret"></span>
                         </button>
-                        <ul onclick="event.stopPropagation();" class="dropdown-menu">
+                        <ul onclick="event.stopPropagation();" class="dropdown-menu" style="min-width:210px;">
                             <li>
                                 <label class="checkbox" >
-                                    <input type="checkbox" ng-disabled="formDisabled"
+                                    <input type="checkbox" ng-disabled="formDisabled || equipmentLineItem.isObsolete"
                                            style="visibility: visible !important;"
                                            ng-init="equipmentLineItem.electrolytesChecked = equipmentLineItem.electrolytesDaysOutOfUse > 0"
-                                           ng-checked="equipmentLineItem.electrolytesChecked"
-                                           ng-model="equipmentLineItem.electrolytesChecked"
-
-                                    />
+                                           ng-checked="equipmentLineItem.electrolytesChecked && !equipmentLineItem.isObsolete"
+                                           ng-model="equipmentLineItem.electrolytesChecked"/>
                                     <span openlmis-message="rnr.label.electrolytes"></span>
                                 </label>
                             </li>
                             <li>
                                 <label class="checkbox">
-                                <input type="checkbox" ng-disabled="formDisabled"
+                                <input type="checkbox" ng-disabled="formDisabled || equipmentLineItem.isObsolete"
                                        style="visibility: visible !important;"
                                        ng-init="equipmentLineItem.analytesChecked  = (equipmentLineItem.analytesDaysOutOfUse > 0)"
-                                       ng-checked="equipmentLineItem.analytesChecked"
+                                       ng-checked="equipmentLineItem.analytesChecked && !equipmentLineItem.isObsolete"
                                        ng-model="equipmentLineItem.analytesChecked"/>
                                         <span openlmis-message="rnr.label.analytes"></span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="checkbox" >
+                                    <input type="checkbox" ng-disabled="formDisabled" id="equipmentLineItem_$index"
+                                           style="visibility: visible !important;"
+                                           ng-init="equipmentLineItem.isObsolete = equipmentLineItem.operationalStatus.isObsolete;"
+                                           ng-model="equipmentLineItem.isObsolete"
+                                           ng-change="setEquipmentLineItemStatusObsolete(equipmentLineItem);"/>
+                                    <span openlmis-message="label.obsolete.equipment.status"></span>
                                 </label>
                             </li>
                         </ul>
                     </div>
                 </td>
                 <td class="padding2px cell-input ">
-                    <div class="btn-group dropdown" style="">
-                        <button id="non-functional-days" type="button"
+                    <div class="btn-group dropdown" >
+                        <button id="non-functional-days" type="button" ng-class="{'error-border' : !equipmentLineItem.isEquipmentValid}"
                                 class="btn btn-default dropdown-toggle btn-mini">
                             <span openlmis-message="rnr.label.days.not.functional"></span>
                             <span class="caret"></span>
@@ -107,9 +115,12 @@
                                         </label>
                                     </div>
                                     <div class="span2">
-                                        <input ng-disabled="formDisabled || !equipmentLineItem.electrolytesChecked" type="text"
+                                        <input  type="text" id="{{equipmentLineItem.equipmentName}}_electrolytes"
+                                               ng-disabled="formDisabled || !equipmentLineItem.electrolytesChecked || equipmentLineItem.isObsolete"
+                                               numeric-validator="positiveInteger"
                                                ng-model="equipmentLineItem.electrolytesDaysOutOfUse"
-                                                id="{{equipmentLineItem.equipmentName}}_electrolytes"></div>
+                                               ng-class="{'required-error' : validateDaysOutOfUse(equipmentLineItem, equipmentLineItem.electrolytesDaysOutOfUse)}">
+                                    </div>
                                 </div>
                             </li>
                             <li>
@@ -121,9 +132,12 @@
                                         </label>
                                     </div>
                                     <div class="span2">
-                                        <input ng-disabled="formDisabled || !equipmentLineItem.analytesChecked" type="text"
+                                        <input type="text" id="{{equipmentLineItem.equipmentName}}_analytes"
+                                               ng-disabled="formDisabled || !equipmentLineItem.analytesChecked || equipmentLineItem.isObsolete"
+                                               numeric-validator="positiveInteger"
                                                ng-model="equipmentLineItem.analytesDaysOutOfUse"
-                                               id="{{equipmentLineItem.equipmentName}}_analytes"></div>
+                                               ng-class="{'required-error' : validateDaysOutOfUse(equipmentLineItem, equipmentLineItem.analytesDaysOutOfUse)}">
+                                     </div>
                                 </div>
                             </li>
                         </ul>
@@ -138,7 +152,7 @@
                             <li ng-repeat="(key, value) in equipmentLineItem.bioChemistryTestes | groupBy: 'testTypeName'">
                                 <div class="row"><strong>{{key}}</strong> <hr style="margin: 4px 0;"/></div>
 
-                                <div class="row" ng-repeat="testCount in value" >
+                                <div class="row" ng-repeat="testCount in value">
                                     <div class="span2">
                                         <label class="drop-label" style="font-size: 10px;"
                                                for="{{equipmentLineItem.equipmentName}}_{{testCount.productName}}">
@@ -146,9 +160,10 @@
                                     </div>
                                     <div class="span2">
                                         <input type="text"
-                                               ng-disabled="formDisabled"
+                                               ng-disabled="formDisabled" numeric-validator="positiveInteger"
                                                id="{{equipmentLineItem.equipmentName}}_{{testCount.productName}}"
-                                               ng-model="testCount.numberOfTestes" ></div>
+                                               ng-model="testCount.numberOfTestes" >
+                                        <span ng-show=""><br/>Error</span>
                                 </div>
                             </li>
                         </ul>
@@ -178,7 +193,7 @@
             </tr>
 
             <tr ng-repeat="equipmentLineItem in otherEquipment = (page.equipment | filter:{isBioChemistryEquipment: false}) ">
-                <td class="cell-input padding2px ">
+                <td class="cell-input padding2px ">{{equipmentLineItem.isEquipmentValid}}
                   <span class="col-product cell-text">
                      <span ng-bind="equipmentLineItem.equipmentName" class="padding2px"></span>
                   </span>

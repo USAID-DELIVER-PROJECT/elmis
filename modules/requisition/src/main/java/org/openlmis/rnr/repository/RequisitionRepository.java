@@ -16,6 +16,7 @@ import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.repository.mapper.SignatureMapper;
 import org.openlmis.equipment.domain.EquipmentInventoryStatus;
 import org.openlmis.equipment.repository.mapper.EquipmentInventoryStatusMapper;
+import org.openlmis.equipment.service.EquipmentOperationalStatusService;
 import org.openlmis.rnr.domain.*;
 import org.openlmis.rnr.dto.RnrDTO;
 import org.openlmis.rnr.repository.mapper.*;
@@ -35,6 +36,7 @@ import static org.openlmis.rnr.domain.RnrStatus.*;
 @Repository
 public class RequisitionRepository {
 
+  public static final String FUNCTIONAL = "FUNCTIONAL";
   @Autowired
   private RequisitionMapper requisitionMapper;
 
@@ -70,6 +72,9 @@ public class RequisitionRepository {
 
   @Autowired
   private ManualTestsLineItemMapper manualTestMapper;
+
+  @Autowired
+  private EquipmentOperationalStatusService operationalStatusService;
 
   public void insert(Rnr requisition) {
     requisition.setStatus(INITIATED);
@@ -133,7 +138,11 @@ public class RequisitionRepository {
     EquipmentInventoryStatus status = new EquipmentInventoryStatus();
     status.setId(equipmentLineItem.getInventoryStatusId());
     status.setInventoryId(equipmentLineItem.getEquipmentInventoryId());
-    status.setStatusId(equipmentLineItem.getOperationalStatusId());
+
+    if(equipmentLineItem.getOperationalStatusId() == null)
+      status.setStatusId(operationalStatusService.getByCode(FUNCTIONAL).getId());
+    else status.setStatusId(equipmentLineItem.getOperationalStatusId());
+
     return status;
   }
 
@@ -179,9 +188,13 @@ public class RequisitionRepository {
       equipmentLineItemMapper.update(item);
 
       if(item.getBioChemistryTestes() != null) {
+        //if bio chemistry equipment operational status is null, set 'functional' as functional status
+        if(item.getOperationalStatusId() == null)
+          item.setOperationalStatusId(operationalStatusService.getByCode(FUNCTIONAL).getId());
+
         item.getBioChemistryTestes().stream().forEach(test -> {
-          test.setModifiedBy(item.getModifiedBy());
-          test.setModifiedDate(item.getModifiedDate());
+          test.setModifiedBy(rnr.getModifiedBy());
+          test.setModifiedDate(rnr.getModifiedDate());
           equipmentLineItemMapper.updateEquipmentLineItemBioChemistryTests(test);
         });
       }

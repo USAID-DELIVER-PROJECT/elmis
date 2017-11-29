@@ -10,7 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function CreateEquipmentInventoryController($scope, $location, $routeParams,GetEquipmentByDesignation, EquipmentInventory,ColdChainDesignations, Donors, EquipmentsByType, SaveEquipmentInventory, UserFacilityList, EquipmentOperationalStatus, messageService, EquipmentType, EquipmentInventoryFacilities, EquipmentEnergyTypes,equipmentStatusHelp) {
+function CreateEquipmentInventoryController($scope, $location, $routeParams,GetEquipmentByDesignation, EquipmentInventory,ColdChainDesignations, Donors, EquipmentsByType, SaveEquipmentInventory, UserFacilityList, EquipmentOperationalStatus,
+                                            messageService, EquipmentType, EquipmentInventoryFacilities, EquipmentEnergyTypes,
+                                            equipmentStatusHelp, EquipmentModelByEquipmentType) {
 
   $scope.$parent.message = $scope.$parent.error = '';
   $scope.equipmentStatusHelp=equipmentStatusHelp;
@@ -135,6 +137,7 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
     $scope.energyTypes = data.energy_types;
   });
 
+  $scope.equipmentModels = EquipmentModelByEquipmentType.query({id : $routeParams.equipmentType});
 
   $scope.updateModels = function () {
 
@@ -156,6 +159,12 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
     }
   };
 
+  $scope.isObsoleteEquipment = function(){
+      if(($scope.inventory === undefined || $scope.inventory.operationalStatusId === undefined)) return false;
+      var obsoleteStatus = _.where($scope.labOperationalStatusList, {id:  parseInt($scope.inventory.operationalStatusId, 10) })[0];
+      return obsoleteStatus.isObsolete || false;
+  };
+
   $scope.checkForBadStatus = function () {
     var operationalStatus = _.where($scope.cceOperationalStatusList, {id: parseInt($scope.inventory.operationalStatusId, 10)})[0];
     $scope.badStatusSelected = operationalStatus.isBad;
@@ -175,7 +184,9 @@ function CreateEquipmentInventoryController($scope, $location, $routeParams,GetE
       }
 
       if (!$scope.inventory.equipment.name) {
-        $scope.inventory.equipment.name = $scope.inventory.equipment.manufacturer + " / " + $scope.inventory.equipment.model;
+          var equipmentModelName = _.pluck(_.where($scope.equipmentModels, {id :parseInt($scope.inventory.equipment.equipmentModel.id, 10)}), 'name')[0];
+         $scope.inventory.equipment.name = $scope.inventory.equipment.manufacturer + " / " + equipmentModelName;
+
       }
 
       // When saving, need to make sure date fields are set from string date fields

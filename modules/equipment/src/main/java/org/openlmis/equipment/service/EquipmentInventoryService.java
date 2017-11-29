@@ -85,22 +85,22 @@ public class EquipmentInventoryService {
     // Only need to do this for non-CCE
     Equipment equipment = inventory.getEquipment();
     if (!equipment.getEquipmentType().isColdChain()) {
-      Boolean equipmentFound = false;
+      //Boolean equipmentFound = false;
       Long equipmentTypeId = equipment.getEquipmentTypeId();
 
       // Check to see if equipment already exists in db
-      List<Equipment> equipments = equipmentService.getAllByType(equipmentTypeId);
-      for (Equipment e : equipments) {
-        if (e.equalsByMakeAndModel(equipment)) {
-          // Equipment already exists in db
-          equipmentFound = true;
-          equipment = e;
-          break;
-        }
-      }
+     // List<Equipment> equipments = equipmentService.getAllByType(equipmentTypeId);
+
+      Equipment existingEquipment = equipmentService.getByTypeManufacturerAndModel(equipmentTypeId,
+              equipment.getManufacturer(),
+              equipment.getEquipmentModel().getId(),
+              equipment.getModel());
+
+      //equipment = existingEquipment == null ? equipment : existingEquipment;
 
       equipment.setModifiedBy(inventory.getModifiedBy());
-      if (!equipmentFound) {
+      equipment.setModel(null);
+      if (existingEquipment == null) {
         equipment.setCreatedBy(inventory.getCreatedBy());
         equipmentRepository.insert(equipment);
       } else {

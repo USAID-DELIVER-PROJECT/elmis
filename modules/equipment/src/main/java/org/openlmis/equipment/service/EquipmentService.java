@@ -53,6 +53,7 @@ public class EquipmentService {
     return repository.getByType(equipmentTypeId, page);
   }
 
+
   public Equipment getById(Long id){
     return repository.getById(id);
   }
@@ -138,5 +139,9 @@ public class EquipmentService {
   public List<ManualTestTypes> getManualTestTypes() {
 
     return repository.getManualTestTypes();
+  }
+
+  public Equipment getByTypeManufacturerAndModel(Long equipmentTypeId, String manufacturer, Long modelId, String model) {
+    return repository.getByTypeManufacturerAndModel(equipmentTypeId, manufacturer, modelId, model);
   }
 }
