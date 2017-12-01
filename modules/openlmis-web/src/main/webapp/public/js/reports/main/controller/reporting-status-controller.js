@@ -34,8 +34,8 @@ function ReportingStatusController($scope, NonReportingFacilities) {
       $scope.summary.total = utils.parseIntWithBaseTen(_.findWhere($scope.responseData.pages.rows[0].summary, {name: "TOTAL_FACILITIES"}).count);
       $scope.summary.nonReporting = utils.parseIntWithBaseTen(_.findWhere($scope.responseData.pages.rows[0].summary, {name: "TOTAL_NON_REPORTING"}).count);
       $scope.summary.reporting = utils.parseIntWithBaseTen(_.findWhere($scope.responseData.pages.rows[0].summary, {name: "REPORTING_FACILITIES"}).count);
-      $scope.summary.reportingPercent = ($scope.summary.reporting !== 0) ? ($scope.summary.reporting * 100 / $scope.summary.total) : 0;
-      $scope.summary.nonReportingPercent = ($scope.summary.reporting !== 0) ? ($scope.summary.nonReporting * 100 / $scope.summary.total) : 0;
+      $scope.summary.reportingPercent = ($scope.summary.reporting !== 0) ? Math.round($scope.summary.reporting * 100 / $scope.summary.total) : 0;
+      $scope.summary.nonReportingPercent = ($scope.summary.reporting !== 0) ? Math.round($scope.summary.nonReporting * 100 / $scope.summary.total) : 0;
     };
 
     NonReportingFacilities.get($scope.getSanitizedParameter(), function (data) {
