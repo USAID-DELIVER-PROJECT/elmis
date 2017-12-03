@@ -45,8 +45,14 @@
                   </span>
                 </td>
                 <td class="cell-input col-general padding2px">
-                    <input ng-disabled="formDisabled"  ng-disable="disableForm"
-                           type="text" ng-model="manualTestLineItems.testCount">
+                    <input
+                            ng-disabled="formDisabled"
+                            ng-disable="disableForm"
+                            ng-required="true"
+                            type="text"
+                            ng-model="manualTestLineItems.testCount"
+                            numeric-validator="positiveInteger"
+                            ng-class="highlightRequired(showError, manualTestLineItems.testCount, rnrLineItem.skipped)">
                 </td>
                 <td class="cell-input span9">
                     <input ng-disabled="formDisabled"  ng-disable="disableForm"

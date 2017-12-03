@@ -202,4 +202,11 @@ public class VaccineDashboardRepository {
     public List<HashMap<String, Object>> geStockEventByMonth(Long product, Long period, Long year, Long district) {
         return mapper.geStockEventByMonth(product,period,year,district);
     }
+    public List<HashMap<String, Object>> getAvailableStockForDashboard(Long product, Long period, Long year, Long userId) {
+        return mapper.getAvailableStockForDashboard(product,period,year,userId);
+    }
+
+    public List<HashMap<String,Object>>getVaccineImmunization(){
+        return mapper.getAllVaccineImmunization();
+    }
 }

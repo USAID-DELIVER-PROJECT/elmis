@@ -139,5 +139,22 @@ public class ProductController extends BaseController {
   public List<ProductCategory> getAllCategories() {
     return productCategoryService.getAll();
   }
+
+
+  @RequestMapping(value = "product/{id}", method = GET, headers = ACCEPT_JSON)
+  public ProductDTO getByProductId(@PathVariable(value = "id") Long id) {
+    Product product = service.getById(id);
+
+    if(product == null) return null;
+
+    List<ProgramProduct> programProducts = programProductService.getByProductCode(product.getCode());
+
+    List<ProductPriceSchedule> productPriceSchedules = priceScheduleService.getByProductId(product.getId());
+
+    return new ProductDTO(product, product.getModifiedDate(), programProducts, productPriceSchedules);
+  }
+
+
+
 }
 

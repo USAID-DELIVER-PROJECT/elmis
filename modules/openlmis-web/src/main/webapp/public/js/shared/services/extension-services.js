@@ -1221,6 +1221,10 @@ services.factory('ReportProductsByProgramWithoutDescriptions',function($resource
     return $resource('/reports/program-products-with-no-descriptions/:programId.json',{},{});
 });
 
+services.factory('ReportProductsByProgramWithoutDescriptionsAndSyringes',function($resource){
+    return $resource('/reports/program-products-with-no-descriptions-and-program-and-syringes.json',{},{});
+});
+
 services.factory('StaticYears',function($resource){
     return $resource('/vaccine/report/staticYearList.json',{},{});
 });
@@ -1294,3 +1298,6 @@ services.factory('ManualTestType', function ($resource) {
     return $resource('/manualTestTypes/types/:tid', {tid:'@tid'}, {});
 });
 
+services.factory('GetProductById', function ($resource) {
+    return $resource('/products/product/:id.json', {id:'@id'}, {});
+});

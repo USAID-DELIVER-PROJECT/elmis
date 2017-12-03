@@ -52,4 +52,10 @@ public interface EquipmentOperationalStatusMapper {
             "  FROM equipment_operational_status\n" +
             "  WHERE ID = #{Id} ")
     EquipmentOperationalStatus getStatusById(Long Id);
+
+  @Select(" SELECT id, name, displayorder, modifiedby, modifieddate, \n" +
+          "       category, isbad, needsparepart\n" +
+          "  FROM equipment_operational_status\n" +
+          "  WHERE code = #{code}")
+  EquipmentOperationalStatus getByCode(String code);
 }

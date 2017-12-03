@@ -11,12 +11,10 @@
   ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-07-29T16:01:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="district-consumption" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
-	<property name="ireport.zoom" value="3.4522712143931065"/>
-	<property name="ireport.x" value="210"/>
-	<property name="ireport.y" value="302"/>
+	<property name="ireport.zoom" value="1.3310000000000026"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
 	</parameter>
@@ -34,36 +32,70 @@
 	<parameter name="REPORT_MESSAGE_WHEN_NO_DATA" class="java.lang.String"/>
 	<parameter name="OPERATOR_NAME" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[WITH temp AS (select product,zone_name, SUM(normalizedconsumption) normalizedconsumption
+		<![CDATA[SELECT
+  sq.*,
+  (sq.consumption / sum(sq.consumption)
+  OVER ()) * 100 AS totalPercentage
+FROM (
 
-      from vw_district_consumption_summary
-     --writePredicates(filter)
-      group by product,zone_name
-      order by product)
+       SELECT
+         p.code,
+         p.primaryName || ' (' || coalesce(p.dispensingunit, '-') || ')' AS                    product,
+         d.district_name                                                 AS                    district,
+         d.district_id,
+         f.name                                                          AS                    facility,
+         sum(li.quantityDispensed)                                                             dispensed,
+         sum(li.normalizedConsumption)                                                         consumption,
+         ceil(sum(li.quantityDispensed) / (sum(li.packsize) / count(li.productCode)) :: FLOAT) consumptionInPacks,
+         ceil(sum(li.normalizedConsumption) /
+              (sum(li.packsize) / count(li.productCode)) :: FLOAT)                             adjustedConsumptionInPacks
+       FROM requisition_line_items li
+         INNER JOIN requisitions r ON r.id = li.rnrid
+         INNER JOIN facilities f ON r.facilityId = f.id
+         INNER JOIN facility_types ft ON f.typeid = ft.id
+         INNER JOIN vw_districts d ON d.district_id = f.geographicZoneId
+         INNER JOIN processing_periods pp ON pp.id = r.periodId
+         INNER JOIN products p ON p.code :: TEXT = li.productCode :: TEXT
+         INNER JOIN program_products ppg ON ppg.programId = r.programId AND ppg.productId = p.id
 
-      select t.product, t.zone_name district, t.normalizedconsumption consumption, case when temp2.total > 0 THEN round(((t.normalizedconsumption*100)/temp2.total),1) ELSE temp2.total END totalPercentage
-      from temp t
-      INNER JOIN ( select product,SUM(normalizedconsumption) total
-      from temp
-      group by product
-      order by product) temp2 ON t.product = temp2.product]]>
+       WHERE p.id = 1062 AND r.programid = 3 AND pp.id = 112 AND d.region_id = 18
+             AND f.id IN (SELECT facility_id
+                          FROM
+                            vw_user_facilities
+                          WHERE user_id = 98 AND program_id = 3)
+
+       GROUP BY p.code, p.primaryName, p.dispensingunit, d.district_name, d.district_id, f.name
+       LIMIT 100
+     ) AS sq order by district;]]>
 	</queryString>
 	<field name="product" class="java.lang.String"/>
 	<field name="district" class="java.lang.String"/>
 	<field name="consumption" class="java.lang.Number"/>
 	<field name="totalPercentage" class="java.lang.Number"/>
+	<field name="facility" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
 	<variable name="TOTAL_PAGES" class="java.lang.Integer">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
 	</variable>
 	<variable name="consumption_1" class="java.lang.Number" resetType="Group" resetGroup="GroupByProduct" calculation="Sum">
 		<variableExpression><![CDATA[$F{consumption}]]></variableExpression>
 	</variable>
+	<variable name="consumption_2" class="java.lang.Number" resetType="Group" resetGroup="group-by-district" calculation="Sum">
+		<variableExpression><![CDATA[$F{consumption}]]></variableExpression>
+	</variable>
+	<variable name="totalPercentage_1" class="java.lang.Number" resetType="Group" resetGroup="group-by-district" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalPercentage}]]></variableExpression>
+	</variable>
+	<variable name="ROW_COUNT" class="java.lang.Integer" incrementType="Group" incrementGroup="group-by-district">
+		<variableExpression><![CDATA[($V{group-by-district_COUNT} == 1) ? $V{ROW_COUNT} + 1 : $V{ROW_COUNT}]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
 	<group name="GroupByProduct" isStartNewPage="true" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{product}]]></groupExpression>
 		<groupHeader>
 			<band height="40">
 				<staticText>
-					<reportElement mode="Opaque" x="0" y="20" width="542" height="20" forecolor="#FFFFFF" backcolor="#3D9297" uuid="e587f413-b748-4b6c-8a34-93bb08817a0b">
+					<reportElement mode="Opaque" x="0" y="20" width="802" height="20" forecolor="#FFFFFF" backcolor="#3D9297" uuid="e587f413-b748-4b6c-8a34-93bb08817a0b">
 						<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 					</reportElement>
 					<text><![CDATA[]]></text>
@@ -76,23 +108,25 @@
 					<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="20" width="45" height="20" uuid="2f4622b7-9d0c-40de-91ca-f135c06b4287"/>
+					<reportElement x="0" y="20" width="31" height="20" uuid="2f4622b7-9d0c-40de-91ca-f135c06b4287"/>
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$R{label.line.no}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="45" y="20" width="140" height="20" uuid="58459912-f28d-43b9-82d8-bd2099f488f2"/>
+					<reportElement x="31" y="20" width="250" height="20" uuid="58459912-f28d-43b9-82d8-bd2099f488f2"/>
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$R{label.district}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="185" y="20" width="192" height="20" uuid="55b2cf9f-1c32-4ae5-91bd-d8d0c92558bb"/>
+					<reportElement x="281" y="20" width="241" height="20" uuid="55b2cf9f-1c32-4ae5-91bd-d8d0c92558bb"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$R{label.consumption}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="377" y="20" width="165" height="20" uuid="09508062-1f95-4986-9144-76f479f979c2"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<reportElement x="522" y="20" width="280" height="20" uuid="09508062-1f95-4986-9144-76f479f979c2"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<paragraph rightIndent="2"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$R{label.total.percent}]]></textFieldExpression>
 				</textField>
 			</band>
@@ -100,7 +134,7 @@
 		<groupFooter>
 			<band height="20">
 				<textField>
-					<reportElement mode="Transparent" x="185" y="0" width="192" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="a4c069eb-7ead-42ce-8dfb-3239eb46942a"/>
+					<reportElement mode="Transparent" x="281" y="0" width="241" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="a4c069eb-7ead-42ce-8dfb-3239eb46942a"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
@@ -108,12 +142,49 @@
 					<textFieldExpression><![CDATA[($V{consumption_1} != null)? new java.text.DecimalFormat("#,##0").format($V{consumption_1}): "0"]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="0" width="185" height="20" uuid="49036606-a4dd-4d9c-89d0-dccd63923506"/>
+					<reportElement x="0" y="0" width="281" height="20" uuid="49036606-a4dd-4d9c-89d0-dccd63923506"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$R{label.total} + ' :']]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
+	</group>
+	<group name="group-by-district">
+		<groupExpression><![CDATA[$F{district_id}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement x="31" y="0" width="250" height="20" uuid="16bf8bae-ee94-4fb6-b586-c9fec2188b80"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{district}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="group-by-district">
+					<reportElement x="281" y="0" width="241" height="20" uuid="6027bec1-4991-4107-a60d-ab9a24620216"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{consumption_2} == null ? 0 : $V{consumption_2}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="group-by-district" pattern="#,##0.00 %">
+					<reportElement x="522" y="0" width="280" height="20" uuid="d6781cca-ff86-41d7-8505-47d101e37b27"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totalPercentage_1} == null ? 0 : $V{totalPercentage_1}/100]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="31" height="20" uuid="1bfb44b4-3a20-4f98-80f8-4a2a01d89cf8"/>
+					<textElement>
+						<font isBold="true"/>
+						<paragraph leftIndent="1"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
@@ -168,43 +239,32 @@
 				<textFieldExpression><![CDATA[$P{REPORT_MESSAGE_WHEN_NO_DATA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="542" height="20" backcolor="#F4F4F4" uuid="9a174af8-d2cb-46c8-b19f-0b17e1be585b">
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="20" backcolor="#F4F4F4" uuid="9a174af8-d2cb-46c8-b19f-0b17e1be585b">
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="0" y="0" width="45" height="20" uuid="29ff9399-7f59-451b-b8df-f1f6240f4a60"/>
-				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
-			</textField>
 			<line>
-				<reportElement x="0" y="19" width="542" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7">
+				<reportElement x="0" y="19" width="802" height="1" forecolor="#3D9297" uuid="83a87452-92e8-46d4-bcdd-314f90e18dc7">
 					<printWhenExpression><![CDATA[$P{REPORT_OUTPUT_OPTION}.toUpperCase() != "XLS"]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="45" y="0" width="140" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="5342fab3-58d3-42c9-b212-7e577dc21e8c"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{district}]]></textFieldExpression>
+			<textField>
+				<reportElement x="31" y="0" width="250" height="20" uuid="779d3620-cd59-47df-98f4-7333f3567282"/>
+				<textFieldExpression><![CDATA[$F{facility}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="185" y="0" width="192" height="20" uuid="5a01a3cf-e81b-4564-b06e-ad43feb067a7"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[($F{consumption} != null)?new java.text.DecimalFormat("#,##0").format($F{consumption}): ""]]></textFieldExpression>
+				<reportElement x="281" y="0" width="241" height="20" uuid="45961782-c294-4727-8c82-a2d094e1a835"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{consumption} == null ? 0 : $F{consumption}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="377" y="0" width="165" height="20" uuid="10e6e842-7414-4456-8d71-a9f99b6249ed"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00%").format(((($F{totalPercentage} == null)?0:$F{totalPercentage}) / 100))]]></textFieldExpression>
+			<textField pattern="#,##0.00 %">
+				<reportElement x="522" y="0" width="280" height="20" uuid="174357b2-7c3a-442d-af3c-ad24f878eab1"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{totalPercentage} == null ? 0 : $F{totalPercentage}/100]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

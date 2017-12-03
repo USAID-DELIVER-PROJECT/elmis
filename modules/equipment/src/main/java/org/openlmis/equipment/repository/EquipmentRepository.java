@@ -76,4 +76,8 @@ public class EquipmentRepository {
   public List<ManualTestTypes> getManualTestTypes() {
     return mapper.getManualTestTypes();
   }
+
+  public Equipment getByTypeManufacturerAndModel(Long equipmentTypeId, String manufacturer, Long modelId, String model) {
+    return mapper.getByTypeManufacturerAndModel(equipmentTypeId, manufacturer, modelId, model);
+  }
 }

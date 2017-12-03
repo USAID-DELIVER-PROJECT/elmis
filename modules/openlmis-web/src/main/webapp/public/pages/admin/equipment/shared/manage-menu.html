@@ -62,14 +62,18 @@
         </li>
         <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="manageEnergyTypeSelected">
             <a href="/public/pages/admin/equipment/equipment-energe-type/index.html">
-                <span id="energy-Type">Energy Type</span>
+                <span id="energy-Type" openlmis-message="link.manage.energy.type"></span>
             </a>
         </li>
         <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="lotSelected">
             <a href="/public/pages/admin/equipment/lot/index.html">
-                <span id="lot">Manage Lot</span>
+                <span id="lot" openlmis-message="link.manage.lot"></span>
             </a>
         </li>
-
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="manageModelSelected">
+            <a href="/public/pages/admin/equipment/model/index.html">
+                <span id="equipement_model" openlmis-message="link.manage.equipment.model" ></span>
+            </a>
+        </li>
     </ul>
 </div>

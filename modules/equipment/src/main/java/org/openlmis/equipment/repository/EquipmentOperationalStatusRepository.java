@@ -44,5 +44,7 @@ public class EquipmentOperationalStatusRepository {
     mapper.remove(id);
   }
 
-
+  public EquipmentOperationalStatus getByCode(String code) {
+    return mapper.getByCode(code);
+  }
 }

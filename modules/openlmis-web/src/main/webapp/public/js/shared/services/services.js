@@ -515,3 +515,23 @@ services.factory('GetByDistrict', function ($resource) {
 services.factory('LabEquipmentRnrReferenceData', function ($resource) {
     return $resource('/requisitions/lab/reference-data.json', {}, {});
 });
+
+services.factory('BatchExpiryNotification', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/getBatchExpiryNotification/', {}, {});
+});
+
+services.factory('VaccineDashboardSummary', function($resource){
+
+    return $resource('/vaccine/dashboard/summary.json',{},{});
+});
+
+services.factory('ReceiveDistributionAlert', function ($resource) {
+    return $resource('/vaccine/orderRequisition/receiveDistributionAlert', {}, {});
+});
+
+services.factory('MinimumStockNotification', function ($resource) {
+    return $resource('/vaccine/orderRequisition/getMinimumStock', {}, {});
+});
+services.factory('VaccinePendingRequisitions', function ($resource) {
+    return $resource('/vaccine/orderRequisition/getPendingRequest/:facilityId.json', {}, {});
+});

@@ -129,12 +129,19 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
     var rnr = this;
     var invalidLineItems = _.map(this.equipmentLineItems, function(equipmentLineItem){
       var currentStatus = _.findWhere(operationalStatuses, {'id': utils.parseIntWithBaseTen(equipmentLineItem.operationalStatusId)});
-      if (!isUndefined(currentStatus) && (!currentStatus.isBad || ! utils.isEmpty( equipmentLineItem.remarks)) ) {
+
+      if(equipmentLineItem.isEquipmentValid === false){
+            subErrorMessage = 'error.rnr.equipment.non.functional.days.invalid';
+        return true;
+      }
+      else if (!isUndefined(currentStatus)  && (!currentStatus.isBad || ! utils.isEmpty( equipmentLineItem.remarks)) ) {
         return false;
       }
+
       return _.any(equipmentLineItem.relatedProducts, function (product) {
         var lineItem = _.findWhere(rnr.fullSupplyLineItems, {productCode: product.code});
         if (!isUndefined(lineItem) && utils.parseIntWithBaseTen(lineItem.quantityRequested) > 0) {
+            subErrorMessage = 'error.rnr.equipment.non.functional.requires.remarks';
           return true;
         }
         return false;
@@ -146,7 +153,7 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
     });
 
     if(true === hasInvalidLineItems){
-      errorMessage = 'error.rnr.equipment.non.functional.requires.remarks';
+      errorMessage = subErrorMessage;
     }
     return errorMessage;
   };
@@ -187,6 +194,17 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
       }
     });
     return error;
+  };
+
+  Rnr.prototype.validateManualTest = function(){
+      var error = '';
+      $(this.manualTestLineItems).each(function (i, lineItem) {
+          if (isUndefined(lineItem.testCount)) {
+              error = 'error.rnr.validation';
+              return false;
+          }
+      });
+      return error;
   };
 
   var calculateTotalCost = function (rnrLineItems) {

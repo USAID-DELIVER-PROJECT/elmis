@@ -14,6 +14,7 @@ package org.openlmis.rnr.repository.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.openlmis.core.domain.Product;
+import org.openlmis.equipment.domain.EquipmentOperationalStatus;
 import org.openlmis.equipment.domain.NonFunctionalTestProducts;
 import org.openlmis.rnr.domain.EquipmentLineItem;
 import org.openlmis.rnr.domain.EquipmentLineItemBioChemistryTests;
@@ -60,10 +61,13 @@ public interface EquipmentLineItemMapper {
   @Results(
       value = {
           @Result(property = "id", column = "id"),
+          @Result(property = "operationalStatusId", column = "operationalStatusId"),
           @Result(property = "relatedProducts", javaType = List.class, column = "id",
                   many = @Many(select = "org.openlmis.rnr.repository.mapper.EquipmentLineItemMapper.getRelatedRnrLineItems")),
           @Result(property = "bioChemistryTestes", javaType = List.class, column = "id",
-                  many = @Many(select = "org.openlmis.rnr.repository.mapper.EquipmentLineItemMapper.getBioChemistryTestLineItem"))
+                  many = @Many(select = "org.openlmis.rnr.repository.mapper.EquipmentLineItemMapper.getBioChemistryTestLineItem")),
+          @Result(property = "operationalStatus", javaType = EquipmentOperationalStatus.class, column = "operationalStatusId",
+                      one = @One(select = "org.openlmis.equipment.repository.mapper.EquipmentOperationalStatusMapper.getById"))
   })
   List<EquipmentLineItem> getEquipmentLineItemsByRnrId(@Param("rnrId") Long rnrId);
 

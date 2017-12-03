@@ -6,7 +6,9 @@ import org.openlmis.core.message.OpenLmisMessage;
 import org.openlmis.core.service.*;
 import org.openlmis.db.repository.mapper.DbMapper;
 import org.openlmis.equipment.domain.EquipmentInventory;
+import org.openlmis.equipment.domain.EquipmentOperationalStatus;
 import org.openlmis.equipment.service.EquipmentInventoryService;
+import org.openlmis.equipment.service.EquipmentOperationalStatusService;
 import org.openlmis.rnr.domain.*;
 import org.openlmis.rnr.dto.RnrDTO;
 import org.openlmis.rnr.repository.RequisitionRepository;
@@ -57,6 +59,7 @@ public class RequisitionService {
   public static final String TESTTYPES = "testtypes";
   public static final String TESTPRODUCTS = "testproducts";
   public static final String MANUALTESTTYPES = "manualtesttypes";
+  public static final String OBSOLETE = "OBSOLETE";
 
   @Autowired
   private RequisitionRepository requisitionRepository;
@@ -113,6 +116,9 @@ public class RequisitionService {
 
   @Autowired
   private ManualTestsLineItemMapper manualTestMapper;
+
+  @Autowired
+  private EquipmentOperationalStatusService equipmentOperationalStatusService;
 
   @Autowired
   public void setRequisitionSearchStrategyFactory(RequisitionSearchStrategyFactory requisitionSearchStrategyFactory) {
@@ -200,7 +206,16 @@ public class RequisitionService {
   private void populateEquipments(Rnr requisition) {
     List<EquipmentInventory> inventories = equipmentInventoryService.getInventoryForFacility(requisition.getFacility().getId(), requisition.getProgram().getId());
     requisition.setEquipmentLineItems(new ArrayList<EquipmentLineItem>());
+
+    EquipmentOperationalStatus obsoleteEquipmentStatus =
+            equipmentOperationalStatusService.getByCode(OBSOLETE);
+
+    //if the equipment status become obsolete on the previous Rnr,
+    // ignore it for the current and the following Rnr
     for (EquipmentInventory inv : inventories) {
+      if(inv.getOperationalStatusId() == obsoleteEquipmentStatus.getId())
+        continue;
+
       EquipmentLineItem lineItem = new EquipmentLineItem();
       lineItem.setRnrId(requisition.getId());
       lineItem.setEquipmentSerial(inv.getSerialNumber());

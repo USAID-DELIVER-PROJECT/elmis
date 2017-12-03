@@ -42,9 +42,10 @@ public class AggregateConsumptionQueryBuilder {
 
 
     WHERE(programIsFilteredBy("r.programId"));
-    WHERE(periodIsFilteredBy("r.periodId"));
     WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
     WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
+    WHERE(periodStartDateRangeFilteredBy("pp.startdate", filter.getPeriodStart().trim()));
+    WHERE(periodEndDateRangeFilteredBy("pp.enddate", filter.getPeriodEnd().trim()));
 
     if(filter.getProductCategory() != 0){
       WHERE( productCategoryIsFilteredBy("ppg.productCategoryId"));

@@ -27,7 +27,7 @@ public interface ManualTestsLineItemMapper {
     @Select("SELECT manualtest.*, testtypes.name AS testTypeName " +
             "FROM manual_test_line_item manualtest  " +
             "  JOIN manual_test_types testtypes " +
-            "  ON testtypes.id = manualtest.testtypeid where rnrId = #{rnrId}")
+            "  ON testtypes.id = manualtest.testtypeid where rnrId = #{rnrId} order by testtypes.displayorder")
     List<ManualTestesLineItem> getManualTestLineItemsByRnrId(Long rnrId);
 
     @Select("SELECT id AS testTypeId, name AS testTypeName, null AS remark, " +

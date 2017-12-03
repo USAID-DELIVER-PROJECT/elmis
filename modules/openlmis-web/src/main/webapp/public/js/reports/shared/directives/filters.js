@@ -2838,3 +2838,29 @@ app.directive('facilityLevelWithoutProgramForStockFilter', ['ReportFacilityLevel
         };
     }
 ]);
+
+app.directive('productWithoutDescriptionAndSyringesFilter', ['ReportProductsByProgramWithoutDescriptionsAndSyringes', '$routeParams',
+    function (ReportProductsByProgramWithoutDescriptionsAndSyringes, $routeParams) {
+
+        return {
+            restrict: 'E',
+            require: '^filterContainer',
+            link: function (scope, elm, attr) {
+
+              /*  if (!$routeParams.product) {
+                    scope.products = scope.unshift([], 'Select Product');
+                }
+*/
+                ReportProductsByProgramWithoutDescriptionsAndSyringes.get({}, function (data) {
+                    scope.products = scope.unshift(data.productList,'Select Product');
+                });
+
+                scope.$watch('filter.product', function () {
+                    scope.$parent.OnFilterChanged();
+                });
+
+            },
+            templateUrl: 'filter-product-without-description-and-without-program-template'
+        };
+    }
+]);

@@ -29,9 +29,8 @@
                   <form ng-submit="filterGrid()"  name="filterForm" novalidate>
                     <div filter-container class="clearfix">
                         <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
-                        <schedule-filter class="form-cell horizontalFilters" required="true"></schedule-filter>
-                        <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
-                        <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
+                        <date-range-filter perioderror="error" startdate="filter.periodStart"  enddate="filter.periodEnd"
+                        class="form-cell horizontalFilters"></date-range-filter>
                         <zone-filter class="form-cell horizontalFilters"></zone-filter>
                         <product-category-filter class="form-cell horizontalFilters" ></product-category-filter>
                         <product-filter class="form-cell horizontalFilters" required="true"></product-filter>
@@ -42,13 +41,28 @@
             <div class="content-body" >
                 <div class="box-header">
 
-                    <div class="form-cell span8">
-                        <div class="checkbox">
-                            <label for="toggle-report">
-                               <input id="toggle-report" type="checkbox" class="form-cell horizontalFilters" ng-model="toggel">  <span  openlmis-message="label.show.facilities.consumption">Show facilities consumption</span>
-                            </label>
+                    <div class="form-cell">
+                        <div class="span4">
+                            <div class="checkbox">
+                                <label for="toggle-report">
+                                    <input id="toggle-report" type="checkbox" class="form-cell horizontalFilters" ng-model="toggel">
+                                    <span  openlmis-message="label.show.facilities.consumption"></span>
+
+                                </label>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <div class="checkbox">
+                                <label for="exclude-dho">
+                                    <input id="exclude-dho" type="checkbox" class="form-cell horizontalFilters" ng-model="filter.excludeDHO"
+                                    ng-change="OnFilterChanged();">
+                                    <span  openlmis-message="label.exclude.DHO.consumption"></span>
+
+                                </label>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
                 <table client-side-sort-pagination  class="table table-bordered" ng-show="data == undefined || data.length == 0">

@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module('mapModule', ['openlmis', 'angularCombine', 'ngTable', 'ui.bootstrap.modal', 'ui.bootstrap.dialog', 'leaflet-directive', 'ui.bootstrap.dropdownToggle','tree.dropdown'])
+angular.module('mapModule', ['openlmis', 'angularCombine', 'ngTable', 'ui.bootstrap.modal', 'ui.bootstrap.dialog', 'leaflet-directive', 'ui.bootstrap.dropdownToggle','tree.dropdown','export.csv'])
     .config(['$routeProvider',
         function($routeProvider) {
             $routeProvider.
@@ -17,8 +17,9 @@ angular.module('mapModule', ['openlmis', 'angularCombine', 'ngTable', 'ui.bootst
             when('/lab-equipments-by-location', {controller:LabEquipmentStatusByLocationController, templateUrl:'partials/lab-equipments-by-location.html',reloadOnSearch:false}).
             when('/mnch-status', {controller:MNCHStatusController, templateUrl:'partials/mnch-status.html',reloadOnSearch:false}).
             when('/stock-status', {controller:StockStatusController, templateUrl:'partials/stock-status.html',reloadOnSearch:false}).
+            when('/geo-coverage', {  controller: GeoVaccineCoverageController,  templateUrl: 'partials/coverage.html', reloadOnSearch: false }).
             otherwise({
-                redirectTo: '/list'
+            redirectTo: '/list'
             });
         }
     ]).config(function(angularCombineConfigProvider) {

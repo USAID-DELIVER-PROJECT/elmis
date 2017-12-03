@@ -678,3 +678,7 @@ services.factory('MinimumStockNotification', function ($resource) {
     return $resource('/vaccine/orderRequisition/getMinimumStock', {}, {});
 });
 
+services.factory('AvailableStockDashboard', function($resource){
+
+    return $resource('/vaccine/dashboard/availableStock.json',{},{});
+});

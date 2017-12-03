@@ -50,4 +50,32 @@ function CreateEquipmentLineItemController($scope) {
     });
   };
 
+  $scope.setEquipmentLineItemStatusObsolete = function(lineItem){
+    var obsoleteEquipmentStatus = _.findWhere($scope.$parent.equipmentOperationalStatus, {'isObsolete': true});
+
+    if(lineItem.isObsolete){
+        lineItem.analytesDaysOutOfUseOldValue = lineItem.analytesDaysOutOfUse;
+        lineItem.electrolytesDaysOutOfUseOldValue = lineItem.electrolytesDaysOutOfUse;
+        lineItem.operationalStatusOldValue = lineItem.operationalStatusId;
+
+        lineItem.analytesDaysOutOfUse = undefined;
+        lineItem.electrolytesDaysOutOfUse = undefined;
+        lineItem.operationalStatusId = obsoleteEquipmentStatus.id;
+    }
+    else{
+        lineItem.operationalStatusId = lineItem.operationalStatusOldValue;
+        lineItem.analytesDaysOutOfUse = lineItem.analytesDaysOutOfUseOldValue;
+        lineItem.electrolytesDaysOutOfUse = lineItem.electrolytesDaysOutOfUseOldValue;
+    }
+  };
+
+  function validateDays(days){ return days > 31 || days < 0; }
+
+  $scope.validateDaysOutOfUse = function(lineItem, daysOutOfUse){
+        if(validateDays(lineItem.analytesDaysOutOfUse) || validateDays(lineItem.electrolytesDaysOutOfUse))
+            lineItem.isEquipmentValid = false;
+       else
+            lineItem.isEquipmentValid = true;
+        return validateDays(daysOutOfUse);
+   };
 }

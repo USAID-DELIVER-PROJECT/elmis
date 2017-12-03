@@ -1,0 +1,9 @@
+CREATE TABLE equipment_model (
+  id SERIAL PRIMARY KEY,
+  name CHARACTER VARYING(1000) NOT NULL,
+  code CHARACTER VARYING(1000) NOT NULL,
+  createdby INTEGER,
+  createddate TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
+  modifiedby INTEGER,
+  modifieddate TIMESTAMP WITHOUT TIME ZONE DEFAULT now()
+);

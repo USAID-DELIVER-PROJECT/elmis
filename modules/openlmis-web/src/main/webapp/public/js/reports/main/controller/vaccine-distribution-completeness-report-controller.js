@@ -35,7 +35,6 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
         if (utils.isEmpty($scope.getSanitizedParameter().year))
             return;
         var periodFilter = ($scope.getSanitizedParameter().period === null || isUndefined($scope.getSanitizedParameter().period) || utils.isEmpty($scope.getSanitizedParameter().period)) ? 0 : $scope.getSanitizedParameter().period;
-
         VaccineDistributionCompletenessReport.get(
             {
 
