@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -262,6 +264,11 @@ public class GeoDataController extends BaseController {
                                                                    HttpServletRequest request) {
         Long userId = loggedInUserId(request);
 
-        return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoZoneVaccineCoverage(userId, product,year, period));
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int y = cal.get(Calendar.YEAR);
+
+        return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoZoneVaccineCoverage(userId, product,Long.valueOf(y), period));
     }
 }
