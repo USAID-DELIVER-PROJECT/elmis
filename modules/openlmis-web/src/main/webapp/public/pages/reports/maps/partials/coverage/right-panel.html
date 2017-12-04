@@ -62,16 +62,16 @@
             <div class="number" style="float:right;">{{(feature.coveragePercentage).toFixed(0)}} %</div>
             <div class="progress" style="margin-bottom:0px;width:68%">
 
-              <div ng-if="feature.coverageClassification=='warn'" class="bar bar-warning leaflet-clickable" ng-click=""
+              <div ng-if="feature.coverageClassification=='warn'" class="bar bar-warning leaflet-clickable" ng-click="onDetailClicked(feature, this)"
                    style="width:100%">
               </div>
-              <div ng-if="feature.coverageClassification=='bad'" class="bar bar-danger leaflet-clickable" ng-click=""
+              <div ng-if="feature.coverageClassification=='bad'" class="bar bar-danger leaflet-clickable" ng-click="onDetailClicked(feature, this)"
                    style="width:100%">
               </div>
-                <div ng-if="feature.coverageClassification=='normal'" class="bar bar-info leaflet-clickable" ng-click=""
+                <div ng-if="feature.coverageClassification=='normal'" class="bar bar-info leaflet-clickable" ng-click="onDetailClicked(feature, this)"
                    style="width:100%">
               </div>
-              <div ng-if="feature.coverageClassification=='good'" class="bar bar-success good leaflet-clickable" ng-click=""
+              <div ng-if="feature.coverageClassification=='good'" class="bar bar-success good leaflet-clickable" ng-click="onDetailClicked(feature, this)"
                    style="width:100%">
               </div>
 
