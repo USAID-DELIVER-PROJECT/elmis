@@ -92,6 +92,7 @@ function GeoVaccineCoverageController($scope,leafletData,GetProductById){
     initiateCoverageMap($scope);
 
     $scope.onDetailClicked = function (feature) {
+        console.log(feature);
         $scope.currentFeature = feature;
         $scope.$broadcast('openDialogBox');
     };
