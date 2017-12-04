@@ -53,4 +53,8 @@ public class GeoZoneVaccineCoverage {
     private Integer soh;
 
     private float prevMOS;
+
+    private Integer prevExpected;
+
+    private Integer prevPeriod;
 }
