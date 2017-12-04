@@ -384,5 +384,31 @@ Long userId = this.loggedInUserId(request);
         return response;
     }
 
+   @RequestMapping(value = "fullStockAvailability.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse> getFullStockAvailability(
+            HttpServletRequest request
+
+            ) {
+
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.response("fullStocks",
+                service.getFullStockAvailability());
+        return response;
+    }
+
+
+    @RequestMapping(value = "getNationalPerformance.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse>getPerformanceReport(
+            HttpServletRequest request,
+            @Param("productId") Long productId,
+            @Param("periodId") Long periodId,
+            @Param("year") Long year
+
+            ) {
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.response("performance",service.getNationalPerformance(loggedInUserId(request), productId,periodId,year));
+        return response;
+    }
+
 
 }

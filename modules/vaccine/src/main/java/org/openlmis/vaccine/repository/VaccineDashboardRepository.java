@@ -209,4 +209,11 @@ public class VaccineDashboardRepository {
     public List<HashMap<String,Object>>getVaccineImmunization(){
         return mapper.getAllVaccineImmunization();
     }
+
+    public List<HashMap<String,Object>>getFullStockAvailability(){
+        return mapper.getFullStockAvailability();
+    }
+    public List<HashMap<String,Object>>getNationalPerformance(Long userId,Long productId,Long periodId, Long year){
+        return mapper.getNationalPerformance(userId,productId,periodId,year);
+    }
 }

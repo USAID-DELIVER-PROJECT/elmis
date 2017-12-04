@@ -1352,4 +1352,83 @@ public interface VaccineDashboardMapper {
             "  order by product_id,display_name")
     List<HashMap<String, Object>>getAllVaccineImmunization();
 
+
+   //Dashboard Queries
+   @Select("select * from vw_full_stock_availability_vw ")
+   List<HashMap<String,Object>>getFullStockAvailability();
+
+
+  @Select("\n" +
+          "\n" +
+          "WITH Q as (\n" +
+          "\n" +
+          "select b.*, \n" +
+          "CASE when soh = 0 THEN 'bad' WHEN mos between 1 and 1.5 THEN 'good' WHEN (mos > 1.5 or mos IS NULL ) THEN 'normal'" +
+          " WHEN mos < 1 THEN 'warn' ELSE NULL END AS Classification from \n" +
+          "\n" +
+          "( select region_name, district_name, district_id, EXTRACT (YEAR FROM A .startdate) \"year\", EXTRACT (MONTH FROM A .startdate) \"month\", a.periodid, a.period_name, sum(soh) soh,\n" +
+          " sum(consumption) consumption, case when sum(COALESCE(consumption,0)) > 0 then round(sum(COALESCE(soh,0))/(sum(COALESCE(consumption,0))/3::numeric)::numeric,2) else null end mos \n" +
+          " from ( \n" +
+          " \n" +
+          " with t as (\n" +
+          "  SELECT * FROM vaccine_facility_report_view \n" +
+          "  where startdate::date >= (#{year}::text||'-01-01')::date - interval '3 months' and \n" +
+          "  enddate::date <= (#{year}::text||'-12-31')::date and productid = #{productId}::INT and status <> 'DRAFT'\n" +
+          "\n" +
+          "   ) \n" +
+          "  \n" +
+          "SELECT facilityid, periodid, period_name, startdate, consumption, soh, extract(month from startdate) AS dow,\n" +
+          " CASE WHEN count(consumption) OVER w = 3 THEN avg(consumption) OVER w END AS amc FROM t \n" +
+          "\n" +
+          " WHERE extract(month from startdate) \n" +
+          " \n" +
+          " between 1 and 12 WINDOW w AS (ORDER BY facilityid, startdate desc ROWS BETWEEN 0 FOLLOWING AND 2 FOLLOWING) ) a \n" +
+          " join facilities f on f.id = a.facilityid\n" +
+          " join vw_districts d on f.geographiczoneid = d.district_id \n" +
+          " join processing_periods pr on pr.id = a.periodid \n" +
+          " group by 1,2,3,4,5,6,7\n" +
+          "  ) b\n" +
+          " ) select period_name,Reported.count total,\n" +
+          " -- sum(case when classification = 'normal' then 1 else 0 end) as normal,\n" +
+          " --SUM(case when classification = 'bad' then 1 else 0 end) as bad,\n" +
+          "-- SUM(case when classification = 'warn' then 1 else 0 end)as warn,\n" +
+          " --SUM(case when classification = 'good' then 1 else 0 end) as good,\n" +
+          "  --SUM(case when classification is null then 1 else 0 end) as noMonthOfStock,\n" +
+          "CASE WHEN Reported.count > 0 then \n" +
+          "ROUND((sum(case when classification = 'normal' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as accordingPlan,\n" +
+          "\n" +
+          "CASE WHEN Reported.count > 0 then \n" +
+          "ROUND((sum(case when classification = 'bad' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as stockedOut,\n" +
+          "\n" +
+          "\n" +
+          "CASE WHEN Reported.count > 0 then \n" +
+          "ROUND((sum(case when classification = 'warn' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as underStocked,\n" +
+          "\n" +
+          "\n" +
+          "\n" +
+          "CASE WHEN Reported.count > 0 then \n" +
+          "ROUND((sum(case when classification = 'good' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as overStocked\n" +
+          "  \n" +
+          "  \n" +
+          "    from q\n" +
+          "    LEFT JOIN \n" +
+          "(\n" +
+          "\n" +
+          "\n" +
+          "                                 select geographicZoneId, count(*) REPORTED from facilities  \n" +
+          "                                 join programs_supported ps on ps.facilityId = facilities.id \n" +
+          "                                    join geographic_zones gz on gz.id = facilities.geographicZoneId \n" +
+          "                                    where  ps.programId = 82 and facilities.id in \n" +
+          "                                      (select facilityId from vaccine_reports where periodId = #{periodId}::INT and programId = 82 and\n" +
+          "                                      status not in ('DRAFT') )\n" +
+          "                                     group by geographicZoneId\n" +
+          "                                     ) Reported ON q.district_id = reported.geographicZoneId\n" +
+          "   \n" +
+          "    \n" +
+          "    where periodid = #{periodId}\n" +
+          "group by period_name\n" +
+          "\n ")
+        List<HashMap<String,Object>>getNationalPerformance(@Param("userId") Long userId, @Param("productId") Long productId, @Param("periodId") Long periodId,@Param("year")Long year);
+
+
 }
