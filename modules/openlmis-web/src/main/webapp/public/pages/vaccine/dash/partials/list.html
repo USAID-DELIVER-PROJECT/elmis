@@ -1,0 +1,244 @@
+<!--<div>
+<filter-container>
+
+    <product-without-description-and-syringes-filter class="form-cell horizontalFilters" required="true"></product-without-description-and-syringes-filter>
+
+   &lt;!&ndash; <year-filter class="form-cell horizontalFilters"></year-filter>
+
+    <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>&ndash;&gt;
+</filter-container>
+</div>
+
+    <div class="clearfix"></div>
+    <div class="clearfix"></div>
+<br/>
+
+    <div id="container" style="min-width: 200px; height: 300px; margin: 0 auto"></div>
+
+<div class="clearfix"></div>
+<div class="clearfix"></div>
+<br/>
+<div id="container2" style="height: 800px"></div>
+<div class="clearfix"></div>
+<div class="clearfix"></div>
+<br/>
+<div id="container3" style="height: 800px"></div>-->
+
+
+<!--<filter-container>
+
+    <product-without-description-and-syringes-filter class="form-cell horizontalFilters" required="true"></product-without-description-and-syringes-filter>
+
+    &lt;!&ndash; <year-filter class="form-cell horizontalFilters"></year-filter>
+
+     <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>&ndash;&gt;
+</filter-container>-->
+<br/>
+
+<style>
+    .panel {
+        height: 150px !important;
+    }
+
+
+</style>
+
+<div>
+
+    <div class="row">
+<div>{{dataaaa}}</div>
+        <div class="col l8 s8 m12">
+
+            <p class="z-depth-1">z-depth-1</p>
+        </div>
+
+        <div class="col l4 s4 m12">
+            <div class="card-panel grey lighten-4 z-depth-1">
+                <div class="row valign-wrapper">
+                    <div class="col s3"  style="background-color: red">
+                         <span class="black-text">
+                           <span style="font-size: 40px">{{facilityPerformance.stockedout}} %</span>
+                             <p>Of Facilities Stocked Out</p>
+                          </span>
+                    </div>
+                    <div class="col s3" style="background-color: yellow">
+              <span class="black-text">
+                <span style="font-size: 40px">{{facilityPerformance.understocked}}%</span>
+                             <p>Of Facilities Understocked</p>
+              </span>
+                    </div>
+
+                    <div class="col s3" style="background-color: green">
+              <span class="black-text">
+                      <span style="font-size: 40px">{{facilityPerformance.accordingplan}}%</span>
+                             <p>Stocked According To plan</p>
+              </span>
+                    </div>
+                    <div class="col s3" style="background-color: #00B0F0;">
+                      <span class="black-text">
+                        <span style="font-size:40px">{{facilityPerformance.overstocked}}%</span>
+                             <p>Of Facilities Overstocked</p>
+                  </span>
+                    </div>
+                </div>
+            </div>
+     <!--       <div class="z-depth-4">
+
+
+                <div class="panel-body">
+                       <span class="span3" style="background-color: red; color: black">
+                           <span style="font-size: 40px;">30%</span> <br/> <p>Of Facilities Stocked Out</p>
+                       </span>
+                       <span class="span3" style="background-color: cadetblue; color: black">
+                           <span style="font-size: 40px;">30%</span> <br/> <p>Of Facilities Stocked Out</p>
+                       </span>
+                      <span class="span3" style="background-color: cadetblue; color: black">
+                           <span style="font-size: 40px;">30%</span> <br/> <p>Of Facilities Stocked Out</p>
+                       </span>
+
+                </div>
+                    </div>-->
+        </div>
+
+        <!--<div class="col l6 s12 m12">
+
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="span6" style="display: inline-block;">
+
+                       <span class="span3" style="background-color: red; color: black">
+                           <span style="font-size: 40px;">30%</span> <br/> <p>Of Facilities Stocked Out</p>
+                       </span>
+                       <span class="span3" style="background-color: cadetblue; color: black">
+                           <span style="font-size: 40px;">30%</span> <br/> <p>Of Facilities Stocked Out</p>
+                       </span>
+                        <span class="span3" style="background-color: yellow; color: black">
+                           <span style="font-size: 40px;">30%</span> <br/> <p>Of Facilities Stocked Out</p>
+                       </span>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="col l6 s12 m12">
+
+
+            &lt;!&ndash;  <div class="panel panel-primary">
+                  <div class="panel-heading">
+                      <h3 class="panel-title">Panel title</h3>
+                  </div>
+                  <div class="panel-body">
+                      Panel content
+                  </div>
+              </div>&ndash;&gt;
+            <div class="progress">
+                <div class="indeterminate"></div>
+            </div>
+
+
+            <div class="card">
+                <div class="progress" style="width:70%"></div>
+                <div class="content">
+                    <h2>Performance</h2>
+                    <p>Card which uses the background colour to show progress.</p>
+                    <p class="percentage">70%</p>
+                </div>
+            </div>
+
+      &lt;!&ndash;      <md-card md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch>
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline"></span>
+                        <span class="md-subhead"></span>
+                    </md-card-title-text>
+                    <md-card-title-media>
+                        <div class="md-media-sm card-media"></div>
+                    </md-card-title-media>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="end center">
+
+                </md-card-actions>
+            </md-card>
+&ndash;&gt;
+
+        </div>
+
+-->
+    </div>
+
+    <div class="row">
+        <div class="col l6 s12 m12">
+            <div class="card">
+                <div class="card-content">
+                    <!--
+                                        <h5 class="grey-text">Growth</h5>
+                    -->
+
+                    <div id="container3"></div>
+
+
+                    <!--<canvas id="line" class="chart chart-line" chart-data="data"
+                            chart-labels="labels" chart-legend="true" chart-series="series"
+                            chart-click="onClick" >
+                    </canvas>-->
+                </div>
+            </div>
+        </div>
+        <div class="col l6 s12 m12">
+            <div class="card">
+                <div class="card-content">
+
+                    <div id="container"></div>
+
+                    <!--
+                                        <h5 class="grey-text">Sales Report</h5>
+                    -->
+                    <!--
+                                        <div id="container1"></div>
+                    -->
+
+                    <!--  <canvas id="bar" class="chart chart-bar"
+                              chart-data="data" chart-labels="labels"> chart-series="series"
+                      </canvas>
+                      <p>
+                          This are the amazing report for the company, only need to looking to last month's report
+                      </p>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col l6 s12 m12">
+            <div class="card">
+                <div class="card-content">
+                    <h5 class="grey-text center">Pie Chart</h5>
+                    <canvas id="pie" class="chart chart-pie"
+                            chart-data="dataPie" chart-labels="labelsPie">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col l6 s12 m12">
+            <div class="card">
+                <div class="card-content">
+                    <h5 class="grey-text center">Doughnut Chart</h5>
+                    <canvas id="doughnut" class="chart chart-doughnut"
+                            chart-data="dataPie" chart-labels="labelsPie">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

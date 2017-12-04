@@ -19,14 +19,14 @@
     <div class="modal-body">
 
       <div class="tabbable">
-        <ul class="nav nav-tabs">
+       <!-- <ul class="nav nav-tabs">
           <li class="active">
             <a href="#notify-facility" data-toggle="tab">Notify Facility</a>
           </li>
           <li>
             <a href="#notify-supervisor" data-toggle="tab">Notify Supervisor</a>
           </li>
-        </ul>
+        </ul>-->
         <div class="tab-content">
           <div class="tab-pane active" id="notify-facility">
             <div ng-show="show_sms">
@@ -84,9 +84,10 @@
             <table ng-show="!show_sms && !show_email" class="table table-bordered">
               <thead>
               <tr>
-                <th openlmis-message="label.facility.name"></th>
-                <th openlmis-message="label.phone"></th>
-                <th openlmis-message="label.action"></th>
+                <th>Health Facility</th>
+                <th>Coverage</th>
+                <th>Stock Status</th>
+                <th>Equipment Status</th>
               </tr>
               </thead>
               <tbody>

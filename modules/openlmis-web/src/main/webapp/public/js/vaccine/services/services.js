@@ -682,3 +682,14 @@ services.factory('AvailableStockDashboard', function($resource){
 
     return $resource('/vaccine/dashboard/availableStock.json',{},{});
 });
+
+
+//Dashboard API
+
+services.factory('FullStockAvailableForDashboard', function($resource){
+    return $resource('/vaccine/dashboard/fullStockAvailability.json',{},{});
+});
+
+services.factory('AggregateFacilityPerformance', function($resource){
+    return $resource('/vaccine/dashboard/getNationalPerformance.json',{},{});
+});

@@ -273,7 +273,7 @@
                     <div class="notification-item">
                         <h2 class="item-title" style="font-size: 1.0em !important;">Supplying</h2>
 
-                        <span class="alert alert-info">
+                        <span class="alert alert-info" ng-show="supplying.orders > 0">
                              You have <a href="/public/pages/vaccine/order-requisition/index.html#/view"
                                          style="display: inline !important;color:red !important;"> <strong>{{supplying.orders}}</strong></a>
                             Pending Orders. <a href="/public/pages/vaccine/order-requisition/index.html#/view"
@@ -282,7 +282,7 @@
                         </span>
 
                         <div class="divider"></div>
-                        <span class="alert alert-info" style=  "padding: 8px 19px 8px 14px; !important;">
+                        <span class="alert alert-info" style=  "padding: 8px 19px 8px 14px; !important;" ng-show="supplyingPendingReceive.supplyingPendingToReceiveLowerLevel.length >0">
                              <a href="/public/pages/vaccine/order-requisition/index.html#/view"
                                 style="display: inline !important;color:red !important;"> <strong>
 
@@ -294,7 +294,7 @@
 
                     </div>
 
-                    <div class="notification-item">
+                    <div class="notification-item" ng-show="totalMinimumStock > 0">
                         <h2 class="item-title" style="font-size: 1.0em !important;">Stock</h2>
 
                         <span class="alert alert-info">
@@ -305,11 +305,11 @@
                     </div>
 
 
-                    <div class="notification-item">
+                    <div class="notification-item" ng-if="totalBatchToExpire >0">
                         <h2 class="item-title" style="font-size: 1.0em !important;">Batch Expiries</h2>
 
                         <span class="alert alert-info">
-                            <a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment" style="display: inline !important;color:red !important;"> <strong>{{totalBatchToExpire}}</strong></a>
+                            <a href="/public/pages/ vaccine/inventory/index.html#/stock-adjustment" style="display: inline !important;color:red !important;"> <strong>{{totalBatchToExpire}}</strong></a>
                            Batches to Expire<a href="/public/pages/vaccine/inventory/index.html#/stock-adjustment" style="display: inline !important;color:blue !important;"><strong>Resolve</strong></a>
                         </span>
 

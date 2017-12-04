@@ -573,4 +573,12 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
     public List<HashMap<String,Object>>getVaccineImmunization(){
         return repository.getVaccineImmunization();
     }
+
+    public List<HashMap<String,Object>>getFullStockAvailability(){
+        return repository.getFullStockAvailability();
+    }
+
+    public List<HashMap<String,Object>>getNationalPerformance(Long userId,Long productId,Long periodId, Long year){
+        return repository.getNationalPerformance(userId,productId,periodId,year);
+    }
 }
