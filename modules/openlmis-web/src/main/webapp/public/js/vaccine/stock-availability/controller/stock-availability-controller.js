@@ -191,11 +191,8 @@ function StockAvailabilityControllerFunc($scope, AvailableStockDashboard,FullSto
 
             title: {
                 text: '<span style="font-size: 60px;">80 %</span> <br/> <div class="clearfix"></div>' +
-                '<span style="font-size: 12px !important;">DTP3-HepB-Hib-3 Coverage Nov, 2017</span>'
-                ,align: 'center',
-                verticalAlign: 'middle'
-            }
-            ,
+                '<span style="font-size: 12px !important;">DTP3-HepB-Hib-3 Coverage Nov, 2017</span>',align: 'center',verticalAlign: 'middle'
+            },
 
         credits: {enabled: false},
 

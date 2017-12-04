@@ -292,14 +292,11 @@ function StockAvailabilityControllerFunc1($scope,$state, AvailableStockDashboard
                 fontFamily: 'helvetica'
             }
         },
-
             title: {
                 text: '<span style="font-size: 60px;">80 %</span> <br/> <div class="clearfix"></div>' +
-                '<span style="font-size: 12px !important;">DTP3-HepB-Hib-3 Coverage Nov, 2017</span>'
-                ,align: 'center',
-                verticalAlign: 'middle'
-            }
-            ,
+                '<span style="font-size: 12px !important;">DTP3-HepB-Hib-3 Coverage Nov, 2017</span>',align:'center',verticalAlign: 'middle'&apos
+            },
+
 
         credits: {enabled: false},
 
@@ -476,8 +473,7 @@ function StockAvailabilityControllerFunc1($scope,$state, AvailableStockDashboard
                     tooltip: {
                         valueSuffix: ' %'
                     }
-                }
-                ,
+                },
                 {
                     name: '% Approved',
                     dashStyle: 'longdash',
