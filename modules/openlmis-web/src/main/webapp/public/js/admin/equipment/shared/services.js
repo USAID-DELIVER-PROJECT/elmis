@@ -318,3 +318,21 @@ services.factory("GetLotById", function($resource){
 services.factory('LotLists', function($resource){
     return $resource('/lot/lots.json',{},{});
 });
+
+services.factory('EquipmentModel', function($resource){
+    return $resource('/equipment/model/models/:modelid', {modelid:'@modelid'},
+      {
+        query: {
+            method: 'GET',
+            isArray: true,
+            transformResponse: function(data) {
+                return angular.fromJson(data).models;
+            }
+       },
+       update : { method: 'PUT'}
+     });
+});
+
+services.factory('EquipmentModelByEquipmentType', function($resource){
+    return $resource('/equipment/model/models/equipmenttype/:id',{id:'@id'},{});
+});

@@ -56,6 +56,6 @@ public interface EquipmentOperationalStatusMapper {
   @Select(" SELECT id, name, displayorder, modifiedby, modifieddate, \n" +
           "       category, isbad, needsparepart\n" +
           "  FROM equipment_operational_status\n" +
-          "  WHERE isObsolete = TRUE ")
-  EquipmentOperationalStatus getObsoleteEquipmentOperationalStatus();
+          "  WHERE code = #{code}")
+  EquipmentOperationalStatus getByCode(String code);
 }

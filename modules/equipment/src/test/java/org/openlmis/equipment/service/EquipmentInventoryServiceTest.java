@@ -25,6 +25,7 @@ import org.openlmis.core.service.FacilityService;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.domain.EquipmentInventory;
+import org.openlmis.equipment.domain.EquipmentModel;
 import org.openlmis.equipment.domain.EquipmentType;
 import org.openlmis.equipment.repository.EquipmentInventoryRepository;
 import org.openlmis.equipment.repository.EquipmentRepository;
@@ -231,6 +232,7 @@ public class EquipmentInventoryServiceTest {
   public void shouldSaveNewEquipmentInventory() throws Exception {
     // Set up variables
     EquipmentType equipmentType = new EquipmentType();
+    EquipmentModel model = new EquipmentModel();
     equipmentType.setColdChain(false);
     equipmentType.setId(1L);
     Equipment equipment = new Equipment();
@@ -238,6 +240,7 @@ public class EquipmentInventoryServiceTest {
     equipment.setEquipmentTypeId(equipmentType.getId());
     equipment.setManufacturer("Manu");
     equipment.setModel("123");
+    equipment.setEquipmentModel(model);
     EquipmentInventory inventory = new EquipmentInventory();
     inventory.setSerialNumber("123");
     inventory.setEquipment(equipment);
@@ -247,6 +250,8 @@ public class EquipmentInventoryServiceTest {
     List<Equipment> equipmentsInserted = new ArrayList<>();
     equipmentsInserted.add(equipment);
     when(equipmentService.getAllByType(1L)).thenReturn(equipmentsEmpty, equipmentsInserted);
+    when(equipmentService.getByTypeManufacturerAndModel(1L, "Manu", 1L, "123")).thenReturn(null);
+
 
     // Do the call
     service.save(inventory);
@@ -262,6 +267,8 @@ public class EquipmentInventoryServiceTest {
   public void shouldSaveChangesInExistingEquipmentInventory() throws Exception {
     // Set up variables
     EquipmentType equipmentType = new EquipmentType();
+    EquipmentModel model = new EquipmentModel();
+    model.setId(1L);
     equipmentType.setColdChain(false);
     equipmentType.setId(1L);
     Equipment equipment = new Equipment();
@@ -269,6 +276,7 @@ public class EquipmentInventoryServiceTest {
     equipment.setEquipmentTypeId(equipmentType.getId());
     equipment.setManufacturer("Manu");
     equipment.setModel("123");
+    equipment.setEquipmentModel(model);
     EquipmentInventory inventory = new EquipmentInventory();
     inventory.setId(1L);
     inventory.setSerialNumber("123");
@@ -278,6 +286,7 @@ public class EquipmentInventoryServiceTest {
     List<Equipment> equipments = new ArrayList<>();
     equipments.add(equipment);
     when(equipmentService.getAllByType(1L)).thenReturn(equipments);
+    when(equipmentService.getByTypeManufacturerAndModel(1L, "Manu", 1L, "123")).thenReturn(new Equipment());
 
     // Do the call
     service.save(inventory);

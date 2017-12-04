@@ -188,7 +188,7 @@
                         <a ng-href="#/edit/{{selectedType}}/{{item.programId}}/{{selectedEquipmentType.id}}/{{item.id}}/{{currentPage}}">{{item.equipment.name}}</a>
                     </td>
                     <td>{{item.equipment.manufacturer}}</td>
-                    <td>{{item.equipment.model}}</td>
+                    <td>{{item.equipment.equipmentModel.name}}</td>
                     <td>{{item.sourceOfFund}}</td>
                     <td>
                         <span class="btn-mini" ng-show="!item.isActive"

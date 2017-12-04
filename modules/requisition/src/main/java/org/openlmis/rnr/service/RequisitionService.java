@@ -59,6 +59,7 @@ public class RequisitionService {
   public static final String TESTTYPES = "testtypes";
   public static final String TESTPRODUCTS = "testproducts";
   public static final String MANUALTESTTYPES = "manualtesttypes";
+  public static final String OBSOLETE = "OBSOLETE";
 
   @Autowired
   private RequisitionRepository requisitionRepository;
@@ -207,8 +208,10 @@ public class RequisitionService {
     requisition.setEquipmentLineItems(new ArrayList<EquipmentLineItem>());
 
     EquipmentOperationalStatus obsoleteEquipmentStatus =
-            equipmentOperationalStatusService.getObsoleteEquipmentOperationalStatus();
+            equipmentOperationalStatusService.getByCode(OBSOLETE);
 
+    //if the equipment status become obsolete on the previous Rnr,
+    // ignore it for the current and the following Rnr
     for (EquipmentInventory inv : inventories) {
       if(inv.getOperationalStatusId() == obsoleteEquipmentStatus.getId())
         continue;

@@ -10,41 +10,28 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.equipment.repository;
-
-import org.openlmis.equipment.domain.EquipmentOperationalStatus;
-import org.openlmis.equipment.repository.mapper.EquipmentOperationalStatusMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
-@Repository
-public class EquipmentOperationalStatusRepository {
-
-  @Autowired
-  private EquipmentOperationalStatusMapper mapper;
-
-  public List<EquipmentOperationalStatus> getAll(){
-    return mapper.getAll();
-  }
-  public void insert(EquipmentOperationalStatus status){
-    mapper.Insert(status);
-  }
-
-  public void update(EquipmentOperationalStatus status){
-    mapper.update(status);
-  }
-
-  public EquipmentOperationalStatus getStatusById(Long id){
-    return  mapper.getStatusById(id);
-  }
-
-  public void remove(Long id){
-    mapper.remove(id);
-  }
-
-  public EquipmentOperationalStatus getByCode(String code) {
-    return mapper.getByCode(code);
-  }
-}
+angular.module('equipment-model', ['openlmis', 'ui.bootstrap.modal', 'ui.bootstrap.dialog', 'ui.bootstrap.dropdownToggle']).config(['$routeProvider',
+  function ($routeProvider) {
+    $routeProvider.
+    when('/list', {
+      controller: CreateEquipmentModelController,
+      templateUrl: 'partials/list.html',
+      mode: 'LIST'
+    }).
+    when('/edit/:id', {
+      controller: CreateEquipmentModelController,
+      templateUrl: 'partials/create.html',
+      mode: 'EDIT'
+    }).
+    when('/create', {
+      controller: CreateEquipmentModelController,
+      templateUrl: 'partials/create.html',
+      mode: 'EDIT'
+    }).
+    otherwise({
+      redirectTo: '/list',
+    });
+}]).run(function ($rootScope, AuthorizationService) {
+    $rootScope.manageModelSelected = "selected";
+  AuthorizationService.preAuthorize('MANAGE_EQUIPMENT_SETTINGS');
+});

@@ -22,7 +22,7 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
                 $scope.summaries = data.pages.rows[0].summary;
                 $scope.periods = data.pages.rows[0].keyValueSummary.periodsForChart;
                 $scope.chartDataRows = getDataWithRankedPeriod(data.pages.rows[0].keyValueSummary.chartData);
-                $scope.data = data.pages.rows[0].details;
+                $scope.data = _.select(data.pages.rows[0].details, {'reportingStatus': 'NON_REPORTING'}); //data.pages.rows[0].details;
 
                 $scope.rawChartData = getChartData();
                 $scope.chart = {};
@@ -54,7 +54,7 @@ function NonReportingController($scope, NonReportingFacilities, ngTableParams) {
        var data = getChartData();
 
         _.map(data[NON_REPORTING_SERIES].data, function(dataPoint){
-            dataPoint[y] = ((dataPoint[y] / (dataPoint[y] + getChartDataPointYvalue(data[REPORTING_SERIES], dataPoint[x]))) *100).toFixed(2); });
+            dataPoint[y] = Math.round((dataPoint[y] / (dataPoint[y] + getChartDataPointYvalue(data[REPORTING_SERIES], dataPoint[x]))) *100); });
 
         _.map(data[REPORTING_SERIES].data, function(dataPoint){
           dataPoint[y] = (100 - getChartDataPointYvalue(data[NON_REPORTING_SERIES], dataPoint[x])); });

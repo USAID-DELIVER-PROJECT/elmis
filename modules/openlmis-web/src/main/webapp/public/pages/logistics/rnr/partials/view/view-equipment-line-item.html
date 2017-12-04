@@ -60,13 +60,12 @@
                             <span openlmis-message="rnr.label.select.non.functional.test.type.show"></span>
                             <span class="caret"></span>
                         </button>
-                        <ul onclick="event.stopPropagation();" class="dropdown-menu">
+                        <ul onclick="event.stopPropagation();" class="dropdown-menu" style="min-width:210px;">
                             <li>
                                 <label class="checkbox" >
                                     <input type="checkbox"
                                            style="visibility: visible !important;"
-                                           ng-checked="equipmentLineItem.electrolytesChecked"
-                                           ng-model="equipmentLineItem.electrolytesChecked" ng-disabled="true"/>
+                                           ng-checked="equipmentLineItem.electrolytesDaysOutOfUse > 0"  ng-disabled="true"/>
                                     <span openlmis-message="rnr.label.electrolytes"></span>
                                 </label>
                             </li>
@@ -74,9 +73,16 @@
                                 <label class="checkbox">
                                     <input type="checkbox"
                                            style="visibility: visible !important;"
-                                           ng-checked="equipmentLineItem.analytesChecked"
-                                           ng-model="equipmentLineItem.analytesChecked" ng-disabled="true"/>
+                                           ng-checked="equipmentLineItem.analytesDaysOutOfUse > 0" ng-disabled="true"/>
                                     <span openlmis-message="rnr.label.analytes"></span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="checkbox" >
+                                    <input type="checkbox" ng-disabled="true"
+                                           style="visibility: visible !important;"
+                                           ng-model="equipmentLineItem.operationalStatus.isObsolete" />
+                                    <span openlmis-message="label.obsolete.equipment.status"></span>
                                 </label>
                             </li>
                         </ul>
