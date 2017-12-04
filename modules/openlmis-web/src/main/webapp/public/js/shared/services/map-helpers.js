@@ -41,7 +41,7 @@ function initiateCoverageMap(scope) {
         },
         legend: {
             position: 'bottomleft',
-            colors: ['#FF0000', '#FFFF00', '#52C552', '#509fc5', "#000000"],
+            colors: ['#FF0000', '#FFFF00', '#509fc5','#52C552', "#000000"],
             labels: ['Coverage <50%', '50% <= Coverage <80%', '80% <= Coverage <90%', 'Coverage > 90%', 'Not Started to Report']
         }
     });
@@ -84,12 +84,12 @@ function popupFormatForCoverageMap(feature) {
         '<tr>' +
         '<td>Health Facilities</td>' +
         '<td style="text-align: right">Expected</td>' +
-        '<td class="number">' + feature.expected + '</td>' +
+        '<td class="number">' + feature.prevExpected + '</td>' +
         '<td class="number">' + feature.expected + '</td>' +
         '</tr>' +
         '<tr><td> </td>' +
         '<td class="number" style="text-align: right">Reported</td>' +
-        '<td class="number">' + feature.period + '</td>' +
+        '<td class="number">' + feature.prevPeriod + '</td>' +
         '<td class="number">' + feature.period + '</td>' +
         '</tr>' +
         '<tr><td>Stock Status</td>' +
