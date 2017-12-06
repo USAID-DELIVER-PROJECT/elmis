@@ -30,10 +30,12 @@ public interface ManualTestTypeMapper {
     @Select("select * from manual_test_types where id = #{id}")
     ManualTestType getById(Long id);
 
-    @Insert("insert into manual_test_types (code, name, displayorder) values (#{code}, #{name}, #{displayOrder})")
+    @Insert("insert into manual_test_types (code, name, displayorder,createdBy,createdDate, modifiedBy, modifiedDate) " +
+            " values (#{code}, #{name}, #{displayOrder}, #{createdBy}, COALESCE(#{createdDate}, NOW()), #{modifiedBy}, COALESCE(#{modifiedDate}, NOW()))")
     void insert(ManualTestType type);
 
-    @Update("update manual_test_types set code=#{code}, name=#{name}, displayorder = #{displayOrder} where id = #{id}")
+    @Update("update manual_test_types set code=#{code}, name=#{name}, displayorder = #{displayOrder} " +
+            " modifiedBy = #{modifiedBy}, modifiedDate = COALESCE(#{modifiedDate}, NOW()) where id = #{id}")
     void update(ManualTestType type);
 
     @Delete("delete from manual_test_types where id = #{id}")
