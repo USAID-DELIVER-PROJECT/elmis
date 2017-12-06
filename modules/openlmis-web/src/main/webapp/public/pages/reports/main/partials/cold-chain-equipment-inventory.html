@@ -68,15 +68,15 @@
                     <tbody>
                     <tr ng-repeat="row in datarows">
 
-                        <td data-title="getLocalMessage('label.region')" sortable="region_name">
+                        <td data-title="getLocalMessage('label.region')" sortable="regionName">
                             {{
-                            row.region_name
+                            row.regionName
                             }}
                         </td>
 
-                        <td data-title="getLocalMessage('label.district')" sortable="district_name">
+                        <td data-title="getLocalMessage('label.district')" sortable="districtName">
                             {{
-                            row.district_name
+                            row.districtName
                             }}
                         </td>
 
@@ -88,7 +88,7 @@
                         <td data-title="getLocalMessage('label.electricity')" sortable="facilityHasElectricity">{{(row.facilityHasElectricity)?'Yes':'No'}}</td>
                         <td data-title="getLocalMessage('label.manufacturer')" sortable="manufacturer">{{row.manufacturer}}</td>
                         <td data-title="getLocalMessage('label.refrigerator.model')" sortable="model">{{row.model}}</td>
-                        <td data-title="getLocalMessage('label.equipment.serial')" sortable="equipmentColdChainEquipmentsSerial">{{row.equipmentcoldchainequipmentsserial}}</td>
+                        <td data-title="getLocalMessage('label.equipment.serial')" sortable="equipmentColdChainEquipmentsSerial">{{row.equipmentColdChainEquipmentsSerial}}</td>
                         <td data-title="getLocalMessage('label.equipment.refrigerant')"  sortable="refrigerant">{{row.refrigerant}}</td>
                         <td data-title="getLocalMessage('label.equipment.refrigerator-capacity')" sortable="refrigeratorCapacity">{{row.refrigeratorCapacity}}</td>
                         <td data-title="getLocalMessage('label.equipment.freezer-capacity')" sortable="freezerCapacity">{{row.freezerCapacity}}</td>

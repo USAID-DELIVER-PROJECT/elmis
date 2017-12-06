@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="openlmis-report-master-landscape" language="groovy" pageWidth="1645" pageHeight="595" orientation="Landscape" columnWidth="1605" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed759f09-4d2c-46c9-b606-42da2355eabd">
 	<property name="ireport.zoom" value="1.0000000000000007"/>
-	<property name="ireport.x" value="266"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -95,6 +95,8 @@
 	<field name="facilityAddress1" class="java.lang.String">
 		<fieldDescription><![CDATA[facilityAddress1]]></fieldDescription>
 	</field>
+	<field name="districtName" class="java.lang.String"/>
+	<field name="regionName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -231,12 +233,12 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[($F{geozoneHierarchy} != null && $F{geozoneHierarchy}.size() > 0)  ? $F{geozoneHierarchy}.toArray()[0] : ""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{regionName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="104" y="0" width="116" height="20" uuid="5c136f43-efcc-4b64-a697-0965e505dee1"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[($F{geozoneHierarchy} != null && $F{geozoneHierarchy}.size() > 0)  ? $F{geozoneHierarchy}.toArray()[1] : ""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{districtName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="223" y="0" width="100" height="20" uuid="b7f916b2-c71b-4ab3-91ee-8c8200e73377"/>

@@ -34,7 +34,7 @@ public class CCEInventoryReportDatum implements ResultRow {
     private String model;
     private String energyTypeName;
     private String equipmentColdChainEquipmentsCode;
-    private String equipmentcoldchainequipmentsserial;
+    private String equipmentColdChainEquipmentsSerial;
 
     private String refrigerant;
     private Integer refrigeratorCapacity;
@@ -57,8 +57,8 @@ public class CCEInventoryReportDatum implements ResultRow {
 
     private  String facilityOperator;
 
-    private String region_name;
-    private String district_name;
+    private String regionName;
+    private String districtName;
 
     private Integer geozoneId;
     private String geozoneName;
@@ -97,7 +97,7 @@ public class CCEInventoryReportDatum implements ResultRow {
         datum.model = "model_" + seed;
         datum.energyTypeName = "energyTypeName_" + seed;
         datum.equipmentColdChainEquipmentsCode = "code_" + seed;
-        datum.equipmentcoldchainequipmentsserial = "serial_" + seed;
+        datum.equipmentColdChainEquipmentsSerial = "serial_" + seed;
 
         datum.refrigerant = "refrigerant_" + seed;
         datum.refrigeratorCapacity = seed;

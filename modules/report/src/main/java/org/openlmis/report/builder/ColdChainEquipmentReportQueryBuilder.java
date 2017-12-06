@@ -27,12 +27,12 @@ public class ColdChainEquipmentReportQueryBuilder
         ColdChainEquipmentReportParam filter = (ColdChainEquipmentReportParam)params.get("filterCriteria");
         Long userId = (Long) params.get("userId");
 
-        return " SELECT * FROM vw_cold_chain_equipment e  " +
+        return " SELECT e.*, vw.district_name districtName, vw.region_name regionName FROM vw_cold_chain_equipment e  " +
                 "JOIN vw_districts vw ON e.geozoneId = vw.district_id   "+
                   writePredicates(filter)
        + "      AND vw.district_id in (select district_id from vw_user_facilities where user_id = '" + userId + "'::INT and program_id = fn_get_vaccine_program_id())  "
 
-                +"  ORDER BY geozoneHierarchy  ";
+                +"  ORDER BY vw.region_name, vw.district_name, e.facilityname  ";
 
     }
 
