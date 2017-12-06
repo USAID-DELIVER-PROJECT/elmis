@@ -37,6 +37,9 @@
                     <div filter-container class="clearfix">
 
                         <facility-level-without-program-filter class="form-cell horizontalFilters" required="true"></facility-level-without-program-filter>
+                        <vaccine-zone-filter class="horizontalFilters form-cell" facilityid="filter.facility"
+                                             faccility="false" pro="filter.program" user_geo_level="user_geo_level"
+                                             zones="zones" val="filter.zone"></vaccine-zone-filter>
 
                         </div>
                 </form>
@@ -65,15 +68,15 @@
                     <tbody>
                     <tr ng-repeat="row in datarows">
 
-                        <td data-title="getLocalMessage('label.region')" sortable="geozoneHierarchy[1]">
+                        <td data-title="getLocalMessage('label.region')" sortable="region_name">
                             {{
-                            row.geozoneHierarchy.length > 1 ? row.geozoneHierarchy[1] : '';
+                            row.region_name
                             }}
                         </td>
 
-                        <td data-title="getLocalMessage('label.district')" sortable="geozoneHierarchy[0]">
+                        <td data-title="getLocalMessage('label.district')" sortable="district_name">
                             {{
-                            row.geozoneHierarchy.length > 0 ? row.geozoneHierarchy[0] : '';
+                            row.district_name
                             }}
                         </td>
 
@@ -85,7 +88,7 @@
                         <td data-title="getLocalMessage('label.electricity')" sortable="facilityHasElectricity">{{(row.facilityHasElectricity)?'Yes':'No'}}</td>
                         <td data-title="getLocalMessage('label.manufacturer')" sortable="manufacturer">{{row.manufacturer}}</td>
                         <td data-title="getLocalMessage('label.refrigerator.model')" sortable="model">{{row.model}}</td>
-                        <td data-title="getLocalMessage('label.equipment.code')" sortable="equipmentColdChainEquipmentsCode">{{row.equipmentColdChainEquipmentsCode}}</td>
+                        <td data-title="getLocalMessage('label.equipment.serial')" sortable="equipmentColdChainEquipmentsSerial">{{row.equipmentcoldchainequipmentsserial}}</td>
                         <td data-title="getLocalMessage('label.equipment.refrigerant')"  sortable="refrigerant">{{row.refrigerant}}</td>
                         <td data-title="getLocalMessage('label.equipment.refrigerator-capacity')" sortable="refrigeratorCapacity">{{row.refrigeratorCapacity}}</td>
                         <td data-title="getLocalMessage('label.equipment.freezer-capacity')" sortable="freezerCapacity">{{row.freezerCapacity}}</td>

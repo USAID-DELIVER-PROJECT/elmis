@@ -59,7 +59,7 @@ public class ColdChainEquipmentReportDataProvider extends ReportDataProvider{
         ColdChainEquipmentReportParam param = new ColdChainEquipmentReportParam();
 
        param.setFacilityLevel(filterCriteria.get("facilityLevel")[0]);
-
+       param.setZone(StringHelper.isBlank(filterCriteria, "zone") ? 0: Long.parseLong(filterCriteria.get("zone")[0]));
 
         List<Program>programs = programService.getAllIvdPrograms();
 

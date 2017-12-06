@@ -18,11 +18,18 @@ function ColdChainEquipmentReportController($scope, $log,$window, ColdChainEquip
     $scope.filter = {};
     $scope.filter.max = 10000;
 
+
     $scope.exportReport = function (type)
     {
         $scope.filter.pdformat = 1;
-        var params = jQuery.param($scope.filter);
+        var CCparam = {
+           zone: utils.isEmpty($scope.getSanitizedParameter().zone) ? 0 : $scope.getSanitizedParameter().zone.id,
+           program: $scope.getSanitizedParameter().program,
+           facilityLevel: $scope.getSanitizedParameter().facilityLevel,
+           max: $scope.getSanitizedParameter().max
+         };
 
+        var params = jQuery.param(CCparam);
         var sortOrderParams = jQuery.param($scope.tableParams.sorting);
         sortOrderParams = sortOrderParams.split('=');
         sortOrderParams = { sortBy:sortOrderParams[0], order:sortOrderParams[1] };
@@ -36,19 +43,23 @@ function ColdChainEquipmentReportController($scope, $log,$window, ColdChainEquip
     $scope.OnFilterChanged  = function () {
 
         $scope.filter.max = 10000;
+        //alert(JSON.stringify( $scope.filter, null, 2)); // spacing level = 2
+        var CCparam = {
+                        zone: utils.isEmpty($scope.getSanitizedParameter().zone) ? 0 : $scope.getSanitizedParameter().zone.id,
+                        program: $scope.getSanitizedParameter().program,
+                        facilityLevel: $scope.getSanitizedParameter().facilityLevel,
+                        max: $scope.getSanitizedParameter().max
+                      };
 
         ColdChainEquipmentService.get
         (
-            $scope.getSanitizedParameter(),
-
+            CCparam,
             function (data)
-            {
-                $scope.data = $scope.datarows = data.pages.rows;
+            {   $scope.data = $scope.datarows = data.pages.rows;
                 $scope.pages = data.pages;
                 $scope.tableParams.total = $scope.pages.total;
             }
         );
-
 
     };
 
@@ -57,7 +68,6 @@ function ColdChainEquipmentReportController($scope, $log,$window, ColdChainEquip
         page: 1,            // show first page
         count: 10           // count per page
     });
-
 
     $scope.getRowFacilityAddress = function(row)
     {
@@ -69,8 +79,6 @@ function ColdChainEquipmentReportController($scope, $log,$window, ColdChainEquip
         return ret;
     };
 
-
-
     $scope.getLargestRecordShown = function()
     {
         var max = $scope.tableParams.page * $scope.tableParams.count;
@@ -79,4 +87,12 @@ function ColdChainEquipmentReportController($scope, $log,$window, ColdChainEquip
         else
             return max;
     };
+
+     $scope.replaceAll = function(string, omit, place, prevstring) {
+     if (prevstring && string === prevstring)
+        return string;
+        prevstring = string.replace(omit, place);
+        return $scope.replaceAll(prevstring, omit, place, string);
+    };
+
 }

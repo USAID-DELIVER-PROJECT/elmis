@@ -41,6 +41,7 @@ public class ColdChainEquipmentReportQueryBuilder
         String predicate = " ";
 
         String facilityLevel = params.getFacilityLevel();
+        Long zone = params.getZone();
 
         if (  facilityLevel.equalsIgnoreCase("cvs")
                 || facilityLevel.equalsIgnoreCase("rvs")
@@ -50,6 +51,9 @@ public class ColdChainEquipmentReportQueryBuilder
         } else {
             predicate += "  where facilitytypecode NOT IN ('cvs','rvs','dvs') ";
 
+        }
+        if (zone != 0 && zone != null) {
+            predicate += " AND (district_id = " + zone + " or zone_id = " + zone + " or region_id = " + zone + " or parent = " + zone + ")";
         }
 
         return predicate;

@@ -19,4 +19,5 @@ public class ColdChainEquipmentReportParam extends BaseParam
     //private Long program;
     private String facilityLevel;
     private String facilityIds;
+    private Long zone;
 }
