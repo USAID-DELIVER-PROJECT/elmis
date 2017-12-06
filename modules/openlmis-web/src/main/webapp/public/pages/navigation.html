@@ -584,7 +584,7 @@ vertical-align: top !important;">
                   openlmis-message="link.dashboard"></a>
       </li>
 
-      <li ng-hide="false">
+      <li ng-show="hasPermission('VIEW_VIMS_NOTIFICATION')">
           <ng-include src="'/public/pages/notification.html'"></ng-include>
       </li>
 
