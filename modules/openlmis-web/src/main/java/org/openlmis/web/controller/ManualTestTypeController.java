@@ -65,6 +65,7 @@ public class ManualTestTypeController extends BaseController {
         ResponseEntity<OpenLmisResponse> successResponse;
 
         testType.setModifiedBy(loggedInUserId(request));
+        testType.setCreatedBy(loggedInUserId(request));
 
         manualTestService.save(testType);
 

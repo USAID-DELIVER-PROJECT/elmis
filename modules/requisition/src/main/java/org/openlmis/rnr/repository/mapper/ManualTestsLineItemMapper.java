@@ -37,7 +37,7 @@ public interface ManualTestsLineItemMapper {
     @Insert(" INSERT INTO manual_test_line_item " +
             "(rnrid, testtypeid, testcount, remark, createdBy, createdDate, modifiedBy, modifiedDate) " +
             " VALUES " +
-            "(#{rnrId},#{testTypeId},#{testCount},#{remark}, #{createdBy}, #{createdDate}, #{modifiedBy}, #{modifiedDate})")
+            "(#{rnrId},#{testTypeId},#{testCount},#{remark}, #{createdBy}, COALESCE(#{createdDate}, NOW()), #{modifiedBy}, COALESCE(#{modifiedDate}, NOW()))")
     @Options(useGeneratedKeys = true)
     Integer insertManualTestLineItem(ManualTestesLineItem item);
 
@@ -46,9 +46,7 @@ public interface ManualTestsLineItemMapper {
             " testtypeid = #{testTypeId}, " +
             " testcount = #{testCount}, " +
             " remark = #{remark}, " +
-           // " createdBy = #{createdBy}," +
-        //    " createdDate = #{createdDate}, " +
             " modifiedBy = #{modifiedBy}, " +
-            " modifiedDate = #{modifiedDate} where id = #{id}")
+            " modifiedDate = COALESCE(#{modifiedDate}, NOW()) where id = #{id}")
     Integer updateManualTestLineItem(ManualTestesLineItem item);
 }
