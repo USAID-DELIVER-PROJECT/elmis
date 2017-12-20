@@ -29,14 +29,14 @@ public interface OrderFillRateReportMapper {
 
     @SelectProvider(type=OrderFillRateQueryBuilder.class, method="getQuery")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize=10,timeout=0,useCache=true,flushCache=true)
-    public List<OrderFillRateReport> getReport(@Param("filterCriteria") OrderFillRateReportParam params,
+     List<OrderFillRateReport> getReport(@Param("filterCriteria") OrderFillRateReportParam params,
                                                       @Param("RowBounds") RowBounds rowBounds,
                                                       @Param("userId") Long userId
     );
 
     @SelectProvider(type = OrderFillRateQueryBuilder.class, method = "getSummaryQuery")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-    public List<OrderFillRateReport> getReportSummary(
+     List<OrderFillRateReport> getReportSummary(
            @Param("filterCriteria") OrderFillRateReportParam params,
             @Param("userId") Long userId
     );
@@ -44,7 +44,7 @@ public interface OrderFillRateReportMapper {
     // Gets the count of the total facility count under the selection criteria
     @SelectProvider(type = OrderFillRateQueryBuilder.class, method = "getTotalProductsReceived")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-    public List<Integer> getTotalProductsReceived(
+     List<Integer> getTotalProductsReceived(
             @Param("filterCriteria") OrderFillRateReportParam params,
             @Param("userId") Long userId
     );
@@ -52,8 +52,12 @@ public interface OrderFillRateReportMapper {
     // Gets the count of the total facility count that did not report under the selection criteria
     @SelectProvider(type = OrderFillRateQueryBuilder.class, method = "getTotalProductsOrdered")
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-    public List<Integer> getTotalProductsOrdered(@Param("filterCriteria") OrderFillRateReportParam params,
+     List<Integer> getTotalProductsOrdered(@Param("filterCriteria") OrderFillRateReportParam params,
                                                  @Param("userId")
                                                  Long userId
     );
+
+    @SelectProvider(type = OrderFillRateQueryBuilder.class, method = "getFillRateReportRequisitionStatus")
+    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
+    String getFillRateReportRequisitionStatus(@Param("filterCriteria") OrderFillRateReportParam params);
 }

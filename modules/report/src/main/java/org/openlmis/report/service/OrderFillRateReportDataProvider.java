@@ -35,6 +35,10 @@ import java.util.Map;
 @NoArgsConstructor
 public class OrderFillRateReportDataProvider extends ReportDataProvider {
 
+  public static final String ORDER_FILL_RATE = "ORDER_FILL_RATE";
+  public static final String TOTAL_PRODUCTS_APPROVED = "TOTAL_PRODUCTS_APPROVED";
+  public static final String TOTAL_PRODUCT_SHIPPED = "TOTAL_PRODUCT_SHIPPED";
+  public static final String REPORT_STATUS = "REPORT_STATUS";
   @Autowired
   private OrderFillRateReportMapper reportMapper;
 
@@ -77,9 +81,12 @@ public class OrderFillRateReportDataProvider extends ReportDataProvider {
     Float orderFillRate = ((approved == 0L || approved == null) ? 0L : ((float)shipped/approved)*100);
 
     report.setKeyValueSummary(new HashedMap(){{
-      put("ORDER_FILL_RATE", orderFillRate);
-      put("TOTAL_PRODUCTS_APPROVED", approved);
-      put("TOTAL_PRODUCT_SHIPPED", shipped);
+      put(ORDER_FILL_RATE, orderFillRate);
+      put(TOTAL_PRODUCTS_APPROVED, approved);
+      put(TOTAL_PRODUCT_SHIPPED, shipped);
+      //for the report to show data, the rnr status needs to be 'SUBMITED'.
+      //If the report data is empty and the rnr is already there, lets show the status of the requisition.
+      put(REPORT_STATUS, detail.size() == 0 ? reportMapper.getFillRateReportRequisitionStatus(parameter) : null);
     }});
 
     reportList.add(report);

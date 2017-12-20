@@ -94,10 +94,14 @@ public class OrderFillRateQueryBuilder {
         WHERE(" status = 'RELEASED'");
         WHERE(" li.quantityapproved > 0");
 
-        if(param.getFacilityType() != 0)
-          WHERE(facilityTypeIsFilteredBy("f.type"));
-        if(param.getFacility() != 0)
-          WHERE(facilityIsFilteredBy("f.id"));
+        //facility type is not necessary at this point since the report is facility based report
+        //if(param.getFacilityType() != 0)
+         // WHERE(facilityTypeIsFilteredBy("f.type"));
+
+        //We alredy have the rnrid at this point so no need to filter by facility
+       // if(param.getFacility() != 0)
+       //   WHERE(facilityIsFilteredBy("f.id"));
+
         if(param.getProductCategory() != 0)
           WHERE(productCategoryIsFilteredBy("pp.productcategoryid"));
         if (multiProductFilterBy(param.getProducts(), "p.id", "tracer") != null)
@@ -105,6 +109,17 @@ public class OrderFillRateQueryBuilder {
       ORDER_BY(" productCode ");
     String query=SQL();
     return query;
+  }
+
+  public static String getFillRateReportRequisitionStatus(Map params){
+    BEGIN();
+    SELECT("distinct status\n");
+       FROM(     "requisitions r");
+      WHERE("  r.id = #{filterCriteria.rnrId}");
+
+
+    String query=SQL();
+    return query.concat(" LIMIT 1");
   }
 
   @Deprecated
