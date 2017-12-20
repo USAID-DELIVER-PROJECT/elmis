@@ -58,7 +58,6 @@ function RnRFeedbackController($scope, RnRFeedbackReport,SettingsByKey) {
           });
 
           $scope.data = allOrders;
-          console.log(allOrders);
           $scope.paramsChanged( $scope.tableParams );
       });
     };

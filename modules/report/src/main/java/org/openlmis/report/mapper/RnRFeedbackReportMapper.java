@@ -42,6 +42,7 @@ public interface RnRFeedbackReportMapper {
       "  li.packstoship               AS packstoship, " +
       "  li.quantityrequested         AS quantityRequested, " +
       "  prl.stockinhand              AS previousStockInHand, " +
+      "  li.calculatedorderquantity   AS calculatedOrderQuantity," +
       "  COALESCE(sli.substitutedproductquantityshipped,0) as substituteProductQuantityShipped," +
       "  COALESCE(sli.quantityShipped,0) + COALESCE(sli.substitutedproductquantityshipped,0) as totalQuantityShipped, " +
       "  li.packsize, " +
