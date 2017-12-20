@@ -66,10 +66,10 @@
                                 <td data-title="getLocalMessage('label.adjustments')" class="number" style="width:80px" sortable="totalLossesAndAdjustments"  >{{ row.totalLossesAndAdjustments | number}}</td>
                                 <td data-title="getLocalMessage('label.physical.count')" class="number" style="{{ row.productIndex == 0 && row.err_qty_stockinhand == 1 && 'font-style: italic;font-weight: bold;' || ''}}" sortable="stockInHand"  >{{ row.stockInHand | number }}</td>
                                 <td data-title="getLocalMessage('label.amc')" class="number" style="width:80px" sortable="amc"  >{{ row.amc | number}}</td>
-                                <td data-title="getLocalMessage('label.requested.quantity')" class="number" style="{{ (row.quantityRequestedWasChanged == 1) ? 'font-style: italic;font-weight: bold;width: 80px;':'width: 80px;' }}" sortable="quantityRequested"  >{{ row.quantityRequested | number}}</td>
+                                <td data-title="getLocalMessage('label.requested.quantity')" class="number" style="width: 80px;" sortable="quantityRequested"  >{{ row.quantityRequested | number}}</td>
                                 <td data-title="getLocalMessage('label.quantity.calculated.order.quantity')" class="number" style="{{ (row.quantityShipped !== row.calculatedOrderQuantity) ? 'font-style: italic;font-weight: bold;width: 80px;':'width: 80px;' }}" sortable="calculatedOrderQuantity"  >{{ row.calculatedOrderQuantity | number}}</td>
                                 <td data-title="getLocalMessage('label.quantity.approved')" class="number"  sortable="quantityApproved"  >{{ row.quantityApproved | number}}</td>
-                                <td data-title="getLocalMessage('label.quantity.supplied')" class="number" style="width:80px" sortable="quantityShipped"  >{{ row.quantityShipped | number }}</td>
+                                <td data-title="getLocalMessage('label.quantity.supplied')" class="number" style="{{ (row.quantityShipped !== row.calculatedOrderQuantity) ? 'font-style: italic;font-weight: bold;width: 80px;':'width: 80px;' }}" sortable="quantityShipped"  >{{ row.quantityShipped | number }}</td>
                                 <!-- td data-title="getLocalMessage('label.total.quantity.supplied')" class="number" style="width:80px" sortable="totalQuantityShipped"  >{{ row.totalQuantityShipped | number }}</td -->
                                </tr>
                             <tr class="substitutes" ng-repeat="r in row.substitutes">
