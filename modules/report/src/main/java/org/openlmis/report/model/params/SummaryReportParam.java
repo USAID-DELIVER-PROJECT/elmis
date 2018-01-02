@@ -44,4 +44,10 @@ public class SummaryReportParam
 
   private Long facility;
 
+  private Boolean isEmergency;
+
+  private String reportType;
+
+  private Boolean allReportType;
+
 }
