@@ -11,143 +11,183 @@
   -->
 
 <div class="container-fluid">
-  <div class="box row-fluid">
-    <div class="box-header">
-      <h2>
-        <span openlmis-message="label.report.aggregate.summary"></span>
-      </h2>
-      <div class="box-icon">
-        <a id="pdf-button" target="_blank" href="" ng-click="exportReport('PDF')"
-           class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
-        <a id="xls-button" target="_blank" href="" ng-click="exportReport('XLS')"
-           class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
-      </div>
-    </div>
-    <div>
-      <div class="row-fluid">
-        <div class="sidebar">
-          <div class="app-form" style="padding: 5px;">
-            <form ng-submit="filterGrid()" name="filterForm" novalidate>
-              <div filter-container class="clearfix">
-                <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
-                <schedule-filter class="form-cell horizontalFilters" required="true"></schedule-filter>
-                <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
-                <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
-                <div class="form-cell horizontalFilters" style="padding-top: 20px;">
-                  <label class="checkbox">
-                    <input class="checkbox" type="checkbox" ng-model="filter.disaggregated"
-                           ng-change="filterChanged()"/>
-                    <span openlmis-message="label.report.view.disaggregated"></span>
-                  </label>
-                </div>
-                <div class="clearfix padding2px"></div>
-                <div ng-hide="showMoreFilters" class="form-cell horizontalFilters">
-                  <br/>
-                  <a class="button" href="" ng-click="toggleMoreFilters()"
-                     openlmis-message="link.report.show.more.filters"></a>
-                </div>
-
-                <div ng-hide="!showMoreFilters">
-                  <zone-filter class="form-cell horizontalFilters"></zone-filter>
-                  <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
-                  <facility-filter class="form-cell horizontalFilters"></facility-filter>
-                  <product-category-filter class="form-cell horizontalFilters"></product-category-filter>
-                  <product-filter class="form-cell horizontalFilters"></product-filter>
-                  <div class="clearfix form-cell horizontalFilters">
-                    <br/>
-                    <a class="button" href="javascript:void()" ng-click="toggleMoreFilters()">Less Filters</a>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
+    <div class="box row-fluid">
+        <div class="box-header">
+            <h2>
+                <span openlmis-message="label.report.aggregate.summary"></span>
+            </h2>
+            <div class="box-icon">
+                <a id="pdf-button" target="_blank" href="" ng-click="exportReport('PDF',params)"
+                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
+                <a id="xls-button" target="_blank" href="" ng-click="exportReport('XLS',params)"
+                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+            </div>
         </div>
-        <div class="content-body">
-          <table class="table table-bordered"
-                 ng-show="data == undefined || data.length == 0">
-            <tr>
-              <td openlmis-message="label.report.no.data.to.show"></td>
-            </tr>
-          </table>
-          <div client-side-sort-pagination ng-show="datarows.length > 0">
-            <div ng-if="datarows.length > 0" top-right-table-summary></div>
-            <table  ng-show="datarows.length > 0" class="table-bordered table table-striped" ng-table="tableParams" style="overflow-x: auto;min-width: 100%;table-layout: fixed;">
-              <thead>
-                <tr class="gradient-header">
-                  <th ng-show="filter.disaggregated" sortable="facilityCode">
-                    <span openlmis-message="label.facility.code"></span>
-                  </th>
-                  <th ng-show="filter.disaggregated" style="width: 200px;" sortable="facility">
-                    <span openlmis-message="label.facility"></span>
-                  </th>
-                  <th ng-show="filter.disaggregated" sortable="facilityType" >
-                    <span openlmis-message="label.facility.type"></span>
-                  </th>
-                  <th sortable="code">
-                    <span openlmis-message="label.product.code"></span>
-                  </th>
-                  <th sortable="product" style="width: 300px;">
-                    <span openlmis-message="label.product"></span>
-                  </th>
-                  <th class="number" sortable="openingBalance">
-                    <span openlmis-message="label.opening.balance"></span>
-                  </th>
-                  <th class="number" sortable="receipts">
-                    <span openlmis-message="label.receipts"></span>
-                  </th>
-                  <th class="number" sortable="issues">
-                    <span openlmis-message="label.consumption"></span>
-                  </th>
-                  <th class="number" sortable="adjustments">
-                    <span openlmis-message="label.adjustments"></span>
-                  </th>
-                  <th class="number" sortable="closingBalance">
-                    <span openlmis-message="label.closing.balance"></span>
-                  </th>
-                  <th class="number" sortable="reorderAmount">
-                    <span openlmis-message="label.reorder.amount"></span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-              <tr ng-repeat="row in datarows">
-                <td ng-show="filter.disaggregated" >
-                  {{ row.facilityCode}}
-                </td>
-                <td ng-show="filter.disaggregated" >
-                  {{row.facility}}
-                </td>
-                <td ng-show="filter.disaggregated" >
-                  {{row.facilityType}}
-                </td>
-                <td >{{ row.code }}</td>
-                <td>
-                  {{ row.product }}
-                </td>
-                <td class="number" >{{ row.openingBalance |  number}}
-                </td>
-                <td class="number">{{ row.receipts | number}}
-                </td>
-                <td class="number">{{ row.issues | number}}
-                </td>
-                <td class="number" >{{ row.adjustments | number}}
-                </td>
-                <td class="number" >{{ row.closingBalance | number}}
-                </td>
-                <td class="number" >{{ row.reorderAmount | number}}
-                </td>
-              </tr>
-              </tbody>
-            </table>
+        <div>
+            <div class="row-fluid">
+                <div class="sidebar">
+                    <div class="app-form" style="padding: 5px;">
+                        <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                            <div filter-container class="clearfix">
+                                <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+                                <schedule-filter class="form-cell horizontalFilters" required="true"></schedule-filter>
+                                <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
+                                <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
+                                <div class="form-cell horizontalFilters" style="padding-top: 20px;">
+                                    <label class="checkbox">
+                                        <input class="checkbox" type="checkbox" ng-model="filter.disaggregated"
+                                               ng-change="filterChanged()"/>
+                                        <span openlmis-message="label.report.view.disaggregated"></span>
+                                    </label>
+                                </div>
+                                <div class="clearfix padding2px"></div>
+                                <div ng-hide="showMoreFilters" class="form-cell horizontalFilters">
+                                    <br/>
+                                    <a class="button" href="" ng-click="toggleMoreFilters()"
+                                       openlmis-message="link.report.show.more.filters"></a>
+                                </div>
 
-          </div>
-          <div class="pull-right">
-            <a ng-href="/public/pages/reports/maps/index.html#/reporting-rate?schedule={{filter.schedule}}&year={{filter.year}}&program={{filter.program}}&period={{filter.period}}">
-              View Reporting Rate
-            </a>
-          </div>
+                                <div ng-hide="!showMoreFilters">
+                                    <zone-filter class="form-cell horizontalFilters"></zone-filter>
+                                    <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
+                                    <facility-filter class="form-cell horizontalFilters"></facility-filter>
+                                    <product-category-filter
+                                            class="form-cell horizontalFilters"></product-category-filter>
+                                    <product-filter class="form-cell horizontalFilters"></product-filter>
+                                    <div class="clearfix form-cell horizontalFilters">
+                                        <br/>
+                                        <a class="button" href="javascript:void()" ng-click="toggleMoreFilters()">Less
+                                            Filters</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="content-body">
+
+                    <div class="box-header">
+
+
+                        <div class="form-cell span2">
+                            <div class="checkbox">
+                                <label for="allType"><input id="allType" class="checkbox" type="checkbox"
+                                                            value="allReportType"
+                                                            ng-change="onToggleReportTypeAll()"
+                                                            ng-model="allReportType">
+                                    <span openlmis-message="label.all"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-cell span2">
+                            <div class="checkbox">
+                                <label for="emergency"><input id="emergency" class="checkbox" type="checkbox" value="EM"
+                                                              ng-change="onReportTypeCheckboxChanged()"
+                                                              ng-model="reportTypes.EM">
+                                    <span openlmis-message="requisition.type.emergency"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-cell span2">
+                            <div class="checkbox">
+                                <label for="re"><input id="re" class="checkbox" type="checkbox" value="RE"
+                                                       ng-checked="true"
+                                                       ng-change="onReportTypeCheckboxChanged()"
+                                                       ng-model="reportTypes.RE">
+                                    <span openlmis-message="requisition.type.regular"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <table class="table table-bordered"
+                           ng-show="data == undefined || data.length == 0">
+                        <tr>
+                            <td openlmis-message="label.report.no.data.to.show"></td>
+                        </tr>
+                    </table>
+                    <div client-side-sort-pagination ng-show="datarows.length > 0">
+                        <div ng-if="datarows.length > 0" top-right-table-summary></div>
+                        <table ng-show="datarows.length > 0" class="table-bordered table table-striped"
+                               ng-table="tableParams" style="overflow-x: auto;min-width: 100%;table-layout: fixed;">
+                            <thead>
+                            <tr class="gradient-header">
+                                <th ng-show="filter.disaggregated" sortable="facilityCode">
+                                    <span openlmis-message="label.facility.code"></span>
+                                </th>
+                                <th ng-show="filter.disaggregated" style="width: 200px;" sortable="facility">
+                                    <span openlmis-message="label.facility"></span>
+                                </th>
+                                <th ng-show="filter.disaggregated" sortable="facilityType">
+                                    <span openlmis-message="label.facility.type"></span>
+                                </th>
+                                <th sortable="code">
+                                    <span openlmis-message="label.product.code"></span>
+                                </th>
+                                <th sortable="product" style="width: 300px;">
+                                    <span openlmis-message="label.product"></span>
+                                </th>
+                                <th class="number" sortable="openingBalance">
+                                    <span openlmis-message="label.opening.balance"></span>
+                                </th>
+                                <th class="number" sortable="receipts">
+                                    <span openlmis-message="label.receipts"></span>
+                                </th>
+                                <th class="number" sortable="issues">
+                                    <span openlmis-message="label.consumption"></span>
+                                </th>
+                                <th class="number" sortable="adjustments">
+                                    <span openlmis-message="label.adjustments"></span>
+                                </th>
+                                <th class="number" sortable="closingBalance">
+                                    <span openlmis-message="label.closing.balance"></span>
+                                </th>
+                                <th class="number" sortable="reorderAmount">
+                                    <span openlmis-message="label.reorder.amount"></span>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in datarows">
+                                <td ng-show="filter.disaggregated">
+                                    {{ row.facilityCode}}
+                                </td>
+                                <td ng-show="filter.disaggregated">
+                                    {{row.facility}}
+                                </td>
+                                <td ng-show="filter.disaggregated">
+                                    {{row.facilityType}}
+                                </td>
+                                <td>{{ row.code }}</td>
+                                <td>
+                                    {{ row.product }}
+                                </td>
+                                <td class="number">{{ row.openingBalance | number}}
+                                </td>
+                                <td class="number">{{ row.receipts | number}}
+                                </td>
+                                <td class="number">{{ row.issues | number}}
+                                </td>
+                                <td class="number">{{ row.adjustments | number}}
+                                </td>
+                                <td class="number">{{ row.closingBalance | number}}
+                                </td>
+                                <td class="number">{{ row.reorderAmount | number}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class="pull-right">
+                        <a ng-href="/public/pages/reports/maps/index.html#/reporting-rate?schedule={{filter.schedule}}&year={{filter.year}}&program={{filter.program}}&period={{filter.period}}">
+                            View Reporting Rate
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
