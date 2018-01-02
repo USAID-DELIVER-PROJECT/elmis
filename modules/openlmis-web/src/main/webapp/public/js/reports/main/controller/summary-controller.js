@@ -12,18 +12,74 @@
 
 function SummaryReportController($scope, SummaryReport) {
 
-  $scope.exportReport = function (type) {
-    $scope.filter.pdformat = 1;
-    var params = jQuery.param($scope.getSanitizedParameter());
-    var url = '/reports/download/summary' + (($scope.filter.disaggregated === true)?'_disaggregated': '') + '/' + type + '?' + params;
-    window.open(url,"_BLANK");
-  };
+    $scope.exportReport = function (type, par) {
+        $scope.filter.pdformat = 1;
+        var params = jQuery.param(par);
+        var url = '/reports/download/summary' + (($scope.filter.disaggregated === true) ? '_disaggregated' : '') + '/' + type + '?' + params;
+        window.open(url, "_BLANK");
+    };
 
-  $scope.OnFilterChanged = function() {
+    $scope.onToggleReportTypeAll = function () {
+        if ($scope.reportTypes === undefined) {
+            $scope.reportTypes = {};
+        }
+
+        $scope.reportTypes.EM = $scope.reportTypes.RE = $scope.allReportType;
+        $scope.onReportTypeCheckboxChanged();
+    };
+    $scope.onReportTypeCheckboxChanged = function () {
+        var reportType = null;
+        _.keys($scope.reportTypes).forEach(function (key) {
+            var value = $scope.reportTypes[key];
+            if (value === true && (key === 'EM' || key === 'RE')) {
+
+                utils.isNullOrUndefined(reportType) ? reportType = key : reportType += "," + key;
+
+            } else if (value === false) {
+                $scope.allReportType = false;
+                $scope.filter.allReportType = false;
+            }
+        });
+        if ($scope.filter === undefined) {
+            $scope.filter = {reportType: reportType};
+        } else {
+            $scope.filter.reportType = reportType;
+        }
+
+        if ($scope.filter.reportType !== null) {
+
+
+            var str_array = $scope.filter.reportType.split(',');
+
+            var type = {"RE": "false", "EM": "true"};
+
+            if (str_array.length === 1) {
+                $scope.filter.allReportType = false;
+                $scope.filter.isEmergency = type[str_array[0]];
+
+                console.log($scope.filter.isEmergency);
+
+            } else {
+                $scope.filter.allReportType = true;
+                $scope.filter.isEmergency = 0;
+            }
+
+        }
+
+        $scope.OnFilterChanged();
+    };
+
+    $scope.params = {};
+
+    $scope.OnFilterChanged = function () {
         // clear old data if there was any
+
         $scope.data = $scope.datarows = [];
         $scope.filter.max = 10000;
-        SummaryReport.get($scope.getSanitizedParameter(), function(data) {
+
+        $scope.params = angular.extend({}, $scope.getSanitizedParameter(), $scope.filter);
+
+        SummaryReport.get($scope.params, function (data) {
             if (data.pages !== undefined && data.pages.rows !== undefined) {
                 $scope.data = data.pages.rows;
                 $scope.paramsChanged($scope.tableParams);
