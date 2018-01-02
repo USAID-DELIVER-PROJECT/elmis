@@ -91,6 +91,11 @@ public class RequisitionPredicateHelper {
     return String.format("%s= #{filterCriteria.facilityOwner}", field);
   }
 
+  public static String reportTypeFilteredBy(String field) {
+    return String.format("%s = #{filterCriteria.isEmergency}::boolean", field);
+  }
+
+
   /**
    *  a predicate for getting a start date of a period for any selected date @param startDate
    * @param field
