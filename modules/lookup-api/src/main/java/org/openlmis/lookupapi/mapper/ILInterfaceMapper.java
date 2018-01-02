@@ -34,7 +34,7 @@ public interface ILInterfaceMapper {
     @Select("select * from hfr_facilities WHERE IlIDNumber = #{IlIDNumber} limit 1")
     HealthFacilityDTO getByTransactionId(@Param("IlIDNumber") String IlIDNumber);
 
-    @Select("select * from hfr_facilities where id = #{id} limit 1 ")
+    @Select("select * from hfr_facilities where id = #{id} limit 1  ")
     HealthFacilityDTO getById(@Param("id") Integer id);
 
     @Select("select * from hfr_facilities where facIDNumber = #{facIDNumber} limit 1")
