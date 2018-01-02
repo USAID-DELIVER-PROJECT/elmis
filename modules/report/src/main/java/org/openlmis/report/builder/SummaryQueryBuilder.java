@@ -18,110 +18,120 @@ import java.util.Map;
 
 import static org.apache.ibatis.jdbc.SqlBuilder.*;
 import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.*;
+import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.reportTypeFilteredBy;
 
 public class SummaryQueryBuilder {
 
-  private static String getAggregateSelect(SummaryReportParam param){
-    BEGIN();
-    SELECT( " li.productCode as code" +
-      ", li.product" +
-      ", li.productCategory as category" +
-      ", li.dispensingUnit as unit" +
-      ", sum(li.beginningBalance) as openingBalance" +
-      ", sum(li.quantityReceived) as receipts" +
-      ", sum(li.quantityDispensed) as issues" +
-      ", sum(li.totalLossesAndAdjustments) as adjustments" +
-      ", sum(li.stockInHand) as closingBalance " +
-      ", sum(li.quantityApproved) as reorderAmount " +
-      ", sum(0) as stockOutRate " );
-    FROM(" facilities   " +
-      "    inner join requisitions r ON  r.facilityId = facilities.id   " +
-      "    inner join requisition_line_items li ON li.rnrId = r.id    " +
-      "    inner join products ON products.code  ::text =   li.productCode  ::text      " +
-      "    inner join vw_districts gz on gz.district_id = facilities.geographicZoneId " +
-      "    inner join programs ON  r.programId = programs.id " +
-      "    inner join program_products pps ON  r.programId = pps.programId and products.id = pps.productId " +
-      "    inner join requisition_group_members ON facilities.id = requisition_group_members.facilityId " +
-      "    inner join requisition_groups ON requisition_groups.id = requisition_group_members.requisitionGroupId " +
-      "    inner join requisition_group_program_schedules ON requisition_group_program_schedules.programId = programs.id   " +
-      "               AND requisition_group_program_schedules.requisitionGroupId = requisition_groups.id " +
-      "    inner join processing_schedules ON processing_schedules.id = requisition_group_program_schedules.scheduleId  " +
-      "    inner join processing_periods ON processing_periods.id = r.periodId  ");
-    writePredicates(param);
-    GROUP_BY("li.productCode, li.productCategory, li.product, li.dispensingUnit");
-    ORDER_BY("productCategory asc, product asc");
-    return SQL();
-  }
-
-  private static String getDisaggregatedSelect(SummaryReportParam param){
-    BEGIN();
-    SELECT( " li.productCode as code " +
-      ", li.product" +
-      ", facilities.code as facilityCode" +
-      ", facilities.name as facility" +
-      ", facility_types.name as facilityType" +
-      ", li.productCategory as category" +
-      ", li.dispensingUnit as unit" +
-      ", (li.beginningBalance) as openingBalance" +
-      ", (li.quantityReceived) as receipts" +
-      ", (li.quantityDispensed) as issues" +
-      ", (li.quantityApproved) as reorderAmount " +
-      ", (li.totalLossesAndAdjustments) as adjustments" +
-      ", (li.stockInHand) as closingBalance " );
-
-    FROM(" facilities   " +
-      " inner join facility_types on facility_types.id = facilities.typeId " +
-      "    inner join requisitions r ON  r.facilityId = facilities.id   " +
-      "    inner join requisition_line_items li ON li.rnrId = r.id    " +
-      "    inner join products ON products.code  ::text =   li.productCode  ::text      " +
-      "    inner join vw_districts gz on gz.district_id = facilities.geographicZoneId " +
-      "    inner join programs ON  r.programId = programs.id " +
-      "    inner join program_products pps ON  r.programId = pps.programId and products.id = pps.productId " +
-      "    inner join requisition_group_members ON facilities.id = requisition_group_members.facilityId " +
-      "    inner join requisition_groups ON requisition_groups.id = requisition_group_members.requisitionGroupId " +
-      "    inner join requisition_group_program_schedules ON requisition_group_program_schedules.programId = programs.id   " +
-      "               AND requisition_group_program_schedules.requisitionGroupId = requisition_groups.id " +
-      "    inner join processing_schedules ON processing_schedules.id = requisition_group_program_schedules.scheduleId  " +
-      "    inner join processing_periods ON processing_periods.id = r.periodId  ");
-    writePredicates(param);
-    ORDER_BY("productCategory asc, product asc, facility asc");
-    return SQL();
-  }
-
-
-  public static String getQuery(Map params) {
-    SummaryReportParam filter = (SummaryReportParam) params.get("filterCriteria");
-    if(filter.getDisaggregated()){
-      return getDisaggregatedSelect(filter);
-    }
-    return getAggregateSelect(filter) ;
-  }
-
-  private static void writePredicates(SummaryReportParam filter) {
-
-    WHERE(rnrStatusFilteredBy("r.status", "'APPROVED', 'RELEASED'"));
-    WHERE(periodIsFilteredBy("r.periodId"));
-    WHERE(programIsFilteredBy("r.programId"));
-
-    if(filter.getProductCategory() > 0){
-      WHERE(productCategoryIsFilteredBy("pps.productCategoryId"));
+    private static String getAggregateSelect(SummaryReportParam param) {
+        BEGIN();
+        SELECT(" li.productCode as code" +
+                ", li.product" +
+                ", li.productCategory as category" +
+                ", li.dispensingUnit as unit" +
+                ", sum(li.beginningBalance) as openingBalance" +
+                ", sum(li.quantityReceived) as receipts" +
+                ", sum(li.quantityDispensed) as issues" +
+                ", sum(li.totalLossesAndAdjustments) as adjustments" +
+                ", sum(li.stockInHand) as closingBalance " +
+                ", sum(li.quantityApproved) as reorderAmount " +
+                ", sum(0) as stockOutRate ");
+        FROM(" facilities   " +
+                "    inner join requisitions r ON  r.facilityId = facilities.id   " +
+                "    inner join requisition_line_items li ON li.rnrId = r.id    " +
+                "    inner join products ON products.code  ::text =   li.productCode  ::text      " +
+                "    inner join vw_districts gz on gz.district_id = facilities.geographicZoneId " +
+                "    inner join programs ON  r.programId = programs.id " +
+                "    inner join program_products pps ON  r.programId = pps.programId and products.id = pps.productId " +
+                "    inner join requisition_group_members ON facilities.id = requisition_group_members.facilityId " +
+                "    inner join requisition_groups ON requisition_groups.id = requisition_group_members.requisitionGroupId " +
+                "    inner join requisition_group_program_schedules ON requisition_group_program_schedules.programId = programs.id   " +
+                "               AND requisition_group_program_schedules.requisitionGroupId = requisition_groups.id " +
+                "    inner join processing_schedules ON processing_schedules.id = requisition_group_program_schedules.scheduleId  " +
+                "    inner join processing_periods ON processing_periods.id = r.periodId  ");
+        writePredicates(param);
+        GROUP_BY("li.productCode, li.productCategory, li.product, li.dispensingUnit");
+        ORDER_BY("productCategory asc, product asc");
+        return SQL();
     }
 
-    if(filter.getProduct() > 0){
-     WHERE( productFilteredBy("products.id"));
+    private static String getDisaggregatedSelect(SummaryReportParam param) {
+        BEGIN();
+        SELECT(" li.productCode as code " +
+                ", li.product" +
+                ", facilities.code as facilityCode" +
+                ", facilities.name as facility" +
+                ", facility_types.name as facilityType" +
+                ", li.productCategory as category" +
+                ", li.dispensingUnit as unit" +
+                ", (li.beginningBalance) as openingBalance" +
+                ", (li.quantityReceived) as receipts" +
+                ", (li.quantityDispensed) as issues" +
+                ", (li.quantityApproved) as reorderAmount " +
+                ", (li.totalLossesAndAdjustments) as adjustments" +
+                ", (li.stockInHand) as closingBalance ");
+
+        FROM(" facilities   " +
+                " inner join facility_types on facility_types.id = facilities.typeId " +
+                "    inner join requisitions r ON  r.facilityId = facilities.id   " +
+                "    inner join requisition_line_items li ON li.rnrId = r.id    " +
+                "    inner join products ON products.code  ::text =   li.productCode  ::text      " +
+                "    inner join vw_districts gz on gz.district_id = facilities.geographicZoneId " +
+                "    inner join programs ON  r.programId = programs.id " +
+                "    inner join program_products pps ON  r.programId = pps.programId and products.id = pps.productId " +
+                "    inner join requisition_group_members ON facilities.id = requisition_group_members.facilityId " +
+                "    inner join requisition_groups ON requisition_groups.id = requisition_group_members.requisitionGroupId " +
+                "    inner join requisition_group_program_schedules ON requisition_group_program_schedules.programId = programs.id   " +
+                "               AND requisition_group_program_schedules.requisitionGroupId = requisition_groups.id " +
+                "    inner join processing_schedules ON processing_schedules.id = requisition_group_program_schedules.scheduleId  " +
+                "    inner join processing_periods ON processing_periods.id = r.periodId  ");
+        writePredicates(param);
+        ORDER_BY("productCategory asc, product asc, facility asc");
+        return SQL();
     }
 
-    if(filter.getZone() > 0){
-      WHERE(geoZoneIsFilteredBy("gz"));
+
+    public static String getQuery(Map params) {
+        SummaryReportParam filter = (SummaryReportParam) params.get("filterCriteria");
+        if (filter.getDisaggregated()) {
+            return getDisaggregatedSelect(filter);
+        }
+        return getAggregateSelect(filter);
     }
 
-    if (filter.getFacilityType() > 0) {
-      WHERE(facilityTypeIsFilteredBy("facilities.typeId"));
-    }
+    private static void writePredicates(SummaryReportParam filter) {
 
-    if (filter.getFacility() > 0) {
-      WHERE(facilityIsFilteredBy("facilities.id"));
+        WHERE(rnrStatusFilteredBy("r.status", "'APPROVED', 'RELEASED'"));
+        WHERE(periodIsFilteredBy("r.periodId"));
+        WHERE(programIsFilteredBy("r.programId"));
+
+        if (filter.getProductCategory() > 0) {
+            WHERE(productCategoryIsFilteredBy("pps.productCategoryId"));
+        }
+
+        if (filter.getProduct() > 0) {
+            WHERE(productFilteredBy("products.id"));
+        }
+
+        if (filter.getZone() > 0) {
+            WHERE(geoZoneIsFilteredBy("gz"));
+        }
+
+        if (filter.getFacilityType() > 0) {
+            WHERE(facilityTypeIsFilteredBy("facilities.typeId"));
+        }
+
+        if (filter.getFacility() > 0) {
+            WHERE(facilityIsFilteredBy("facilities.id"));
+        }
+
+
+        if (filter.getAllReportType()) {
+            WHERE("r.emergency in (true,false)");
+        } else {
+
+            WHERE(reportTypeFilteredBy("r.emergency"));
+        }
+
     }
-  }
 
 }
