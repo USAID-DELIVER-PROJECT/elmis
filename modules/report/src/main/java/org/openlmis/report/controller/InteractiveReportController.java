@@ -815,4 +815,17 @@ public class InteractiveReportController extends BaseController {
                 (List<LogTagReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
         return new Pages(page, max, reportData);
     }
+
+    @RequestMapping(value = "/reportdata/rejectedRnR", method = GET, headers = BaseController.ACCEPT_JSON)
+    public Pages getRejected(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                                  @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+                                                  HttpServletRequest request
+
+    ) {
+        Report report = reportManager.getReportByKey("rejected_rnr");
+
+        List<RejectedRnRReport> reportData =
+                (List<RejectedRnRReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+        return new Pages(page, max, reportData);
+    }
 }

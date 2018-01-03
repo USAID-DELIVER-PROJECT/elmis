@@ -557,6 +557,15 @@
                     <property name="title" value="header.report.reporting.status"/>
                     <property name="version" value="1.0"/>
                 </bean>
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="rejected_rnr"/>
+                    <property name="template" value="reporting-status.jasper"/>
+                    <property name="reportDataProvider" ref="rejectedRnRReportDataProvider"/>
+                    <property name="id" value="RP-Reporting-Status"/>
+                    <property name="name" value="Rejected RnR"/>
+                    <property name="title" value="Rejected RnR By District"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>
