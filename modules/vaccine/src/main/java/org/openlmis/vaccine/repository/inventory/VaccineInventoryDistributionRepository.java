@@ -1,6 +1,5 @@
 package org.openlmis.vaccine.repository.inventory;
 
-import com.sun.javafx.collections.MappingChange;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
@@ -12,7 +11,6 @@ import org.openlmis.vaccine.domain.inventory.VoucherNumberCode;
 import org.openlmis.vaccine.dto.BatchExpirationNotificationDTO;
 import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
 import org.openlmis.vaccine.repository.mapper.inventory.VaccineInventoryDistributionMapper;
-import org.openlmis.vaccine.service.inventory.SdpNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +24,6 @@ public class VaccineInventoryDistributionRepository {
 
     @Autowired
     VaccineInventoryDistributionMapper mapper;
-    @Autowired
-    private SdpNotificationService notificationService;
 
     public List<Facility> getOneLevelSupervisedFacilities(Long facilityId) {
         return mapper.getOneLevelSupervisedFacilities(facilityId);
