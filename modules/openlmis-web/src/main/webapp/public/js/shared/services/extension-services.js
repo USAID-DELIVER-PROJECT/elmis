@@ -1301,3 +1301,7 @@ services.factory('ManualTestType', function ($resource) {
 services.factory('GetProductById', function ($resource) {
     return $resource('/products/product/:id.json', {id:'@id'}, {});
 });
+
+services.factory('GetRejectedRnRReport', function ($resource) {
+    return $resource('/reports/reportdata/rejectedRnR', {}, {});
+});
