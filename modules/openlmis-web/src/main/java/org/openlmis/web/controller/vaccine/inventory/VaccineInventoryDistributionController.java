@@ -32,7 +32,6 @@ import org.openlmis.reporting.service.TemplateService;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
 import org.openlmis.vaccine.service.StockRequirementsService;
 import org.openlmis.vaccine.service.VaccineOrderRequisitionServices.VaccineNotificationService;
-import org.openlmis.vaccine.service.inventory.SdpNotificationService;
 import org.openlmis.vaccine.service.inventory.VaccineInventoryDistributionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -93,8 +92,7 @@ public class VaccineInventoryDistributionController extends BaseController {
     private JasperReportsViewFactory jasperReportsViewFactory;
     @Autowired
     private VaccineNotificationService notificationService;
-    @Autowired
-    private SdpNotificationService sdpNotificationService;
+
 
     public static String getCommaSeparatedIds(List<Long> idList) {
         return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
@@ -106,7 +104,6 @@ public class VaccineInventoryDistributionController extends BaseController {
     public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineDistribution distribution, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
         Long distributionId = service.save(distribution,userId);
-       // sdpNotificationService.updateNotification(distributionId);
         return OpenLmisResponse.response("distributionId", distributionId);
     }
 
