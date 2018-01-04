@@ -189,6 +189,10 @@
             <a ng-href="/public/pages/reports/main/index.html#pipeline-export"
                openlmis-message="menu.report.pipeline.export"></a>
           </li>
+          <li ng-show="hasPermission('VIEW_PIPELINE_EXPORT')">
+            <a ng-href="/public/pages/reports/other/index.html#home"
+               >Rejected RnR</a>
+          </li>
 
         </ul>
       </div>
