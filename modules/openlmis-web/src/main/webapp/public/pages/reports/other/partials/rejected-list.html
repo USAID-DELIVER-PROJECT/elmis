@@ -74,8 +74,18 @@
     }
 
     .rnr-table th.col-product, .rnr-table td.col-product {
-        min-width: 200px;
+        min-width: 100px !important;
+        font-weight: bold !important;
         overflow: auto;
+
+    }
+
+    .cell-text {
+        font-size: 0.8em !important;
+    }
+
+    .rnr-table .table-bordered td:first-child {
+        border-left: 0px solid #ddd !important;
     }
 
 </style>
@@ -96,74 +106,101 @@
          <span class="pull-right print-button" style="background-color:#4897BA !important;">
     <a id="printButton" style="background-color:#4897BA !important;"
        class="btn btn-primary" ng-href="/requisitions/{{rnr.id}}/print.pdf"
-       openlmis-message="button.print"
-       target="_blank"></a>
+       target="_blank">Export</a>
          </span>
 
                 <div class="clearfix"></div>
                 <form name="stockOnHandForm">
-                    <div id="pod" class="rnr-table" tab-scroll bottom-offset="180" style="padding-right: 0 !important;">
-                        <table id="equipmentTable" fixed-table-header class="table-bordered scrollable">
-                            <thead>
-                            <tr>
+                    <div class="row">
+                        <div class="col-md-4">
+                           <div id="rejected"></div>
+                        </div>
+                        <div class="col-md-8 text-right">
 
-                                <th class="col-product">
-                                    <div class="regimen-heading">
-                                        <span>District name</span>
-                                    </div>
-                                </th>
-                                <th class="span1">
-                                    <div class="regimen-heading">
-                                        <span>Region Name</span>
-                                    </div>
-                                </th>
-                                <th class="col-quantity">
-                                    <div class="regimen-heading">
-                                        <span>MSD Zone</span>
-                                    </div>
-                                </th>
-                                <th class="span1">
-                                    <div class="regimen-heading">
-                                        <span>Total Rejected</span>
-                                    </div>
-                                </th>
+                            <div id="pod" class="rnr-table" tab-scroll bottom-offset="180"
+                                 style="padding-right: 0 !important;">
+                                <table id="equipmentTable" fixed-table-header class="table-bordered
+                         scrollable table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="number" style="width:10px;text-align: left">#</th>
+
+                                        <th class="col-product">
+                                            <div class="regimen-heading">
+                                                <span>District name</span>
+                                            </div>
+                                        </th>
+                                        <th class="col-product">
+                                            <div class="regimen-heading">
+                                                <span openlmis-message="label.region"></span>
+                                            </div>
+                                        </th>
+                                        <th class="col-product">
+                                            <div class="regimen-heading">
+                                                <span>MSD Zone</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="col-product">
+                                            <div class="regimen-heading">
+                                                <span>Total Rejected</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="span1">
+                                            <div class="regimen-heading">
+                                                <span>Action</span>
+                                            </div>
+                                        </th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="rejected in rejectedRnRLis">
+                                        <td class="number"
+                                            style="width:20px; font-size: 0.8em !important;text-align: left;    height: 40px !important;">
+                                            {{$index+1}}
+                                        </td>
+                                        <td class="cell-text">{{rejected.districtName}}</td>
+                                        <td class="cell-text">{{rejected.regionName}}</td>
+                                        <td class="cell-text">{{rejected.zoneName}}</td>
+                                        <td class="cell-text  padding2px"
+                                            style="text-align: right;font-family: 'Times New Roman';font-weight: bold">
+                                            {{rejected.rejectedCount | number}}
+                                        </td>
+                                        <td class="cell-text  padding2px" style="text-align: center">
+                                    <span>
+                                          <a id="printButton"
+                                             ui-sref="element({idElement:c.product.id,facilityId:{{homeFacility}}})"
+                                             class="btn btn-primary">View</a>
+
+                                    </span>
 
 
-                                <th class="span1">
-                                    <div class="regimen-heading">
-                                        <span>Action</span>
-                                    </div>
-                                </th>
-                                <!--
-                                                        <th class="span1">
-                                                            <div class="regimen-heading">
-                                                                <span openlmis-message="rnr.equipment.days.out.of.use"></span>
-                                                            </div>
-                                                        </th>
-                                                        <th class="col-remarks">
-                                                            <div class="regimen-heading">
-                                                                <span openlmis-message="rnr.equipment.remarks"></span>
-                                                            </div>
-                                                        </th>-->
-                            </tr>
-                            </thead>
-                            <tbody>
-                          <tr ng-repeat="rejected in rejectedRnRLis">
-                              <td class="cell-input">re</td>
+                                        </td>
+                                    </tr>
 
-                          </tr>
-                            <!--   <tr ng-show="showCategory($index)">
-                                   <td class="productCategory" colspan="9" ng-show="showCategory($index)"
-                                       ng-bind="stock.product.form.code"></td>
-                               </tr>-->
+                                    </tbody>
+                                </table>
+                            </div>
 
 
-                            </tbody>
-                        </table>
+
+
+                        </div>
                     </div>
+
+
+
+                    <!--
+                    <div class="row-fluid content">
+
+
+                    </div>-->
                 </form>
 
-                <!--ending-->
+
+
             </div>
 
         </div>
