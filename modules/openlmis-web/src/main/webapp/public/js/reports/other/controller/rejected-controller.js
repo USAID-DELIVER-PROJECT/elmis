@@ -22,7 +22,7 @@ function RejectedControllerFunction($scope, GetRejectedRnRReport) {
         var array1 = key, array3 = maximumValue, result = [], i = -1;
 
         while (array1[++i]) {
-            if (array3[i] === total2)
+            if (array3[i] === totalValues)
                 result.push({
                     name: array1[i], y: array3[i], sliced: true,
                     selected: true
