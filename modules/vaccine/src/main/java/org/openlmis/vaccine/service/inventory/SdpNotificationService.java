@@ -54,12 +54,9 @@ public class SdpNotificationService {
     private VaccineInventoryDistributionMapper mapper;
 
     @Autowired
-    private VaccineInventoryDistributionService distributionService;
-
-    @Autowired
     ConfigurationSettingService configurationSettingService;
 
-//    @Transactional
+
 
 
 
@@ -128,7 +125,7 @@ public class SdpNotificationService {
 
     public void sendHttps(VaccineDistribution d,String url,String username,String password) {
 
-        VaccineDistribution distribution = distributionService.getDistributionByToFacility(d.getToFacilityId());
+        VaccineDistribution distribution = mapper.getDistributionByToFacility(d.getToFacilityId());
         ObjectMapper mapper = new ObjectMapper();
 
         System.out.println(username);

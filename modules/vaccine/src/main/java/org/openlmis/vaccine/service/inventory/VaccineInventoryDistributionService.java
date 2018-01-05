@@ -62,8 +62,7 @@ public class VaccineInventoryDistributionService {
     private VaccineDistributionStatusChangeRepository statusChangeRepository;
     @Autowired
     private VaccineNotificationService notificationService;
-    @Autowired
-    private SdpNotificationService sdpNotificationService;
+
 
     public List<Facility> getFacilities(Long userId) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
@@ -115,7 +114,6 @@ public class VaccineInventoryDistributionService {
             //Update status changes to keep distribution log
             VaccineDistributionStatusChange statusChange = new VaccineDistributionStatusChange(distribution,userId);
             statusChangeRepository.insert(statusChange);
-            sdpNotificationService.updateNotification(distribution.getId());
 
         }
 
