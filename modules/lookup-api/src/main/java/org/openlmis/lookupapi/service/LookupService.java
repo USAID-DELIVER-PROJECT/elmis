@@ -189,19 +189,21 @@ public class LookupService {
   public void saveHFR(HealthFacilityDTO dto){
 
     if(dto != null){
-      HealthFacilityDTO hfr = interfaceMapper.getByTransactionId(dto.getIlIDNumber());
-      HealthFacilityDTO facilityDTO = interfaceMapper.getByFacilityCode(dto.getFacIDNumber());
-      if(hfr == null){
-        if(facilityDTO == null) {
-          interfaceMapper.insert(dto);
-        }else
-          interfaceMapper.update(dto);
+        if(!dto.getIlIDNumber().isEmpty()) {
+            HealthFacilityDTO hfr = interfaceMapper.getByTransactionId(dto.getIlIDNumber());
+            //HealthFacilityDTO facilityDTO = interfaceMapper.getByFacilityCode(dto.getFacIDNumber());
+            if (hfr == null) {
+                //if(facilityDTO == null) {
+                interfaceMapper.insert(dto);
+        /*}else
+          interfaceMapper.update(dto);*/
 
-      }else {
-        if (hfr.getFacIDNumber() != null){
-          interfaceMapper.update(dto);
+            } else {
+                // if (hfr.getFacIDNumber() != null){
+                interfaceMapper.update(dto);
+                // }
+            }
         }
-      }
 
     }
 

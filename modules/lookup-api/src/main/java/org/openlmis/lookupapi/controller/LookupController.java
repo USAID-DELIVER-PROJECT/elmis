@@ -332,8 +332,6 @@ public class LookupController {
     @RequestMapping(value = "/rest-api/hfr-list", method = RequestMethod.POST, headers = ACCEPT_JSON)
     public ResponseEntity postTransaction(@RequestBody HealthFacilityDTO dto, HttpServletRequest request){
 
-       // lookupService.saveHFR(dto);
-
        try {
             interfaceService.sendResponse(dto);
         } catch (Exception e) {
