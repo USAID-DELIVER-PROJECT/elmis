@@ -1,4 +1,4 @@
-function RejectedControllerFunction($scope, GetRejectedRnRReport) {
+function RejectedControllerFunction($scope, GetRejectedRnRReport,$state) {
     "use strict";
 
     function getRejectionRate(rows) {
@@ -19,13 +19,13 @@ function RejectedControllerFunction($scope, GetRejectedRnRReport) {
 
         var maximumValue = Math.max.apply(null, totalValues);
 
-        var array1 = key, array3 = maximumValue, result = [], i = -1;
+        var array1 = key, array3 = totalValues, result = [], i = -1;
 
         while (array1[++i]) {
-            if (array3[i] === totalValues)
+            if (array3[i] === maximumValue)
                 result.push({
                     name: array1[i], y: array3[i], sliced: true,
-                    selected: true
+                    selected: true,color:'red'
                 });
             else
                 result.push([array1[i], array3[i]]);
@@ -39,15 +39,20 @@ function RejectedControllerFunction($scope, GetRejectedRnRReport) {
     });
 
 
+    var displayEventData = function (event) {
+        var params = {'zone':event.point.name,'value':event.point.y};
+        $state.go('rejectionByZoneView',params);
+
+    };
     var functionalData = function (data) {
-        // Create the chart
+
         var chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'rejected',
                 type: 'pie',
                 options3d: {
                     enabled: true,
-                    alpha: 45
+                    alpha: 90
                 },
                 style: {
                     fontFamily: 'helvetica'
@@ -55,39 +60,36 @@ function RejectedControllerFunction($scope, GetRejectedRnRReport) {
             },
             credits: {enabled: false},
             title: {
-                text: 'RnR Rejection Rate by MSD Zone'
-            },
-            yAxis: {
-                title: {
-                    text: 'Total percent market share'
-                }
+                text: 'RnR Rejection by Zone'
             },
             plotOptions: {
                 pie: {
                     shadow: false,
                     cursor: 'pointer',
-                    slicedOffset: 30,
+                    slicedOffset: 20
                 }
             },
             tooltip: {
                 formatter: function () {
-                    return '<b>' + this.point.name + '</b>: ' + this.y + ' %';
+                    return '<b>' + this.point.name + '</b>: ' + this.y;
                 }
             },
             series: [{
                 name: 'zones',
                 data: data,
-                /* data: [["Firefox",6],["MSIE",4],["Chrome",7],{
-                     name: 'May',
-                     y: 9,
-                     sliced: true,
-                     selected: true
-                 }],*/
                 size: '60%',
-                innerSize: '60%',
-                showInLegend: true,
+                innerSize: '70%',
+                showInLegend: false,
                 dataLabels: {
                     enabled: true
+                }, animation: true,
+                point:{
+                    events:{
+                        click: function (event) {
+                            displayEventData(event);
+
+                        }
+                    }
                 }
             }]
         });

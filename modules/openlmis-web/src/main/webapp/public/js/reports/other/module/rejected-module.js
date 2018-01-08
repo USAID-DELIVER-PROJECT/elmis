@@ -12,7 +12,7 @@
 var app  = angular.module('rejected_module', ['openlmis','ui.router', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion',
     'ui.bootstrap.modal','ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle',
     'angularUtils.directives.uiBreadcrumbs','ng-breadcrumbs','ncy-angular-breadcrumb','angularCombine',
-    'ngTable','ui.bootstrap.pagination', 'tree.dropdown'
+    'ngTable','ui.bootstrap.pagination', 'tree.dropdown','export.csv'
 ]);
 ///Start
 
@@ -28,7 +28,21 @@ app.config(function($stateProvider, $urlRouterProvider, $breadcrumbProvider){
             ncyBreadcrumb: {
                 label: 'Rejected By District Report'
             }
-        }/*,
+        },
+
+        {
+            name: 'rejectionByZoneView',
+            url: '/zone:zone/:value',
+            templateUrl: 'partials/rejection-by-zone.html',
+            controller: 'RejectionByZoneControllerFunction',
+            ncyBreadcrumb: {
+                label: 'Rejection of {{zone}}',
+                parent: 'home'
+            }
+        }
+
+
+        /*,
         {
             name: 'element',
             url: '/element:idElement/:facilityId',

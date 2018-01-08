@@ -74,46 +74,66 @@
     }
 
     .rnr-table th.col-product, .rnr-table td.col-product {
-        min-width: 100px !important;
+        /*
+                width: 10px !important;
+        */
         font-weight: bold !important;
         overflow: auto;
 
     }
 
     .cell-text {
-        font-size: 0.8em !important;
+        font-size: 0.9em !important;
+        width: 10px !important;
+        text-align: left;
     }
 
     .rnr-table .table-bordered td:first-child {
         border-left: 0px solid #ddd !important;
     }
 
+    th.col-product {
+        min-width: 40px !important;
+    }
+
 </style>
 <div class="container" id="wrapper">
     <breadcrumbs item-display-name-resolver="myResolver(defaultResolver, state, isCurrent)"></breadcrumbs>
 
-    <h3 id="podPageTitle"><span></span></h3>
+    <!--
+        <h3 id="podPageTitle"><span></span></h3>
+    -->
+    <filter-container>
+        <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+        <schedule-filter class="form-cell horizontalFilters" required="true"></schedule-filter>
+        <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
+        <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
+    </filter-container>
+
 
     <div class="row-fluid span12">
 
-
         <div class="span12">
-            <!--
-            Starting
-            -->
+
             <div style="width: 100% !important;">
 
          <span class="pull-right print-button" style="background-color:#4897BA !important;">
     <a id="printButton" style="background-color:#4897BA !important;"
-       class="btn btn-primary" ng-href="/requisitions/{{rnr.id}}/print.pdf"
+
+       id="xls-button" href="" export export-data="rejectedRnRLis"
+       export-keys="['districtName','regionName','zoneName','rejectedCount']"
+       export-headers="['District name','Region Name','MSD Zone','Total Rejected']"
+
+       class="btn-small btn-primary"
        target="_blank">Export</a>
          </span>
 
                 <div class="clearfix"></div>
+
                 <form name="stockOnHandForm">
                     <div class="row">
                         <div class="col-md-4">
-                           <div id="rejected"></div>
+                            <div id="rejected"></div>
                         </div>
                         <div class="col-md-8 text-right">
 
@@ -123,25 +143,25 @@
                          scrollable table-striped">
                                     <thead>
                                     <tr>
-                                        <th class="number" style="width:10px;text-align: left">#</th>
+                                        <th class="number" style="min-width:1px !important;text-align: left">#</th>
 
-                                        <th class="col-product">
+                                        <th class="col-product" style="min-width: 100px !important;">
                                             <div class="regimen-heading">
                                                 <span>District name</span>
                                             </div>
                                         </th>
-                                        <th class="col-product">
+                                        <th class="col-product " style="min-width: 100px !important;">
                                             <div class="regimen-heading">
                                                 <span openlmis-message="label.region"></span>
                                             </div>
                                         </th>
-                                        <th class="col-product">
+                                        <th class="col-product" style="min-width: 100px !important;">
                                             <div class="regimen-heading">
                                                 <span>MSD Zone</span>
                                             </div>
                                         </th>
 
-                                        <th class="col-product">
+                                        <th class="col-product" style="min-width: 100px !important;">
                                             <div class="regimen-heading">
                                                 <span>Total Rejected</span>
                                             </div>
@@ -158,7 +178,7 @@
                                     <tbody>
                                     <tr ng-repeat="rejected in rejectedRnRLis">
                                         <td class="number"
-                                            style="width:20px; font-size: 0.8em !important;text-align: left;    height: 40px !important;">
+                                            style="width:1px !important; font-size: 0.8em !important;text-align: center;    height: 40px !important;">
                                             {{$index+1}}
                                         </td>
                                         <td class="cell-text">{{rejected.districtName}}</td>
@@ -169,7 +189,7 @@
                                             {{rejected.rejectedCount | number}}
                                         </td>
                                         <td class="cell-text  padding2px" style="text-align: center">
-                                    <span>
+                                    <span class="cell-text">
                                           <a id="printButton"
                                              ui-sref="element({idElement:c.product.id,facilityId:{{homeFacility}}})"
                                              class="btn btn-primary">View</a>
@@ -185,11 +205,8 @@
                             </div>
 
 
-
-
                         </div>
                     </div>
-
 
 
                     <!--
@@ -198,7 +215,6 @@
 
                     </div>-->
                 </form>
-
 
 
             </div>
