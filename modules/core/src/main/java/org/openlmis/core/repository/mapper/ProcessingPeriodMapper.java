@@ -125,8 +125,21 @@ public interface ProcessingPeriodMapper {
     @Select({"SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId} AND startDate<=#{programStartDate} AND endDate>= #{programStartDate}"})
     ProcessingPeriod getCurrentPeriodNew(@Param("scheduleId") Long scheduleId, @Param("programStartDate") Date programStartDate);
 
-    @Select({" SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId}\n" +
-            " AND startDate<=now() and extract('year' from startDate) = extract('year' from NOW()) order by id desc "})
+    /*@Select({" SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId}\n" +
+            " AND startDate<=now() and extract('year' from startDate) = extract('year' from NOW()) order by id desc "})*/
+    @Select({"        WITH Q as (\n" +
+            "                \n" +
+            "                SELECT * FROM (\n" +
+            "                   SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId}\n" +
+            "                      AND startDate<=now() and extract('year' from startDate) = extract('year' from NOW())  order by id Desc\n" +
+            "                     )x\n" +
+            "                     UNION ALL\n" +
+            "                                \n" +
+            "                      SELECT * FROM processing_periods WHERE scheduleId = #{scheduleId}\n" +
+            "                      AND extract('year' from startDate) < extract('year' from NOW()) order by id Desc limit \n" +
+            "                     (SELECT VALUE::INT FROM configuration_settings where key = 'VIMS_DISTRIBUTION_PERIODS')\n" +
+            "                     )select * from q \n" +
+            "                    order by id asc"})
     List<ProcessingPeriod> getCurrentPeriodForDistribution(@Param("scheduleId") Long scheduleId, @Param("programStartDate") Date programStartDate);
 
 
