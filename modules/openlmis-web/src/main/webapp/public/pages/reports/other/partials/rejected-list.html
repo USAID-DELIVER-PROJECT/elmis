@@ -108,6 +108,17 @@
         <schedule-filter class="form-cell horizontalFilters" required="true"></schedule-filter>
         <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
         <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
+        <div class="form-cell horizontalFilters">
+            <label for="status" class="labels" openlmis-message="label.status"></label>
+            <div>
+            <select id ="status" ui-select2 class="input-large"  ng-model="filter.status" ng-change="OnFilterChanged()">
+                <option ng-repeat="type in statuses" ng-selected="type.code == default_status"
+                        value="{{type.code}}">{{type.name}}
+                </option>
+            </select>
+            </div>
+        </div>
+
     </filter-container>
 
 
@@ -120,7 +131,7 @@
          <span class="pull-right print-button" style="background-color:#4897BA !important;">
     <a id="printButton" style="background-color:#4897BA !important;"
 
-       id="xls-button" href="" export export-data="rejectedRnRLis"
+       id="xls-button" href="" export export-data="datarows"
        export-keys="['districtName','regionName','zoneName','rejectedCount']"
        export-headers="['District name','Region Name','MSD Zone','Total Rejected']"
 
@@ -137,10 +148,17 @@
                         </div>
                         <div class="col-md-8 text-right">
 
-                            <div id="pod" class="rnr-table" tab-scroll bottom-offset="180"
-                                 style="padding-right: 0 !important;">
-                                <table id="equipmentTable" fixed-table-header class="table-bordered
-                         scrollable table-striped">
+                            <table class="table table-bordered" ng-show="data == undefined || data.length == 0">
+                                <tr>
+                                    <td>No data to show under selected filters</td>
+                                </tr>
+                            </table>
+
+                            <div  ng-show="datarows.length > 0" id="pod" class="rnr-table" tab-scroll bottom-offset="180"
+                                 style="padding-right: 0 !important;" client-side-sort-pagination>
+
+                                <table ng-show="datarows.length > 0" id="equipmentTable" fixed-table-header class="table-bordered
+                         scrollable table-striped scrollable"  ng-table="tableParams">
                                     <thead>
                                     <tr>
                                         <th class="number" style="min-width:1px !important;text-align: left">#</th>
@@ -176,7 +194,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr ng-repeat="rejected in rejectedRnRLis">
+                                    <tr ng-repeat="rejected in datarows">
                                         <td class="number"
                                             style="width:1px !important; font-size: 0.8em !important;text-align: center;    height: 40px !important;">
                                             {{$index+1}}
@@ -191,7 +209,7 @@
                                         <td class="cell-text  padding2px" style="text-align: center">
                                     <span class="cell-text">
                                           <a id="printButton"
-                                             ui-sref="element({idElement:c.product.id,facilityId:{{homeFacility}}})"
+                                             ui-sref="rejectionByZoneView({zone:rejected.zoneName,value:rejected.rejectedCount,status:{{status}},program:{{program}}})"
                                              class="btn btn-primary">View</a>
 
                                     </span>
@@ -202,6 +220,13 @@
 
                                     </tbody>
                                 </table>
+                                <div class="clearfix"></div>
+                                <br/>
+
+                             <!--   <pagination total-items="totalItems" page="currentPage" max-size="10"
+                                            items-per-page="pagination.limit"
+                                            direction-links="false" class="pagination-sm"></pagination>-->
+
                             </div>
 
 

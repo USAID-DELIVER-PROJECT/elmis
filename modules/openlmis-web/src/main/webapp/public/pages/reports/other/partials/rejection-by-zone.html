@@ -1,5 +1,86 @@
 <div>
-    <h2>Details view</h2>
-    <p><a ui-sref=".detail">Detail</a></p>
-    <div ui-view></div>
+    <h2>List Of Facilities Rejected RNR</h2>
+    <div ui-view>
+<div class="row content">
+        <div class="col-md-12">
+       <span class="pull-right print-button" style="background-color:#4897BA !important;">
+    <a id="printButton" style="background-color:#4897BA !important;"
+
+       id="xls-button" href="" export export-data="rejectedRnRLis"
+       export-keys="['districtName','regionName','zoneName','rejectedCount']"
+       export-headers="['District name','Region Name','MSD Zone','Total Rejected']"
+
+       class="btn-small btn-primary"
+       target="_blank">Export</a>
+         </span>
+
+            <div class="clearfix"></div>
+            <div id="pod" class="rnr-table" tab-scroll bottom-offset="180"
+                 style="padding-right: 0 !important;">
+                <table id="equipmentTable" fixed-table-header class="table-bordered
+                         scrollable table-striped">
+                    <thead>
+                    <tr>
+                        <th class="number" style="min-width:1px !important;text-align: left">#</th>
+
+                        <th class="col-product" style="min-width: 100px !important;">
+                            <div class="regimen-heading">
+                                <span>Facility name</span>
+                            </div>
+                        </th>
+                        <th class="col-product" style="min-width: 100px !important;">
+                            <div class="regimen-heading">
+                                <span>District name</span>
+                            </div>
+                        </th>
+                        <th class="col-product " style="min-width: 100px !important;">
+                            <div class="regimen-heading">
+                                <span openlmis-message="label.region"></span>
+                            </div>
+                        </th>
+                        <th class="col-product" style="min-width: 100px !important;">
+                            <div class="regimen-heading">
+                                <span>MSD Zone</span>
+                            </div>
+                        </th>
+
+                        <th class="col-product" style="min-width: 100px !important;">
+                            <div class="regimen-heading">
+                                <span>Total Rejected</span>
+                            </div>
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="rejected in rejects">
+                        <td class="number"
+                            style="width:1px !important; font-size: 0.8em !important;text-align: center;    height: 40px !important;">
+                            {{$index+1}}
+                        </td>
+                        <td class="cell-text">{{rejected.facilityname}}</td>
+                        <td class="cell-text">{{rejected.districtname}}</td>
+                        <td class="cell-text">{{rejected.regionname}}</td>
+                        <td class="cell-text">{{rejected.zonename}}</td>
+                        <td class="cell-text  padding2px"
+                            style="text-align: right;font-family: 'Times New Roman';font-weight: bold">
+                            {{rejected.rejectedcount | number}}
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+<br/>
+            <pagination total-items="totalItems" page="currentPage" max-size="10"
+                        items-per-page="pagination.limit"
+                        direction-links="false" class="pagination-sm"></pagination>
+
+
+        </div>
+    </div>
+
+    </div>
 </div>

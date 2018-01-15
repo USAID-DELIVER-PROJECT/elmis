@@ -1,5 +1,7 @@
 function RejectedControllerFunction($scope, GetRejectedRnRReport,$state) {
     "use strict";
+    $scope.statuses = [{code:'INITIATED',name:'District Rejected'},{code:'AUTHORIZED',name:'LMU Rejected'}];
+    $scope.default_status = 'INITIATED';
 
     function getRejectionRate(rows) {
 
@@ -32,16 +34,49 @@ function RejectedControllerFunction($scope, GetRejectedRnRReport,$state) {
         }
         functionalData(result);
     }
+    $scope.currentPage = 1;
+    $scope.pageSize = 50;
+    $scope.OnFilterChanged = function(){
 
-    GetRejectedRnRReport.get({}, function (data) {
-        $scope.rejectedRnRLis = data.pages.rows;
-        getRejectionRate(data.pages.rows);
-    });
+        $scope.filter.max = 10000;
+        $scope.filter.page = 1;
+       // var param = angular.extend($scope.getSanitizedParameter(),{page: $scope.page,limit:$scope.pageSize,max:1000});
+        $scope.default_status = 'INITIATED';
+        $scope.data = $scope.datarows = [];
 
+        $scope.filter.max = 10000;
+        $scope.status = $scope.getSanitizedParameter().status;
+        $scope.program = $scope.getSanitizedParameter().program;
+
+        console.log($scope.program);
+        GetRejectedRnRReport.get($scope.getSanitizedParameter(), function (data) {
+           if(data.pages !== undefined){
+            $scope.data=data.pages.rows;
+            $scope.paramsChanged($scope.tableParams);
+
+            getRejectionRate(data.pages.rows);
+
+           }
+
+            //  $scope.pagination = data.pagination;
+          //  $scope.totalItems = $scope.pagination.totalRecords;
+          //  $scope.currentPage = $scope.pagination.page;
+        });
+
+    };
+
+  /*  $scope.$watch('currentPage', function () {
+        if ($scope.currentPage > 0) {
+            $scope.page = $scope.currentPage;
+            $scope.OnFilterChanged();
+        }
+    });*/
 
     var displayEventData = function (event) {
+        console.log($scope.getSanitizedParameter());
         var params = {'zone':event.point.name,'value':event.point.y};
-        $state.go('rejectionByZoneView',params);
+        var params2 =angular.extend(params,$scope.getSanitizedParameter());
+        $state.go('rejectionByZoneView',params2);
 
     };
     var functionalData = function (data) {
@@ -94,6 +129,31 @@ function RejectedControllerFunction($scope, GetRejectedRnRReport,$state) {
             }]
         });
     };
+
+/*
+    $scope.paramsChanged = function (params) {
+
+        // slice array data on pages
+        if ($scope.data === undefined) {
+            $scope.datarows = [];
+        } else {
+            var data = $scope.data;
+            var orderedData = params.filter ? $filter('filter')(data, params.filter) : data;
+            orderedData = params.sorting ? $filter('orderBy')(orderedData, params.orderBy()) : data;
+
+            params.total = orderedData.length;
+            $scope.datarows = orderedData.slice((params.page - 1) * params.count, params.page * params.count);
+            var i = 0;
+            var baseIndex = params.count * (params.page - 1) + 1;
+            while (i < $scope.datarows.length) {
+                $scope.datarows[i].no = baseIndex + i;
+                i++;
+            }
+        }
+    };
+
+    // watch for changes of parameters
+    $scope.$watch('tableParams', $scope.paramsChanged, true);*/
 
 
 }
