@@ -790,7 +790,7 @@ function StockAvailabilityControllerFunc1($scope,$state,ReportingTarget, Availab
 
                 }]
             });
-        }
+        };
 
 
 
