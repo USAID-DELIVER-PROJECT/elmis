@@ -128,4 +128,6 @@ public interface EquipmentInventoryMapper {
     @Delete("Delete from equipment_inventories where id=#{inventoryId} ")
     Integer deleteEquipmentInventory(@Param("inventoryId") Long inventoryId);
 
+    @Select("select * from equipment_inventories where serialNumber = #{serialNumber}")
+    EquipmentInventory findInventoryBySerialNumber(@Param("serialNumber") String serialNumber);
 }

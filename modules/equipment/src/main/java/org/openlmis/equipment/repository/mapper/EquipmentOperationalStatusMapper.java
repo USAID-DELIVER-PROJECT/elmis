@@ -58,4 +58,7 @@ public interface EquipmentOperationalStatusMapper {
           "  FROM equipment_operational_status\n" +
           "  WHERE code = #{code}")
   EquipmentOperationalStatus getByCode(String code);
+
+    @Select("select * from equipment_operational_status where category like #{category} || '%'")
+    List<EquipmentOperationalStatus> getOperationalStatusByCategory(String category);
 }

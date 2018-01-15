@@ -21,7 +21,7 @@ dependencies {
 
 
 
-    testCompile  'org.postgresql:postgresql:9.2-1002-jdbc4',
+    testCompile  'org.postgresql:postgresql:42.1.4',
             project(path: ':modules:core', configuration: 'testFixtures')
 
     configurations {

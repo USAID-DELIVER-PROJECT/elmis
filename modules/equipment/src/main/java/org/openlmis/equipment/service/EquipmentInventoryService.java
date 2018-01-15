@@ -146,4 +146,8 @@ public List<ColdChainEquipmentTemperatureStatusDTO>getAllbyId(Long equipmentId){
   public List<ManualTestTypes> getManualTestTypes(){
     return equipmentService.getManualTestTypes();
   }
+
+  public EquipmentInventory getInventoryBySerialNumber(String serialNumber) {
+    return repository.findBySerialNumber(serialNumber);
+  }
 }
