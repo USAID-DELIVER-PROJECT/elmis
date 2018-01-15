@@ -15,6 +15,7 @@ import org.openlmis.vaccine.repository.mapper.VaccineDashboardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.security.acl.LastOwnerException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -216,4 +217,15 @@ public class VaccineDashboardRepository {
     public List<HashMap<String,Object>>getNationalPerformance(Long userId,Long productId,Long periodId, Long year){
         return mapper.getNationalPerformance(userId,productId,periodId,year);
     }
+    public List<HashMap<String,Object>>reportingTarget(Long userId,Long periodId, Long year){
+        return mapper.reportingTarget(userId,periodId,year);
+    }
+
+    public List<HashMap<String,Object>>getDistrictCategorization(Long userId,Long periodId, Long year){
+        return mapper.getDistrictCategorization(periodId);
+    }
+    public List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(Long userId, Long productId, Long periodId, Long year){
+        return mapper.getVaccineCoverageByRegionAndProduct(userId,productId,periodId,year);
+    }
+
 }

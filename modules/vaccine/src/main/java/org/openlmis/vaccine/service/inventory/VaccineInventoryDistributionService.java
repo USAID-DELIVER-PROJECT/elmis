@@ -10,6 +10,8 @@
 
 package org.openlmis.vaccine.service.inventory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.ProcessingPeriod;
@@ -30,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -80,7 +83,7 @@ public class VaccineInventoryDistributionService {
         return repository.getOneLevelSupervisedFacilities(facilityId);
     }
 
-
+@Transactional
     public Long save(VaccineDistribution distribution, Long userId) {
         //Get supervised facility period
         System.out.println(distribution.getPeriodId());
@@ -89,7 +92,8 @@ public class VaccineInventoryDistributionService {
         ProcessingPeriod period = null;
         if (null != distribution.getToFacilityId() && null != distribution.getProgramId()) {
             period = getCurrentPeriod_new(distribution.getToFacilityId(), distribution.getProgramId(), distribution.getDistributionDate());
-           // System.out.println(period.getId());
+            System.out.println("period");
+            System.out.println(period.getId());
             System.out.println(distribution.getDistributionDate());
         }
         if (period != null) {
@@ -108,7 +112,14 @@ public class VaccineInventoryDistributionService {
             statusChangeRepository.insert(statusChange);
         } else {
             distribution.setCreatedBy(userId);
-             repository.saveDistribution(distribution);
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                System.out.println("Distribution");
+                System.out.println(mapper.writeValueAsString(distribution));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            repository.saveDistribution(distribution);
             System.out.println("Distribution Id");
 
             //Update status changes to keep distribution log

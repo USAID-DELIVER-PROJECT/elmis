@@ -140,7 +140,7 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select("SELECT *" +
             " FROM vaccine_distributions " +
-            "WHERE tofacilityid=#{facilityId} AND vouchernumber=#{voucherNumber} AND status='PENDING' LIMIT 1")
+            "WHERE tofacilityid=#{facilityId} AND vouchernumber=#{voucherNumber} AND status='PENDING' order by distributiondate desc LIMIT 1")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
                     many = @Many(select = "getLineItems")),
@@ -166,7 +166,7 @@ public interface VaccineInventoryDistributionMapper {
 
     @Select("SELECT *" +
             " FROM vaccine_distributions " +
-            " WHERE tofacilityid=#{facilityId} AND  status='PENDING' order by createddate ASC LIMIT 1")
+            " WHERE tofacilityid=#{facilityId} AND  status='PENDING'  order by distributiondate desc LIMIT 1")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "fromFacilityId", column = "fromFacilityId"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
@@ -223,7 +223,7 @@ public interface VaccineInventoryDistributionMapper {
             " FROM vaccine_distributions " +
             " WHERE fromfacilityid=#{facilityId} AND  " +
             " distributiondate::DATE = #{date}::DATE AND distributionType='ROUTINE'" +
-            " order by createddate DESC")
+            " order by distributiondate DESC")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "toFacilityId", column = "toFacilityId"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
@@ -236,7 +236,7 @@ public interface VaccineInventoryDistributionMapper {
             " FROM vaccine_distributions " +
             " WHERE fromfacilityid=#{facilityId} AND  " +
             " distributiondate::DATE >= #{date}::DATE AND distributiondate::DATE <= #{endDate}::DATE  AND distributionType= #{distributionType}  " +
-            " order by createddate DESC")
+            " order by distributiondate::DATE DESC")
     @Results({@Result(property = "id", column = "id"),
             @Result(property = "toFacilityId", column = "toFacilityId"),
             @Result(property = "lineItems", column = "id", javaType = List.class,
