@@ -693,3 +693,17 @@ services.factory('FullStockAvailableForDashboard', function($resource){
 services.factory('AggregateFacilityPerformance', function($resource){
     return $resource('/vaccine/dashboard/getNationalPerformance.json',{},{});
 });
+
+services.factory('ReportingTarget', function($resource){
+    return $resource('/vaccine/dashboard/reportingTarget.json',{},{});
+});
+
+services.factory('GetDistrictCategorization', function($resource){
+    return $resource('/vaccine/dashboard/categorization.json',{},{});
+});
+services.factory('GetVaccineCoverageByRegionAndProduct', function($resource){
+    return $resource('/vaccine/dashboard/VaccineCoverageByRegionAndProduct.json',{},{});
+});
+services.factory('GetRejectedRnR', function($resource){
+    return $resource('/reports/getRejectedRnR.json',{},{});
+});
