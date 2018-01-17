@@ -44,4 +44,7 @@ public class LogisticsLineItemRepository {
   public List<LogisticsLineItem> getApprovedLineItemListFor(String programCode, String facilityCode,  Long periodId) {
     return mapper.getApprovedLineItemListFor(programCode, facilityCode, periodId);
   }
+  public List<LogisticsLineItem> getSubmittedLineItemListFor(String programCode, String facilityCode,  Long periodId) {
+    return mapper.getSubmittedLineItemListFor(programCode, facilityCode, periodId);
+  }
 }
