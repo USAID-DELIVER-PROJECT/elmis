@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.report.model.ReportParameter;
+import org.openlmis.stockmanagement.domain.LotOnHand;
 
 @Getter
 @Setter
@@ -15,5 +16,5 @@ public class RejectedRnRReportParam  extends BaseParam implements ReportParamete
 private Long program;
 private String status;
 private Long zone;
-
+public Long period;
 }

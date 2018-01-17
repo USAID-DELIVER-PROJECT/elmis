@@ -106,9 +106,10 @@ public class VaccineInventoryDistributionController extends BaseController {
     @Transactional
     public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineDistribution distribution, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
-        Long distributionId = service.save(distribution,userId);
-        sdpNotificationService.updateNotification(distribution.getId());
-        return OpenLmisResponse.response("distributionId", distributionId);
+        sdpNotificationService.updateNotification(distribution,userId);
+        System.out.println("I'm first");
+        System.out.println(distribution.getId());
+        return OpenLmisResponse.response("distributionId", distribution.getId());
     }
 
     @RequestMapping(value = "get-distributed/{facilityId}/{programId}", method = GET, headers = ACCEPT_JSON)

@@ -41,6 +41,7 @@ import org.openlmis.report.model.report.TimelinessReport;
 import org.openlmis.report.util.Constants;
 import org.openlmis.report.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -136,6 +137,15 @@ public class ReportLookupService {
 
   @Autowired
   ConfigurationSettingService configurationSettingService;
+  @Autowired
+  private RejectionRnRReportMapper rejectionRnRReportMapper;
+
+  private Integer pageSize;
+
+  @Autowired
+  public void setPageSize(@Value("${search.page.size}") String pageSize) {
+    this.pageSize = Integer.parseInt(pageSize);
+  }
 
   private static final String VACCINE_DATE_FORMAT = "yyyy-MM-dd";
   private static final String VACCINE_DATE_FORMAT_FOR_RANGE = "MMM-dd-yyyy";
@@ -756,8 +766,6 @@ public class ReportLookupService {
     return facilityService.getAllOperators();
   }
 
-
-
   public List<FacilityType> getFacilityLevelsWithoutProgram(Long userId) {
 
     List<org.openlmis.core.domain.Program> program =  programService.getAllIvdPrograms();
@@ -767,4 +775,13 @@ public class ReportLookupService {
 
     return facilityTypeMapper.getLevelsWithoutProgram(program.get(0).getId(), facilityIds);
   }
+
+  public List<HashMap<String,Object>> getRejectedRnR(String status,Long program,Long period,String zone,Integer page){
+    return rejectionRnRReportMapper.getRnRRejected(status,program,period,zone,getPagination(page));
+  }
+
+  public Pagination getPagination(Integer page) {
+    return new Pagination(page, pageSize);
+  }
+
 }

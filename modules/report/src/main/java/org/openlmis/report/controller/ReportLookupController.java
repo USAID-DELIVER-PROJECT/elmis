@@ -651,5 +651,18 @@ public class ReportLookupController extends BaseController {
     return this.reportLookupService.getProgramProductsWithoutDescriptionsAndSyringes(programList.get(0).getId());
   }
 
+  @RequestMapping(value = "/getRejectedRnR", method = GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getRejectedRnRs(@RequestParam("program") Long program,
+                                                          @RequestParam("period") Long period,
+                                                          @RequestParam("status") String status,
+                                                          @RequestParam("zone") String zone,
+                                                          @RequestParam(value = "page", required = true, defaultValue = "1") Integer page
+                                                          ) {
+    ResponseEntity<OpenLmisResponse> response = OpenLmisResponse.response("rejected",
+            this.reportLookupService.getRejectedRnR(status,program,period,zone,page));
+    Pagination pagination = this.reportLookupService.getPagination(page);
+    response.getBody().addData("pagination", pagination);
+    return response;
+  }
 
 }

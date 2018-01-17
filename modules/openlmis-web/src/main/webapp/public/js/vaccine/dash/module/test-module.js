@@ -15,7 +15,7 @@
 var app  = angular.module('test', ['openlmis','ui.router', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion',
     'ui.bootstrap.modal','ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle',
     'angularUtils.directives.uiBreadcrumbs','ng-breadcrumbs','ncy-angular-breadcrumb','angularCombine',
-    'ngTable','ui.bootstrap.pagination', 'tree.dropdown'
+    'ngTable','ui.bootstrap.pagination', 'tree.dropdown','angularScreenfull'
 ]);
 ///Start
 

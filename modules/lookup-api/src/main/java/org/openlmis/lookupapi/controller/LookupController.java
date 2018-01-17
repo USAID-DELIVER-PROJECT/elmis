@@ -71,6 +71,7 @@ public class LookupController {
     public static final String REGIMEN_PRODUCT_COMBINATIONS = "regimen-product-combinations";
     public static final String REGIMEN_COMBINATION_CONSTITUENTS = "regimen-combination-constituents";
     public static final String REGIMEN_CONSTITUENT_DOSAGES = "regimen-constituent-dosages";
+    private static final String PROGRAM_REFERENCE_DATA ="ProgramReferenceData" ;
 
     @Autowired
     private LookupService lookupService;
@@ -339,6 +340,10 @@ public class LookupController {
         }
         System.out.println("RESPONSE BEFORE");
         return ResponseEntity.ok(OK);
+    }
+    @RequestMapping(value = "/rest-api/lookup/program-referece-data/{code}/{facility_code}", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity getProgramReferenceData(@PathVariable("code") String code,@PathVariable("facility_code") String facilityCode) {
+        return RestResponse.response(PROGRAM_REFERENCE_DATA, lookupService.getProgramReferenceData(code,facilityCode));
     }
 
 }

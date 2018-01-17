@@ -13,6 +13,7 @@ var FacilitiesWithProducts = function (facility,stockCards,distributionForecastA
     var productsToIssue=[];
     var distribution=distributionForecastAndPeriod.distribution;
     var currentPeriod=distributionForecastAndPeriod.lasPeriodAllData;
+    console.log(currentPeriod);
    // var currentPeriod=distributionForecastAndPeriod.currentPeriod;
     var forecast=distributionForecastAndPeriod.forecast;
     var programProducts=distributionForecastAndPeriod.programProductList;

@@ -581,4 +581,15 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
     public List<HashMap<String,Object>>getNationalPerformance(Long userId,Long productId,Long periodId, Long year){
         return repository.getNationalPerformance(userId,productId,periodId,year);
     }
+    public List<HashMap<String,Object>>reportingTarget(Long userId,Long periodId, Long year){
+        return repository.reportingTarget(userId,periodId,year);
+    }
+    public List<HashMap<String,Object>>getDistrictCategorization(Long userId,Long periodId, Long year){
+        return repository.getDistrictCategorization(userId,periodId,year);
+    }
+
+    public List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(Long userId, Long productId, Long periodId, Long year){
+        return repository.getVaccineCoverageByRegionAndProduct(userId,productId,periodId,year);
+    }
+
 }

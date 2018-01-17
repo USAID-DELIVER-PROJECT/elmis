@@ -24,6 +24,7 @@ import org.openlmis.lookupapi.mapper.DosageUnitReportMapper;
 import org.openlmis.lookupapi.mapper.GeographicLevelReportMapper;
 import org.openlmis.lookupapi.mapper.ILInterfaceMapper;
 import org.openlmis.lookupapi.model.HealthFacilityDTO;
+import org.openlmis.lookupapi.model.ProgramReferenceData;
 import org.openlmis.report.mapper.lookup.*;
 import org.openlmis.report.model.dto.*;
 import org.openlmis.report.model.dto.DosageUnit;
@@ -209,4 +210,23 @@ public class LookupService {
 
   }
 
+  public ProgramReferenceData getProgramReferenceData(String code, String facilityCode) {
+    Facility facility = null;
+    Program program = null;
+    List<FacilityTypeApprovedProduct> facilityTypeApprovedProductList = null;
+    List<ProcessingPeriod> processingPeriodList = null;
+    ProgramReferenceData programReferenceData = new ProgramReferenceData();
+    program = programMapper.getProgramByCode(code);
+    facility = facilityReportMapper.getFacilityByCode(facilityCode);
+    processingPeriodList = processingPeriodMapper.getPeriodsByProgramCode(code);
+    if (facility != null && program != null) {
+      facilityTypeApprovedProductList = facilityApprovedProductMapper.getAllByFacilityAndProgramId(Long.valueOf(facility.getId()), Long.valueOf(program.getId()));
+
+      programReferenceData.setFacility(facility);
+      programReferenceData.setProgram(program);
+      programReferenceData.setFacilityTypeApprovedProductList(facilityTypeApprovedProductList);
+      programReferenceData.setProcessingPeriodList(processingPeriodList);
+    }
+    return programReferenceData;
+  }
 }

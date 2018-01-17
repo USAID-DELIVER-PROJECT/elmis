@@ -43,60 +43,46 @@ import java.util.concurrent.Future;
 @Component
 */
 @Service
-@Async
 public class SdpNotificationService {
 
-    public  static final String TIIS_URL= "VIMS_TIMR_INTERGRATION";
-    public  static final String TIIS_USERNAME= "VIMS_TIMR_USERNAME";
-    public  static final String TIIS_PASSWORD= "VIMS_TIMR_PASSWORD";
-
-    @Autowired
-    private VaccineInventoryDistributionMapper mapper;
+    public static final String TIIS_URL = "VIMS_TIMR_INTERGRATION";
+    public static final String TIIS_USERNAME = "VIMS_TIMR_USERNAME";
+    public static final String TIIS_PASSWORD = "VIMS_TIMR_PASSWORD";
 
     @Autowired
     ConfigurationSettingService configurationSettingService;
 
+    @Autowired
+    VaccineInventoryDistributionService service;
 
 
-
-
-    public void updateNotification(Long distributionId) {
-
-       if (distributionId != null) {
-            VaccineDistribution d = mapper.getDistributionById(distributionId);
+    @Async("myExecutor")
+    public void updateNotification(VaccineDistribution distribution, Long userId) {
+        service.save(distribution, userId);
+        if (distribution.getId() != null) {
+            VaccineDistribution d = service.getDistributionById(distribution.getId());
             String url = configurationSettingService.getByKey(TIIS_URL).getValue();
             String username = configurationSettingService.getByKey(TIIS_USERNAME).getValue();
             String password = configurationSettingService.getByKey(TIIS_PASSWORD).getValue();
-            if(url != null && username != null && password !=null)
-                sendHttps(d,url,username,password);
-            //sendNotification(d);
+            if (url != null && username != null && password != null) {
+                sendHttps(d, url, username, password);
+
+            }
         }
     }
 
 
-/*    public void updateNotification(Long distributionId) {
-        if (distributionId != null) {
-            VaccineDistribution d = mapper.getDistributionById(distributionId);
-            String url = configurationSettingService.getByKey(TIIS_URL).getValue();
-            String username = configurationSettingService.getByKey(TIIS_USERNAME).getValue();
-            String password = configurationSettingService.getByKey(TIIS_PASSWORD).getValue();
-            if(url != null && username != null && password !=null)
-            sendHttps(d,url,username,password);
-            //sendNotification(d);
-        }
-
-    }*/
-
     private static void disableSslVerification() {
-        try
-        {
+        try {
             // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                 public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
+
                 public void checkClientTrusted(X509Certificate[] certs, String authType) {
                 }
+
                 public void checkServerTrusted(X509Certificate[] certs, String authType) {
                 }
             }
@@ -123,9 +109,11 @@ public class SdpNotificationService {
         }
     }
 
-    public void sendHttps(VaccineDistribution d,String url,String username,String password) {
-
-        VaccineDistribution distribution = mapper.getDistributionByToFacility(d.getToFacilityId());
+    private void sendHttps(VaccineDistribution d, String url, String username, String password) {
+        System.out.println("I'm second");
+        System.out.println(d.getToFacilityId());
+        VaccineDistribution distribution = service.getDistributionByToFacility(d.getToFacilityId());
+        System.out.println("I'm second..");
         ObjectMapper mapper = new ObjectMapper();
 
         System.out.println(username);
@@ -137,12 +125,14 @@ public class SdpNotificationService {
             URL obj = new URL(url);
 
             // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                 public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
+
                 public void checkClientTrusted(X509Certificate[] certs, String authType) {
                 }
+
                 public void checkServerTrusted(X509Certificate[] certs, String authType) {
                 }
             }
@@ -164,8 +154,8 @@ public class SdpNotificationService {
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 
             HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-           // disableSslVerification();
-            String userCredentials = username+":"+password;
+            // disableSslVerification();
+            String userCredentials = username + ":" + password;
             String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userCredentials.getBytes()));
             con.setRequestProperty("Authorization", basicAuth);
             con.setRequestMethod("POST");

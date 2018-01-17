@@ -410,5 +410,43 @@ Long userId = this.loggedInUserId(request);
         return response;
     }
 
+    @RequestMapping(value = "reportingTarget.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse>getPerformanceReport(
+            HttpServletRequest request,
+            @Param("periodId") Long periodId,
+            @Param("year") Long year
+
+    ) {
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.response("reportingTarget",service.reportingTarget(loggedInUserId(request), periodId, year));
+        return response;
+    }
+
+    @RequestMapping(value = "categorization.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse>getDistrictCategorization(
+            HttpServletRequest request,
+            @Param("periodId") Long periodId,
+            @Param("year") Long year
+
+    ) {
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.response("categories",service.getDistrictCategorization(loggedInUserId(request), periodId, year));
+        return response;
+    }
+
+ @RequestMapping(value = "VaccineCoverageByRegionAndProduct.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse>getVaccineCoverageByRegionAndProduct(
+            HttpServletRequest request,
+            @Param("periodId") Long periodId,
+            @Param("year") Long year,
+            @Param("productId")Long productId
+
+    ) {
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.response("coverage",service.getVaccineCoverageByRegionAndProduct(
+                loggedInUserId(request), productId,periodId, year));
+        return response;
+    }
+
 
 }

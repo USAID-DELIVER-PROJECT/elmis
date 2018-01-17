@@ -32,7 +32,7 @@ app.config(function($stateProvider, $urlRouterProvider, $breadcrumbProvider){
 
         {
             name: 'rejectionByZoneView',
-            url: '/zone:zone/:value',
+            url: '/zone:zone/:value/:status/:period/:program',
             templateUrl: 'partials/rejection-by-zone.html',
             controller: 'RejectionByZoneControllerFunction',
             ncyBreadcrumb: {

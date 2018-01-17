@@ -325,7 +325,7 @@ public class IvdFormService {
 
   public FacilityIvdSummary getStockStatusForAllProductsInFacility(String facilityCode, String programCode, Long periodId) {
     FacilityIvdSummary summary = new FacilityIvdSummary(facilityCode, programCode, periodId);
-    List<LogisticsLineItem> list = logisticsLineItemRepository.getApprovedLineItemListFor(programCode, facilityCode, periodId);
+    List<LogisticsLineItem> list = logisticsLineItemRepository.getSubmittedLineItemListFor(programCode, facilityCode, periodId);
     if (!emptyIfNull(list).isEmpty()) {
       Facility facility = facilityService.getFacilityByCode(facilityCode);
 
@@ -343,6 +343,8 @@ public class IvdFormService {
     }
     return summary;
   }
+
+
 
   public StockStatusSummary getStockStatusForProductInFacility(String facilityCode, String productCode, String programCode, Long periodId) {
     LogisticsLineItem periodicLLI = logisticsLineItemRepository.getApprovedLineItemFor(programCode, productCode, facilityCode, periodId);

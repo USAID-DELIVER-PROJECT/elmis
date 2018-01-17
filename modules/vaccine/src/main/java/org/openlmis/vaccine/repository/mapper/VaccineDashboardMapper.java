@@ -11,6 +11,7 @@
  */
 package org.openlmis.vaccine.repository.mapper;
 
+import net.sf.jasperreports.engine.json.expression.member.ObjectKeyExpression;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -22,6 +23,19 @@ import java.util.Map;
 
 @Repository
 public interface VaccineDashboardMapper {
+
+    String vaccineDistrictCoverageDenominatorSql = "fn_get_vaccine_coverage_district_denominator(" +
+            "       (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int," +
+            "       (select extract(year from startdate) from processing_periods where id = #{period} )::int," +
+            "       #{product}::int," +
+            "       fn_get_vaccine_program_id()::int" +
+            "  )";
+    String vaccineDistrictCoverageDenominatorWthPeriodStartDateSql = "fn_get_vaccine_coverage_district_denominator(" +
+            "       (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int," +
+            "       (select extract(year from  #{startDate}::date))::int," +
+            "       #{product}::int," +
+            "       fn_get_vaccine_program_id()::int" +
+            "  )";
 
     /*
      * Action Bar
@@ -105,33 +119,6 @@ public interface VaccineDashboardMapper {
             "                      ) ")
     List<HashMap<String, Object>> getRepairingDetails(@Param("userId") Long userId);
 
-    /* */
-    @Select(" select count(1) from ( \n" +
-            "                 select facility_code, facility_name, geographic_zone_name district, aefi_case, aefi_batch, aefi_date, aefi_notes \n" +
-            "                   from vw_vaccine_iefi i\n" +
-            "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
-            "                    where is_investigated = 'f'  \n" +
-            "                    and relatedtolineitemid is null \n" +
-            "                    and program_id = (select id from programs where enableivdform = 't' limit 1)  \n" +
-            "                    and  period_id = fn_get_vaccine_current_reporting_period()\n" +
-            "		             and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
-            "                    vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
-            "                     )  \n" +
-            "                ) a ")
-    Map<String, Object> getInvestigatingSummary(@Param("userId") Long userId);
-
-    /* */
-    @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case,product_name, aefi_batch, aefi_date, aefi_notes,aefi_expiry_date,manufacturer \n" +
-            "                   from vw_vaccine_iefi i\n" +
-            "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
-            "                    where is_investigated = 'f'  \n" +
-            "                    and program_id = fn_get_vaccine_program_id()  \n" +
-            "                    and  period_id = fn_get_vaccine_current_reporting_period()\n" +
-            "                    and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
-            "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
-            "                     )  ")
-    List<HashMap<String, Object>> getInvestigatingDetails(@Param("userId") Long userId);
-
 /* End Action Bar */
 
        /* @Select("SELECT\n" +
@@ -164,18 +151,32 @@ public interface VaccineDashboardMapper {
          * ---------------- Coverage ------------------------------------
         */
 
-    String vaccineDistrictCoverageDenominatorSql = "fn_get_vaccine_coverage_district_denominator(" +
-            "       (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int," +
-            "       (select extract(year from startdate) from processing_periods where id = #{period} )::int," +
-            "       #{product}::int," +
-            "       fn_get_vaccine_program_id()::int" +
-            "  )";
-    String vaccineDistrictCoverageDenominatorWthPeriodStartDateSql = "fn_get_vaccine_coverage_district_denominator(" +
-            "       (select value from user_preferences up where up.userid = #{user} and up.userpreferencekey = 'DEFAULT_GEOGRAPHIC_ZONE' limit 1)::int," +
-            "       (select extract(year from  #{startDate}::date))::int," +
-            "       #{product}::int," +
-            "       fn_get_vaccine_program_id()::int" +
-            "  )";
+    /* */
+    @Select(" select count(1) from ( \n" +
+            "                 select facility_code, facility_name, geographic_zone_name district, aefi_case, aefi_batch, aefi_date, aefi_notes \n" +
+            "                   from vw_vaccine_iefi i\n" +
+            "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
+            "                    where is_investigated = 'f'  \n" +
+            "                    and relatedtolineitemid is null \n" +
+            "                    and program_id = (select id from programs where enableivdform = 't' limit 1)  \n" +
+            "                    and  period_id = fn_get_vaccine_current_reporting_period()\n" +
+            "		             and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
+            "                    vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
+            "                     )  \n" +
+            "                ) a ")
+    Map<String, Object> getInvestigatingSummary(@Param("userId") Long userId);
+
+    /* */
+    @Select(" select facility_code, facility_name, geographic_zone_name district, aefi_case,product_name, aefi_batch, aefi_date, aefi_notes,aefi_expiry_date,manufacturer \n" +
+            "                   from vw_vaccine_iefi i\n" +
+            "                    join vw_districts vd on i.geographic_zone_id = vd.district_id \n" +
+            "                    where is_investigated = 'f'  \n" +
+            "                    and program_id = fn_get_vaccine_program_id()  \n" +
+            "                    and  period_id = fn_get_vaccine_current_reporting_period()\n" +
+            "                    and (vd.district_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer)) or  \n" +
+            "                      vd.region_id = (select geographiczoneid from fn_get_user_preferences(#{userId}::integer))\n" +
+            "                     )  ")
+    List<HashMap<String, Object>> getInvestigatingDetails(@Param("userId") Long userId);
 
     @Select("SELECT\n" +
             "d.region_name,\n" +
@@ -1429,6 +1430,196 @@ public interface VaccineDashboardMapper {
           "group by period_name\n" +
           "\n ")
         List<HashMap<String,Object>>getNationalPerformance(@Param("userId") Long userId, @Param("productId") Long productId, @Param("periodId") Long periodId,@Param("year")Long year);
+
+    @Select("with completeness_with_reporting_periods as (\n" +
+            "                  select    \n" +
+            "                  a.region_name,   \n" +
+            "                  a.district_name,  \n" +
+            "                  a.priod_id,      \n" +
+            "                  a.period_name,   \n" +
+            "                  a.period_start_date,\n" +
+            "                  a.geographiczoneid,    \n" +
+            "                  a.expected,  \n" +
+            "                  a.reported,   \n" +
+            "                  a.ontime,    \n" +
+            "                  a.late ,\n" +
+            "                  a.approved,\n" +
+            "                  a.distributed          \n" +
+            "                  from (  \n" +
+            "                       with temp as ( \n" +
+            "                       select * from dashboard_reporting_view v\n" +
+            "                       where  v.startdate::date >='2017-01-01'::DATE and v.enddate::date <='2017-12-01'::DATE \n" +
+            "                      )    \n" +
+            "\n" +
+            "                      select    \n" +
+            "                      vd.region_name,   \n" +
+            "                      vd.district_name, \n" +
+            "                      priod_id,       \n" +
+            "                      t.period_name,   \n" +
+            "                      t.period_start_date,  \n" +
+            "                      t.geographiczoneid,  \n" +
+            "                      sum(fixed) fixed,   \n" +
+            "                      sum(outreach) outreach,   \n" +
+            "                      sum(fixed) + sum(outreach) session_total,   \n" +
+            "                      sum(target) target,     \n" +
+            "                     (select count(*) from requisition_group_members rgm\n" +
+            "                \n" +
+            "                                join facilities f on f.id = rgm.facilityid \n" +
+            "                                join programs_supported ps on ps.facilityid=f.id \n" +
+            "                                join requisition_group_program_schedules rgs on rgs.programid=(select id from programs where enableivdform = 't' limit 1) \n" +
+            "                                 and  rgs.requisitiongroupid=rgm.requisitiongroupid and rgs.scheduleid=45 \n" +
+            "                                where f.geographiczoneid = t.geographiczoneid  and f.active=true \n" +
+            "                                and f.sdp = true \n" +
+            "                ) expected,   \n" +
+            "                      sum(case when reporting_status IN ('T','L') then 1 else 0 end) reported,   \n" +
+            "                      sum(case when reporting_status = 'T' then 1 else 0 end) ontime,    \n" +
+            "                      sum(case when reporting_status = 'L' then 1 else 0 end) late ,\n" +
+            "                      SUM(approved) approved ,\n" +
+            "                      sum(distributed) distributed          \n" +
+            "\n" +
+            "                    from temp t  \n" +
+            "                        join vw_districts vd on vd.district_id = t.geographiczoneid \n" +
+            "                        --\" + writeDistrictPredicate(params.getDistrict())\n" +
+            "                      where vd.district_id in (select district_id from vw_user_facilities where user_id = 307 and program_id = fn_get_vaccine_program_id())  \n" +
+            "                    group by 1, 2, 3, 4,5 ,6  \n" +
+            "                  ) a   \n" +
+            "                     ),  \n" +
+            "\n" +
+            "                                completness_with_nonreporting_periods as ( \n" +
+            "                                      select c.geographiczoneid, periods.*, \n" +
+            "                                            (select count(*) from requisition_group_members rgm\n" +
+            "                \n" +
+            "                                join facilities f on f.id = rgm.facilityid \n" +
+            "                                join programs_supported ps on ps.facilityid=f.id  \n" +
+            "                                join requisition_group_program_schedules rgs on rgs.programid=(select id from programs where enableivdform = 't' limit 1) \n" +
+            "                                 and  rgs.requisitiongroupid=rgm.requisitiongroupid and rgs.scheduleid=45 \n" +
+            "                                 \n" +
+            "                                where f.geographiczoneid = c.geographiczoneid  and f.active=true \n" +
+            "                                and f.sdp = true \n" +
+            "                ) expected\n" +
+            "                                        from  \n" +
+            "                                         ( \n" +
+            "                                              select id, name period_name, startdate period_start_date from processing_periods pp  \n" +
+            "                                                where pp.startdate::date >='2017-01-01'::date  and pp.enddate::date <= '2017-12-01'::date\n" +
+            "                                              AND pp.numberofmonths = 1 \n" +
+            "                                          ) periods ,  \n" +
+            "                                          ( \n" +
+            "                                              select distinct geographiczoneid from  \n" +
+            "                                             completeness_with_reporting_periods c \n" +
+            "                                          ) c \n" +
+            "                                    ) \n" +
+            "\n" +
+            "                      SELECT         \n" +
+            "                      nonreporting.period_name,  \n" +
+            "                      nonreporting.period_start_date,\n" +
+            "                      Extract(month FROM nonreporting.period_start_date) as month,\n" +
+            "                      Extract(year FROM nonreporting.period_start_date) as year,\n" +
+            "                      SUM(nonreporting.expected)  expected,  \n" +
+            "                      SUM(COALESCE(c.reported,0)) reported,   \n" +
+            "                      SUM(COALESCE(c.ontime,0))   ontime,    \n" +
+            "                      SUM(COALESCE(c.late,0))     late ,\n" +
+            "                       SUM(COALESCE(c.approved,0))approved,\n" +
+            "                       SUM(COALESCE(C.distributed,0)) distributed ," +
+            "                       \n" +
+            "                       ROUND ( CASE when SUM(nonreporting.expected) > 0 THEN \n" +
+            "                       100 *( SUM(COALESCE(C.distributed,0))::numeric/SUM(nonreporting.expected) ) else 0 end,0)\n" +
+            "                        AS distributed_rate  ,\n" +
+            "\n" +
+            "                         ROUND ( CASE when SUM(c.approved) > 0 THEN \n" +
+            "                       100 *( SUM(COALESCE(C.approved,0))::numeric/SUM(nonreporting.expected) ) else 0 end,0)\n" +
+            "                        AS approved_rate  ,\n" +
+            "\n" +
+            "                         ROUND ( CASE when SUM(c.ontime) > 0 THEN \n" +
+            "                       100 *( SUM(COALESCE(C.ontime,0))::numeric/SUM(c.reported) ) else 0 end,0)\n" +
+            "                        AS ontime_rate ,\n" +
+            "\n" +
+            "                         ROUND ( CASE when SUM(c.reported) > 0 THEN \n" +
+            "                       100 *( SUM(COALESCE(C.reported,0))::numeric/SUM(nonreporting.expected) ) else 0 end,0)\n" +
+            "                        AS reported_rate           \n" +
+            "                      FROM completness_with_nonreporting_periods nonreporting  \n" +
+            "                      join geographic_zones z on z.id = nonreporting.geographiczoneid   \n" +
+            "                      join vw_districts vd on vd.district_id = nonreporting.geographiczoneid \n" +
+            "                      left outer join completeness_with_reporting_periods c  On c.geographiczoneid = nonreporting.geographiczoneid AND nonreporting.id = c.priod_id \n" +
+            "                    group by 1,2 order by 2")
+    List<HashMap<String, Object>>reportingTarget(@Param("userId")Long userId, @Param("periodId")Long periodId, @Param("year")Long year);
+
+    @Select("with q as (\n" +
+            "SELECT\n" +
+            "  CASE WHEN pd.dropout <= pt.targetdropoutgood AND cc.coveragepercentage >= pt.targetcoveragegood\n" +
+            "    THEN 'good'\n" +
+            "  WHEN pd.dropout > pt.targetdropoutgood AND cc.coveragepercentage >= pt.targetcoveragegood\n" +
+            "    THEN 'normal'\n" +
+            "  WHEN pd.dropout <= pt.targetdropoutgood AND cc.coveragepercentage <= pt.targetcoveragegood\n" +
+            "    THEN 'warn'\n" +
+            "  ELSE 'bad'\n" +
+            "  END AS classificationClass,\n" +
+            "  CASE WHEN pd.dropout <= pt.targetdropoutgood AND cc.coveragepercentage >= pt.targetcoveragegood\n" +
+            "    THEN 'Cat_1'\n" +
+            "  WHEN pd.dropout > pt.targetdropoutgood AND cc.coveragepercentage >= pt.targetcoveragegood\n" +
+            "    THEN 'Cat_2'\n" +
+            "  WHEN pd.dropout <= pt.targetdropoutgood AND cc.coveragepercentage <= pt.targetcoveragegood\n" +
+            "    THEN 'Cat_3'\n" +
+            "  ELSE 'Cat_4'\n" +
+            "  END AS catagorization,\n" +
+            "  cc.month,\n" +
+            "  cc.year,\n" +
+            "  pd.district_id,\n" +
+            "  d.region_id,\n" +
+            "  cc.district_name,\n" +
+            "  cc.region_name,\n" +
+            "  cc.periodid,\n" +
+            "  pd.period_name,\n" +
+            "  pd.district_name\n" +
+            "FROM vw_vaccine_coverage_by_dose_and_district cc\n" +
+            "  JOIN vw_penta_dropout_district_summary pd\n" +
+            "    ON cc.doseid = 1\n" +
+            "       AND pd.productid = cc.productid\n" +
+            "       AND pd.district_id = cc.district_id\n" +
+            "       AND pd.year = cc.year\n" +
+            "       AND pd.month = cc.month\n" +
+            "  JOIN vw_districts d on d.district_id = cc.geographiczoneid\n" +
+            "  JOIN vaccine_product_targets pt ON pt.productid = cc.productid\n" +
+            "WHERE pd.year = 2017 :: INT \n" +
+            ")\n" +
+            "select catagorization, count(*) total from q\n" +
+            "where periodId = #{periodId}\n" +
+            "group by catagorization\n" +
+            "order by catagorization")
+    List<HashMap<String,Object>>getDistrictCategorization(@Param("periodId")Long periodId);
+@Select(
+        "SELECT region_name region,\n" +
+        "ROUND (\n" +
+        " (case when sum(target) > 0 then (sum(COALESCE(actual,0)) / \n" +
+        "                sum(target)::numeric) else 0 end) * 100,2) coverage\n" +
+        "from (\n" +
+        "                SELECT\n" +
+        "                d.region_name,\n" +
+        "                d.district_name,\n" +
+        "                i.period_name, \n" +
+        "                i.period_start_date,\n" +
+        "                sum(i.denominator) target, \n" +
+        "                sum(COALESCE(i.within_outside_total,0)) actual,\n" +
+        "                (case when sum(denominator) > 0 then (sum(COALESCE(i.within_outside_total,0)) / \n" +
+        "                sum(denominator)::numeric) else 0 end) * 100 coverage\n" +
+        "                FROM\n" +
+        "                vw_vaccine_coverage i\n" +
+        "                JOIN vw_districts d ON i.geographic_zone_id = d.district_id\n" +
+        "                JOIN vaccine_reports vr ON i.report_id = vr.ID\n" +
+        "                JOIN program_products pp ON pp.programid = vr.programid\n" +
+        "                AND pp.productid = i.product_id\n" +
+        "                WHERE\n" +
+        "                i.program_id = ( SELECT id FROM programs p WHERE p .enableivdform = TRUE limit 1) \n" +
+        "                AND VR.periodId = #{periodId}\n" +
+        "                and i.product_id = #{productId}\n" +
+        "                group by 1,2,3,4\n" +
+        "                ORDER BY\n" +
+        "                d.region_name,\n" +
+        "                d.district_name,\n" +
+        "                i.period_start_date\n" +
+        ")X\n" +
+        "group by region_name" +
+                " order by coverage desc  \n")
+     List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(@Param("userId")Long userId, @Param("productId")Long productId,@Param("periodId")Long periodId,@Param("year")Long year);
 
 
 }

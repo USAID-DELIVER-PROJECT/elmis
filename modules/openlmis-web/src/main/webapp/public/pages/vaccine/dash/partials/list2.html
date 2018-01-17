@@ -1,177 +1,301 @@
-<div>
+<style>
+    body {
+        padding : 1px ;
+    }
+    .breadcrumb {
+        padding: 1px 1px !important;
+        margin-bottom: 1px !important;
+        background-color: lightgrey;
+        font-size: 10px;
 
-    <div class="row">
-        <div class="col l8 s8 m12">
-            <!--<p class="z-depth-1">{{facilityPerformance}}
-            </p>-->
+    }
+
+    #exTab1 .tab-content {
+        color : white;
+        background-color: lightgrey;
+        padding : 5px 15px;
+    }
+
+    #exTab2 h3 {
+        color : #428bca;
+        background-color: #428bca;
+        padding : 5px 15px;
+    }
+
+    /* remove border radius for the tab */
+
+    #exTab1 .nav-pills > li > a {
+        border-radius: 0;
+    }
+
+    /* change border radius for the tab , apply corners on top*/
+
+    #exTab3 .nav-pills > li > a {
+        border-radius: 4px 4px 0 0 ;
+    }
+
+    #exTab3 .tab-content {
+        color : white;
+        background-color: #428bca;
+        padding : 5px 15px;
+    }
 
 
+    .modal {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.7);
+    }
+    .modal .chart {
+        height: 90%;
+    }
 
-            <div class="card">
-                <div class="card-content">
-                    <!--
-                                        <h5 class="grey-text center">Pie Chart</h5>
-                    -->
-                    <div id="container5" ></div>
-<!--
-                    <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
--->
+    .full-width-box{
+        width: 100%;
+        z-index: 1;
+    }
+    .fullscreen {
+        width: 100%;
+        height: 100%;
+    }
+
+    .nav-pills>li>a {
+
+        margin-bottom: 1px !important;
+
+    }
+</style>
+<div id="exTab1" class="container">
+    <ul  class="nav nav-pills">
+        <li class="active">
+            <a  href="#1a" data-toggle="tab">National View</a>
+        </li>
+        <li><a href="#2a" data-toggle="tab">My Supervised View</a>
+        </li>
+
+    </ul>
+
+    <div class="tab-content clearfix">
+        <div class="tab-pane active" id="1a">
+            <div>
+                <div class="row">
+                    <div class="col l12 s12 m12">
+
+                        <div class="box-header">
+
+                            <filter-container>
+
+                                <product-without-description-and-syringes-filter class="form-cell horizontalFilters"
+                                                                                 required="true"></product-without-description-and-syringes-filter>
+
+                                <year-filter class="form-cell horizontalFilters"></year-filter>
+
+                                <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>
+                            </filter-container>
+
+
+                        </div>
+
+                    </div>
 
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col l8 s8 m12">
+                        <!--<p class="z-depth-1">{{facilityPerformance}}
+                        </p>-->
+                        <div class="card">
+                            <div class="card-content">
+                                <div id="container5"></div>
+                                <!--
+                                                    <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
+                                -->
+
+                            </div>
+                        </div>
 
 
-        </div>
+                    </div>
 
-        <div class="col l4 s4 m12">
+                    <div class="col l4 s4 m12">
 
-            <div class="card-panel grey lighten-4 z-depth-1">
-                <div class="row valign-wrapper">
-                    <div class="col l3 s3 m12"  style="background-color: red">
+                        <div class="card-panel grey lighten-4 z-depth-1">
+                            <div class="row valign-wrapper">
+                                <div class="col l3 s3 m12" style="background-color: red">
 
-                        <div class="icon-block">
+                                    <div class="icon-block">
                              <span class="black-text">
                            <span style="font-size: 40px">{{facilityPerformance[0].stockedout}} %</span>
                              <p class="light">Of Facilities Stocked Out</p>
                           </span>
 
-                        </div>
+                                    </div>
 
-
-
-                       <!--  <span class="black-text">
-                           <span style="font-size: 40px">{{facilityPerformance[0].stockedout}} %</span>
-                             <p>Of Facilities Stocked Out</p>
-                          </span>-->
-                    </div>
-                    <div class="col l3 s3 m12" style="background-color: yellow">
-                        <div class="icon-block">
+                                </div>
+                                <div class="col l3 s3 m12" style="background-color: yellow">
+                                    <div class="icon-block">
                              <span class="black-text">
                              <span style="font-size: 40px">{{facilityPerformance[0].understocked}}%</span>
                              <p>Of Facilities Understocked</p>
                           </span>
 
-                        </div>
+                                    </div>
 
-                    </div>
+                                </div>
 
-                    <div class="col  l3 s3 m12" style="background-color: green">
-                        <div class="icon-block">
+                                <div class="col  l3 s3 m12" style="background-color: green">
+                                    <div class="icon-block">
                              <span class="black-text">
                       <span style="font-size: 40px">{{facilityPerformance[0].accordingplan}}%</span>
                              <p class="light">Stocked According To plan</p>
                           </span>
 
-                        </div>
+                                    </div>
 
-                    </div>
-                    <div class="col  l3 s3 m12" style="background-color: #00B0F0;">
+                                </div>
+                                <div class="col  l3 s3 m12" style="background-color: #00B0F0;">
 
-                        <div class="icon-block">
+                                    <div class="icon-block">
                              <span class="black-text">
                         <span style="font-size:40px">{{facilityPerformance[0].overstocked}}%</span>
                              <p class="light">Of Facilities Overstocked</p>
                           </span>
 
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="col l4 s4 m12">
+                        <div class="card" style="height: 260px!important;">
+                            <div class="card-content">
+                                <div id="container8"></div>
+                                <!--
+                                                    <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
+                                -->
+
+                            </div>
                         </div>
 
                     </div>
+
                 </div>
-            </div>
 
 
-        </div>
-
-    </div>
-
-
-
-<!--
-<div class="row">
-
-    <div class="col l12 s12 m12">
-
-
-
-</div>
-</div>-->
-<!--
-    <div class="clearfix"></div>
-    <div class="clearfix"></div>
-<br/>
-
-    <div id="container" style="min-width: 200px; height: 300px; margin: 0 auto"></div>
-
-<div class="clearfix"></div>
-<div class="clearfix"></div>
-<br/>
-<div id="container2" style="height: 800px"></div>
-<div class="clearfix"></div>
-<div class="clearfix"></div>
-<br/>
-<div id="container3" style="height: 800px"></div>-->
-
-<div class="row">
-    <div class="col l12 s12 m12">
-        <div class="card">
-            <div class="card-title"><filter-container>
-
-                <product-without-description-and-syringes-filter class="form-cell horizontalFilters" required="true"></product-without-description-and-syringes-filter>
-
-                <!-- <year-filter class="form-cell horizontalFilters"></year-filter>
-
-                 <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>-->
-            </filter-container></div>
-            <div class="card-content">
                 <!--
-                                    <h5 class="grey-text center">Pie Chart</h5>
-                -->
+                <div class="row">
 
-                <div id="container"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="row">
+                    <div class="col l12 s12 m12">
 
 
-        <div class="col l6 s12 m12">
-            <div class="card">
-                <div class="card-content">
-                    <!--
-                                        <h5 class="grey-text center">Product Coverage</h5>
-                    -->
-                    <div id="container2"></div>
+
                 </div>
-            </div>
-        </div>
+                </div>-->
+                <!--
+                    <div class="clearfix"></div>
+                    <div class="clearfix"></div>
+                <br/>
 
+                    <div id="container" style="min-width: 200px; height: 300px; margin: 0 auto"></div>
 
-        <div class="col l6 s12 m12">
-            <div class="card">
-                <div class="card-content">
-<!--
-                    <h5 class="grey-text center">Product Coverage</h5>
--->
-                 <div id="container7"></div>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+                <br/>
+                <div id="container2" style="height: 800px"></div>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+                <br/>
+                <div id="container3" style="height: 800px"></div>-->
+
+                <div class="row">
+                    <div class="col l12 s12 m12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div id="container"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="row">
+
+
+                    <div class="col l6 s12 m12">
+                        <div class="card">
+                            <div class="card-content">
+                                <!--
+                                                    <h5 class="grey-text center">Product Coverage</h5>
+                                -->
+                                <div id="container2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col l6 s12 m12">
+                        <div class="card">
+                            <div class="card-content">
+                                <!--
+                                                    <h5 class="grey-text center">Product Coverage</h5>
+                                -->
+                                <div id="container7"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col l12 s12 m12">
+
+                        <div class="card">
+                            <div class="card-content">
+                    <span class="pull-right">
+
+      </span>
+                                <!--
+                                                <h5 class="center">Full Stock Availability Percentage</h5>
+                                -->
+                                <!--
+                                                    <a id="resizeViewButton" full-screen="" href="" class="btn">
+                                                        <i class="icon-resize-full"></i>
+                                                    </a>-->
+
+                                <div ngsf-fullscreen>
+                        <span class="pull-right"><a ngsf-toggle-fullscreen  class="btn">
+                            <i class="icon-resize-full"></i>
+
+                        </a></span>
+
+                                    <div id="container3">
+
+
+                                    </div>
+
+                                </div>
+
+
+
+
+                                <!--
+                                                    <input type="radio" name="mychart" ng-model="pieChart" class="mychart" id= "pie" value="pie" ng-click= "changeChart()"/>
+                                -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col l12 s12 m12">
-
-        <div class="card">
-            <div class="card-content">
-<!--
-                <h5 class="center">Full Stock Availability Percentage</h5>
--->
-
-                <div id="container3"></div>
-            </div>
+        <div class="tab-pane" id="2a">
+            <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the tab</h3>
         </div>
-            </div>
-    </div>
 
+    </div>
 </div>
