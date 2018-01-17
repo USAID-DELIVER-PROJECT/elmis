@@ -12,10 +12,11 @@
 
 package org.openlmis.equipment.repository.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.openlmis.core.domain.Facility;
 import org.openlmis.equipment.domain.DailyColdTraceStatus;
+import org.openlmis.equipment.domain.Equipment;
+import org.openlmis.equipment.domain.EquipmentInventory;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -27,13 +28,13 @@ public interface DailyColdTraceStatusMapper {
   @Insert("insert into equipment_daily_cold_trace_status " +
       "(" +
       " serialNumber, equipmentInventoryId, date, operationalStatusId, " +
-      " minEpisodeTemp, maxEpisodeTemp, lowTemp, highTemp, " +
+      " minTemp, maxTemp, lowTempEpisode, highTempEpisode, " +
       " remarks, createdBy, createdDate" +
       ")" +
       "values " +
       "(" +
       " #{serialNumber}, #{equipmentInventory.id}, #{date}, #{operationalStatusId}, " +
-      " #{minEpisodeTemp}, #{maxEpisodeTemp}, #{lowTemp}, #{highTemp} , " +
+      " #{minTemp}, #{maxTemp}, #{lowTempEpisode}, #{highTempEpisode} , " +
       " #{remarks}, #{createdBy}, NOW()" +
       ")")
   int insert(DailyColdTraceStatus status);
@@ -43,10 +44,10 @@ public interface DailyColdTraceStatusMapper {
       "equipmentInventoryId = #{equipmentInventory.id}, " +
       "date = #{date}, " +
       "operationalStatusId = #{operationalStatusId}, " +
-      "minEpisodeTemp = #{minEpisodeTemp}, " +
-      "maxEpisodeTemp = #{maxEpisodeTemp}, " +
-      "lowTemp = #{lowTemp}, " +
-      "highTemp = #{highTemp}, " +
+      "minTemp = #{minTemp}, " +
+      "maxTemp = #{maxTemp}, " +
+      "lowTempEpisode = #{lowTempEpisode}, " +
+      "highTempEpisode = #{highTempEpisode}, " +
       "remarks = #{remarks}, " +
       "modifiedBy = #{modifiedBy}," +
       "modifiedDate = NOW()" +
@@ -60,6 +61,11 @@ public interface DailyColdTraceStatusMapper {
       " JOIN equipment_inventories i on i.id = s.equipmentInventoryId " +
       " JOIN processing_periods p on p.id = #{periodId} and s.date >= p.startDate and s.date <= p.endDate " +
       " where i.facilityId = #{facilityId}")
+  @Results({
+      @Result(
+          property = "equipmentInventory", column = "equipmentInventoryId", javaType = EquipmentInventory.class,
+          one = @One(select = "org.openlmis.equipment.repository.mapper.EquipmentInventoryMapper.getInventoryById")),
+  })
   List<DailyColdTraceStatus> getForFacilityForPeriod(@Param("facilityId") Long facilityId, @Param("periodId") Long periodId);
 
 

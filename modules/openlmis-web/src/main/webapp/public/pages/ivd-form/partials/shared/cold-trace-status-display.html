@@ -1,0 +1,53 @@
+<!--
+  ~ Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
+  ~
+  ~ Copyright (C) 2015  John Snow, Inc (JSI). This program was produced for the U.S. Agency for International Development (USAID). It was prepared under the USAID | DELIVER PROJECT, Task Order 4.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<div ng-show="coldTraceStatus != undefined && coldTraceStatus.length !== 0">
+  <h3>RTM Status</h3>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th rowspan="2" class="col-skipped"><span openlmis-message="label.date"></span></th>
+      <th rowspan="2" class="span3"><span openlmis-message="label.vaccine.cc.asset"></span></th>
+      <th rowspan="2" class="span2"><span openlmis-message="label.vaccine.cc.serial"></span></th>
+      <th rowspan="2" class="span2"><span openlmis-message="label.vaccine.cc.model"></span></th>
+      <th rowspan="2" class="span2"><span openlmis-message="label.vaccine.cc.energy.source"></span></th>
+      <th rowspan="2" class="span1">
+        <span openlmis-message="label.vaccine.cc.status"></span>
+      </th>
+      <th colspan="2"><span openlmis-message="label.vaccine.cc.temp"></span></th>
+      <th colspan="2"><span openlmis-message="label.vaccine.cc.temp.episode"></span></th>
+    </tr>
+    <tr>
+      <th class="span1" openlmis-message="label.vaccine.cc.temp.min">Min</th>
+      <th class="span1" openlmis-message="label.vaccine.cc.temp.max">Max</th>
+      <th class="span1" openlmis-message="label.vaccine.cc.temp.low">Low</th>
+      <th class="span1" openlmis-message="label.vaccine.cc.temp.high">High</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr style="height: 30px;" ng-repeat="r in coldTraceStatus">
+      <td class="span1 cell-input" ><span class="cell-text" >{{r.date | date}}</span></td>
+      <td class="span3 cell-input"><span class="cell-text">{{r.equipmentInventory.equipment.name}}</span></td>
+      <td class="span2 cell-input"><span class="cell-text">{{r.serialNumber}}</span></td>
+      <td class="span2 cell-input"><span class="cell-text">{{r.equipmentInventory.equipment.model}}</span></td>
+      <td class="span2 cell-input"><span class="cell-text">{{r.equipmentInventory.equipment.energyType.name}}</span></td>
+      <td class="span1 cell-input">
+        <span class="cell-text">{{operationalStatusIndex[r.operationalStatusId].name}}</span>
+      </td>
+      <td class="span1 number cell-input"><span class="cell-text">{{r.minTemp | number: 2 }}</span></td>
+      <td class="span1 number cell-input"><span class="cell-text">{{r.maxTemp | number: 2 }}</span></td>
+      <td class="span1 number cell-input"><span class="cell-text">{{r.lowTempEpisode | number: 0 }}</span></td>
+      <td class="span1 number cell-input"><span class="cell-text">{{r.highTempEpisode | number: 0 }}</span></td>
+    </tr>
+    </tbody>
+  </table>
+</div>

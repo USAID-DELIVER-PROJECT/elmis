@@ -12,7 +12,6 @@
 
 package org.openlmis.equipment.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,20 +27,19 @@ public class DailyColdTraceStatus extends BaseModel {
 
   private String serialNumber;
 
-  @JsonIgnore
   private EquipmentInventory equipmentInventory;
 
   private Date date;
 
   private Integer operationalStatusId;
 
-  private BigDecimal minEpisodeTemp;
+  private BigDecimal minTemp;
 
-  private BigDecimal maxEpisodeTemp;
+  private BigDecimal maxTemp;
 
-  private BigDecimal lowTemp;
+  private BigDecimal lowTempEpisode;
 
-  private BigDecimal highTemp;
+  private BigDecimal highTempEpisode;
 
   private String remarks;
 }

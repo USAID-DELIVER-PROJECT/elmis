@@ -9,7 +9,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function ApproveIvdFormDetailController($scope, $dialog, $location, report, discardingReasons, operationalStatuses, VaccineReportApprove, VaccineReportReject) {
+function ApproveIvdFormDetailController($scope, $dialog, $location, report, discardingReasons, operationalStatuses, VaccineReportApprove, VaccineReportReject, ColdTraceStatus) {
 
   // initial state of the display
   $scope.report = new VaccineReport(report);
@@ -19,6 +19,12 @@ function ApproveIvdFormDetailController($scope, $dialog, $location, report, disc
   _.chain(report.tabVisibilitySettings).groupBy('tab').map(function(key, value){
                                                                 $scope.tabVisibility[value] =  key[0].visible;
                                                               });
+
+  ColdTraceStatus.get({facility: $scope.report.facility.id, period: $scope.report.periodId}, function(data){
+    $scope.coldTraceStatus = data.cold_trace_status;
+  });
+  $scope.operationalStatusIndex = _.indexBy(operationalStatuses, 'id');
+
 
   $scope.cancel = function () {
     $location.path('/approve');
