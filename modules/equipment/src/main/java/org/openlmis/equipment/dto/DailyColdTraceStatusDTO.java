@@ -10,27 +10,26 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.equipment.domain;
+package org.openlmis.equipment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.*;
-import org.openlmis.core.domain.BaseModel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.openlmis.core.exception.DataException;
 import org.openlmis.core.serializer.DateDeserializer;
+import org.openlmis.equipment.domain.DailyColdTraceStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class DailyColdTraceStatus extends BaseModel {
+public class DailyColdTraceStatusDTO {
 
   private String serialNumber;
-
-  private EquipmentInventory equipmentInventory;
 
   @JsonDeserialize(using = DateDeserializer.class)
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -48,6 +47,22 @@ public class DailyColdTraceStatus extends BaseModel {
 
   private String remarks;
 
+  public void validate() {
+    if (new Date().compareTo(date) < 0) {
+      throw new DataException("Submissions for future date not allowed.");
+    }
+  }
+
+  public DailyColdTraceStatus buildEntity() {
+    return DailyColdTraceStatus.builder()
+        .date(this.date)
+        .operationalStatusId(this.operationalStatusId)
+        .highTempEpisode(this.highTempEpisode)
+        .lowTempEpisode(this.lowTempEpisode)
+        .minTemp(this.minTemp)
+        .maxTemp(this.maxTemp)
+        .remarks(this.remarks)
+        .serialNumber(this.serialNumber)
+        .build();
+  }
 }
-
-

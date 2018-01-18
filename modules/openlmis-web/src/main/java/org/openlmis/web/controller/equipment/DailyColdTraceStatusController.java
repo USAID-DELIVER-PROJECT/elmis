@@ -14,7 +14,7 @@ package org.openlmis.web.controller.equipment;
 
 import com.wordnik.swagger.annotations.Api;
 import org.openlmis.core.web.OpenLmisResponse;
-import org.openlmis.equipment.domain.DailyColdTraceStatus;
+import org.openlmis.equipment.dto.DailyColdTraceStatusDTO;
 import org.openlmis.equipment.service.DailyColdTraceStatusService;
 import org.openlmis.restapi.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 @Api(value = "Cold Trace", description = "APIs to report cold trace status")
@@ -35,22 +34,32 @@ public class DailyColdTraceStatusController extends BaseController {
   @Autowired
   private DailyColdTraceStatusService service;
 
-
   @RequestMapping(value = "/equipment/cold-trace/status", method = RequestMethod.GET)
   public ResponseEntity<OpenLmisResponse> findStatusForPeriod(@RequestParam("facility") Long facilityId, @RequestParam("period") Long periodId) {
     return OpenLmisResponse.response("cold_trace_status", service.findStatusForFacilityPeriod(facilityId, periodId));
   }
 
   @RequestMapping(value = "/rest-api/equipment/cold-trace", method = RequestMethod.POST, headers = ACCEPT_JSON)
-  public void submit(@RequestBody DailyColdTraceStatus status, Principal principal) {
-    //TODO: some validation is due here.
-    //Example - date! can we save status for future date? how about for distant past?
-    service.saveDailyStatus(status, loggedInUserId(principal));
+  public ResponseEntity<OpenLmisResponse> submit(@RequestBody DailyColdTraceStatusDTO status, Principal principal) {
+    status.validate();
+    service.saveDailyStatus(status.buildEntity(), loggedInUserId(principal));
+    return OpenLmisResponse.success("Daily cold trace status submitted for " + status.getDate().toString());
   }
 
-  @RequestMapping(value = "/rest-api/equipment/cold-trace/statuses", method = RequestMethod.GET, headers = ACCEPT_JSON)
+  @RequestMapping(value = "/rest-api/equipment/cold-trace/operational-status-options", method = RequestMethod.GET, headers = ACCEPT_JSON)
   public ResponseEntity<OpenLmisResponse> findPossibleStatuses() {
     return OpenLmisResponse.response("statuses", service.findPossibleStatuses());
+  }
+
+
+  @RequestMapping(value = "/rest-api/equipment/cold-trace/regional-submission-status", method = RequestMethod.GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getLastSubmissions(@RequestParam("regionCode") String regionCode) {
+    return OpenLmisResponse.response("statuses", service.getLastSubmissionStatus(regionCode));
+  }
+
+  @RequestMapping(value = "/rest-api/equipment/cold-trace/submissions-for-equipment", method = RequestMethod.GET, headers = ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getListOfSubmissions(@RequestParam("serialNumber") String serialNumber) {
+    return OpenLmisResponse.response("statuses", service.getStatusSubmittedFor(serialNumber));
   }
 
 

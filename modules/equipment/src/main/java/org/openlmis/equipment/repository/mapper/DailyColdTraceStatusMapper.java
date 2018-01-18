@@ -13,10 +13,10 @@
 package org.openlmis.equipment.repository.mapper;
 
 import org.apache.ibatis.annotations.*;
-import org.openlmis.core.domain.Facility;
 import org.openlmis.equipment.domain.DailyColdTraceStatus;
-import org.openlmis.equipment.domain.Equipment;
 import org.openlmis.equipment.domain.EquipmentInventory;
+import org.openlmis.equipment.dto.ColdTraceSummaryDTO;
+import org.openlmis.equipment.dto.DailyColdTraceStatusDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -69,4 +69,31 @@ public interface DailyColdTraceStatusMapper {
   List<DailyColdTraceStatus> getForFacilityForPeriod(@Param("facilityId") Long facilityId, @Param("periodId") Long periodId);
 
 
+  @Select("SELECT " +
+      "  r.code                              regionCode, " +
+      "  r.name                              regionName, " +
+      "  d.name                              districtName, " +
+      "  d.code                              districtCode, " +
+      "  f.name AS                           facilityName, " +
+      "  f.code AS                           facilityCode, " +
+      "  e.name                              equipmentName, " +
+      "  e.model, " +
+      "  i.serialnumber, " +
+      "  (SELECT max(date) " +
+      "   FROM equipment_daily_cold_trace_status " +
+      "   WHERE equipmentinventoryid = i.id) lastSubmissionDate " +
+      "FROM equipment_inventories i " +
+      "  JOIN equipments e ON e.id = i.equipmentid " +
+      "  JOIN facilities f ON i.facilityid = f.id " +
+      "  JOIN geographic_zones d ON f.geographiczoneid = d.id " +
+      "  JOIN geographic_zones r ON r.id = d.parentid " +
+      "WHERE r.code = #{code} OR d.code = #{code} " +
+      "ORDER BY r.name, D.name, e.name  ")
+  List<ColdTraceSummaryDTO> getLastSubmission(@Param("code") String regionCode);
+
+  @Select("SELECT * from equipment_daily_cold_trace_status " +
+      " WHERE serialNumber = #{serialNumber} " +
+      " ORDER BY date desc " +
+      "limit 1000")
+  List<DailyColdTraceStatusDTO> getDailyStatusSubmittedFor(@Param("serialNumber") String serialNumber);
 }
