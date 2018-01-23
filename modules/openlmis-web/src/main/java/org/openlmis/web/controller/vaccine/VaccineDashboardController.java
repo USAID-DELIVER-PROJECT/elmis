@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.acl.LastOwnerException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -386,13 +387,15 @@ Long userId = this.loggedInUserId(request);
 
    @RequestMapping(value = "fullStockAvailability.json", method = RequestMethod.GET)
     public ResponseEntity<OpenLmisResponse> getFullStockAvailability(
-            HttpServletRequest request
+            HttpServletRequest request,
+            @Param("period") Long periodId,
+            @Param("year") Long year
 
             ) {
 
         ResponseEntity<OpenLmisResponse> response;
         response = OpenLmisResponse.response("fullStocks",
-                service.getFullStockAvailability());
+                service.getFullStockAvailability(loggedInUserId(request),periodId,year));
         return response;
     }
 
@@ -426,11 +429,13 @@ Long userId = this.loggedInUserId(request);
     public ResponseEntity<OpenLmisResponse>getDistrictCategorization(
             HttpServletRequest request,
             @Param("periodId") Long periodId,
-            @Param("year") Long year
+            @Param("year") Long year,
+            @Param("doseId")Long doseId,
+            @Param("product")Long product
 
     ) {
         ResponseEntity<OpenLmisResponse> response;
-        response = OpenLmisResponse.response("categories",service.getDistrictCategorization(loggedInUserId(request), periodId, year));
+        response = OpenLmisResponse.response("categories",service.getDistrictCategorization(loggedInUserId(request),product,doseId,year, periodId));
         return response;
     }
 
@@ -439,12 +444,28 @@ Long userId = this.loggedInUserId(request);
             HttpServletRequest request,
             @Param("periodId") Long periodId,
             @Param("year") Long year,
-            @Param("productId")Long productId
+            @Param("productId")Long productId,
+            @Param("doseId")Long doseId
 
     ) {
         ResponseEntity<OpenLmisResponse> response;
         response = OpenLmisResponse.response("coverage",service.getVaccineCoverageByRegionAndProduct(
-                loggedInUserId(request), productId,periodId, year));
+                loggedInUserId(request), productId,periodId, year,doseId));
+        return response;
+    }
+
+ @RequestMapping(value = "VaccineNationalCoverage.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse>getNationalVaccineCoverage(
+            HttpServletRequest request,
+            @Param("periodId") Long periodId,
+            @Param("year") Long year,
+            @Param("product")Long product,
+            @Param("doseId")Long doseId
+
+    ) {
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.response("natioanl_coverage",service.getNationalVaccineCoverage(
+                loggedInUserId(request), product,doseId,periodId, year));
         return response;
     }
 

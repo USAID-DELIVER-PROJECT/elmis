@@ -211,8 +211,8 @@ public class VaccineDashboardRepository {
         return mapper.getAllVaccineImmunization();
     }
 
-    public List<HashMap<String,Object>>getFullStockAvailability(){
-        return mapper.getFullStockAvailability();
+    public List<HashMap<String,Object>>getFullStockAvailability(Long userId,Long periodId,Long year){
+        return mapper.getFullStockAvailability(userId,periodId,year);
     }
     public List<HashMap<String,Object>>getNationalPerformance(Long userId,Long productId,Long periodId, Long year){
         return mapper.getNationalPerformance(userId,productId,periodId,year);
@@ -221,11 +221,16 @@ public class VaccineDashboardRepository {
         return mapper.reportingTarget(userId,periodId,year);
     }
 
-    public List<HashMap<String,Object>>getDistrictCategorization(Long userId,Long periodId, Long year){
-        return mapper.getDistrictCategorization(periodId);
+    public List<HashMap<String,Object>>getDistrictCategorization(Long userId,Long product,Long doseId, Long year,Long periodId){
+        return mapper.getDistrictCategorization(userId,year,periodId);
     }
-    public List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(Long userId, Long productId, Long periodId, Long year){
-        return mapper.getVaccineCoverageByRegionAndProduct(userId,productId,periodId,year);
+    public List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(Long userId, Long productId, Long periodId, Long year,Long doseId){
+        System.out.println(doseId);
+        return mapper.getVaccineCoverageByRegionAndProduct(userId,productId,periodId,year,doseId);
+    }
+
+    public List<HashMap<String,Object>>getNationalVaccineCoverage(Long userId, Long product,Long doseId,Long periodId,Long year){
+        return mapper.getNationalVaccineCoverage(userId,product,doseId,periodId,year);
     }
 
 }

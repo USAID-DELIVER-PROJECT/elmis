@@ -574,8 +574,8 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
         return repository.getVaccineImmunization();
     }
 
-    public List<HashMap<String,Object>>getFullStockAvailability(){
-        return repository.getFullStockAvailability();
+    public List<HashMap<String,Object>>getFullStockAvailability(Long userId,Long periodId,Long year){
+        return repository.getFullStockAvailability(userId,periodId,year);
     }
 
     public List<HashMap<String,Object>>getNationalPerformance(Long userId,Long productId,Long periodId, Long year){
@@ -584,12 +584,16 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
     public List<HashMap<String,Object>>reportingTarget(Long userId,Long periodId, Long year){
         return repository.reportingTarget(userId,periodId,year);
     }
-    public List<HashMap<String,Object>>getDistrictCategorization(Long userId,Long periodId, Long year){
-        return repository.getDistrictCategorization(userId,periodId,year);
+    public List<HashMap<String,Object>>getDistrictCategorization(Long userId,Long product,Long doseId, Long year,Long periodId){
+        return repository.getDistrictCategorization(userId,product,doseId,year,periodId);
     }
 
-    public List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(Long userId, Long productId, Long periodId, Long year){
-        return repository.getVaccineCoverageByRegionAndProduct(userId,productId,periodId,year);
+    public List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(Long userId, Long productId, Long periodId, Long year,Long doseId){
+        return repository.getVaccineCoverageByRegionAndProduct(userId,productId,periodId,year,doseId);
+    }
+
+    public List<HashMap<String,Object>>getNationalVaccineCoverage(Long userId, Long product,Long doseId,Long periodId, Long year){
+        return repository.getNationalVaccineCoverage(userId, product,doseId,periodId,year);
     }
 
 }
