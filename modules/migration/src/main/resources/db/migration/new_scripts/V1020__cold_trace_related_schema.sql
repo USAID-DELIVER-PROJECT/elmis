@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS equipment_daily_cold_trace_status;
+
 CREATE TABLE equipment_daily_cold_trace_status
 (
   id                   SERIAL PRIMARY KEY,
@@ -5,10 +7,10 @@ CREATE TABLE equipment_daily_cold_trace_status
   equipmentInventoryId INT          NULL REFERENCES equipment_inventories (id),
   date                 DATE         NOT NULL,
   operationalStatusId  INT REFERENCES equipment_operational_status (id),
-  minepisodetemp       NUMERIC      NOT NULL,
-  maxepisodetemp       NUMERIC      NOT NULL,
-  lowtemp              NUMERIC      NOT NULL,
-  hightemp             NUMERIC      NOT NULL,
+  mintemp              NUMERIC      NOT NULL,
+  maxtemp              NUMERIC      NOT NULL,
+  lowtempEpisode       NUMERIC      NOT NULL,
+  hightempEpisode      NUMERIC      NOT NULL,
   remarks              VARCHAR(500) NULL,
   createdBy            INT,
   createdDate          DATE,

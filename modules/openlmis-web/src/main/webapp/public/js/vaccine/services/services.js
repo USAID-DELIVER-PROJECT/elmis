@@ -18,6 +18,10 @@ services.factory('VaccineDisease', function ($resource) {
     return $resource('/vaccine/disease/get/:id.json', {id: '@id'}, {});
 });
 
+services.factory('ColdTraceStatus', function ($resource) {
+  return $resource('/equipment/cold-trace/status.json', {}, {});
+});
+
 services.factory('SaveVaccineDisease', function ($resource) {
     return $resource('/vaccine/disease/save.json', {}, update);
 });

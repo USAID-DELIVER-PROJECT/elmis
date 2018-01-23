@@ -10,44 +10,37 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openlmis.equipment.domain;
+package org.openlmis.equipment.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.*;
-import org.openlmis.core.domain.BaseModel;
-import org.openlmis.core.serializer.DateDeserializer;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
-@Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class DailyColdTraceStatus extends BaseModel {
+@Data
+public class ColdTraceSummaryDTO {
+
+  private String regionCode;
+
+  private String regionName;
+
+  private String districtCode;
+
+  private String districtName;
+
+  private String facilityCode;
+
+  private String facilityName;
+
+  private String equipmentName;
 
   private String serialNumber;
 
-  private EquipmentInventory equipmentInventory;
+  private String model;
 
-  @JsonDeserialize(using = DateDeserializer.class)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  private Date date;
-
-  private Integer operationalStatusId;
-
-  private BigDecimal minTemp;
-
-  private BigDecimal maxTemp;
-
-  private BigDecimal lowTempEpisode;
-
-  private BigDecimal highTempEpisode;
-
-  private String remarks;
+  private Date lastSubmissionDate;
 
 }
-
-
