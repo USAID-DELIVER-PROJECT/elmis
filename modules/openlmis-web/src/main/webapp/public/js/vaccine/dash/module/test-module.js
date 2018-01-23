@@ -15,7 +15,7 @@
 var app  = angular.module('test', ['openlmis','ui.router', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion',
     'ui.bootstrap.modal','ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle',
     'angularUtils.directives.uiBreadcrumbs','ng-breadcrumbs','ncy-angular-breadcrumb','angularCombine',
-    'ngTable','ui.bootstrap.pagination', 'tree.dropdown','angularScreenfull'
+    'ngTable','ui.bootstrap.pagination', 'tree.dropdown','angularScreenfull','rzModule','ui.materialize','leaflet-directive'
 ]);
 ///Start
 
@@ -25,11 +25,21 @@ app.config(function($stateProvider, $urlRouterProvider, $breadcrumbProvider){
         {
             name: 'home',
             url: '/home',
-            templateUrl: 'partials/list2.html',
+            templateUrl: 'partials/dashboard.html',
             controller:StockAvailabilityControllerFunc1,
             resolve:StockAvailabilityControllerFunc1.resolve,
             ncyBreadcrumb: {
                 label: 'Proof Of Concept'
+            }
+        },
+        {
+            name: 'product',
+            url: '/product:referer',
+            templateUrl: 'partials/dashboard.html',
+            ncyBreadcrumb: {
+                label: 'Details',
+                parent: 'home'
+
             }
         },
 
