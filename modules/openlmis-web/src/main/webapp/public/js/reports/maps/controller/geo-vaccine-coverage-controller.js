@@ -17,6 +17,9 @@ function GeoVaccineCoverageController($scope,leafletData,GetProductById){
     };
 
     $scope.style = function (feature) {
+        if(feature.monthlyEstimate >0)
+        console.log(feature.monthlyEstimate);
+
         if ($scope.filter !== undefined && $scope.filter.indicator_type !== undefined) {
             $scope.indicator_type = $scope.filter.indicator_type;
         }
@@ -64,7 +67,7 @@ function GeoVaccineCoverageController($scope,leafletData,GetProductById){
     $scope.OnFilterChanged = function () {
 
         GetProductById.get({id:parseInt($scope.filter.product,10)}, function (data) {
-                $scope.product = data.productDTO.product.primaryName;
+            $scope.product = data.productDTO.product.primaryName;
             $scope.showProduct = true;
         });
         $.getJSON('/gis/vaccine-coverage.json', $scope.filter, function (data) {

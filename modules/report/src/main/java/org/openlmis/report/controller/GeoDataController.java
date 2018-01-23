@@ -260,7 +260,8 @@ public class GeoDataController extends BaseController {
     @RequestMapping(value = "/vaccine-coverage", method = GET, headers = BaseController.ACCEPT_JSON)
     public ResponseEntity<OpenLmisResponse> getGeoZoneVaccineCoverage(@RequestParam(value = "product", required = false, defaultValue = "0") Long product,
                                                                    @RequestParam(value = "period", required = false, defaultValue = "0") Long period,
-                                                                   @RequestParam(value = "year", required = false, defaultValue = "0") Long year,
+                                                                   @RequestParam(value = "year", required = false) Long year,
+                                                                   @RequestParam(value = "dose",required = false)Long doseId,
                                                                    HttpServletRequest request) {
         Long userId = loggedInUserId(request);
 
@@ -268,7 +269,12 @@ public class GeoDataController extends BaseController {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int y = cal.get(Calendar.YEAR);
+        System.out.println(product);
+        System.out.println(year);
+        System.out.println(period);
+        System.out.println(y);
+        Long yr=(year==null)?Long.valueOf(y):year;
 
-        return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoZoneVaccineCoverage(userId, product,Long.valueOf(y), period));
+        return OpenLmisResponse.response(MAP, this.geographicZoneReportMapper.getGeoZoneVaccineCoverage(userId, product,yr, period,doseId));
     }
 }
