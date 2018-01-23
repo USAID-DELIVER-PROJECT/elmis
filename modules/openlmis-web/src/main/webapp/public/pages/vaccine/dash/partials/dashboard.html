@@ -1,0 +1,1085 @@
+<style>
+    .spacer {
+        height: 40px;
+    }
+
+    body {
+        padding: 1px;
+    }
+
+    .breadcrumb {
+        padding: 1px 1px !important;
+        margin-bottom: 1px !important;
+        background-color: lightgrey;
+        font-size: 10px;
+
+    }
+
+    #exTab1 .tab-content {
+        /*
+                color : white;
+        */
+        background-color: lightgrey;
+        padding: 5px 15px;
+    }
+
+    #exTab2 h3 {
+        color: #428bca;
+        background-color: #428bca;
+        padding: 5px 15px;
+    }
+
+    /* remove border radius for the tab */
+
+    #exTab1 .nav-pills > li > a {
+        border-radius: 0;
+    }
+
+    /* change border radius for the tab , apply corners on top*/
+
+    #exTab3 .nav-pills > li > a {
+        border-radius: 4px 4px 0 0;
+    }
+
+    #exTab3 .tab-content {
+        color: white;
+        background-color: #428bca;
+        padding: 5px 15px;
+    }
+
+    .modal {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal .chart {
+        height: 90%;
+    }
+
+    .full-width-box {
+        width: 100%;
+        z-index: 1;
+    }
+
+    .fullscreen {
+        width: 100%;
+        height: 100%;
+    }
+
+    .nav-pills > li > a {
+
+        margin-bottom: 1px !important;
+
+    }
+
+    #ex13 .slider-selection {
+        background: #BABABA;
+    }
+
+    .rzslider .rz-bar-wrapper {
+        left: 0;
+        z-index: 1;
+        width: 31% !important;
+        height: 32px;
+        padding-top: 2px;
+        margin-top: -16px;
+        box-sizing: border-box;
+        display: inline-block;
+    }
+
+    .rzslider .rz-pointer {
+        top: -14px;
+        z-index: 3;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        background-color: #5BADB1 !important;
+        border-radius: 16px;
+    }
+
+    .fa-2x {
+        font-size: 2em;
+    }
+
+    .fa {
+        position: relative;
+        display: table-cell;
+        width: 60px;
+        height: 36px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 20px;
+    }
+
+    .main-menu:hover, nav.main-menu.expanded {
+        width: 250px;
+        overflow: visible;
+    }
+
+    .main-menu {
+        background: #fbfbfb;
+        border-right: 1px solid #e5e5e5;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        right: 0;
+        width: 3px;
+        overflow: hidden;
+        -webkit-transition: width .05s linear;
+        transition: width .05s linear;
+        -webkit-transform: translateZ(0) scale(1, 1);
+        z-index: 1000;
+    }
+
+    .main-menu > ul {
+        margin: 7px 0;
+    }
+
+    .main-menu li {
+        position: relative;
+        display: block;
+        width: 250px;
+    }
+
+    .main-menu li > a {
+        position: relative;
+        display: table;
+        border-collapse: collapse;
+        border-spacing: 0;
+        color: #999;
+        font-family: arial;
+        font-size: 14px;
+        text-decoration: none;
+        -webkit-transform: translateZ(0) scale(1, 1);
+        -webkit-transition: all .1s linear;
+        transition: all .1s linear;
+
+    }
+
+    .main-menu .nav-icon {
+        position: relative;
+        display: table-cell;
+        width: 60px;
+        height: 36px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 18px;
+    }
+
+    .main-menu .nav-text {
+        position: relative;
+        display: table-cell;
+        vertical-align: middle;
+        width: 190px;
+        font-family: 'Titillium Web', sans-serif;
+    }
+
+    .main-menu > ul.logout {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+    }
+
+    .no-touch .scrollable.hover {
+        overflow-y: hidden;
+    }
+
+    .no-touch .scrollable.hover:hover {
+        overflow-y: auto;
+        overflow: visible;
+    }
+
+    a:hover, a:focus {
+        text-decoration: none;
+    }
+
+    nav {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
+
+    nav ul, nav li {
+        outline: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-menu li:hover > a, nav.main-menu li.active > a, .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus, .no-touch .dashboard-page nav.dashboard-menu ul li:hover a, .dashboard-page nav.dashboard-menu ul li.active a {
+        color: #fff;
+        background-color: #5fa2db;
+    }
+
+    .area {
+        float: left;
+        background: #e2e2e2;
+        width: 100%;
+        height: 100%;
+    }
+
+    /*
+        start chart option
+    */
+
+    .chart-options {
+        position: absolute;
+        /*visibility:hidden;*/
+        height: 100%;
+        width: 35px;
+        right: 0;
+        top: 0;
+        /*z-index: 500;*/
+        padding-top: 25px;
+        padding-right: 2px;
+        background-color: transparent;
+        -webkit-transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        -ms-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out;
+    }
+
+    .chart-options ul > li > a {
+        cursor: pointer;
+        /*!*padding-left: 5px;*!*/
+        /*padding-top: 5px;*/
+        /*font-size: 10px;*/
+        /*height: 30px;*/
+        /*width: 30px;*/
+        /*border: solid 1px #ddd;*/
+        /*border-radius: 15px;*/
+        /*background-color: #ddd;*/
+        /*-webkit-transition: all .2s ease-in-out;*/
+        /*-moz-transition: all .2s ease-in-out;*/
+        /*-o-transition: all .2s ease-in-out;*/
+        /*-ms-transition: all .2s ease-in-out;*/
+        /*transition: all .2s ease-in-out;*/
+        /*margin-bottom: 2px;*/
+    }
+
+    .chart-options ul > li > a:hover {
+        -webkit-transform: scale(1.2);
+        -moz-transform: scale(1.2);
+        -o-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+
+    .chart-option-icon {
+        margin: auto;
+        height: 18px;
+        width: 18px;
+        opacity: 0.9;
+    }
+
+    .chart-option-icon:hover {
+        margin: auto;
+        height: 20px;
+        width: 20px;
+        opacity: 1;
+    }
+
+    .active-type {
+        background-color: #cecece !important;
+    }
+
+    .chart2 {
+        height: 200px;
+    }
+
+    .rzslider {
+        position: relative;
+        display: inline-block;
+        width: 990px !important;
+        height: 2px;
+        margin: 40px 0 15px 0 !important;
+        vertical-align: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .rzslider .rz-bar-wrapper {
+        left: 0;
+        z-index: 2;
+        width: 0%;
+        height: 32px;
+        padding-top: 20px;
+        margin-top: -20px;
+        box-sizing: border-box;
+    }
+
+    .period_slider {
+        top: -2px !important;
+        left: 210px !important;
+        position: relative !important;
+        /*
+                padding-top: 5px !important;
+        */
+        /*
+                margin-top: -40px !important;
+        */
+    }
+
+    .fixed-button {
+        /*
+                padding: 20px;
+        */
+        position: fixed;
+        height: 50px;
+        width: 100px;
+        right: 0px;
+        top: 140px;
+        /*
+                background-color: #ffffff;
+        */
+        z-index: 10000;
+        /*
+               bottom:10px;
+        */
+        /*
+                bottom: 15px;
+        */
+        border: solid thin #e5e5e5;
+        background-color: lightgrey;
+    }
+
+    .fixed-card {
+        height: 160px;
+        width: 550px;
+        background-color: white;
+        border: solid thin #e5e5e5;
+
+        position: fixed;
+
+        /*
+                background-color: #ffffff;
+        */
+        z-index: 10000;
+        right: 20px;
+        /*
+               bottom:10px;
+        */
+        bottom: 100px;
+        border: solid thin #e5e5e5;
+
+    }
+
+    .row {
+        margin-bottom: 0px !important;
+    }
+
+    table td {
+        text-align: center;
+        margin-bottom: 0px !important;
+    }
+
+    select {
+        bottom: 20px;
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #f2f2f2;
+        border-radius: 2px;
+        height: 2rem !important;
+        top: 190px !important;
+    }
+
+    .select2-chosen, .select2-choice > span:first-child, .select2-container .select2-choices .select2-search-field input {
+        padding: 6px 50px !important;
+    }
+    .content{
+        margin: 7px 0px 0;
+    }
+
+    tbody {
+        display:block;
+        height:600px;
+        overflow:auto;
+    }
+    thead, tbody tr {
+        display:table;
+        width:100%;
+        table-layout:fixed;
+    }
+    thead {
+        width: calc( 100% - 1em )
+    }
+    table {
+        width:100%;
+    }
+
+</style>
+
+
+<div id="exTab1" class="">
+
+    <ul class="nav nav-pills">
+        <li class="active">
+            <a href="#1a" data-toggle="tab">National View</a>
+        </li>
+        <li><a href="" data-toggle="tab">My Supervised View</a>
+        </li>
+
+    </ul>
+    <div class="tab-content clearfix">
+
+        <div class="tab-pane active" id="1a">
+            <div>
+                <!--Floating button-->
+                <div class="fixed-button" ng-mouseover="showFilter()" ng-if="showfilter==false">
+
+                    <div class="card blue-grey darken-1 waves-effect waves-light">
+                        <span> <a class="waves-effect waves-light btn"> <span style="color: #0e4a64">Filters</span></a>
+                            <!--<img ng-src="{{'/public/images/search.png'}}"  alt=""
+                                 style="width: 40px!important;"></a>--></span>
+                    </div>
+
+                </div>
+
+
+                <!--
+                                <div class="fixed-card" ng-if="showfilter" ng-mouseleave="hideFilter()">
+                                    <div class="card" style="width: 100% !important;height: 160px!important;">
+                                        <div class="card-title blue-grey darken-1">
+                                            <h2 style="text-align: center;font-size: 20px"><span>Filter Data</span></h2>
+
+                                        </div>
+
+                                        <div class="card-body">
+                                            <form>
+                                                <div class="box-header">
+                                                    <div class="row-fluid">
+                                                        <div class="span12">
+                                                            <filter-container>
+                                                                <product-without-description-and-syringes-for-dashboard-filter
+                                                                        class="form-cell horizontalFilters"></product-without-description-and-syringes-for-dashboard-filter>
+                                                                <year-without-select-ui-filter
+                                                                        class="form-cell horizontalFilters"></year-without-select-ui-filter>
+                                                                <period-by-year-without-ui-select-filter
+                                                                        class="form-cell horizontalFilters"></period-by-year-without-ui-select-filter>
+
+                                                            </filter-container>
+
+                                                        </div>
+                                                        <div class="span12">
+                                                            <rzslider id="dose_slider"
+                                                                      rz-slider-model="dose_slider.value"
+                                                                      rz-slider-options="dose_slider.options"></rzslider>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                -->
+
+                <!--
+                                <div class="row" ng-if="false">
+                                    <div class="col s12 m12 l12">
+                                        <div class="card" style="height:700px !important;">
+                                            <div class="card-body">
+
+                                                <div class="box-header">
+
+                                                    <div>
+                                                        <label for="product" class="labels"><span
+                                                                openlmis-message="label.product"></span><span
+                                                                ng-show="requiredFilters.product"
+                                                                class="label-required">*</span></label>
+                                                        <div>
+                                                            <select id="product" ui-select2 class="input-large"
+                                                                    ng-model="filter.product"
+                                                                    ng-change="notifyFilterChanged('product-changed');">
+                                                                <option ng-repeat="option in products | filter:productCFilter"
+                                                                        value="{{ option.id }}"
+                                                                        ng-selected="filter.product == option.id">{{ option.name }}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <filter-container>
+
+                                                        <product-without-description-and-syringes-filter
+                                                                class="form-cell horizontalFilters"
+                                                                required="true"></product-without-description-and-syringes-filter>
+
+                                                        <year-filter class="form-cell horizontalFilters"></year-filter>
+
+                                                        <period-change-year-filter class="form-cell horizontalFilters"
+                                                                                   required="false"></period-change-year-filter>
+
+
+                                                    </filter-container>
+                                                    <div id="dose_slider" class="form-cell horizontalFilters">
+                                                        <div class="select2-container">
+                                                            <label for="dose_slider" class="labels">Dose</label>
+
+                                                            <rzslider
+                                                                    rz-slider-model="dose_slider.value"
+                                                                    rz-slider-options="dose_slider.options"></rzslider>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="year_slider" class="form-cell horizontalFilters">
+                                                        <label for="year_slider" class="labels" openlmis-message="label.year"></label>
+
+                                                        <rzslider class="slider"
+                                                                  rz-slider-model="year_slider.value"
+                                                                  rz-slider-options="year_slider.options"></rzslider>
+                                                    </div>
+                                                    <div id="slider" class="form-cell horizontalFilters period_slider">
+                                                        <label for="slider" class="labels" openlmis-message="label.period"></label>
+
+                                                        <rzslider
+                                                                rz-slider-model="slider.value"
+                                                                rz-slider-options="slider.options"></rzslider>
+                                                    </div>
+
+
+                                                    &lt;!&ndash;    <filter-container>
+
+                                                            <product-without-description-and-syringes-filter class="form-cell horizontalFilters" required="true"></product-without-description-and-syringes-filter>
+
+                                                            <year-filter class="form-cell horizontalFilters"></year-filter>
+
+                                                            <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>
+
+                                                            <vaccine-product-doses-filter class="form-cell horizontalFilters"></vaccine-product-doses-filter>
+                                                        </filter-container>&ndash;&gt;
+                                                </div>
+                                                &lt;!&ndash;     <div class="span4" style="float: left !important;left:0 !important;">
+                                                        <div class="form-cell horizontalFilters">
+                                                        <rzslider rz-slider-model="dose_slider.value"
+                                                                   rz-slider-options="dose_slider.options"></rzslider>
+                                                        </div>
+
+
+                                                     </div>&ndash;&gt;
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                -->
+
+                <div class="row"  ng-if="showfilter">
+
+                    <!--  <select class="my_select_box" data-placeholder="Select Your Options">
+                          <option value="1">Option 1</option>
+                          <option value="2">Option 2</option>
+                          <option value="3">Option 3</option>
+                      </select>-->
+                    <div class="col s12">
+                        <div class="section grey lighten-5 card" style="height: 100px;!important;">
+
+                            <!--
+                                                        <div class="col s6 grey lighten-5">
+                            -->
+
+                            <div class="span3">
+
+                                <label for="product" class="labels">Product</label>
+                                <select ui-select2 id="product"  class="input-large" ng-model="filter.product" ng-change="doseByProduct()">
+                                    <option ng-repeat="option in products | orderBy:'categoryId'  "
+                                            value="{{ option.id }}" ng-selected="filter.product == option.id">{{
+                                        option.name }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <div class="span3">
+                                <label for="period" class="labels">Dose</label>
+                                <select ui-select2 id="dose" class="input-large" ng-model="filter.dose"
+                                        ng-change="firstClick1()" material-select
+                                        watch>
+                                    <option ng-repeat="dose in doses | orderBy:'id':true" value="{{dose.doseId}}"
+                                            ng-selected="filter.dose === dose.id">{{dose.displayName}}
+                                    </option>
+
+                                </select>
+                            </div>
+
+
+                            <div class="span3">
+                                <label for="period" class="labels">Year</label>
+                                <select ui-select2 class="input-large"  id="year"
+                                        ng-model="filter.year" ng-change="changeYear()" material-select
+                                        watch>
+                                    <option ng-repeat="option in years" value="{{option}}"
+                                            ng-selected="option == filter.year"
+                                    >{{option}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="span3">
+                                <label for="period" class="labels">Period</label>
+                                <select ui-select2 id="period" class="input-large" ng-model="filter.period"
+                                        ng-change="firstClick1()" material-select
+                                        watch>
+                                    <option ng-repeat="period in periods" value="{{ period.id }}"
+                                            ng-selected="period.id == filter.period">{{period.name}}
+                                    </option>
+
+                                </select>
+
+                            </div>
+                            <span style="float: left;z-index: 800;bottom: 2000px;!important;"><a ng-click="loadDashboardData(filter)" class="waves-effect waves-light btn" style="bottom: -22px;right: -1px">Search </a></span>
+
+
+                            <!--</div>-->
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--
+                                <div class="row" ng-if="false">
+                                    <div class="col s12 z-depth-1" style="top:190px;z-index:400;margin-left: 0%">
+                                        <div class="section grey lighten-5 ">
+
+                                            <div class="input-field col s6 grey lighten-5">
+                                                <select ng-model="$root.selectedPeriod" ng-change="$root.firstClick1()" material-select
+                                                        watch>
+                                                    <option value="2014">2014</option>
+                                                    <option value="2015">2015</option>
+                                                    <option value="2016">2016</option>
+                                                    <option value="2017">2017</option>
+                                                </select>
+                                                <label>Period</label>
+                                            </div>
+
+                                            <div class="input-field col s6 orgDropdown grey lighten-5"  id="orgDropdown" >
+                                                <label>Regions</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                -->
+
+                <div class="row">
+
+
+                    <div class="col l6 s12 m12">
+                        <div class="card">
+                            <div class="card-content">
+                                <!--
+                                                    <h5 class="grey-text center">Product Coverage</h5>
+                                -->
+
+                                <div id="NationalChart2" style="margin: 0 auto" class="chart2"></div>
+                                <!--
+                                                                <div class="spacer"></div>
+                                -->
+                                <div id="NationalChart" class="chart2"></div> <!-- Container for Chart B -->
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col l6 s12 m12">
+                        <div class="card">
+                            <div class="card-content">
+                                <!--
+                                                    <h5 class="grey-text center">Product Coverage</h5>
+                                -->
+                                <div id="container7"></div>
+                                <span ng-show="showData==false" style="text-align: center"><strong>No Data to show Under Selected Filters</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12 m8 l8">
+
+                        <div class="card">
+                            <div class="card-content">
+                                <div style="padding-left: 0px;">
+                                    <leaflet width="100%" height="500px" legend="legend" geojson="geojson"
+                                             layers="layers"></leaflet>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col s12 m4 l4">
+                        <div class="card white darken-1">
+                            <div class="card-content">
+                                <div style="height: 500px !important;"
+                                     ng-show="features && (features | filter:expectedFilter).length > 0">
+                                    <div class="card-title grey white-text"
+                                         style="width:100% !important; font-size: 15px !important;text-align: center !important; color: #5BADB1 !important;">
+                                      <span class="pull-left" ng-show="showProduct">
+                                        District Coverage Of <Strong>{{productToDisplay.name}}-{{doseToDisplay}},{{periodToDisplay.name}}</Strong></span>
+                                    </div>
+                                    <div class="card-body responsive-table table-status-sheet">
+                                        <table class="striped responsive-table table-scrollable scroll">
+                                            <thead>
+                                            <tr>
+                                                <th style="width:25%" openlmis-message="label.district"></th>
+                                                <th style="width:25%;text-align: left !important;">Target</th>
+                                                <th style="width:25% !important;" class="number">Vaccinated</th>
+                                                <th style="width: 25%; text-align: right">%Coverage</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="feature in features | filter:expectedFilter">
+                                                <td style="width:25% !important;">{{feature.name}}</td>
+                                                <td style="width:25% !important;" class="number">
+                                                    {{feature.monthlyEstimate |
+                                                    number}}
+                                                </td>
+                                                <td style="width:25% !important;" class="number">{{feature.vaccinated |
+                                                    number}}
+                                                </td>
+                                                <td style="width:25% !important;" class="number">
+                                                    <div class="number"
+                                                         style="float:right;margin-bottom:0px !important;">
+                                                        {{(feature.coveragePercentage).toFixed(0)}} %
+                                                    </div>
+                                                    <div class="progress"
+                                                         style="margin-bottom:0px !important;width:68%">
+
+                                                        <div ng-if="feature.coverageClassification=='warn'"
+                                                             class="bar bar-warning leaflet-clickable"
+                                                             ng-click="onDetailClicked(feature, this)"
+                                                             style="width:100%">
+                                                        </div>
+                                                        <div ng-if="feature.coverageClassification=='bad'"
+                                                             class="bar bar-danger leaflet-clickable"
+                                                             ng-click="onDetailClicked(feature, this)"
+                                                             style="width:100%">
+                                                        </div>
+                                                        <div ng-if="feature.coverageClassification=='normal'"
+                                                             class="bar bar-info leaflet-clickable"
+                                                             ng-click="onDetailClicked(feature, this)"
+                                                             style="width:100%">
+                                                        </div>
+                                                        <div ng-if="feature.coverageClassification=='good'"
+                                                             class="bar bar-success good leaflet-clickable"
+                                                             ng-click="onDetailClicked(feature, this)"
+                                                             style="width:100%">
+                                                        </div>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="row" style="height: 10px !important;" ng-show="true">
+                    <div class="col s12 m6 l3">
+                        <div class="card">
+                            <div class="card-content  red white-text" ng-hide="showNoData">
+
+                                <p style="text-align:center;font-weight:bold;" class="card-stats-title"><i class="mdi-social-group-warn"></i>Facilities Out of Stock</p>
+                                <h4 class="card-stats-number" style="text-align: center">{{facilityPerformance[0].stockedout}} %</h4>
+                                <!--<p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 15% <span
+                                        class="green-text text-lighten-5">from yesterday</span>
+                                </p>-->
+                            </div>
+                            <div ng-show="showNoData" class="card-content red white-text">
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+
+                            </div>
+                            <!-- <div class="card-action  green darken-2">
+                                 <div id="clients-bar" class="center-align"><canvas width="227" height="25" style="display: inline-block; width: 227px; height: 25px; vertical-align: top;"></canvas></div>
+                             </div>-->
+                        </div>
+                    </div>
+                    <div class="col s12 m6 l3">
+                        <div class="card">
+                            <div class="card-content yellow lighten-1 white-text" ng-hide="showNoData" >
+                                <p style="text-align:center;font-weight:bold;" class="card-stats-title"> Facilities
+                                    Understocked</p>
+                                <h4 style="text-align:center;font-size: 30px !important;font-weight:bold;" id="card-stats-number">{{facilityPerformance[0].understocked}}%</h4>
+                               <!-- <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-down"></i> 3% <span
+                                        class="deep-purple-text text-lighten-5">from last month</span>
+                                </p>-->
+                            </div>
+                            <div ng-show="showNoData" class="card-content yellow white-text">
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+
+                            </div>
+                            <!--<div class="card-action  pink darken-2">
+                                <div id="invoice-line" class="center-align"><canvas width="282" height="25" style="display: inline-block; width: 282px; height: 25px; vertical-align: top;"></canvas></div>
+                            </div>-->
+                        </div>
+                    </div>
+                    <div class="col s12 m6 l3">
+                        <div class="card">
+                            <div class="card-content green white-text" ng-hide="showNoData">
+                                <p class="card-stats-title" style="text-align:center;font-weight:bold;">Stocked According to Plan
+                                </p>
+                                <h4 class="card-stats-number" style="text-align:center;font-size: 30px !important;font-weight:bold;text-align: center">
+                                    {{facilityPerformance[0].accordingplan}}%</h4>
+                               <!-- <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 80% <span
+                                        class="blue-grey-text text-lighten-5">from yesterday</span>
+                                </p>-->
+                            </div>
+                            <div ng-show="showNoData" class="card-content green white-text">
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+                            </div>
+
+                            <!-- <div class="card-action blue-grey darken-2">
+                                 <div id="profit-tristate" class="center-align"><canvas width="227" height="25" style="display: inline-block; width: 227px; height: 25px; vertical-align: top;"></canvas></div>
+                             </div>-->
+                        </div>
+                    </div>
+                    <div class="col s12 m6 l3">
+                        <div class="card">
+                            <div ng-hide="showNoData" class="card-content light-blue white-text">
+                                <p class="card-stats-title" style="text-align:center;font-weight:bold;" >Facilities Overstocked
+                                </p>
+                                <h4 class="card-stats-number" style="text-align:center;font-size: 30px !important;font-weight:bold;" >{{facilityPerformance[0].overstocked}}%</h4>
+                              <!--  <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 70% <span
+                                        class="purple-text text-lighten-5">last month</span>
+                                </p>-->
+                            </div>
+                            <div ng-show="showNoData" class="card-content  light-blue white-text">
+
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+                            </div>
+
+                            <!--  <div class="card-action purple darken-2">
+                                  <div id="sales-compositebar" class="center-align"><canvas width="214" height="25" style="display: inline-block; width: 214px; height: 25px; vertical-align: top;"></canvas></div>
+                              </div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col l12 s12 m12">
+                        <div class="card">
+                            <div class="card-content" ng-show="categorized.length>0">
+                                <div id="container8"></div>
+                            </div>
+                            <div class="card-content white black-text" ng-show="categorized.length==0" >
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+                    <div class="col l12 s12 m12">
+                        <!--<p class="z-depth-1">{{facilityPerformance}}
+                        </p>-->
+                        <div class="card" ng-mouseover="showIcons(card)" ng-mouseleave="hideIcons(card)">
+                            <div class="card-content">
+                                <div id="container5"></div>
+                                <!--
+                                                    <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
+                                -->
+
+                                <div class="chart-options" ng-if="showicons">
+                                    <ul class="nav nav-stacked">
+                                        <li ng-repeat="chartType in icons" style="padding-top: 6px;padding-bottom: 6px">
+                                            <a ng-click="changeChart(chartType.name)" title="{{chartType.name}}"
+                                               ng-class="{'active-type': card.chart == chartType.type }">
+                                                <img ng-src="{{'/public/images/img/'+chartType.image}}"
+                                                     class="chart-option-icon" alt="" style="width: 20px!important;">
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+<!--
+                    <div class="col l4 s4 m12">
+
+
+                        <div class="card-stacked">
+                            <div class="card-content">
+
+                                <div class="card-panel grey lighten-4 z-depth-1">
+                                    <div class="row valign-wrapper">
+                                        <div class="col l3 s3 m12" style="background-color: red">
+
+                                            <div class="icon-block">
+                             <span class="black-text">
+                           <span style="font-size: 40px">{{facilityPerformance[0].stockedout}} %</span>
+                             <p class="light">Of Facilities Stocked Out</p>
+                          </span>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col l3 s3 m12" style="background-color: yellow">
+                                            <div class="icon-block">
+                             <span class="black-text">
+                             <span style="font-size: 40px">{{facilityPerformance[0].understocked}}%</span>
+                             <p>Of Facilities Understocked</p>
+                          </span>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col  l3 s3 m12" style="background-color: green">
+                                            <div class="icon-block">
+                             <span class="black-text">
+                      <span style="font-size: 40px">{{facilityPerformance[0].accordingplan}}%</span>
+                             <p class="light">Stocked According To plan</p>
+                          </span>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col  l3 s3 m12" style="background-color: #00B0F0;">
+
+                                            <div class="icon-block">
+                             <span class="black-text">
+                        <span style="font-size:40px">{{facilityPerformance[0].overstocked}}%</span>
+                             <p class="light">Of Facilities Overstocked</p>
+                          </span>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="card-content">
+
+                                &lt;!&ndash;
+                                                                <div class="col l4 s4 m12">
+                                &ndash;&gt;
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div id="container8"></div>
+                                        &lt;!&ndash;
+                                                                                            <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
+                                        &ndash;&gt;
+
+                                    </div>
+                                </div>
+
+                                &lt;!&ndash;
+                                                                </div>
+                                &ndash;&gt;
+
+                            </div>
+                        </div>
+
+
+                    </div>
+-->
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col l12 s12 m12">
+                        <div class="card">
+                            <div class="card-content" ng-show="stocks.length>0">
+                                <div id="container"></div>
+                            </div>
+
+                            <div class="card-content white black-text" ng-show="stocks.length==0" >
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col l12 s12 m12">
+
+                        <div class="card">
+                            <div  class="card-content" ng-show="fullStocks.length>0">
+                    <span class="pull-right">
+
+      </span>
+                                <!--
+                                                <h5 class="center">Full Stock Availability Percentage</h5>
+                                -->
+                                <!--
+                                                    <a id="resizeViewButton" full-screen="" href="" class="btn">
+                                                        <i class="icon-resize-full"></i>
+                                                    </a>-->
+
+                                <div ngsf-fullscreen>
+                        <span class="pull-right"><a ngsf-toggle-fullscreen class="btn">
+                            <i class="icon-resize-full"></i>
+
+                        </a></span>
+
+                                    <div id="container3">
+
+
+                                    </div>
+
+                                </div>
+
+
+                                <!--
+                                                    <input type="radio" name="mychart" ng-model="pieChart" class="mychart" id= "pie" value="pie" ng-click= "changeChart()"/>
+                                -->
+
+                            </div>
+                            <div class="card-content white black-text" ng-show="fullStocks.length==0" >
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div ng-disabled="true" class="tab-pane" id="2a">
+            <h3>Supervised Tab</h3>
+        </div>
+    </div>
+</div>
+
+</div>

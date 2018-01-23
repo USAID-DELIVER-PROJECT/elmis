@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+    <title>Angularjs directives for Materialize CSS Framework</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+
+    <script type="text/javascript" src="src/angular-materialize.js"></script>
+
+    <!-- App -->
+    <script type="text/javascript" src="js/app.js"></script>
+</head>
+<body ng-app="materializeApp" ng-controller="BodyController">
+<header>
+    <div class="container"><a href="#" data-activates="nav-mobile" class="button-collapse top-nav" data-sidenav="left" data-closeonclick="false"><i
+            class="mdi-navigation-menu"></i></a></div>
+    <ul id="nav-mobile" class="side-nav fixed">
+        <!--Maybe a logo?-->
+        <!--<li class="logo" style="margin-left: -15px;"><a id="logo-container" href="http://materializecss.com/"class="brand-logo"><h3></h3></a></li>-->
+        <li class="bold"><a href="http://materializecss.com/" class="waves-effect waves-teal">Materialize</a></li>
+        <li class="bold"><a href="https://angularjs.org/" class="waves-effect waves-teal">AngularJS</a></li>
+
+        <li class="bold"><a href="#about" class="waves-effect waves-teal">About angular-materialize</a></li>
+
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+                <li class="bold"><a class="collapsible-header waves-effect waves-teal active">Forms</a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li><a href="#input-field">Input-field</a></li>
+                            <li><a href="#input-date">Input-date</a></li>
+                            <li><a href="#select">Material select</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </li>
+
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+                <li class="bold"><a class="collapsible-header waves-effect waves-teal active">JavaScript</a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li><a href="#collapsible">Collapsible</a></li>
+                            <li><a href="#toast">Dialogs - Toast</a></li>
+                            <li><a href="#tooltip">Tooltip</a></li>
+                            <li><a href="#pushpin">Pushpin</a></li>
+                            <li><a href="#dropdown">Dropdown</a></li>
+                            <li><a href="#modals">Modals</a></li>
+                            <li><a href="#parallax">Parallax</a></li>
+                            <li><a href="#sidenav">SideNav</a></li>
+                            <li><a href="#slider">Slider</a></li>
+                            <li><a href="#media">Media</a></li>
+                            <li><a href="#tabs">Tabs</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </li>
+
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+                <li class="bold"><a class="collapsible-header waves-effect waves-teal active">Components</a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li><a href="#pagination">Pagination</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</header>
+<main>
+    <div class="section" id="index-banner">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h1 class="header center-on-small-only"><a href="https://github.com/kresCruz/angular-materialize" style="color:white;">Angular-materialize</a></h1>
+                    <p style="color: white;" class="center-on-small-only">This is a collection of simple angular directives for using the features in <a href="http://materializecss.com">materializecss</a>. </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row" id="about">
+            <h2 class="header">About angular-materialize</h2>
+            <p>This plugin is useful for you if you want to use the <a href="http://materializecss.com/">Materialize UI framework</a> with angular. </p>
+            <p>It includes a number of directives, which makes sure that the components in materialize.js, which are mainly initialized on document ready, are handled by Angular in the right way.<p>
+            <p>So it is not a complete rewrite of Materialize. And it therefore depends on jQuery, because Materialize depends on jQuery.</p>
+            <p>The following sections are examples of the directives which are included in this plugin,
+                you can also use the menu to the left to see if the directive you are looking for is implemented.<br/>
+                Otherwise, you can <a href="https://github.com/krescruz/angular-materialize/issues/">suggest it to the developers</a>
+                or <a href="https://github.com/krescruz/angular-materialize/pulls">implement it yourself</a>.</p>
+        </div>
+
+        <div class="row" id="input-field">
+            <h2 class="header">Input-field</h2>
+            <p>Materialize uses the class .input-field to manage animating labels and input-fields. But that doesn't work properly when angular dynamically creates element</p>
+            <p>Instead of adding the class input-field, use the input-field directive. This way it still works when angular dynamically creates it.</p>
+            <p>Just in Materialize, if you add the length attribute, a character-counter will appear (in the below length is set to 150). </p>
+            <p>The <code class="language-markup" data-language="markup">input</code> or <code class="language-markup" data-language="markup">textarea</code> tags has to be direct children of the element with the input-field tag. </p>
+        </div>
+        <div class="row" ng-init="showInputLabel = true;dummyInputs.inputFieldInput = 'This is input'; dummyInputs.textAreaInput = 'Textareas \ncan\ncontain\nmultiple\nlines';">
+            <div class="col s2">
+                <a class="btn waves-effect waves-light" ng-click="showInputLabel = !showInputLabel">Toggle input</a>
+            </div>
+            <div class="col s4" ng-if="showInputLabel">
+                <div input-field>
+                    <input type="text" ng-model="dummyInputs.inputFieldInput" length="150">
+                    <label>Input label</label>
+                </div>
+            </div>
+            <div class="col s3" ng-if="showInputLabel">
+                <div input-field>
+                    <textarea ng-model="dummyInputs.textAreaInput" class="materialize-textarea"></textarea>
+                    <label>Textarea</label>
+                </div>
+            </div>
+            <div class="col s3" ng-if="showInputLabel">
+                <div input-field>
+                    <textarea ng-model="dummyInputs.textAreaInput" class="materialize-textarea"></textarea>
+                    <label>Synchronized textarea</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>
+&lt;div input-field&gt;
+    &lt;input type="text" ng-model="dummyInputs.inputFieldInput" length="150"&gt;
+    &lt;label&gt;Input label&lt;/label&gt;
+&lt;/div&gt;
+&lt;div input-field&gt;
+    &lt;textarea ng-model="dummyInputs.textAreaInput" class="materialize-textarea"&gt;&lt;/textarea&gt;
+    &lt;label&gt;Textarea&lt;/label&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <div class="row">
+            <p>You can also use it as an element instead of an attribute.</p>
+<pre><code class="language-markup" ng-non-bindable>
+&lt;input-field&gt;
+    &lt;input type="text" ng-model="dummyInputs.inputFieldInput"&gt;
+    &lt;label&gt;Input label&lt;/label&gt;
+&lt;/input-field&gt;
+    &lt;input-field&gt;
+    &lt;textarea ng-model="dummyInputs.textAreaInput" class="materialize-textarea"&gt;&lt;/textarea&gt;
+    &lt;label&gt;Textarea&lt;/label&gt;
+&lt;/input-field&gt;</code></pre>
+        </div>
+
+
+        <div class="row" id="input-date">
+            <h2 class="header">Input-date</h2>
+            <p>The below example is where there are values in all the options, but all the options are optional. </p>
+            <p>The attributes <code class="language-markup" data-language="markup">min</code> and <code class="language-markup" data-language="markup">max</code> can be any value representing a date. It should be in a format recognised by <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" title="Date - JavaScript | MDN">Date Constructor</a>.</p>
+        </div>
+        <div class="row" ng-controller="DateController">
+            <label for="inputCreated">Input date</label>
+            <input input-date
+                   type="text"
+                   name="created"
+                   id="inputCreated"
+                   ng-model="currentTime"
+                   container="body"
+                   format="dd/mm/yyyy"
+                   months-full="{{ month }}"
+                   months-short="{{ monthShort }}"
+                   weekdays-full="{{ weekdaysFull }}"
+                   weekdays-short="{{ weekdaysShort }}"
+                   weekdays-letter="{{ weekdaysLetter }}"
+                   disable="disable"
+                   min="{{ minDate }}"
+                   max="{{ maxDate }}"
+                   today="today"
+                   clear="clear"
+                   close="close"
+                   select-years="15"
+                   on-start="onStart()"
+                   on-render="onRender()"
+                   on-open="onOpen()"
+                   on-close="onClose()"
+                   on-set="onSet()"
+                   on-stop="onStop()" />
+        </div>
+        <div class="row">
+            <p>The code in the HTML</p>
+<pre><code class="language-markup" ng-non-bindable>&lt;label for="inputCreated"&gt;Input date&lt;/label&gt;
+&lt;input input-date
+    type="text"
+    name="created"
+    id="inputCreated"
+    ng-model="currentTime"
+    container="body"
+    format="dd/mm/yyyy"
+    months-full="{{ month }}"
+    months-short="{{ monthShort }}"
+    weekdays-full="{{ weekdaysFull }}"
+    weekdays-short="{{ weekdaysShort }}"
+    weekdays-letter="{{ weekdaysLetter }}"
+    disable="disable"
+    min="{{ minDate }}"
+    max="{{ maxDate }}"
+    today="today"
+    clear="clear"
+    close="close"
+    select-years="15"
+    on-start="onStart()"
+    on-render="onRender()"
+    on-open="onOpen()"
+    on-close="onClose()"
+    on-set="onSet()"
+    on-stop="onStop()" /&gt;</code></pre>
+            <p>And the JavaScript in the controller</p>
+            <pre><code class="language-javascript">var currentTime = new Date();
+$scope.currentTime = currentTime;
+$scope.month = ['Januar', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+$scope.monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+$scope.weekdaysFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+$scope.weekdaysLetter = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+$scope.disable = [false, 1, 7];
+$scope.today = 'Today';
+$scope.clear = 'Clear';
+$scope.close = 'Close';
+var days = 15;
+$scope.minDate = (new Date($scope.currentTime.getTime() - ( 1000 * 60 * 60 *24 * days ))).toISOString();
+$scope.maxDate = (new Date($scope.currentTime.getTime() + ( 1000 * 60 * 60 *24 * days ))).toISOString();
+$scope.onStart = function () {
+    console.log('onStart');
+};
+$scope.onRender = function () {
+    console.log('onRender');
+};
+$scope.onOpen = function () {
+    console.log('onOpen');
+};
+$scope.onClose = function () {
+    console.log('onClose');
+};
+$scope.onSet = function () {
+    console.log('onSet');
+};
+$scope.onStop = function () {
+    console.log('onStop');
+};</code></pre>
+        </div>
+
+
+        <div class="row" id="select">
+            <h2 class="header">Material select</h2>
+            <p>Add the material-select as an attribute to the select where you want material-select.</p>
+            <p>Not needed if you add the class browser-default.</p>
+            <p>It doesn't support changing content within the select, add the class browser-default if you want that.</p>
+            <p>If you add the attribute <code class=" language-markup" data-language="markup">watch</code>, then the material-select will re-initialize whenever something changes in the content within the select. <br />
+                That includes if the number of list elements change. <br />
+                But beware, while the implementation works, it is very heavy in computation, so tread lightly. </p>
+        </div>
+        <div class="row">
+            <div class="section col s4">
+                <select class="" ng-model="select.value1" material-select watch>
+                    <option ng-repeat="value in select.choices">{{value}}</option>
+                </select>
+            </div>
+            <div class="section col s4">
+                <h5>You selected: <b>{{select.value1}}</b></h5>
+            </div>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>
+&lt;select class="" ng-model="select.value1" material-select watch&gt;
+    &lt;option ng-repeat="value in select.choices"&gt;{{value}}&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+        </div>
+        <div class="row">
+            <h5>Using class browser-default</h5>
+            <div class="section col s4">
+                <select class="browser-default" ng-model="select.value2">
+                    <option ng-repeat="value in select.choices">{{value}}</option>
+                </select>
+            </div>
+            <div class="section col s4">
+                <h5>You selected: <b>{{select.value2}}</b></h5>
+            </div>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>
+&lt;select class="browser-default" ng-model="select.value2"&gt;
+    &lt;option ng-repeat="value in select.choices"&gt;{{value}}&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+        </div>
+
+        <div class="row" id="collapsible">
+            <h2 class="header">Collapsible</h2>
+            <p>The collapsible below is populated using ng-repeat, just to show that it is possible. You can also just manually put in the content. </p>
+            <p>In the below, the popout class is added, which makes a "Google inbox" effect. Just remove the popout class to get a normal accordion. </p>
+            <p>Since this is just a wrapper for materializes collapsible, <a href="http://materializecss.com/collapsible.html">all their customization</a> can be used. </p>
+            <p>If you add the attribute <code class=" language-markup" data-language="markup">watch</code>, then the collapsible will re-initialize whenever something changes in the content within the collapsible. <br />
+                That includes if the number of list elements change. <br />
+                But beware, while the implementation works, it is very heavy in computation, so tread lightly. </p>
+            <a class="btn waves-effect waves-light" ng-init="showCollapsible = true" ng-click="showCollapsible = !showCollapsible">Show/hide the below collapsible</a>
+        </div>
+        <div class="row" ng-controller="CollapsibleController" ng-if="showCollapsible">
+            <ul class="collapsible popout" data-collapsible="accordion" watch>
+                <li ng-repeat="single in collapsibleElements">
+                    <div class="collapsible-header"><i class="{{single.icon}}"></i>{{single.title}}</div>
+                    <div class="collapsible-body"><p>{{single.content}}</p></div>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <p>The code in the HTML</p>
+<pre><code class="language-markup" ng-non-bindable>&lt;ul class="collapsible popout" data-collapsible="accordion" watch&gt;
+    &lt;li ng-repeat="single in collapsibleElements"&gt;
+        &lt;div class="collapsible-header"&gt;&lt;i class="{{single.icon}}"&gt;&lt;/i&gt;{{single.title}}&lt;/div&gt;
+        &lt;div class="collapsible-body"&gt;&lt;p&gt;{{single.content}}&lt;/p&gt;&lt;/div&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+            <p>And the JavaScript in the controller</p>
+<pre><code class="language-javascript">$scope.collapsibleElements = [{
+        icon: 'mdi-image-filter-drama',
+        title: 'First',
+        content: 'Lorem ipsum dolor sit amet.'
+    },{
+        icon: 'mdi-maps-place',
+        title: 'Second',
+        content: 'Lorem ipsum dolor sit amet.'
+    },{
+        icon: 'mdi-social-whatshot',
+        title: 'Third',
+        content: 'Lorem ipsum dolor sit amet.'
+    }
+];</code></pre>
+
+        </div>
+
+
+        <div class="row" id="toast">
+            <h2 class="header">Toasts</h2>
+            <p>Materializes toast is a global function. Using this directive you can call a toast using a custom event (in the below click), and show a message determined by a variable in the scope. <br />
+            The message is specified through the message attribute, and the duration is set though the duration attribute (defaults to 3000ms if not set).</p>
+        </div>
+        <div class="row" ng-controller="ToastController">
+            <div class="col s4" input-field>
+                <input id="message" type="text" ng-model="dummyInputs.message" ng-init="dummyInputs.message = 'I\'m a message'">
+                <label for="message">Message</label>
+            </div>
+            <div class="col s2" input-field>
+                <input id="toastDuration" type="text" ng-model="dummyInputs.duration" ng-init="dummyInputs.duration = 1000">
+                <label for="toastDuration">Toast duration</label>
+            </div>
+            <div class="input-field col s4">
+                <a class="waves-effect waves-light btn" message="{{dummyInputs.message}}" duration="{{dummyInputs.duration}}" callback="callback('Your toast was dismissed')" toast='click'>Toast!</a>
+            </div>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>&lt;div class="row"&gt;
+    &lt;div class="col s4" input-field&gt;
+        &lt;input id="message" type="text" ng-model="dummyInputs.message" ng-init="dummyInputs.message = 'I\'m a message'"&gt;
+        &lt;label for="message"&gt;Message&lt;/label&gt;
+    &lt;/div&gt;
+    &lt;div class="col s2" input-field&gt;
+        &lt;input id="toastDuration" type="text" ng-model="dummyInputs.duration" ng-init="dummyInputs.duration = 1000"&gt;
+        &lt;label for="toastDuration"&gt;Toast duration&lt;/label&gt;
+    &lt;/div&gt;
+    &lt;div class="input-field col s4"&gt;
+        &lt;a class="waves-effect waves-light btn" message="{{dummyInputs.message}}" duration="{{dummyInputs.duration}}" toast='click'&gt;Toast!&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <div class="row" id="tooltip">
+            <h2 class="header">Tooltip</h2>
+            <p>The tooltipped attribute in the below makes sure that the jQuery plugin is run.<br />
+                You can set attributes on the tag, matching the names of the options in the materializeCSS's version.
+            </p>
+            <div class="col s4" ng-init="showTooltip = true">
+                <a class="btn waves-effect waves-light" ng-click="showTooltip = !showTooltip" style="margin-bottom: 10px;">Toggle Buttons</a>
+            </div>
+            <div class="col s8" ng-if="showTooltip">
+                <!-- data-position can be : bottom, top, left, or right -->
+                <!-- data-delay controls delay before tooltip shows (in milliseconds)-->
+                <a tooltipped class="btn col s4 offset-s4 l2 offset-l1" data-position="bottom" data-delay="50" data-tooltip="I am tooltip"> Bottom</a>
+                <a tooltipped class="btn col s4 offset-s4 l2 offset-l1" data-position="top" data-delay="150" data-tooltip="I am tooltip"> Top</a>
+                <a tooltipped class="btn col s4 offset-s4 l2 offset-l1" data-position="left" data-delay="250" data-tooltip="I am tooltip"> Left</a>
+                <a tooltipped class="btn col s4 offset-s4 l2 offset-l1" data-position="right" data-delay="550" data-tooltip="I am tooltip"> Right</a>
+            </div>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>&lt;div class="col s8" ng-if="showTooltip"&gt;
+    &lt;!-- data-position can be : bottom, top, left, or right --&gt;
+    &lt;!-- data-delay controls delay before tooltip shows (in milliseconds)--&gt;
+    &lt;a tooltipped class="btn col s4 offset-s4 l2 offset-l1" data-position="bottom" data-delay="50" data-tooltip="I am tooltip"&gt; Bottom&lt;/a&gt;
+    &lt;a tooltipped class="btn col s4 offset-s4 l2 offset-l1" data-position="top" data-delay="150" data-tooltip="I am tooltip"&gt; Top&lt;/a&gt;
+    &lt;a tooltipped class="btn col s4 offset-s4 l2 offset-l1" data-position="left" data-delay="250" data-tooltip="I am tooltip"&gt; Left&lt;/a&gt;
+    &lt;a tooltipped class="btn col s4 offset-s4 l2 offset-l1" data-position="right" data-delay="550" data-tooltip="I am tooltip"&gt; Right&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <div class="row" id="pushpin">
+            <h2 class="header">Pushpin</h2>
+            <p>The <code class=" language-markup" data-language="markup">pushpin</code> attribute allows you to pin a particular element to the top of the page.</p>
+            <p>You can use the <code class=" language-markup" data-language="markup">pushpin-top</code> attribute to define distance in pixels from the top of the page where the element becomes fixed. The <code class=" language-markup" data-language="markup">pushpin-offset</code> attribute can be used to offset the distance from the top. The <code class=" language-markup" data-language="markup">pushpin-bottom</code> attribute can be used to set the distance in pixels from the top of the page where the elements stops being fixed.</p>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>
+&lt;div class=&quot;sidebar&quot; pushpin pushpin-top=&quot;0&quot; pushpin-offset=&quot;0&quot; pushpin-bottom=&quot;Infinity&quot;&gt;
+  &lt;ul id=&quot;sidebarMenu&quot; class=&quot;menu&quot;&gt;
+    &lt;li&gt;Item 1&lt;/li&gt;
+    &lt;li&gt;Item 2&lt;/li&gt;
+    &lt;li&gt;Item 3&lt;/li&gt;
+    &lt;li&gt;Item 4&lt;/li&gt;
+    &lt;li&gt;Item 5&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+
+        <div class="row" id="dropdown">
+            <h2 class="header">Dropdown</h2>
+            <p>The dropdown attribute in the below makes sure that the jQuery plugin is run.</p>
+            <p>You can set attributes on the tag, matching the names of the options in the <a href="http://materializecss.com/dropdown.html#!">materializeCSS's version</a>.</p>
+        </div>
+        <div class="row">
+            <div class="section col s4">
+                <!-- Dropdown Trigger -->
+                <a class='dropdown-button btn' href='javascript:void(0);' data-activates='demoDropdown' dropdown data-hover="true">
+                    This is a dropdown
+                </a>
+
+                <!-- Dropdown Structure -->
+                <ul id='demoDropdown' class='dropdown-content'>
+                    <li><a href="javascript:void(0);">Link 1</a></li>
+                    <li><a href="javascript:void(0);">Link 2</a></li>
+                    <li><a href="javascript:void(0);">Link 3</a></li>
+                    <li><a href="javascript:void(0);">Link 4</a></li>
+                    <li><a href="javascript:void(0);">Link 5</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>
+&lt;!-- Dropdown Trigger --&gt;
+&lt;a class='dropdown-button btn' href='javascript:void(0);' data-activates='demoDropdown' dropdown data-hover="true"&gt;
+    This is a dropdown
+&lt;/a&gt;
+
+&lt;!-- Dropdown Structure --&gt;
+&lt;ul id='demoDropdown' class='dropdown-content'&gt;
+    &lt;li&gt;&lt;a href="javascript:void(0);"&gt;Link 1&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="javascript:void(0);"&gt;Link 2&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="javascript:void(0);"&gt;Link 3&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="javascript:void(0);"&gt;Link 4&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="javascript:void(0);"&gt;Link 5&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+        </div>
+
+
+        <div class="row" id="modals" ng-init="dummyInputs.modalInput = 'Modal header'">
+            <h2 class="header">Modals</h2>
+            <p>You need a modal trigger, like the below. The trigger should have the modal directive, and the href attribute must point to the ID of the modal structure. <br />
+            The modal strcture should be structured <a href="http://materializecss.com/modals.html">just like in materialize</a>. <br>
+            In the below example, you can change the header of the modal through the input field. </p>
+            <!-- Modal Trigger -->
+            <div class="col">
+                <a class='btn' href='#demoModal' modal>Show Modal</a>
+            </div>
+            <div input-field  class="col s4">
+                <input type="text" ng-model="dummyInputs.modalInput">
+                <label>Modal header</label>
+            </div>
+            <!-- Modal Structure -->
+            <div id="demoModal" class="modal">
+                <div class="modal-content">
+                    <h4>{{dummyInputs.modalInput}}</h4>
+                    <p>A bunch of text</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+                <pre><code class="language-markup" ng-non-bindable>&lt;!-- Modal Trigger --&gt;
+&lt;div class="col"&gt;
+    &lt;a class='btn' href='#demoModal' modal&gt;Show Modal&lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- Modal Structure --&gt;
+&lt;div id="demoModal" class="modal"&gt;
+    &lt;div class="modal-content"&gt;
+        &lt;h4&gt;Modal header&lt;/h4&gt;
+        &lt;p&gt;A bunch of text&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="modal-footer"&gt;
+        &lt;a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"&gt;Agree&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+
+        <div class="row" id="parallax" ng-init="showParallax = true">
+            <h2 class="header">Parallax</h2>
+            <p>Adding the parallax attribute makes sure that <a href="http://materializecss.com/parallax.html">the jQuery plugin from Materialize</a> is run.</p>
+            <p>It works just like the code below the image shows, and fills the entire width of the container it is put in. </p>
+            <a class="btn waves-effect waves-light" ng-click="showParallax = !showParallax">Show/hide the below parallax</a>
+        </div>
+    </div>
+    <div class="parallax-container" ng-if="showParallax" style="margin: 20px 0;">
+        <div parallax><img src="images/parallax1.jpg"></div>
+    </div>
+    <div class="container">
+
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>&lt;div class="parallax-container"&gt;
+    &lt;div parallax&gt;&lt;img src="images/parallax1.jpg"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+
+        <div class="row" id="sidenav">
+            <h2 class="header">Sidenav</h2>
+            <p>Make sure to have a side-menu with id corresponding to the argument <code class="language-markup">data-activates</code>. </p>
+            <p>If you copy this page, there is another side-nav link in the top of the page, which initializes first and therefore sets the options. </p>
+            <p>If you add the class <code class="language-markup">button-collapse</code> the button will only show when the side-menu is hidden.  <br/>
+            This is not done on the below button, for demonstration purposes, although it is added in the code example.</p>
+        </div>
+        <div class="row">
+            <a href="#" data-activates="nav-mobile" class="top-nav btn waves-effect waves-light" data-sidenav="left" data-closeonclick="false">
+                Show side-nav
+            </a>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>
+&lt;a href="#" class="button-collapse" data-activates="nav-mobile" data-sidenav="left" data-menuwidth="500" data-closeonclick="false"&gt;
+    Show side-nav
+&lt;/a&gt;</code></pre>
+        </div>
+
+        <div class="row" id="slider">
+            <h2 class="header">Slider</h2>
+            <p>An extremely simple directive, that just enables the slider. Just add the attribute <code class=" language-markup" data-language="markup">slider</code>, and the slider will be initialized. </p>
+            <p>You can optionally set one of more of the attributes <code class=" language-markup" data-language="markup">height</code>, <code class=" language-markup" data-language="markup">transition</code>,
+                <code class=" language-markup" data-language="markup">interval</code> or <code class=" language-markup" data-language="markup">indicators</code>, and the option will be passed to the slider. <br />
+                Like so: <code class=" language-markup" data-language="markup">&lt;div slider height='500' transition='400'&gt;&lt;/div&gt;</code></p>
+        </div>
+        <div class="row">
+            <div slider>
+                <ul class="slides">
+                    <li>
+                        <img src="http://lorempixel.com/580/250/nature/1"> <!-- random image -->
+                        <div class="caption center-align">
+                            <h3>This is our big Tagline!</h3>
+                            <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="http://lorempixel.com/580/250/nature/2"> <!-- random image -->
+                        <div class="caption left-align">
+                            <h3>Left Aligned Caption</h3>
+                            <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="http://lorempixel.com/580/250/nature/3"> <!-- random image -->
+                        <div class="caption right-align">
+                            <h3>Right Aligned Caption</h3>
+                            <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="http://lorempixel.com/580/250/nature/4"> <!-- random image -->
+                        <div class="caption center-align">
+                            <h3>This is our big Tagline!</h3>
+                            <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>&lt;div class="slider" slider&gt;
+    &lt;ul class="slides"&gt;
+        &lt;li&gt;
+            &lt;img src="http://lorempixel.com/580/250/nature/1"&gt; &lt;!-- random image --&gt;
+            &lt;div class="caption center-align"&gt;
+                &lt;h3&gt;This is our big Tagline!&lt;/h3&gt;
+                &lt;h5 class="light grey-text text-lighten-3"&gt;Here's our small slogan.&lt;/h5&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;img src="http://lorempixel.com/580/250/nature/2"&gt; &lt;!-- random image --&gt;
+            &lt;div class="caption left-align"&gt;
+                &lt;h3&gt;Left Aligned Caption&lt;/h3&gt;
+                &lt;h5 class="light grey-text text-lighten-3"&gt;Here's our small slogan.&lt;/h5&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+                &lt;img src="http://lorempixel.com/580/250/nature/3"&gt; &lt;!-- random image --&gt;
+                &lt;div class="caption right-align"&gt;
+            &lt;h3&gt;Right Aligned Caption&lt;/h3&gt;
+            &lt;h5 class="light grey-text text-lighten-3"&gt;Here's our small slogan.&lt;/h5&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;img src="http://lorempixel.com/580/250/nature/4"&gt; &lt;!-- random image --&gt;
+            &lt;div class="caption center-align"&gt;
+                &lt;h3&gt;This is our big Tagline!&lt;/h3&gt;
+                &lt;h5 class="light grey-text text-lighten-3"&gt;Here's our small slogan.&lt;/h5&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <div class="row" id="media">
+            <h2 class="header">Media</h2>
+            <p class="caption">Materialbox is intialized automatically. However, if you add images dynamically, you will have to add this initialization code.</p>
+            <div class="material-placeholder"><img materialboxed class="materialboxed responsive-img " width="650" src="images/sample-1.jpg"></div>
+        </div>
+
+        <div class="row">
+
+            <p>Creating the above image with the effect is as simple as adding a  class to the image tag.</p>
+            <pre><code class="language-markup" ng-non-bindable>
+&lt;img materialboxed class="materialboxed responsive-img" width="650" src="images/sample-1.jpg"&gt;
+            </code></pre>
+        </div>
+        <div class="row">
+            <h4>Captions</h4>
+                <p>It is very easy to add a short caption to your photo. Just add the caption as a <code class=" language-markup">data-caption</code> attribute.</p>
+                <div class="material-placeholder"><img materialboxed class="materialboxed" data-caption="A picture of some deer and tons of trees" width="250" src="images/nature_portrait_by_pw_fotografie-d63tx0n.jpg"></div>
+        </div>
+        <div class="row">
+
+            <p>Creating the above image with the effect is as simple as adding a  class to the image tag.</p>
+            <pre><code class="language-markup" ng-non-bindable>
+&lt;img materialboxed class="materialboxed" data-caption="A picture of some deer and tons of trees" width="250" src="iamges/nature_portrait_by_pw_fotografie-d63tx0n.jpg"&gt;
+            </code></pre>
+     
+        <div class="row">
+
+
+        <div class="row" id="tabs" ng-init="showTabs = true">
+            <h2 class="header">Tabs</h2>
+            <p>This is a very simple directive, that just calls the jQuery plugin when the element is initialized.</p>
+            <p>For the styling to work, you still need to have the class <code class="language-markup">tabs</code> on the <code class="language-markup">ul</code> tag</p>
+            <p>Because of the simple implementation, don't expect ng-repeat ng-model or similar to work inside the ul of the tabs (should work inside the content though).</p>
+            <a class="btn waves-effect waves-light" ng-click="showTabs = !showTabs">Show/hide the below tabs</a>
+        </div>
+        <div class="row" ng-if="showTabs">
+            <div class="col s12">
+                <ul class="tabs" tabs>
+                    <li class="tab col s3"><a href="#test1">Test 1</a></li>
+                    <li class="tab col s3"><a class="active" href="#test2">Test 2</a></li>
+                    <li class="tab col s3"><a href="#test3">Test 3</a></li>
+                    <li class="tab col s3"><a href="#test4">Test 4</a></li>
+                </ul>
+            </div>
+            <div id="test1" class="col s12">Test 1</div>
+            <div id="test2" class="col s12">Test 2</div>
+            <div id="test3" class="col s12">Test 3</div>
+            <div id="test4" class="col s12">Test 4</div>
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>
+&lt;div class="row" ng-if="showTabs"&gt;
+    &lt;div class="col s12"&gt;
+        &lt;ul class="tabs" tabs&gt;
+            &lt;li class="tab col s3"&gt;&lt;a href="#test1"&gt;Test 1&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="tab col s3"&gt;&lt;a class="active" href="#test2"&gt;Test 2&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="tab col s3"&gt;&lt;a href="#test3"&gt;Test 3&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="tab col s3"&gt;&lt;a href="#test4"&gt;Test 4&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;div id="test1" class="col s12"&gt;Test 1&lt;/div&gt;
+    &lt;div id="test2" class="col s12"&gt;Test 2&lt;/div&gt;
+    &lt;div id="test3" class="col s12"&gt;Test 3&lt;/div&gt;
+    &lt;div id="test4" class="col s12"&gt;Test 4&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <div class="row" id="pagination">
+            <h2 class="header">Pagination</h2>
+            <p>This is only the pagination buttons, it doesn't do anything to change the page. That you'll have to do in the callback</p>
+            <p>In the below, changePage is a function defined on the controller. </p>
+        </div>
+        <div class="row" ng-controller="PaginationController">
+            <pagination
+                page="1"
+                page-size="10"
+                total="200"
+                show-prev-next="true"
+                dots="...."
+                hide-if-empty="false"
+                adjacent="2"
+                scroll-top="false"
+                pagination-action="changePage(page)" />
+        </div>
+        <div class="row">
+<pre><code class="language-markup" ng-non-bindable>&lt;pagination
+    page="1"
+    page-size="10"
+    total="200"
+    show-prev-next="true"
+    dots="...."
+    hide-if-empty="false"
+    adjacent="2"
+    scroll-top="false"
+    pagination-action="changePage(page)" /&gt;</code></pre>
+        </div>
+    </div>
+</main>
+</body>
+</html>
