@@ -1,7 +1,12 @@
 <style>
-    body {
-        padding : 1px ;
+    .spacer {
+        height: 40px;
     }
+
+    body {
+        padding: 1px;
+    }
+
     .breadcrumb {
         padding: 1px 1px !important;
         margin-bottom: 1px !important;
@@ -11,15 +16,17 @@
     }
 
     #exTab1 .tab-content {
-        color : white;
+        /*
+                color : white;
+        */
         background-color: lightgrey;
-        padding : 5px 15px;
+        padding: 5px 15px;
     }
 
     #exTab2 h3 {
-        color : #428bca;
+        color: #428bca;
         background-color: #428bca;
-        padding : 5px 15px;
+        padding: 5px 15px;
     }
 
     /* remove border radius for the tab */
@@ -31,47 +38,436 @@
     /* change border radius for the tab , apply corners on top*/
 
     #exTab3 .nav-pills > li > a {
-        border-radius: 4px 4px 0 0 ;
+        border-radius: 4px 4px 0 0;
     }
 
     #exTab3 .tab-content {
-        color : white;
+        color: white;
         background-color: #428bca;
-        padding : 5px 15px;
+        padding: 5px 15px;
     }
-
 
     .modal {
         position: fixed;
         width: 100%;
         height: 100%;
         top: 0;
-        left: 0;
+        right: 0;
         background: rgba(0, 0, 0, 0.7);
     }
+
     .modal .chart {
         height: 90%;
     }
 
-    .full-width-box{
+    .full-width-box {
         width: 100%;
         z-index: 1;
     }
+
     .fullscreen {
         width: 100%;
         height: 100%;
     }
 
-    .nav-pills>li>a {
+    .nav-pills > li > a {
 
         margin-bottom: 1px !important;
 
     }
+
+    #ex13 .slider-selection {
+        background: #BABABA;
+    }
+
+    .rzslider .rz-bar-wrapper {
+        left: 0;
+        z-index: 1;
+        width: 31% !important;
+        height: 32px;
+        padding-top: 16px;
+        margin-top: -16px;
+        box-sizing: border-box;
+    }
+
+    .rzslider .rz-pointer {
+        top: -14px;
+        z-index: 3;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        background-color: #5BADB1 !important;
+        border-radius: 16px;
+    }
+
+    .fa-2x {
+        font-size: 2em;
+    }
+
+    .fa {
+        position: relative;
+        display: table-cell;
+        width: 60px;
+        height: 36px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 20px;
+    }
+
+    .main-menu:hover, nav.main-menu.expanded {
+        width: 250px;
+        overflow: visible;
+    }
+
+    .main-menu {
+        background: #fbfbfb;
+        border-right: 1px solid #e5e5e5;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        right: 0;
+        width: 3px;
+        overflow: hidden;
+        -webkit-transition: width .05s linear;
+        transition: width .05s linear;
+        -webkit-transform: translateZ(0) scale(1, 1);
+        z-index: 1000;
+    }
+
+    .main-menu > ul {
+        margin: 7px 0;
+    }
+
+    .main-menu li {
+        position: relative;
+        display: block;
+        width: 250px;
+    }
+
+    .main-menu li > a {
+        position: relative;
+        display: table;
+        border-collapse: collapse;
+        border-spacing: 0;
+        color: #999;
+        font-family: arial;
+        font-size: 14px;
+        text-decoration: none;
+        -webkit-transform: translateZ(0) scale(1, 1);
+        -webkit-transition: all .1s linear;
+        transition: all .1s linear;
+
+    }
+
+    .main-menu .nav-icon {
+        position: relative;
+        display: table-cell;
+        width: 60px;
+        height: 36px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 18px;
+    }
+
+    .main-menu .nav-text {
+        position: relative;
+        display: table-cell;
+        vertical-align: middle;
+        width: 190px;
+        font-family: 'Titillium Web', sans-serif;
+    }
+
+    .main-menu > ul.logout {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+    }
+
+    .no-touch .scrollable.hover {
+        overflow-y: hidden;
+    }
+
+    .no-touch .scrollable.hover:hover {
+        overflow-y: auto;
+        overflow: visible;
+    }
+
+    a:hover, a:focus {
+        text-decoration: none;
+    }
+
+    nav {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
+
+    nav ul, nav li {
+        outline: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-menu li:hover > a, nav.main-menu li.active > a, .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus, .no-touch .dashboard-page nav.dashboard-menu ul li:hover a, .dashboard-page nav.dashboard-menu ul li.active a {
+        color: #fff;
+        background-color: #5fa2db;
+    }
+
+    .area {
+        float: left;
+        background: #e2e2e2;
+        width: 100%;
+        height: 100%;
+    }
+
+    /*
+        start chart option
+    */
+
+    .chart-options {
+        position: absolute;
+        /*visibility:hidden;*/
+        height: 100%;
+        width: 35px;
+        right: 0;
+        top: 0;
+        /*z-index: 500;*/
+        padding-top: 25px;
+        padding-right: 2px;
+        background-color: transparent;
+        -webkit-transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        -ms-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out;
+    }
+
+    .chart-options ul > li > a {
+        cursor: pointer;
+        /*!*padding-left: 5px;*!*/
+        /*padding-top: 5px;*/
+        /*font-size: 10px;*/
+        /*height: 30px;*/
+        /*width: 30px;*/
+        /*border: solid 1px #ddd;*/
+        /*border-radius: 15px;*/
+        /*background-color: #ddd;*/
+        /*-webkit-transition: all .2s ease-in-out;*/
+        /*-moz-transition: all .2s ease-in-out;*/
+        /*-o-transition: all .2s ease-in-out;*/
+        /*-ms-transition: all .2s ease-in-out;*/
+        /*transition: all .2s ease-in-out;*/
+        /*margin-bottom: 2px;*/
+    }
+
+    .chart-options ul > li > a:hover {
+        -webkit-transform: scale(1.2);
+        -moz-transform: scale(1.2);
+        -o-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+
+    .chart-option-icon {
+        margin: auto;
+        height: 18px;
+        width: 18px;
+        opacity: 0.9;
+    }
+
+    .chart-option-icon:hover {
+        margin: auto;
+        height: 20px;
+        width: 20px;
+        opacity: 1;
+    }
+
+    .active-type {
+        background-color: #cecece !important;
+    }
+
+    .chart2 {
+        height: 200px;
+    }
+
+    .rzslider {
+        position: relative;
+        display: inline-block;
+        width: 990px !important;
+        height: 2px;
+        margin: 40px 0 15px 0 !important;
+        vertical-align: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .rzslider .rz-bar-wrapper {
+        left: 0;
+        z-index: 2;
+        width: 0%;
+        height: 32px;
+        padding-top: 20px;
+        margin-top: -20px;
+        box-sizing: border-box;
+    }
+
+    .period_slider {
+        top: -2px !important;
+        left: 210px !important;
+        position: relative !important;
+        /*
+                padding-top: 5px !important;
+        */
+        /*
+                margin-top: -40px !important;
+        */
+    }
+
+    .fixed-button {
+        /*
+                padding: 20px;
+        */
+        position: fixed;
+        height: 50px;
+        width: 100px;
+        /*
+                background-color: #ffffff;
+        */
+        z-index: 10000;
+        right: 0px;
+        top: 140px;
+/*
+               bottom:10px;
+*/
+        border: solid thin #e5e5e5;
+        background-color: lightgrey;
+    }
+
+    .fixed-card {
+        height: 160px;
+        width: 550px;
+        background-color: white;
+        border: solid thin #e5e5e5;
+
+        position: fixed;
+
+        /*
+                background-color: #ffffff;
+        */
+        z-index: 10000;
+        right: 20px;
+        /*
+               bottom:10px;
+        */
+        bottom: 100px;
+        border: solid thin #e5e5e5;
+
+    }
+
+    .row {
+        margin-bottom: 0px !important;
+    }
+
+    table td {
+        text-align: center;
+        margin-bottom: 0px !important;
+    }
+
+    #card-stats #card-content {
+        text-align: center !important;
+    }
+
+    #card-stats #card-stats-number {
+        font-size: 1.8rem !important;
+        line-height: 2.0rem !important;
+        margin: 0.2rem 0 0.2rem 0 !important;
+        font-weight: 500 !important;
+    }
+
+
+    .s-hidden {
+        visibility:hidden;
+        padding-right:10px;
+    }
+    .select {
+        cursor:pointer;
+        display:inline-block;
+        position:relative;
+        font:normal 11px/22px Arial, Sans-Serif;
+        color:black;
+        border:1px solid #ccc;
+    }
+    .styledSelect {
+        position:absolute;
+        top:0;
+        right:0;
+        bottom:0;
+        left:0;
+        background-color:white;
+        padding:0 10px;
+        font-weight:bold;
+    }
+    .styledSelect:after {
+        content:"";
+        width:0;
+        height:0;
+        border:5px solid transparent;
+        border-color:black transparent transparent transparent;
+        position:absolute;
+        top:9px;
+        right:6px;
+    }
+    .styledSelect:active, .styledSelect.active {
+        background-color:#eee;
+    }
+    .options {
+        display:none;
+        position:absolute;
+        top:100%;
+        right:0;
+        left:0;
+        z-index:999;
+        margin:0 0;
+        padding:0 0;
+        list-style:none;
+        border:1px solid #ccc;
+        background-color:white;
+        -webkit-box-shadow:0 1px 2px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow:0 1px 2px rgba(0, 0, 0, 0.2);
+        box-shadow:0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    .options li {
+        padding:0 6px;
+        margin:0 0;
+        padding:0 10px;
+    }
+    .options li:hover {
+        background-color:#39f;
+        color:white;
+    }
+
+
+
+
+
+
+
+
 </style>
+<!--
 <div id="exTab1" class="container">
-    <ul  class="nav nav-pills">
+-->
+
+<div id="exTab1" class="">
+
+    <ul class="nav nav-pills">
         <li class="active">
-            <a  href="#1a" data-toggle="tab">National View</a>
+            <a href="#1a" data-toggle="tab">National View</a>
         </li>
         <li><a href="#2a" data-toggle="tab">My Supervised View</a>
         </li>
@@ -81,20 +477,48 @@
     <div class="tab-content clearfix">
         <div class="tab-pane active" id="1a">
             <div>
-                <div class="row">
-                    <div class="col l12 s12 m12">
 
-                        <div class="box-header">
+                <div class="fixed-button" ng-mouseover="showFilter()" ng-if="showfilter==false">
 
-                            <filter-container>
+                    <div class="card blue-grey darken-1 waves-effect waves-light">
+                        <span> <a class="waves-effect waves-light btn"> <span style="color: #0e4a64">Filters</span></a>
+                            <!--<img ng-src="{{'/public/images/search.png'}}"  alt=""
+                                 style="width: 40px!important;"></a>--></span>
+                    </div>
 
-                                <product-without-description-and-syringes-filter class="form-cell horizontalFilters"
-                                                                                 required="true"></product-without-description-and-syringes-filter>
+                </div>
+<!--
 
-                                <year-filter class="form-cell horizontalFilters"></year-filter>
+-->
+                <div class="fixed-card" ng-if="showfilter" ng-mouseleave="hideFilter()">
 
-                                <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>
-                            </filter-container>
+                    <div class="card" style="width: 100% !important;height: 160px!important;">
+                        <div class="card-title blue-grey darken-1">
+                            <h2 style="text-align: center;font-size: 20px" ><span >Filter Data</span></h2>
+                        </div>
+                        <div class="card-body">
+                          <form>
+                              <div class="box-header">
+                                  <div class="row-fluid">
+                                  <div class="span12">
+                                      <filter-container>
+                                          <product-without-description-and-syringes-for-dashboard-filter class="form-cell horizontalFilters"></product-without-description-and-syringes-for-dashboard-filter>
+                                          <year-without-select-ui-filter class="form-cell horizontalFilters"></year-without-select-ui-filter>
+                                          <period-by-year-without-ui-select-filter class="form-cell horizontalFilters"></period-by-year-without-ui-select-filter>
+
+                                      </filter-container>
+                                  </div>
+                                      <div class="span12">
+                                       <rzslider id="dose_slider"
+                                                  rz-slider-model="dose_slider.value"
+                                                  rz-slider-options="dose_slider.options"></rzslider>
+                                      </div>
+
+
+                              </div>
+                          </form>
+
+                        </div></div></div>
 
 
                         </div>
@@ -102,200 +526,511 @@
                     </div>
 
                 </div>
-                <div class="row">
-                    <div class="col l8 s8 m12">
-                        <!--<p class="z-depth-1">{{facilityPerformance}}
-                        </p>-->
-                        <div class="card">
-                            <div class="card-content">
-                                <div id="container5"></div>
-                                <!--
-                                                    <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
-                                -->
+
+            </div>
+
+
+            <!-- end of Nav Bar -->
+
+
+            <!--
+                            <div class="row">
+                                <div class="col l12 s12 m12">
+
+                                    <div class="box-header">
+
+
+                                        <div class="card">
+                                            <div class="box-header">
+                                                <filter-container>
+
+                                                    <product-without-description-and-syringes-filter class="form-cell horizontalFilters"
+                                                                                                     required="true"></product-without-description-and-syringes-filter>
+
+                                                    &lt;!&ndash;<year-filter class="form-cell horizontalFilters"></year-filter>
+
+                                                    <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>&ndash;&gt;
+
+
+
+
+                                                </filter-container>
+                                                <div id="dose_slider"  class="form-cell horizontalFilters">
+                                                    <div class="select2-container">
+                                                    <label for="dose_slider" class="labels">Dose</label>
+
+                                                    <rzslider
+                                                            rz-slider-model="dose_slider.value"
+                                                            rz-slider-options="dose_slider.options"></rzslider>
+                                                    </div>
+                                                </div>
+
+                                                <div id="year_slider"  class="form-cell horizontalFilters">
+                                                    <label for="year_slider" class="labels" openlmis-message="label.year"></label>
+
+                                                    <rzslider class="slider"
+                                                            rz-slider-model="year_slider.value"
+                                                            rz-slider-options="year_slider.options"></rzslider>
+                                                </div>
+                                                <div id="slider"  class="form-cell horizontalFilters period_slider">
+                                                    <label for="slider" class="labels" openlmis-message="label.period"></label>
+
+                                                    <rzslider
+                                                            rz-slider-model="slider.value"
+                                                            rz-slider-options="slider.options"></rzslider>
+                                                </div>
+
+
+
+                                                &lt;!&ndash;
+                                                                            </div>
+                                                &ndash;&gt;
+
+
+                                                &lt;!&ndash;
+                                                                        </div>
+                                                &ndash;&gt;
+
+                                            </div>
+
+                                        </div>
+
+
+
+
+                                   &lt;!&ndash;     <div class="card">
+
+                                            <div class="section">
+                                                <filter-container>
+
+                                                    <product-without-description-and-syringes-filter class="form-cell horizontalFilters"
+                                                                                                     required="true"></product-without-description-and-syringes-filter>
+
+                                                    &lt;!&ndash;<year-filter class="form-cell horizontalFilters"></year-filter>
+
+                                                    <period-change-year-filter class="form-cell horizontalFilters"  required="false"></period-change-year-filter>&ndash;&gt;
+
+
+                                                </filter-container>
+                                                <label for="slider" class="labels" openlmis-message="label.period"></label>
+
+                                                <div id="slider" class="form-cell horizontalFilters">
+                                                    <rzslider
+                                                            rz-slider-model="slider.value"
+                                                            rz-slider-options="slider.options"></rzslider>
+                                                </div>
+
+                                            </div>
+
+                                        </div>&ndash;&gt;
+
+
+                                    </div>
+
+                                </div>
 
                             </div>
+            -->
+            <!--
+                            <div class="row">
+                                <div class="col s12 m12 l10" style="padding-left: 0px">
+                                    <div class="section">
+                                        <div style="padding-right: 0px">
+                                            <div class="card z-depth-2 teal lighten-5 large">
+                                                <div class="card-image waves-effect waves-block waves-light" style="overflow: scroll">
+                                                    <div style="width: 100%" ng-mouseover="showIcons(card)" ng-mouseleave="hideIcons(card)">
+
+                                                        <div class="chart-options" ng-if="showicons">
+                                                            <ul class="nav nav-stacked">
+                                                                <li ng-repeat="chartType in icons" style="padding-top: 6px;padding-bottom: 6px">
+                                                                    <a ng-click="changeChart(chartType.name)" title="{{chartType.name}}" ng-class="{'active-type': card.chart == chartType.type }">
+                                                                        <img ng-src="{{'/public/images/img/'+chartType.image}}" class="chart-option-icon" alt="" style="width: 20px!important;">
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+            -->
+            <div class="row" ng-show="false">
+                <div class="col s12 m6 l3">
+                    <div class="card">
+                        <div class="card-content  red white-text">
+                            <p class="card-stats-title"><i class="mdi-social-group-add"></i>Facilities Out of Stock</p>
+                            <h4 class="card-stats-number">{{facilityPerformance[0].stockedout}} %</h4>
+                            <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 15% <span
+                                    class="green-text text-lighten-5">from yesterday</span>
+                            </p>
+                        </div>
+                        <!-- <div class="card-action  green darken-2">
+                             <div id="clients-bar" class="center-align"><canvas width="227" height="25" style="display: inline-block; width: 227px; height: 25px; vertical-align: top;"></canvas></div>
+                         </div>-->
+                    </div>
+                </div>
+                <div class="col s12 m6 l3">
+                    <div class="card">
+                        <div class="card-content yellow lighten-1 white-text">
+                            <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Facilities
+                                Understocked</p>
+                            <h4 id="card-stats-number">{{facilityPerformance[0].understocked}}%</h4>
+                            <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-down"></i> 3% <span
+                                    class="deep-purple-text text-lighten-5">from last month</span>
+                            </p>
+                        </div>
+                        <!--<div class="card-action  pink darken-2">
+                            <div id="invoice-line" class="center-align"><canvas width="282" height="25" style="display: inline-block; width: 282px; height: 25px; vertical-align: top;"></canvas></div>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="col s12 m6 l3">
+                    <div class="card">
+                        <div class="card-content green white-text">
+                            <p class="card-stats-title"><i class="mdi-action-trending-up"></i> Stocked According to Plan
+                            </p>
+                            <h4 class="card-stats-number" style="font-size: 40px !important;">
+                                {{facilityPerformance[0].accordingplan}}%</h4>
+                            <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 80% <span
+                                    class="blue-grey-text text-lighten-5">from yesterday</span>
+                            </p>
+                        </div>
+                        <!-- <div class="card-action blue-grey darken-2">
+                             <div id="profit-tristate" class="center-align"><canvas width="227" height="25" style="display: inline-block; width: 227px; height: 25px; vertical-align: top;"></canvas></div>
+                         </div>-->
+                    </div>
+                </div>
+                <div class="col s12 m6 l3">
+                    <div class="card">
+                        <div class="card-content light-blue white-text">
+                            <p class="card-stats-title"><i class="mdi-editor-attach-money"></i>Facilities Overstocked
+                            </p>
+                            <h4 class="card-stats-number">{{facilityPerformance[0].overstocked}}%</h4>
+                            <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 70% <span
+                                    class="purple-text text-lighten-5">last month</span>
+                            </p>
+                        </div>
+                        <!--  <div class="card-action purple darken-2">
+                              <div id="sales-compositebar" class="center-align"><canvas width="214" height="25" style="display: inline-block; width: 214px; height: 25px; vertical-align: top;"></canvas></div>
+                          </div>-->
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col s12 m8 l8">
+
+                    <div class="card">
+                        <div class="card-content">
+                            <div style="padding-left: 0px;">
+                                <leaflet width="100%" height="500px" legend="legend" geojson="geojson"
+                                         layers="layers"></leaflet>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col s12 m4 l4">
+                    <div class="card white darken-1">
+                        <div class="card-content">
+                            <div style="height: 500px !important;"
+                                 ng-show="features && (features | filter:expectedFilter).length > 0">
+                                <div class="card-title grey white-text"
+                                     style="width:100% !important; font-size: 20px !important; color: #5BADB1 !important;">
+                                      <span class="pull-left" ng-show="showProduct">
+                                        District Coverage Of <Strong>{{product}}</Strong></span>
+                                </div>
+                                <div class="card-body">
+                                    <table class="striped responsive-table table-scrollable scroll">
+                                        <thead>
+                                        <tr>
+                                            <th style="width:25%" openlmis-message="label.district"></th>
+                                            <th style="width:25%;text-align: left !important;">Target</th>
+                                            <th style="width:25% !important;" class="number">Vaccinated</th>
+                                            <th style="width: 25%; text-align: right">% Coverage</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="feature in features | filter:expectedFilter">
+                                            <td style="width:25% !important;">{{feature.name}}</td>
+                                            <td style="width:25% !important;" class="number">{{feature.monthlyEstimate |
+                                                number}}
+                                            </td>
+                                            <td style="width:25% !important;" class="number">{{feature.vaccinated |
+                                                number}}
+                                            </td>
+                                            <td style="width:25% !important;" class="number">
+                                                <div class="number" style="float:right;margin-bottom:0px !important;">
+                                                    {{(feature.coveragePercentage).toFixed(0)}} %
+                                                </div>
+                                                <div class="progress" style="margin-bottom:0px !important;width:68%">
+
+                                                    <div ng-if="feature.coverageClassification=='warn'"
+                                                         class="bar bar-warning leaflet-clickable"
+                                                         ng-click="onDetailClicked(feature, this)"
+                                                         style="width:100%">
+                                                    </div>
+                                                    <div ng-if="feature.coverageClassification=='bad'"
+                                                         class="bar bar-danger leaflet-clickable"
+                                                         ng-click="onDetailClicked(feature, this)"
+                                                         style="width:100%">
+                                                    </div>
+                                                    <div ng-if="feature.coverageClassification=='normal'"
+                                                         class="bar bar-info leaflet-clickable"
+                                                         ng-click="onDetailClicked(feature, this)"
+                                                         style="width:100%">
+                                                    </div>
+                                                    <div ng-if="feature.coverageClassification=='good'"
+                                                         class="bar bar-success good leaflet-clickable"
+                                                         ng-click="onDetailClicked(feature, this)"
+                                                         style="width:100%">
+                                                    </div>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="row">
+                <div class="col l8 s8 m12">
+                    <!--<p class="z-depth-1">{{facilityPerformance}}
+                    </p>-->
+                    <div class="card" ng-mouseover="showIcons(card)" ng-mouseleave="hideIcons(card)">
+                        <div class="card-content">
+                            <div id="container5"></div>
+                            <!--
+                                                <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
+                            -->
+
+                            <div class="chart-options" ng-if="showicons">
+                                <ul class="nav nav-stacked">
+                                    <li ng-repeat="chartType in icons" style="padding-top: 6px;padding-bottom: 6px">
+                                        <a ng-click="changeChart(chartType.name)" title="{{chartType.name}}"
+                                           ng-class="{'active-type': card.chart == chartType.type }">
+                                            <img ng-src="{{'/public/images/img/'+chartType.image}}"
+                                                 class="chart-option-icon" alt="" style="width: 20px!important;">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
                         </div>
 
 
                     </div>
 
-                    <div class="col l4 s4 m12">
 
-                        <div class="card-panel grey lighten-4 z-depth-1">
-                            <div class="row valign-wrapper">
-                                <div class="col l3 s3 m12" style="background-color: red">
+                </div>
 
-                                    <div class="icon-block">
+                <div class="col l4 s4 m12">
+
+                    <div class="card-panel grey lighten-4 z-depth-1">
+                        <div class="row valign-wrapper">
+                            <div class="col l3 s3 m12" style="background-color: red">
+
+                                <div class="icon-block">
                              <span class="black-text">
                            <span style="font-size: 40px">{{facilityPerformance[0].stockedout}} %</span>
                              <p class="light">Of Facilities Stocked Out</p>
                           </span>
 
-                                    </div>
-
                                 </div>
-                                <div class="col l3 s3 m12" style="background-color: yellow">
-                                    <div class="icon-block">
+
+                            </div>
+                            <div class="col l3 s3 m12" style="background-color: yellow">
+                                <div class="icon-block">
                              <span class="black-text">
                              <span style="font-size: 40px">{{facilityPerformance[0].understocked}}%</span>
                              <p>Of Facilities Understocked</p>
                           </span>
 
-                                    </div>
-
                                 </div>
 
-                                <div class="col  l3 s3 m12" style="background-color: green">
-                                    <div class="icon-block">
+                            </div>
+
+                            <div class="col  l3 s3 m12" style="background-color: green">
+                                <div class="icon-block">
                              <span class="black-text">
                       <span style="font-size: 40px">{{facilityPerformance[0].accordingplan}}%</span>
                              <p class="light">Stocked According To plan</p>
                           </span>
 
-                                    </div>
-
                                 </div>
-                                <div class="col  l3 s3 m12" style="background-color: #00B0F0;">
 
-                                    <div class="icon-block">
+                            </div>
+                            <div class="col  l3 s3 m12" style="background-color: #00B0F0;">
+
+                                <div class="icon-block">
                              <span class="black-text">
                         <span style="font-size:40px">{{facilityPerformance[0].overstocked}}%</span>
                              <p class="light">Of Facilities Overstocked</p>
                           </span>
 
-                                    </div>
-
                                 </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-
-                    <div class="col l4 s4 m12">
-                        <div class="card" style="height: 260px!important;">
-                            <div class="card-content">
-                                <div id="container8"></div>
-                                <!--
-                                                    <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
-                                -->
 
                             </div>
                         </div>
-
                     </div>
+
 
                 </div>
 
 
-                <!--
-                <div class="row">
+                <div class="col l4 s4 m12">
+                    <div class="card" style="height: 260px!important;">
+                        <div class="card-content">
+                            <!--
+                                                            <div id="container8"></div>
+                            -->
+                            <!--
+                                                <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
+                            -->
 
-                    <div class="col l12 s12 m12">
-
-
+                        </div>
+                    </div>
 
                 </div>
-                </div>-->
-                <!--
-                    <div class="clearfix"></div>
-                    <div class="clearfix"></div>
-                <br/>
 
-                    <div id="container" style="min-width: 200px; height: 300px; margin: 0 auto"></div>
+            </div>
 
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
-                <br/>
-                <div id="container2" style="height: 800px"></div>
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
-                <br/>
-                <div id="container3" style="height: 800px"></div>-->
 
-                <div class="row">
-                    <div class="col l12 s12 m12">
-                        <div class="card">
-                            <div class="card-content">
-                                <div id="container"></div>
-                            </div>
+            <!--
+            <div class="row">
+
+                <div class="col l12 s12 m12">
+
+
+
+            </div>
+            </div>-->
+            <!--
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+            <br/>
+
+                <div id="container" style="min-width: 200px; height: 300px; margin: 0 auto"></div>
+
+            <div class="clearfix"></div>
+            <div class="clearfix"></div>
+            <br/>
+            <div id="container2" style="height: 800px"></div>
+            <div class="clearfix"></div>
+            <div class="clearfix"></div>
+            <br/>
+            <div id="container3" style="height: 800px"></div>-->
+
+            <div class="row">
+                <div class="col l12 s12 m12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div id="container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+
+                <div class="col l6 s12 m12">
+                    <div class="card">
+                        <div class="card-content">
+                            <!--
+                                                <h5 class="grey-text center">Product Coverage</h5>
+                            -->
+
+                            <div id="NationalChart2" style="margin: 0 auto" class="chart2"></div>
+                            <!--
+                                                            <div class="spacer"></div>
+                            -->
+                            <div id="NationalChart" class="chart2"></div> <!-- Container for Chart B -->
+
+
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
 
-
-                    <div class="col l6 s12 m12">
-                        <div class="card">
-                            <div class="card-content">
-                                <!--
-                                                    <h5 class="grey-text center">Product Coverage</h5>
-                                -->
-                                <div id="container2"></div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col l6 s12 m12">
-                        <div class="card">
-                            <div class="card-content">
-                                <!--
-                                                    <h5 class="grey-text center">Product Coverage</h5>
-                                -->
-                                <div id="container7"></div>
-                            </div>
+                <div class="col l6 s12 m12">
+                    <div class="card">
+                        <div class="card-content">
+                            <!--
+                                                <h5 class="grey-text center">Product Coverage</h5>
+                            -->
+                            <div id="container7"></div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col l12 s12 m12">
+            </div>
+            <div class="row">
+                <div class="col l12 s12 m12">
 
-                        <div class="card">
-                            <div class="card-content">
+                    <div class="card">
+                        <div class="card-content">
                     <span class="pull-right">
 
       </span>
-                                <!--
-                                                <h5 class="center">Full Stock Availability Percentage</h5>
-                                -->
-                                <!--
-                                                    <a id="resizeViewButton" full-screen="" href="" class="btn">
-                                                        <i class="icon-resize-full"></i>
-                                                    </a>-->
+                            <!--
+                                            <h5 class="center">Full Stock Availability Percentage</h5>
+                            -->
+                            <!--
+                                                <a id="resizeViewButton" full-screen="" href="" class="btn">
+                                                    <i class="icon-resize-full"></i>
+                                                </a>-->
 
-                                <div ngsf-fullscreen>
-                        <span class="pull-right"><a ngsf-toggle-fullscreen  class="btn">
+                            <div ngsf-fullscreen>
+                        <span class="pull-right"><a ngsf-toggle-fullscreen class="btn">
                             <i class="icon-resize-full"></i>
 
                         </a></span>
 
-                                    <div id="container3">
+                                <div id="container3">
 
-
-                                    </div>
 
                                 </div>
 
-
-
-
-                                <!--
-                                                    <input type="radio" name="mychart" ng-model="pieChart" class="mychart" id= "pie" value="pie" ng-click= "changeChart()"/>
-                                -->
-
                             </div>
+
+
+                            <!--
+                                                <input type="radio" name="mychart" ng-model="pieChart" class="mychart" id= "pie" value="pie" ng-click= "changeChart()"/>
+                            -->
+
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div>
-        <div class="tab-pane" id="2a">
-            <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the tab</h3>
-        </div>
 
+
+    <div class="tab-pane" id="2a">
+        <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the
+            tab</h3>
     </div>
-</div>
+
+
