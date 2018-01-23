@@ -13,24 +13,39 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!--
     <link rel="stylesheet" href="/public/lib/angular-material/angular-material.css">
+-->
 
 
     <!-- CSS  -->
-    <link href="/public/lib/materialize/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 
     <title openlmis-message="app.title"></title>
     <link rel="icon" href="/public/favicon.ico" type="image/x-icon"/>
     <!-- library files-->
     <script src="/public/lib/base2.js"></script>
-    <script src="/public/lib/jquery/jquery-2.0.0.min.js"></script>
+
+    <!--
+        <script src="/public/lib/jquery/jquery-2.0.0.min.js"></script>
+    -->
 <!--
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 -->
+<!--
     <script src="/public/lib/jquery/jquery-ui-1.9.2.custom.min.js"></script>
-    <script src="/public/lib/angular/angular.min.js"></script>
+-->
+    <script src="/public/lib/leaflet/leaflet.js"></script>
+  <!--  <script src="/public/lib/jquery/jquery-2.0.0.min.js"></script>
+    <script src="/public/lib/jquery/jquery-ui-1.9.2.custom.min.js"></script>-->
+    <script type="text/javascript" src="/public/lib/materialize3/js/jquery-2.1.4.min.js"></script>
 
-    <script src="/public/lib/materialize/js/materialize.js"></script>
+    <script type="text/javascript" src="/public/lib/jquery.smartmenus.js"></script>
+
+
+    <script src="/public/lib/angular/angular.min.js"></script>
+    <script src="/public/lib/materialize3/js/materialize.min.js"></script>
+    <script type="text/javascript" src="/public/lib/angular-materialize/src/angular-materialize.js"></script>
+
 
     <script src="/public/lib/angular/angular-route.min.js"></script>
     <script src="/public/lib/angular/angular-cookies.js"></script>
@@ -47,6 +62,9 @@
     <script src="/public/lib/angular-ui/ng-grid/ng-grid-2.0.7.min.js"></script>
 
     <script src="/public/lib/angular-breadcrumb/js/angular-breadcrumb.min.js"></script>
+    <script src="/public/lib/jquery/chosen.jquery.min.js"></script>
+
+
 
     <link rel="stylesheet" href="/public/lib/angular-ui/angular-ui.min.css">
 
@@ -68,11 +86,16 @@
     <script src="/public/js/vaccine/inventory/shared/service.js"></script>
     <script src="/public/lib/highcharts/highcharts.js"></script>
     <script src="/public/lib/highcharts/highcharts-more.js"></script>
+<!--
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+-->
     <script src="/public/lib/highcharts/exporting.js"></script>
     <script src="/public/js/shared/services/navigate-back-service.js"></script>
     <script src="/public/js/shared/app.js"></script>
     <script type="text/javascript" src="/public/js/shared/services/authorization-service.js"></script>
 
+
+    <script src="/public/js/shared/services/map-helpers.js"></script>
 
     <!-- App directives -->
     <script src="/public/js/shared/directives/form-toolbar.js"></script>
@@ -86,6 +109,8 @@
     <script src="/public/js/shared/directives/openlmis-pagination.js"></script>
     <script src="/public/js/shared/directives/ng-grid-events.js"></script>
     <script src="/public/js/shared/directives/fixed-table-header.js"></script>
+
+
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/public/lib/bootstrap-tree-view/css/bootstrap.3.3.7.min.css">
@@ -106,12 +131,20 @@
     <script src="/public/lib/tree-dropdown/tree-dropdown.js"></script>
     <script src="/public/lib/angular-screen-full/screenfull.js"></script>
     <script src="/public/lib/angular-screen-full/angular-screenfull.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/public/lib/angularjs-slider/rzslider.css"/>
+    <script src="/public/lib/angularjs-slider/rzslider.min.js"></script>
     <script src="/public/js/rnr/directives/full-screen.js"></script>
-
+    <link rel="stylesheet" href="/public/lib/leaflet/leaflet.css">
     <link rel="stylesheet" href="/public/lib/tree-dropdown/tree-dropdown.css">
     <link rel="stylesheet" href="/public/css/app.css">
     <link rel="stylesheet" href="/public/lib/angular-ui/ng-table/ng-table.css">
+<!--
     <link rel="stylesheet" href="/public/css/report.css">
+-->
+    <link rel="stylesheet" href="/public/css/ivd_map.css">
+
+
+
     <!--
         <link rel="stylesheet" href="/public/css/style.css">
     -->
@@ -129,7 +162,16 @@
     <script src="/public/js/vaccine/stock-availability/controller/notification-controller.js"></script>
     <script src="/public/js/vaccine/dash/controller/chart-helper-controller.js"></script>
 
+    <!--Map directives -->
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyDhnT2tAschK5E7U6on9fB3zjxTlfcZ_Mw&v=3&sensor=false"></script>
+    <script src="/public/lib/leaflet/angular-leaflet-directive.min.js"></script>
+    <script src="/public/lib/leaflet/chroma.min.js"></script>
+    <script src="/public/lib/leaflet/Google.js"></script>
+
+
     <link type="text/css" rel="stylesheet" charset="UTF-8" href="/public/css/ng-grid.css">
+    <link href="/public/lib/materialize3/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
     <link type="text/css" rel="stylesheet" charset="UTF-8" href="/public/css/app.css">
     <link rel="stylesheet" href="/public/css/rnr-mmia-view.css"/>
     <link rel="stylesheet" href="/public/css/rnr-view.css">
@@ -140,6 +182,11 @@
 
     <link type="text/css" rel="stylesheet" charset="UTF-8" href="/public/css/vaccine-inventory.css">
 
+    <link href="/public/css/bootstrap-select.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<!--
+    <link rel="stylesheet" href="/public/css/chosen.min.css">
+-->
 
 
 </head>
@@ -151,7 +198,55 @@
 <div class="content" style="background-color: #eef1f3;">
     <div ncy-breadcrumb=""></div>
     <div  ui-view></div>
+<script>
+    $(document).ready(function() {
+        $(".my_select_box").chosen({max_selected_options: 100});
+    $('select').material_select();
+});
+</script>
+
 </div>
+
+<script>
+
+
+/*
+    $(document).ready(function(){
+        $("#main-menu").css({"display":"none"});
+        $(".button-collapse").sideNav();
+        $(".chat-collapse").sideNav();
+        $('select').material_select();
+        $(".dropdown-button").dropdown();
+        $('.modal-trigger').leanModal();
+        $(".dropdown-button1").dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrain_width: false, // Does not change width of dropdown to that of the activator
+            hover: true, // Activate on hover
+            gutter: 0, // Spacing from edge
+            belowOrigin: false, // Displays dropdown below the button
+            alignment: 'left' // Displays dropdown with edge aligned to the left of button
+        });
+        $(function() {
+            $('#main-menu,#rchandhmisindicator,#dropdown1,#dropdown3,#dropdown4,#dropdown5,#dropdown6').smartmenus({
+                mainMenuSubOffsetX: 10,
+                mainMenuSubOffsetY: 0,
+                subMenusSubOffsetX: 10,
+                subMenusSubOffsetY: 0
+            });
+            $('#dropdown8').smartmenus({
+                mainMenuSubOffsetX: 10,
+                mainMenuSubOffsetY: 0,
+                subMenusSubOffsetX: 10,
+                subMenusSubOffsetY: 0
+            });
+        });
+
+    })
+*/
+
+
+</script>
 <!--
 <script type="text/javascript">
     function attachEvent() {
@@ -209,7 +304,11 @@
 </script>
 -->
 
+<script type="text/javascript">
 
+
+
+</script>
 
 
 
