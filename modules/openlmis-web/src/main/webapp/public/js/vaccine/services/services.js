@@ -11,159 +11,171 @@
  */
 
 services.factory('VaccineDiseases', function ($resource) {
-  return $resource('/vaccine/disease/all.json', {}, {});
+    return $resource('/vaccine/disease/all.json', {}, {});
 });
 
 services.factory('VaccineDisease', function ($resource) {
-  return $resource('/vaccine/disease/get/:id.json', {id : '@id'}, {});
+    return $resource('/vaccine/disease/get/:id.json', {id: '@id'}, {});
 });
 
 services.factory('SaveVaccineDisease', function ($resource) {
-  return $resource('/vaccine/disease/save.json', {}, update);
+    return $resource('/vaccine/disease/save.json', {}, update);
 });
 
 
 services.factory('SaveVaccineProductDose', function ($resource) {
-  return $resource('/vaccine/product-dose/save.json', {}, update);
+    return $resource('/vaccine/product-dose/save.json', {}, update);
 });
 
 services.factory('VaccineProductDose', function ($resource) {
-  return $resource('/vaccine/product-dose/get/:programId.json', {productId : '@programId'}, {});
+    return $resource('/vaccine/product-dose/get/:programId.json', {productId: '@programId'}, {});
 });
 
 services.factory('VaccineIvdTabConfigs', function ($resource) {
-  return $resource('/vaccine/config/tab-visibility/:programId.json', {productId : '@programId'}, {});
+    return $resource('/vaccine/config/tab-visibility/:programId.json', {productId: '@programId'}, {});
 });
 
 services.factory('SaveVaccineIvdTabConfigs', function ($resource) {
-  return $resource('/vaccine/config/save-tab-visibility.json', {}, update);
+    return $resource('/vaccine/config/save-tab-visibility.json', {}, update);
 });
 
 
 services.factory('VaccineReportConfigurablePrograms', function ($resource) {
-  return $resource('/vaccine/report/programs.json', {}, {});
+    return $resource('/vaccine/report/programs.json', {}, {});
 });
 
 services.factory('VaccineSupervisedIvdPrograms', function ($resource) {
-  return $resource('/vaccine/report/ivd-form/supervised-programs.json', {}, {});
+    return $resource('/vaccine/report/ivd-form/supervised-programs.json', {}, {});
 });
 services.factory('VimsVaccineSupervisedIvdPrograms', function ($resource) {
     return $resource('/vaccine/report/ivd-form/vims-supervised-programs.json', {}, {});
 });
 services.factory('VaccineHomeFacilityIvdPrograms', function ($resource) {
-  return $resource('/vaccine/report/ivd-form/programs.json', {}, {});
+    return $resource('/vaccine/report/ivd-form/programs.json', {}, {});
 });
 
 services.factory('VaccineReportPrograms', function ($resource) {
-  return $resource('/vaccine/report/programs.json', {}, {});
+    return $resource('/vaccine/report/programs.json', {}, {});
 });
 
 services.factory('VaccineReportFacilities', function ($resource) {
-  return $resource('/vaccine/report/ivd-form/facilities/:programId.json', { programId: '@programId'}, {});
+    return $resource('/vaccine/report/ivd-form/facilities/:programId.json', {programId: '@programId'}, {});
 });
 
 services.factory('VaccineReportPeriods', function ($resource) {
-  return $resource('/vaccine/report/periods/:facilityId/:programId.json', {facilityId: '@facilityId', programId: '@programId'}, {});
+    return $resource('/vaccine/report/periods/:facilityId/:programId.json', {
+        facilityId: '@facilityId',
+        programId: '@programId'
+    }, {});
 });
 
 services.factory('ViewVaccineReportPeriods', function ($resource) {
-  return $resource('/vaccine/report/view-periods/:facilityId/:programId.json', {facilityId: '@facilityId', programId: '@programId'}, {});
+    return $resource('/vaccine/report/view-periods/:facilityId/:programId.json', {
+        facilityId: '@facilityId',
+        programId: '@programId'
+    }, {});
 });
 
-services.factory('ApprovalPendingIvds', function($resource){
-  return $resource('/vaccine/report/approval-pending.json',{}, {});
+services.factory('ApprovalPendingIvds', function ($resource) {
+    return $resource('/vaccine/report/approval-pending.json', {}, {});
 });
 
 services.factory('VaccineReportInitiate', function ($resource) {
-  return $resource('/vaccine/report/initialize/:facilityId/:programId/:periodId.json', {facilityId: '@facilityId', programId: '@programId', periodId: '@periodId'}, {});
+    return $resource('/vaccine/report/initialize/:facilityId/:programId/:periodId.json', {
+        facilityId: '@facilityId',
+        programId: '@programId',
+        periodId: '@periodId'
+    }, {});
 });
 
 services.factory('VaccineReport', function ($resource) {
-  return $resource('/vaccine/report/get/:id.json', {id: '@id'}, {});
+    return $resource('/vaccine/report/get/:id.json', {id: '@id'}, {});
 });
 
 services.factory('VaccineReportSave', function ($resource) {
-  return $resource('/vaccine/report/save.json', {}, update);
+    return $resource('/vaccine/report/save.json', {}, update);
 });
 
 services.factory('VaccineReportSubmit', function ($resource) {
-  return $resource('/vaccine/report/submit.json', {}, update);
+    return $resource('/vaccine/report/submit.json', {}, update);
 });
 
 
 services.factory('VaccineReportApprove', function ($resource) {
-  return $resource('/vaccine/report/approve.json', {}, update);
+    return $resource('/vaccine/report/approve.json', {}, update);
 });
 
 services.factory('VaccineReportReject', function ($resource) {
-  return $resource('/vaccine/report/reject.json', {}, update);
+    return $resource('/vaccine/report/reject.json', {}, update);
 });
 
 
 services.factory('VaccineColumnTemplate', function ($resource) {
-  return $resource('/vaccine/columns/get/:id.json', {id : '@id'}, {});
+    return $resource('/vaccine/columns/get/:id.json', {id: '@id'}, {});
 });
 
 services.factory('VaccineColumnTemplateSave', function ($resource) {
-  return $resource('/vaccine/columns/save.json', {}, update);
+    return $resource('/vaccine/columns/save.json', {}, update);
 });
 
-services.factory('VaccineDiscardingReasons', function($resource){
-  return $resource('/vaccine/discarding/reasons/all.json',{},{});
+services.factory('VaccineDiscardingReasons', function ($resource) {
+    return $resource('/vaccine/discarding/reasons/all.json', {}, {});
 });
 
-services.factory('StockCards', function($resource){
-   return $resource('/api/v2/facilities/:facilityId/stockCards?includeEmptyLots=false', {facilityId: '@facilityId'}, {});
+services.factory('StockCards', function ($resource) {
+    return $resource('/api/v2/facilities/:facilityId/stockCards?includeEmptyLots=false', {facilityId: '@facilityId'}, {});
 });
 
-services.factory('Forecast', function($resource){
-    return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements',{facilityId: '@facilityId', programId: '@programId'},{});
+services.factory('Forecast', function ($resource) {
+    return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements', {
+        facilityId: '@facilityId',
+        programId: '@programId'
+    }, {});
 });
 
-services.factory('ProgramProducts',function($resource){
-    return $resource('/programProducts/programId/:programId.json',{programId:'@programId'},{});
+services.factory('ProgramProducts', function ($resource) {
+    return $resource('/programProducts/programId/:programId.json', {programId: '@programId'}, {});
 });
 
-services.factory('VaccineInventoryPrograms',function($resource){
-    return $resource('/vaccine/inventory/programs.json',{},{});
+services.factory('VaccineInventoryPrograms', function ($resource) {
+    return $resource('/vaccine/inventory/programs.json', {}, {});
 });
 
-services.factory('SaveVaccineInventoryAdjustment',function($resource){
-    return $resource('/vaccine/inventory/stock/adjustment.json',{},{update:{method:'PUT'}});
+services.factory('SaveVaccineInventoryAdjustment', function ($resource) {
+    return $resource('/vaccine/inventory/stock/adjustment.json', {}, {update: {method: 'PUT'}});
 });
 
-services.factory('VaccineAdjustmentReasons',function($resource){
-    return $resource('/api/v2/stockManagement/adjustmentReasons.json',{programId:'@programId'},{});
+services.factory('VaccineAdjustmentReasons', function ($resource) {
+    return $resource('/api/v2/stockManagement/adjustmentReasons.json', {programId: '@programId'}, {});
 });
 
 services.factory('VaccineProgramProducts', function ($resource) {
-  return $resource('/vaccine/inventory/programProducts/programId/:programId.json', {}, {});
+    return $resource('/vaccine/inventory/programProducts/programId/:programId.json', {}, {});
 });
 
 services.factory('ProductLots', function ($resource) {
-  return $resource('/vaccine/inventory/lots/byProduct/:productId.json', {productId:'@productId'}, {});
+    return $resource('/vaccine/inventory/lots/byProduct/:productId.json', {productId: '@productId'}, {});
 });
 
-services.factory('SaveVaccineInventoryReceived',function($resource){
-    return $resource('/vaccine/inventory/stock/credit.json',{},{update:{method:'PUT'}});
+services.factory('SaveVaccineInventoryReceived', function ($resource) {
+    return $resource('/vaccine/inventory/stock/credit.json', {}, {update: {method: 'PUT'}});
 });
 
-services.factory('SaveVaccineInventoryConfigurations',function($resource){
-    return $resource('/vaccine/inventory/configuration/save.json',{},{update:{method:'PUT'}});
+services.factory('SaveVaccineInventoryConfigurations', function ($resource) {
+    return $resource('/vaccine/inventory/configuration/save.json', {}, {update: {method: 'PUT'}});
 });
 
-services.factory('VaccineInventoryConfigurations',function($resource){
-    return $resource('/vaccine/inventory/configuration/getProductConfigurations.json',{},{});
+services.factory('VaccineInventoryConfigurations', function ($resource) {
+    return $resource('/vaccine/inventory/configuration/getProductConfigurations.json', {}, {});
 });
 
 services.factory('ManufacturerList', function ($resource) {
-  return $resource('/vaccine/manufacturers.json', {}, {});
+    return $resource('/vaccine/manufacturers.json', {}, {});
 });
 
 
-
-services.factory('StockEvent', function($resource){
-    return $resource('/api/v2/facilities/:facilityId/stockCards',{facilityId:'@facilityId'}, {update:{method:"POST"}});
+services.factory('StockEvent', function ($resource) {
+    return $resource('/api/v2/facilities/:facilityId/stockCards', {facilityId: '@facilityId'}, {update: {method: "POST"}});
 });
 
 
@@ -173,20 +185,34 @@ services.factory('VaccineReportPrograms', function ($resource) {
 
 
 services.factory('VaccineOrderRequisitionReportPeriods', function ($resource) {
-    return $resource('/vaccine/orderRequisition/periods/:facilityId/:programId.json', {facilityId: '@facilityId', programId: '@programId'}, {});
+    return $resource('/vaccine/orderRequisition/periods/:facilityId/:programId.json', {
+        facilityId: '@facilityId',
+        programId: '@programId'
+    }, {});
 });
 
 services.factory('ViewOrderRequisitionVaccineReportPeriods', function ($resource) {
-    return $resource('/vaccine/orderRequisition/view-periods/:facilityId/:programId.json', {facilityId: '@facilityId', programId: '@programId'}, {});
+    return $resource('/vaccine/orderRequisition/view-periods/:facilityId/:programId.json', {
+        facilityId: '@facilityId',
+        programId: '@programId'
+    }, {});
 });
 
 
 services.factory('VaccineOrderRequisitionReportInitiate', function ($resource) {
-    return $resource('/vaccine/orderRequisition/initialize/:periodId/:programId/:facilityId.json', {facilityId: '@facilityId', programId: '@programId', periodId: '@periodId'}, {});
+    return $resource('/vaccine/orderRequisition/initialize/:periodId/:programId/:facilityId.json', {
+        facilityId: '@facilityId',
+        programId: '@programId',
+        periodId: '@periodId'
+    }, {});
 });
 
 services.factory('VaccineOrderRequisitionReportInitiateEmergency', function ($resource) {
-    return $resource('/vaccine/orderRequisition/initializeEmergency/:periodId/:programId/:facilityId.json', {facilityId: '@facilityId', programId: '@programId', periodId: '@periodId'}, {});
+    return $resource('/vaccine/orderRequisition/initializeEmergency/:periodId/:programId/:facilityId.json', {
+        facilityId: '@facilityId',
+        programId: '@programId',
+        periodId: '@periodId'
+    }, {});
 });
 
 
@@ -217,20 +243,26 @@ services.factory('VaccinePendingRequisitions', function ($resource) {
 });
 
 
-services.factory('LoggedInUserDetails',function($resource){
-    return $resource('/vaccine/orderRequisition/loggedInUserDetails.json',{},{});
+services.factory('LoggedInUserDetails', function ($resource) {
+    return $resource('/vaccine/orderRequisition/loggedInUserDetails.json', {}, {});
 });
 
-services.factory('ProgramForUserHomeFacility', function($resource){
-    return $resource('/vaccine/orderRequisition/order-requisition/programs.json',{},{});
+services.factory('ProgramForUserHomeFacility', function ($resource) {
+    return $resource('/vaccine/orderRequisition/order-requisition/programs.json', {}, {});
 });
 
-services.factory('VaccineOrderRequisitionInsert', function($resource){
-    return $resource('/vaccine/orderRequisition/initialize/:programId/:facilityId.json',{programId:'@programId',facilityId:'@facilityId'},{});
+services.factory('VaccineOrderRequisitionInsert', function ($resource) {
+    return $resource('/vaccine/orderRequisition/initialize/:programId/:facilityId.json', {
+        programId: '@programId',
+        facilityId: '@facilityId'
+    }, {});
 });
 
-services.factory('VaccineOrderRequisitionLastReport', function($resource){
-    return $resource('/vaccine/orderRequisition/lastReport/:facilityId/:programId.json',{facilityId:'@facilityId',programId:'@programId'},{});
+services.factory('VaccineOrderRequisitionLastReport', function ($resource) {
+    return $resource('/vaccine/orderRequisition/lastReport/:facilityId/:programId.json', {
+        facilityId: '@facilityId',
+        programId: '@programId'
+    }, {});
 });
 
 services.factory('VaccineOrderRequisitionSave', function ($resource) {
@@ -245,20 +277,20 @@ services.factory('VaccineHomeFacilityPrograms', function ($resource) {
     return $resource('/vaccine/orderRequisition/programs.json', {}, {});
 });
 
-services.factory('UpdateOrderRequisitionStatus',function($resource){
-    return $resource('/vaccine/orderRequisition/updateOrderRequest/:orderId.json',{orderId:'@orderId'},{update:{method:'PUT'}});
+services.factory('UpdateOrderRequisitionStatus', function ($resource) {
+    return $resource('/vaccine/orderRequisition/updateOrderRequest/:orderId.json', {orderId: '@orderId'}, {update: {method: 'PUT'}});
 });
 
 services.factory('VaccineLastStockMovement', function ($resource) {
     return $resource('/vaccine/inventory/stock/lastReport.json', {}, {});
 });
 
-services.factory('SaveForecastConfiguration',function($resource){
-    return $resource('/vaccine/inventory/configuration/saveForecastConfiguration.json',{},{update:{method:'PUT'}});
+services.factory('SaveForecastConfiguration', function ($resource) {
+    return $resource('/vaccine/inventory/configuration/saveForecastConfiguration.json', {}, {update: {method: 'PUT'}});
 });
 
-services.factory('VaccineForecastConfigurations',function($resource){
-    return $resource('/vaccine/inventory/configuration/getAllForecastConfigurations.json',{},{});
+services.factory('VaccineForecastConfigurations', function ($resource) {
+    return $resource('/vaccine/inventory/configuration/getAllForecastConfigurations.json', {}, {});
 });
 
 services.factory('FacilityDistributed', function ($resource) {
@@ -266,23 +298,26 @@ services.factory('FacilityDistributed', function ($resource) {
 });
 
 services.factory('SaveDistribution', function ($resource) {
-    return $resource('/vaccine/inventory/distribution/save.json', {}, {save:{method:'POST'}});
+    return $resource('/vaccine/inventory/distribution/save.json', {}, {save: {method: 'POST'}});
 });
 
 services.factory('DistributedFacilities', function ($resource) {
     return $resource('/vaccine/inventory/distribution/get-distributed.json', {}, {});
 });
 
-services.factory('EquipmentNonFunctional',function($resource){
-    return $resource('/vaccine/inventory/dashboard/get-equipment-alerts',{},{});
+services.factory('EquipmentNonFunctional', function ($resource) {
+    return $resource('/vaccine/inventory/dashboard/get-equipment-alerts', {}, {});
 });
 
-services.factory('OneLevelSupervisedFacilities',function($resource){
-    return $resource('/vaccine/inventory/distribution/supervised-facilities/:programId.json',{programId: '@programId'},{});
+services.factory('OneLevelSupervisedFacilities', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/supervised-facilities/:programId.json', {programId: '@programId'}, {});
 });
 services.factory('ViewBundledDistributionVaccinationSupplies', function ($resource) {
 
-    return $resource('/vaccine/report/view-bundled-distribution-vaccination-supplies/:year/:productId.json', {year: '@year', productId: '@productId'}, {});
+    return $resource('/vaccine/report/view-bundled-distribution-vaccination-supplies/:year/:productId.json', {
+        year: '@year',
+        productId: '@productId'
+    }, {});
 });
 services.factory('PerformanceByDropoutRateByDistrict', function ($resource) {
     return $resource('/vaccine/report/performanceByDropoutRateByDistrict.json', {}, {});
@@ -302,108 +337,106 @@ services.factory('DenominatorName', function ($resource) {
     return $resource('/vaccine/report/denominatorName.json', {}, {});
 });
 
-services.factory('VaccineDashboardSummary', function($resource){
+services.factory('VaccineDashboardSummary', function ($resource) {
 
-   return $resource('/vaccine/dashboard/summary.json',{},{});
-});
-
-services.factory('VaccineDashboardMonthlyCoverage', function($resource){
-    return $resource('/vaccine/dashboard/monthly-coverage.json',{},{});
+    return $resource('/vaccine/dashboard/summary.json', {}, {});
 });
 
-services.factory('repairingDetail', function($resource){
-    return $resource('/vaccine/dashboard/repairing-details.json',{},{});
-});
-services.factory('reportingDetail', function($resource){
-    return $resource('/vaccine/dashboard/reporting-details.json',{},{});
-});
-services.factory('InvestigatingDetails', function($resource){
-    return $resource('/vaccine/dashboard/investigating-details.json',{},{});
-});
-services.factory('VaccineDashboardMonthlyDropout', function($resource){
-    return $resource('/vaccine/dashboard/monthly-dropout.json',{},{});
+services.factory('VaccineDashboardMonthlyCoverage', function ($resource) {
+    return $resource('/vaccine/dashboard/monthly-coverage.json', {}, {});
 });
 
-services.factory('VaccineDashboardDistrictDropout', function($resource){
-    return $resource('/vaccine/dashboard/district-dropout.json',{},{});
+services.factory('repairingDetail', function ($resource) {
+    return $resource('/vaccine/dashboard/repairing-details.json', {}, {});
+});
+services.factory('reportingDetail', function ($resource) {
+    return $resource('/vaccine/dashboard/reporting-details.json', {}, {});
+});
+services.factory('InvestigatingDetails', function ($resource) {
+    return $resource('/vaccine/dashboard/investigating-details.json', {}, {});
+});
+services.factory('VaccineDashboardMonthlyDropout', function ($resource) {
+    return $resource('/vaccine/dashboard/monthly-dropout.json', {}, {});
 });
 
-services.factory('VaccineDashboardDistrictCoverage', function($resource){
-    return $resource('/vaccine/dashboard/district-coverage.json',{},{});
+services.factory('VaccineDashboardDistrictDropout', function ($resource) {
+    return $resource('/vaccine/dashboard/district-dropout.json', {}, {});
 });
 
-services.factory('VaccineDashboardMonthlyWastage', function($resource){
-    return $resource('/vaccine/dashboard/monthly-wastage.json',{},{});
-});
-services.factory('VaccineDashboardDistrictWastage', function($resource){
-    return $resource('/vaccine/dashboard/district-wastage.json',{},{});
-});
-services.factory('VaccineDashboardMonthlyStock', function($resource){
-    return $resource('/vaccine/dashboard/monthly-stock.json',{},{});
-});
-services.factory('VaccineDashboardDistrictStock', function($resource){
-    return $resource('/vaccine/dashboard/district-stock.json',{},{});
-});
-services.factory('VaccineDashboardFacilityStock', function($resource){
-    return $resource('/vaccine/dashboard/facility-stock.json',{},{});
+services.factory('VaccineDashboardDistrictCoverage', function ($resource) {
+    return $resource('/vaccine/dashboard/district-coverage.json', {}, {});
 });
 
-services.factory('VaccineDashboardBundle', function($resource){
-    return $resource('/vaccine/dashboard/bundle.json',{},{});
+services.factory('VaccineDashboardMonthlyWastage', function ($resource) {
+    return $resource('/vaccine/dashboard/monthly-wastage.json', {}, {});
 });
-services.factory('VaccineDashboardFacilityCoverage', function($resource){
-    return $resource('/vaccine/dashboard/facility-coverage.json',{},{});
+services.factory('VaccineDashboardDistrictWastage', function ($resource) {
+    return $resource('/vaccine/dashboard/district-wastage.json', {}, {});
+});
+services.factory('VaccineDashboardMonthlyStock', function ($resource) {
+    return $resource('/vaccine/dashboard/monthly-stock.json', {}, {});
+});
+services.factory('VaccineDashboardDistrictStock', function ($resource) {
+    return $resource('/vaccine/dashboard/district-stock.json', {}, {});
+});
+services.factory('VaccineDashboardFacilityStock', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-stock.json', {}, {});
 });
 
-
-services.factory('VaccineDashboardFacilityCoverageDetails', function($resource){
-    return $resource('/vaccine/dashboard/facility-coverage-details.json',{},{});
+services.factory('VaccineDashboardBundle', function ($resource) {
+    return $resource('/vaccine/dashboard/bundle.json', {}, {});
 });
-
-services.factory('VaccineDashboardFacilityWastage', function($resource){
-    return $resource('/vaccine/dashboard/facility-wastage.json',{},{});
+services.factory('VaccineDashboardFacilityCoverage', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-coverage.json', {}, {});
 });
 
 
-services.factory('VaccineDashboardFacilityWastageDetails', function($resource){
-    return $resource('/vaccine/dashboard/facility-wastage-details.json',{},{});
+services.factory('VaccineDashboardFacilityCoverageDetails', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-coverage-details.json', {}, {});
 });
 
-services.factory('VaccineDashboardFacilitySessions', function($resource){
-    return $resource('/vaccine/dashboard/facility-sessions.json',{},{});
-});
-
-
-services.factory('VaccineDashboardFacilitySessionsDetails', function($resource){
-    return $resource('/vaccine/dashboard/facility-sessions-details.json',{},{});
-});
-
-services.factory('VaccineDashboardFacilityDropout', function($resource){
-    return $resource('/vaccine/dashboard/facility-dropout.json',{},{});
+services.factory('VaccineDashboardFacilityWastage', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-wastage.json', {}, {});
 });
 
 
-services.factory('VaccineDashboardFacilityDropoutDetails', function($resource){
-    return $resource('/vaccine/dashboard/facility-dropout-details.json',{},{});
+services.factory('VaccineDashboardFacilityWastageDetails', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-wastage-details.json', {}, {});
 });
 
-services.factory('VaccineDashboardFacilityTrend', function($resource){
-    return $resource('/vaccine/dashboard/facility-coverage.json',{},
+services.factory('VaccineDashboardFacilitySessions', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-sessions.json', {}, {});
+});
+
+
+services.factory('VaccineDashboardFacilitySessionsDetails', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-sessions-details.json', {}, {});
+});
+
+services.factory('VaccineDashboardFacilityDropout', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-dropout.json', {}, {});
+});
+
+
+services.factory('VaccineDashboardFacilityDropoutDetails', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-dropout-details.json', {}, {});
+});
+
+services.factory('VaccineDashboardFacilityTrend', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-coverage.json', {},
         {
-            coverage: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage.json'},
-            coverageDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-coverage-details.json'},
-            sessions: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-sessions.json'},
-            sessionsDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-sessions-details.json'},
-            wastage: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-wastage.json'},
-            wastageDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-wastage-details.json'},
-            dropout: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-dropout.json'},
-            dropoutDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-dropout-details.json'},
-            stockDetails: {method: 'GET', params:{}, url: '/vaccine/dashboard/facility-stock-detail.json'}
+            coverage: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-coverage.json'},
+            coverageDetails: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-coverage-details.json'},
+            sessions: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-sessions.json'},
+            sessionsDetails: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-sessions-details.json'},
+            wastage: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-wastage.json'},
+            wastageDetails: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-wastage-details.json'},
+            dropout: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-dropout.json'},
+            dropoutDetails: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-dropout-details.json'},
+            stockDetails: {method: 'GET', params: {}, url: '/vaccine/dashboard/facility-stock-detail.json'}
         }
     );
 });
-
-
 
 
 services.factory('Distribution', function ($resource) {
@@ -412,14 +445,14 @@ services.factory('Distribution', function ($resource) {
 
 
 services.factory('ColdChainOperationalStatus', function ($resource) {
-  return $resource('/equipment/type/operational-status.json', {}, {});
+    return $resource('/equipment/type/operational-status.json', {}, {});
 });
 
-services.factory('VaccineDashboardSessions', function($resource){
-    return $resource('/vaccine/dashboard/sessions.json',{},{});
+services.factory('VaccineDashboardSessions', function ($resource) {
+    return $resource('/vaccine/dashboard/sessions.json', {}, {});
 });
 
-services.factory('VaccineDashboardDistrictSessions', function($resource) {
+services.factory('VaccineDashboardDistrictSessions', function ($resource) {
     return $resource('/vaccine/dashboard/district-sessions.json', {}, {});
 });
 
@@ -435,7 +468,7 @@ services.factory('StatuVaccinationSupply', function ($resource) {
     return $resource('/vaccine/report/statusOfVaccinationSupplyReceive.json', {}, {});
 });
 
-services.factory("SendVaccineMessages",function($resource) {
+services.factory("SendVaccineMessages", function ($resource) {
     return $resource('/vaccine/messages/send.json', {}, {post: {method: 'POST'}});
 });
 
@@ -445,15 +478,18 @@ services.factory('SupervisoryNodeByFacilityAndRequisition', function ($resource)
 
 
 services.factory('ConsolidatedOrdersList', function ($resource) {
-    return $resource('/vaccine/orderRequisition/getConsolidatedOrderList/:program/:facilityId.json', {program: '@program',facilityId: '@facilityId'}, {});
+    return $resource('/vaccine/orderRequisition/getConsolidatedOrderList/:program/:facilityId.json', {
+        program: '@program',
+        facilityId: '@facilityId'
+    }, {});
 });
 
-services.factory('PrintConsolidatedList', function($resource) {
+services.factory('PrintConsolidatedList', function ($resource) {
     return $resource('/vaccine/orderRequisition/consolidate/print/:facilityId.json', {facilityId: '@facilityId'}, {});
 });
 
 services.factory('SaveDistributionList', function ($resource) {
-    return $resource('/vaccine/inventory/distribution/saveConsolidatedDistributionList.json', {}, {save:{method:'POST'}});
+    return $resource('/vaccine/inventory/distribution/saveConsolidatedDistributionList.json', {}, {save: {method: 'POST'}});
 });
 
 services.factory('GetDistributionNotification', function ($resource) {
@@ -464,31 +500,34 @@ services.factory('UpdateDistributionsForNotification', function ($resource) {
     return $resource('/vaccine/inventory/distribution/UpdateDistributionsForNotification/:id.json', {id: '@id'}, {});
 });
 
-services.factory("SendVaccineMessages",function($resource){
-    return $resource('/vaccine/messages/send.json',{}, {post: {method:'POST'}});
+services.factory("SendVaccineMessages", function ($resource) {
+    return $resource('/vaccine/messages/send.json', {}, {post: {method: 'POST'}});
 });
 
-services.factory('RefreshStockRequirements', function($resource){
-    return $resource('/rest-api/facility/:facilityId/program/:programId/refreshStockRequirements',{facilityId: '@facilityId', programId: '@programId'},{});
+services.factory('RefreshStockRequirements', function ($resource) {
+    return $resource('/rest-api/facility/:facilityId/program/:programId/refreshStockRequirements', {
+        facilityId: '@facilityId',
+        programId: '@programId'
+    }, {});
 });
 
-services.factory('AllVaccineInventoryConfigurations',function($resource){
-    return $resource('/vaccine/inventory/configuration/getAll.json',{},{});
+services.factory('AllVaccineInventoryConfigurations', function ($resource) {
+    return $resource('/vaccine/inventory/configuration/getAll.json', {}, {});
 });
 
-services.factory('Lot',function($resource){
-    return $resource('/vaccine/inventory/lot/create.json',{},{create:{method:'PUT'}});
+services.factory('Lot', function ($resource) {
+    return $resource('/vaccine/inventory/lot/create.json', {}, {create: {method: 'PUT'}});
 });
 
-services.factory('FacilityTypeAndProgramProducts',function($resource) {
+services.factory('FacilityTypeAndProgramProducts', function ($resource) {
     return $resource('/vaccine/inventory/programProducts/facilityId/:facilityId/programId/:programId.json', {
         facilityId: '@facilityId',
         programId: '@programId'
     }, {});
 });
 
-services.factory('GetFacilityForVaccineOrderRequisition',function($resource){
-    return $resource('/vaccine/orderRequisition/facilities/:facilityId.json',{facilityId:'@facilityId'},{});
+services.factory('GetFacilityForVaccineOrderRequisition', function ($resource) {
+    return $resource('/vaccine/orderRequisition/facilities/:facilityId.json', {facilityId: '@facilityId'}, {});
 });
 
 services.factory('ClassificationVaccineUtilizationPerformance', function ($resource) {
@@ -498,16 +537,24 @@ services.factory('CategorizationVaccineUtilizationPerformance', function ($resou
     return $resource('/vaccine/report/categorizationVaccineUtilizationPerformance.json', {}, {});
 });
 
-services.factory('QuantityRequired',function($resource){
-     return $resource('/rest-api/ivd/facility-stock-status',{facilityCode:'@facilityCode',programCode:'@programCode',periodId:'@periodId'},{});
+services.factory('QuantityRequired', function ($resource) {
+    return $resource('/rest-api/ivd/facility-stock-status', {
+        facilityCode: '@facilityCode',
+        programCode: '@programCode',
+        periodId: '@periodId'
+    }, {});
 });
 
 services.factory('FacilityDistributionForecastAndLastPeriod', function ($resource) {
-    return $resource('/vaccine/inventory/distribution/facility-distribution-forecast-lastPeriod/:facilityId/:programId.json',{facilityCode:'@facilityCode',programCode:'@programCode',periodId:'@periodId'}, {});
+    return $resource('/vaccine/inventory/distribution/facility-distribution-forecast-lastPeriod/:facilityId/:programId.json', {
+        facilityCode: '@facilityCode',
+        programCode: '@programCode',
+        periodId: '@periodId'
+    }, {});
 });
 
-services.factory('DistributionWithSupervisorId',function($resource){
-     return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
+services.factory('DistributionWithSupervisorId', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId', {facilityId: '@facilityId'}, {});
 });
 
 
@@ -519,59 +566,62 @@ services.factory('PendingNotificationForLowerLevel', function ($resource) {
     return $resource('/vaccine/inventory/distribution/pendingConsignmentNotificationForLowerLevel.json', {}, {});
 });
 
-services.factory('DistributionWithSupervisorId',function($resource){
-    return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId',{facilityId:'@facilityId'},{});
+services.factory('DistributionWithSupervisorId', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/distribution-supervisorid/:facilityId', {facilityId: '@facilityId'}, {});
 });
 
-services.factory('IsDistrictUser',function($resource){
-    return $resource('/vaccine/dashboard/isDistrictUser.json',{},{});
+services.factory('IsDistrictUser', function ($resource) {
+    return $resource('/vaccine/dashboard/isDistrictUser.json', {}, {});
 });
 
-services.factory('verifyDistribution',function($resource){
-    return $resource('/vaccine/orderRequisition/updateVerify/:orderId.json',{orderId:'@orderId'},{update:{method:'PUT'}});
+services.factory('verifyDistribution', function ($resource) {
+    return $resource('/vaccine/orderRequisition/updateVerify/:orderId.json', {orderId: '@orderId'}, {update: {method: 'PUT'}});
 });
 
-services.factory('FacilitiesSameType',function($resource){
-    return $resource('/vaccine/inventory/distribution/facilities/same-type/:facilityId/:query',{facilityId:'@facilityId',query:'@query'},{});
+services.factory('FacilitiesSameType', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/facilities/same-type/:facilityId/:query', {
+        facilityId: '@facilityId',
+        query: '@query'
+    }, {});
 });
 
-services.factory('DistributionsByDate',function($resource){
-    return $resource('/vaccine/inventory/distribution/get-by-date/:facilityId',{facilityId:'@facilityId'},{});
+services.factory('DistributionsByDate', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/get-by-date/:facilityId', {facilityId: '@facilityId'}, {});
 });
 
-services.factory('DistributionsByDateRange',function($resource){
-    return $resource('/vaccine/inventory/distribution/get-by-date-range/:facilityId',{facilityId:'@facilityId'},{});
+services.factory('DistributionsByDateRange', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/get-by-date-range/:facilityId', {facilityId: '@facilityId'}, {});
 });
 
-services.factory('VaccineDashboardMonthlyStockStatus', function($resource){
-    return $resource('/vaccine/dashboard/monthly-stock-status.json',{},{});
+services.factory('VaccineDashboardMonthlyStockStatus', function ($resource) {
+    return $resource('/vaccine/dashboard/monthly-stock-status.json', {}, {});
 });
-services.factory('VaccineDashboardDistrictStockStatus', function($resource){
-    return $resource('/vaccine/dashboard/district-stock-status.json',{},{});
+services.factory('VaccineDashboardDistrictStockStatus', function ($resource) {
+    return $resource('/vaccine/dashboard/district-stock-status.json', {}, {});
 });
-services.factory('VaccineDashboardFacilityStockStatus', function($resource){
-    return $resource('/vaccine/dashboard/facility-stock-status.json',{},{});
+services.factory('VaccineDashboardFacilityStockStatus', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-stock-status.json', {}, {});
 });
-services.factory('VaccineDashboardFacilityStockStatusDetails', function($resource){
-    return $resource('/vaccine/dashboard/facility-stock-status-details.json',{},{});
+services.factory('VaccineDashboardFacilityStockStatusDetails', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-stock-status-details.json', {}, {});
 });
-services.factory('VaccineCurrentPeriod', function($resource){
-    return $resource('/vaccine/dashboard/vaccine-current-period.json',{},{});
+services.factory('VaccineCurrentPeriod', function ($resource) {
+    return $resource('/vaccine/dashboard/vaccine-current-period.json', {}, {});
 });
-services.factory('UserGeographicZonePereference', function($resource){
-    return $resource('/vaccine/dashboard/user-geographic-zone-preference.json',{},{});
-});
-
-services.factory('VaccineProductDoseList', function($resource){
-    return $resource('/vaccine/product-dose/get/:programId/:productId.json',{},{});
+services.factory('UserGeographicZonePereference', function ($resource) {
+    return $resource('/vaccine/dashboard/user-geographic-zone-preference.json', {}, {});
 });
 
-services.factory('VaccineDashboardFacilityInventoryStockStatus', function($resource){
-    return $resource('/vaccine/dashboard/facility-inventory-stock-status.json',{},{});
+services.factory('VaccineProductDoseList', function ($resource) {
+    return $resource('/vaccine/product-dose/get/:programId/:productId.json', {}, {});
 });
 
-services.factory('VaccineDashboardSupervisedFacilityInventoryStockStatus', function($resource){
-    return $resource('/vaccine/dashboard/supervised-facilities-inventory-stock-status.json',{},{});
+services.factory('VaccineDashboardFacilityInventoryStockStatus', function ($resource) {
+    return $resource('/vaccine/dashboard/facility-inventory-stock-status.json', {}, {});
+});
+
+services.factory('VaccineDashboardSupervisedFacilityInventoryStockStatus', function ($resource) {
+    return $resource('/vaccine/dashboard/supervised-facilities-inventory-stock-status.json', {}, {});
 });
 
 services.factory('VaccineTotalPendingRequisitions', function ($resource) {
@@ -587,12 +637,12 @@ services.factory('BatchExpiryNotification', function ($resource) {
     return $resource('/vaccine/inventory/distribution/getBatchExpiryNotification/', {}, {});
 });
 
-services.factory('CoefficientValues',function($resource) {
+services.factory('CoefficientValues', function ($resource) {
     return $resource('/vaccine/report/coverageAndDropoutCoefficient.json', {}, {});
 });
 
-services.factory('SendIssueNotification',function($resource) {
-    return $resource('/vaccine/orderRequisition/sendNotification/:distributionId.json', {distributionId:'@distributionId'}, {});
+services.factory('SendIssueNotification', function ($resource) {
+    return $resource('/vaccine/orderRequisition/sendNotification/:distributionId.json', {distributionId: '@distributionId'}, {});
 });
 
 services.factory('GetAllOneLevelFacilities', function ($resource) {
@@ -624,8 +674,8 @@ services.factory('VaccineDistributionProgramProduct', function ($resource) {
 });
 
 
-services.factory('searchDistributionsByDateRange',function($resource){
-    return $resource('/vaccine/inventory/distribution/searh-by-date-range/:facilityId',{facilityId:'@facilityId'},{});
+services.factory('searchDistributionsByDateRange', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/searh-by-date-range/:facilityId', {facilityId: '@facilityId'}, {});
 });
 
 services.factory('GetDistributionsByDateRangeForFacility', function ($resource) {
@@ -633,33 +683,33 @@ services.factory('GetDistributionsByDateRangeForFacility', function ($resource) 
 });
 
 
-services.factory('VaccineInventorySummary', function($resource){
+services.factory('VaccineInventorySummary', function ($resource) {
 
-    return $resource('/vaccine/dashboard/stock-status-over-view.json',{},{});
+    return $resource('/vaccine/dashboard/stock-status-over-view.json', {}, {});
 });
 
-services.factory('VaccineInventorySummaryDetails', function($resource){
+services.factory('VaccineInventorySummaryDetails', function ($resource) {
 
-    return $resource('/vaccine/dashboard/vaccineInventoryStockDetails.json',{},{});
+    return $resource('/vaccine/dashboard/vaccineInventoryStockDetails.json', {}, {});
 });
-services.factory('GetVaccineInventoryDetails', function($resource){
+services.factory('GetVaccineInventoryDetails', function ($resource) {
 
-    return $resource('/vaccine/dashboard/vaccineInventoryDetails.json',{},{});
+    return $resource('/vaccine/dashboard/vaccineInventoryDetails.json', {}, {});
 });
 
-services.factory('GetVaccineInventoryFacilityDetails', function($resource){
+services.factory('GetVaccineInventoryFacilityDetails', function ($resource) {
 
-    return $resource('/vaccine/dashboard/vaccineInventoryFacilityDetails.json',{},{});
+    return $resource('/vaccine/dashboard/vaccineInventoryFacilityDetails.json', {}, {});
 });
 
 //Log Tag API
-services.factory('GetAllLogTagTemperature', function($resource){
+services.factory('GetAllLogTagTemperature', function ($resource) {
 
-    return $resource('/log-tag-api/getLogTagTemps.json',{},{});
+    return $resource('/log-tag-api/getLogTagTemps.json', {}, {});
 });
 
-services.factory('GetAllLogTagTemperatureById',function($resource){
-    return $resource('/log-tag-api/byId/:id',{id:'@id'},{});
+services.factory('GetAllLogTagTemperatureById', function ($resource) {
+    return $resource('/log-tag-api/byId/:id', {id: '@id'}, {});
 });
 
 services.factory('SaveLogTagTemperatureInfo', function ($resource) {
@@ -678,32 +728,232 @@ services.factory('MinimumStockNotification', function ($resource) {
     return $resource('/vaccine/orderRequisition/getMinimumStock', {}, {});
 });
 
-services.factory('AvailableStockDashboard', function($resource){
+services.factory('AvailableStockDashboard', function ($resource) {
 
-    return $resource('/vaccine/dashboard/availableStock.json',{},{});
+    return $resource('/vaccine/dashboard/availableStock.json', {}, {});
 });
 
 
 //Dashboard API
 
-services.factory('FullStockAvailableForDashboard', function($resource){
-    return $resource('/vaccine/dashboard/fullStockAvailability.json',{},{});
+services.factory('NationalVaccineCoverageData', function ($q, $timeout, $resource,GetVaccineNationalCoverage) {
+
+    function get(params) {
+        var deferred = $q.defer();
+
+        $timeout(function () {
+            GetVaccineNationalCoverage.get({product:parseInt(params.product,10),doseId:parseInt(params.dose,10),periodId:parseInt(params.period,10),year:parseInt(params.year,10)}, function (data) {
+             console.log(data);
+                var coverage = [];
+                if (data !== undefined) {
+                    coverage = data.natioanl_coverage;
+                    console.log(coverage);
+                }
+                deferred.resolve(coverage);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
 });
 
-services.factory('AggregateFacilityPerformance', function($resource){
-    return $resource('/vaccine/dashboard/getNationalPerformance.json',{},{});
+
+services.factory('Categorization', function ($q, $timeout, $resource,GetDistrictCategorization) {
+
+    function get(param) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetDistrictCategorization.get({product:parseInt(param.product,10),doseId:parseInt(param.dose,10),periodId:parseInt(param.period,10),year:parseInt(param.year,10)}, function (data) {
+                var coverage = [];
+                if (data !== undefined) {
+                    coverage = data.categories;
+                }
+                deferred.resolve(coverage);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
 });
 
-services.factory('ReportingTarget', function($resource){
-    return $resource('/vaccine/dashboard/reportingTarget.json',{},{});
+services.factory('ProductService', function ($q, $timeout, $resource,GetProductBy) {
+
+    function get(product) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetProductBy.get({id:parseInt(product,10)}, function (data) {
+                var product = [];
+                if (data !== undefined) {
+                    product = data.productDTO.product.primaryName;
+                }
+                deferred.resolve(product);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+services.factory('GetFullStockAvailability', function ($q, $timeout, $resource,FullStockAvailableForDashboard) {
+
+    function get(params) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            FullStockAvailableForDashboard.get({period:parseInt(params.period,10),year:parseInt(params.year,10)}, function (data) {
+                var product = [];
+                if (data !== undefined) {
+                    product = data.fullStocks;
+                }
+                deferred.resolve(product);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
 });
 
-services.factory('GetDistrictCategorization', function($resource){
-    return $resource('/vaccine/dashboard/categorization.json',{},{});
+
+services.factory('AvailableStockData', function ($q, $timeout, $resource,AvailableStockDashboard) {
+
+    function get(params) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            AvailableStockDashboard.get({product:parseInt(params.product,10),period:parseInt(params.period,10),year:parseInt(params.year,10)}, function (data) {
+                var product = [];
+                if (data !== undefined) {
+                    product = data.availableStock;
+                }
+                deferred.resolve(product);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
 });
-services.factory('GetVaccineCoverageByRegionAndProduct', function($resource){
-    return $resource('/vaccine/dashboard/VaccineCoverageByRegionAndProduct.json',{},{});
+
+
+services.factory('GetAggregateFacilityPerformanceData', function ($q, $timeout, $resource,AggregateFacilityPerformance) {
+
+    function get(params) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            AggregateFacilityPerformance.get({productId:parseInt(params.product,10),periodId:parseInt(params.period,10),year:parseInt(params.year,10)}, function (data) {
+                var product = [];
+                if (data !== undefined) {
+                    product = data.performance;
+                }
+                deferred.resolve(product);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
 });
-services.factory('GetRejectedRnR', function($resource){
-    return $resource('/reports/getRejectedRnR.json',{},{});
+
+
+services.factory('VaccineCoverageByProductData', function ($q, $timeout, $resource,GetVaccineCoverageByRegionAndProduct) {
+
+    function get(params) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetVaccineCoverageByRegionAndProduct.get({productId:parseInt(params.product,10),periodId:parseInt(params.period,10),year:parseInt(params.year,10),doseId:parseInt(params.dose,10)}, function (data) {
+                console.log(data);
+                var coverage = [];
+                if (data !== undefined) {
+                    coverage = data.coverage;
+                }
+                deferred.resolve(coverage);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+
+
+services.factory('GetPeriodForDashboard', function ($q, $timeout, $resource,ReportPeriodsByYear) {
+
+    function get(params) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            ReportPeriodsByYear.get({year:parseInt(params,10)}, function (data) {
+
+                var period ={};
+                if (data !== undefined) {
+                    period = data.periods[0];
+                }
+                deferred.resolve(period);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+
+services.factory('FullStockAvailableForDashboard', function ($resource) {
+    return $resource('/vaccine/dashboard/fullStockAvailability.json', {}, {});
+});
+
+services.factory('AggregateFacilityPerformance', function ($resource) {
+    return $resource('/vaccine/dashboard/getNationalPerformance.json', {}, {});
+});
+
+services.factory('ReportingTarget', function ($resource) {
+    return $resource('/vaccine/dashboard/reportingTarget.json', {}, {});
+});
+
+services.factory('GetDistrictCategorization', function ($resource) {
+    return $resource('/vaccine/dashboard/categorization.json', {}, {});
+});
+services.factory('GetVaccineCoverageByRegionAndProduct', function ($resource) {
+    return $resource('/vaccine/dashboard/VaccineCoverageByRegionAndProduct.json', {}, {});
+});
+services.factory('GetRejectedRnR', function ($resource) {
+    return $resource('/reports/getRejectedRnR.json', {}, {});
+});
+services.factory('GetVaccineNationalCoverage', function ($resource) {
+    return $resource('/vaccine/dashboard/VaccineNationalCoverage.json', {}, {});
+});
+
+services.factory('GetProductBy', function ($resource) {
+    return $resource('/products/product/:id.json', {id:'@id'}, {});
 });
