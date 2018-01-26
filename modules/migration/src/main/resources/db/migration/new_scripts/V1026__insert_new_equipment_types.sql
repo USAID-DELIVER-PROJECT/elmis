@@ -1,0 +1,16 @@
+insert into equipment_types (code, name, iscoldchain) values ('LAB040','ABX Micros ES60',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB041','ABX Pentra 60C+',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB042','ABX Pentra 80XL',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB043','BACTEC MGIT',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB044','GeneXpert',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB045','Guava',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB046','HemoCue 201',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB047','HemoCue 301',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB048','Olympus AU 400',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB049','Pentra C400',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB050','Sysmex FN 550',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB051','Sysmex XN 550',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB052','Sysmex XS 1000i',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB053','Sysmex XS 1800i',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB054','Sysmex XT 1800i',false);
+insert into equipment_types (code, name, iscoldchain) values ('LAB055','HemoCue 201',false);
