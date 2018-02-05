@@ -135,4 +135,10 @@ public class GeographicZoneController extends BaseController {
     service.saveGisInfo(geoZoneGeometries.getFeatures(), loggedInUserId(request));
     return OpenLmisResponse.response("status", true);
   }
+
+  @RequestMapping(value = "/geographic-zone-by/{geoLevelCode}", method = GET, headers = ACCEPT_JSON)
+  public List<GeographicZone> getAllGeographicZonesByLevelCode(@PathVariable("geoLevelCode") String geographicLevelCode) {
+    GeographicLevel geographicLevel = new GeographicLevel(geographicLevelCode, null, null);
+    return service.getAllGeographicZonesAbove(geographicLevel);
+  }
 }
