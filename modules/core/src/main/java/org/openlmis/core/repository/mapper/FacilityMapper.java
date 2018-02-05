@@ -23,6 +23,7 @@ import org.openlmis.core.dto.FacilitySupervisor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -576,7 +577,10 @@ public interface FacilityMapper {
             "                        WHERE GZZ.parentId = #{parentId} and ft.code = 'rvs' ")
     Facility getFacilityByParentGeoZone(@Param("parentId")Long parentId);
 
-
+@Select("SELECT U.username, U.id userId,F.id facilityId,F.NAME facilityName, FT.CODE facilityTypeCode,ft.name facilityTypeName\n" +
+        " FROM users U, facilities F, Facility_types ft \n" +
+        "WHERE U.facilityId = F.id AND U.id =#{userId} and ft.id =f.typeid AND f.active = TRUE AND f.virtualFacility = FALSE")
+  HashMap<String,Object>getHomeFacilityWithType(@Param("userId")Long userId);
 
 
 

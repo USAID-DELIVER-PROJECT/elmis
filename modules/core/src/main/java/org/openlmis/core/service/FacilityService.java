@@ -363,4 +363,8 @@ public class FacilityService {
 
     }
 
+    public HashMap<String,Object> getHomeFacilityWithType(Long userId) {
+        return facilityRepository.getHomeFacilityWithType(userId);
+    }
+
 }

@@ -26,6 +26,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.openlmis.core.domain.RightName.commaSeparateRightNames;
@@ -304,4 +305,9 @@ public class FacilityRepository {
   public Facility getFacilityByParentGeoZone(Long parentId){
     return mapper.getFacilityByParentGeoZone(parentId);
   }
+
+  public HashMap<String, Object> getHomeFacilityWithType(Long userId) {
+    return mapper.getHomeFacilityWithType(userId);
+  }
+
 }

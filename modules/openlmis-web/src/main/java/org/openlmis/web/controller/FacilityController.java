@@ -318,4 +318,15 @@ public class FacilityController extends BaseController {
     response.getBody().addData("facility", facilityService.getByDistrict(districtId));
     return response;
   }
+
+  @RequestMapping(value = "/user/facilityWithType", method = GET)
+  public ResponseEntity<OpenLmisResponse> getHomeFacilityWithType(HttpServletRequest httpServletRequest) {
+
+    ResponseEntity<OpenLmisResponse> response;
+    response = OpenLmisResponse.success("");
+    response.getBody().addData("homeFacility", facilityService.getHomeFacilityWithType(loggedInUserId(httpServletRequest)));
+    return response;
+  }
+
+
 }
