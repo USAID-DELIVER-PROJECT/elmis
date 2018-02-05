@@ -4,9 +4,7 @@ function MsdStockStatusFunc($scope, GetMsdStockStatusReport, GeoZoneFilteredData
         if(!isUndefined(data)){
 
             $scope.stockStatusData = data.msd_status;
-            console.log(JSON.stringify($scope.stockStatusData));
 
-            console.log(Object.keys( $scope.stockStatusData))
 
         }
     });
@@ -39,7 +37,7 @@ $scope.getStockColor=function(mos,levelId){
     $scope.getHeaderValues =function (data) {
         var headers=[];
         if(_.contains( $scope.cellValues,data)){
-            headers.push(data)
+            headers.push(data);
         }
 
             console.log(data);
@@ -73,9 +71,9 @@ $scope.getStockColor=function(mos,levelId){
 
     });
     $scope.set_color = function (color) {
-            return { 'background-color':color,'text-align':'center' }
+            return { 'background-color':color,'text-align':'center' };
 
-    }
+    };
 }
 
 MsdStockStatusFunc.resolve = {

@@ -44,6 +44,6 @@ function AggregateConsumptionReportController($scope, $window, AggregateConsumpt
 
     $scope.toggleMoreFilters = function () {
         $scope.showMoreFilters = true;
-    }
+    };
 
 }
