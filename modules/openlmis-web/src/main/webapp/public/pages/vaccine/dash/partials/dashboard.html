@@ -415,23 +415,27 @@
     table {
         width:100%;
     }
-
 </style>
 
 
 <div id="exTab1" class="">
 
     <ul class="nav nav-pills">
-        <li class="active">
-            <a href="#1a" data-toggle="tab">National View</a>
+        <li class="active" ng-show="homeFacility.facilitytypecode=='cvs'">
+            <a href="#1a"   data-toggle="tab">National View</a>
         </li>
-        <li><a href="" data-toggle="tab">My Supervised View</a>
+        <li ng-hide="homeFacility.facilitytypecode=='cvs'"  class="active">
+            <a href="#myStore" data-toggle="tab">{{homeFacility.facilityname}}</a>
         </li>
+    <!--    <li><span  style="left: 965px!important;color:#5BADB1;
+    bottom: -10px !important;
+    font-size: 15px;">{{homePageDate | date:'dd-MM-yyyy hh:mm:ss'}}</span></li>-->
+
 
     </ul>
     <div class="tab-content clearfix">
 
-        <div class="tab-pane active" id="1a">
+        <div  ng-show="homeFacility.facilitytypecode=='cvs'" class="tab-pane active" id="1a">
             <div>
                 <!--Floating button-->
                 <div class="fixed-button" ng-mouseover="showFilter()" ng-if="showfilter==false">
@@ -708,6 +712,29 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+
+
+                    <div class="col l12 s12 m12">
+                        <div class="card">
+                            <div class="card-content">
+                                <!--
+                                                    <h5 class="grey-text center">Product Coverage</h5>
+                                -->
+
+                                <div id="performanceMonitoring" style="margin: 0 auto"></div>
+                                <!--
+                                                                <div class="spacer"></div>
+                                -->
+                               <!-- <div id="NationalChart" class="chart2"></div> --><!-- Container for Chart B -->
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+               </div>
 
                 <div class="row">
                     <div class="col s12 m8 l8">
@@ -1076,10 +1103,112 @@
         </div>
 
 
-        <div ng-disabled="true" class="tab-pane" id="2a">
-            <h3>Supervised Tab</h3>
+<!--My Store Tab -->
+        <div ng-hide="homeFacility.facilitytypecode=='cvs'" class="tab-pane active"  id="myStore">
+            <div>
+                <div class="row"  ng-if="showfilter">
+
+                    <!--  <select class="my_select_box" data-placeholder="Select Your Options">
+                          <option value="1">Option 1</option>
+                          <option value="2">Option 2</option>
+                          <option value="3">Option 3</option>
+                      </select>-->
+                    <div class="col s12">
+                        <div class="section grey lighten-5 card" style="height: 100px;!important;">
+
+                            <!--
+                                                        <div class="col s6 grey lighten-5">
+                            -->
+
+                            <div class="span3">
+
+                                <label for="product" class="labels">Product</label>
+                                <select ui-select2 id="product"  class="input-large" ng-model="filter.product" ng-change="doseByProduct()">
+                                    <option ng-repeat="option in products | orderBy:'categoryId'  "
+                                            value="{{ option.id }}" ng-selected="filter.product == option.id">{{
+                                        option.name }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <div class="span3">
+                                <label for="period" class="labels">Dose</label>
+                                <select ui-select2 id="dose" class="input-large" ng-model="filter.dose"
+                                        ng-change="firstClick1()" material-select
+                                        watch>
+                                    <option ng-repeat="dose in doses | orderBy:'id':true" value="{{dose.doseId}}"
+                                            ng-selected="filter.dose === dose.id">{{dose.displayName}}
+                                    </option>
+
+                                </select>
+                            </div>
+
+
+                            <div class="span3">
+                                <label for="period" class="labels">Year</label>
+                                <select ui-select2 class="input-large"  id="year"
+                                        ng-model="filter.year" ng-change="changeYear()" material-select
+                                        watch>
+                                    <option ng-repeat="option in years" value="{{option}}"
+                                            ng-selected="option == filter.year"
+                                    >{{option}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="span3">
+                                <label for="period" class="labels">Period</label>
+                                <select ui-select2 id="period" class="input-large" ng-model="filter.period"
+                                        ng-change="firstClick1()" material-select
+                                        watch>
+                                    <option ng-repeat="period in periods" value="{{ period.id }}"
+                                            ng-selected="period.id == filter.period">{{period.name}}
+                                    </option>
+
+                                </select>
+
+                            </div>
+                            <span style="float: left;z-index: 800;bottom: 2000px;!important;"><a ng-click="loadDashboardData(filter)" class="waves-effect waves-light btn" style="bottom: -22px;right: -1px">Search </a></span>
+
+
+                            <!--</div>-->
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col l12 s12 m12">
+                        <div class="card">
+                            <div class="card-content">
+
+                           <!-- Container for Chart B -->
+<div id="myStockVaccine"></div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+                <div class="fixed-button" ng-mouseover="showFilter()" ng-if="showfilter==false">
+
+                    <div class="card blue-grey darken-1 waves-effect waves-light">
+                        <span> <a class="waves-effect waves-light btn"> <span style="color: #0e4a64">Filters</span></a>
+                            <!--<img ng-src="{{'/public/images/search.png'}}"  alt=""
+                                 style="width: 40px!important;"></a>--></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
         </div>
     </div>
 </div>
 
-</div>

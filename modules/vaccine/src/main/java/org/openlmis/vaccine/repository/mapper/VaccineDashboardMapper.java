@@ -876,7 +876,7 @@ public interface VaccineDashboardMapper {
             "   (SELECT date_part('YEAR',sce.createddate::DATE)) = ( SELECT date_part('YEAR', #{date}::DATE )) AND " +
             "  sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::integer, 0))) " +
             "  END AS color " +
-            " FROM vw_vaccine_inventory_stock_status vvisc WHERE vvisc.facility_id=#{facilityId}")
+            " FROM vw_vaccine_inventory_stock_status_dashboard vvisc WHERE vvisc.facility_id=#{facilityId} and year = ( SELECT date_part('YEAR', #{date}::DATE ))")
     List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId, @Param("date") String date);
 
     @Select("SELECT " +
@@ -1644,7 +1644,8 @@ public interface VaccineDashboardMapper {
            "\t AND d. YEAR = #{year}::INT\n" +
            "\t AND d. MONTH <= ( SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId}::INT )\n" +
            "\t GROUP BY 1,2,3,4,5) a\n" +
-           "        join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid and e.year = #{year}::INT\n" +
+           "        join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid" +
+           "  AND e.districtid = a.geographiczoneid and e.year = #{year}::INT\n" +
            "        GROUP BY PERIOD)\n" +
            "\tselect cumulative_vaccinated, monthly_district_target, monthnumber,monthly,\n" +
            "\t  case when monthly_district_target > 0 then\n" +
@@ -1672,7 +1673,8 @@ public interface VaccineDashboardMapper {
            "\t AND d. YEAR = #{year}::INT\n" +
            "\t AND d. MONTH <= ( SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId}::INT )\n" +
            "\t GROUP BY 1,2,3,4) a\n" +
-           "\t  join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid and e.year = #{year}::int)\n" +
+           "\t  join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid " +
+           "  and e.districtid = a.geographiczoneId and e.year = #{year}::int)\n" +
            "\tselect SUM(cumulative_vaccinated)cumulative_vaccinated,SUM(monthly_district_target) monthly_district_target,\n" +
            "        case when SUM(monthly_district_target) > 0 then\n" +
            "\tSUM(cumulative_vaccinated)/ (SUM(monthly_district_target)::numeric * MAX(monthnumber))*100 end as Nationalcoverage\n" +

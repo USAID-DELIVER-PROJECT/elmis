@@ -301,4 +301,22 @@ public class DashboardController extends BaseController {
         return OpenLmisResponse.response("facilities", this.lookupService.getFacilitiesStockedOut(programId, periodId, productCode));
     }
 
+   @RequestMapping(value = "/msdStock.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getAllMSDStockStatusReport(@RequestParam("programId") Long programId,
+                                                                                                  @RequestParam("periodId") Long periodId,
+                                                                                                  @RequestParam("productCode") String productCode) {
+        return OpenLmisResponse.response("msd_status", this.lookupService.getAllMSDStockStatusReport(programId, periodId, productCode));
+    }
+
+    @RequestMapping(value = "/msdStockStatus.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getStockStatus() {
+        return OpenLmisResponse.response("msd_status", this.lookupService.getStockStatus());
+    }
+
+    @RequestMapping(value = "/getStockColor.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getStockColor(@RequestParam("mos")Long mos,
+                                                          @RequestParam("levelId")Long levelId) {
+        return OpenLmisResponse.response("colors", this.lookupService.getStockColor(mos,levelId));
+    }
+
 }
