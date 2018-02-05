@@ -12,22 +12,38 @@
 function AggregateConsumptionReportController($scope, $window, AggregateConsumptionReport) {
 
   $scope.OnFilterChanged = function() {
-    $scope.data = $scope.datarows = [];
 
-    $scope.filter.max = 10000;
-    AggregateConsumptionReport.get($scope.getSanitizedParameter(), function(data) {
-      if (data.pages !== undefined) {
-        $scope.data = data.pages.rows;
-        $scope.paramsChanged($scope.tableParams);
-      }
-    });
+
   };
 
+  $scope.searchReport = function () {
+
+      $scope.data = $scope.datarows = [];
+
+      $scope.filter.max = 10000;
+      if($scope.getSanitizedParameter().periodEnd !=='' &&
+          $scope.getSanitizedParameter().periodStart !=='' &&
+          $scope.getSanitizedParameter().products !==null &&
+          $scope.getSanitizedParameter().program !==null
+      ){
+          AggregateConsumptionReport.get($scope.getSanitizedParameter(), function(data) {
+              if (data.pages !== undefined) {
+                  $scope.data = data.pages.rows;
+                  $scope.paramsChanged($scope.tableParams);
+              }
+          });
+
+      }
+  };
   $scope.exportReport = function(type) {
     $scope.filter.pdformat = 1;
     var url = '/reports/download/aggregate_consumption/' + type + '?' + jQuery.param($scope.getSanitizedParameter());
     $window.open(url, '_blank');
   };
+    $scope.showMoreFilters = false;
 
+    $scope.toggleMoreFilters = function () {
+        $scope.showMoreFilters = true;
+    }
 
 }
