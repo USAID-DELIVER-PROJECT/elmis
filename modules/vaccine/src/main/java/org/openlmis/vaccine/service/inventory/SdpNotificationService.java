@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.ConfigurationSetting;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
-import org.openlmis.vaccine.repository.mapper.inventory.VaccineInventoryDistributionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpEntity;
@@ -52,6 +51,7 @@ public class SdpNotificationService {
     @Autowired
     ConfigurationSettingService configurationSettingService;
 
+
     @Autowired
     VaccineInventoryDistributionService service;
 
@@ -69,6 +69,10 @@ public class SdpNotificationService {
 
             }
         }
+    }
+
+    public Long saveDistribution(VaccineDistribution distribution, Long userId){
+        return service.save(distribution, userId);
     }
 
 
@@ -110,7 +114,8 @@ public class SdpNotificationService {
     }
 
     private void sendHttps(VaccineDistribution d, String url, String username, String password) {
-        System.out.println("I'm second");
+        System.out.println(username);
+        System.out.println("I'm second ....................");
         System.out.println(d.getToFacilityId());
         VaccineDistribution distribution = service.getDistributionByToFacility(d.getToFacilityId());
         System.out.println("I'm second..");

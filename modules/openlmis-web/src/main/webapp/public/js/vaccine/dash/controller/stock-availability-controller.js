@@ -1,5 +1,134 @@
-function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodForDashboard, YearFilteredData, ProductFilteredData, $routeParams, leafletData, ProductService, GetFullStockAvailability, $state, VaccineProductDoseList, ReportPeriodsByYear, VimsVaccineSupervisedIvdPrograms, ReportingTarget, NationalVaccineCoverageData, AvailableStockDashboard, FullStockAvailableForDashboard,GetAggregateFacilityPerformanceData, Categorization, VaccineCoverageByProductData) {
-    // console.log(ProductFilteredData);
+function StockAvailabilityControllerFunc1($scope, homeFacility, FacilityInventoryStockStatusData, AvailableStockData, GetPeriodForDashboard, YearFilteredData, ProductFilteredData, $routeParams, leafletData, ProductService, GetFullStockAvailability, $state, VaccineProductDoseList, ReportPeriodsByYear, VimsVaccineSupervisedIvdPrograms, ReportingTarget, NationalVaccineCoverageData, AvailableStockDashboard, FullStockAvailableForDashboard, GetAggregateFacilityPerformanceData, Categorization, VaccineCoverageByProductData) {
+    $scope.homeFacility = homeFacility;
+    $scope.homePageDate = new Date();
+
+     //Lower Level Charts
+    function getVaccineStockStatusChartForLowerLevel(data) {
+
+        var vaccineData = data[0].dataPoints;
+        var product = _.pluck(data[0].dataPoints, 'product');
+
+        var  dataV = [];
+        vaccineData.forEach(function (data) {
+            dataV.push({y:data.mos,color:data.color,soh:data.soh});
+        });
+
+        Highcharts.chart('myStockVaccine', {
+            chart: {
+                type: 'column'
+            },
+            credits:{
+                enabled:false
+            },
+            title: {
+                text: 'Current Stock Status of '  + homeFacility.facilityname
+            },
+            subtitle: {
+                text: 'Vaccine Stock'
+            },
+            xAxis: {
+                categories:product,
+                crosshair: false
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'MOS'
+                },
+                lineColor: '#999',
+                lineWidth: 1,
+                tickColor: '#666',
+                tickWidth: 1,
+                tickLength: 3,
+                gridLineColor: ''
+            },
+            tooltip: {
+                formatter: function() {
+                    var tooltip;
+                        tooltip =  '<span style="color:' + this.series.color + '">' + this.series.name + '</span>: <b>' + this.y+ '</b><br/>';
+
+                    return tooltip;
+                }
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+
+                }
+            },
+            series: [{
+                name: 'Vaccine',
+                data: dataV
+
+            }]
+        });
+
+
+    }
+
+    FacilityInventoryStockStatusData.get({
+        facilityId: parseInt(homeFacility.facilityid, 10),
+        date: '2017-01-31'
+    }).then(function (data) {
+        if(!isUndefined(data)){
+            var byCategory = _.groupBy(data, function (p) {
+                return p.product_category;
+            });
+
+            var allStockDataPointsByCategory = $.map(byCategory, function (value, index) {
+                return [{"productCategory": index, "dataPoints": value}];
+            });
+            getVaccineStockStatusChartForLowerLevel(allStockDataPointsByCategory);
+        }
+    });
+
+/*    VaccineDashboardFacilityInventoryStockStatus.get({
+        facilityId: parseInt(homeFacility.facilityid, 10),
+        date: '2017-01-31'
+    }, function (data) {
+
+        if (data.facilityStockStatus !== null) {
+            var allProducts = data.facilityStockStatus;
+            var byCategory = _.groupBy(allProducts, function (p) {
+                return p.product_category;
+            });
+
+            var allStockDataPointsByCategory = $.map(byCategory, function (value, index) {
+                return [{"productCategory": index, "dataPoints": value}];
+            });
+
+
+            var vaccineData = $scope.allStockDataPointsByCategory[0].dataPoints;
+            var mos = _.pluck($scope.allStockDataPointsByCategory[0].dataPoints, 'mos');
+            var color = _.pluck($scope.allStockDataPointsByCategory[0].dataPoints, 'color');
+            var product = _.pluck($scope.allStockDataPointsByCategory[0].dataPoints, 'product');
+
+            console.log(mos);
+            if (!isUndefined(mos)) {
+              getVaccineStockStatusChartForLowerLevel(allStockDataPointsByCategory);
+
+            } else
+                return 'No Chart data';
+/!*
+              $scope.myStockVaccine.productCategory = $scope.allStockDataPointsByCategory[0].productCategory;
+
+            $scope.myStockSupplies.dataPoints = $scope.allStockDataPointsByCategory[1].dataPoints;*!/
+            // $scope.myStockSupplies.productCategory = $scope.allStockDataPointsByCategory[1].productCategory;
+
+
+        }*/
+   // });
+
+
+    /*$scope.facilityInventoryStockStatusCallback = function (myStock) {
+        $scope.myStockFilter=myStock;
+
+        if (!isUndefined(homeFacility.id) && !isUndefined(myStock.toDate) && $scope.stockStatus.loadData) {
+
+        }
+    };
+*/
 
 
     var currentDate = new Date().getFullYear() - 1;
@@ -10,7 +139,7 @@ function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodF
         $scope.years = YearFilteredData.sort(function (a, b) {
             return b - a;
         });
-        $scope.filter.year= currentDate;
+        $scope.filter.year = currentDate;
 
         $scope.products = $scope.findProductToDisplay;
 
@@ -19,7 +148,7 @@ function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodF
         $scope.productToDisplay = _.findWhere($scope.products, {id: parseInt(2421, 10)});
         console.log(par);
 
-        var para = angular.extend(par,currentDate,{periodName:data.name,productName:$scope.productToDisplay.name});
+        var para = angular.extend(par, currentDate, {periodName: data.name, productName: $scope.productToDisplay.name});
         $scope.nationalVaccineCoverageFunc(para);
         $scope.loadMap(par);
         $scope.vaccineCoverageByRegionAndProductFunc(para);
@@ -35,8 +164,10 @@ function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodF
         $scope.productToDisplay = _.findWhere($scope.products, {id: parseInt(filter.product, 10)});
         $scope.periodToDisplay = _.findWhere($scope.periods, {id: parseInt(filter.period, 10)});
         $scope.doseToDisplay = filter.dose;
-        var prepareParams = angular.extend(filter,{productName:$scope.productToDisplay.name,
-            periodName:$scope.periodToDisplay.name});
+        var prepareParams = angular.extend(filter, {
+            productName: $scope.productToDisplay.name,
+            periodName: $scope.periodToDisplay.name
+        });
         console.log(filter);
 
 
@@ -54,12 +185,12 @@ function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodF
     $scope.changeYear = function () {
 
         $scope.periods = [];
-     //   $scope.filter.year = currentDate;
+        //   $scope.filter.year = currentDate;
         ReportPeriodsByYear.get({
             year: $scope.filter.year
         }, function (data) {
             $scope.periods = data.periods;
-            $scope.filter.period=$scope.periods[0].id;
+            $scope.filter.period = $scope.periods[0].id;
 
         });
 
@@ -97,15 +228,15 @@ function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodF
     });
 
 
-    $scope.getAggregatePerformanceFunc= function (params) {
+    $scope.getAggregatePerformanceFunc = function (params) {
 
         GetAggregateFacilityPerformanceData.get(params).then(function (data) {
-           if(!isUndefined(data) || data.length >0) {
-               $scope.facilityPerformance = data;
-               $scope.showNoData =false;
-           }
-           else
-               $scope.showNoData =true;
+            if (!isUndefined(data) || data.length > 0) {
+                $scope.facilityPerformance = data;
+                $scope.showNoData = false;
+            }
+            else
+                $scope.showNoData = true;
 
 
         });
@@ -113,13 +244,12 @@ function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodF
     };
 
 
-
     function round(value, precision) {
         var multiplier = Math.pow(10, precision || 0);
         return Math.round(value * multiplier) / multiplier;
     }
 
-    function getNationalCoverageChart(data,params) {
+    function getNationalCoverageChart(data, params) {
         var nationalCoverage = _.pluck(data, 'nationalcoverage');
         var max_value = _.max(nationalCoverage, function (data) {
             return data;
@@ -144,7 +274,7 @@ function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodF
             },
             credits: {enabled: false},
             title: {
-                text: 'National Coverage('+params.productName+'-' +params.dose +','+params.periodName + ')'
+                text: 'National Coverage(' + params.productName + '-' + params.dose + ',' + params.periodName + ')'
             },
             xAxis: {
                 categories: months
@@ -211,16 +341,16 @@ function StockAvailabilityControllerFunc1($scope, AvailableStockData, GetPeriodF
     $scope.categorizationFunct = function (params) {
 
         Categorization.get(params).then(function (data) {
-            if (data !== undefined || data.length>0) {
+            if (data !== undefined || data.length > 0) {
                 categoryFunc(data);
-            }else
-                $scope.categorized =[];
+            } else
+                $scope.categorized = [];
         });
     };
 
 
     $scope.fullStockAvailabilityFunc = function (params) {
-console.log(params);
+        console.log(params);
         if (!isUndefined(params.period) && !isUndefined(params.year)) {
 
             GetFullStockAvailability.get(params).then(function (data) {
@@ -229,8 +359,8 @@ console.log(params);
                     console.log(data);
                     $scope.fullStocks = data;
                     getFullStockAvailabilityForChart(data);
-                }else
-                    $scope.fullStocks =[];
+                } else
+                    $scope.fullStocks = [];
             });
         }
     };
@@ -249,19 +379,175 @@ console.log(params);
         });
     };
 
+    function getPerformanceMonitoringChart(data, params) {
+
+        var vaccinated = _.pluck(data, 'cumulative_vaccinated');
+        var target = _.pluck(data, 'monthly_district_target');
+        var monthly = _.pluck(data, 'monthly');
+        var comb = [];
+        comb = _.zip(monthly, target);
+
+        Highcharts.chart('performanceMonitoring', {
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'Performance Monitoring'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: monthly,
+            crosshair: true,
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    format: '{value}°C',
+                    style: {
+                        color: Highcharts.getOptions().colors[2]
+                    }
+                },
+                title: {
+                    text: 'Temperature',
+                    style: {
+                        color: Highcharts.getOptions().colors[2]
+                    }
+                },
+                opposite: true
+
+            }, { // Secondary yAxis
+                gridLineWidth: 0,
+                title: {
+                    text: 'Rainfall',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    format: '{value} mm',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                }
+
+            }, { // Tertiary yAxis
+                gridLineWidth: 0,
+                title: {
+                    text: 'Sea-Level Pressure',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                labels: {
+                    format: '{value} mb',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                x: 80,
+                verticalAlign: 'top',
+                y: 55,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+            },
+            series: [{
+                name: 'Rainfall',
+                type: 'column',
+                yAxis: 1,
+                data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+                tooltip: {
+                    valueSuffix: ' mm'
+                }
+
+            }, {
+                name: 'Target',
+                type: 'spline',
+                yAxis: 2,
+                data: target,
+                marker: {
+                    enabled: false
+                },
+                dashStyle: 'shortdot',
+                tooltip: {
+                    valueSuffix: ' mb'
+                }
+
+            }, {
+                name: 'Temperature',
+                type: 'spline',
+                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+                tooltip: {
+                    valueSuffix: ' °C'
+                }
+            }]
+        });
+
+
+        /*
+                new Highcharts.chart('performanceMonitoring', {
+
+                  credits: {enabled: false},
+
+                 /!* xAxis: {
+                        min: -0.5,
+                        max: 5.5
+                    },*!/
+                    yAxis: {
+                        min: 0
+                    },
+                    title: {
+                        text: 'Performance Monitoring'
+                    },
+                    series: [{
+                        type: 'line',
+                        name: 'Target',
+                        data: comb,
+                        marker: {
+                            enabled: true
+                        },
+                        states: {
+                            hover: {
+                                lineWidth: 0
+                            }
+                        },
+                        enableMouseTracking: false
+                    }, {
+                        type: 'spline',
+                        name: 'Children Vaccinated',
+                        data: vaccinated,
+                        dashStyle: 'shortdot',
+                        marker: {
+                            radius: 4
+                        }
+                    }]
+                });
+        */
+
+    }
+
     $scope.nationalVaccineCoverageFunc = function (params) {
         NationalVaccineCoverageData.get(params).then(function (data) {
+
+
             if (data !== undefined) {
                 console.log(data);
 
-                getNationalCoverageChart(data,params);
-            }else
+                getNationalCoverageChart(data, params);
+                getPerformanceMonitoringChart(data, params);
+            } else
                 $scope.showData = false;
         });
     };
 
 
-    function coverageByRegion(coverage,params) {
+    function coverageByRegion(coverage, params) {
 
         var cov = _.pluck(coverage, 'coverage');
         var region = _.pluck(coverage, 'region');
@@ -282,7 +568,7 @@ console.log(params);
                 type: 'bar'
             },
             title: {
-                text: params.productName+'-'+params.dose+' Coverage By Region'+' ,'+params.periodName
+                text: params.productName + '-' + params.dose + ' Coverage By Region' + ' ,' + params.periodName
             },
             credits: {enabled: false},
             subtitle: {
@@ -332,7 +618,7 @@ console.log(params);
 
         VaccineCoverageByProductData.get(params).then(function (coverage) {
             if (!isUndefined(coverage))
-                coverageByRegion(coverage,params);
+                coverageByRegion(coverage, params);
         });
     };
 
@@ -633,12 +919,12 @@ console.log(params);
 
         AvailableStockData.get(params).then(function (data) {
             console.log(data);
-            if (!isUndefined(data) || data.length >0){
+            if (!isUndefined(data) || data.length > 0) {
                 $scope.stocks = data;
                 getData(data);
 
-            }else
-                $scope.stocks =[];
+            } else
+                $scope.stocks = [];
         });
 
 
@@ -1315,8 +1601,6 @@ console.log(params);
     getProduct();
 
 
-
-
     $scope.geojson = {};
 
     $scope.default_indicator = "ever_over_total";
@@ -1382,7 +1666,6 @@ console.log(params);
         });
 
 
-
     };
     initiateCoverageMap($scope);
 
@@ -1420,6 +1703,21 @@ StockAvailabilityControllerFunc1.resolve = {
             }, {});
         }, 100);
         return deferred.promise;
+    },
+
+    homeFacility: function ($q, $timeout, HomeFacilityWithType) {
+        var deferred = $q.defer();
+        var homeFacility = {};
+
+        $timeout(function () {
+            HomeFacilityWithType.get({}, function (data) {
+                homeFacility = data.homeFacility;
+                deferred.resolve(homeFacility);
+            });
+
+        }, 100);
+        return deferred.promise;
     }
+
 
 };
