@@ -41,7 +41,11 @@
             <tbody>
             <tr ng-repeat="lot in lots | filter : query">
                 <td>{{$index + 1}}</td>
+                <td>{{lot.product.primaryName}}</td>
                 <td><a href="" ng-click="editLot(lot.id)">{{lot.lotCode}}</a></td>
+                <td>{{lot.product.manufacturer}}</td>
+                <td>{{lot.expirationDate}}</td>
+
             </tr>
             </tbody>
         </table>

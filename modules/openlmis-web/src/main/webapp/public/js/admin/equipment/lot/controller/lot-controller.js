@@ -4,8 +4,7 @@ function LotController( $scope,GetLotById,$routeParams,$location,messageService,
 
         if ($routeParams.id) {
             GetLotById.get({id: $routeParams.id}, function (data) {
-                $scope.lot = data.lot;
-                console.log(data.lot);
+                $scope.lot = data.lotsById;
                 $scope.showError = true;
             }, {});
         }
@@ -20,11 +19,11 @@ function LotController( $scope,GetLotById,$routeParams,$location,messageService,
     $scope.saveLot = function () {
 
         var successHandler = function (response) {
-            $scope.energyType = response.energy_types;
+            $scope.lot = response.lots;
             $scope.showError = false;
             $scope.error = "";
             $scope.$parent.message = response.success;
-            $scope.$parent.id = $scope.energyType.id;
+            $scope.$parent.id = $scope.lot.id;
 
             $location.path('');
         };
@@ -34,8 +33,8 @@ function LotController( $scope,GetLotById,$routeParams,$location,messageService,
             $scope.error = messageService.get(response.data.error);
         };
 
-        if (!$scope.energyTypeForm.$invalid) {
-            SaveEnergyType.save($scope.energyType, successHandler, errorHandler);
+        if (!$scope.lotForm.$invalid) {
+            SaveLOt.save($scope.lot, successHandler, errorHandler);
         }
 
         return true;
