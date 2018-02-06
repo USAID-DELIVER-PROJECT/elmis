@@ -37,7 +37,7 @@ function AggregateConsumptionReportController($scope, $window, AggregateConsumpt
   };
   $scope.exportReport = function(type) {
     $scope.filter.pdformat = 1;
-    var url = '/reports/download/aggregate_consumption/' + type + '?' + jQuery.param($scope.getSanitizedParameter());
+    var url = '/reports/download/aggregate_consumption' +(($scope.filter.disaggregated === true) ? '_disaggregated' : '') +'/' + type + '?' + jQuery.param($scope.getSanitizedParameter());
     $window.open(url, '_blank');
   };
     $scope.showMoreFilters = false;

@@ -29,6 +29,10 @@
         visibility: visible !important;
         color: #0c9083;
     }
+
+   /* .table td {
+         padding: 1px !important;
+    }*/
 </style>
 
 <div class="alert alert-success" id="saveSuccessMsgDiv" ng-bind="message" ng-show="message"></div>
@@ -74,7 +78,7 @@
 
                                 <label class="checkbox">
                                     <input class="checkbox" type="checkbox" ng-model="filter.disaggregated"
-                                           ng-change="filterChanged()"/>
+                                           ng-change="searchReport()"/>
 
                                     <span  style="color:#078f97;" openlmis-message="label.report.view.disaggregated"></span>
                                 </label>
@@ -121,12 +125,12 @@
 
                             <td data-title="'#'" class="number" style="width:50px;">{{ row.no }}</td>
 
-                            <td ng-show="filter.disaggregated" data-title="getLocalMessage('label.facility.code')"
-                                style="width:100px" sortable="facilityCode">{{ row.facilityCode
+                           <!-- <td ng-hide="true" data-title="getLocalMessage('label.facility.code')"
+                                style="width:20% !important; padding: 0px !important;" sortable="facilityCode">{{ row.facilityCode
                                 }}
-                            </td>
+                            </td>-->
                             <td ng-show="filter.disaggregated" data-title="getLocalMessage('label.facility')"
-                                style="width:100px" sortable="facility">{{ row.facility
+                                style="width:50px" sortable="facility">{{ row.facility
                                 }}
                             </td>
                             <td ng-show="filter.disaggregated" data-title="getLocalMessage('label.facility.type')"
@@ -146,12 +150,12 @@
                                 sortable="dispensed">{{ row.dispensed | number }}
                             </td>
                             <td data-title="getLocalMessage('label.reported.consumption.per.packs')" class="number"
-                                style="width:80px"
+                                style="width:40px !important;"
                                 sortable="consumptionInPacks">{{ row.consumptionInPacks | number }}
                             </td>
                              
                             <td data-title="getLocalMessage('label.adjusted.consumption')" class="number"
-                                style="width:80px"
+                                style="width:50px"
                                 sortable="consumption">{{ row.consumption | number }}
                             </td>
                              
