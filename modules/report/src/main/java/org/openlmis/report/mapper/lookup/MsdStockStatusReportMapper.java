@@ -11,14 +11,16 @@ import java.util.List;
 @Repository
 public interface MsdStockStatusReportMapper {
 
-    @Select("SELECT s.mos,gz.code geoCode, case when gz.code ='MSDCentral' then\n" +
-            " fn_get_MSD_MOS_color(s.mos::INT,1::INT) else fn_get_MSD_MOS_color(s.mos::INT,2::INT) end as color,\n" +
-            " gz.name msdzone,p.code productcode,p.primaryname productName\n" +
-            "  FROM msd_stock_statuses s \n" +
-            "JOIN geographic_Zones gz ON s.geographiczoneid = gz.id\n" +
-            "JOIN products p On p.id =s.productId\n" +
-            "where gz.levelid=2 \n" +
-            "order by gz.name")
+    @Select("\n" +
+            "SELECT s.mos,gz.code geoCode, case when f.code ='DM' then\n" +
+            "             fn_get_MSD_MOS_color(s.mos::INT,1::INT) else fn_get_MSD_MOS_color(s.mos::INT,2::INT) end as color,\n" +
+            "             f.name msdzone,p.code productcode,p.primaryname productName,onhandquantity,onhanddate\n" +
+            "              FROM msd_stock_statuses s \n" +
+            "              JOIN FACILITIES f ON s.facilityId = F.ID\n" +
+            "            JOIN geographic_Zones gz ON f.geographiczoneid = gz.id\n" +
+            "            JOIN products p On p.id =s.productId\n" +
+            "            where gz.levelid=2 and s.createddate::date = now()::date \n" +
+            "            order by gz.name")
     List<MSDStockStatusDTO> getAllMSDStockStatusReport(Long programId, Long periodId, String productCode);
 
     @Select("SELECT p.code productCode,p.primaryName productName,\n" +
