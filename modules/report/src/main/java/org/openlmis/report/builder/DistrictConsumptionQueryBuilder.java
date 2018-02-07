@@ -57,7 +57,7 @@ public class DistrictConsumptionQueryBuilder {
     }
 
     if(filter.getExcludeDHO())
-      WHERE("ft.code not in ('DHO','DHTM') "); // exclude DHOs and DHMTs
+      WHERE("ft.code not in ('DHO','DHTM', 'MSL') "); // exclude DHOs and DHMTs
 
     if (filter.getZone() != 0) {
       WHERE( geoZoneIsFilteredBy("d") );
@@ -109,7 +109,7 @@ public class DistrictConsumptionQueryBuilder {
     }
 
     if(filter.getExcludeDHO())
-      WHERE("ft.code not in ('DHO','DHTM') "); // exclude DHOs and DHMTs
+      WHERE("ft.code not in ('DHO','DHTM', 'MSL') "); // exclude DHOs and DHMTs
 
     GROUP_BY("p.code, p.primaryName, p.dispensingunit, d.district_name, d.district_id, f.name");
     return String.format( "select sq.*, " +
