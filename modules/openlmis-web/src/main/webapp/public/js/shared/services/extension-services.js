@@ -1318,3 +1318,6 @@ services.factory('GetMsdStockStatusColor', function ($resource) {
 services.factory('GetGoZoneByLevelCode', function ($resource) {
     return $resource('/geographic-zone-by/:geoLevelCode.json', {geoLevelCode:'@geoLevelCode'}, {});
 });
+services.factory('GetHFRFacilities', function ($resource) {
+    return $resource('/rest-api/lookup/hfr-facilities', {}, {});
+});

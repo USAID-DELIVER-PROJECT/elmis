@@ -5,6 +5,9 @@ import org.openlmis.lookupapi.model.HealthFacilityDTO;
 import org.openlmis.lookupapi.model.MSDStockDTO;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
+import java.util.List;
+
 @Repository
 public interface ILInterfaceMapper {
 
@@ -40,6 +43,9 @@ public interface ILInterfaceMapper {
 
     @Select("select * from hfr_facilities where facIDNumber = #{facIDNumber} limit 1")
     HealthFacilityDTO getByFacilityCode(@Param("facIDNumber") String facIDNumber);
+
+    @Select("select * from hfr_facilities")
+    List<HashMap<String,Object>>getAllHFRFacilities();
 
 
     @Insert(" INSERT INTO public.msd_stock_statuses(\n" +
