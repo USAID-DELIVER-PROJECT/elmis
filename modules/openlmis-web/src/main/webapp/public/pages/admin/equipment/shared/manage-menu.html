@@ -75,5 +75,11 @@
                 <span id="equipement_model" openlmis-message="link.manage.equipment.model" ></span>
             </a>
         </li>
+
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="hfrSelected">
+            <a href="/public/pages/admin/equipment/hfr-facility/index.html">
+                <span>Facility List</span>
+            </a>
+        </li>
     </ul>
 </div>
