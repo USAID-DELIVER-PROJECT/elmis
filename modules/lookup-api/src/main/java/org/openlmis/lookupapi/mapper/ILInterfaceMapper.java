@@ -2,6 +2,7 @@ package org.openlmis.lookupapi.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.openlmis.lookupapi.model.HealthFacilityDTO;
+import org.openlmis.lookupapi.model.MSDStockDTO;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -39,4 +40,16 @@ public interface ILInterfaceMapper {
 
     @Select("select * from hfr_facilities where facIDNumber = #{facIDNumber} limit 1")
     HealthFacilityDTO getByFacilityCode(@Param("facIDNumber") String facIDNumber);
+
+
+    @Insert(" INSERT INTO public.msd_stock_statuses(\n" +
+            "             ilId, facilityId, productId, onHandDate, onHandQuantity, \n" +
+            "            mos, createdDate, createdBy)\n" +
+            "    VALUES ( #{ilID}, #{facilityId}, #{productId}, #{onHandDate}, #{onHandQuantity}, \n" +
+            "            #{mos}, #{createdDate}, #{createdBy}) ")
+    @Options(useGeneratedKeys = true)
+    Integer insertMsdStock(MSDStockDTO dto);
+
+    @Select("select * from msd_stock_statuses where ilId=#{ilId} ")
+    MSDStockDTO getByMSDILId(String ilId);
 }

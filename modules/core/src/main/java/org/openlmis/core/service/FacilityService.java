@@ -367,4 +367,8 @@ public class FacilityService {
         return facilityRepository.getHomeFacilityWithType(userId);
     }
 
+
+    public Facility getByCodeFor(String code) {
+        return facilityRepository.getByCode(code);
+    }
 }

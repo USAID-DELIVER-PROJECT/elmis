@@ -15,6 +15,7 @@ package org.openlmis.restapi.controller;
 import com.wordnik.swagger.annotations.ApiOperation;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.core.service.ELMISInterfaceService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.rnr.domain.DailyStockStatus;
 import org.openlmis.rnr.service.DailyStockStatusSubmissionService;
@@ -49,6 +50,25 @@ public class DailyStockStatusController extends BaseController {
     }catch(SQLException exception){
       throw new DataException(exception.getMessage());
     }
+    return OpenLmisResponse.success("Submission Accepted!");
+  }
+
+@ApiOperation(value = "Accepts Daily MSD Stock Status!", httpMethod = "POST")
+  @RequestMapping(value = "/rest-api/msd-stock-status.json", method = RequestMethod.POST)
+  public ResponseEntity<OpenLmisResponse> getMSDStockStatus(@RequestBody String dailyStockStatus, BindingResult bindingResult, HttpServletRequest request) {
+    if (bindingResult.hasErrors()) {
+      return OpenLmisResponse.error(bindingResult.getGlobalError().toString(), HttpStatus.BAD_REQUEST);
+    }
+
+  System.out.println(dailyStockStatus);
+  System.out.println("reached Here");
+
+    try {
+      service.saveMSDStockStatus(dailyStockStatus,loggedInUserId(request.getUserPrincipal()));
+    }catch(Exception exception){
+      throw new DataException(exception.getMessage());
+    }
+  System.out.println("First Response");
     return OpenLmisResponse.success("Submission Accepted!");
   }
 

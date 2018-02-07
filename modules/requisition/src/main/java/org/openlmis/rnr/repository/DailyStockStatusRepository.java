@@ -12,11 +12,15 @@
 
 package org.openlmis.rnr.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openlmis.rnr.domain.DailyStockStatus;
 import org.openlmis.rnr.domain.DailyStockStatusLineItem;
+import org.openlmis.rnr.dto.MSDStockStatusDTO;
 import org.openlmis.rnr.repository.mapper.DailyStockStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -39,5 +43,13 @@ public class DailyStockStatusRepository {
   public void clearStatusForFacilityProgramDate(Long facilityId, Long programId, Date date){
     mapper.clearStatusForFacilityDate(facilityId, programId, date);
   }
+@Transactional
+  public Long saveMsdStockStatus(MSDStockStatusDTO statusDTO) {
+    mapper.insertMSDStatus(statusDTO);
+    return statusDTO.getId();
+  }
 
+  public MSDStockStatusDTO getByTransactionId(String ilId){
+    return mapper.getByMSDILId(ilId);
+  }
 }

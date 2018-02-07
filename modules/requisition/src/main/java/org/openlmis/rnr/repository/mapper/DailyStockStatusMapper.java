@@ -12,12 +12,10 @@
 
 package org.openlmis.rnr.repository.mapper;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.*;
 import org.openlmis.rnr.domain.DailyStockStatus;
 import org.openlmis.rnr.domain.DailyStockStatusLineItem;
+import org.openlmis.rnr.dto.MSDStockStatusDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -39,5 +37,16 @@ public interface DailyStockStatusMapper {
       "values " +
       "(#{stockStatusSubmissionId}, #{productId}, #{stockOnHand}, #{lastTransactionDate}, NOW(), #{createdBy})")
   void insertLineItem(DailyStockStatusLineItem lineItem);
+
+  @Insert(" INSERT INTO public.msd_stock_statuses(\n" +
+          "             ilId, facilityId, productId, onHandDate, onHandQuantity, \n" +
+          "            mos, createdDate, createdBy)\n" +
+          "    VALUES ( #{ilId}, #{facilityId}, #{productId}, #{onHandDate}, #{onHandQuantity}, \n" +
+          "            #{mos}, NOW(), #{createdBy}) ")
+  @Options(useGeneratedKeys = true)
+  Integer insertMSDStatus(MSDStockStatusDTO dto);
+
+  @Select("select * from msd_stock_statuses where ilId=#{ilId} ")
+  MSDStockStatusDTO getByMSDILId(String ilId);
 
 }
