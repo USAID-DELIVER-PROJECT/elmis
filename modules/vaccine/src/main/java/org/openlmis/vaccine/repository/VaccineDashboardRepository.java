@@ -232,5 +232,9 @@ public class VaccineDashboardRepository {
     public List<HashMap<String,Object>>getNationalVaccineCoverage(Long userId, Long product,Long doseId,Long periodId,Long year){
         return mapper.getNationalVaccineCoverage(userId,product,doseId,periodId,year);
     }
+ public List<HashMap<String,Object>>getNationalCoverageProductAndDose(Long userId,Long periodId,Long year){
+        return mapper.getNationalCoverageProductAndDose(userId,periodId,year);
+    }
+
 
 }

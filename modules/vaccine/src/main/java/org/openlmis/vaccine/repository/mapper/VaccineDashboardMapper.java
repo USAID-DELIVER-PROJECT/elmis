@@ -1683,4 +1683,42 @@ public interface VaccineDashboardMapper {
            ")n ")
     List<HashMap<String,Object>>getNationalVaccineCoverage(@Param("userId")Long userId,@Param("product")Long product,@Param("doseId")Long doseId,@Param("periodId")Long periodId,@Param("year")Long year);
 
+
+   @Select(" with coverage as (  \n" +
+           "              select productId,product, doseId,\n" +
+           "        (SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods wHERE  ID = #{periodId} :: INT )  monthnumber, \n" +
+           "        sum( a.cumulative_vaccinated) cumulative_vaccinated, \n" +
+           "        sum(e.value) /12::numeric  monthly_district_target \n" +
+           "          \n" +
+           "        from ( \n" +
+           "       SELECT \n" +
+           "         f.geographiczoneid, \n" +
+           "         d.denominatorestimatecategoryid, \n" +
+           "         d.productid, \n" +
+           "         d.doseid, \n" +
+           "        d.MONTH period,p.primaryName product,\n" +
+           "\n" +
+           "        SUM (monthlyregular) AS cumulative_vaccinated \n" +
+           "       FROM \n" +
+           "        vw_vaccine_cumulative_coverage_by_dose d \n" +
+           "        join facilities f on f.id = d.facilityid \n" +
+           "        Join products p On productid = p.id\n" +
+           "        wHERE periodId = #{periodId}\n" +
+           "        AND d. YEAR = #{year}::INT \n" +
+           "        AND d. MONTH <= ( SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods wHERE  ID = #{periodId}::INT ) \n" +
+           "        GROUP BY 1,2,3,4,5,6\n" +
+           "        \n" +
+           "        order by productId ) a \n" +
+           "               join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid and e.year = #{year}::INT \n" +
+           "               GROUP BY product,doseId,productId\n" +
+           "               ORDER BY productId,DOSEiD\n" +
+           "\n" +
+           "\n" +
+           "               ) \n" +
+           "       select cumulative_vaccinated, monthly_district_target, product,DOSEID, monthnumber, \n" +
+           "         case when monthly_district_target > 0 then \n" +
+           "      ROUND( cumulative_vaccinated/ (monthly_district_target::numeric)*100,0) end as coverage   \n" +
+           "       from coverage c \n" +
+           "       ORDER BY productId")
+    List<HashMap<String,Object>>getNationalCoverageProductAndDose(@Param("userId")Long userId,@Param("periodId")Long periodId,@Param("year")Long year);
 }

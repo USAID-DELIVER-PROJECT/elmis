@@ -470,4 +470,18 @@ Long userId = this.loggedInUserId(request);
     }
 
 
+    @RequestMapping(value = "VaccineNationalCoverageByProductAndDose.json", method = RequestMethod.GET)
+    public ResponseEntity<OpenLmisResponse>getNationalCoverageProductAndDose(
+            HttpServletRequest request,
+            @Param("periodId") Long periodId,
+            @Param("year") Long year
+
+    ) {
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.response("natioanl_coverage",service.getNationalCoverageProductAndDose(
+                loggedInUserId(request),periodId, year));
+        return response;
+    }
+
+
 }
