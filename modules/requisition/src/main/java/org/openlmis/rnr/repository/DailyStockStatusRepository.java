@@ -52,4 +52,8 @@ public class DailyStockStatusRepository {
   public MSDStockStatusDTO getByTransactionId(String ilId){
     return mapper.getByMSDILId(ilId);
   }
+
+  public void updateMsdStockStatus(MSDStockStatusDTO dto) {
+     mapper.updateMsdStockStatus(dto);
+  }
 }

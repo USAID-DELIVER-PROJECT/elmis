@@ -54,5 +54,7 @@ public class MSDStockStatusDTO extends BaseModel{
 
     public String status;
 
-    public String IL_TransactionIDNumber;
+    public String iL_TransactionIDNumber;
+
+
 }

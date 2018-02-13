@@ -47,6 +47,9 @@ public interface DailyStockStatusMapper {
   Integer insertMSDStatus(MSDStockStatusDTO dto);
 
   @Select("select * from msd_stock_statuses where ilId=#{ilId} ")
-  MSDStockStatusDTO getByMSDILId(String ilId);
+  MSDStockStatusDTO getByMSDILId(@Param("ilId") String ilId);
 
+@Update("update msd_stock_statuses set onHandDate = #{onHandDate},onHandQuantity=#{onHandQuantity} " +
+        " ,mos =#{mos} WHERE ilId= #{ilId} ")
+  void updateMsdStockStatus(MSDStockStatusDTO dto);
 }

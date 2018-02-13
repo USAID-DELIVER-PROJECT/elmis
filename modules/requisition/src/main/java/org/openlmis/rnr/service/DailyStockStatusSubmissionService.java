@@ -20,6 +20,7 @@ import org.openlmis.core.service.FacilityService;
 import org.openlmis.core.service.ProductService;
 import org.openlmis.rnr.domain.DailyStockStatus;
 import org.openlmis.rnr.dto.MSDStockStatusDTO;
+import org.openlmis.rnr.dto.MsdStatusDTO;
 import org.openlmis.rnr.repository.DailyStockStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -30,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -37,6 +39,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static java.lang.Math.abs;
 
 @Component
 public class DailyStockStatusSubmissionService {
@@ -100,6 +104,12 @@ public class DailyStockStatusSubmissionService {
         try {
             MSDStockStatusDTO[] values = mapper.readValue(dailyStockStatus, MSDStockStatusDTO[].class);
 
+            int totalReceived = 0;
+            int updated = 0;
+            int ignored =0;
+            int imported = 0;
+            String id ="";
+
             for (MSDStockStatusDTO dto : values) {
 
                 if (dto.getIlId() != null) {
@@ -117,22 +127,39 @@ public class DailyStockStatusSubmissionService {
                         if (trans == null) {
                             dto.setStatus("Fail");
 
-                            if (il_url != null && username != null && password != null)
+                          /*  if (il_url != null && username != null && password != null)
                                 sendConfirmationMessage(username, password, il_url, dto.getStatus(), dto.getIlId());
-
+*/
                         } else {
                             dto.setStatus("Success");
-                            if (il_url != null && username != null && password != null)
-                                sendConfirmationMessage(username, password, il_url, dto.getStatus(), dto.getIlId());
+                            /*if (il_url != null && username != null && password != null)
+                               sendConfirmationMessage(username, password, il_url, dto.getStatus(), dto.getIlId());*/
                         }
-
+                       imported++;
                     }else {
+                        repository.updateMsdStockStatus(statusDTO1);
+                        updated++;
                         if (il_url != null && username != null && password != null)
                             dto.setStatus("Fail");
-                            sendConfirmationMessage(username, password, il_url, dto.getStatus(), dto.getIlId());
+                           // sendConfirmationMessage(username, password, il_url, dto.getStatus(), dto.getIlId());
                     }
+                    id = dto.getIlId();
                 }
+                totalReceived++;
             }
+            String status = "Success";
+            MsdStatusDTO statusDTO = new MsdStatusDTO();
+            statusDTO.setStatus(status);
+            statusDTO.setIL_TransactionIDNumber(id);
+            statusDTO.setImported(imported);
+            statusDTO.setUpdated(updated);
+            if((imported+updated)<totalReceived)
+            statusDTO.setIgnored(totalReceived-(imported+updated));
+            else
+            statusDTO.setIgnored(ignored);
+            String jsonInString = mapper.writeValueAsString(statusDTO);
+             if (il_url != null && username != null && password != null)
+                 sendConfirmationMessage(username, password, il_url,jsonInString);
 
         } catch (IOException e) {
 
@@ -144,20 +171,12 @@ public class DailyStockStatusSubmissionService {
 
     }
 
-    private void sendConfirmationMessage(String username, String password, String il_url, String status, String transId) {
-        System.out.println(il_url);
-        ObjectMapper mapper = new ObjectMapper();
+    private void sendConfirmationMessage(String username, String password, String il_url,String jsonData) {
+
         URL obj = null;
         try {
             obj = new URL(il_url);
             HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-
-            MSDStockStatusDTO hfrdto = new MSDStockStatusDTO();
-            hfrdto.setStatus(status);
-            hfrdto.setIL_TransactionIDNumber(transId);
-
-            String jsonInString = mapper.writeValueAsString(hfrdto);
-            System.out.println(jsonInString);
 
             String userCredentials = username + ":" + password;
             String basicAuth = "Basic " + new String(java.util.Base64.getEncoder().encode(userCredentials.getBytes()));
@@ -168,10 +187,10 @@ public class DailyStockStatusSubmissionService {
 
             con.setDoOutput(true);
 
-            System.out.println(jsonInString);
+            System.out.println(jsonData);
 
             OutputStream wr = con.getOutputStream();
-            wr.write(jsonInString.getBytes("UTF-8"));
+            wr.write(jsonData.getBytes("UTF-8"));
 
             wr.flush();
             wr.close();
