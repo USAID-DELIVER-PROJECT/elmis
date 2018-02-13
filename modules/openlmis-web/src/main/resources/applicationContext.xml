@@ -359,6 +359,27 @@
                 </entry>
 
 
+                <entry key="hfr-vims-mapping">
+                    <bean class="org.openlmis.web.model.UploadBean">
+                        <property name="displayName" value="menu.header.hfr.facility.mapping"/>
+                        <property name="importableClass">
+                            <value type="java.lang.Class">org.openlmis.core.dto.HfrMappingDTO</value>
+                        </property>
+                        <property name="recordHandler" ref="hfrFacilityMappingPersistenceHandler"/>
+                    </bean>
+                </entry>
+
+                <entry key="hfr-facility-type-vims-mapping">
+                    <bean class="org.openlmis.web.model.UploadBean">
+                        <property name="displayName" value="menu.header.hfr.facility.type.mapping"/>
+                        <property name="importableClass">
+                            <value type="java.lang.Class">org.openlmis.core.dto.HfrFacilityTypeDTO</value>
+                        </property>
+                        <property name="recordHandler" ref="hfrFacilityTypeMappingPersistenceHandler"/>
+                    </bean>
+                </entry>
+
+
             </map>
         </constructor-arg>
     </bean>
