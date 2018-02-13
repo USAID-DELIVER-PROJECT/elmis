@@ -16,10 +16,7 @@ import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.FacilityOperator;
 import org.openlmis.core.domain.FacilityType;
 import org.openlmis.core.domain.PriceSchedule;
-import org.openlmis.core.dto.DistrictGeoTree;
-import org.openlmis.core.dto.FacilityContact;
-import org.openlmis.core.dto.FacilityGeoTreeDto;
-import org.openlmis.core.dto.FacilitySupervisor;
+import org.openlmis.core.dto.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -582,6 +579,39 @@ public interface FacilityMapper {
         "WHERE U.facilityId = F.id AND U.id =#{userId} and ft.id =f.typeid AND f.active = TRUE AND f.virtualFacility = FALSE")
   HashMap<String,Object>getHomeFacilityWithType(@Param("userId")Long userId);
 
+@Insert("INSERT INTO public.vims_hfr_mappings(\n" +
+        "           vimsdistrict, hfrdistrict, active, createdby, createddate, \n" +
+        "            modifiedby, modifieddate)\n" +
+        "    VALUES (#{vimsDistrict}, #{hfrDistrict}, #{active}, #{createdBy}, #{createdDate}, #{modifiedBy}, \n" +
+        "            #{modifiedDate});")
+@Options(useGeneratedKeys = true)
+Integer insertHfrMapping(HfrMappingDTO dto);
+
+@Select(" select * from vims_hfr_mappings")
+ List<HfrMappingDTO>getAllHfrMapping();
+
+@Select(" select * from vims_hfr_mappings WHERE ID = #{Id}")
+ List<HfrMappingDTO>getAllHfrMappingById(@Param("id")Long id);
+
+@Select(" select * from vims_hfr_mappings WHERE lower(hfrdistrict) = lower(#{council})")
+ HfrMappingDTO getAllHfrMappingByCouncil(@Param("council") String dto);
+
+@Update("update vims_hfr_mappings set hfrdistrict=#{hfrDistrict} ,vimsdistrict =#{vimsDistrict}  where id =#{id}")
+  void updateHFRMapping(HfrMappingDTO dto);
+
+@Insert("INSERT INTO public.vims_hfr_facility_types_mappings(\n" +
+        "           vimscode, hfrFacilityType, createdby, createddate, \n" +
+        "            modifiedby, modifieddate)\n" +
+        "    VALUES (#{vimsCode}, #{hfrFacilityType}, #{createdBy}, #{createdDate}, #{modifiedBy}, \n" +
+        "            #{modifiedDate}); ")
+@Options(useGeneratedKeys = true)
+  Integer insertHfrFacilityTypeMapping(HfrFacilityTypeDTO typeMapping);
+
+  @Update("update vims_hfr_facility_types_mappings set vimscode = #{vimsCode}, hfrFacilityType =#{hfrFacilityType} where id = #{id}  ")
+  void updateHfrFacilityTypeMapping(HfrFacilityTypeDTO dto);
+
+    @Select(" select * from vims_hfr_facility_types_mappings where hfrFacilityType =#{hfrFacilityType}  ")
+    HfrFacilityTypeDTO geAllFacilityTypeMappingByCode(HfrFacilityTypeDTO record);
 
 
 }

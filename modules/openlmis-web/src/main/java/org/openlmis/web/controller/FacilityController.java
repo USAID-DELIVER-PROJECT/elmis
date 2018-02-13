@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.FacilityType;
 import org.openlmis.core.domain.Pagination;
+import org.openlmis.core.dto.HfrMappingDTO;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.service.FacilityOwnerService;
 import org.openlmis.core.service.FacilityService;
@@ -328,5 +329,36 @@ public class FacilityController extends BaseController {
     return response;
   }
 
+
+  @RequestMapping(value = "/hfrFacilityMapping", method = POST, headers = ACCEPT_JSON)
+  public ResponseEntity insertHfrFacilityMapping(@RequestBody HfrMappingDTO dto, HttpServletRequest request) {
+    dto.setCreatedBy(loggedInUserId(request));
+    dto.setModifiedBy(loggedInUserId(request));
+    ResponseEntity<OpenLmisResponse> response;
+
+      try {
+          facilityService.insertHfrMapping(dto);
+      } catch (DataException e) {
+          return OpenLmisResponse.error(e, BAD_REQUEST);
+      }
+
+    response = success(messageService.message("message.facility.created.success", dto.getHfrDistrict()));
+    response.getBody().addData("facility", dto);
+    return response;
+  }
+
+    @RequestMapping(value = "/hfrFacilityMappingList", method = GET)
+    public ResponseEntity<OpenLmisResponse> getHfrFacilityMappingList(HttpServletRequest httpServletRequest) {
+
+        ResponseEntity<OpenLmisResponse> response;
+        response = OpenLmisResponse.success("");
+        response.getBody().addData("facilityLists", facilityService.getAllHfrMapping());
+        return response;
+    }
+
+    @RequestMapping(value = "/hfrFacilityMappingBy/{id}", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getHfrFacilityMappingBy(@PathVariable(value = "id") Long id) {
+        return response("facility", facilityService.getAllHfrMappingById(id));
+    }
 
 }

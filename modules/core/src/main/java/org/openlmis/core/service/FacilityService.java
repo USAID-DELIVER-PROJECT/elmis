@@ -3,9 +3,9 @@
  * Copyright © 2013 VillageReach
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
 package org.openlmis.core.service;
@@ -73,6 +73,9 @@ public class FacilityService {
     private GeographicZoneService geographicZoneService;
 
     private static final Logger LOGGER = Logger.getLogger(FacilityService.class);
+
+    @Autowired
+    private FacilityTypeService facilityTypeService;
 
     @Transactional
     public void update(Facility facility) {
@@ -363,12 +366,50 @@ public class FacilityService {
 
     }
 
-    public HashMap<String,Object> getHomeFacilityWithType(Long userId) {
+    public HashMap<String, Object> getHomeFacilityWithType(Long userId) {
         return facilityRepository.getHomeFacilityWithType(userId);
     }
 
 
     public Facility getByCodeFor(String code) {
         return facilityRepository.getByCode(code);
+    }
+
+    @Transactional
+    public void insertHfrMapping(HfrMappingDTO dto) {
+       GeographicZone zone = geographicZoneService.getByCodeFor(dto.getZoneCode());
+        dto.setVimsDistrict(zone.getId());
+        if (dto.getId() == null) {
+            facilityRepository.insertHfrMapping(dto);
+        } else
+            facilityRepository.updateHFRMapping(dto);
+    }
+
+    public List<HfrMappingDTO> getAllHfrMapping() {
+        return facilityRepository.getAllHfrMapping();
+    }
+
+    public List<HfrMappingDTO> getAllHfrMappingById(Long paramId) {
+        return facilityRepository.getAllHfrMappingById(paramId);
+    }
+
+    public HfrMappingDTO getAllHfrMappingByCouncil(HfrMappingDTO council) {
+        return facilityRepository.getAllHfrMappingByCouncil(council.getHfrDistrict());
+    }
+
+    @Transactional
+    public void insertHfrFacilityTypeMapping(HfrFacilityTypeDTO dto){
+         if(dto !=null){
+             FacilityType facilityType = facilityTypeService.getFacilityTypeByCode(dto.getVimsCode());
+             dto.setVimsCode(facilityType.getCode());
+             if(dto.getId()==null)
+             facilityRepository.insertHfrFacilityTypeMapping(dto);
+             else
+             facilityRepository.updateHfrFacilityTypeMapping(dto);
+         }
+    }
+
+    public HfrFacilityTypeDTO getAllByFacilityType(HfrFacilityTypeDTO record) {
+        return facilityRepository.geAllFacilityTypeMappingByCode(record);
     }
 }

@@ -12,6 +12,7 @@
 
 package org.openlmis.core.repository.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.openlmis.core.domain.FacilityType;
 import org.springframework.stereotype.Repository;
@@ -23,4 +24,7 @@ public interface FacilityTypeMapper {
 
     @Select("SELECT * FROM facility_types ORDER BY displayOrder")
     List<FacilityType> getAllTypes();
+
+    @Select("select * from facility_types where code =#{code}")
+    FacilityType getByFacilityCode(@Param("code") String code);
 }

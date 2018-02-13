@@ -128,4 +128,9 @@ public class GeographicZoneService {
   public List<GeographicZone> getDistrictsFor(List<Facility> facilities) {
     return repository.getDistrictsFor(facilities);
   }
+
+  public GeographicZone getByCodeFor(String zoneCode) {
+    return repository.getByCode(zoneCode);
+  }
+
 }
