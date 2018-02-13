@@ -957,6 +957,30 @@ services.factory('FacilityInventoryStockStatusData', function ($q, $timeout, $re
 
 });
 
+services.factory('GetCoverageByProductAndDoseData', function ($q, $timeout, $resource,GetVaccineNationalCoverageByProductAndDose) {
+
+    function get(params) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetVaccineNationalCoverageByProductAndDose.get({periodId:parseInt(params.period,10),year:params.year}, function (data) {
+
+                var stocks ={};
+                if (data !== undefined) {
+                    stocks = data.natioanl_coverage;
+                }
+                deferred.resolve(stocks);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+
 services.factory('FullStockAvailableForDashboard', function ($resource) {
     return $resource('/vaccine/dashboard/fullStockAvailability.json', {}, {});
 });
@@ -990,3 +1014,8 @@ services.factory('GetProductBy', function ($resource) {
 services.factory('SaveSupervisoryDistribution', function ($resource) {
     return $resource('/vaccine/inventory/distribution/saveSupervisoryDistribution.json', {}, {save: {method: 'POST'}});
 });
+
+services.factory('GetVaccineNationalCoverageByProductAndDose', function ($resource) {
+    return $resource('/vaccine/dashboard/VaccineNationalCoverageByProductAndDose.json', {}, {});
+});
+

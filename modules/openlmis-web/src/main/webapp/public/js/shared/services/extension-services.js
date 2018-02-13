@@ -1318,6 +1318,19 @@ services.factory('GetMsdStockStatusColor', function ($resource) {
 services.factory('GetGoZoneByLevelCode', function ($resource) {
     return $resource('/geographic-zone-by/:geoLevelCode.json', {geoLevelCode:'@geoLevelCode'}, {});
 });
+
 services.factory('GetHFRFacilities', function ($resource) {
     return $resource('/rest-api/lookup/hfr-facilities', {}, {});
+});
+
+services.factory('GetHfrFacilityMappingList', function ($resource) {
+    return $resource('/hfrFacilityMappingList', {}, {});
+});
+
+services.factory('HfrFacilityMapping', function($resource){
+    return $resource('/hfrFacilityMapping.json', {} , { post: {method:'POST'} } );
+});
+
+services.factory('GetHfrFacilityMappingById', function ($resource) {
+    return $resource('/hfrFacilityMappingBy/:id.json', {id:'@id'}, {});
 });
