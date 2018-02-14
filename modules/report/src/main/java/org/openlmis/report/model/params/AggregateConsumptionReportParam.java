@@ -40,4 +40,6 @@ public class AggregateConsumptionReportParam
   @RequiredParam
   private String periodEnd;
 
+  private Boolean disaggregated;
+
 }

@@ -24,6 +24,7 @@ import org.openlmis.lookupapi.mapper.DosageUnitReportMapper;
 import org.openlmis.lookupapi.mapper.GeographicLevelReportMapper;
 import org.openlmis.lookupapi.mapper.ILInterfaceMapper;
 import org.openlmis.lookupapi.model.HealthFacilityDTO;
+import org.openlmis.lookupapi.model.MSDStockDTO;
 import org.openlmis.lookupapi.model.ProgramReferenceData;
 import org.openlmis.report.mapper.lookup.*;
 import org.openlmis.report.model.dto.*;
@@ -40,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -210,6 +212,8 @@ public class LookupService {
 
   }
 
+
+
   public ProgramReferenceData getProgramReferenceData(String code, String facilityCode) {
     Facility facility = null;
     Program program = null;
@@ -228,5 +232,9 @@ public class LookupService {
       programReferenceData.setProcessingPeriodList(processingPeriodList);
     }
     return programReferenceData;
+  }
+
+  public List<HashMap<String,Object>>getAllHFRFacilities(){
+    return interfaceMapper.getAllHFRFacilities();
   }
 }

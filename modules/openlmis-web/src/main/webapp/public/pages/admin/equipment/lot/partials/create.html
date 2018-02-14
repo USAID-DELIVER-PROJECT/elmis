@@ -30,9 +30,17 @@
                                 <span class="label-required">*</span>
                             </label>
                             <div class="form-field">
-                                <select ng-model="lot.productId" ng-options="product as product.primaryName for product in products" id="productId" name="product" ng-required="lot.productid">
-                                    <option openlmis-mesage="Select"  value=""></option>
-                                </select>
+
+                                <input ng-model="lot.product.primaryName" name="productId" id="productId" type="text"
+                                       maxlength="30" width="200px" ng-required="true" value="lot.product.id"/>
+<!--
+                                <select id="program" ui-select2 class="input-large" ng-model="lot.productId">
+                                    <option ng-repeat="product in lots" value="{{ program.id }}" ng-selected="program.id == lot.product.id">{{product.primaryName}}</option>
+                                </select>-->
+
+                               <!-- <select ng-model="lot.productId" ng-options="product as product.primaryName for product in products" id="productId" name="product" ng-required="lot.productid">
+                                    <option value="">Select PrODUCT</option>
+                                </select>-->
                                 <span class="field-error" ng-show="lot.productId.$error.required && showError" openlmis-message="missing.value"></span>
                             </div>
                         </div>
@@ -82,9 +90,9 @@
 
                             <div class="form-field">
                                 <input ng-model="lot.manufactureDate" name="manufactureDate" id="manufactureDate" type="text"
-                                       maxlength="30" width="200px" ng-required="true"/>
-                                <span class="field-error" ng-show="lotForm.manufactureDate.$error.required && showError"
-                                      openlmis-message="missing.value">
+                                       maxlength="30" width="200px"/>
+                                <!--<span class="field-error" ng-show="lotForm.manufactureDate.$error.required && showError"
+                                      openlmis-message="missing.value">-->
                                 </span>
                             </div>
 

@@ -933,6 +933,54 @@ services.factory('GetPeriodForDashboard', function ($q, $timeout, $resource,Repo
 
 });
 
+services.factory('FacilityInventoryStockStatusData', function ($q, $timeout, $resource,VaccineDashboardFacilityInventoryStockStatus) {
+
+    function get(params) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            VaccineDashboardFacilityInventoryStockStatus.get({facilityId:parseInt(params.facilityId,10),date:params.date}, function (data) {
+
+                var stocks ={};
+                if (data !== undefined) {
+                    stocks = data.facilityStockStatus;
+                }
+                deferred.resolve(stocks);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+
+services.factory('GetCoverageByProductAndDoseData', function ($q, $timeout, $resource,GetVaccineNationalCoverageByProductAndDose) {
+
+    function get(params) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetVaccineNationalCoverageByProductAndDose.get({periodId:parseInt(params.period,10),year:params.year}, function (data) {
+
+                var stocks ={};
+                if (data !== undefined) {
+                    stocks = data.natioanl_coverage;
+                }
+                deferred.resolve(stocks);
+
+            });
+
+        }, 100);
+       return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+
 services.factory('FullStockAvailableForDashboard', function ($resource) {
     return $resource('/vaccine/dashboard/fullStockAvailability.json', {}, {});
 });
@@ -961,3 +1009,13 @@ services.factory('GetVaccineNationalCoverage', function ($resource) {
 services.factory('GetProductBy', function ($resource) {
     return $resource('/products/product/:id.json', {id:'@id'}, {});
 });
+
+
+services.factory('SaveSupervisoryDistribution', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/saveSupervisoryDistribution.json', {}, {save: {method: 'POST'}});
+});
+
+services.factory('GetVaccineNationalCoverageByProductAndDose', function ($resource) {
+    return $resource('/vaccine/dashboard/VaccineNationalCoverageByProductAndDose.json', {}, {});
+});
+

@@ -66,6 +66,9 @@ public class VaccineInventoryDistributionService {
     @Autowired
     private VaccineNotificationService notificationService;
 
+ /*   @Autowired
+    private SdpNotificationService sdpNotificationService;*/
+
 
     public List<Facility> getFacilities(Long userId) {
         Facility homeFacility = facilityService.getHomeFacility(userId);
@@ -147,6 +150,7 @@ public class VaccineInventoryDistributionService {
                 }
             }
         }
+
         return distribution.getId();
     }
 

@@ -1,0 +1,132 @@
+<style>
+
+    .breadcrumb {
+        padding: 0px 0px !important;
+        margin-bottom: 1px !important;
+        background-color: lightgrey;
+        font-size: 10px;
+
+    }
+
+    .card {
+        margin: 0rem 0 1rem 0;
+    }
+
+    p {
+        vertical-align: middle !important;
+    }
+  .btn{
+      color:#2bbbad !important;
+      right:20px;
+      bottom: 3px!important;
+      font-size: 11px;
+      height: 30px!important;
+  }
+</style>
+
+
+<div class="row">
+    <div class="col s12 m12 l12">
+        <div class="card">
+            <div class="section grey lighten-5">
+
+                <div class="col s3 green lighten-1">
+                    <p>
+                        Adequately Stocked
+                    </p>
+                </div>
+                <div class="col s3 orange lighten-1">
+                    <p> Inadequately Stocked</p>
+                </div>
+
+                <div class="col s3 blue lighten-1">
+                    <p>Overstocked</p>
+                </div>
+                <div class="col s3 red lighten-1">
+                    <p>Stocked Out</p>
+                </div>
+
+
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="section lighten-5">
+                <span class="pull-right"><a class="waves-effect waves-light btn">
+                   <!-- <i class="material-icons left">print</i>-->Excel</a></span>
+            </div>
+            <div class="card-content">
+                <div class="section grey lighten-5">
+                <table class="table bordered striped scrollspy">
+                    <thead>
+                    <tr><th>#</th>
+                        <th>Tracer Product </th>
+                       <th>
+                          {{cellValues.msd_central}}
+                       </th>
+                        <th>
+                          {{cellValues.muleba}}
+                       </th>
+                        <th>
+                          {{cellValues.mosh}}
+                       </th>
+                        <th>
+                          {{cellValues.mwnz}}
+                       </th>
+                        <th>
+                          {{cellValues.doodoma}}
+                       </th>
+                        <th>
+                          {{cellValues.mtr}}
+                       </th>
+                        <th>
+                          {{cellValues.tanga}}
+                       </th>
+                        <th>
+                          {{cellValues.tabr}}
+                       </th>
+                        <th>
+                          {{cellValues.iringa}}
+                       </th>
+
+                        <th>
+                          {{cellValues.dar}}
+                       </th>
+                        <th>
+                          {{cellValues.mbeya}}
+                       </th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr  ng-repeat="p in stockStatusData" class="table_row">
+                        <td>{{$index+1}}</td>
+                        <td>{{p.productname}}</td>
+                        <td ng-style="getStockColor(p.msd_central,1)">{{p.msd_central}}</td>
+                        <td ng-style="getStockColor(p.muleba,2)">{{p.muleba}}</td>
+                        <td ng-style="getStockColor(p.mosh,2)">{{p.mosh}}</td>
+                        <td ng-style="getStockColor(p.mwnz,2)">{{p.mwnz}}</td>
+                        <td ng-style="getStockColor(p.doodoma,2)">{{p.doodoma}}</td>
+                        <td ng-style="getStockColor(p.mtr,2)">{{p.mtr}}</td>
+                        <td ng-style="getStockColor(p.tanga,2)">{{p.tanga}}</td>
+                        <td ng-style="getStockColor(p.tabr,2)">{{p.tabr}}</td>
+                        <td ng-style="getStockColor(p.iringa,2)">{{p.iringa}}</td>
+                        <td ng-style="getStockColor(p.dar,2)">{{p.dar}}</td>
+                        <td ng-style="getStockColor(p.mbeya,2)">{{p.mbeya}}</td>
+<!--
+                        <td ng-style="set_color(pr.color)">{{p.mos}}</td>
+-->
+                    </tr>
+                    </tbody>
+<!--
+                    <tbody ng-repeat-end></tbody>
+-->
+                </table>
+            </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+

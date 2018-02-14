@@ -32,4 +32,8 @@ public class DistrictConsumptionReport implements ResultRow {
   private Double totalPercentage;
   private Double district_id;
 
+  private String facilityCode;
+  private String facility;
+  private String facilityType;
+
 }

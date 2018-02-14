@@ -596,4 +596,8 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
         return repository.getNationalVaccineCoverage(userId, product,doseId,periodId,year);
     }
 
+    public List<HashMap<String,Object>>getNationalCoverageProductAndDose(Long userId,Long periodId, Long year){
+        return repository.getNationalCoverageProductAndDose(userId,periodId,year);
+    }
+
 }

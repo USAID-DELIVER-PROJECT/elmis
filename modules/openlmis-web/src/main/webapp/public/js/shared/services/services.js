@@ -535,3 +535,7 @@ services.factory('MinimumStockNotification', function ($resource) {
 services.factory('VaccinePendingRequisitions', function ($resource) {
     return $resource('/vaccine/orderRequisition/getPendingRequest/:facilityId.json', {}, {});
 });
+
+services.factory('HomeFacilityWithType', function ($resource) {
+    return $resource('/user/facilityWithType.json', {}, {});
+});
