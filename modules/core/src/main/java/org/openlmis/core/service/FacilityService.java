@@ -110,6 +110,7 @@ public class FacilityService {
         if (facility != null) {
             facility.setSupportedPrograms(programSupportedService.getAllByFacilityId(id));
             facility.setInterfaceMappings(elmisInterfaceService.getFacilityInterfaceMappingById(id));
+            facility.setId(id);
             facility.setOwners(facilityOwnerService.loadFailityOwnerList(facility));
         }
         return facility;

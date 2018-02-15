@@ -68,7 +68,7 @@ public class FacilityOwnerService {
     public boolean isOwnerAssigned(List<FacilityOwner> facilityOwnerList, Owner operator) {
         if (facilityOwnerList != null && !facilityOwnerList.isEmpty()) {
             for (FacilityOwner owner : facilityOwnerList) {
-                if (operator.getId() == owner.getId()) {
+                if (operator.getId() .equals( owner.getOwner().getId())) {
                     return true;
                 }
             }
