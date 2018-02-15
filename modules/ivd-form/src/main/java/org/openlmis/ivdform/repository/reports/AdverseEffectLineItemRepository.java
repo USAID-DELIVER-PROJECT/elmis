@@ -26,7 +26,6 @@ public class AdverseEffectLineItemRepository {
   AdverseEffectMapper mapper;
 
   public void insert(AdverseEffectLineItem lineItem) {
-    System.out.println(lineItem.getCases());
     mapper.insert(lineItem);
   }
 
