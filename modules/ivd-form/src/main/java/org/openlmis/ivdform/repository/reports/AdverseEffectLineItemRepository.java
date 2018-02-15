@@ -17,6 +17,8 @@ import org.openlmis.ivdform.repository.mapper.reports.AdverseEffectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class AdverseEffectLineItemRepository {
 
@@ -24,6 +26,7 @@ public class AdverseEffectLineItemRepository {
   AdverseEffectMapper mapper;
 
   public void insert(AdverseEffectLineItem lineItem) {
+    System.out.println(lineItem.getCases());
     mapper.insert(lineItem);
   }
 
@@ -34,5 +37,9 @@ public class AdverseEffectLineItemRepository {
   public void deleteLineItems(Long reportId) {
     mapper.deleteRelatedLineItems(reportId);
     mapper.deleteLineItems(reportId);
+  }
+
+  public List<AdverseEffectLineItem> getById(Long id) {
+    return mapper.getById(id);
   }
 }
