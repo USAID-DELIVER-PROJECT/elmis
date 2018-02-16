@@ -23,7 +23,7 @@ public interface FacilityOwnerMapper {
     @Insert("INSERT INTO facility_owners(\n" +
             "             facilityid, ownerid, createdby, createddate, modifiedby, \n" +
             "            modifieddate, description,active)\n" +
-            "    VALUES ( #{facility.id}, #{owner.id}, #{createdBy}, #{createdDate}, #{modifiedBy}, \n" +
+            "    VALUES ( #{facility}, #{owner.id}, #{createdBy}, #{createdDate}, #{modifiedBy}, \n" +
             "            #{modifiedDate}, #{description},#{active});\n")
     @Options(useGeneratedKeys = true)
      Long insert(FacilityOwner facilityOwner);

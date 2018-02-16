@@ -27,8 +27,9 @@ public class FacilityOwner extends BaseModel implements Importable{
     private String displayName;
     @ImportField(mandatory = true, name = "Owner Code", nested = "code")
     private Owner owner;
-    @ImportField(mandatory = true, name = "Facility Code", nested = "code")
-    private Facility facility;
+    @ImportField(mandatory = true, name = "Facility Code")
+    private String facilityCode;
+    private Long facility;
     private boolean active=true;
     private String description;
     public String toString(){

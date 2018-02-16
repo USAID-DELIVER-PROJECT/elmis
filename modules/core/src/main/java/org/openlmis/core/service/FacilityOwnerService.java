@@ -33,7 +33,7 @@ public class FacilityOwnerService {
             repository.deleteFacilityOwners(facility);
             for (FacilityOwner facilityOwner : facilityOwnerList) {
                 if (facilityOwner.isActive()) {
-                    facilityOwner.setFacility(facility);
+                    facilityOwner.setFacility(facility.getId());
                     repository.addNewFacilityOwner(facilityOwner);
                 }
             }
@@ -50,7 +50,7 @@ public class FacilityOwnerService {
                 FacilityOwner facilityOwner = new FacilityOwner();
                 facilityOwner.setOwner(operator);
                 facilityOwner.setActive(false);
-                facilityOwner.setFacility(facility);
+                facilityOwner.setFacility(facility.getId());
                 facilityOwnerList.add(facilityOwner);
             }
         }
@@ -87,17 +87,17 @@ public class FacilityOwnerService {
     }
 
     public BaseModel getFacilityOwner(FacilityOwner record) {
-        FacilityOwner facilityOwner=this.repository.getFacilityOwnerByOwnerCodeAndFacilityCode(record.getOwner().getCode(),record.getFacility().getCode());
+        FacilityOwner facilityOwner=this.repository.getFacilityOwnerByOwnerCodeAndFacilityCode(record.getOwner().getCode(),record.getFacilityCode());
         return  facilityOwner;
     }
 
     public void uploadFacilityOwner(FacilityOwner record) {
 
         Facility facility = new Facility();
-        facility.setCode(record.getFacility().getCode());
+        facility.setCode(record.getFacilityCode());
 
         facility = facilityService.getByCode(facility);
-        record.getFacility().setId(facility.getId());
+        record.setFacility(facility.getId());
 
         Owner owner =repository.getOwnerByCode(record.getOwner().getCode());
         record.setOwner(owner);
