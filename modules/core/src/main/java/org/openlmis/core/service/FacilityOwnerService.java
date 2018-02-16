@@ -9,10 +9,7 @@
 package org.openlmis.core.service;
 
 import lombok.NoArgsConstructor;
-import org.openlmis.core.domain.Facility;
-import org.openlmis.core.domain.FacilityOperator;
-import org.openlmis.core.domain.FacilityOwner;
-import org.openlmis.core.domain.Owner;
+import org.openlmis.core.domain.*;
 import org.openlmis.core.repository.FacilityOwnerRepository;
 import org.openlmis.core.repository.FacilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FacilityOwnerService {
     @Autowired
-    private FacilityRepository facilityRepository;
+    FacilityService facilityService;
     @Autowired
     private FacilityOwnerRepository repository;
 
@@ -36,7 +33,7 @@ public class FacilityOwnerService {
             repository.deleteFacilityOwners(facility);
             for (FacilityOwner facilityOwner : facilityOwnerList) {
                 if (facilityOwner.isActive()) {
-                    facilityOwner.setFacility(facility.getId());
+                    facilityOwner.setFacility(facility);
                     repository.addNewFacilityOwner(facilityOwner);
                 }
             }
@@ -53,7 +50,7 @@ public class FacilityOwnerService {
                 FacilityOwner facilityOwner = new FacilityOwner();
                 facilityOwner.setOwner(operator);
                 facilityOwner.setActive(false);
-                facilityOwner.setFacility(facility.getId());
+                facilityOwner.setFacility(facility);
                 facilityOwnerList.add(facilityOwner);
             }
         }
@@ -87,5 +84,28 @@ public class FacilityOwnerService {
             facilityOwnerList.add(facilityOwner1);
         }
         return facilityOwnerList;
+    }
+
+    public BaseModel getFacilityOwner(FacilityOwner record) {
+        FacilityOwner facilityOwner=this.repository.getFacilityOwnerByOwnerCodeAndFacilityCode(record.getOwner().getCode(),record.getFacility().getCode());
+        return  facilityOwner;
+    }
+
+    public void uploadFacilityOwner(FacilityOwner record) {
+
+        Facility facility = new Facility();
+        facility.setCode(record.getFacility().getCode());
+
+        facility = facilityService.getByCode(facility);
+        record.getFacility().setId(facility.getId());
+
+        Owner owner =repository.getOwnerByCode(record.getOwner().getCode());
+        record.setOwner(owner);
+
+        if (record.getId() == null) {
+            repository.addNewFacilityOwner(record);
+        } else {
+            repository.updateFacilityOwner(record);
+        }
     }
 }

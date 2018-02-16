@@ -379,7 +379,15 @@
                     </bean>
                 </entry>
 
-
+                <entry key="facilityOwner">
+                    <bean class="org.openlmis.web.model.UploadBean">
+                        <property name="displayName" value="menu.header.facility.owner"/>
+                        <property name="importableClass">
+                            <value type="java.lang.Class">org.openlmis.core.domain.FacilityOwner</value>
+                        </property>
+                        <property name="recordHandler" ref="facilityOwnerPersistenceHandler"/>
+                    </bean>
+                </entry>
             </map>
         </constructor-arg>
     </bean>

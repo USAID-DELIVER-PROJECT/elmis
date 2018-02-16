@@ -23,7 +23,7 @@ public interface FacilityOwnerMapper {
     @Insert("INSERT INTO facility_owners(\n" +
             "             facilityid, ownerid, createdby, createddate, modifiedby, \n" +
             "            modifieddate, description,active)\n" +
-            "    VALUES ( #{facility}, #{owner.id}, #{createdBy}, #{createdDate}, #{modifiedBy}, \n" +
+            "    VALUES ( #{facility.id}, #{owner.id}, #{createdBy}, #{createdDate}, #{modifiedBy}, \n" +
             "            #{modifiedDate}, #{description},#{active});\n")
     @Options(useGeneratedKeys = true)
      Long insert(FacilityOwner facilityOwner);
@@ -42,4 +42,19 @@ public interface FacilityOwnerMapper {
     List<FacilityOwner> loadFacilityOwners(Facility facility);
     @Select("SELECT * FROM owners ORDER BY displayOrder")
     List<Owner> allOwners();
+    @Select("select fo.*,fop.code ownerCode,fop.text ownerText FROM facility_owners fo " +
+            " inner join facilities f on f.id =fo.facilityid" +
+            " inner join owners fop on fop.id=fo.ownerid \n" +
+            " WHERE  f.code= #{facilityCode} and fop.code=#{owenerCode};")
+    @Results(value = {@Result(property = "owner.id", column = "ownerid"),
+            @Result(property = "owner.code", column = "ownerCode"),
+            @Result(property = "owner.text", column = "ownerText")})
+    FacilityOwner getFacilityOwnerByOwnerCodeAndFacilityCode(@Param("owenerCode") String owenerCode, @Param("facilityCode") String facilityCode);
+    @Select("SELECT * FROM owners " +
+            " where code=#{code}  ")
+    Owner getOwnerByCode(String code);
+@Update("UPDATE facility_owners\n" +
+        "   SET   description=#{description}\n" +
+        " WHERE id=#{id}")
+    void update(FacilityOwner record);
 }
