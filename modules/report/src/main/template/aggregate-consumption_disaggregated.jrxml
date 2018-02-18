@@ -67,17 +67,6 @@
 					<text><![CDATA[Line#]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="290" y="0" width="100" height="40" uuid="2794df9f-2d9d-4e4e-880c-902bd2678abf">
-						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					</reportElement>
-					<textElement verticalAlignment="Middle">
-						<font size="10" isBold="false"/>
-						<paragraph leftIndent="2"/>
-					</textElement>
-					<text><![CDATA[Product Code]]></text>
-				</staticText>
-				<staticText>
 					<reportElement x="390" y="0" width="130" height="40" uuid="7bc79045-4835-4168-b56f-5f9a521d80cc">
 						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -99,7 +88,7 @@
 					<text><![CDATA[Reported Consumption]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="610" y="0" width="109" height="40" uuid="4cd7e846-0a2e-49f4-814b-9e7b01cd3b99">
+					<reportElement x="611" y="0" width="109" height="40" uuid="4cd7e846-0a2e-49f4-814b-9e7b01cd3b99">
 						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
@@ -151,6 +140,17 @@
 						<paragraph leftIndent="2"/>
 					</textElement>
 					<text><![CDATA[Facility Type]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="290" y="0" width="100" height="40" uuid="ba527aac-b71a-4605-bf4b-2b4bd3c7a6d3">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Product Code]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -224,7 +224,7 @@
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement x="291" y="0" width="100" height="20" uuid="26803b77-a115-453c-810d-6f402250b128"/>
+				<reportElement x="290" y="0" width="100" height="20" uuid="26803b77-a115-453c-810d-6f402250b128"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
@@ -234,7 +234,7 @@
 				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement x="610" y="0" width="112" height="20" uuid="f463c503-d878-4a0f-a32a-711b3bee6a24"/>
+				<reportElement x="611" y="0" width="109" height="20" uuid="f463c503-d878-4a0f-a32a-711b3bee6a24"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[($F{consumptionInPacks} != null)?new java.text.DecimalFormat("#,##0").format($F{consumptionInPacks}):"0"]]></textFieldExpression>
 			</textField>
