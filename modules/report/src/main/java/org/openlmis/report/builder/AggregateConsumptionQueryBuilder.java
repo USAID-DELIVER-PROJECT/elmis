@@ -42,24 +42,6 @@ public class AggregateConsumptionQueryBuilder {
 
     writePredicates(filter);
 
-  /*  WHERE(programIsFilteredBy("r.programId"));
-    WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
-    WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
-    WHERE(periodStartDateRangeFilteredBy("pp.startdate", filter.getPeriodStart().trim()));
-    WHERE(periodEndDateRangeFilteredBy("pp.enddate", filter.getPeriodEnd().trim()));
-
-    if (filter.getProductCategory() != 0) {
-      WHERE(productCategoryIsFilteredBy("ppg.productCategoryId"));
-    }
-
-    if (multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer") != null) {
-      WHERE(multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer"));
-    }
-
-    if (filter.getZone() != 0) {
-      WHERE(geoZoneIsFilteredBy("d"));
-    }*/
-
     GROUP_BY("p.code, p.primaryName, p.dispensingUnit, p.strength, ds.code");
     ORDER_BY("p.primaryName");
     return SQL();
@@ -98,10 +80,11 @@ public class AggregateConsumptionQueryBuilder {
   private static void writePredicates(AggregateConsumptionReportParam filter) {
 
     WHERE(programIsFilteredBy("r.programId"));
+    WHERE(periodIsFilteredBy("r.periodId"));
     WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
-    WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
+    WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));/*
     WHERE(periodStartDateRangeFilteredBy("pp.startdate", filter.getPeriodStart().trim()));
-    WHERE(periodEndDateRangeFilteredBy("pp.enddate", filter.getPeriodEnd().trim()));
+    WHERE(periodEndDateRangeFilteredBy("pp.enddate", filter.getPeriodEnd().trim()));*/
 
     if(filter.getProductCategory() != 0){
       WHERE( productCategoryIsFilteredBy("ppg.productCategoryId"));
