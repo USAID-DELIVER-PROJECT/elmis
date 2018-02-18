@@ -42,4 +42,16 @@ public class FacilityOwnerRepository {
 
         return mapper.allOwners();
     }
+
+    public FacilityOwner getFacilityOwnerByOwnerCodeAndFacilityCode(String owenerCode, String facilityCode) {
+        return  mapper.getFacilityOwnerByOwnerCodeAndFacilityCode(owenerCode, facilityCode);
+    }
+
+    public Owner getOwnerByCode(String code) {
+        return  this.mapper.getOwnerByCode(code);
+    }
+
+    public void updateFacilityOwner(FacilityOwner record) {
+        this.mapper.update(record);
+    }
 }
