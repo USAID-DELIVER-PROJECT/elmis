@@ -21,8 +21,8 @@ function AggregateConsumptionReportController($scope, $window, AggregateConsumpt
       $scope.data = $scope.datarows = [];
 
       $scope.filter.max = 10000;
-      if($scope.getSanitizedParameter().periodEnd !=='' &&
-          $scope.getSanitizedParameter().periodStart !=='' &&
+      if($scope.getSanitizedParameter().period !=='' &&
+          $scope.getSanitizedParameter().schedule !=='' &&
           $scope.getSanitizedParameter().products !==null &&
           $scope.getSanitizedParameter().program !==null
       ){
