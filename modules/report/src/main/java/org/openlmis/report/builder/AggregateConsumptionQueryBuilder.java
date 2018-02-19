@@ -98,6 +98,11 @@ public class AggregateConsumptionQueryBuilder {
       WHERE( geoZoneIsFilteredBy("d") );
     }
 
+    if (filter.getAllReportType()) {
+      WHERE("r.emergency in (true,false)");
+    } else {
+      WHERE(reportTypeFilteredBy("r.emergency"));
+    }
   }
 
   public static String getQuery(Map params){

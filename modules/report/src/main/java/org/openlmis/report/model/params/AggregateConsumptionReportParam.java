@@ -44,4 +44,10 @@ public class AggregateConsumptionReportParam
 
   @RequiredParam
   private Long schedule;
+
+  private Boolean isEmergency;
+
+  private String reportType;
+
+  private Boolean allReportType;
 }

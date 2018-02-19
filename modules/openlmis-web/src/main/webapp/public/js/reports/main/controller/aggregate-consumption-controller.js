@@ -9,37 +9,89 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-function AggregateConsumptionReportController($scope, $window, AggregateConsumptionReport) {
+function AggregateConsumptionReportController($scope, $filter, $window, AggregateConsumptionReport) {
 
-  $scope.OnFilterChanged = function() {
+    $scope.reportTypes = [{name: 'EM', value: 'EM', label: 'Emergency'}, {name: 'RE', value: 'RE', label: 'Regular'}];
+    $scope.isAll = false;
+    $scope.selectAll = function () {
+
+        if ($scope.isAll === false) {
+            angular.forEach($scope.reportTypes, function (type) {
+                type.checked = true;
+            });
+            $scope.isAll = true;
+        } else {
+            angular.forEach($scope.reportTypes, function (type) {
+                type.checked = false;
+            });
+            $scope.isAll = false;
+        }
+        $scope.filter = {};
+        $scope.filter.allReportType = true;
+        $scope.OnFilterChanged();
+
+    };
 
 
-  };
+    $scope.toggleSingle = function () {
+        var param = [];
+        param = _.where($scope.reportTypes, {checked: true});
+        if (parseInt(param.length, 10) === 2 || parseInt(param.length, 10) === 0) {
+            $scope.allReportType = true;
+            $scope.filter = {};
+            $scope.filter.allReportType = true;
+            console.log($scope.filter);
+            $scope.OnFilterChanged();
+        }
+        else {
+            $scope.filter = {};
+            var param2 = _.findWhere($scope.reportTypes, {checked: true});
+            if (param2.name === 'RE') {
+                $scope.filter.isEmergency = false;
+                $scope.filter.allReportType = false;
 
-  $scope.searchReport = function () {
+            } else {
+                $scope.filter.isEmergency = true;
+                $scope.allReportType = false;
+                $scope.filter.allReportType = false;
 
-      $scope.data = $scope.datarows = [];
+                // $scope.filter.allReportType = true;
+            }
+            $scope.OnFilterChanged();
+        }
+    };
 
-      $scope.filter.max = 10000;
-      if($scope.getSanitizedParameter().period !=='' &&
-          $scope.getSanitizedParameter().schedule !=='' &&
-          $scope.getSanitizedParameter().products !==null &&
-          $scope.getSanitizedParameter().program !==null
-      ){
-          AggregateConsumptionReport.get($scope.getSanitizedParameter(), function(data) {
-              if (data.pages !== undefined) {
-                  $scope.data = data.pages.rows;
-                  $scope.paramsChanged($scope.tableParams);
-              }
-          });
 
-      }
-  };
-  $scope.exportReport = function(type) {
-    $scope.filter.pdformat = 1;
-    var url = '/reports/download/aggregate_consumption' +(($scope.filter.disaggregated === true) ? '_disaggregated' : '') +'/' + type + '?' + jQuery.param($scope.getSanitizedParameter());
-    $window.open(url, '_blank');
-  };
+    $scope.OnFilterChanged = function () {
+
+    };
+
+    $scope.searchReport = function () {
+
+        var allParams = angular.extend($scope.filter, $scope.getSanitizedParameter());
+
+        $scope.data = $scope.datarows = [];
+
+        $scope.filter.max = 10000;
+        if (allParams.period !== '' &&
+            allParams.schedule !== '' &&
+            allParams.products !== null &&
+            allParams.program !== null
+        ) {
+            AggregateConsumptionReport.get(allParams, function (data) {
+                if (data.pages !== undefined) {
+                    $scope.data = data.pages.rows;
+                    $scope.paramsChanged($scope.tableParams);
+                }
+            });
+
+        }
+    };
+    $scope.exportReport = function (type) {
+        $scope.filter.pdformat = 1;
+        var url = '/reports/download/aggregate_consumption' + (($scope.filter.disaggregated === true) ? '_disaggregated' : '') + '/' + type + '?' + jQuery.param($scope.getSanitizedParameter());
+        $window.open(url, '_blank');
+    };
     $scope.showMoreFilters = false;
 
     $scope.toggleMoreFilters = function () {

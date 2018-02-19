@@ -115,14 +115,45 @@
                     </form>
                 </div>
             </div>
-            <div class="content-body" client-side-sort-pagination>
+            <div class="content-body">
+
+                <div class="box-header">
+
+
+                    <div class="form-cell span2">
+                        <div class="checkbox">
+                            <label for="allType"><input id="allType" class="checkbox" type="checkbox"
+                                                        value="allReportType"
+                                                        ng-change="selectAll()"
+                                                        ng-model="allReportType">
+                                <span openlmis-message="label.all"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div ng-repeat="r in reportTypes">
+                        <div class="form-cell span2">
+                            <div class="checkbox">
+                                <label for="emergency"><input id="emergency" class="checkbox" type="checkbox" value="{{r.value}}"
+                                                              ng-change="toggleSingle()" ng-checked="r.checked"
+                                                              ng-model="r.checked">
+                                    <span>{{r.label}}</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
                 <table class="table table-bordered" ng-show="data == undefined || data.length == 0">
                     <tr>
                         <td>No data to show under selected filters</td>
                     </tr>
                 </table>
-                <div ng-show="datarows.length > 0">
-                    <div top-right-table-summary></div>
+                <div ng-show="datarows.length > 0" client-side-sort-pagination>
+                    <div ng-if="datarows.length > 0" top-right-table-summary></div>
+
                     <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right"
                            ng-table="tableParams">
 
