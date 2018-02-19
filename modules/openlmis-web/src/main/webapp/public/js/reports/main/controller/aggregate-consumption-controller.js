@@ -48,6 +48,7 @@ function AggregateConsumptionReportController($scope, $filter, $window, Aggregat
             var param2 = _.findWhere($scope.reportTypes, {checked: true});
             if (param2.name === 'RE') {
                 $scope.filter.isEmergency = false;
+                $scope.allReportType = false;
                 $scope.filter.allReportType = false;
 
             } else {
