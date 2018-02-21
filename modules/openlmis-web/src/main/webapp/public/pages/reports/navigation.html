@@ -54,7 +54,7 @@
       </div>
     </li>
 
-    <li class="has-children">
+    <li class="has-children" ng-show="hasPermission('VIEW_VACCINE_REPORT')">
       <a href="" openlmis-message="link.stock.management"></a>
       <div class="submenu">
         <ul>
@@ -97,24 +97,7 @@
             </a>
           </li>
 
-          <li>
-            <a href="/public/pages/reports/main/index.html#inventory-status-summary">
-              Vaccine Inventory Stock Summary
-            </a>
-          </li>
-          <li>
-            <a href="/public/pages/reports/main/index.html#stock-event">
-              Vaccine Stock Event
-            </a>
-          </li>
-
-          <li>
-            <a href="/public/pages/reports/main/index.html#log-tag">
-             Log Tag Report
-            </a>
-          </li>
-
-            <li>
+            <li ng-show="hasPermission('VIEW_DISTRIBUTION_SUMMARY_REPORT')">
                 <a ng-href="/public/pages/reports/maps/index.html#geo-coverage">Vaccine Coverage</a>
             </li>
 
