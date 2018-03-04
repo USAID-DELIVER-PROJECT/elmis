@@ -84,11 +84,14 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
         }
     });
 
+
     $scope.loadDistributedFacilities = function () {
+        console.log($scope.typeValue);
+
         VaccineDistributedFacilitiesReport.get({
                 periodId: $scope.query.periodid,
                 facilityId: $scope.query.facilityid,
-                type: $scope.filter.type,
+                type: $scope.typeValue,
                 page: $scope.dPage
             },
             function (data) {
@@ -125,9 +128,6 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
     $scope.showDistributionModal = function (row) {
         $scope.distributionModal = true;
         $scope.query = row;
-        console.log('Modal Data');
-        console.log(row);
-        console.log($scope.filter.type);
         $scope.loadDistributedFacilities();
 
     };
