@@ -15,6 +15,7 @@ import org.openlmis.core.domain.Facility;
 import org.openlmis.core.domain.GeographicLevel;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.domain.Pagination;
+import org.openlmis.core.dto.GeoZoneMapDTO;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.repository.mapper.GeographicLevelMapper;
@@ -114,5 +115,20 @@ public class GeographicZoneRepository {
 
   public List<GeographicZone> getDistrictsFor(List<Facility> facilities) {
     return mapper.getDistrictsForFacilities(facilityCommaSeparator.commaSeparateIds(facilities));
+  }
+
+    public GeoZoneMapDTO getGeoMappingBy(Long geographicZoneId) {
+    return mapper.getGeoMappingBy(geographicZoneId);
+    }
+
+  public Integer saveGeoZoneMap(GeoZoneMapDTO record) {
+    return mapper.saveGeoZoneMap(record);
+  }
+
+  public void updateGeoZoneMap(GeoZoneMapDTO record) {
+    mapper.updateGeoZoneMap(record);
+  }
+  public List<GeoZoneMapDTO>getAllGeoMapData(){
+    return mapper.getAllGeoMapData();
   }
 }
