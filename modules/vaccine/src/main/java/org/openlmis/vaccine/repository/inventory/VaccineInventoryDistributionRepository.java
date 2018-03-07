@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,8 @@ public class VaccineInventoryDistributionRepository {
     }
 
     public Integer updateDistribution(VaccineDistribution vaccineDistribution) {
+        System.out.println("Rached Here");
+        System.out.println(vaccineDistribution.getStatus());
         return mapper.updateDistribution(vaccineDistribution);
     }
 
@@ -159,5 +162,9 @@ public class VaccineInventoryDistributionRepository {
     public List<Map<String,Object>>getMinimumStockNotification(Long facilityId){
         return mapper.getMinimumStockNotification(facilityId);
 
+    }
+
+    public List<HashMap<String,Object>> getLastDistributionForFacility(Long toFacilityId, String distributionType, String distributionDate, String status) {
+        return mapper.getLastDistributionForFacility(toFacilityId,distributionType,distributionDate,status);
     }
 }

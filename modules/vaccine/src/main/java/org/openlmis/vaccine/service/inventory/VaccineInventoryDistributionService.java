@@ -34,10 +34,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @NoArgsConstructor
@@ -89,15 +86,11 @@ public class VaccineInventoryDistributionService {
 @Transactional
     public Long save(VaccineDistribution distribution, Long userId) {
         //Get supervised facility period
-        System.out.println(distribution.getPeriodId());
         Facility homeFacility = facilityService.getHomeFacility(userId);
         Long homeFacilityId = homeFacility.getId();
         ProcessingPeriod period = null;
         if (null != distribution.getToFacilityId() && null != distribution.getProgramId()) {
             period = getCurrentPeriod_new(distribution.getToFacilityId(), distribution.getProgramId(), distribution.getDistributionDate());
-            System.out.println("period");
-            System.out.println(period.getId());
-            System.out.println(distribution.getDistributionDate());
         }
         if (period != null) {
             distribution.setPeriodId(period.getId());
@@ -107,6 +100,7 @@ public class VaccineInventoryDistributionService {
         distribution.setVoucherNumber(generateVoucherNumber(homeFacilityId, distribution.getProgramId()));
 
         if (distribution.getId() != null) {
+
             distribution.setModifiedBy(userId);
             repository.updateDistribution(distribution);
 
@@ -358,5 +352,9 @@ public class VaccineInventoryDistributionService {
 
     public List<Map<String,Object>>getMinimumStockNotification(Long userId,Long facilityId){
         return repository.getMinimumStockNotification(facilityId);
+    }
+
+    public List<HashMap<String,Object>> getLastDistributionForFacility(Long toFacilityId, String distributionType, String distributionDate, String status) {
+        return repository.getLastDistributionForFacility(toFacilityId,distributionType,distributionDate,status);
     }
 }
