@@ -1,0 +1,2 @@
+drop index if exists i_district_demographicestimateid;
+CREATE INDEX i_district_demographicestimateid ON public.district_demographic_estimates USING btree (demographicestimateid ASC NULLS LAST) TABLESPACE pg_default;
