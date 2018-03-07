@@ -31,6 +31,8 @@ import javax.net.ssl.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Future;
 
 
@@ -58,6 +60,7 @@ public class SdpNotificationService {
 
     @Async("myExecutor")
     public void updateNotification(VaccineDistribution distribution, Long userId) {
+        System.out.println("savae  dsierr");
         service.save(distribution, userId);
         if (distribution.getId() != null) {
             VaccineDistribution d = service.getDistributionById(distribution.getId());
@@ -71,7 +74,7 @@ public class SdpNotificationService {
         }
     }
 
-    public Long saveDistribution(VaccineDistribution distribution, Long userId){
+    public Long saveDistribution(VaccineDistribution distribution, Long userId) {
         return service.save(distribution, userId);
     }
 
@@ -202,4 +205,7 @@ public class SdpNotificationService {
     }
 
 
+    public List<HashMap<String, Object>> getLastDistributionForFacility(Long toFacilityId, String distributionType, String distributionDate, String status) {
+       return service.getLastDistributionForFacility(toFacilityId,distributionType,distributionDate,status);
+    }
 }
