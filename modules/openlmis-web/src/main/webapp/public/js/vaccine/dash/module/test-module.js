@@ -13,7 +13,7 @@
  */
 
 var app  = angular.module('test', ['openlmis','ui.router', 'ngGrid', 'ui.bootstrap.dialog', 'ui.bootstrap.accordion',
-    'ui.bootstrap.modal','ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle',
+    'ui.bootstrap.modal','ui.bootstrap.pagination', 'ui.bootstrap.dropdownToggle','ui.bootstrap',
     'angularUtils.directives.uiBreadcrumbs','ng-breadcrumbs','ncy-angular-breadcrumb','angularCombine',
     'ngTable','ui.bootstrap.pagination', 'tree.dropdown','angularScreenfull','rzModule','ui.materialize','leaflet-directive'
 ]);
@@ -47,7 +47,7 @@ app.config(function($stateProvider, $urlRouterProvider, $breadcrumbProvider){
             name: 'notification',
             url: '/notification',
             templateUrl: 'partials/notification-list.html',
-            controller: 'NotificationControllerFunc',
+            controller: 'DashboardHelperModalInstanceCtrl',
             ncyBreadcrumb: {
                 label: 'All Notifications'
             }

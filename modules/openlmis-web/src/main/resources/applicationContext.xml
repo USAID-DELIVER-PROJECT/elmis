@@ -388,6 +388,15 @@
                         <property name="recordHandler" ref="facilityOwnerPersistenceHandler"/>
                     </bean>
                 </entry>
+                <entry key="geo-zone-map-data">
+                    <bean class="org.openlmis.web.model.UploadBean">
+                        <property name="displayName" value="menu.header.geographic.zone.map.mapping"/>
+                        <property name="importableClass">
+                            <value type="java.lang.Class">org.openlmis.core.dto.GeoZoneMapDTO</value>
+                        </property>
+                        <property name="recordHandler" ref="geoMapMappingPersistenceHandler"/>
+                    </bean>
+                </entry>
             </map>
         </constructor-arg>
     </bean>

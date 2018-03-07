@@ -9,7 +9,7 @@
  */
 
 
-function FacilityDistributionController($scope, Period, $location, FacilitiesSameType, $document, $window, configurations, $timeout, homeFacility, OneLevelSupervisedFacilities, FacilityWithProducts, DistributionsByDateRange, searchDistributionsByDateRange, StockCards, StockCardsByCategory, StockEvent, SaveDistribution, localStorageService, $anchorScroll) {
+function FacilityDistributionController($scope, $filter,Period, $location, FacilitiesSameType, $document, $window, configurations, $timeout, homeFacility, OneLevelSupervisedFacilities, FacilityWithProducts, DistributionsByDateRange, searchDistributionsByDateRange, StockCards, StockCardsByCategory, StockEvent, SaveDistribution, localStorageService, $anchorScroll) {
 
     $scope.userPrograms = configurations.programs;
     $scope.period = configurations.period;
@@ -99,14 +99,16 @@ function FacilityDistributionController($scope, Period, $location, FacilitiesSam
     };
     $scope.loadDistributionsByDate = function () {
 
+       var endDate= $filter('date')($scope.endDate, 'yyyy-MM-dd');
+       var searchDate =$filter('date')($scope.searchDate,'yyyy-MM-dd');
+
         $scope.distributionsByDate = [];
         DistributionsByDateRange.get({
             facilityId: $scope.homeFacility.id,
-            date: $scope.searchDate,
-            endDate: $scope.endDate,
+            date:searchDate,
+            endDate:endDate,
             type: $scope.type
         }, function (data) {
-            console.log(data);
             $scope.distributionsByDate = data.distributions;
         });
     };

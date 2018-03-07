@@ -99,8 +99,12 @@ function SavePODController($scope,$location, $window,$timeout,StockEvent,SaveDis
                  }
                  });
               });
-              SaveDistribution.save(distribution,function(data){
-                 if(events.length >0)
+
+
+         SaveDistribution.save(distribution,function(data){
+             console.log(data);
+
+             if(events.length >0)
                  {
                     StockEvent.save({facilityId:$scope.homeFacility.id},events, function (data) {
 
