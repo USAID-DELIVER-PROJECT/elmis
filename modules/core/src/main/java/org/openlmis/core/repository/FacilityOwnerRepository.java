@@ -54,4 +54,8 @@ public class FacilityOwnerRepository {
     public void updateFacilityOwner(FacilityOwner record) {
         this.mapper.update(record);
     }
+
+    public Long addOwner(Owner owner) {
+      return  this.mapper.addOwner(owner);
+    }
 }
