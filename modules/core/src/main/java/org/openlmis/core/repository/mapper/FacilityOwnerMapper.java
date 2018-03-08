@@ -45,11 +45,11 @@ public interface FacilityOwnerMapper {
     @Select("select fo.*,fop.code ownerCode,fop.text ownerText FROM facility_owners fo " +
             " inner join facilities f on f.id =fo.facilityid" +
             " inner join owners fop on fop.id=fo.ownerid \n" +
-            " WHERE  f.code= #{facilityCode} and fop.code=#{owenerCode};")
+            " WHERE  f.code= #{facilityCode} and fop.code=#{ownerCode};")
     @Results(value = {@Result(property = "owner.id", column = "ownerid"),
             @Result(property = "owner.code", column = "ownerCode"),
             @Result(property = "owner.text", column = "ownerText")})
-    FacilityOwner getFacilityOwnerByOwnerCodeAndFacilityCode(@Param("owenerCode") String owenerCode, @Param("facilityCode") String facilityCode);
+    FacilityOwner getFacilityOwnerByOwnerCodeAndFacilityCode(@Param("ownerCode") String ownerCode, @Param("facilityCode") String facilityCode);
     @Select("SELECT * FROM owners " +
             " where code=#{code}  ")
     Owner getOwnerByCode(String code);
@@ -57,4 +57,9 @@ public interface FacilityOwnerMapper {
         "   SET   description=#{description}\n" +
         " WHERE id=#{id}")
     void update(FacilityOwner record);
+    @Insert("INSERT INTO owners(\n" +
+            "             code, text)\n" +
+            "    VALUES ( #{code}, #{text});\n")
+    @Options(useGeneratedKeys = true)
+    Long addOwner(Owner owner);
 }

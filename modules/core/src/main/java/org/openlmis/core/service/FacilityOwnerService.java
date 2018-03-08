@@ -100,6 +100,12 @@ public class FacilityOwnerService {
         record.setFacility(facility.getId());
 
         Owner owner =repository.getOwnerByCode(record.getOwner().getCode());
+        if(owner==null){
+            owner= new Owner();
+            owner.setCode(record.getOwner().getCode());
+            owner.setText(record.getOwner().getCode());
+            repository.addOwner(owner);
+        }
         record.setOwner(owner);
 
         if (record.getId() == null) {
