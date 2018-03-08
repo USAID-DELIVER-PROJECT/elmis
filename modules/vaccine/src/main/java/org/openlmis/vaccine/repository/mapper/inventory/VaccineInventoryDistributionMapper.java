@@ -14,6 +14,7 @@ import org.openlmis.vaccine.dto.VaccineDistributionAlertDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -382,5 +383,8 @@ public interface VaccineInventoryDistributionMapper {
         "                           = (SELECT value FROM configuration_settings WHERE LOWER(key) = LOWER('STOCK_LESS_THAN_BUFFER_COLOR') LIMIT 1))\n")
     List<Map<String,Object>>getMinimumStockNotification(@Param("facilityId")Long facilityId);
 
-
+    @Select("\n" +
+            "SELECT * FROM VACCINE_DISTRIBUTIONS WHERE STATUS= #{status} AND DISTRIBUTIONDATE=#{distributionDate}::DATE\n" +
+            " AND TOFACILITYID=#{toFacilityId} AND distributionType=#{distributionType} ORDER BY CREATEDDATE DESC LIMIT 1")
+    List<HashMap<String,Object>> getLastDistributionForFacility(@Param("toFacilityId") Long toFacilityId,@Param("distributionType")String distributionType,@Param("distributionDate") String distributionDate,@Param("status") String status);
 }

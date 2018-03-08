@@ -25,7 +25,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
     $scope.pageSize = 50;
     $scope.typeValue = "ROUTINE";
 
-  //  $scope.type ='ROUTINE';
+    //  $scope.type ='ROUTINE';
 
     $scope.distributionTypes = [{'name': 'ROUTINE', 'id': 1}, {'name': 'EMERGENCE', 'id': 2}];
 
@@ -41,17 +41,16 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                 year: $scope.getSanitizedParameter().year,
                 period: periodFilter,
                 range: $scope.range,
-                page: $scope.page ,
+                page: $scope.page,
                 district: utils.isEmpty($scope.getSanitizedParameter().zone) ? 0 : $scope.getSanitizedParameter().zone.id,
                 type: utils.isEmpty($scope.typeValue) ? 'ROUTINE' : $scope.typeValue,
                 product: 0,
-                limit:$scope.pageSize
+                limit: $scope.pageSize
             },
 
             function (data) {
                 $scope.dataR = [];
                 $scope.dataR = data.distributionCompleteness;
-                // console.log(JSON.stringify($scope.dataRows));
                 var d = $scope.dataR;
                 var arr = [];
                 angular.forEach(d, function (value, key) {
@@ -72,6 +71,7 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
 
             });
     };
+
     function percentage(num, per) {
         return (num / per);
     }
@@ -84,17 +84,18 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
         }
     });
 
+
     $scope.loadDistributedFacilities = function () {
+
         VaccineDistributedFacilitiesReport.get({
                 periodId: $scope.query.periodid,
                 facilityId: $scope.query.facilityid,
-                type: $scope.filter.type,
+                type: $scope.typeValue,
                 page: $scope.dPage
             },
             function (data) {
 
                 var distributedFacilities = data.distributedFacilities;
-                console.log(data.pagination);
                 $scope.dPagination = data.pagination;
 
                 $scope.dTotalItems = $scope.dPagination.totalRecords;
@@ -106,8 +107,6 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
                 $scope.distributedFacilities = $.map(byFacility, function (value, index) {
                     return [{"facilityName": index, "products": value}];
                 });
-
-                console.log($scope.distributedFacilities);
 
             });
 
@@ -125,9 +124,6 @@ function VaccineDistributionCompletenessReportController($scope, $routeParams, V
     $scope.showDistributionModal = function (row) {
         $scope.distributionModal = true;
         $scope.query = row;
-        console.log('Modal Data');
-        console.log(row);
-        console.log($scope.filter.type);
         $scope.loadDistributedFacilities();
 
     };

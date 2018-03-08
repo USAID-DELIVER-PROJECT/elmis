@@ -37,14 +37,18 @@
     <script src="/public/lib/leaflet/leaflet.js"></script>
   <!--  <script src="/public/lib/jquery/jquery-2.0.0.min.js"></script>
     <script src="/public/lib/jquery/jquery-ui-1.9.2.custom.min.js"></script>-->
+    <script src="/public/lib/jquery/jquery-2.0.0.min.js"></script>
+
     <script type="text/javascript" src="/public/lib/material/js/jquery-2.1.4.min.js"></script>
+    <script src="/public/lib/jquery/floating-1.12.js"></script>
 
     <script type="text/javascript" src="/public/lib/jquery.smartmenus.js"></script>
+    <script type="text/javascript" src="/public/lib/jquery/jquery.dimensions.min.js"></script>
 
 
     <script src="/public/lib/angular/angular.min.js"></script>
-    <script src="/public/lib/material/js/materialize.min.js"></script>
     <script type="text/javascript" src="/public/lib/angular-materialize/src/angular-materialize.js"></script>
+    <script src="/public/lib/material/js/materialize.min.js"></script>
 
 
     <script src="/public/lib/angular/angular-route.min.js"></script>
@@ -59,6 +63,7 @@
     <script src="/public/lib/angular-ui/angular-ui.min.js"></script>
     <script src="/public/lib/angular-ui/bootstrap/ui-bootstrap-0.1.0.min.js"></script>
     <script src="/public/lib/angular-ui/bootstrap/ui-bootstrap-pagination-0.10.0.min.js"></script>
+
     <script src="/public/lib/angular-ui/ng-grid/ng-grid-2.0.7.min.js"></script>
 
     <script src="/public/lib/angular-breadcrumb/js/angular-breadcrumb.min.js"></script>
@@ -84,12 +89,24 @@
     <script src="/public/js/shared/app.js"></script>
     <script src="/public/js/vaccine/services/services.js"></script>
     <script src="/public/js/vaccine/inventory/shared/service.js"></script>
-    <script src="/public/lib/highcharts/highcharts.js"></script>
-    <script src="/public/lib/highcharts/highcharts-more.js"></script>
+    <script type="text/javascript" src="/public/lib/highcharts/highcharts.js"></script>
+    <script src="/public/lib/highcharts/modules/exporting.js"></script>
+    <script src="/public/lib/highcharts/modules/map.js"></script>
+    <script src="/public/lib/highcharts/modules/data.js"></script>
 <!--
-    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/mapdata/countries/tz/tz-all.js"></script>
 -->
+<!--
+    <script src="http://code.highcharts.com/mapdata/custom/world.js"></script>
+-->
+    <script src="/public/lib/highcharts/mapdata/countries/tz/tz-regions.js"></script>
+
+    <!--
+        <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    -->
+<!--
     <script src="/public/lib/highcharts/exporting.js"></script>
+-->
     <script src="/public/js/shared/services/navigate-back-service.js"></script>
     <script src="/public/js/shared/app.js"></script>
     <script type="text/javascript" src="/public/js/shared/services/authorization-service.js"></script>
@@ -141,7 +158,9 @@
 <!--
     <link rel="stylesheet" href="/public/css/report.css">
 -->
+<!--
     <link rel="stylesheet" href="/public/css/ivd_map.css">
+-->
 
 
 
@@ -161,9 +180,12 @@
     <script src="/public/js/vaccine/dash/controller/stock-availability-controller.js"></script>
     <script src="/public/js/vaccine/stock-availability/controller/notification-controller.js"></script>
     <script src="/public/js/vaccine/dash/controller/chart-helper-controller.js"></script>
+    <script src="/public/js/vaccine/dash/controller/dashboard-modal-helper-controller.js"></script>
 
     <!--Map directives -->
+<!--
     <script src="https://maps.google.com/maps/api/js?key=AIzaSyDhnT2tAschK5E7U6on9fB3zjxTlfcZ_Mw&v=3&sensor=false"></script>
+-->
     <script src="/public/lib/leaflet/angular-leaflet-directive.min.js"></script>
     <script src="/public/lib/leaflet/chroma.min.js"></script>
     <script src="/public/lib/leaflet/Google.js"></script>
@@ -183,6 +205,9 @@
     <link type="text/css" rel="stylesheet" charset="UTF-8" href="/public/css/vaccine-inventory.css">
 
     <link href="/public/css/bootstrap-select.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<!--
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+-->
 
 <!--
     <link rel="stylesheet" href="/public/css/chosen.min.css">
@@ -198,11 +223,17 @@
 <div class="content" style="background-color: #eef1f3;">
     <div ncy-breadcrumb=""></div>
     <div  ui-view></div>
-<script>
+<script type="text/javascript">
+
+
+
     $(document).ready(function() {
+        $('.modal-trigger').leanModal();
         $(".my_select_box").chosen({max_selected_options: 100});
     $('select').material_select();
 });
+
+
 </script>
 
 </div>

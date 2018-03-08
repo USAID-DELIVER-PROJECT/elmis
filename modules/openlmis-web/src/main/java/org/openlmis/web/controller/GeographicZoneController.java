@@ -13,6 +13,7 @@ package org.openlmis.web.controller;
 import org.openlmis.core.domain.GeographicLevel;
 import org.openlmis.core.domain.GeographicZone;
 import org.openlmis.core.domain.Pagination;
+import org.openlmis.core.dto.GeoZoneMapDTO;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.core.web.controller.BaseController;
@@ -140,5 +141,10 @@ public class GeographicZoneController extends BaseController {
   public List<GeographicZone> getAllGeographicZonesByLevelCode(@PathVariable("geoLevelCode") String geographicLevelCode) {
     GeographicLevel geographicLevel = new GeographicLevel(geographicLevelCode, null, null);
     return service.getAllGeographicZonesAbove(geographicLevel);
+  }
+
+  @RequestMapping(value = "/geo-zone-map-data", method = GET, headers = ACCEPT_JSON)
+  public List<GeoZoneMapDTO> getAllGeoMapData() {
+    return service.getAllGeoMapData();
   }
 }

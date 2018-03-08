@@ -45,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
 
@@ -407,6 +408,15 @@ public class VaccineInventoryDistributionController extends BaseController {
         Long userId = loggedInUserId(request);
         sdpNotificationService.saveDistribution(distribution,userId);
         return OpenLmisResponse.response("distributionId", distribution.getId());
+    }
+
+    @RequestMapping(value = "GetLastDistributionForFacility.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getLastDistributionForFacility(HttpServletRequest request,
+                                                                           @RequestParam("toFacilityId")  Long toFacilityId,
+                                                                           @RequestParam("distributionType") String distributionType,
+                                                                           @RequestParam("distributionDate") String distributionDate,
+                                                                           @RequestParam("status") String status) {
+        return OpenLmisResponse.response("distribution",sdpNotificationService.getLastDistributionForFacility(toFacilityId,distributionType,distributionDate,status));
     }
 
 }
