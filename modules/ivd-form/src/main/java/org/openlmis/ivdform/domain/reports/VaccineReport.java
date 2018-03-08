@@ -80,6 +80,7 @@ public class VaccineReport extends BaseModel {
 
   public String rejectionComment;
 
+  public String source;
 
   public void initializeLogisticsLineItems(List<ProgramProduct> programProducts, VaccineReport previousReport, Boolean defaultFieldsToZero) {
     logisticsLineItems = new ArrayList<>();
