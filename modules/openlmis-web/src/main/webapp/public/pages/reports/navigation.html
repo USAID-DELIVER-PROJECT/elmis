@@ -161,8 +161,12 @@
       <div class="submenu">
         <ul>
           <li ng-show="hasPermission('VIEW_DISTRICT_CONSUMPTION_REPORT')">
-            <a ng-href="/public/pages/reports/main/index.html#aggregate-consumption"
-               openlmis-message="menu.report.aggregate.consumption"></a>
+          <a ng-href="/public/pages/reports/main/index.html#aggregate-consumption"
+             openlmis-message="menu.report.aggregate.consumption"></a>
+        </li>
+          <li ng-show="hasPermission('VIEW_DISTRICT_CONSUMPTION_REPORT')">
+            <a ng-href="/public/pages/reports/main/index.html#facility-consumption"
+               openlmis-message="menu.report.facility.consumption"></a>
           </li>
           <li ng-show="hasPermission('VIEW_DISTRICT_CONSUMPTION_REPORT')">
             <a ng-href="/public/pages/reports/main/index.html#district-consumption"

@@ -1334,3 +1334,6 @@ services.factory('HfrFacilityMapping', function($resource){
 services.factory('GetHfrFacilityMappingById', function ($resource) {
     return $resource('/hfrFacilityMappingBy/:id.json', {id:'@id'}, {});
 });
+services.factory('FacilityConsumptionReport', function ($resource) {
+    return $resource('/reports/reportdata/facilityConsumption.json', {}, {});
+});
