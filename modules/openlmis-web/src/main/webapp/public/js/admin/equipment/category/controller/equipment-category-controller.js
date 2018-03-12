@@ -1,6 +1,6 @@
 function EquipmentCategoryController($rootScope, $scope, EquipmentCategories, EquipmentTypes, EquipmentFunctionalTestTypes, $routeParams, $location){
     $scope.EquipmentCategory  = getAllEquipmentCategory();
-    $scope.EquipmentCategoryId   	= $routeParams.id || 0;
+    $scope.EquipmentCategoryId  = $routeParams.id || 0;
     $scope.cmd = $routeParams.cmd || '';
     $scope.functionalTestTypes = EquipmentFunctionalTestTypes.query();
     EquipmentTypes.get(function(data){
@@ -12,12 +12,12 @@ function EquipmentCategoryController($rootScope, $scope, EquipmentCategories, Eq
     $scope.getFilteredOutEquipmentTypes = function(w){
         var equipmentTypes = _.reject($scope.getSelectedEquipmentTypes(), w);
        return _.reject($scope.equipmentTypes, function(type){ return _.contains(equipmentTypes, type.id);});
-    }
+    };
 
     $scope.getSelectedEquipmentTypes = function () {
         return _.chain($scope.EquipmentCategory).pluck('equipmentTypeIds').reduceRight(function(a, b) { return a.concat(b); }, []).value();
 
-    }
+    };
 
     function getAllEquipmentCategory() {
         return EquipmentCategories.query();
@@ -48,7 +48,7 @@ function EquipmentCategoryController($rootScope, $scope, EquipmentCategories, Eq
         else
             EquipmentCategories.save($scope.equipmentCategory, SaveEquipmentCategorySuccessCallback, SaveEquipmentCategoryErrorCallback);
 
-    }
+    };
 
     $scope.deleteEquipmentCategory = function(id){
         EquipmentCategories.EquipmentCategory.delete({'id': id}, deleteEquipmentCategorySuccessCallback, deleteEquipmentCategoryErrorCallback);
@@ -66,11 +66,11 @@ function EquipmentCategoryController($rootScope, $scope, EquipmentCategories, Eq
         $scope.formData = [];
         $scope.formData = $scope.EquipmentCategory;
         EquipmentCategories.associateEquipmentTypes($scope.EquipmentCategory);
-    }
+    };
 
     $scope.getEquipmentTypesWithNoCategories = function(){
         return _.without(_.pluck($scope.equipmentTypes.equipment_types,'id'), _.chain($scope.EquipmentCategory).pluck('equipmentTypeIds').reduceRight(function(a, b) { return a.concat(b); }, []).value());
-    }
+    };
 
 
 

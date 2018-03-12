@@ -2,8 +2,8 @@
 function  EquipmentFunctionalTestTypesController($rootScope, $scope, EquipmentFunctionalTestTypes, $routeParams,
                                                  EquipmentCategories, EquipmentTestItems, $location){
 
-    $scope.EquipmentFunctionalTestTypes  = getAllEquipmentFunctionalTestTypes();
-    $scope.EquipmentFunctionalTestTypesId   	= $routeParams.id || 0;
+    $scope.EquipmentFunctionalTestTypes = getAllEquipmentFunctionalTestTypes();
+    $scope.EquipmentFunctionalTestTypesId = $routeParams.id || 0;
     $scope.cmd = $routeParams.cmd || '';
     $scope.equipmentCategories = EquipmentCategories.query();
     $scope.equipmentTestitems = EquipmentTestItems.query();
@@ -37,7 +37,7 @@ function  EquipmentFunctionalTestTypesController($rootScope, $scope, EquipmentFu
             $scope.errors = error;
             $scope.message = null;
         }
-    }
+    };
 
     $scope.deleteEquipmentFunctionalTestTypes = function(id){
         EquipmentFunctionalTestTypes.delete({'id': id}, deleteEquipmentFunctionalTestTypesSuccessCallback, deleteEquipmentFunctionalTestTypesErrorCallback);
