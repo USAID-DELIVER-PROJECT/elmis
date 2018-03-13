@@ -52,8 +52,8 @@ function EquipmentCategoryController($rootScope, $scope, EquipmentCategories, Eq
 
     $scope.deleteEquipmentCategory = function(id){
         EquipmentCategories.EquipmentCategory.delete({'id': id}, deleteEquipmentCategorySuccessCallback, deleteEquipmentCategoryErrorCallback);
-        function deleteEquipmentCategorySuccessCallback(successReponse){
-            $rootScope.message = successReponse.success;
+        function deleteEquipmentCategorySuccessCallback(successResponse){
+            $rootScope.message = successResponse.success;
             $scope.EquipmentCategory  = getAllEquipmentCategory();
         }
         function deleteEquipmentCategoryErrorCallback(errorResponse){
@@ -65,14 +65,16 @@ function EquipmentCategoryController($rootScope, $scope, EquipmentCategories, Eq
     $scope.saveEquipmentTypeAssociation = function(){
         $scope.formData = [];
         $scope.formData = $scope.EquipmentCategory;
-        EquipmentCategories.associateEquipmentTypes($scope.EquipmentCategory);
+        EquipmentCategories.associateEquipmentTypes($scope.EquipmentCategory, successCallback);
+
+        function successCallback(successResponse){
+            $rootScope.message = successResponse.success;
+        }
+
     };
+
 
     $scope.getEquipmentTypesWithNoCategories = function(){
         return _.without(_.pluck($scope.equipmentTypes.equipment_types,'id'), _.chain($scope.EquipmentCategory).pluck('equipmentTypeIds').reduceRight(function(a, b) { return a.concat(b); }, []).value());
     };
-
-
-
-
 }

@@ -5,6 +5,7 @@ import org.openlmis.core.exception.DataException;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.equipment.domain.EquipmentCategory;
+import org.openlmis.equipment.domain.EquipmentFunctionalTestTypes;
 import org.openlmis.equipment.service.EquipmentCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -89,5 +90,6 @@ public class EquipmentCategoryController extends BaseController {
 
         return OpenLmisResponse.success("EquipmentCategory.saved.successfull");
     }
+
 
 }
