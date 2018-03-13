@@ -13,6 +13,7 @@ package org.openlmis.restapi.service;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -27,6 +28,7 @@ import org.openlmis.core.service.ProgramService;
 import org.openlmis.order.service.OrderService;
 import org.openlmis.restapi.domain.ReplenishmentDTO;
 import org.openlmis.restapi.domain.Report;
+import org.openlmis.restapi.request.RequisitionSearchRequest;
 import org.openlmis.rnr.domain.*;
 import org.openlmis.rnr.search.criteria.RequisitionSearchCriteria;
 import org.openlmis.rnr.service.RequisitionService;
@@ -36,10 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -380,5 +379,39 @@ public class RestRequisitionService {
       rnr = requisitionService.initiate(reportingFacility, reportingProgram, userId, emergency, period, sourceApplication);
     }
     return rnr;
+  }
+
+  public List<Rnr> searchRnrs(RequisitionSearchRequest requisitionSearchRequest, Long userId){
+      List<Rnr> rnrs = new ArrayList<>();
+
+      Facility reportingFacility = facilityService.getFacilityById(requisitionSearchRequest.getFacilityId());
+      Program reportingProgram = programService.getById(requisitionSearchRequest.getProgramId());
+
+      if(reportingProgram == null || reportingFacility == null){
+          return Collections.emptyList();
+      }
+
+      RequisitionSearchCriteria searchCriteria = new RequisitionSearchCriteria();
+      searchCriteria.setProgramId(reportingProgram.getId());
+      searchCriteria.setFacilityId(reportingFacility.getId());
+      searchCriteria.setWithoutLineItems(false);
+      searchCriteria.setUserId(userId);
+      searchCriteria.setEmergency(requisitionSearchRequest.getEmergency());
+
+      ProcessingPeriod period;
+      Rnr fullRnR;
+      for(Long periodId : requisitionSearchRequest.getPeriodIds()) {
+          period = processingPeriodService.getById(periodId);
+          if(period != null) {
+              searchCriteria.setPeriodId(period.getId());
+              List<Rnr> searchResult = requisitionService.getRequisitionsFor(searchCriteria, asList(period));
+              if (searchResult != null && !searchResult.isEmpty()) {
+                  fullRnR = requisitionService.getFullRequisitionById(searchResult.get(0).getId());
+                  rnrs.add(fullRnR);
+              }
+          }
+      }
+
+      return rnrs;
   }
 }
