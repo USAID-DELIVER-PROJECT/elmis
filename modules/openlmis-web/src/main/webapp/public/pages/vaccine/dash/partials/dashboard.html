@@ -1,4 +1,56 @@
 <style>
+
+    .fl {
+        background-color: #000;
+        height: 2000px;
+        color: #ccc;
+        font: 10px "Lucida Grande", "Lucida Sans", "Trebuchet MS", verdana, sans-serif;
+    }
+
+    #floatMenu ul.menu1 li a:hover {
+        border-color: #09f;
+    }
+
+    #floatMenu ul.menu2 li a:hover {
+        border-color: #9f0;
+    }
+
+    #floatMenu ul.menu3 li a:hover {
+        border-color: #f09;
+    }
+
+    #floatMenu {
+        position: absolute;
+        top: 150px;
+        left: 50%;
+        margin-left: 235px;
+        width: 200px;
+    }
+
+    #floatMenu ul {
+        margin-bottom: 20px;
+    }
+
+    #floatMenu ul li a {
+        display: block;
+        border: 1px solid #999;
+        background-color: #222;
+        border-left: 6px solid #999;
+        text-decoration: none;
+        color: #ccc;
+        padding: 5px 5px 5px 25px;
+    }
+
+    #exampleModalCenter {
+        top: 10px !important;
+    }
+
+    #tbody1 {
+        display: block;
+        height: 0px !important;
+        overflow: auto;
+    }
+
     .spacer {
         height: 40px;
     }
@@ -20,7 +72,7 @@
                 color : white;
         */
         background-color: lightgrey;
-        padding: 5px 15px;
+        padding: 5px 10px;
     }
 
     #exTab2 h3 {
@@ -232,11 +284,11 @@
         position: absolute;
         /*visibility:hidden;*/
         height: 100%;
-        width: 35px;
+        width: 50px;
         right: 0;
         top: 0;
         /*z-index: 500;*/
-        padding-top: 25px;
+        padding-top: 50px;
         padding-right: 2px;
         background-color: transparent;
         -webkit-transition: all .2s ease-in-out;
@@ -395,25 +447,85 @@
     .select2-chosen, .select2-choice > span:first-child, .select2-container .select2-choices .select2-search-field input {
         padding: 6px 50px !important;
     }
-    .content{
+
+    .content {
         margin: 7px 0px 0;
     }
 
     tbody {
-        display:block;
-        height:600px;
-        overflow:auto;
+        display: block;
+        height: 600px;
+        overflow: auto;
     }
+
     thead, tbody tr {
-        display:table;
-        width:100%;
-        table-layout:fixed;
+        display: table;
+        width: 100%;
+        table-layout: fixed;
     }
+
     thead {
-        width: calc( 100% - 1em )
+        width: calc(100% - 1em)
     }
+
     table {
-        width:100%;
+        width: 100%;
+    }
+
+    #coverage_map {
+
+        height: 500px;
+        min-width: 310px;
+        max-width: 800px;
+        margin: 0 auto;
+
+    }
+
+    .red {
+        color: red;
+    }
+
+    .green {
+        color: green;
+    }
+
+    .yellow {
+        color: yellow;
+    }
+
+    .blue {
+        color: blue;
+    }
+
+    .modal {
+        width: 50% !important;
+        margin-top: 50px !important;
+        margin-left: 400px !important;
+        background: 0 !important;
+        max-height: 50% !important;
+    }
+
+    .modal .modal-content {
+        padding: 24px !important;
+    }
+
+    #tbody {
+        display: block;
+        height: 200px;
+        overflow: auto;
+    }
+
+    .tabs .tab a {
+        color: #42a7ad;
+    }
+
+    .carousel .carousel-item {
+        width: 100%;
+    }
+
+    .tabs {
+        height: 40px !important;
+
     }
 
 </style>
@@ -422,16 +534,21 @@
 <div id="exTab1" class="">
 
     <ul class="nav nav-pills">
-        <li class="active">
+        <li class="active" ng-show="homeFacility.facilitytypecode=='cvs'">
             <a href="#1a" data-toggle="tab">National View</a>
         </li>
-        <li><a href="" data-toggle="tab">My Supervised View</a>
+        <li ng-hide="homeFacility.facilitytypecode=='cvs'" class="active">
+            <a href="#myStore" data-toggle="tab">{{homeFacility.facilityname}}</a>
         </li>
+        <!--    <li><span  style="left: 965px!important;color:#5BADB1;
+        bottom: -10px !important;
+        font-size: 15px;">{{homePageDate | date:'dd-MM-yyyy hh:mm:ss'}}</span></li>-->
+
 
     </ul>
     <div class="tab-content clearfix">
 
-        <div class="tab-pane active" id="1a">
+        <div ng-show="homeFacility.facilitytypecode=='cvs'" class="tab-pane active" id="1a">
             <div>
                 <!--Floating button-->
                 <div class="fixed-button" ng-mouseover="showFilter()" ng-if="showfilter==false">
@@ -577,7 +694,7 @@
                                 </div>
                 -->
 
-                <div class="row"  ng-if="showfilter">
+                <div class="row" ng-if="showfilter">
 
                     <!--  <select class="my_select_box" data-placeholder="Select Your Options">
                           <option value="1">Option 1</option>
@@ -594,7 +711,8 @@
                             <div class="span3">
 
                                 <label for="product" class="labels">Product</label>
-                                <select ui-select2 id="product"  class="input-large" ng-model="filter.product" ng-change="doseByProduct()">
+                                <select ui-select2 id="product" class="input-large" ng-model="filter.product"
+                                        ng-change="doseByProduct()">
                                     <option ng-repeat="option in products | orderBy:'categoryId'  "
                                             value="{{ option.id }}" ng-selected="filter.product == option.id">{{
                                         option.name }}
@@ -618,7 +736,7 @@
 
                             <div class="span3">
                                 <label for="period" class="labels">Year</label>
-                                <select ui-select2 class="input-large"  id="year"
+                                <select ui-select2 class="input-large" id="year"
                                         ng-model="filter.year" ng-change="changeYear()" material-select
                                         watch>
                                     <option ng-repeat="option in years" value="{{option}}"
@@ -639,7 +757,9 @@
                                 </select>
 
                             </div>
-                            <span style="float: left;z-index: 800;bottom: 2000px;!important;"><a ng-click="loadDashboardData(filter)" class="waves-effect waves-light btn" style="bottom: -22px;right: -1px">Search </a></span>
+                            <span style="float: left;z-index: 800;bottom: 2000px;!important;"><a
+                                    ng-click="loadDashboardData(filter)" class="waves-effect waves-light btn"
+                                    style="bottom: -22px;right: -1px">Search </a></span>
 
 
                             <!--</div>-->
@@ -673,26 +793,168 @@
                                     </div>
                                 </div>
                 -->
+                <!--
+                                Coverage Chart
+                -->
 
                 <div class="row">
 
-
-                    <div class="col l6 s12 m12">
-                        <div class="card">
+                    <div class="col l4 s12 m12 ">
+<!--
+                        ng-mouseover="showIcons(card)" ng-mouseleave="hideIcons(card)"
+-->
+                        <div class="card" >
                             <div class="card-content">
-                                <!--
-                                                    <h5 class="grey-text center">Product Coverage</h5>
-                                -->
+                                <div id="productByDoseChart" style="margin: 0 auto;height: 260px !important;"></div>
+<!--
+                                <div class="chart-options" ng-if="showicons">
+                                    <ul class="nav nav-stacked">
+                                        <li ng-repeat="chartType in icons" style="padding-top: 8px;padding-bottom: 8px">
+                                            <a ng-click="changeChart(chartType.name)" title="{{chartType.name}}"
+                                               ng-class="{'active-type': card.chart == chartType.type }">
+                                                <img src
+                                                     href="/public/images/glygh-iconset/svg//si-glyph-bed.svg"/></img>
+                                                &lt;!&ndash;        <img ng-src="{{'/public/images/glygh-iconset/svg/'+chartType.image}}"
+                                                             class="chart-option-icon" alt="" style="width: 100px!important;">&ndash;&gt;
 
-                                <div id="NationalChart2" style="margin: 0 auto" class="chart2"></div>
-                                <!--
-                                                                <div class="spacer"></div>
-                                -->
-                                <div id="NationalChart" class="chart2"></div> <!-- Container for Chart B -->
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>-->
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col l3 s12 m12">
+                        <div class="card">
+                            <!--  <div class="card-content">
+                                  <div id="districtCoverageChart" style="margin: 0 auto"></div>
+                              </div>-->
+
+                            <!--      <div class="card-tabs">
+                                      <ul id="tabs-swipe-demo" class="tabs tabs-fixed-width">
+                                          <li class="tab"><a class="active" href="#swipe-1">Coverage By Region</a></li>
+                                          <li class="tab"><a href="#swipe-2">Coverage By District</a></li>
+                                      </ul>
+                                  </div>
+                                  <div class="card-content grey lighten-4">
+                                      <div id="swipe-1">
+      &lt;!&ndash;
+
+      &ndash;&gt;mamamamamamamaam
+
+      &lt;!&ndash;
+                                          </div>
+      &ndash;&gt;
+                                      </div>
+                                      <div id="swipe-2">
+
+                                          <div id="districtCoverageChart" style="margin: 0 auto;height: 400px"></div>
+
+                                      </div>
+                                  </div>-->
+                            <div>
+                      <!--      <span style=" background: #222;
+    color: #fff;
+    display: inline-block;
+    /* float:left;  remove */
+    margin: 0px 15px 0 0;
+    padding: 3px 10px">
+                                <input type="radio" id="region" ng-model="region" value="region" ng-change="showDistrict(region)" ng-checked="region">
+                                <label for="region">Click to show Coverage By Region</label>
+                            </span>
+                                <span style=" background: #222;
+    color: #fff;
+    display: inline-block;
+    /* float:left;  remove */
+    margin: 0px 5px 0 0;
+    padding: 3px 5px">
+                                <input type="radio" id="district" ng-model="district" value="district" ng-change="showDistrict(district)" ng-checked="district">
+                                    <label for="district"><span style="font-size: 10px">Click to show Coverage By District</span></label>
+                            </span>-->
+                                <div id="regionCoverageChart" style="margin: 0 auto;height: 300px !important;" ng-show="region"
+                                   ></div>
+
+                                <div id="" ng-show="district"
+                                   >
+                                    <div id="districtCoverageChart" style="margin: 0 auto;height: 300px !important;"></div>
+
+                                </div>
+
 
 
                             </div>
+
+
+                            <!--   <ul id="tabs-swipe-demo" class="tabs">
+                                   <li class="tab col s3"><a href="#swipe-1" style="font-size: 15px">Coverage By Region</a></li>
+                                   <li class="tab col s3"><a class="active" href="#swipe-2" style="font-size: 15px">Coverage By Districts</a></li>
+                               </ul>
+                               <div id="swipe-1" class="col s12">First tab content</div>
+                               <div id="swipe-2" class="col s12">
+                                   <div id="districtCoverageChart" style="margin: 0 auto;height: 400px"></div>
+
+
+                               </div>-->
+
+
                         </div>
+                    </div>
+                    <div class="col l5 s12 m12">
+                        <div class="card">
+                            <div id="performanceMonitoring" style="margin: 0 auto;height: 300px !important;"></div>
+
+                        </div>
+                    </div>
+                </div>
+
+<!--
+                <div class="col l12 s12 m12 ">
+&lt;!&ndash;
+                    ng-mouseover="showIcons(card)" ng-mouseleave="hideIcons(card)"
+&ndash;&gt;
+                    <div class="card" >
+                        <div class="card-content">
+                            <div id="productByDoseChart" style="margin: 0 auto"></div>
+
+                        &lt;!&ndash;    <div class="chart-options" ng-if="showicons">
+                                <ul class="nav nav-stacked">
+                                    <li ng-repeat="chartType in icons" style="padding-top: 8px;padding-bottom: 8px">
+                                        <a ng-click="changeChart(chartType.name)" title="{{chartType.name}}"
+                                           ng-class="{'active-type': card.chart == chartType.type }">
+                                            <img src
+                                                 href="/public/images/glygh-iconset/svg//si-glyph-bed.svg"/></img>
+                                            &lt;!&ndash;        <img ng-src="{{'/public/images/glygh-iconset/svg/'+chartType.image}}"
+                                                         class="chart-option-icon" alt="" style="width: 100px!important;">&ndash;&gt;
+
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>&ndash;&gt;
+                        </div>
+                    </div>
+
+                </div>
+-->
+
+                <div class="row">
+
+                    <div class="col s12 m8 l6">
+
+                        <div class="card">
+                            <div class="card-content">
+                                <div style="padding-left: 0px;">
+
+                                    <div id="coverage_map"
+                                         style="height: 400px; min-width: 310px; max-width: 800px; margin: 0 auto"></div>
+
+                                    <!--  <leaflet width="100%" height="500px" legend="legend" geojson="geojson"
+                                               layers="layers"></leaflet>-->
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
 
 
@@ -702,111 +964,189 @@
                                 <!--
                                                     <h5 class="grey-text center">Product Coverage</h5>
                                 -->
-                                <div id="container7"></div>
+                                <!--
+                                                                <div id="container7"></div>
+                                -->
+                                <div id="districtDistribution"></div>
                                 <span ng-show="showData==false" style="text-align: center"><strong>No Data to show Under Selected Filters</strong></span>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!--
+                                <div class="row">
 
-                <div class="row">
-                    <div class="col s12 m8 l8">
 
-                        <div class="card">
-                            <div class="card-content">
-                                <div style="padding-left: 0px;">
-                                    <leaflet width="100%" height="500px" legend="legend" geojson="geojson"
-                                             layers="layers"></leaflet>
+                                    <div class="col l12 s12 m12">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                &lt;!&ndash;
+                                                                    <h5 class="grey-text center">Product Coverage</h5>
+                                                &ndash;&gt;
+
+                                                <div id="productByDoseChart" style="margin: 0 auto"></div>
+                                                &lt;!&ndash;
+                                                                                <div class="spacer"></div>
+                                                &ndash;&gt;
+                                                &lt;!&ndash; <div id="NationalChart" class="chart2"></div> &ndash;&gt;&lt;!&ndash; Container for Chart B &ndash;&gt;
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                 </div>
+                -->
+                <div class="row">
+
+                    <div class="col s12 m4 l6">
+                        <div class="card white darken-1">
+                            <div class="card-content">
+                                <div id="categorizationByDistrict" style="height: 400px !important;"></div>
+
+
+                                <!--Table for Coverage By District-->
+                                <!--
+                                                                <div style="height: 500px !important;"
+                                                                     ng-show="features && (features | filter:expectedFilter).length > 0">
+                                                                    <div class="card-title grey white-text"
+                                                                         style="width:100% !important; font-size: 15px !important;text-align: center !important; color: #5BADB1 !important;">
+                                                                      <span class="pull-left" ng-show="showProduct">
+                                                                        District Coverage Of <Strong>{{productToDisplay.name}}-{{doseToDisplay}},{{periodToDisplay.name}}</Strong></span>
+                                                                    </div>
+                                                                    <div class="card-body responsive-table table-status-sheet">
+                                                                        <table class="striped responsive-table table-scrollable scroll">
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th style="width:25%" openlmis-message="label.district"></th>
+                                                                                <th style="width:25%;text-align: left !important;">Target</th>
+                                                                                <th style="width:25% !important;" class="number">Vaccinated</th>
+                                                                                <th style="width: 25%; text-align: right">%Coverage</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <tr ng-repeat="feature in features | filter:expectedFilter">
+                                                                                <td style="width:25% !important;">{{feature.name}}</td>
+                                                                                <td style="width:25% !important;" class="number">
+                                                                                    {{feature.monthlyEstimate |
+                                                                                    number}}
+                                                                                </td>
+                                                                                <td style="width:25% !important;" class="number">{{feature.vaccinated |
+                                                                                    number}}
+                                                                                </td>
+                                                                                <td style="width:25% !important;" class="number">
+                                                                                    <div class="number"
+                                                                                         style="float:right;margin-bottom:0px !important;">
+                                                                                        {{(feature.coveragePercentage).toFixed(0)}} %
+                                                                                    </div>
+                                                                                    <div class="progress"
+                                                                                         style="margin-bottom:0px !important;width:68%">
+
+                                                                                        <div ng-if="feature.coverageClassification=='warn'"
+                                                                                             class="bar bar-warning leaflet-clickable"
+                                                                                             ng-click="onDetailClicked(feature, this)"
+                                                                                             style="width:100%">
+                                                                                        </div>
+                                                                                        <div ng-if="feature.coverageClassification=='bad'"
+                                                                                             class="bar bar-danger leaflet-clickable"
+                                                                                             ng-click="onDetailClicked(feature, this)"
+                                                                                             style="width:100%">
+                                                                                        </div>
+                                                                                        <div ng-if="feature.coverageClassification=='normal'"
+                                                                                             class="bar bar-info leaflet-clickable"
+                                                                                             ng-click="onDetailClicked(feature, this)"
+                                                                                             style="width:100%">
+                                                                                        </div>
+                                                                                        <div ng-if="feature.coverageClassification=='good'"
+                                                                                             class="bar bar-success good leaflet-clickable"
+                                                                                             ng-click="onDetailClicked(feature, this)"
+                                                                                             style="width:100%">
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                -->
+
 
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="col s12 m4 l4">
-                        <div class="card white darken-1">
+                    <div class="col l6 s12 m4">
+                        <div class="card">
                             <div class="card-content">
-                                <div style="height: 500px !important;"
-                                     ng-show="features && (features | filter:expectedFilter).length > 0">
-                                    <div class="card-title grey white-text"
-                                         style="width:100% !important; font-size: 15px !important;text-align: center !important; color: #5BADB1 !important;">
-                                      <span class="pull-left" ng-show="showProduct">
-                                        District Coverage Of <Strong>{{productToDisplay.name}}-{{doseToDisplay}},{{periodToDisplay.name}}</Strong></span>
-                                    </div>
-                                    <div class="card-body responsive-table table-status-sheet">
-                                        <table class="striped responsive-table table-scrollable scroll">
-                                            <thead>
-                                            <tr>
-                                                <th style="width:25%" openlmis-message="label.district"></th>
-                                                <th style="width:25%;text-align: left !important;">Target</th>
-                                                <th style="width:25% !important;" class="number">Vaccinated</th>
-                                                <th style="width: 25%; text-align: right">%Coverage</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr ng-repeat="feature in features | filter:expectedFilter">
-                                                <td style="width:25% !important;">{{feature.name}}</td>
-                                                <td style="width:25% !important;" class="number">
-                                                    {{feature.monthlyEstimate |
-                                                    number}}
-                                                </td>
-                                                <td style="width:25% !important;" class="number">{{feature.vaccinated |
-                                                    number}}
-                                                </td>
-                                                <td style="width:25% !important;" class="number">
-                                                    <div class="number"
-                                                         style="float:right;margin-bottom:0px !important;">
-                                                        {{(feature.coveragePercentage).toFixed(0)}} %
-                                                    </div>
-                                                    <div class="progress"
-                                                         style="margin-bottom:0px !important;width:68%">
+                                <div id="classificationByDistrict" style="margin: 0 auto"></div>
+                                <!-- <h5 class="grey-text center">Product Coverage</h5>
 
-                                                        <div ng-if="feature.coverageClassification=='warn'"
-                                                             class="bar bar-warning leaflet-clickable"
-                                                             ng-click="onDetailClicked(feature, this)"
-                                                             style="width:100%">
-                                                        </div>
-                                                        <div ng-if="feature.coverageClassification=='bad'"
-                                                             class="bar bar-danger leaflet-clickable"
-                                                             ng-click="onDetailClicked(feature, this)"
-                                                             style="width:100%">
-                                                        </div>
-                                                        <div ng-if="feature.coverageClassification=='normal'"
-                                                             class="bar bar-info leaflet-clickable"
-                                                             ng-click="onDetailClicked(feature, this)"
-                                                             style="width:100%">
-                                                        </div>
-                                                        <div ng-if="feature.coverageClassification=='good'"
-                                                             class="bar bar-success good leaflet-clickable"
-                                                             ng-click="onDetailClicked(feature, this)"
-                                                             style="width:100%">
-                                                        </div>
-
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
+             <div id="NationalChart2" style="margin: 0 auto" class="chart2"></div>
+                                             <div class="spacer"></div>
+             <div id="NationalChart" class="chart2"></div>  Container for Chart B
+-->
 
                             </div>
                         </div>
-
                     </div>
 
 
                 </div>
+
+
+                <div class="row">
+                    <div class="col l12 s12 m12">
+
+                        <div class="card">
+                            <div class="card-content" ng-show="showDistrictSummary">
+                                <div class="col s6" id="regionSummary"></div>
+                                <div class="col s6" id="districtSummary"></div>
+
+                            </div>
+                            <div class="card-content white black-text" ng-show="showDistrictSummary==false">
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row" ng-show="byLocation">
+                    <div class="col l12 s12 m12">
+                        <div class="card">
+                            <!-- <span class="chip pull-right" style="height: 20px !important; width:40px !important;">
+                                                                <i class="close material-icons">X</i>
+                                                            </span>-->
+                            <div class="card-content">
+
+                                <div class="col s6" id="byLocation"></div>
+                                <div class="col s6" id="byProduct"></div>
+
+                            </div>
+                            <div class="card-content white black-text" ng-show="showDistrictSummary==false">
+                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
 
                 <div class="row" style="height: 10px !important;" ng-show="true">
                     <div class="col s12 m6 l3">
                         <div class="card">
                             <div class="card-content  red white-text" ng-hide="showNoData">
 
-                                <p style="text-align:center;font-weight:bold;" class="card-stats-title"><i class="mdi-social-group-warn"></i>Facilities Out of Stock</p>
-                                <h4 class="card-stats-number" style="text-align: center">{{facilityPerformance[0].stockedout}} %</h4>
+                                <p style="text-align:center;font-weight:bold;color: #000;" class="card-stats-title"><i
+                                        class="mdi-social-group-warn"></i>Facilities Out of Stock</p>
+                                <h4 class="card-stats-number" style="text-align: center;color: #000;">
+                                    {{facilityPerformance[0].stockedout}} %</h4>
                                 <!--<p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 15% <span
                                         class="green-text text-lighten-5">from yesterday</span>
                                 </p>-->
@@ -822,13 +1162,15 @@
                     </div>
                     <div class="col s12 m6 l3">
                         <div class="card">
-                            <div class="card-content yellow lighten-1 white-text" ng-hide="showNoData" >
-                                <p style="text-align:center;font-weight:bold;" class="card-stats-title"> Facilities
+                            <div class="card-content yellow lighten-1 white-text" ng-hide="showNoData">
+                                <p style="text-align:center;font-weight:bold; color: #000;" class="card-stats-title">
+                                    Facilities
                                     Understocked</p>
-                                <h4 style="text-align:center;font-size: 30px !important;font-weight:bold;" id="card-stats-number">{{facilityPerformance[0].understocked}}%</h4>
-                               <!-- <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-down"></i> 3% <span
-                                        class="deep-purple-text text-lighten-5">from last month</span>
-                                </p>-->
+                                <h4 style="text-align:center;font-size: 30px !important;font-weight:bold;color: #000;"
+                                    id="card-stats-number">{{facilityPerformance[0].understocked}}%</h4>
+                                <!-- <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-down"></i> 3% <span
+                                         class="deep-purple-text text-lighten-5">from last month</span>
+                                 </p>-->
                             </div>
                             <div ng-show="showNoData" class="card-content yellow white-text">
                                 <p style="text-align: center;">No Data to Show under Selected Filters</p>
@@ -842,13 +1184,16 @@
                     <div class="col s12 m6 l3">
                         <div class="card">
                             <div class="card-content green white-text" ng-hide="showNoData">
-                                <p class="card-stats-title" style="text-align:center;font-weight:bold;">Stocked According to Plan
+                                <p class="card-stats-title" style="text-align:center;font-weight:bold;color: #000;">
+                                    Stocked
+                                    According to Plan
                                 </p>
-                                <h4 class="card-stats-number" style="text-align:center;font-size: 30px !important;font-weight:bold;text-align: center">
+                                <h4 class="card-stats-number"
+                                    style="text-align:center;font-size: 30px !important;font-weight:bold;text-align: center;color: #000;">
                                     {{facilityPerformance[0].accordingplan}}%</h4>
-                               <!-- <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 80% <span
-                                        class="blue-grey-text text-lighten-5">from yesterday</span>
-                                </p>-->
+                                <!-- <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 80% <span
+                                         class="blue-grey-text text-lighten-5">from yesterday</span>
+                                 </p>-->
                             </div>
                             <div ng-show="showNoData" class="card-content green white-text">
                                 <p style="text-align: center;">No Data to Show under Selected Filters</p>
@@ -862,12 +1207,16 @@
                     <div class="col s12 m6 l3">
                         <div class="card">
                             <div ng-hide="showNoData" class="card-content light-blue white-text">
-                                <p class="card-stats-title" style="text-align:center;font-weight:bold;" >Facilities Overstocked
+                                <p class="card-stats-title" style="text-align:center;font-weight:bold;color: #000;">
+                                    Facilities
+                                    Overstocked
                                 </p>
-                                <h4 class="card-stats-number" style="text-align:center;font-size: 30px !important;font-weight:bold;" >{{facilityPerformance[0].overstocked}}%</h4>
-                              <!--  <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 70% <span
-                                        class="purple-text text-lighten-5">last month</span>
-                                </p>-->
+                                <h4 class="card-stats-number"
+                                    style="text-align:center;font-size: 30px !important;font-weight:bold;color: #000;">
+                                    {{facilityPerformance[0].overstocked}}%</h4>
+                                <!--  <p class="card-stats-compare"><i class="mdi-hardware-keyboard-arrow-up"></i> 70% <span
+                                          class="purple-text text-lighten-5">last month</span>
+                                  </p>-->
                             </div>
                             <div ng-show="showNoData" class="card-content  light-blue white-text">
 
@@ -881,205 +1230,364 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col l12 s12 m12">
-                        <div class="card">
-                            <div class="card-content" ng-show="categorized.length>0">
-                                <div id="container8"></div>
-                            </div>
-                            <div class="card-content white black-text" ng-show="categorized.length==0" >
-                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="row">
-                    <div class="col l12 s12 m12">
-                        <!--<p class="z-depth-1">{{facilityPerformance}}
-                        </p>-->
-                        <div class="card" ng-mouseover="showIcons(card)" ng-mouseleave="hideIcons(card)">
-                            <div class="card-content">
-                                <div id="container5"></div>
-                                <!--
-                                                    <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
-                                -->
-
-                                <div class="chart-options" ng-if="showicons">
-                                    <ul class="nav nav-stacked">
-                                        <li ng-repeat="chartType in icons" style="padding-top: 6px;padding-bottom: 6px">
-                                            <a ng-click="changeChart(chartType.name)" title="{{chartType.name}}"
-                                               ng-class="{'active-type': card.chart == chartType.type }">
-                                                <img ng-src="{{'/public/images/img/'+chartType.image}}"
-                                                     class="chart-option-icon" alt="" style="width: 20px!important;">
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                            </div>
-
-
-                        </div>
-
-
-                    </div>
-
-<!--
-                    <div class="col l4 s4 m12">
-
-
-                        <div class="card-stacked">
-                            <div class="card-content">
-
-                                <div class="card-panel grey lighten-4 z-depth-1">
-                                    <div class="row valign-wrapper">
-                                        <div class="col l3 s3 m12" style="background-color: red">
-
-                                            <div class="icon-block">
-                             <span class="black-text">
-                           <span style="font-size: 40px">{{facilityPerformance[0].stockedout}} %</span>
-                             <p class="light">Of Facilities Stocked Out</p>
-                          </span>
-
-                                            </div>
-
-                                        </div>
-                                        <div class="col l3 s3 m12" style="background-color: yellow">
-                                            <div class="icon-block">
-                             <span class="black-text">
-                             <span style="font-size: 40px">{{facilityPerformance[0].understocked}}%</span>
-                             <p>Of Facilities Understocked</p>
-                          </span>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col  l3 s3 m12" style="background-color: green">
-                                            <div class="icon-block">
-                             <span class="black-text">
-                      <span style="font-size: 40px">{{facilityPerformance[0].accordingplan}}%</span>
-                             <p class="light">Stocked According To plan</p>
-                          </span>
-
-                                            </div>
-
-                                        </div>
-                                        <div class="col  l3 s3 m12" style="background-color: #00B0F0;">
-
-                                            <div class="icon-block">
-                             <span class="black-text">
-                        <span style="font-size:40px">{{facilityPerformance[0].overstocked}}%</span>
-                             <p class="light">Of Facilities Overstocked</p>
-                          </span>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                            </div>
-                            <div class="card-content">
-
-                                &lt;!&ndash;
-                                                                <div class="col l4 s4 m12">
-                                &ndash;&gt;
-                                <div class="card">
-                                    <div class="card-content">
-                                        <div id="container8"></div>
-                                        &lt;!&ndash;
-                                                                                            <div id="container5" style="height:400px;width:600px;margin:1.5em 1em;"></div>
-                                        &ndash;&gt;
-
-                                    </div>
-                                </div>
-
-                                &lt;!&ndash;
-                                                                </div>
-                                &ndash;&gt;
-
-                            </div>
-                        </div>
-
-
-                    </div>
--->
-
-
-                </div>
-
-                <div class="row">
-                    <div class="col l12 s12 m12">
-                        <div class="card">
-                            <div class="card-content" ng-show="stocks.length>0">
-                                <div id="container"></div>
-                            </div>
-
-                            <div class="card-content white black-text" ng-show="stocks.length==0" >
-                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col l12 s12 m12">
-
-                        <div class="card">
-                            <div  class="card-content" ng-show="fullStocks.length>0">
-                    <span class="pull-right">
-
-      </span>
-                                <!--
-                                                <h5 class="center">Full Stock Availability Percentage</h5>
-                                -->
-                                <!--
-                                                    <a id="resizeViewButton" full-screen="" href="" class="btn">
-                                                        <i class="icon-resize-full"></i>
-                                                    </a>-->
-
-                                <div ngsf-fullscreen>
-                        <span class="pull-right"><a ngsf-toggle-fullscreen class="btn">
-                            <i class="icon-resize-full"></i>
-
-                        </a></span>
-
-                                    <div id="container3">
-
-
-                                    </div>
-
-                                </div>
-
-
-                                <!--
-                                                    <input type="radio" name="mychart" ng-model="pieChart" class="mychart" id= "pie" value="pie" ng-click= "changeChart()"/>
-                                -->
-
-                            </div>
-                            <div class="card-content white black-text" ng-show="fullStocks.length==0" >
-                                <p style="text-align: center;">No Data to Show under Selected Filters</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
 
             </div>
 
         </div>
 
 
-        <div ng-disabled="true" class="tab-pane" id="2a">
-            <h3>Supervised Tab</h3>
+        <!--My Store Tab -->
+        <div ng-hide="homeFacility.facilitytypecode=='cvs'" class="tab-pane active" id="myStore">
+            <div>
+                <div class="row" ng-if="showfilter">
+
+                    <!--  <select class="my_select_box" data-placeholder="Select Your Options">
+                          <option value="1">Option 1</option>
+                          <option value="2">Option 2</option>
+                          <option value="3">Option 3</option>
+                      </select>-->
+                    <div class="col s12">
+                        <div class="section grey lighten-5 card" style="height: 100px;!important;">
+
+                            <!--
+                                                        <div class="col s6 grey lighten-5">
+                            -->
+
+                            <div class="span3">
+
+                                <label for="product" class="labels">Product</label>
+                                <select ui-select2 id="product" class="input-large" ng-model="filter.product"
+                                        ng-change="doseByProduct()">
+                                    <option ng-repeat="option in products | orderBy:'categoryId'  "
+                                            value="{{ option.id }}" ng-selected="filter.product == option.id">{{
+                                        option.name }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <div class="span3">
+                                <label for="period" class="labels">Dose</label>
+                                <select ui-select2 id="dose" class="input-large" ng-model="filter.dose"
+                                        ng-change="firstClick1()" material-select
+                                        watch>
+                                    <option ng-repeat="dose in doses | orderBy:'id':true" value="{{dose.doseId}}"
+                                            ng-selected="filter.dose === dose.id">{{dose.displayName}}
+                                    </option>
+
+                                </select>
+                            </div>
+
+
+                            <div class="span3">
+                                <label for="period" class="labels">Year</label>
+                                <select ui-select2 class="input-large" id="year"
+                                        ng-model="filter.year" ng-change="changeYear()" material-select
+                                        watch>
+                                    <option ng-repeat="option in years" value="{{option}}"
+                                            ng-selected="option == filter.year"
+                                    >{{option}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="span3">
+                                <label for="period" class="labels">Period</label>
+                                <select ui-select2 id="period" class="input-large" ng-model="filter.period"
+                                        ng-change="firstClick1()" material-select
+                                        watch>
+                                    <option ng-repeat="period in periods" value="{{ period.id }}"
+                                            ng-selected="period.id == filter.period">{{period.name}}
+                                    </option>
+
+                                </select>
+
+                            </div>
+                            <span style="float: left;z-index: 800;bottom: 2000px;!important;"><a
+                                    ng-click="loadDashboardData(filter)" class="waves-effect waves-light btn"
+                                    style="bottom: -22px;right: -1px">Search </a></span>
+
+
+                            <!--</div>-->
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col l12 s12 m12">
+                        <div class="card">
+                            <div>
+                            <span>
+                                <label class="labels">
+                           <!-- <span style="font-size: medium"><Strong>Indicators</Strong></span><br/>-->
+
+
+                           <span data-toggle="tooltip" title="Indicate that you have Insufficient Stock in your stock ">
+                                <i class="icon-stop red fa-lg" aria-hidden="true"></i>  Order Now</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                               <span data-toggle="tooltip" title="Indicate that you have enough stock ">
+                                   <i class="icon-stop green fa-lg" aria-hidden="true"></i>  Sufficient Stock</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                               <span data-toggle="tooltip"
+                                     title="Indicate that your stock is nearlest to Reorder Level ">
+                                   <i class="icon-stop yellow fa-lg" aria-hidden="true"></i>  Order Soon</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+
+                            <span data-toggle="tooltip"
+                                  title="Indicate that you have more than your have supposed to have."> <i
+                                    class="icon-stop blue fa-lg" aria-hidden="true"></i>  Over Stock</span>
+
+                                    <!--
+                                                                <span ><i class="icon-warning-sign red"></i></span> Order Now
+                                    -->
+
+                        </label>
+
+
+                            </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-size: 15px;color: #007C87; text-align: center;right:0px!important;">Current Stock Status</span>
+                            </div>
+                            <!--  <div class="clearboth"></div>
+                                  <div class="card-title">Current Stock</div>-->
+                            <div class="card-content">
+                                <!-- Container for Chart B -->
+
+                                <div class="col s6">
+                                    <div id="myStockVaccine"></div>
+
+                                </div>
+                                <div class="col s6">
+                                    <div id="myStockSyringe"></div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+
+                    <div class="col l12 s12 m12">
+                        <div class="card">
+                            <div class="card-content">
+
+                                <!-- Container for Chart B -->
+                                <div id="myStockSyringe1"></div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="fixed-button" ng-mouseover="showFilter()" ng-if="showfilter==false">
+
+                    <div class="card blue-grey darken-1 waves-effect waves-light">
+                        <span> <a class="waves-effect waves-light btn"> <span style="color: #0e4a64">Filters</span></a>
+                            <!--<img ng-src="{{'/public/images/search.png'}}"  alt=""
+                                 style="width: 40px!important;"></a>--></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
         </div>
     </div>
 </div>
 
+<div id="modal12" class="modal" ng-if="modal12=true;">
+
+    <div class="modal-content">
+        <h2>Stock Status of {{productName}} for {{level}} </h2>
+        <table class="table table-bordered striped">
+
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Facility Name</th>
+                <th>Stock On Hand</th>
+            </tr>
+            </thead>
+
+            <tbody id="tbody">
+            <tr ng-repeat="facility in facilityList">
+                <td>{{$index+1}}</td>
+                <td>{{facility.name}}</td>
+                <td>{{facility.totalquantityonhand}}</td>
+            </tr>
+
+            </tbody>
+
+
+        </table>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+        </div>
+
+    </div>
+
+
 </div>
+
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <span class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle"> Based on DTP-HepB+Hib-1 ({{parameters.category}},{{classificationData[0].period_name}},{{classificationData[0].year}} )</h2>
+            </span>
+            <div class="modal-body">
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>-->
+                <div class="row">
+                    <table class="table table-bordered striped" style="height: 100px !important;">
+
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>District Name</th>
+                            <th>Region Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="value in classificationData">
+                            <td>{{$index+1}}</td>
+                            <td>{{value.district_name}}</td>
+                            <td>{{value.region_name}}</td>
+
+                        </tr>
+
+                        </tbody>
+
+
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!--
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="classificationModal" style="top: 10px !important;" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <span class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle"> Classification {{classificationByDistrict[0].classification}} ({{classificationByDistrict[0].period}})</h2>
+            </span>
+            <div class="modal-body">
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>-->
+                <div class="row" style="height: 200px !important;">
+                    <table class="table table-bordered striped" style="height: 200px !important;">
+
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>District Name</th>
+                            <th>Region Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="value in classificationByDistrict">
+                            <td>{{$index+1}}</td>
+                            <td>{{value.district}}</td>
+                            <td>{{value.region}}</td>
+
+                        </tr>
+
+                        </tbody>
+
+
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+<div  id="popup-box" class="successModal">
+
+    <div class="row-fluid">
+        <div class="card">
+            <div class="card-content">
+            <h2>Categorization Based on DTP-HepB+Hib-1 ({{parameters.category}}) </h2>
+            <table class="table table-bordered striped">
+
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Facility Name</th>
+                    <th>Stock On Hand</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="facility in facilityList">
+                    <td>{{$index+1}}</td>
+                    <td>{{facility.name}}</td>
+                    <td>{{facility.totalquantityonhand}}</td>
+                </tr>
+
+                </tbody>
+
+
+            </table></div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+-->
+<!--
+<div id="floatdiv" style="
+    position:absolute;
+    width:200px;height:50px;top:10px;right:10px;
+    padding:16px;background:#FFFFFF;
+    border:2px solid #2266AA;
+    z-index:100">
+    This is a floating javascript menu.
+</div>
+
+<div id="floatMenu">
+    <ul class="menu1">
+        <li><a href="#" onclick="return false;"> Home </a></li>
+    </ul>
+
+    <ul class="menu2">
+        <li><a href="#" onclick="return false;"> Table of content </a></li>
+        <li><a href="#" onclick="return false;"> Exam </a></li>
+        <li><a href="#" onclick="return false;"> Wiki </a></li>
+    </ul>
+
+    <ul class="menu3">
+        <li><a href="#" onclick="return false;"> Technical support </a></li>
+    </ul>
+</div>-->

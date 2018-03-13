@@ -9,59 +9,182 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle','ui.bootstrap.pagination', 'tree.dropdown','export.csv'])
+angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.bootstrap.modal', 'ui.bootstrap.dropdownToggle', 'ui.bootstrap.pagination', 'tree.dropdown', 'export.csv'])
     .config(['$routeProvider', function ($routeProvider) {
-      $routeProvider.
-          when('/adjustment-summary', {controller: AdjustmentSummaryReportController, templateUrl:'partials/adjustment-summary.html',reloadOnSearch:false}).
-          when('/aggregate-consumption', {controller: AggregateConsumptionReportController, templateUrl:'partials/aggregate-consumption.html',reloadOnSearch:false}).
-          when('/aggregate-regimen', {controller: RegimenSummaryControllers, templateUrl:'partials/aggregate-regimen.html',reloadOnSearch:false}).
-          when('/cce-repair-management', {controller: RepairManagementController, templateUrl:'partials/cce-repair-management.html',reloadOnSearch:false}).
-          when('/cce-storage-capacity', {controller: CCEStorageCapacityReportController, templateUrl:'partials/cce-storage-capacity.html',reloadOnSearch:false}).
-          when('/district-consumption', {controller: DistrictConsumptionReportController, templateUrl:'partials/district-consumption.html',reloadOnSearch:false}).
-          when('/district-financial-summary', {controller: DistrictFinancialSummaryControllers, templateUrl:'partials/district-financial-summary.html',reloadOnSearch:false}).
-          when('/cold-chain-equipment-inventory', {controller: ColdChainEquipmentReportController, templateUrl:'partials/cold-chain-equipment-inventory.html',reloadOnSearch:false}).
-          when('/facility-list', {controller: ListFacilitiesController, templateUrl:'partials/facility-list.html',reloadOnSearch:false}).
-          when('/lab-equipments-by-donor', {controller: LabEquipmentListByDonorReportController, templateUrl:'partials/lab-equipments-by-donor.html',reloadOnSearch:false}).
-          when('/lab-equipments-list', {controller: LabEquipmentListReportController, templateUrl:'partials/lab-equipment-list.html',reloadOnSearch:false}).
-
-          when('/lab-equipments-functioning', {controller: LabEquipmentFunctioningReportController, templateUrl:'partials/lab-equipment-functioning.html',reloadOnSearch:false}).
-          when('/lab-equipments-non-functioning', {controller: LabEquipmentNonFunctioningReportController, templateUrl:'partials/lab-equipment-non-functioning.html',reloadOnSearch:false}).
-
-          when('/non-reporting', {controller: NonReportingController, templateUrl:'partials/non-reporting.html',reloadOnSearch:false}).
-          when('/reporting-status', {controller: ReportingStatusController, templateUrl:'partials/reporting-status.html',reloadOnSearch:false}).
-          when('/order', {controller: OrderReportController, templateUrl:'partials/order.html',reloadOnSearch:false}).
-          when('/order-fill-rate', {controller: OrderFillRateController, templateUrl:'partials/order-fill-rate.html',reloadOnSearch:false}).
-          when('/order-fill-rate-summary', {controller: OrderFillRateReportSummaryController, templateUrl:'partials/order-fill-rate-summary.html',reloadOnSearch:false}).
-          when('/pipeline-export', {controller: PipelineExportController, templateUrl:'partials/pipeline-export.html',reloadOnSearch:false}).
-          when('/regimen-distribution', {controller: RegimenSummaryControllers, templateUrl:'partials/regimen-distribution.html',reloadOnSearch:false}).
-          when('/regimen-summary', {controller: RegimenSummaryControllers, templateUrl:'partials/regimen-summary.html',reloadOnSearch:false}).
-          when('/replacement-plan-summary', {controller: ReplacementPlanSummary, templateUrl:'partials/replacement-plan-summary.html',reloadOnSearch:false}).
-          when('/rnr-feedback', {controller: RnRFeedbackController, templateUrl:'partials/rnr-feedback.html',reloadOnSearch:false}).
-          when('/seasonality-rationing', {controller: SeasonalRationingAdjustment, templateUrl:'partials/seasonality-rationing.html',reloadOnSearch:false}).
-          when('/stock-imbalance', {controller: StockImbalanceController, templateUrl:'partials/stock-imbalance.html',reloadOnSearch:false}).
-          when('/summary', {controller: SummaryReportController, templateUrl:'partials/summary.html',reloadOnSearch:false}).
-          when('/supply-status', {controller: SupplyStatusController, templateUrl:'partials/supply-status.html',reloadOnSearch:false}).
-          when('/stocked-out', {controller: StockedOutController, templateUrl:'partials/stocked-out.html',reloadOnSearch:false}).
-          when('/timeliness', {controller: TimelinessReportController, templateUrl:'partials/timeliness.html',reloadOnSearch:false}).
-          when('/user-summary', {controller: UserSummaryReportController, templateUrl:'partials/user-summary.html',reloadOnSearch:false}).
-          when('/vaccine-stock-status', {controller: VaccineStockStatusReportController, templateUrl:'partials/vaccine-stock-status-report.html',reloadOnSearch:false}).
-          when('/stock-ledger-report', {controller: VaccineStockLedgerReportController, templateUrl:'partials/stock-ledger.html',reloadOnSearch:false}).
-          when('/cold-chain-temperature', {controller: ColdChainTemperatureController, templateUrl:'partials/cold-chain-temperature.html',reloadOnSearch:false}).
-          when('/distribution-completeness', {controller: VaccineDistributionCompletenessReportController, templateUrl:'partials/vaccine-distribution-completeness-report.html',reloadOnSearch:false}).
-          when('/on-time-in-full', {controller: OnTimeInFullReportController, templateUrl:'partials/on-time-in-full.html',reloadOnSearch:false}).
-          when('/vaccine-received-summary-report', {controller: VaccineReceivedSummaryReportController, templateUrl:'partials/received-consignment.html',reloadOnSearch:false}).
-          when('/log-tag', {controller: LogTagFunction, templateUrl:'partials/log-tag.html',reloadOnSearch:false, resolve:LogTagFunction.resolve}).
-          when('/min-max-stock-report', {controller: MinMaxVaccineStockReportController, templateUrl:'partials/min-max-stock.html',reloadOnSearch:false}).
-          when('/distribution-summary-report', {controller: DistributionSummaryReportController, templateUrl:'partials/distribution-summary.html',reloadOnSearch:false}).
-          otherwise({redirectTo:'/adjustment-summary'});
-    }]).config(function(angularCombineConfigProvider) {
-      angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');
-    }).filter('positive', function() {
-      return function(input) {
+        $routeProvider.when('/adjustment-summary', {
+            controller: AdjustmentSummaryReportController,
+            templateUrl: 'partials/adjustment-summary.html',
+            reloadOnSearch: false
+        }).when('/aggregate-consumption', {
+            controller: AggregateConsumptionReportController,
+            templateUrl: 'partials/aggregate-consumption.html',
+            reloadOnSearch: false
+        }).when('/facility-consumption', {
+            controller: FacilityConsumptionReportController,
+            templateUrl: 'partials/facility-consumption.html',
+            reloadOnSearch: false
+        }).when('/daily-consumption', {
+            controller: DailyConsumptionReportController,
+            templateUrl: 'partials/daily-consumption.html',
+            reloadOnSearch: false
+        }).when('/aggregate-regimen', {
+            controller: RegimenSummaryControllers,
+            templateUrl: 'partials/aggregate-regimen.html',
+            reloadOnSearch: false
+        }).when('/cce-repair-management', {
+            controller: RepairManagementController,
+            templateUrl: 'partials/cce-repair-management.html',
+            reloadOnSearch: false
+        }).when('/cce-storage-capacity', {
+            controller: CCEStorageCapacityReportController,
+            templateUrl: 'partials/cce-storage-capacity.html',
+            reloadOnSearch: false
+        }).when('/district-consumption', {
+            controller: DistrictConsumptionReportController,
+            templateUrl: 'partials/district-consumption.html',
+            reloadOnSearch: false
+        }).when('/district-financial-summary', {
+            controller: DistrictFinancialSummaryControllers,
+            templateUrl: 'partials/district-financial-summary.html',
+            reloadOnSearch: false
+        }).when('/cold-chain-equipment-inventory', {
+            controller: ColdChainEquipmentReportController,
+            templateUrl: 'partials/cold-chain-equipment-inventory.html',
+            reloadOnSearch: false
+        }).when('/facility-list', {
+            controller: ListFacilitiesController,
+            templateUrl: 'partials/facility-list.html',
+            reloadOnSearch: false
+        }).when('/lab-equipments-by-donor', {
+            controller: LabEquipmentListByDonorReportController,
+            templateUrl: 'partials/lab-equipments-by-donor.html',
+            reloadOnSearch: false
+        }).when('/lab-equipments-list', {
+            controller: LabEquipmentListReportController,
+            templateUrl: 'partials/lab-equipment-list.html',
+            reloadOnSearch: false
+        }).when('/lab-equipments-functioning', {
+            controller: LabEquipmentFunctioningReportController,
+            templateUrl: 'partials/lab-equipment-functioning.html',
+            reloadOnSearch: false
+        }).when('/lab-equipments-non-functioning', {
+            controller: LabEquipmentNonFunctioningReportController,
+            templateUrl: 'partials/lab-equipment-non-functioning.html',
+            reloadOnSearch: false
+        }).when('/non-reporting', {
+            controller: NonReportingController,
+            templateUrl: 'partials/non-reporting.html',
+            reloadOnSearch: false
+        }).when('/reporting-status', {
+            controller: ReportingStatusController,
+            templateUrl: 'partials/reporting-status.html',
+            reloadOnSearch: false
+        }).when('/order', {
+            controller: OrderReportController,
+            templateUrl: 'partials/order.html',
+            reloadOnSearch: false
+        }).when('/order-fill-rate', {
+            controller: OrderFillRateController,
+            templateUrl: 'partials/order-fill-rate.html',
+            reloadOnSearch: false
+        }).when('/order-fill-rate-summary', {
+            controller: OrderFillRateReportSummaryController,
+            templateUrl: 'partials/order-fill-rate-summary.html',
+            reloadOnSearch: false
+        }).when('/pipeline-export', {
+            controller: PipelineExportController,
+            templateUrl: 'partials/pipeline-export.html',
+            reloadOnSearch: false
+        }).when('/regimen-distribution', {
+            controller: RegimenSummaryControllers,
+            templateUrl: 'partials/regimen-distribution.html',
+            reloadOnSearch: false
+        }).when('/regimen-summary', {
+            controller: RegimenSummaryControllers,
+            templateUrl: 'partials/regimen-summary.html',
+            reloadOnSearch: false
+        }).when('/replacement-plan-summary', {
+            controller: ReplacementPlanSummary,
+            templateUrl: 'partials/replacement-plan-summary.html',
+            reloadOnSearch: false
+        }).when('/rnr-feedback', {
+            controller: RnRFeedbackController,
+            templateUrl: 'partials/rnr-feedback.html',
+            reloadOnSearch: false
+        }).when('/seasonality-rationing', {
+            controller: SeasonalRationingAdjustment,
+            templateUrl: 'partials/seasonality-rationing.html',
+            reloadOnSearch: false
+        }).when('/stock-imbalance', {
+            controller: StockImbalanceController,
+            templateUrl: 'partials/stock-imbalance.html',
+            reloadOnSearch: false
+        }).when('/summary', {
+            controller: SummaryReportController,
+            templateUrl: 'partials/summary.html',
+            reloadOnSearch: false
+        }).when('/supply-status', {
+            controller: SupplyStatusController,
+            templateUrl: 'partials/supply-status.html',
+            reloadOnSearch: false
+        }).when('/stocked-out', {
+            controller: StockedOutController,
+            templateUrl: 'partials/stocked-out.html',
+            reloadOnSearch: false
+        }).when('/timeliness', {
+            controller: TimelinessReportController,
+            templateUrl: 'partials/timeliness.html',
+            reloadOnSearch: false
+        }).when('/user-summary', {
+            controller: UserSummaryReportController,
+            templateUrl: 'partials/user-summary.html',
+            reloadOnSearch: false
+        }).when('/vaccine-stock-status', {
+            controller: VaccineStockStatusReportController,
+            templateUrl: 'partials/vaccine-stock-status-report.html',
+            reloadOnSearch: false
+        }).when('/stock-ledger-report', {
+            controller: VaccineStockLedgerReportController,
+            templateUrl: 'partials/stock-ledger.html',
+            reloadOnSearch: false
+        }).when('/cold-chain-temperature', {
+            controller: ColdChainTemperatureController,
+            templateUrl: 'partials/cold-chain-temperature.html',
+            reloadOnSearch: false
+        }).when('/distribution-completeness', {
+            controller: VaccineDistributionCompletenessReportController,
+            templateUrl: 'partials/vaccine-distribution-completeness-report.html',
+            reloadOnSearch: false
+        }).when('/on-time-in-full', {
+            controller: OnTimeInFullReportController,
+            templateUrl: 'partials/on-time-in-full.html',
+            reloadOnSearch: false
+        }).when('/vaccine-received-summary-report', {
+            controller: VaccineReceivedSummaryReportController,
+            templateUrl: 'partials/received-consignment.html',
+            reloadOnSearch: false
+        }).when('/log-tag', {
+            controller: LogTagFunction,
+            templateUrl: 'partials/log-tag.html',
+            reloadOnSearch: false,
+            resolve: LogTagFunction.resolve
+        }).when('/min-max-stock-report', {
+            controller: MinMaxVaccineStockReportController,
+            templateUrl: 'partials/min-max-stock.html',
+            reloadOnSearch: false
+        }).when('/distribution-summary-report', {
+            controller: DistributionSummaryReportController,
+            templateUrl: 'partials/distribution-summary.html',
+            reloadOnSearch: false
+        }).otherwise({redirectTo: '/adjustment-summary'});
+    }]).config(function (angularCombineConfigProvider) {
+    angularCombineConfigProvider.addConf(/filter-/, '/public/pages/reports/shared/filters.html');
+}).filter('positive', function () {
+    return function (input) {
         if (!input) {
-          return 0;
+            return 0;
         }
 
         return Math.abs(input);
-      };
-    });
+    };
+});

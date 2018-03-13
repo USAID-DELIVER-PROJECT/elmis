@@ -47,7 +47,7 @@ public class VaccineDashboardService {
 
     public Map<String, Object> getReportingSummary(Long userId) {
 
-        Map<String, Object> reportingSummaryList=null ;
+        Map<String, Object> reportingSummaryList = null;
         try {
             reportingSummaryList = repository.getReportingSummary(userId);
         } catch (Exception ex) {
@@ -59,7 +59,7 @@ public class VaccineDashboardService {
     public List<HashMap<String, Object>> getReportingDetails(Long userId) {
         List<HashMap<String, Object>> reportingDetails = null;
         try {
-        reportingDetails= repository.getReportingDetails(userId);
+            reportingDetails = repository.getReportingDetails(userId);
         } catch (Exception ex) {
             LOGGER.warn("error while loading Reporting summary:... ", ex);
 
@@ -96,7 +96,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getInvestigatingSummary(userId);
+            repairingDetailList = repository.getInvestigatingSummary(userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -108,7 +108,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getInvestigatingDetails(userId);
+            repairingDetailList = repository.getInvestigatingDetails(userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -122,7 +122,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getMonthlyCoverage(fromDate, toDate, userId, product);
+            repairingDetailList = repository.getMonthlyCoverage(fromDate, toDate, userId, product);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -134,7 +134,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getFacilityCoverage(period, product, userId);
+            repairingDetailList = repository.getFacilityCoverage(period, product, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -148,7 +148,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getFacilityCoverageDetails(fromDate, toDate, product, userId);
+            repairingDetailList = repository.getFacilityCoverageDetails(fromDate, toDate, product, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -160,7 +160,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getFacilitySessions(period, userId);
+            repairingDetailList = repository.getFacilitySessions(period, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -174,7 +174,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getFacilitySessionsDetails(fromDate, toDate, userId);
+            repairingDetailList = repository.getFacilitySessionsDetails(fromDate, toDate, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -186,7 +186,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getFacilityWastage(period, product, userId);
+            repairingDetailList = repository.getFacilityWastage(period, product, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -200,7 +200,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getFacilityWastageDetails(fromDate, toDate, product, userId);
+            repairingDetailList = repository.getFacilityWastageDetails(fromDate, toDate, product, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -233,12 +233,12 @@ public class VaccineDashboardService {
         return repairingDetailList;
     }
 
-    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product,Long user) {
+    public List<HashMap<String, Object>> getDistrictCoverage(Long period, Long product, Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
 
-            repairingDetailList = repository.getDistrictCoverage(period, product,user);
+            repairingDetailList = repository.getDistrictCoverage(period, product, user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -273,12 +273,12 @@ public class VaccineDashboardService {
         return repairingDetailList;
     }
 
-    public List<HashMap<String, Object>> getDistrictSessions(Long period,Long user) {
+    public List<HashMap<String, Object>> getDistrictSessions(Long period, Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
 
-            repairingDetailList =repository.getDistrictSessions(period,user);
+            repairingDetailList = repository.getDistrictSessions(period, user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -292,7 +292,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getBundling(fromDate, toDate, productId);
+            repairingDetailList = repository.getBundling(fromDate, toDate, productId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -300,12 +300,12 @@ public class VaccineDashboardService {
     }
 
 
-    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product,Long user) {
+    public List<HashMap<String, Object>> getWastageByDistrict(Long period, Long product, Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
 
-            repairingDetailList =repository.getWastageByDistrict(period, product,user);
+            repairingDetailList = repository.getWastageByDistrict(period, product, user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -326,12 +326,12 @@ public class VaccineDashboardService {
         return repairingDetailList;
     }
 
-    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product,Long user) {
+    public List<HashMap<String, Object>> getDistrictDropout(Long period, Long product, Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
 
-            repairingDetailList = repository.getDistrictDropout(period, product,user);
+            repairingDetailList = repository.getDistrictDropout(period, product, user);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -363,10 +363,11 @@ public class VaccineDashboardService {
         }
         return repairingDetailList;
     }
-    public  boolean isDistrictUser(Long userId){
+
+    public boolean isDistrictUser(Long userId) {
         boolean districtUser = false;
         try {
-            districtUser= repository.isDistrictUser(userId)>0;
+            districtUser = repository.isDistrictUser(userId) > 0;
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -390,12 +391,13 @@ public class VaccineDashboardService {
         List<HashMap<String, Object>> facilityStockDetailList = null;
 
         try {
-            facilityStockDetailList =repository.getFacilityStockDetail(fromDate, toDate, product, userId);
+            facilityStockDetailList = repository.getFacilityStockDetail(fromDate, toDate, product, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
         return facilityStockDetailList;
     }
+
     public List<HashMap<String, Object>> getStockStatusByMonthly(String startDate, String endDate, Long userId, Long product) {
         Date fromDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(startDate).toDate();
         Date toDate = DateTimeFormat.forPattern(DATE_FORMAT).parseDateTime(endDate).toDate();
@@ -403,7 +405,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getStockStatusByMonthly(fromDate, toDate, userId, product);
+            repairingDetailList = repository.getStockStatusByMonthly(fromDate, toDate, userId, product);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -415,7 +417,7 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getFacilityStockStatus(period, product, userId);
+            repairingDetailList = repository.getFacilityStockStatus(period, product, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -429,13 +431,14 @@ public class VaccineDashboardService {
         try {
 
 
-            repairingDetailList =repository.getFacilityStockStatusDetails(fromDate, toDate, product, userId);
+            repairingDetailList = repository.getFacilityStockStatusDetails(fromDate, toDate, product, userId);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
         return repairingDetailList;
     }
-    public List<HashMap<String, Object>> getDistrictStockStatus(Long period, Long product,Long user) {
+
+    public List<HashMap<String, Object>> getDistrictStockStatus(Long period, Long product, Long user) {
         List<HashMap<String, Object>> repairingDetailList = null;
         try {
 
@@ -446,17 +449,21 @@ public class VaccineDashboardService {
         }
         return repairingDetailList;
     }
-public Map<String, Object> getVaccineCurrentReportingPeriod(){
-    return repository.getVaccineCurrentPeriod();
-}
+
+    public Map<String, Object> getVaccineCurrentReportingPeriod() {
+        return repository.getVaccineCurrentPeriod();
+    }
+
     public Map<String, Object> getUserZoneInformation(Long userId) {
         return repository.getUserZoneInformation(userId);
     }
 
-    public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long facilityId, String date) {
+    public List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(Long userId, String date) {
+        Facility facility = facilityService.getHomeFacility(userId);
+
         List<HashMap<String, Object>> stockStatusList = null;
         try {
-            stockStatusList = repository.getFacilityVaccineInventoryStockStatus(facilityId, date);
+            stockStatusList = repository.getFacilityVaccineInventoryStockStatus(facility.getId(), date);
         } catch (Exception ex) {
             LOGGER.warn("error occured.... ", ex);
         }
@@ -482,53 +489,53 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
 
     }
 
-    public List<HashMap<String, Object>> getStockStatusOverView(Long userId,Long category,  String dateString, String level) {
+    public List<HashMap<String, Object>> getStockStatusOverView(Long userId, Long category, String dateString, String level) {
         System.out.println(category);
         Long categoryId = 0L;
         Facility homeFacility = facilityService.getHomeFacility(userId);
-       // System.out.println(homeFacility);
-       // FacilityType ft = facilityService.getFacilityTypeById(homeFacility.getFacilityType().getId());
-        if(level == null){
+        // System.out.println(homeFacility);
+        // FacilityType ft = facilityService.getFacilityTypeById(homeFacility.getFacilityType().getId());
+        if (level == null) {
             level = "dvs";
         }
-        if(category == null){
-            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+        if (category == null) {
+            ProductCategory pc = productCategoryService.getByCode("Vaccine");
             category = pc.getId();
         }
-        return repository.getStockStatusOverView(userId,category,dateString,level);
+        return repository.getStockStatusOverView(userId, category, dateString, level);
     }
 
-    public List<HashMap<String, Object>> getInventoryStockStatusDetail(String category,Long userId, String status,String dateString, String level) {
-         if(category == null){
-             ProductCategory pc= productCategoryService.getByCode("Vaccine");
-             category = pc.getId().toString();
-         }
+    public List<HashMap<String, Object>> getInventoryStockStatusDetail(String category, Long userId, String status, String dateString, String level) {
+        if (category == null) {
+            ProductCategory pc = productCategoryService.getByCode("Vaccine");
+            category = pc.getId().toString();
+        }
 
-        return repository.getInventoryStockStatusDetail(category,userId,status, dateString, level);
+        return repository.getInventoryStockStatusDetail(category, userId, status, dateString, level);
     }
 
 
-    public List<HashMap<String, Object>> getVaccineInventoryStockByStatus(Long category, String level,Long userId) {
-        if(category == null){
-            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+    public List<HashMap<String, Object>> getVaccineInventoryStockByStatus(Long category, String level, Long userId) {
+        if (category == null) {
+            ProductCategory pc = productCategoryService.getByCode("Vaccine");
             category = pc.getId();
         }
 
-        return repository.getVaccineInventoryStockByStatus(category,level,userId);
+        return repository.getVaccineInventoryStockByStatus(category, level, userId);
     }
 
-    public List<HashMap<String,Object>> getVaccineInventoryFacilitiesByProduct(Long category, String level, Long userId, String product, String color) {
-       Long productId = 0L;
-        if(category == null){
-            ProductCategory pc= productCategoryService.getByCode("Vaccine");
+    public List<HashMap<String, Object>> getVaccineInventoryFacilitiesByProduct(Long category, String level, Long userId, String product, String color) {
+        Long productId = 0L;
+        if (category == null) {
+            ProductCategory pc = productCategoryService.getByCode("Vaccine");
             category = pc.getId();
         }
-        if(product !=null){
+        if (product != null) {
             Product pr = productService.getByPrimaryName(product);
             productId = pr.getId();
         }
 
-        return  repository.getVaccineInventoryFacilitiesByProduct(category,level,userId, productId,color);
+        return repository.getVaccineInventoryFacilitiesByProduct(category, level, userId, productId, color);
     }
 
   /*  public List<HashMap<String, Object>> getStockEventByMonth(Long ) {
@@ -537,63 +544,128 @@ public Map<String, Object> getVaccineCurrentReportingPeriod(){
 
     public List<HashMap<String, Object>> getStockEventByMonth(Long product, Long period, Long year, Long district) {
 
-        ProcessingPeriod period1= processingPeriodService.getById(period);
-       Long period2 =0L;
+        ProcessingPeriod period1 = processingPeriodService.getById(period);
+        Long period2 = 0L;
         Date value;
-        if(period1 != null){
+        if (period1 != null) {
             value = period1.getStartDate();
             Calendar cal = Calendar.getInstance();
             cal.setTime(value);
-            period2= Long.valueOf(cal.get(Calendar.MONTH));
+            period2 = Long.valueOf(cal.get(Calendar.MONTH));
             System.out.println(period2 + 1);
         }
         Long levelId = 0L;
-        GeographicZone geographicZone =  zoneService.getById(district);
-        if(geographicZone !=null){
+        GeographicZone geographicZone = zoneService.getById(district);
+        if (geographicZone != null) {
             levelId = geographicZone.getLevel().getId();
         }
-        Facility facility = facilityService.getByGeographicZoneId(district,levelId);
+        Facility facility = facilityService.getByGeographicZoneId(district, levelId);
 
         Long id;
-        if(facility !=null)
+        if (facility != null)
             id = facility.getId();
         else
-           id = 0L;
+            id = 0L;
 //        System.out.println(facility.getName());
-        return repository.geStockEventByMonth(product,period2+1,year,id);
+        return repository.geStockEventByMonth(product, period2 + 1, year, id);
 
     }
 
-    public List<HashMap<String,Object>>getAvailableStockForDashboard(Long product, Long period,
-                                                                     Long year, Long userId){
+    public List<HashMap<String, Object>> getAvailableStockForDashboard(Long product, Long period,
+                                                                       Long year, Long userId) {
         System.out.println(product);
-        return repository.getAvailableStockForDashboard(product,period,year,userId);
+        return repository.getAvailableStockForDashboard(product, period, year, userId);
     }
 
-    public List<HashMap<String,Object>>getVaccineImmunization(){
+    public List<HashMap<String, Object>> getVaccineImmunization() {
         return repository.getVaccineImmunization();
     }
 
-    public List<HashMap<String,Object>>getFullStockAvailability(Long userId,Long periodId,Long year){
-        return repository.getFullStockAvailability(userId,periodId,year);
+    public List<HashMap<String, Object>> getFullStockAvailability(Long userId, Long periodId, Long year) {
+        return repository.getFullStockAvailability(userId, periodId, year);
     }
 
-    public List<HashMap<String,Object>>getNationalPerformance(Long userId,Long productId,Long periodId, Long year){
-        return repository.getNationalPerformance(userId,productId,periodId,year);
-    }
-    public List<HashMap<String,Object>>reportingTarget(Long userId,Long periodId, Long year){
-        return repository.reportingTarget(userId,periodId,year);
-    }
-    public List<HashMap<String,Object>>getDistrictCategorization(Long userId,Long product,Long doseId, Long year,Long periodId){
-        return repository.getDistrictCategorization(userId,product,doseId,year,periodId);
+    public List<HashMap<String, Object>> getNationalPerformance(Long userId, Long productId, Long periodId, Long year) {
+        return repository.getNationalPerformance(userId, productId, periodId, year);
     }
 
-    public List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(Long userId, Long productId, Long periodId, Long year,Long doseId){
-        return repository.getVaccineCoverageByRegionAndProduct(userId,productId,periodId,year,doseId);
+    public List<HashMap<String, Object>> reportingTarget(Long userId, Long periodId, Long year) {
+        return repository.reportingTarget(userId, periodId, year);
     }
 
-    public List<HashMap<String,Object>>getNationalVaccineCoverage(Long userId, Long product,Long doseId,Long periodId, Long year){
-        return repository.getNationalVaccineCoverage(userId, product,doseId,periodId,year);
+    public List<HashMap<String, Object>> getDistrictCategorization(Long userId, Long product, Long doseId, Long year, Long periodId) {
+        return repository.getDistrictCategorization(userId, product, doseId, year, periodId);
     }
+
+    public List<HashMap<String, Object>> getVaccineCoverageByRegionAndProduct(Long userId, Long productId, Long periodId, Long year, Long doseId) {
+        return repository.getVaccineCoverageByRegionAndProduct(userId, productId, periodId, year, doseId);
+    }
+
+    public List<HashMap<String, Object>> getNationalVaccineCoverage(Long userId, Long product, Long doseId, Long periodId, Long year) {
+        return repository.getNationalVaccineCoverage(userId, product, doseId, periodId, year);
+    }
+
+    public List<HashMap<String, Object>> getNationalCoverageProductAndDose(Long userId, Long periodId, Long year,Long product) {
+        return repository.getNationalCoverageProductAndDose(userId, periodId, year,product);
+    }
+
+    public List<HashMap<String, Object>> getDistrictInventorySummary(Long userId) {
+        return repository.getDistrictInventorySummary(userId);
+    }
+
+    public List<HashMap<String, Object>> getRegionInventorySummary(Long userId) {
+        return repository.getRegionInventorySummary(userId);
+    }
+
+    public List<HashMap<String, Object>> getInventorySummaryByLocation(String facilityLevel) {
+        return repository.getInventorySummaryByLocation(facilityLevel);
+    }
+
+    public List<HashMap<String, Object>> getInventorySummaryByMaterial(String facilityLevel) {
+        return repository.getInventorySummaryByMaterial(facilityLevel);
+    }
+
+    public List<HashMap<String, Object>> getInventorySummaryByMaterialFacilityList(String facilityLevel, String product, String indicator) {
+        return repository.getInventorySummaryByMaterialFacilityList(facilityLevel, product, indicator);
+
+    }
+
+    public List<HashMap<String, Object>> getVaccineCoverageForMap(Long userId, Long productId, Long periodId, Long year, Long doseId) {
+        return repository.getVaccineCoverageForMap(userId, productId, periodId, year, doseId);
+    }
+
+    public List<HashMap<String, Object>> getCoverageByDistrict(Long userId, Long product, Long period, Long year, Long doseId) {
+        System.out.println(period);
+        return repository.getCoverageByDistrict(userId, product, period, year, doseId);
+    }
+
+    public List<HashMap<String, Object>> getCoverageByRegionSummary(Long userId, Long product, Long period, Long year, Long doseId) {
+        System.out.println(period);
+        return repository.getCoverageByRegionSummary(userId, product, period, year, doseId);
+    }
+
+    public List<HashMap<String, Object>> getCategorizationByDistrict(Long userId, Long year) {
+        return repository.getCategorizationByDistrict(userId, year);
+    }
+
+    public List<HashMap<String, Object>> getCategorizationByDistrictDrillDown(Long userId, String category, String period) {
+        return repository.getCategorizationByDistrictDrillDown(userId, category, period);
+    }
+
+    public List<HashMap<String, Object>> getDistrictClassification(Long userId, Long product, Long year) {
+        return repository.getDistrictClassification(userId, product, year);
+    }
+     public List<HashMap<String, Object>> getDistrictClassificationDrillDown(Long userId,Long product,Long year,String indicator,String period) {
+            return repository.getDistrictClassificationDrillDown(userId, product, year,indicator,period);
+    }
+
+    public List<HashMap<String, Object>> getDistributionOfDistrictPerPerformance( Long userId,  Long product, Long year,Long doseId) {
+            return repository.getDistributionOfDistrictPerPerformance(userId, product, year,doseId);
+    }
+
+    public List<HashMap<String, Object>> getPerformanceMonitoring( Long userId,  Long product, Long year) {
+            return repository.getPerformanceMonitoring(userId, product, year);
+    }
+
 
 }

@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 @Component
 @NoArgsConstructor
@@ -170,7 +171,9 @@ public class OrderSummaryReportDataProvider extends ReportDataProvider {
 
 
         final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mm a");
-
+        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        dateFormat.setTimeZone(timeZone);
+        System.out.println(dateFormat);
         List<RequisitionStatusChange> changes = reportMapper.getLastUsersWhoActedOnRnr(orderReportParam.getOrderId(), RnrStatus.AUTHORIZED.name());
         if (!changes.isEmpty()) {
             result.put(AUTHORIZED_BY, changes.get(0).getCreatedBy().getFirstName() + " " + changes.get(0).getCreatedBy().getLastName());

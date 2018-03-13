@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.ConfigurationSetting;
 import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.vaccine.domain.inventory.VaccineDistribution;
-import org.openlmis.vaccine.repository.mapper.inventory.VaccineInventoryDistributionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpEntity;
@@ -32,6 +31,8 @@ import javax.net.ssl.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Future;
 
 
@@ -52,12 +53,14 @@ public class SdpNotificationService {
     @Autowired
     ConfigurationSettingService configurationSettingService;
 
+
     @Autowired
     VaccineInventoryDistributionService service;
 
 
     @Async("myExecutor")
     public void updateNotification(VaccineDistribution distribution, Long userId) {
+        System.out.println("savae  dsierr");
         service.save(distribution, userId);
         if (distribution.getId() != null) {
             VaccineDistribution d = service.getDistributionById(distribution.getId());
@@ -69,6 +72,10 @@ public class SdpNotificationService {
 
             }
         }
+    }
+
+    public Long saveDistribution(VaccineDistribution distribution, Long userId) {
+        return service.save(distribution, userId);
     }
 
 
@@ -110,7 +117,8 @@ public class SdpNotificationService {
     }
 
     private void sendHttps(VaccineDistribution d, String url, String username, String password) {
-        System.out.println("I'm second");
+        System.out.println(username);
+        System.out.println("I'm second ....................");
         System.out.println(d.getToFacilityId());
         VaccineDistribution distribution = service.getDistributionByToFacility(d.getToFacilityId());
         System.out.println("I'm second..");
@@ -197,4 +205,7 @@ public class SdpNotificationService {
     }
 
 
+    public List<HashMap<String, Object>> getLastDistributionForFacility(Long toFacilityId, String distributionType, String distributionDate, String status) {
+       return service.getLastDistributionForFacility(toFacilityId,distributionType,distributionDate,status);
+    }
 }

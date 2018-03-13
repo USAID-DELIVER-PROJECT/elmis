@@ -11,10 +11,8 @@
 package org.openlmis.core.service;
 
 import lombok.NoArgsConstructor;
-import org.openlmis.core.domain.Facility;
-import org.openlmis.core.domain.GeographicLevel;
-import org.openlmis.core.domain.GeographicZone;
-import org.openlmis.core.domain.Pagination;
+import org.openlmis.core.domain.*;
+import org.openlmis.core.dto.GeoZoneMapDTO;
 import org.openlmis.core.dto.GeographicZoneGeometry;
 import org.openlmis.core.repository.GeographicZoneRepository;
 import org.openlmis.core.repository.mapper.GeographicZoneGeoJSONMapper;
@@ -127,5 +125,35 @@ public class GeographicZoneService {
 
   public List<GeographicZone> getDistrictsFor(List<Facility> facilities) {
     return repository.getDistrictsFor(facilities);
+  }
+
+  public GeographicZone getByCodeFor(String zoneCode) {
+    return repository.getByCode(zoneCode);
+  }
+
+    public GeoZoneMapDTO getGeoMapMapping(GeoZoneMapDTO record) {
+    GeographicZone zone = repository.getByCode(record.getCode());
+    if(zone != null)
+    return repository.getGeoMappingBy(zone.getId());
+    else
+      return null;
+    }
+
+  public void uploadGeoMapMapping(GeoZoneMapDTO record) {
+
+    GeographicZone zone = repository.getByCode(record.getCode());
+    if(zone != null) {
+      record.setGeographicZoneId(zone.getId());
+      if (record.getId() == null) {
+        repository.saveGeoZoneMap(record);
+      } else {
+        repository.updateGeoZoneMap(record);
+      }
+    }
+
+  }
+
+  public List<GeoZoneMapDTO>getAllGeoMapData(){
+    return repository.getAllGeoMapData();
   }
 }

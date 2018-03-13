@@ -1305,3 +1305,40 @@ services.factory('GetProductById', function ($resource) {
 services.factory('GetRejectedRnRReport', function ($resource) {
     return $resource('/reports/reportdata/rejectedRnR', {}, {});
 });
+services.factory('GetMsdStockStatusReport', function ($resource) {
+    return $resource('/dashboard/msdStock.json', {}, {});
+});
+services.factory('GetMsdStockStatus', function ($resource) {
+    return $resource('/dashboard/msdStockStatus.json', {}, {});
+});
+
+services.factory('GetMsdStockStatusColor', function ($resource) {
+    return $resource('/dashboard/getStockColor.json', {}, {});
+});
+services.factory('GetGoZoneByLevelCode', function ($resource) {
+    return $resource('/geographic-zone-by/:geoLevelCode.json', {geoLevelCode:'@geoLevelCode'}, {});
+});
+
+services.factory('GetHFRFacilities', function ($resource) {
+    return $resource('/rest-api/lookup/hfr-facilities', {}, {});
+});
+
+services.factory('GetHfrFacilityMappingList', function ($resource) {
+    return $resource('/hfrFacilityMappingList', {}, {});
+});
+
+services.factory('HfrFacilityMapping', function($resource){
+    return $resource('/hfrFacilityMapping.json', {} , { post: {method:'POST'} } );
+});
+
+services.factory('GetHfrFacilityMappingById', function ($resource) {
+    return $resource('/hfrFacilityMappingBy/:id.json', {id:'@id'}, {});
+});
+services.factory('FacilityConsumptionReport', function ($resource) {
+    return $resource('/reports/reportdata/facilityConsumption.json', {}, {});
+});
+
+
+services.factory('DailyConsumption', function ($resource) {
+    return $resource('/reports/reportdata/dailyConsumption.json', {}, {});
+});

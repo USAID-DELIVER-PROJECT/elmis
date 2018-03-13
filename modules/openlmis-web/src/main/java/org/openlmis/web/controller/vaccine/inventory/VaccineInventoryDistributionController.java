@@ -45,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
 
@@ -93,6 +94,8 @@ public class VaccineInventoryDistributionController extends BaseController {
     private JasperReportsViewFactory jasperReportsViewFactory;
     @Autowired
     private VaccineNotificationService notificationService;
+/*    @Autowired
+    private VaccineInventoryDistributionService distributionService;*/
     @Autowired
     private SdpNotificationService sdpNotificationService;
 
@@ -106,9 +109,12 @@ public class VaccineInventoryDistributionController extends BaseController {
     @Transactional
     public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineDistribution distribution, HttpServletRequest request) {
         Long userId = loggedInUserId(request);
-        sdpNotificationService.updateNotification(distribution,userId);
-        System.out.println("I'm first");
-        System.out.println(distribution.getId());
+        try {
+            sdpNotificationService.updateNotification(distribution,userId);
+
+        }catch (Exception e){
+            e.fillInStackTrace();
+        };
         return OpenLmisResponse.response("distributionId", distribution.getId());
     }
 
@@ -392,6 +398,25 @@ public class VaccineInventoryDistributionController extends BaseController {
            // response.getBody().addData(SUPERVISOR_ID, service.getSupervisorFacilityId(distributionId));
             return response;
         }
+    }
+
+
+    @RequestMapping(value = "saveSupervisoryDistribution", method = POST, headers = ACCEPT_JSON)
+    @PreAuthorize("@permissionEvaluator.hasPermission(principal,'MANAGE_STOCK, VIEW_STOCK_ON_HAND')")
+    @Transactional
+    public ResponseEntity<OpenLmisResponse> saveSupervisorDistribution(@RequestBody VaccineDistribution distribution, HttpServletRequest request) {
+        Long userId = loggedInUserId(request);
+        sdpNotificationService.saveDistribution(distribution,userId);
+        return OpenLmisResponse.response("distributionId", distribution.getId());
+    }
+
+    @RequestMapping(value = "GetLastDistributionForFacility.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getLastDistributionForFacility(HttpServletRequest request,
+                                                                           @RequestParam("toFacilityId")  Long toFacilityId,
+                                                                           @RequestParam("distributionType") String distributionType,
+                                                                           @RequestParam("distributionDate") String distributionDate,
+                                                                           @RequestParam("status") String status) {
+        return OpenLmisResponse.response("distribution",sdpNotificationService.getLastDistributionForFacility(toFacilityId,distributionType,distributionDate,status));
     }
 
 }

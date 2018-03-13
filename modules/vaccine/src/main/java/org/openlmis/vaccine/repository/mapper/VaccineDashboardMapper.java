@@ -40,7 +40,7 @@ public interface VaccineDashboardMapper {
     /*
      * Action Bar
      * TODO: Add userid parameter to summary dashlets
-    */
+     */
     @Select("with temp as ( \n" +
             "            select vd.district_name district, f.name facility_name, f.code facility_code, \n" +
             "                   to_char(vr.createdDate, 'DD Mon YYYY') reported_date,  \n" +
@@ -119,7 +119,7 @@ public interface VaccineDashboardMapper {
             "                      ) ")
     List<HashMap<String, Object>> getRepairingDetails(@Param("userId") Long userId);
 
-/* End Action Bar */
+    /* End Action Bar */
 
        /* @Select("SELECT\n" +
                 "d.region_name,\n" +
@@ -147,9 +147,9 @@ public interface VaccineDashboardMapper {
                 "i.period_start_date")
         List<HashMap<String, Object>> getMonthlyCoverage(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product);*/
 
-        /*
-         * ---------------- Coverage ------------------------------------
-        */
+    /*
+     * ---------------- Coverage ------------------------------------
+     */
 
     /* */
     @Select(" select count(1) from ( \n" +
@@ -275,7 +275,7 @@ public interface VaccineDashboardMapper {
 
     /*
      * ---------------- Dropout ------------------------------------
-    */
+     */
     @Select("SELECT\n" +
             "i.period_name,\n" +
             "i.period_start_date, \n" +
@@ -382,11 +382,11 @@ public interface VaccineDashboardMapper {
     List<HashMap<String, Object>> getFacilityDropoutDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
 
-/* End Drop Out */
+    /* End Drop Out */
 
     /*
      * ---------------- Wastage ------------------------------------
-    */
+     */
     @Select("with temp as (\n" +
             "select period_name, period_start_date::date," +
             " sum(COALESCE(vaccinated,0)) vaccinated,\n" +
@@ -476,11 +476,11 @@ public interface VaccineDashboardMapper {
             "ORDER BY 5,2;")
     List<HashMap<String, Object>> getFacilityWastageDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long product, @Param("user") Long user);
 
-/* End Wastage */
+    /* End Wastage */
 
     /*
      * ---------------- Sessions ------------------------------------
-    */
+     */
     @Select("with temp as (\n" +
             "select\n" +
             "period_name,\n" +
@@ -559,11 +559,11 @@ public interface VaccineDashboardMapper {
             "ORDER BY 4,2;")
     List<HashMap<String, Object>> getFacilitySessionsDetails(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("user") Long user);
 
-/* End Session */
+    /* End Session */
 
     /*
      * ---------------- Bundling ------------------------------------
-    */
+     */
     @Select("select \n" +
             "vvb.programid, \n" +
             "vvb.periodid, \n" +
@@ -586,11 +586,11 @@ public interface VaccineDashboardMapper {
             "and vvb.period_start_date >= #{startDate} and vvb.period_end_date <= #{endDate}")
     List<HashMap<String, Object>> getBundling(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("product") Long productId);
 
-/* End Bundling */
+    /* End Bundling */
 
-/*
- * ---------------- Stock -----------------------------------
-*/
+    /*
+     * ---------------- Stock -----------------------------------
+     */
 
     @Select("WITH TEMP AS (\n" +
             "SELECT\n" +
@@ -701,9 +701,9 @@ public interface VaccineDashboardMapper {
 
 
     /* End Stock */
- /*
-         * ---------------- Stock Status ------------------------------------
-        */
+    /*
+     * ---------------- Stock Status ------------------------------------
+     */
     @Select("with temp as (select ss.period_name, ss.period_start_date period_start_date,  coalesce(ss.closing_balance,0) closing_balance, \n" +
             "coalesce((select isavalue from stock_requirements where facilityid = ss.facility_id \n" +
             "and programid = ss.program_id\n" +
@@ -876,7 +876,7 @@ public interface VaccineDashboardMapper {
             "   (SELECT date_part('YEAR',sce.createddate::DATE)) = ( SELECT date_part('YEAR', #{date}::DATE )) AND " +
             "  sc.facilityid=#{facilityId} and sc.productid=vvisc.product_id and sce.createddate <=#{date}::DATE)::integer, 0))) " +
             "  END AS color " +
-            " FROM vw_vaccine_inventory_stock_status vvisc WHERE vvisc.facility_id=#{facilityId}")
+            " FROM vw_vaccine_inventory_stock_status_dashboard vvisc WHERE vvisc.facility_id=#{facilityId} and year = ( SELECT date_part('YEAR', #{date}::DATE ))")
     List<HashMap<String, Object>> getFacilityVaccineInventoryStockStatus(@Param("facilityId") Long facilityId, @Param("date") String date);
 
     @Select("SELECT " +
@@ -988,7 +988,6 @@ public interface VaccineDashboardMapper {
             "\t\t      )M\n" +
             "\n ")
     List<HashMap<String, Object>> getStockStatusOverViewNotUsed(@Param("userId") Long userId, @Param("category") Long category, @Param("productId") Long productId, @Param("dateString") String dateString, @Param("level") String level);
-
 
     @Select("\n" +
             "                                        SELECT\n" +
@@ -1342,95 +1341,95 @@ public interface VaccineDashboardMapper {
             "order by p.id \n"
     )
     List<HashMap<String, Object>> getAvailableStockForDashboard(@Param("product") Long product,
-                                                                @Param("period")Long period,
-                                                                @Param("year")Long year,
-                                                                @Param("userId")Long userId);
+                                                                @Param("period") Long period,
+                                                                @Param("year") Long year,
+                                                                @Param("userId") Long userId);
 
     @Select("select product_code productCode,product_name product,display_name DisplayName,\n" +
             " within_male male,within_female female, within_total, *\n" +
             "\n" +
             "  from vw_vaccine_coverage WHERE  facility_id=19324 AND PERIOD_ID = 121\n" +
             "  order by product_id,display_name")
-    List<HashMap<String, Object>>getAllVaccineImmunization();
+    List<HashMap<String, Object>> getAllVaccineImmunization();
 
 
-   //Dashboard Queries
-   @Select("select * from vw_full_stock_availability_vw where this_year = #{year}::int")
-   List<HashMap<String,Object>>getFullStockAvailability(@Param("userId")Long userId,@Param("periodId")Long periodId,
-                                                        @Param("year") Long year);
+    //Dashboard Queries
+    @Select("select * from vw_full_stock_availability_vw where this_year = #{year}::int")
+    List<HashMap<String, Object>> getFullStockAvailability(@Param("userId") Long userId, @Param("periodId") Long periodId,
+                                                           @Param("year") Long year);
 
 
-  @Select("\n" +
-          "\n" +
-          "WITH Q as (\n" +
-          "\n" +
-          "select b.*, \n" +
-          "CASE when soh = 0 THEN 'bad' WHEN mos between 1 and 1.5 THEN 'good' WHEN (mos > 1.5 or mos IS NULL ) THEN 'normal'" +
-          " WHEN mos < 1 THEN 'warn' ELSE NULL END AS Classification from \n" +
-          "\n" +
-          "( select region_name, district_name, district_id, EXTRACT (YEAR FROM A .startdate) \"year\", EXTRACT (MONTH FROM A .startdate) \"month\", a.periodid, a.period_name, sum(soh) soh,\n" +
-          " sum(consumption) consumption, case when sum(COALESCE(consumption,0)) > 0 then round(sum(COALESCE(soh,0))/(sum(COALESCE(consumption,0))/3::numeric)::numeric,2) else null end mos \n" +
-          " from ( \n" +
-          " \n" +
-          " with t as (\n" +
-          "  SELECT * FROM vaccine_facility_report_view \n" +
-          "  where startdate::date >= (#{year}::text||'-01-01')::date - interval '3 months' and \n" +
-          "  enddate::date <= (#{year}::text||'-12-31')::date and productid = #{productId}::INT and status <> 'DRAFT'\n" +
-          "\n" +
-          "   ) \n" +
-          "  \n" +
-          "SELECT facilityid, periodid, period_name, startdate, consumption, soh, extract(month from startdate) AS dow,\n" +
-          " CASE WHEN count(consumption) OVER w = 3 THEN avg(consumption) OVER w END AS amc FROM t \n" +
-          "\n" +
-          " WHERE extract(month from startdate) \n" +
-          " \n" +
-          " between 1 and 12 WINDOW w AS (ORDER BY facilityid, startdate desc ROWS BETWEEN 0 FOLLOWING AND 2 FOLLOWING) ) a \n" +
-          " join facilities f on f.id = a.facilityid\n" +
-          " join vw_districts d on f.geographiczoneid = d.district_id \n" +
-          " join processing_periods pr on pr.id = a.periodid \n" +
-          " group by 1,2,3,4,5,6,7\n" +
-          "  ) b\n" +
-          " ) select period_name,Reported.count total,\n" +
-          " -- sum(case when classification = 'normal' then 1 else 0 end) as normal,\n" +
-          " --SUM(case when classification = 'bad' then 1 else 0 end) as bad,\n" +
-          "-- SUM(case when classification = 'warn' then 1 else 0 end)as warn,\n" +
-          " --SUM(case when classification = 'good' then 1 else 0 end) as good,\n" +
-          "  --SUM(case when classification is null then 1 else 0 end) as noMonthOfStock,\n" +
-          "CASE WHEN Reported.count > 0 then \n" +
-          "ROUND((sum(case when classification = 'normal' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as accordingPlan,\n" +
-          "\n" +
-          "CASE WHEN Reported.count > 0 then \n" +
-          "ROUND((sum(case when classification = 'bad' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as stockedOut,\n" +
-          "\n" +
-          "\n" +
-          "CASE WHEN Reported.count > 0 then \n" +
-          "ROUND((sum(case when classification = 'warn' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as underStocked,\n" +
-          "\n" +
-          "\n" +
-          "\n" +
-          "CASE WHEN Reported.count > 0 then \n" +
-          "ROUND((sum(case when classification = 'good' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as overStocked\n" +
-          "  \n" +
-          "  \n" +
-          "    from q\n" +
-          "    LEFT JOIN \n" +
-          "(\n" +
-          "\n" +
-          "\n" +
-          "                                 select geographicZoneId, count(*) REPORTED from facilities  \n" +
-          "                                 join programs_supported ps on ps.facilityId = facilities.id \n" +
-          "                                    join geographic_zones gz on gz.id = facilities.geographicZoneId \n" +
-          "                                    where  ps.programId = 82 and facilities.id in \n" +
-          "                                      (select facilityId from vaccine_reports where periodId = #{periodId}::INT and programId = 82 and\n" +
-          "                                      status not in ('DRAFT') )\n" +
-          "                                     group by geographicZoneId\n" +
-          "                                     ) Reported ON q.district_id = reported.geographicZoneId\n" +
-          "   \n" +
-          "    \n" +
-          "    where periodid = #{periodId}\n" +
-          "group by period_name\n" +
-          "\n ")
-        List<HashMap<String,Object>>getNationalPerformance(@Param("userId") Long userId, @Param("productId") Long productId, @Param("periodId") Long periodId,@Param("year")Long year);
+    @Select("\n" +
+            "\n" +
+            "WITH Q as (\n" +
+            "\n" +
+            "select b.*, \n" +
+            "CASE when soh = 0 THEN 'bad' WHEN mos between 1 and 1.5 THEN 'good' WHEN (mos > 1.5 or mos IS NULL ) THEN 'normal'" +
+            " WHEN mos < 1 THEN 'warn' ELSE NULL END AS Classification from \n" +
+            "\n" +
+            "( select region_name, district_name, district_id, EXTRACT (YEAR FROM A .startdate) \"year\", EXTRACT (MONTH FROM A .startdate) \"month\", a.periodid, a.period_name, sum(soh) soh,\n" +
+            " sum(consumption) consumption, case when sum(COALESCE(consumption,0)) > 0 then round(sum(COALESCE(soh,0))/(sum(COALESCE(consumption,0))/3::numeric)::numeric,2) else null end mos \n" +
+            " from ( \n" +
+            " \n" +
+            " with t as (\n" +
+            "  SELECT * FROM vaccine_facility_report_view \n" +
+            "  where startdate::date >= (#{year}::text||'-01-01')::date - interval '3 months' and \n" +
+            "  enddate::date <= (#{year}::text||'-12-31')::date and productid = #{productId}::INT and status <> 'DRAFT'\n" +
+            "\n" +
+            "   ) \n" +
+            "  \n" +
+            "SELECT facilityid, periodid, period_name, startdate, consumption, soh, extract(month from startdate) AS dow,\n" +
+            " CASE WHEN count(consumption) OVER w = 3 THEN avg(consumption) OVER w END AS amc FROM t \n" +
+            "\n" +
+            " WHERE extract(month from startdate) \n" +
+            " \n" +
+            " between 1 and 12 WINDOW w AS (ORDER BY facilityid, startdate desc ROWS BETWEEN 0 FOLLOWING AND 2 FOLLOWING) ) a \n" +
+            " join facilities f on f.id = a.facilityid\n" +
+            " join vw_districts d on f.geographiczoneid = d.district_id \n" +
+            " join processing_periods pr on pr.id = a.periodid \n" +
+            " group by 1,2,3,4,5,6,7\n" +
+            "  ) b\n" +
+            " ) select period_name,Reported.count total,\n" +
+            " -- sum(case when classification = 'normal' then 1 else 0 end) as normal,\n" +
+            " --SUM(case when classification = 'bad' then 1 else 0 end) as bad,\n" +
+            "-- SUM(case when classification = 'warn' then 1 else 0 end)as warn,\n" +
+            " --SUM(case when classification = 'good' then 1 else 0 end) as good,\n" +
+            "  --SUM(case when classification is null then 1 else 0 end) as noMonthOfStock,\n" +
+            "CASE WHEN Reported.count > 0 then \n" +
+            "ROUND((sum(case when classification = 'normal' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as accordingPlan,\n" +
+            "\n" +
+            "CASE WHEN Reported.count > 0 then \n" +
+            "ROUND((sum(case when classification = 'bad' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as stockedOut,\n" +
+            "\n" +
+            "\n" +
+            "CASE WHEN Reported.count > 0 then \n" +
+            "ROUND((sum(case when classification = 'warn' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as underStocked,\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "CASE WHEN Reported.count > 0 then \n" +
+            "ROUND((sum(case when classification = 'good' then 1 else 0 end))::numeric/(Reported.count) * 100,0) end as overStocked\n" +
+            "  \n" +
+            "  \n" +
+            "    from q\n" +
+            "    LEFT JOIN \n" +
+            "(\n" +
+            "\n" +
+            "\n" +
+            "                                 select geographicZoneId, count(*) REPORTED from facilities  \n" +
+            "                                 join programs_supported ps on ps.facilityId = facilities.id \n" +
+            "                                    join geographic_zones gz on gz.id = facilities.geographicZoneId \n" +
+            "                                    where  ps.programId = 82 and facilities.id in \n" +
+            "                                      (select facilityId from vaccine_reports where periodId = #{periodId}::INT and programId = 82 and\n" +
+            "                                      status not in ('DRAFT') )\n" +
+            "                                     group by geographicZoneId\n" +
+            "                                     ) Reported ON q.district_id = reported.geographicZoneId\n" +
+            "   \n" +
+            "    \n" +
+            "    where periodid = #{periodId}\n" +
+            "group by period_name\n" +
+            "\n ")
+    List<HashMap<String, Object>> getNationalPerformance(@Param("userId") Long userId, @Param("productId") Long productId, @Param("periodId") Long periodId, @Param("year") Long year);
 
     @Select("with completeness_with_reporting_periods as (\n" +
             "                  select    \n" +
@@ -1542,13 +1541,13 @@ public interface VaccineDashboardMapper {
             "                      join vw_districts vd on vd.district_id = nonreporting.geographiczoneid \n" +
             "                      left outer join completeness_with_reporting_periods c  On c.geographiczoneid = nonreporting.geographiczoneid AND nonreporting.id = c.priod_id \n" +
             "                    group by 1,2 order by 2")
-    List<HashMap<String, Object>>reportingTarget(@Param("userId")Long userId, @Param("periodId")Long periodId, @Param("year")Long year);
+    List<HashMap<String, Object>> reportingTarget(@Param("userId") Long userId, @Param("periodId") Long periodId, @Param("year") Long year);
 
     @Select("     select catagorization, count(*) total from categorization_view\n" +
-            "            where periodId = #{periodId}::INT \n" +
+            "            where periodId = #{periodId}::INT and year =#{year}::int\n" +
             "            group by catagorization\n" +
             "            order by catagorization")
-    List<HashMap<String,Object>>getDistrictCategorization(@Param("userId")Long userId,@Param("year")Long year,@Param("periodId")Long periodId);
+    List<HashMap<String, Object>> getDistrictCategorization(@Param("userId") Long userId, @Param("year") Long year, @Param("periodId") Long periodId);
 /*@Select(
         "SELECT region_name region,\n" +
         "ROUND (\n" +
@@ -1619,66 +1618,671 @@ public interface VaccineDashboardMapper {
             "group by d.region_name\n" +
             "order by Nationalcoverage desc\n" +
             ")x\n ")
-     List<HashMap<String,Object>>getVaccineCoverageByRegionAndProduct(@Param("userId")Long userId, @Param("productId")Long productId,@Param("periodId")Long periodId,@Param("year")Long year,@Param("doseId")Long doseId);
+    List<HashMap<String, Object>> getVaccineCoverageByRegionAndProduct(@Param("userId") Long userId, @Param("productId") Long productId, @Param("periodId") Long periodId, @Param("year") Long year, @Param("doseId") Long doseId);
 
-   @Select("\n" +
-           "SELECT L.*, ROUND(Nationalcoverage::NUMERIC,0)Nationalcoverage FROM \n" +
-           "(with coverage as ( \n" +
-           "       \tselect  PERIOD,to_char(to_timestamp (PERIOD::text, 'MM'), 'Mon')  monthly,\n" +
-           "\t (SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId} :: INT )  monthnumber,\n" +
-           "\t sum(a.cumulative_vaccinated) cumulative_vaccinated,\n" +
-           "\t sum(e.value) /12::numeric  monthly_district_target\n" +
-           "\t  \n" +
-           "\t from (\n" +
-           "\tSELECT\n" +
-           "\t  f.geographiczoneid,\n" +
-           "\t  d.denominatorestimatecategoryid,\n" +
-           "\t  d.productid,\n" +
-           "\t  d.doseid,\n" +
-           "\t d.MONTH period,\n" +
-           "\t SUM (monthlyregular) AS cumulative_vaccinated\n" +
-           "\tFROM\n" +
-           "\t vw_vaccine_cumulative_coverage_by_dose d\n" +
-           "\t join facilities f on f.id = d.facilityid\n" +
-           "\t WHERE\tproductId = #{product}::int AND doseid = #{doseId}::int\n" +
-           "\t AND d. YEAR = #{year}::INT\n" +
-           "\t AND d. MONTH <= ( SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId}::INT )\n" +
-           "\t GROUP BY 1,2,3,4,5) a\n" +
-           "        join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid and e.year = #{year}::INT\n" +
-           "        GROUP BY PERIOD)\n" +
-           "\tselect cumulative_vaccinated, monthly_district_target, monthnumber,monthly,\n" +
-           "\t  case when monthly_district_target > 0 then\n" +
-           "\tcumulative_vaccinated/ (monthly_district_target::numeric * monthnumber)*100 end as coverage  " +
-           "from coverage c\n" +
-           "ORDER BY PERIOD)L,\n" +
-           "(\n" +
-           "\n" +
-           "with coverage as ( \n" +
-           "       \tselect\n" +
-           "\t (SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId}::INT )  monthnumber,\n" +
-           "\t sum(a.cumulative_vaccinated) cumulative_vaccinated,\n" +
-           "\t sum(e.value) /12::numeric  monthly_district_target\n" +
-           "\t from (\n" +
-           "\tSELECT\n" +
-           "\t  f.geographiczoneid,\n" +
-           "\t  d.denominatorestimatecategoryid,\n" +
-           "\t  d.productid,\n" +
-           "\t  d.doseid,\n" +
-           "\t SUM (monthlyregular) AS cumulative_vaccinated\n" +
-           "\tFROM\n" +
-           "\t vw_vaccine_cumulative_coverage_by_dose d\n" +
-           "\t join facilities f on f.id = d.facilityid\n" +
-           "\t WHERE\tproductId = #{product}::int AND doseid = #{doseId}::int\n" +
-           "\t AND d. YEAR = #{year}::INT\n" +
-           "\t AND d. MONTH <= ( SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId}::INT )\n" +
-           "\t GROUP BY 1,2,3,4) a\n" +
-           "\t  join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid and e.year = #{year}::int)\n" +
-           "\tselect SUM(cumulative_vaccinated)cumulative_vaccinated,SUM(monthly_district_target) monthly_district_target,\n" +
-           "        case when SUM(monthly_district_target) > 0 then\n" +
-           "\tSUM(cumulative_vaccinated)/ (SUM(monthly_district_target)::numeric * MAX(monthnumber))*100 end as Nationalcoverage\n" +
-           " from coverage c\n" +
-           "\n" +
-           ")n ")
-    List<HashMap<String,Object>>getNationalVaccineCoverage(@Param("userId")Long userId,@Param("product")Long product,@Param("doseId")Long doseId,@Param("periodId")Long periodId,@Param("year")Long year);
+    @Select("\n" +
+            "SELECT L.*, ROUND(Nationalcoverage::NUMERIC,0)Nationalcoverage FROM \n" +
+            "(with coverage as ( \n" +
+            "       \tselect  PERIOD,to_char(to_timestamp (PERIOD::text, 'MM'), 'Mon')  monthly,\n" +
+            "\t (SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId} :: INT )  monthnumber,\n" +
+            "\t sum(a.cumulative_vaccinated) cumulative_vaccinated,\n" +
+            "\t sum(e.value) /12::numeric  monthly_district_target\n" +
+            "\t  \n" +
+            "\t from (\n" +
+            "\tSELECT\n" +
+            "\t  f.geographiczoneid,\n" +
+            "\t  d.denominatorestimatecategoryid,\n" +
+            "\t  d.productid,\n" +
+            "\t  d.doseid,\n" +
+            "\t d.MONTH period,\n" +
+            "\t SUM (monthlyregular) AS cumulative_vaccinated\n" +
+            "\tFROM\n" +
+            "\t vw_vaccine_cumulative_coverage_by_dose d\n" +
+            "\t join facilities f on f.id = d.facilityid\n" +
+            "\t WHERE\tproductId = #{product}::int AND doseid = #{doseId}::int\n" +
+            "\t AND d. YEAR = #{year}::INT\n" +
+            "\t AND d. MONTH <= ( SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId}::INT )\n" +
+            "\t GROUP BY 1,2,3,4,5) a\n" +
+            "        join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid" +
+            "  AND e.districtid = a.geographiczoneid and e.year = #{year}::INT\n" +
+            "        GROUP BY PERIOD)\n" +
+            "\tselect cumulative_vaccinated, monthly_district_target, monthnumber,monthly,\n" +
+            "\t  case when monthly_district_target > 0 then\n" +
+            "\tcumulative_vaccinated/ (monthly_district_target::numeric * monthnumber)*100 end as coverage  " +
+            "from coverage c\n" +
+            "ORDER BY PERIOD)L,\n" +
+            "(\n" +
+            "\n" +
+            "with coverage as ( \n" +
+            "       \tselect\n" +
+            "\t (SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId}::INT )  monthnumber,\n" +
+            "\t sum(a.cumulative_vaccinated) cumulative_vaccinated,\n" +
+            "\t sum(e.value) /12::numeric  monthly_district_target\n" +
+            "\t from (\n" +
+            "\tSELECT\n" +
+            "\t  f.geographiczoneid,\n" +
+            "\t  d.denominatorestimatecategoryid,\n" +
+            "\t  d.productid,\n" +
+            "\t  d.doseid,\n" +
+            "\t SUM (monthlyregular) AS cumulative_vaccinated\n" +
+            "\tFROM\n" +
+            "\t vw_vaccine_cumulative_coverage_by_dose d\n" +
+            "\t join facilities f on f.id = d.facilityid\n" +
+            "\t WHERE\tproductId = #{product}::int AND doseid = #{doseId}::int\n" +
+            "\t AND d. YEAR = #{year}::INT\n" +
+            "\t AND d. MONTH <= ( SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods WHERE ID = #{periodId}::INT )\n" +
+            "\t GROUP BY 1,2,3,4) a\n" +
+            "\t  join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid " +
+            "  and e.districtid = a.geographiczoneId and e.year = #{year}::int)\n" +
+            "\tselect SUM(cumulative_vaccinated)cumulative_vaccinated,SUM(monthly_district_target) monthly_district_target,\n" +
+            "        case when SUM(monthly_district_target) > 0 then\n" +
+            "\tSUM(cumulative_vaccinated)/ (SUM(monthly_district_target)::numeric * MAX(monthnumber))*100 end as Nationalcoverage\n" +
+            " from coverage c\n" +
+            "\n" +
+            ")n ")
+    List<HashMap<String, Object>> getNationalVaccineCoverage(@Param("userId") Long userId, @Param("product") Long product, @Param("doseId") Long doseId, @Param("periodId") Long periodId, @Param("year") Long year);
+
+
+    @Select("\n" +
+            "\n" +
+            "            SELECT coverage.*,  \n" +
+            "\n" +
+            "                   CASE\n" +
+            "           WHEN coverage.coverage IS NULL THEN NULL\n" +
+            "           WHEN  coverage.coverage >= X.TARGETCOVERAGEGOOD THEN 'GOOD'\n" +
+            "           WHEN  coverage.coverage >= X.TARGETCOVERAGEWARN THEN 'WARN'\n" +
+            "           ELSE 'BAD'\n" +
+            "               END AS COVERAGECLASSIFICATION, x.*\n" +
+            "\n" +
+            "\n" +
+            "                  FROM (\n" +
+            "                       with coverage as (\n" +
+            "                         \n" +
+            "                         select productId,product, doseId,\n" +
+            "                   (SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods wHERE  ID = #{periodId} :: INT )  monthnumber, \n" +
+            "                   sum( a.cumulative_vaccinated) cumulative_vaccinated, \n" +
+            "                   sum(e.value) /12::numeric  monthly_district_target \n" +
+            "                     \n" +
+            "                   from ( \n" +
+            "                  SELECT  \n" +
+            "                    D.geographiczoneid, \n" +
+            "                    d.denominatorestimatecategoryid, \n" +
+            "                    d.productid, \n" +
+            "                    d.doseid, \n" +
+            "                   d.period, product,\n" +
+            "           \n" +
+            "                   SUM (monthlyregular) AS cumulative_vaccinated \n" +
+            "                  FROM \n" +
+            "                   VW_PRODUCT_COVERAGE d \n" +
+            "                 \n" +
+            "                   wHERE D.PERIODID = #{periodId}\n" +
+            "                   AND d. YEAR = #{year}::INT and productId in(#{product}::int,2421) \n" +
+            "                   AND d.PERIOD <= ( SELECT EXTRACT (MONTH FROM startdate) FROM processing_periods wHERE  ID = #{periodId}::INT ) \n" +
+            "                   GROUP BY 1,2,3,4,5,6\n" +
+            "                   \n" +
+            "                   order by productId ) a \n" +
+            "                          join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid and e.year = #{year}::INT AND DISTRICTID =A.GEOGRAPHICZONEID\n" +
+            "                          GROUP BY product,doseId,productId\n" +
+            "                          ORDER BY productId,DOSEiD\n" +
+            "           \n" +
+            "           \n" +
+            "                          ) \n" +
+            "                  select CASE WHEN PRODUCTiD =2421 then 1 else 2 end as sq,productId,cumulative_vaccinated, monthly_district_target, product ||' Dose '|| DOSEID product, monthnumber, \n" +
+            "                    case when monthly_district_target > 0 then \n" +
+            "                 ROUND( cumulative_vaccinated/ (monthly_district_target::numeric)*100,0) end as coverage   \n" +
+            "                  from coverage c \n" +
+            "                  ORDER BY sq\n" +
+            "         ) COVERAGE\n" +
+            "        LEFT JOIN VACCINE_PRODUCT_TARGETS X ON COVERAGE.PRODUCTID = X.PRODUCTID\n" +
+            "\n" +
+            "                  ")
+    List<HashMap<String, Object>> getNationalCoverageProductAndDose(@Param("userId") Long userId, @Param("periodId") Long periodId,
+                                                                    @Param("year") Long year,@Param("product") Long product);
+
+    @Select("SELECT \n" +
+            "ROUND(100.0 * (SUM(blue) /( SUM(totalProduct))), 0) AS blue_total,\n" +
+            "ROUND(100.0 * (SUM(green) /( SUM(totalProduct))), 0) AS green_total,\n" +
+            "ROUND(100.0 * (SUM(yellow) /( SUM(totalProduct))), 0) AS yellow_total,\n" +
+            "ROUND(100.0 * (SUM(red) /( SUM(totalProduct))), 0) AS red_total\n" +
+            "from(\n" +
+            "SELECT\n" +
+            "SUM( CASE WHEN (totalQuantityOnHand >0 ) And totalQuantityOnHand > maximumstock THEN 1 ELSE 0 END  ) AS blue ,\n" +
+            "SUM(CASE WHEN (totalQuantityOnHand >0 ) AND ( totalQuantityOnHand <= maximumstock ) AND (totalQuantityOnHand >= reorderlevel) THEN 1 ELSE 0 END )AS green,\n" +
+            "SUM(CASE WHEN (totalQuantityOnHand >0 ) AND (totalQuantityOnHand < reorderlevel AND totalQuantityOnHand >= bufferstock ) OR ((totalQuantityOnHand>0 ) AND totalQuantityOnHand< bufferstock ) THEN 1 ELSE 0 END) AS yellow,\n" +
+            "SUM(CASE WHEN totalQuantityOnHand = 0 THEN 1 ELSE 0 END) AS red,count(*) totalProduct, row_number() over (PARTITION BY facilityid) AS totalStores\n" +
+            "from vw_vaccine_stock_summary_view where facilityTYPECode ='dvs'\n" +
+            "GROUP BY facilityId\n" +
+            ")dvs_summary\n")
+    List<HashMap<String, Object>> getDistrictInventorySummary(@Param("userId") Long userId);
+
+    @Select("SELECT \n" +
+            "ROUND(100.0 * (SUM(blue) /( SUM(totalProduct))), 0) AS blue_total,\n" +
+            "ROUND(100.0 * (SUM(green) /( SUM(totalProduct))), 0) AS green_total,\n" +
+            "ROUND(100.0 * (SUM(yellow) /( SUM(totalProduct))), 0) AS yellow_total,\n" +
+            "ROUND(100.0 * (SUM(red) /( SUM(totalProduct))), 0) AS red_total\n" +
+            "from(\n" +
+            "SELECT\n" +
+            "SUM( CASE WHEN (totalQuantityOnHand >0 ) And totalQuantityOnHand > maximumstock THEN 1 ELSE 0 END  ) AS blue ,\n" +
+            "SUM(CASE WHEN (totalQuantityOnHand >0 ) AND ( totalQuantityOnHand <= maximumstock ) AND (totalQuantityOnHand >= reorderlevel) THEN 1 ELSE 0 END )AS green,\n" +
+            "SUM(CASE WHEN (totalQuantityOnHand >0 ) AND (totalQuantityOnHand < reorderlevel AND totalQuantityOnHand >= bufferstock ) OR ((totalQuantityOnHand>0 ) AND totalQuantityOnHand< bufferstock ) THEN 1 ELSE 0 END) AS yellow,\n" +
+            "SUM(CASE WHEN totalQuantityOnHand = 0 THEN 1 ELSE 0 END) AS red,count(*) totalProduct, row_number() over (PARTITION BY facilityid) AS totalStores\n" +
+            "from vw_vaccine_stock_summary_view where facilityTYPECode ='rvs'\n" +
+            "GROUP BY facilityid\n" +
+            ")dvs_summary\n")
+    List<HashMap<String, Object>> getRegionInventorySummary(@Param("userId") Long userId);
+
+    @Select("\n" +
+            "SELECT * \n" +
+            "from(\n" +
+            "SELECT facilityid,\n" +
+            "SUM( CASE WHEN (totalQuantityOnHand >0 ) And totalQuantityOnHand > maximumstock THEN 1 ELSE 0 END  ) AS blue ,\n" +
+            "SUM(CASE WHEN (totalQuantityOnHand >0 ) AND ( totalQuantityOnHand <= maximumstock ) AND (totalQuantityOnHand >= reorderlevel) THEN 1 ELSE 0 END )AS green,\n" +
+            "SUM(CASE WHEN (totalQuantityOnHand >0 ) AND (totalQuantityOnHand < reorderlevel AND totalQuantityOnHand >= bufferstock ) OR ((totalQuantityOnHand>0 ) AND totalQuantityOnHand< bufferstock ) THEN 1 ELSE 0 END) AS yellow,\n" +
+            "SUM(CASE WHEN totalQuantityOnHand = 0 THEN 1 ELSE 0 END) AS red,count(*) totalProduct, row_number() over (PARTITION BY facilityid) AS totalStores\n" +
+            "from vw_vaccine_stock_summary_view where facilityTYPECode =#{facilityLevel} \n" +
+            "GROUP BY facilityid \n" +
+            ")dvs_summary\n" +
+            "JOIN facilities f On f.id = dvs_summary.facilityid "
+    )
+    List<HashMap<String, Object>> getInventorySummaryByLocation(@Param("facilityLevel") String facilityLevel);
+
+    @Select(
+            "SELECT *\n" +
+                    "from(\n" +
+                    "SELECT productId,\n" +
+                    "SUM( CASE WHEN (totalQuantityOnHand >0 ) And totalQuantityOnHand > maximumstock THEN 1 ELSE 0 END  ) AS blue ,\n" +
+                    "SUM(CASE WHEN (totalQuantityOnHand >0 ) AND ( totalQuantityOnHand <= maximumstock ) AND (totalQuantityOnHand >= reorderlevel) THEN 1 ELSE 0 END )AS green,\n" +
+                    "SUM(CASE WHEN (totalQuantityOnHand >0 ) AND (totalQuantityOnHand < reorderlevel AND totalQuantityOnHand >= bufferstock ) OR ((totalQuantityOnHand>0 ) AND totalQuantityOnHand< bufferstock ) THEN 1 ELSE 0 END) AS yellow,\n" +
+                    "SUM(CASE WHEN totalQuantityOnHand = 0 THEN 1 ELSE 0 END) AS red,count(*) totalProduct, row_number() over (PARTITION BY productId) AS totalStores\n" +
+                    "from vw_vaccine_stock_summary_view where facilityTYPECode =#{facilityLevel}\n" +
+                    "GROUP BY productId \n" +
+                    ")dvs_summary\n" +
+                    "left JOIN products p On p.id = dvs_summary.productId\n ")
+    List<HashMap<String, Object>> getInventorySummaryByMaterial(@Param("facilityLevel") String facilityLevel);
+
+    @Select(" WITH Q as (\n" +
+            "    \n" +
+            "   SELECT *\n" +
+            "           from(\n" +
+            "           SELECT facilityId,sum(totalQuantityOnHand)totalquantityonhand,\n" +
+            "           SUM( CASE WHEN (totalQuantityOnHand >0 ) And totalQuantityOnHand > maximumstock THEN 1 ELSE 0 END  ) AS blue ,\n" +
+            "           SUM(CASE WHEN (totalQuantityOnHand >0 ) AND ( totalQuantityOnHand <= maximumstock ) AND (totalQuantityOnHand >= reorderlevel) THEN 1 ELSE 0 END )AS green,\n" +
+            "           SUM(CASE WHEN (totalQuantityOnHand >0 ) AND (totalQuantityOnHand < reorderlevel AND totalQuantityOnHand >= bufferstock ) OR ((totalQuantityOnHand>0 ) AND totalQuantityOnHand< bufferstock ) THEN 1 ELSE 0 END) AS yellow,\n" +
+            "           SUM(CASE WHEN totalQuantityOnHand = 0 THEN 1 ELSE 0 END) AS red,count(*) totalProduct, row_number() over (PARTITION BY facilityId) AS totalStores\n" +
+            "           from vw_vaccine_stock_summary_view where facilityTYPECode =#{facilityLevel} aND product=#{product}\n" +
+            "           GROUP BY facilityId \n" +
+            "           )dvs_summary\n" +
+            "           JOIN Facilities f On f.id = dvs_summary.facilityId\n" +
+            "           )select * from q\n" +
+            "           where ${indicator} > 0")
+    List<HashMap<String, Object>> getInventorySummaryByMaterialFacilityList(@Param("facilityLevel") String facilityLevel, @Param("product") String product, @Param("indicator") String indicator);
+
+    @Select(" SELECT gz.name,coverage.*,mapcode code FROM GEOGRAPHIC_ZONES GZ\n" +
+            "         JOIN \n" +
+            "         (SELECT * FROM geographic_zone_map_mappings)map ON gz.id =map.geographiczoneid\n" +
+            "         LEFT JOIN (\n" +
+            "         SELECT COVERAGE.*,\n" +
+            "           CASE\n" +
+            "           WHEN value IS NULL THEN NULL\n" +
+            "           WHEN value > X.TARGETCOVERAGEGOOD THEN 'GOOD'\n" +
+            "           WHEN value > X.TARGETCOVERAGEWARN THEN 'NORMAL'\n" +
+            "           WHEN value > X.TARGETCOVERAGEBAD THEN 'WARN'\n" +
+            "           ELSE 'BAD'\n" +
+            "               END AS COVERAGECLASSIFICATION, x.*\n" +
+            "        FROM\n" +
+            "          ( WITH COVERAGE AS\n" +
+            "             (SELECT PRODUCTID,\n" +
+            "             PRODUCT,\n" +
+            "             DOSEID,\n" +
+            "             GEOGRAPHICZONEID,\n" +
+            "             D.DISTRICT_NAME,\n" +
+            "             D.REGION_NAME REGION,\n" +
+            "             D.REGION_ID REGIONID,\n" +
+            "        \n" +
+            "        (SELECT EXTRACT (MONTH FROM STARTDATE)\n" +
+            "         FROM PROCESSING_PERIODS\n" +
+            "         WHERE ID = #{period} :: INT ) MONTHNUMBER,\n" +
+            "             SUM(A.CUMULATIVE_VACCINATED) CUMULATIVE_VACCINATED,\n" +
+            "             SUM(E.VALUE) /12::NUMERIC MONTHLY_DISTRICT_TARGET\n" +
+            "              FROM\n" +
+            "        (SELECT F.GEOGRAPHICZONEID,\n" +
+            "        D.DENOMINATORESTIMATECATEGORYID,\n" +
+            "        D.PRODUCTID,\n" +
+            "        D.DOSEID,\n" +
+            "        D.MONTH PERIOD,\n" +
+            "        P.PRIMARYNAME PRODUCT,\n" +
+            "        SUM (MONTHLYREGULAR) AS CUMULATIVE_VACCINATED\n" +
+            "         FROM VW_VACCINE_CUMULATIVE_COVERAGE_BY_DOSE D\n" +
+            "         JOIN FACILITIES F ON F.ID = D.FACILITYID\n" +
+            "         JOIN PRODUCTS P ON PRODUCTID = P.ID\n" +
+            "         WHERE PRODUCTID = #{product} and D.DOSEID = #{doseId}\n" +
+            "           AND D. YEAR = #{year}::INT\n" +
+            "           AND D. MONTH <=\n" +
+            "             (SELECT EXTRACT (MONTH\n" +
+            "              FROM STARTDATE)\n" +
+            "              FROM PROCESSING_PERIODS\n" +
+            "              WHERE ID = #{period}::INT )\n" +
+            "         GROUP BY 1,2,3,4,5,6\n" +
+            "         \n" +
+            "         ORDER BY PRODUCTID) A\n" +
+            "              JOIN DISTRICT_DEMOGRAPHIC_ESTIMATES E ON E.DEMOGRAPHICESTIMATEID = A.DENOMINATORESTIMATECATEGORYID AND E.YEAR =  #{year}::INT AND DISTRICTID =A.GEOGRAPHICZONEID\n" +
+            "              JOIN VW_DISTRICTS D ON GEOGRAPHICZONEID = D.DISTRICT_ID\n" +
+            "        \n" +
+            "              GROUP BY PRODUCT,DOSEID,PRODUCTID,GEOGRAPHICZONEID,REGION_NAME,D.REGION_ID,D.DISTRICT_NAME\n" +
+            "              ORDER BY PRODUCTID,DOSEID)\n" +
+            "              SELECT PRODUCTID,REGION,REGIONID,SUM(CUMULATIVE_VACCINATED) CUMULATIVE_VACCINATED,SUM(MONTHLY_DISTRICT_TARGET) MONTHLY_DISTRICT_TARGET,PRODUCT,DOSEID,MAX(MONTHNUMBER) MONTHNUMBER,\n" +
+            "              CASE\n" +
+            "              WHEN SUM(MONTHLY_DISTRICT_TARGET) > 0 THEN ROUND(SUM(CUMULATIVE_VACCINATED)/ SUM((MONTHLY_DISTRICT_TARGET::NUMERIC))*100,0)\n" +
+            "              END AS value\n" +
+            "           FROM COVERAGE C\n" +
+            "           GROUP BY PRODUCTID,REGION,PRODUCT,DOSEID,REGIONID\n" +
+            "           ORDER BY PRODUCTID)COVERAGE\n" +
+            "        LEFT JOIN VACCINE_PRODUCT_TARGETS X ON COVERAGE.PRODUCTID = X.PRODUCTID\n" +
+            "\n" +
+            "         )COVERAGE ON gz.id = coverage.regionid\n" +
+            "         \n" +
+            "         WHERE levelid =3\n")
+    List<HashMap<String, Object>> getVaccineCoverageForMap(@Param("userId") Long userId, @Param("product") Long product, @Param("period") Long periodId, @Param("year") Long year, @Param("doseId") Long doseId);
+
+
+    @Select("\n" +
+            "          SELECT SUM(CASE WHEN COVERAGECLASSIFICATION = 'GOOD' THEN 1 ELSE 0 END ) AS GREEN,\n" +
+            "           SUM(CASE WHEN COVERAGECLASSIFICATION = 'NORMAL' THEN 1 ELSE 0 END ) YELLOW,\n" +
+            "                      SUM(CASE WHEN COVERAGECLASSIFICATION = 'BAD' THEN 1 ELSE 0 END ) RED\n" +
+            "\n" +
+            "           FROM (\n" +
+            "           SELECT COVERAGE.*,\n" +
+            "               CASE\n" +
+            "           WHEN VALUE IS NULL THEN NULL\n" +
+            "           WHEN VALUE > X.TARGETCOVERAGEGOOD THEN 'GOOD'\n" +
+            "           WHEN VALUE > X.TARGETCOVERAGEWARN THEN 'NORMAL'\n" +
+            "           ELSE 'BAD'\n" +
+            "               END AS COVERAGECLASSIFICATION, X.*\n" +
+            "        FROM\n" +
+            "          ( WITH COVERAGE AS\n" +
+            "             (\n" +
+            "\n" +
+            "\n" +
+            "             SELECT PRODUCTID,\n" +
+            "             PRODUCT,\n" +
+            "             DOSEID,\n" +
+            "             GEOGRAPHICZONEID,\n" +
+            "             D.DISTRICT_NAME,\n" +
+            "             D.REGION_NAME REGION,\n" +
+            "             D.REGION_ID REGIONID,\n" +
+            "        \n" +
+            "        (SELECT EXTRACT (MONTH FROM STARTDATE)\n" +
+            "         FROM PROCESSING_PERIODS\n" +
+            "         WHERE ID = #{period}::int  ) MONTHNUMBER,\n" +
+            "             SUM(A.CUMULATIVE_VACCINATED) CUMULATIVE_VACCINATED,\n" +
+            "             SUM(E.VALUE) /12::NUMERIC MONTHLY_DISTRICT_TARGET\n" +
+            "              FROM\n" +
+            "        (SELECT F.GEOGRAPHICZONEID,\n" +
+            "        D.DENOMINATORESTIMATECATEGORYID,\n" +
+            "        D.PRODUCTID,\n" +
+            "        D.DOSEID,\n" +
+            "        D.MONTH PERIOD,\n" +
+            "        P.PRIMARYNAME PRODUCT,\n" +
+            "        SUM (MONTHLYREGULAR) AS CUMULATIVE_VACCINATED\n" +
+            "         FROM VW_VACCINE_CUMULATIVE_COVERAGE_BY_DOSE D\n" +
+            "         JOIN FACILITIES F ON F.ID = D.FACILITYID\n" +
+            "         JOIN PRODUCTS P ON PRODUCTID = P.ID\n" +
+            "         WHERE PRODUCTID = #{product}::int AND D.DOSEID = 1\n" +
+            "           AND D. YEAR = #{year}::int\n" +
+            "           AND D. MONTH <=\n" +
+            "             (SELECT EXTRACT (MONTH\n" +
+            "              FROM STARTDATE)\n" +
+            "              FROM PROCESSING_PERIODS\n" +
+            "              WHERE ID =  #{period} )\n" +
+            "         GROUP BY 1,2,3,4,5,6\n" +
+            "         \n" +
+            "         ORDER BY PRODUCTID) A\n" +
+            "              JOIN DISTRICT_DEMOGRAPHIC_ESTIMATES E ON E.DEMOGRAPHICESTIMATEID = A.DENOMINATORESTIMATECATEGORYID AND E.YEAR = #{year}::int AND DISTRICTID =A.GEOGRAPHICZONEID\n" +
+            "              JOIN VW_DISTRICTS D ON GEOGRAPHICZONEID = D.DISTRICT_ID\n" +
+            "        \n" +
+            "              GROUP BY PRODUCT,DOSEID,PRODUCTID,GEOGRAPHICZONEID,REGION_NAME,D.REGION_ID,D.DISTRICT_NAME\n" +
+            "              ORDER BY PRODUCTID,DOSEID\n" +
+            "\n" +
+            "\n" +
+            "              )\n" +
+            "              \n" +
+            "              SELECT PRODUCTID,DISTRICT_NAME,GEOGRAPHICZONEID,SUM(CUMULATIVE_VACCINATED) CUMULATIVE_VACCINATED,SUM(MONTHLY_DISTRICT_TARGET) MONTHLY_DISTRICT_TARGET,PRODUCT,DOSEID,MAX(MONTHNUMBER) MONTHNUMBER,\n" +
+            "              CASE\n" +
+            "              WHEN SUM(MONTHLY_DISTRICT_TARGET) > 0 THEN ROUND(SUM(CUMULATIVE_VACCINATED)/ SUM((MONTHLY_DISTRICT_TARGET::NUMERIC))*100,0)\n" +
+            "              END AS VALUE\n" +
+            "           FROM COVERAGE C\n" +
+            "           GROUP BY PRODUCTID,DISTRICT_NAME,PRODUCT,DOSEID,GEOGRAPHICZONEID\n" +
+            "           ORDER BY PRODUCTID\n" +
+            "\n" +
+            "\n" +
+            "           )COVERAGE\n" +
+            "        LEFT JOIN VACCINE_PRODUCT_TARGETS X ON COVERAGE.PRODUCTID = X.PRODUCTID\n" +
+            "        )K\n")
+    List<HashMap<String, Object>> getCoverageByDistrict(@Param("userId") Long userId, @Param("product") Long product, @Param("period") Long period, @Param("year") Long year, @Param("doseId") Long doseId);
+
+    @Select("\n" +
+            "    select P.ID, period_name, catagorization,count(*) total from categorization_view v\n" +
+            "    JOIN processing_periods p on p.id = v.periodId\n" +
+            "    where year = #{year}::INT AND numberofmonths = 1 and period_name not in ('July - Sept 2017')\n" +
+            "                        group by catagorization,period_name,P.ID\n" +
+            "                     order by P.ID, period_name,catagorization")
+    List<HashMap<String, Object>> getCategorizationByDistrict(@Param("userId") Long userId, @Param("year") Long year);
+
+    @Select("\n" +
+            "    select * from categorization_view v\n" +
+            "    JOIN processing_periods p on p.id = v.periodId\n" +
+            "    where numberofmonths = 1 and scheduleId =45 and period_name not in ('July - Sept 2017')\n" +
+            "    AND period_name = #{period} AND CATaGORIZATION=#{category}\n" +
+            "                     order by p.id, period_name,catagorization")
+    List<HashMap<String, Object>> getCategorizationByDistrictDrillDown(@Param("userId") Long userId, @Param("category") String category, @Param("period") String period);
+
+    @Select(" SELECT pERIOD_ID, period,classificationclass,classification,count(*) from(\n" +
+            "\n" +
+            "SELECT pERIOD_ID,period, CLASSIficationclass,district,classification,count(*) TOTAL FROM (\n" +
+            "\n" +
+            "SELECT\n" +
+            "  b.*,b.period_name period,b.district_name district,B.PERIODiD pERIOD_ID,\n" +
+            "  CASE WHEN b.wastageClassification = 'good' AND coverage.coverageClassification = 'good'\n" +
+            "    THEN 'Class A'\n" +
+            "  WHEN b.wastageClassification != 'good' AND coverage.coverageClassification = 'good'\n" +
+            "    THEN 'Class B'\n" +
+            "  WHEN b.wastageClassification = 'good' AND coverage.coverageClassification != 'good'\n" +
+            "    THEN 'Class C'\n" +
+            "  ELSE 'Class D'\n" +
+            "  END AS classification,\n" +
+            "  CASE WHEN b.wastageClassification = 'good' AND coverage.coverageClassification = 'good'\n" +
+            "    THEN 'good'\n" +
+            "  WHEN b.wastageClassification != 'good' AND coverage.coverageClassification = 'good'\n" +
+            "    THEN 'normal'\n" +
+            "  WHEN b.wastageClassification = 'good' AND coverage.coverageClassification != 'good'\n" +
+            "    THEN 'warn'\n" +
+            "  ELSE 'bad'\n" +
+            "  END AS classificationClass,\n" +
+            "\n" +
+            "  b.*\n" +
+            "\n" +
+            "FROM (\n" +
+            "       SELECT\n" +
+            "         CASE WHEN w.wastageRate < t.targetwastagegood\n" +
+            "           THEN 'good'\n" +
+            "         WHEN w.wastageRate < t.targetcoveragewarn\n" +
+            "           THEN 'normal'\n" +
+            "         WHEN w.wastageRate < t.targetcoveragebad\n" +
+            "           THEN 'warn'\n" +
+            "         WHEN w.wastageRate > t.targetcoveragebad\n" +
+            "           THEN 'bad'\n" +
+            "         ELSE NULL\n" +
+            "         END AS wastageClassification,\n" +
+            "         w.*,\n" +
+            "         d.*,w.period_name periodl\n" +
+            "       FROM vw_vaccine_wastage_rate_by_district w\n" +
+            "         JOIN vw_districts d ON d.district_id = w.geographiczoneid\n" +
+            "         JOIN vaccine_product_targets t ON w.productid = t.productid\n" +
+            "     ) b\n" +
+            "  JOIN (\n" +
+            "         SELECT * FROM\n" +
+            "             vw_vaccine_coverage_by_dose_and_district dos\n" +
+            "           where dos.doseid = (\n" +
+            "                                select max(doseid)\n" +
+            "                                from vaccine_product_doses\n" +
+            "                                where dos.productid = vaccine_product_doses.productid\n" +
+            "                              )\n" +
+            "       ) coverage\n" +
+            "  ON coverage.geographiczoneid = b.geographiczoneid\n" +
+            "  and coverage.productid = b.productid\n" +
+            "  and coverage.periodid = b.periodid\n" +
+            "  joiN processing_periods ps ON ps.id = B.periodId\n" +
+            "  JOIN PROCESSING_SCHEDULES PC oN ps.scheduleid = pc.id\n" +
+            "WHERE b.year =#{year} :: INT\n" +
+            "      AND coverage.productid = #{product}::INT and pc.id =45\n" +
+            "\n" +
+            ") L\n" +
+            "    group by period, CLASSIficationclass,district,classification ,period_id \n" +
+            "ORDER BY pERIOD_ID\n" +
+            "\n" +
+            "    )Z\n" +
+            "group by period,CLASSIficationclass,pERIOD_ID,classification\n" +
+            "order by pERIOD_ID\n")
+    List<HashMap<String, Object>> getDistrictClassification(@Param("userId") Long userId, @Param("product") Long product, @Param("year") Long year);
+
+    @Select("WITH Q as (\n" +
+            "SELECT pERIOD_ID,period, CLASSIficationclass,district,region,classification FROM (\n" +
+            "\n" +
+            "SELECT\n" +
+            "  b.*,b.period_name period,b.district_name district,B.PERIODiD pERIOD_ID,b.region_name region,\n" +
+            "  CASE WHEN b.wastageClassification = 'good' AND coverage.coverageClassification = 'good'\n" +
+            "    THEN 'Class A'\n" +
+            "  WHEN b.wastageClassification != 'good' AND coverage.coverageClassification = 'good'\n" +
+            "    THEN 'Class B'\n" +
+            "  WHEN b.wastageClassification = 'good' AND coverage.coverageClassification != 'good'\n" +
+            "    THEN 'Class C'\n" +
+            "  ELSE 'Class D'\n" +
+            "  END AS classification,\n" +
+            "  CASE WHEN b.wastageClassification = 'good' AND coverage.coverageClassification = 'good'\n" +
+            "    THEN 'good'\n" +
+            "  WHEN b.wastageClassification != 'good' AND coverage.coverageClassification = 'good'\n" +
+            "    THEN 'normal'\n" +
+            "  WHEN b.wastageClassification = 'good' AND coverage.coverageClassification != 'good'\n" +
+            "    THEN 'warn'\n" +
+            "  ELSE 'bad'\n" +
+            "  END AS classificationClass,\n" +
+            "\n" +
+            "  b.*\n" +
+            "\n" +
+            "FROM (\n" +
+            "       SELECT\n" +
+            "         CASE WHEN w.wastageRate < t.targetwastagegood\n" +
+            "           THEN 'good'\n" +
+            "         WHEN w.wastageRate < t.targetcoveragewarn\n" +
+            "           THEN 'normal'\n" +
+            "         WHEN w.wastageRate < t.targetcoveragebad\n" +
+            "           THEN 'warn'\n" +
+            "         WHEN w.wastageRate > t.targetcoveragebad\n" +
+            "           THEN 'bad'\n" +
+            "         ELSE NULL\n" +
+            "         END AS wastageClassification,\n" +
+            "         w.*,\n" +
+            "         d.*,w.period_name periodl\n" +
+            "       FROM vw_vaccine_wastage_rate_by_district w\n" +
+            "         JOIN vw_districts d ON d.district_id = w.geographiczoneid\n" +
+            "         JOIN vaccine_product_targets t ON w.productid = t.productid\n" +
+            "     ) b\n" +
+            "  JOIN (\n" +
+            "         SELECT * FROM\n" +
+            "             vw_vaccine_coverage_by_dose_and_district dos\n" +
+            "           where dos.doseid = (\n" +
+            "                                select max(doseid)\n" +
+            "                                from vaccine_product_doses\n" +
+            "                                where dos.productid = vaccine_product_doses.productid\n" +
+            "                              )\n" +
+            "       ) coverage\n" +
+            "  ON coverage.geographiczoneid = b.geographiczoneid\n" +
+            "  and coverage.productid = b.productid\n" +
+            "  and coverage.periodid = b.periodid\n" +
+            "  joiN processing_periods ps ON ps.id = B.periodId\n" +
+            "  JOIN PROCESSING_SCHEDULES PC oN ps.scheduleid = pc.id\n" +
+            "WHERE b.year =#{year}:: INT\n" +
+            "      AND coverage.productid = #{product}::INT and pc.id =45\n" +
+            "\n" +
+            ") L\n" +
+            "    group by period, CLASSIficationclass,district,region,classification ,period_id \n" +
+            "ORDER BY pERIOD_ID\n" +
+            ") select * from q \n" +
+            "WHERE CLASSIFICATION = #{indicator} and period=#{period}\n")
+    List<HashMap<String, Object>> getDistrictClassificationDrillDown(@Param("userId") Long userId, @Param("product") Long product, @Param("year") Long year,
+                                                                     @Param("indicator") String indicator, @Param("period") String period);
+
+    @Select("\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "SELECT PERIODID, PERIODNAME,PRODUCT, COVERAGECLASSIFICATION, COUNT(*) total  FROM (\n" +
+            "            SELECT coverage.*,  \n" +
+            "\n" +
+            "                   CASE\n" +
+            "                       WHEN coverage.coverage IS NULL THEN NULL\n" +
+            "                       WHEN coverage.coverage > X.TARGETCOVERAGEGOOD THEN 'GOOD'\n" +
+            "                       WHEN coverage.coverage > X.TARGETCOVERAGEWARN THEN 'NORMAL'\n" +
+            "                       WHEN coverage.coverage > X.TARGETCOVERAGEBAD THEN 'WARN'\n" +
+            "                       ELSE 'BAD'\n" +
+            "               END AS COVERAGECLASSIFICATION, x.*\n" +
+            "\n" +
+            "\n" +
+            "                  FROM (\n" +
+            "                       with coverage as (\n" +
+            "                         \n" +
+            "                         select periodId,pp.name periodName, DISTRICTID,district_name ,productId,product, doseId,\n" +
+            "                         12  monthnumber, \n" +
+            "                   sum( a.cumulative_vaccinated) cumulative_vaccinated, \n" +
+            "                   sum(e.value) /12::numeric  monthly_district_target \n" +
+            "                     \n" +
+            "                   from ( \n" +
+            "                  SELECT \n" +
+            "                    D.geographiczoneid, \n" +
+            "                    d.denominatorestimatecategoryid, \n" +
+            "                    d.productid, \n" +
+            "                    d.doseid, \n" +
+            "                   d.period, product,d.periodId,\n" +
+            "           \n" +
+            "                   SUM (monthlyregular) AS cumulative_vaccinated \n" +
+            "                  FROM \n" +
+            "                   VW_PRODUCT_COVERAGE d \n" +
+            "                 \n" +
+            "                   wHERE D.PRODUCTID  = #{product} AND DOSEID = #{doseId}\n" +
+            "                   AND d. YEAR = #{year}::INT \n" +
+            "                   AND d.PERIOD <= 12 \n" +
+            "                   GROUP BY 1,2,3,4,5,6,7\n" +
+            "                   \n" +
+            "                   order by periodId ) a \n" +
+            "                          join district_demographic_estimates e on e.demographicestimateid = a.denominatorestimatecategoryid and e.year = #{year}::INT AND DISTRICTID =A.GEOGRAPHICZONEID\n" +
+            "                          JOIN VW_Districts d ON DISTRICTID = d.district_id\n" +
+            "                          JOIN processing_periods pp ON periodID = pp.id and scheduleid =45\n" +
+            "                          GROUP BY product,doseId,productId,districtid,d.district_name,periodId,pp.name\n" +
+            "                          ORDER BY productId,DOSEiD\n" +
+
+            "                          ) \n" +
+            "                  select district_name,periodId,periodName,productId,cumulative_vaccinated, monthly_district_target, product ||'-'|| DOSEID product, monthnumber, \n" +
+            "                    case when monthly_district_target > 0 then \n" +
+            "                 ROUND( cumulative_vaccinated/ (monthly_district_target::numeric)*100,0) end as coverage   \n" +
+            "                  from coverage c \n" +
+            "                  ORDER BY periodId,district_name\n" +
+            "         ) COVERAGE\n" +
+            "        LEFT JOIN VACCINE_PRODUCT_TARGETS X ON COVERAGE.PRODUCTID = X.PRODUCTID\n" +
+            "        )z\n" +
+            "        WHERE COVERAGECLASSIFICATION IS NOT NULL\n" +
+            "        GROUP BY PERIODID, PERIODNAME,PRODUCT, COVERAGECLASSIFICATION\n" +
+            "        ORDER BY PERIODID")
+    List<HashMap<String, Object>> getDistributionOfDistrictPerPerformance(@Param("userId") Long userId, @Param("product") Long product, @Param("year") Long year, @Param("doseId") Long doseId);
+
+    @Select("SELECT\n"+
+            " doseid,\n"+
+            "\tPERIOD,\n"+
+            "\tmax (A .CUMULATIVE_VACCINATED) monthlyvaccinated,\n"+
+            " ROUND(SUM(E. VALUE) / 12 :: NUMERIC, 0) target_monthly,\n"+
+            "\tmax (CUMULATIVE) vaccinated_cumulative,\n"+
+            "\tperiod * ROUND(SUM(E. VALUE) / 12 :: NUMERIC, 0) estimate\n"+
+            "FROM\n"+
+            "\t(\n"+
+            "\tSELECT\n"+
+            "\tD.DENOMINATORESTIMATECATEGORYID,\n"+
+            "\tD.DOSEID,\n"+
+            "\tD. MONTH PERIOD,\n"+
+            "\tsum(MONTHLYREGULAR) AS CUMULATIVE_VACCINATED,\n"+
+            "\tsum(CUMULATIVE) CUMULATIVE\n"+
+            "\tFROM\n"+
+            "\tVW_VACCINE_CUMULATIVE_COVERAGE_BY_DOSE D\n"+
+            "\tJOIN FACILITIES F ON F. ID = D.FACILITYID\n"+
+            "\tJOIN vw_user_facilities uf ON uf.facility_id = f. ID\n"+
+            "\tAND uf.user_id = #{userId}\n"+
+            "\tJOIN PRODUCTS P ON PRODUCTID = P . ID\n"+
+            "\tWHERE\n"+
+            "\tPRODUCTID = #{product} :: INT\n"+
+            "\tAND D. YEAR = #{year} :: INT\n"+
+            "\tGROUP BY 1, 2, 3\n"+
+            ") A\n"+
+            "JOIN DISTRICT_DEMOGRAPHIC_ESTIMATES E ON E.DEMOGRAPHICESTIMATEID = A .DENOMINATORESTIMATECATEGORYID\n"+
+            "AND E. YEAR = #{year} :: INT\n"+
+            "GROUP BY \n"+
+            " DOSEID,\n"+
+            "\tA .period\n"+
+            "ORDER BY\n"+
+            " DOSEID,\n"+
+            " A .period")
+    List<HashMap<String,Object>>getPerformanceMonitoring(@Param("userId")Long userId,@Param("product")Long product,@Param("year")Long year);
+
+    @Select("      SELECT COVERAGE.*,\n" +
+            "                           CASE\n" +
+            "                       WHEN coverage IS NULL THEN NULL\n" +
+            "                       WHEN coverage > X.TARGETCOVERAGEGOOD THEN 'GOOD'\n" +
+            "                       WHEN coverage > X.TARGETCOVERAGEWARN THEN 'NORMAL'\n" +
+            "                       ELSE 'BAD'\n" +
+            "                           END AS COVERAGECLASSIFICATION, X.*\n" +
+            "                    FROM\n" +
+            "                      ( \n" +
+            "                    \n" +
+            "                    select PRODUCTID,DOSEID,PRODUCT,REGION,REGIONID,MAX(MONTHNUMBER)MONTHNUMBER, SUM(CUMULATIVE_VACCINATED) CUMULATIVE_VACCINATED,SUM(MONTHLY_DISTRICT_TARGET)MONTHLY_DISTRICT_TARGET\n" +
+            "                    ,SUM(coverage) coverage from\n" +
+            "                     ( WITH COVERAGE AS\n" +
+            "                         (\n" +
+            "            \n" +
+            "            \n" +
+            "                         SELECT PRODUCTID,\n" +
+            "                         PRODUCT,\n" +
+            "                         DOSEID,\n" +
+            "                         GEOGRAPHICZONEID,\n" +
+            "                         D.DISTRICT_NAME,\n" +
+            "                         D.REGION_NAME REGION,\n" +
+            "                         D.REGION_ID REGIONID,\n" +
+            "                    \n" +
+            "                    (SELECT EXTRACT (MONTH FROM STARTDATE)\n" +
+            "                     FROM PROCESSING_PERIODS\n" +
+            "                     WHERE ID = #{period}::int  ) MONTHNUMBER,\n" +
+            "                         SUM(A.CUMULATIVE_VACCINATED) CUMULATIVE_VACCINATED,\n" +
+            "                         round(period::numeric *  SUM(E.VALUE) /12::NUMERIC ,0) MONTHLY_DISTRICT_TARGET\n" +
+            "                          FROM\n" +
+            "                    (SELECT F.GEOGRAPHICZONEID,\n" +
+            "                    D.DENOMINATORESTIMATECATEGORYID,\n" +
+            "                    D.PRODUCTID,\n" +
+            "                    D.DOSEID,\n" +
+            "                    D.MONTH PERIOD,\n" +
+            "                    P.PRIMARYNAME PRODUCT,\n" +
+            "                    SUM (MONTHLYREGULAR) AS CUMULATIVE_VACCINATED\n" +
+            "                     FROM VW_VACCINE_CUMULATIVE_COVERAGE_BY_DOSE D\n" +
+            "                     JOIN FACILITIES F ON F.ID = D.FACILITYID\n" +
+            "                     JOIN PRODUCTS P ON PRODUCTID = P.ID\n" +
+            "                     WHERE PRODUCTID = #{product}::int AND D.DOSEID = #{doseId}::int\n" +
+            "                       AND D. YEAR = #{year}::int\n" +
+            "                       AND D. MONTH <=\n" +
+            "                         (SELECT EXTRACT (MONTH\n" +
+            "                          FROM STARTDATE)\n" +
+            "                          FROM PROCESSING_PERIODS\n" +
+            "                          WHERE ID =  #{period}::int )\n" +
+            "                     GROUP BY 1,2,3,4,5,6\n" +
+            "                     \n" +
+            "                     ORDER BY PRODUCTID) A\n" +
+            "                          JOIN DISTRICT_DEMOGRAPHIC_ESTIMATES E ON E.DEMOGRAPHICESTIMATEID = A.DENOMINATORESTIMATECATEGORYID AND E.YEAR = #{year}::int AND DISTRICTID =A.GEOGRAPHICZONEID\n" +
+            "                          JOIN VW_DISTRICTS D ON GEOGRAPHICZONEID = D.DISTRICT_ID\n" +
+            "                    \n" +
+            "                          GROUP BY PRODUCT,DOSEID,PRODUCTID,GEOGRAPHICZONEID,REGION_NAME,D.REGION_ID,D.DISTRICT_NAME,period\n" +
+            "                          ORDER BY PRODUCTID,DOSEID\n" +
+            "            \n" +
+            "            \n" +
+            "                          )\n" +
+            "                          \n" +
+            "                          SELECT PRODUCTID,DISTRICT_NAME,GEOGRAPHICZONEID,REGION,REGIONid,SUM(CUMULATIVE_VACCINATED) CUMULATIVE_VACCINATED,SUM(MONTHLY_DISTRICT_TARGET) MONTHLY_DISTRICT_TARGET,PRODUCT,DOSEID,MAX(MONTHNUMBER) MONTHNUMBER,\n" +
+            "                          CASE\n" +
+            "                          WHEN SUM(MONTHLY_DISTRICT_TARGET) > 0 THEN ROUND(SUM(CUMULATIVE_VACCINATED)/ SUM((MONTHLY_DISTRICT_TARGET::NUMERIC))*100,0)\n" +
+            "                          END AS coverage\n" +
+            "                       FROM COVERAGE C\n" +
+            "                       GROUP BY PRODUCTID,DISTRICT_NAME,PRODUCT,DOSEID,GEOGRAPHICZONEID,REGION,REGIONID\n" +
+            "                       ORDER BY PRODUCTID\n" +
+            "                       )L\n" +
+            "                     GROUP BY PRODUCTID,REGION,PRODUCT,DOSEID,REGIONID\n" +
+            "                       ORDER BY PRODUCTID\n" +
+            "            \n" +
+            "                       )COVERAGE\n" +
+            "                    LEFT JOIN VACCINE_PRODUCT_TARGETS X ON COVERAGE.PRODUCTID = X.PRODUCTID ")
+    List<HashMap<String, Object>> getCoverageByRegionSummary(@Param("userId") Long userId, @Param("product") Long product, @Param("period") Long period, @Param("year") Long year, @Param("doseId") Long doseId);
+
 
 }

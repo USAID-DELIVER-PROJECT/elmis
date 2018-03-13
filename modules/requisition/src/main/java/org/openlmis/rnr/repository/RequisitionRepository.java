@@ -95,7 +95,7 @@ public class RequisitionRepository {
     }
   }
 
-  private void insertEquipmentStatus(Rnr requisition, List<EquipmentLineItem> equipmentLineItems) {
+  /*private void insertEquipmentStatus(Rnr requisition, List<EquipmentLineItem> equipmentLineItems) {
 
     List<EquipmentLineItemBioChemistryTests> generatedNonFunctionalTestes =
             equipmentLineItemMapper.getEmptyBioChemistryEquipmentTestWithProducts();
@@ -123,6 +123,43 @@ public class RequisitionRepository {
           });
       }
     }
+  }*/
+
+  private void insertEquipmentStatus(Rnr requisition, List<EquipmentLineItem> equipmentLineItems) {
+
+    for (EquipmentLineItem equipmentLineItem : equipmentLineItems) {
+      EquipmentInventoryStatus status = getStatusFromEquipmentLineItem(equipmentLineItem);
+      equipmentInventoryStatusMapper.insert(status);
+      equipmentLineItem.setInventoryStatusId(status.getId());
+
+      equipmentLineItem.setRnrId(requisition.getId());
+      equipmentLineItem.setModifiedBy(requisition.getModifiedBy());
+      equipmentLineItemMapper.insert(equipmentLineItem);
+    }
+
+    equipmentLineItemMapper.generateOperationalStatus(requisition.getId(), requisition.getModifiedBy());
+
+    equipmentLineItemMapper.generateTestCounts(requisition.getId(), requisition.getModifiedBy());
+
+     /* List<EquipmentLineItemBioChemistryTests> generatedNonFunctionalTestes =
+            equipmentLineItemMapper.getEmptyBioChemistryEquipmentTestWithProducts();
+
+
+      List<EquipmentLineItemBioChemistryTests> newNonFunctionalTestes;
+      newNonFunctionalTestes = generatedNonFunctionalTestes;
+
+      if(equipmentLineItem.getIsBioChemistryEquipment() != null && equipmentLineItem.getIsBioChemistryEquipment()) {
+        newNonFunctionalTestes.stream().forEach(test -> {
+          test.setEquipmentLineItemId(equipmentLineItem.getId().intValue());
+          test.setModifiedBy(requisition.getModifiedBy());
+          test.setCreatedBy(requisition.getModifiedBy());
+          test.setCreatedDate(requisition.getCreatedDate());
+          test.setModifiedDate(requisition.getModifiedDate());
+          equipmentLineItemMapper.insertEquipmentLineItemBioChemistryTests(test);
+        });
+      }
+      */
+
   }
 
   private void insertManualTestsLineItems(Rnr requisition, List<ManualTestesLineItem> manualTestLineItems) {
@@ -187,17 +224,21 @@ public class RequisitionRepository {
     for(EquipmentLineItem item : rnr.getEquipmentLineItems()){
       equipmentLineItemMapper.update(item);
 
-      if(item.getBioChemistryTestes() != null) {
-        //if bio chemistry equipment operational status is null, set 'functional' as functional status
-        if(item.getOperationalStatusId() == null)
-          item.setOperationalStatusId(operationalStatusService.getByCode(FUNCTIONAL).getId());
+      if(item.getNonFunctionalDaysOutOfUse() != null)
+        item.getNonFunctionalDaysOutOfUse().stream().forEach( operationalStatus -> {
+              operationalStatus.setModifiedBy(rnr.getModifiedBy());
+              operationalStatus.setModifiedDate(rnr.getModifiedDate());
+              equipmentLineItemMapper.updateNonFunctionalDaysOutOfUse(operationalStatus);
+            }
+        );
 
-        item.getBioChemistryTestes().stream().forEach(test -> {
-          test.setModifiedBy(rnr.getModifiedBy());
-          test.setModifiedDate(rnr.getModifiedDate());
-          equipmentLineItemMapper.updateEquipmentLineItemBioChemistryTests(test);
-        });
-      }
+      if(item.getTestDone() != null)
+        item.getTestDone().stream().forEach(test -> {
+            test.setModifiedBy(rnr.getModifiedBy());
+            test.setModifiedDate(rnr.getModifiedDate());
+            equipmentLineItemMapper.updateTestDone(test);
+          }
+        );
 
       EquipmentInventoryStatus status = getStatusFromEquipmentLineItem(item);
       equipmentInventoryStatusMapper.update(status);

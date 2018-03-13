@@ -54,7 +54,7 @@
       </div>
     </li>
 
-    <li class="has-children">
+    <li class="has-children" ng-show="hasPermission('VIEW_VACCINE_REPORT')">
       <a href="" openlmis-message="link.stock.management"></a>
       <div class="submenu">
         <ul>
@@ -97,24 +97,7 @@
             </a>
           </li>
 
-          <li>
-            <a href="/public/pages/reports/main/index.html#inventory-status-summary">
-              Vaccine Inventory Stock Summary
-            </a>
-          </li>
-          <li>
-            <a href="/public/pages/reports/main/index.html#stock-event">
-              Vaccine Stock Event
-            </a>
-          </li>
-
-          <li>
-            <a href="/public/pages/reports/main/index.html#log-tag">
-             Log Tag Report
-            </a>
-          </li>
-
-            <li>
+            <li ng-show="hasPermission('VIEW_DISTRIBUTION_SUMMARY_REPORT')">
                 <a ng-href="/public/pages/reports/maps/index.html#geo-coverage">Vaccine Coverage</a>
             </li>
 
@@ -178,8 +161,16 @@
       <div class="submenu">
         <ul>
           <li ng-show="hasPermission('VIEW_DISTRICT_CONSUMPTION_REPORT')">
-            <a ng-href="/public/pages/reports/main/index.html#aggregate-consumption"
-               openlmis-message="menu.report.aggregate.consumption"></a>
+          <a ng-href="/public/pages/reports/main/index.html#aggregate-consumption"
+             openlmis-message="menu.report.aggregate.consumption"></a>
+        </li>
+          <li ng-show="hasPermission('VIEW_DISTRICT_CONSUMPTION_REPORT')">
+            <a ng-href="/public/pages/reports/main/index.html#facility-consumption"
+               openlmis-message="menu.report.facility.consumption"></a>
+          </li>
+          <li ng-show="hasPermission('VIEW_DISTRICT_CONSUMPTION_REPORT')">
+            <a ng-href="/public/pages/reports/main/index.html#daily-consumption"
+               openlmis-message="menu.report.daily.consumption"></a>
           </li>
           <li ng-show="hasPermission('VIEW_DISTRICT_CONSUMPTION_REPORT')">
             <a ng-href="/public/pages/reports/main/index.html#district-consumption"
@@ -188,10 +179,6 @@
           <li ng-show="hasPermission('VIEW_PIPELINE_EXPORT')">
             <a ng-href="/public/pages/reports/main/index.html#pipeline-export"
                openlmis-message="menu.report.pipeline.export"></a>
-          </li>
-          <li ng-show="hasPermission('VIEW_PIPELINE_EXPORT')">
-            <a ng-href="/public/pages/reports/other/index.html#home"
-               >Rejected RnR</a>
           </li>
 
         </ul>
@@ -298,6 +285,10 @@
           <li ng-show="hasPermission('VIEW_TIMELINESS_REPORT')">
             <a ng-href="/public/pages/reports/main/index.html#timeliness"
                openlmis-message="menu.report.reporting.timeliness"></a>
+          </li>
+          <li ng-show="hasPermission('VIEW_PIPELINE_EXPORT')">
+            <a ng-href="/public/pages/reports/other/index.html#home"
+            >Rejected RnR</a>
           </li>
         </ul>
       </div>

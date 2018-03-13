@@ -113,6 +113,41 @@ public class LineItemService {
     }
   }
 
+  //TODO: Refactor this to be used for Both UI and Interfaced system
+  public void saveAdverseEffectLineItemsForInterfaceAPI(VaccineReport dbVersion, List<AdverseEffectLineItem> adverseEffectLineItems, Long reportId, Long userId) {
+
+    // delete and recreate the line items here.
+    if (reportId == null && dbVersion != null) {
+      reportId = dbVersion.getId();
+    }
+    //Fixed Delete Adverse Effect
+    //adverseLineItemRepository.deleteLineItems(reportId);
+    for (AdverseEffectLineItem lineItem : emptyIfNull(adverseEffectLineItems)) {
+      lineItem.setReportId(reportId);
+
+      if (lineItem.getId() != null) {
+        List<AdverseEffectLineItem> lineItems = adverseLineItemRepository.getById(lineItem.getId());
+        if (lineItems == null)
+          adverseLineItemRepository.insert(lineItem);
+        else
+          adverseLineItemRepository.update(lineItem);
+      } else
+        adverseLineItemRepository.insert(lineItem);
+      for (AdverseEffectLineItem relatedIssue : emptyIfNull(lineItem.getRelatedLineItems())) {
+        relatedIssue.setReportId(reportId);
+        relatedIssue.setRelatedToLineItemId(lineItem.getId());
+        // copy important details from the main aefi
+        relatedIssue.setCases(lineItem.getCases());
+        relatedIssue.setDate(lineItem.getDate());
+        relatedIssue.setIsInvestigated(lineItem.getIsInvestigated());
+        relatedIssue.setInvestigationDate(lineItem.getInvestigationDate());
+        relatedIssue.setCreatedBy(userId);
+        adverseLineItemRepository.insert(relatedIssue);
+      }
+    }
+  }
+
+
   public void saveAdverseEffectLineItems(VaccineReport dbVersion, List<AdverseEffectLineItem> adverseEffectLineItems, Long reportId, Long userId) {
 
     // delete and recreate the line items here.

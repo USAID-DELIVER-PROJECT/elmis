@@ -15,6 +15,8 @@ package org.openlmis.report.model.report;
 import lombok.*;
 import org.openlmis.report.model.ResultRow;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,5 +33,11 @@ public class DistrictConsumptionReport implements ResultRow {
   private Double dispensed;
   private Double totalPercentage;
   private Double district_id;
+
+  private String facilityCode;
+  private String facility;
+  private String facilityType;
+  private String periodName;
+  private Date periodStart;
 
 }

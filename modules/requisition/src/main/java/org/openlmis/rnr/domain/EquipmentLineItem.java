@@ -31,6 +31,7 @@ public class EquipmentLineItem extends LineItem  {
   private String code;
   private String equipmentName;
   private String equipmentCategory;
+  private String equipmentTypeCategory;
   private String equipmentModel;
   private String equipmentSerial;
   private Long equipmentInventoryId;
@@ -48,12 +49,16 @@ public class EquipmentLineItem extends LineItem  {
   private List<Product> relatedProducts;
 
   private String remarks;
-  private Boolean isBioChemistryEquipment;
+
+  private EquipmentOperationalStatus operationalStatus;
+
+  private List<EquipmentTestItemTests> testDone;
+  private List<EquipmentTestTypeOperationalStatus> nonFunctionalDaysOutOfUse;
 
   private List<EquipmentLineItemBioChemistryTests> bioChemistryTestes;
   private Integer analytesDaysOutOfUse;
   private Integer electrolytesDaysOutOfUse;
-  private EquipmentOperationalStatus operationalStatus;
+  private Boolean isBioChemistryEquipment;
 
   @Override
   public boolean compareCategory(LineItem lineItem) {

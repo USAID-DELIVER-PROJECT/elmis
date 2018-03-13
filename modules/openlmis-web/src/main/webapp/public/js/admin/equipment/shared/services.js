@@ -336,3 +336,19 @@ services.factory('EquipmentModel', function($resource){
 services.factory('EquipmentModelByEquipmentType', function($resource){
     return $resource('/equipment/model/models/equipmenttype/:id',{id:'@id'},{});
 });
+
+services.factory('EquipmentCategories', function ($resource) {
+    return $resource('/equipmentCategory/:id', {id: '@_id'}, {
+        update: {method: 'PUT' },
+        associateEquipmentTypes : {method : 'PUT', url: '/equipmentCategories/associate/equipmentTypes'}
+    });
+});
+
+services.factory('EquipmentFunctionalTestTypes', function ($resource) {
+    return $resource('/EquipmentFunctionalTestTypes/EquipmentFunctionalTestTypes/:id', {id: '@_id'}, {update: {method: 'PUT' }});
+});
+
+services.factory('EquipmentTestItems', function ($resource) {
+    return $resource('/equipmentTestItems/:id', {id: '@_id'}, {update: {method: 'PUT' }});
+});
+

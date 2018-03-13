@@ -10,16 +10,25 @@
  */
 package org.openlmis.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import org.openlmis.upload.Importable;
+import org.openlmis.upload.annotation.ImportField;
 
 @NoArgsConstructor
 @Setter
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class FacilityOwner extends BaseModel{
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class FacilityOwner extends BaseModel implements Importable{
     private String displayName;
+    @ImportField(mandatory = true, name = "Owner Code", nested = "code")
     private Owner owner;
+    @ImportField(mandatory = true, name = "Facility Code")
+    private String facilityCode;
     private Long facility;
     private boolean active=true;
     private String description;

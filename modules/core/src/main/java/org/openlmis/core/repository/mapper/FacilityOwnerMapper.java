@@ -30,16 +30,36 @@ public interface FacilityOwnerMapper {
     @Delete("DELETE FROM facility_owners\n" +
             " WHERE  facilityid= #{id};")
      Long deleteOwners(Facility facility);
-    @Select("select * FROM facility_owners fo " +
+    @Select("select fo.*,fop.code ownerCode,fop.text ownerText FROM facility_owners fo " +
             " inner join facilities f on f.id =fo.facilityid" +
-            " inner join facility_operators fop on fop.id=fo.ownerid \n" +
+            " inner join owners fop on fop.id=fo.ownerid \n" +
             " WHERE  facilityid= #{id};")
     @Results(value = {@Result(property = "owner.id", column = "ownerid"),
-            @Result(property = "owner.code", column = "code"),
-            @Result(property = "owner.text", column = "text")})
+            @Result(property = "owner.code", column = "ownerCode"),
+            @Result(property = "owner.text", column = "ownerText")})
 
 
     List<FacilityOwner> loadFacilityOwners(Facility facility);
     @Select("SELECT * FROM owners ORDER BY displayOrder")
     List<Owner> allOwners();
+    @Select("select fo.*,fop.code ownerCode,fop.text ownerText FROM facility_owners fo " +
+            " inner join facilities f on f.id =fo.facilityid" +
+            " inner join owners fop on fop.id=fo.ownerid \n" +
+            " WHERE  f.code= #{facilityCode} and fop.code=#{ownerCode};")
+    @Results(value = {@Result(property = "owner.id", column = "ownerid"),
+            @Result(property = "owner.code", column = "ownerCode"),
+            @Result(property = "owner.text", column = "ownerText")})
+    FacilityOwner getFacilityOwnerByOwnerCodeAndFacilityCode(@Param("ownerCode") String ownerCode, @Param("facilityCode") String facilityCode);
+    @Select("SELECT * FROM owners " +
+            " where code=#{code}  ")
+    Owner getOwnerByCode(String code);
+@Update("UPDATE facility_owners\n" +
+        "   SET   description=#{description}\n" +
+        " WHERE id=#{id}")
+    void update(FacilityOwner record);
+    @Insert("INSERT INTO owners(\n" +
+            "             code, text)\n" +
+            "    VALUES ( #{code}, #{text});\n")
+    @Options(useGeneratedKeys = true)
+    Long addOwner(Owner owner);
 }

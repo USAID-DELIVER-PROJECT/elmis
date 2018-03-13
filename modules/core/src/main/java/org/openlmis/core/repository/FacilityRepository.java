@@ -12,10 +12,7 @@ package org.openlmis.core.repository;
 
 import lombok.NoArgsConstructor;
 import org.openlmis.core.domain.*;
-import org.openlmis.core.dto.DistrictGeoTree;
-import org.openlmis.core.dto.FacilityContact;
-import org.openlmis.core.dto.FacilityGeoTreeDto;
-import org.openlmis.core.dto.FacilitySupervisor;
+import org.openlmis.core.dto.*;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.repository.helper.CommaSeparator;
 import org.openlmis.core.repository.mapper.FacilityMapper;
@@ -26,6 +23,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.openlmis.core.domain.RightName.commaSeparateRightNames;
@@ -303,5 +301,37 @@ public class FacilityRepository {
 
   public Facility getFacilityByParentGeoZone(Long parentId){
     return mapper.getFacilityByParentGeoZone(parentId);
+  }
+
+  public HashMap<String, Object> getHomeFacilityWithType(Long userId) {
+    return mapper.getHomeFacilityWithType(userId);
+  }
+
+  public Integer insertHfrMapping(HfrMappingDTO dto){
+    return mapper.insertHfrMapping(dto);
+  }
+  public List<HfrMappingDTO>getAllHfrMapping(){
+    return mapper.getAllHfrMapping();
+  }
+  public List<HfrMappingDTO>getAllHfrMappingById(Long paramId){
+    return mapper.getAllHfrMappingById(paramId);
+  }
+
+  public HfrMappingDTO getAllHfrMappingByCouncil(String council){
+    return mapper.getAllHfrMappingByCouncil(council);
+  }
+  public void updateHFRMapping(HfrMappingDTO dto){
+    mapper.updateHFRMapping(dto);
+  }
+
+  public void updateHfrFacilityTypeMapping(HfrFacilityTypeDTO dto){
+    mapper.updateHfrFacilityTypeMapping(dto);
+  }
+  public void insertHfrFacilityTypeMapping(HfrFacilityTypeDTO dto){
+    mapper.insertHfrFacilityTypeMapping(dto);
+  }
+
+  public HfrFacilityTypeDTO geAllFacilityTypeMappingByCode(HfrFacilityTypeDTO record) {
+    return mapper.geAllFacilityTypeMappingByCode(record);
   }
 }

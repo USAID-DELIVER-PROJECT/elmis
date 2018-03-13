@@ -44,9 +44,12 @@ public interface NonReportingFacilityReportMapper {
                                              @Param("RowBounds") RowBounds rowBounds,
                                              @Param("userId") Long userId
   );
-  @Select("SELECT  * from processing_periods p\n" +
+  @Select("SELECT distinct p.* from processing_periods p \n" +
+          "inner join processing_schedules ps on ps.id= p.scheduleid\n" +
+          "inner join requisition_group_program_schedules rgps on rgps.scheduleid=ps.id\n" +
           "WHERE p.startdate >= date_trunc('MONTH',#{filterCriteria.periodStart}::date)::DATE\n" +
-          "and  p.startdate <= date_trunc('MONTH',#{filterCriteria.periodEnd}::date)::DATE")
+          "and  p.startdate <= date_trunc('MONTH',#{filterCriteria.periodEnd}::date)::DATE\n" +
+          " and rgps.programId=#{filterCriteria.program}")
   List<ProcessingPeriod> getReportingPeriodList(@Param(value = "filterCriteria") NonReportingFacilityParam params);
 
   @SelectProvider(type = NonReportingFacilityQueryBuilder.class, method = "getPeriodsTicksForChart")

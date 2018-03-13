@@ -94,11 +94,22 @@ services.factory('FacilityWithProducts', function($resource,$timeout,$q,StockCar
                                     FacilityDistributionForecastAndLastPeriod.get({facilityId:facility.id,programId:program.id},function(distributionForecastAndPeriod){
                                         //distributionForecastAndPeriod.lastPeriod[0].id,
 
-                                        var param = (selectedPeriod === undefined)?distributionForecastAndPeriod.lastPeriod[0].id:selectedPeriod;
-                                        QuantityRequired.get({facilityCode:facility.code,programCode:program.code,periodId:param},function(report){
-                                             var facilityWithProducts=new FacilitiesWithProducts(facility,s.stockCards,distributionForecastAndPeriod,report);
-                                             deferred.resolve(facilityWithProducts);
-                                        });
+                                        console.log(selectedPeriod);
+                                        console.log(distributionForecastAndPeriod);
+
+                                        var param = (selectedPeriod === undefined)?distributionForecastAndPeriod.currentPeriod.id:selectedPeriod;
+
+                                            QuantityRequired.get({
+                                                facilityCode: facility.code,
+                                                programCode: program.code,
+                                                periodId: param
+                                            }, function (report) {
+                                                var facilityWithProducts = new FacilitiesWithProducts(facility, s.stockCards, distributionForecastAndPeriod, report);
+                                                console.log(facilityWithProducts);
+
+                                                deferred.resolve(facilityWithProducts);
+                                            });
+
                                     });
                                 });
                          }
@@ -435,6 +446,29 @@ services.factory('StockCardsForProgramByCategory', function ($resource,StockCard
 });
 
 
+services.factory('GetLastDistributionForFacilityData', function ($q, $timeout, $resource,GetLastDistributionForFacility) {
+    function get(params) {
+
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetLastDistributionForFacility.get(params, function (data) {
+
+                var distribution ={};
+                if (data !== undefined) {
+                    distribution = data.distribution;
+                }
+                deferred.resolve(distribution);
+
+            });
+
+        }, 100);
+        return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
 
 services.factory('RequisitionForFacility', function ($resource) {
     return $resource('/vaccine/orderRequisition/getAllBy/:programId/:periodId/:facilityId.json', {
@@ -465,5 +499,9 @@ services.factory('VaccineOrderRequisitionProgramProduct', function ($resource) {
 
 services.factory('StockRequirements', function ($resource) {
     return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements.json',{facilityId: '@facilityId', programId: '@programId'},{});
+});
+
+services.factory('GetLastDistributionForFacility', function ($resource) {
+    return $resource('/vaccine/inventory/distribution/GetLastDistributionForFacility.json',{},{});
 });
 

@@ -1,0 +1,93 @@
+<style>
+    .section {
+        padding: 10px;
+    }
+
+    .card-panel {
+        margin-top: 0px;
+        padding: 10px;
+    }
+
+    .card-title {
+        font-size: 12px !important;
+        color: #00646B !important;
+    }
+
+    .card-title .btn {
+
+    }
+
+    .btn {
+        padding: 0px 10px;
+        margin-bottom: 0px;
+        margin-top: -8px;
+        right: -10px;
+    }
+</style>
+<div>
+    <row style="top:10px !important;">
+        <div class="col s12 m6 l6" style="padding-top:0px !important;">
+            <div class="card" style="padding:0px;">
+
+                <div class="card-panel green-text lighten-5 z-depth-1" style="background-color: whitesmoke">
+
+                    <div class="card-title">
+                        <span openlmis-message="report.title.aggregate.consumption.report"></span>
+                        <span class="pull-right text-bottom">
+                           <a class="waves-effect waves-light btn"><span class="text-bottom"
+                                                                         style=" color:#00646B !important;"
+                                                                         openlmis-message="label.pdf"></span></a>
+                       </span>
+
+                        <span class="pull-right">
+                           <a class="waves-effect waves-light btn"><span style=" color:#00646B !important;"
+                                                                         openlmis-message="label.excel"></span></a>
+                       </span>
+                    </div>
+
+                </div>
+
+                <div class="card-content lighten-5 z-depth-1">
+                    <div>
+                        <form ng-submit="filterGrid()" name="filterForm" novalidate>
+                            <div filter-container class="clearfix">
+                                <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
+                                <date-range-filter perioderror="error" startdate="filter.periodStart"
+                                                   enddate="filter.periodEnd"
+                                                   class="form-cell horizontalFilters"></date-range-filter>
+                                <zone-filter class="form-cell horizontalFilters"></zone-filter>
+                                <product-category-filter class="form-cell horizontalFilters"></product-category-filter>
+                                <product-multi-filter class="form-cell horizontalFilters"></product-multi-filter>
+
+                                <div class="form-cell horizontalFilters" style="padding-top: 20px;">
+                                    <label class="checkbox">
+                                        <input class="checkbox" type="checkbox" ng-model="filter.disaggregated"
+                                               ng-change="filterChanged()"/>
+                                        <span openlmis-message="label.report.view.disaggregated"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+
+              <!--  <div class="fixed-action-btn toolbar">
+                    <a class="btn-floating btn-large red">
+                        <i class="large material-icons">mode_edit</i>
+                    </a>
+                    <ul>
+                        <li class="waves-effect waves-light"><a href="#!"><i class="material-icons">insert_chart</i></a></li>
+                        <li class="waves-effect waves-light"><a href="#!"><i class="material-icons">format_quote</i></a></li>
+                        <li class="waves-effect waves-light"><a href="#!"><i class="material-icons">publish</i></a></li>
+                        <li class="waves-effect waves-light"><a href="#!"><i class="material-icons">attach_file</i></a></li>
+                    </ul>
+                </div>-->
+
+
+
+            </div>
+        </div>
+    </row>
+</div>

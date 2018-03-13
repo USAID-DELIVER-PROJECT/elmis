@@ -346,4 +346,10 @@ public class LookupController {
         return RestResponse.response(PROGRAM_REFERENCE_DATA, lookupService.getProgramReferenceData(code,facilityCode));
     }
 
+
+    @RequestMapping(value = "/rest-api/lookup/hfr-facilities", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity getAllFacilities() {
+        return RestResponse.response("facilities", lookupService.getAllHFRFacilities());
+    }
+
 }

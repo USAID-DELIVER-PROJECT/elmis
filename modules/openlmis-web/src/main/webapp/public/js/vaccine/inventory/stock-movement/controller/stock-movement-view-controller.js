@@ -8,7 +8,7 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
  */
 
-function StockMovementViewController($scope,verifyDistribution, $window,$timeout,SaveDistribution,StockEvent,configurations, UpdateOrderRequisitionStatus,VaccineLastStockMovement, StockCardsByCategoryAndRequisition, StockCardsForProgramByCategory, $dialog, homeFacility, programs, $routeParams, $location,SendIssueNotification) {
+function StockMovementViewController($scope,verifyDistribution,SaveSupervisoryDistribution, $window,$timeout,SaveDistribution,StockEvent,configurations, UpdateOrderRequisitionStatus,VaccineLastStockMovement, StockCardsByCategoryAndRequisition, StockCardsForProgramByCategory, $dialog, homeFacility, programs, $routeParams, $location,SendIssueNotification) {
 
     var orderId = parseInt($routeParams.id, 10);
     var programId = parseInt($routeParams.programId, 10);
@@ -202,7 +202,7 @@ function StockMovementViewController($scope,verifyDistribution, $window,$timeout
 
                 });
               StockEvent.save({facilityId:homeFacility.id},events,function(data){
-                   SaveDistribution.save(distribution,function(d) {
+                  SaveSupervisoryDistribution.save(distribution,function(d) {
                        $scope.message = "label.form.Submitted.Successfully";
                        var url = '/vaccine/orderRequisition/issue/print/'+d.distributionId;
                        printWindow.location.href=url;

@@ -21,23 +21,33 @@ import org.openlmis.report.model.ReportParameter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AggregateConsumptionReportParam
-    extends BaseParam implements ReportParameter {
+        extends BaseParam implements ReportParameter {
 
-  @RequiredParam
-  private Long program;
+    @RequiredParam
+    private Long program;
+    @RequiredParam
+    private Long period;
 
-  private Long period;
+    private Long zone;
 
-  private Long zone;
+    private String products;
 
-  private String products;
+    private Long productCategory;
 
-  private Long productCategory;
 
-  @RequiredParam
-  private String periodStart;
+    private String periodStart;
 
-  @RequiredParam
-  private String periodEnd;
 
+    private String periodEnd;
+    private String date;
+    private Boolean disaggregated;
+
+    @RequiredParam
+    private Long schedule;
+
+    private Boolean isEmergency;
+
+    private String reportType;
+
+    private Boolean allReportType;
 }

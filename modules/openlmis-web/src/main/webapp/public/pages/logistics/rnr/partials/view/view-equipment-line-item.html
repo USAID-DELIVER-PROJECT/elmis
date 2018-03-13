@@ -11,7 +11,7 @@
   -->
 <div ng-controller="ViewEquipmentLineItemController">
     <div class="rnr-table regimen-table" tab-scroll bottom-offset="180">
-        <table id="equipmentTable" fixed-table-header class="table table-bordered scrollable">
+        <table id="equipment-line-item-table" fixed-table-header class="table table-bordered scrollable">
             <thead>
             <tr>
                 <th class="col-product" >
@@ -42,153 +42,124 @@
             </tr>
             </thead>
             <tbody >
-
-            <tr>
-                <td class="productCategory" colspan="5" openlmis-message="rnr.label.bio.chemistry.equipment"></td>
+            <tr ng-repeat-start="(key, values) in page.equipment | groupBy : 'equipmentTypeCategory'">
+                <td class="productCategory" colspan="5">{{key === 'undefined' ? 'All Other Equipment Types' : key}}</td>
             </tr>
-            <tr ng-repeat="equipmentLineItem in bioChemistryLineItem = (page.equipment | filter:{isBioChemistryEquipment: true}) ">
-
+            <tr ng-repeat="equipmentLineItem in values" ng-repeat-end>
                 <td class="cell-input padding2px ">
                   <span class="col-product cell-text">
                      <span ng-bind="equipmentLineItem.equipmentName" class="padding2px"></span>
                   </span>
                 </td>
+                <!-- Non Functional Test Types -->
                 <td class="cell-input padding2px">
-                    <div class="btn-group dropdown">
-                        <button id="non-functional-types" type="button"
-                                class="btn btn-default dropdown-toggle btn-mini">
-                            <span openlmis-message="rnr.label.select.non.functional.test.type.show"></span>
+                    <div ng-if="equipmentLineItem.nonFunctionalDaysOutOfUse.length > 1"  class="btn-group dropdown">
+                        <button id="non-functional-types_{{equipmentLineItem.id}}" type="button"
+                                class="btn btn-default dropdown-toggle btn-mini"
+                                openlmis-message="rnr.label.select.non.functional.test.type">
+                            <span openlmis-message="rnr.label.select.non.functional.test.type"></span>
                             <span class="caret"></span>
                         </button>
                         <ul onclick="event.stopPropagation();" class="dropdown-menu" style="min-width:210px;">
-                            <li>
+                            <li ng-repeat="functionalTestTypes in equipmentLineItem.nonFunctionalDaysOutOfUse">
                                 <label class="checkbox" >
-                                    <input type="checkbox"
-                                           style="visibility: visible !important;"
-                                           ng-checked="equipmentLineItem.electrolytesDaysOutOfUse > 0"  ng-disabled="true"/>
-                                    <span openlmis-message="rnr.label.electrolytes"></span>
-                                </label>
-                            </li>
-                            <li>
-                                <label class="checkbox">
-                                    <input type="checkbox"
-                                           style="visibility: visible !important;"
-                                           ng-checked="equipmentLineItem.analytesDaysOutOfUse > 0" ng-disabled="true"/>
-                                    <span openlmis-message="rnr.label.analytes"></span>
+                                    <input type="checkbox" ng-disabled="true" style="visibility: visible !important;" ng-model="functionalTestTypes.nonFunctional"/>
+                                    <span>{{functionalTestTypes.functionalTestName}}</span>
                                 </label>
                             </li>
                             <li>
                                 <label class="checkbox" >
                                     <input type="checkbox" ng-disabled="true"
                                            style="visibility: visible !important;"
-                                           ng-model="equipmentLineItem.operationalStatus.isObsolete" />
+                                           ng-model="equipmentLineItem.isObsolete"/>
                                     <span openlmis-message="label.obsolete.equipment.status"></span>
                                 </label>
                             </li>
                         </ul>
                     </div>
+                    <span ng-if="equipmentLineItem.nonFunctionalDaysOutOfUse.length == 1 || equipmentLineItem.nonFunctionalDaysOutOfUse.length == undefined">
+                <select ng-disabled="true" class="cell-text"
+                        ng-model="equipmentLineItem.operationalStatusId">
+                    <option  ng-repeat="status in equipmentOperationalStatus" value="{{status.id}}"
+                             ng-selected="equipmentLineItem.operationalStatusId == status.id">{{status.name}}</option>
+                </select>
+            </span>
+
+
                 </td>
+                <!-- No. Days Not Functional -->
                 <td class="padding2px cell-input ">
-                    <div class="btn-group dropdown" style="">
-                        <button id="non-functional-days" type="button"
-                                class="btn btn-default dropdown-toggle btn-mini">
-                            <span openlmis-message="rnr.label.days.not.functional.show"></span>
+                    <div ng-if="equipmentLineItem.nonFunctionalDaysOutOfUse.length > 1" class="btn-group dropdown" >
+                        <button id="non-functional-days_{{equipmentLineItem.id}}" type="button" class="btn btn-default dropdown-toggle btn-mini">
+                            <span openlmis-message="rnr.label.days.not.functional"></span>
                             <span class="caret"></span>
                         </button>
                         <ul onclick="event.stopPropagation();" class="dropdown-menu wide">
-                            <li>
+                            <li ng-repeat="functionalTestTypes in equipmentLineItem.nonFunctionalDaysOutOfUse">
                                 <div class="row" >
                                     <div class="span2">
                                         <label class="drop-label" style="font-size: 10px;"
-                                               for="{{equipmentLineItem.equipmentName}}_electrolytes">
-                                            <span openlmis-message="rnr.label.electrolytes"></span>
+                                               for="{{equipmentLineItem.equipmentName}}_$index">
+                                            <span>{{functionalTestTypes.functionalTestName}}</span>
                                         </label>
                                     </div>
                                     <div class="span2">
-                                        <input ng-disabled="true" type="text"
-                                               ng-model="equipmentLineItem.electrolytesDaysOutOfUse"
-                                               id="{{equipmentLineItem.equipmentName}}_electrolytes"></div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="row" >
-                                    <div class="span2">
-                                        <label class="drop-label" style="font-size: 10px;"
-                                               for="{{equipmentLineItem.equipmentName}}_analytes">
-                                            <span openlmis-message="rnr.label.analytes"></span>
-                                        </label>
+                                        <input  type="text" id="{{equipmentLineItem.equipmentName}}_$index"
+                                                ng-disabled="true"
+                                                ng-model="functionalTestTypes.daysOutOfuse">
                                     </div>
-                                    <div class="span2">
-                                        <input ng-disabled="true" type="text"
-                                               ng-model="equipmentLineItem.analytesDaysOutOfUse"
-                                               id="{{equipmentLineItem.equipmentName}}_analytes"></div>
                                 </div>
                             </li>
                         </ul>
                     </div>
+                    <div ng-if="equipmentLineItem.nonFunctionalDaysOutOfUse.length == 1">
+                        <input style="width: 90%;" ng-disabled="true" type="text" ng-model="equipmentLineItem.nonFunctionalDaysOutOfUse[0].daysOutOfuse">
+                    </div>
+                    <div ng-if="equipmentLineItem.nonFunctionalDaysOutOfUse == undefined">
+                        <input style="width: 90%;" ng-disabled="true" type="text" ng-model="equipmentLineItem.daysOutOfUse">
+                    </div>
                 </td>
+                <!---- 	No. of Test Done -->
                 <td class="cell-input">
-                    <div class="btn-group dropdown">
-                        <button id="tests-done" type="button" class="btn btn-default dropdown-toggle btn-mini">
-                            &nbsp;<span openlmis-message="rnr.label.test.done.show"></span> <span class="caret"></span>
+                    <div ng-if="equipmentLineItem.testDone.length > 1" class="btn-group dropdown" uib-dropdown="" is-open="status.isopen">
+                        <button id="test_done_{{equipmentLineItem.id}}" type="button" class="btn btn-default dropdown-toggle btn-mini">
+                            &nbsp;<span openlmis-message="rnr.label.test.done"></span> <span class="caret"></span>
                         </button>
                         <ul onclick=" event.stopPropagation();" class="dropdown-menu wide scroll">
-                            <li ng-repeat="(key, value) in equipmentLineItem.bioChemistryTestes | groupBy: 'testTypeName'">
+                            <li ng-repeat="(key, value) in equipmentLineItem.testDone | groupBy: 'testTypeName'">
                                 <div class="row"><strong>{{key}}</strong> <hr style="margin: 4px 0;"/></div>
 
-                                <div class="row" ng-repeat="testCount in value" >
+                                <div class="row" ng-repeat="testDone in value">
                                     <div class="span2">
-                                        <label class="drop-label" style="font-size: 10px;"
-                                               for="{{equipmentLineItem.equipmentName}}_{{testCount.productName}}">
-                                            {{testCount.productName}}</label>
+                                        <label class="drop-label" style="font-size: 10px;">
+                                            {{testDone.testItemName}}</label>
                                     </div>
                                     <div class="span2">
-                                        <input type="text"
-                                               ng-disabled="true"
-                                               id="{{equipmentLineItem.equipmentName}}_{{testCount.productName}}"
-                                               ng-model="testCount.numberOfTestes" ></div>
+                                        <input type="text"  ng-disabled="true" ng-model="testDone.numberOfTestes" >
+                                    </div>
                                 </div>
                             </li>
                         </ul>
                     </div>
+                    <div  ng-if="equipmentLineItem.testDone.length == 1" class="cell-input col-general padding2px">
+                        <input ng-disabled="true"  ng-disable="true" type="text" ng-model="equipmentLineItem.testDone[0].numberOfTestes">
+                    </div>
+
+                    <div  ng-if="equipmentLineItem.testDone == undefined" class="cell-input col-general padding2px">
+                        <input ng-disabled="true"  ng-disable="true" type="text" ng-model="equipmentLineItem.testCount">
+                    </div>
                 </td>
-                <td class="cell-input">
-                    <span class="cell-text" type="text" ng-bind="equipmentLineItem.remarks" ></span>
+                <td class="cell-input" >
+                  <span>
+                        <input ng-disabled="true"  type="text" ng-model="equipmentLineItem.remarks">
+                  </span>
+                    <span class="alert alert-warning warning-alert"
+                          ng-show="requiresRemarks(equipmentLineItem)"
+                          openlmis-message="equipment.error.related.products.ordered">
+                  </span>
                 </td>
             </tr>
 
-            <tr ng-show="bioChemistryLineItem.length == 0">
-                <td  colspan="5">
-                    <span class="padding2px alert alert-info span12" >
-                        <small><span openlmis-message="rnr.label.no.bio.chemistry.exist"></span></small>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="productCategory" colspan="5" openlmis-message="rnr.label.all.other.equipment.types"></td>
-            </tr>
-            <tr ng-repeat="equipmentLineItem in page.equipment | filter:{isBioChemistryEquipment: false} ">
-                <td class="cell-input padding2px ">
-                  <span class="col-product cell-text">
-                    <span ng-bind="equipmentLineItem.equipmentName" class="padding2px"></span>
-                  </span>
-                </td>
-                <td class="cell-input">
-                    <select ng-disabled="true" class="cell-text" ng-model="equipmentLineItem.operationalStatusId">
-                        <option  ng-repeat="status in equipmentOperationalStatus" value="{{status.id}}" ng-selected="equipmentLineItem.operationalStatusId === status.id">{{status.name}}</option>
-                    </select>
-                </td>
-                <td class="cell-input number">
-                    <span class="cell-text text-right" type="text" ng-bind="equipmentLineItem.daysOutOfUse"></span>
-                </td>
-                <td class="cell-input number">
-                    <span class="cell-text text-right" type="text" ng-bind="equipmentLineItem.testCount"></span>
-                </td>
-                <td class="cell-input">
-                    <span class="cell-text" type="text" ng-bind="equipmentLineItem.remarks" ></span>
-                </td>
-            </tr>
-            <tr></tr>
             </tbody>
         </table>
     </div>

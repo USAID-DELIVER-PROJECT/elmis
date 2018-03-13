@@ -4,14 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import org.apache.commons.net.util.Base64;
 import org.json.JSONObject;
+import org.openlmis.core.domain.Facility;
+import org.openlmis.core.domain.Product;
 import org.openlmis.core.service.ConfigurationSettingService;
+import org.openlmis.core.service.FacilityService;
+import org.openlmis.core.service.ProductService;
 import org.openlmis.lookupapi.mapper.ILInterfaceMapper;
 import org.openlmis.lookupapi.model.HFRDTO;
 import org.openlmis.lookupapi.model.HealthFacilityDTO;
+import org.openlmis.lookupapi.model.MSDStockDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -21,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 
 @Service
@@ -41,6 +49,11 @@ public class InterfaceService {
 
     @Autowired
     private ConfigurationSettingService settingService;
+
+    @Autowired
+    private FacilityService facilityService;
+    @Autowired
+    private ProductService productService;
 
     @Async("myExecutor")
     public void sendResponse(HealthFacilityDTO d) throws InterruptedException {
@@ -76,6 +89,26 @@ public class InterfaceService {
 
         }
 
+
+    }
+
+    @Async("myExecutor")
+    public void saveMsdStock(String[] dto){
+   /*     System.out.println("I'm second");
+        System.out.println(dto);
+        if(dto != null){
+            if(!dto.getIlId().isEmpty()) {
+
+                Facility facility = facilityService.getByCodeFor(dto.getPlant());
+                Product product = productService.getByCode(dto.getPartNum());
+                MSDStockDTO stockDTO = interfaceMapper.getByMSDILId(dto.getIlId());
+                if (stockDTO == null) {
+                    interfaceMapper.insertMsdStock(dto);
+
+                }
+            }
+
+        }*/
 
     }
 

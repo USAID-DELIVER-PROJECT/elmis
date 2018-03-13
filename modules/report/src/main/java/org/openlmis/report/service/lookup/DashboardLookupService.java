@@ -17,6 +17,7 @@ import org.openlmis.report.mapper.lookup.DashboardMapper;
 import org.openlmis.report.mapper.lookup.RnRStatusSummaryReportMapper;
 import org.openlmis.report.model.DashboardLookUpReportHeader;
 import org.openlmis.report.model.dto.*;
+import org.openlmis.report.repository.MSDStockStatusReportRepository;
 import org.openlmis.report.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,8 @@ public class DashboardLookupService {
 
     @Autowired
     DashboardMapper dashboardMapper;
+    @Autowired
+    MSDStockStatusReportRepository msdStockStatusReportRepository;
    // @Autowired
     //AverageConsumptionReportMapper avgMapper;
 
@@ -189,5 +192,15 @@ public class DashboardLookupService {
     }
     public List<HashMap<String, Object>> getFacilitiesStockedOut(Long programId, Long periodId, String productCode) {
         return dashboardMapper.getFacilityStockedOut(programId, periodId, productCode);
+    }
+
+    public List<MSDStockStatusDTO> getAllMSDStockStatusReport(Long programId, Long periodId, String productCode) {
+        return msdStockStatusReportRepository.getAllMSDStockStatusReport(programId, periodId,productCode);
+    }
+    public List<HashMap<String,Object>>getStockStatus(){
+        return msdStockStatusReportRepository.getStockStatus();
+    }
+    public HashMap<String,Object>getStockColor(Long mos,Long levelId ){
+        return msdStockStatusReportRepository.getStockColor(mos,levelId);
     }
 }

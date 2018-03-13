@@ -8,117 +8,121 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
  */
 
-function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveDistribution) {
+function SaveIssueController($scope, GetLastDistributionForFacilityData, $location, $window, $timeout, StockEvent, SaveDistribution) {
 
-     $scope.distribute=function(type){
-        $scope.allProductsZero=true;
+    $scope.distribute = function (type) {
+        $scope.allProductsZero = true;
         $scope.clearErrorMessages();
         var printWindow;
-        $scope.facilityToIssue.productsToIssueByCategory.forEach(function(category){
-            category.productsToIssue.forEach(function(product){
-                if(product.quantity > 0)
-                {
-                  $scope.allProductsZero=false;
+        $scope.facilityToIssue.productsToIssueByCategory.forEach(function (category) {
+            category.productsToIssue.forEach(function (product) {
+                if (product.quantity > 0) {
+                    $scope.allProductsZero = false;
                 }
             });
 
         });
-        if($scope.issueForm.$invalid)
-        {
+        if ($scope.issueForm.$invalid) {
             $scope.showFormError();
             return;
         }
-        if($scope.allProductsZero){
+        if ($scope.allProductsZero) {
             $scope.showNoProductError();
             return;
         }
 
 
-         var distribution = {};
-         var events = [];
+        var distribution = {};
+        var events = [];
 
-         distribution.fromFacilityId = $scope.homeFacility.id;
-         distribution.toFacilityId= $scope.facilityToIssue.id;
-         distribution.programId=$scope.selectedProgram.id;
-         distribution.distributionDate = $scope.facilityToIssue.issueDate;
-         distribution.lineItems=[];
-         distribution.distributionType=$scope.facilityToIssue.type;
-         distribution.status="PENDING";
-         $scope.facilityToIssue.productsToIssueByCategory.forEach(function(category){
+        distribution.fromFacilityId = $scope.homeFacility.id;
+        distribution.toFacilityId = $scope.facilityToIssue.id;
+        distribution.programId = $scope.selectedProgram.id;
+        distribution.distributionDate = $scope.facilityToIssue.issueDate;
+        distribution.lineItems = [];
+        distribution.distributionType = $scope.facilityToIssue.type;
+        distribution.status = "PENDING";
+        $scope.facilityToIssue.productsToIssueByCategory.forEach(function (category) {
 
-            category.productsToIssue.forEach(function(product){
-             if(product.quantity >0)
-             {
-                 var list = {};
-                 list.productId = product.productId;
-                 list.quantity=product.quantity;
-                 if(product.lots !==undefined && product.lots.length >0)
-                 {
-                     list.lots = [];
-                     product.lots.forEach(function(l)
-                     {
-                         if(l.quantity !==null && l.quantity >0)
-                         {
-                             var lot = {};
-                             var event ={};
-                             event.type="ISSUE";
-                             event.productCode =product.productCode;
-                             event.facilityId=$scope.facilityToIssue.id;
-                             event.occurred=$scope.facilityToIssue.issueDate;
-                             event.customProps={};
-                             event.customProps.occurred=$scope.facilityToIssue.issueDate;
-                             event.customProps.issuedto=$scope.facilityToIssue.name;
-                             event.lotId=l.lotId;
-                             event.quantity=l.quantity;
+            category.productsToIssue.forEach(function (product) {
+                if (product.quantity > 0) {
+                    var list = {};
+                    list.productId = product.productId;
+                    list.quantity = product.quantity;
+                    if (product.lots !== undefined && product.lots.length > 0) {
+                        list.lots = [];
+                        product.lots.forEach(function (l) {
+                            if (l.quantity !== null && l.quantity > 0) {
+                                var lot = {};
+                                var event = {};
+                                event.type = "ISSUE";
+                                event.productCode = product.productCode;
+                                event.facilityId = $scope.facilityToIssue.id;
+                                event.occurred = $scope.facilityToIssue.issueDate;
+                                event.customProps = {};
+                                event.customProps.occurred = $scope.facilityToIssue.issueDate;
+                                event.customProps.issuedto = $scope.facilityToIssue.name;
+                                event.lotId = l.lotId;
+                                event.quantity = l.quantity;
 
-                             lot.lotId = l.lotId;
-                             lot.vvmStatus=l.vvmStatus;
-                             lot.quantity = l.quantity;
-                             list.lots.push(lot);
-                             events.push(event);
-                         }
+                                lot.lotId = l.lotId;
+                                lot.vvmStatus = l.vvmStatus;
+                                lot.quantity = l.quantity;
+                                list.lots.push(lot);
+                                events.push(event);
+                            }
 
-                     });
-                 }
-             else{
-                 var event ={};
-                 event.type="ISSUE";
-                 event.productCode =product.productCode;
-                 event.facilityId=$scope.facilityToIssue.id;
-                 event.occurred=$scope.facilityToIssue.issueDate;
-                 event.customProps={};
-                 event.customProps.occurred=$scope.facilityToIssue.issueDate;
-                 event.customProps.issuedto=$scope.facilityToIssue.name;
-                 event.quantity=product.quantity;
-                 events.push(event);
-             }
-             distribution.lineItems.push(list);
-            }
+                        });
+                    }
+                    else {
+                        var event = {};
+                        event.type = "ISSUE";
+                        event.productCode = product.productCode;
+                        event.facilityId = $scope.facilityToIssue.id;
+                        event.occurred = $scope.facilityToIssue.issueDate;
+                        event.customProps = {};
+                        event.customProps.occurred = $scope.facilityToIssue.issueDate;
+                        event.customProps.issuedto = $scope.facilityToIssue.name;
+                        event.quantity = product.quantity;
+                        events.push(event);
+                    }
+                    distribution.lineItems.push(list);
+                }
             });
-         });
+        });
 
-          $scope.closeIssueModal();
-         StockEvent.save({facilityId:$scope.homeFacility.id},events, function (data) {
-             if(data.success)
-             {
-                 SaveDistribution.save(distribution,function(distribution){
-                      $scope.showMessages();
+        $scope.closeIssueModal();
+        StockEvent.save({facilityId: $scope.homeFacility.id}, events, function (data) {
+            if (data.success) {
 
-                      $scope.distributionId=distribution.distributionId;
-                      $scope.loadDistributionsByDate($scope.toDay);
-                      if(type === 'EMERGENCE')
-                      {
-                         var url = '/vaccine/orderRequisition/issue/print/'+$scope.distributionId;
-                        printWindow.location.href=url;
-                      }
-                 });
-             }
-         });
-          if(type === 'EMERGENCE')
-           {
-                 printWindow= $window.open('about:blank','_blank');
-          }
+                SaveDistribution.save(distribution, function (d) {
+                    var param = {
+                        toFacilityId: parseInt(distribution.toFacilityId, 10),
+                        distributionType: distribution.distributionType,
+                        distributionDate: distribution.distributionDate,
+                        status: distribution.status
+                    };
+                    $scope.showMessages();
 
-     };
+                    GetLastDistributionForFacilityData.get(param).then(function (data) {
+                        $scope.distributionId = d.distributionId;
+
+                        $scope.loadDistributionsByDate($scope.toDay);
+                        if (type === 'EMERGENCE') {
+                            var url = '/vaccine/orderRequisition/issue/print/' + parseInt(data[0].id, 10);
+                            printWindow.location.href = url;
+                        }
+
+                    });
+
+
+                });
+            }
+        });
+        if (type === 'EMERGENCE') {
+            printWindow = $window.open('about:blank', '_blank');
+        }
+
+    };
 
 }

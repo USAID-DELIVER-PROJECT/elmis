@@ -71,4 +71,7 @@ public interface AdverseEffectMapper {
 
   @Delete("DELETE from vaccine_report_adverse_effect_line_items where reportId = #{reportId} and relatedToLineItemId is null")
   void deleteLineItems(@Param("reportId")Long reportId);
+
+  @Select("select * from vaccine_report_adverse_effect_line_items where id = #{id}")
+    List<AdverseEffectLineItem> getById(@Param("id") Long id);
 }
