@@ -119,4 +119,8 @@ public class RequisitionPredicateHelper {
             "where p.enddate >= '%2$s' " +
             "order by p.enddate ASC  limit 1) ", field, endDate);
   }
+
+  public static String dateFilteredBy(String field, String date) {
+    return String.format("%1$s = '%2$s'::DATE ", field, date);
+  }
 }

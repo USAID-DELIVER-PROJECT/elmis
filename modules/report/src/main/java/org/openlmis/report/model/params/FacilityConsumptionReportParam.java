@@ -12,7 +12,10 @@
 
 package org.openlmis.report.model.params;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.report.annotations.RequiredParam;
 import org.openlmis.report.model.ReportParameter;
 
@@ -20,34 +23,19 @@ import org.openlmis.report.model.ReportParameter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AggregateConsumptionReportParam
+public class FacilityConsumptionReportParam
         extends BaseParam implements ReportParameter {
 
     @RequiredParam
     private Long program;
-    @RequiredParam
-    private Long period;
-
     private Long zone;
-
     private String products;
-
     private Long productCategory;
-
-
     private String periodStart;
-
-
     private String periodEnd;
     private String date;
     private Boolean disaggregated;
-
-    @RequiredParam
-    private Long schedule;
-
     private Boolean isEmergency;
-
     private String reportType;
-
     private Boolean allReportType;
 }

@@ -41,7 +41,7 @@
     <div class="box row-fluid" style="padding:0px;">
         <div class="box-header" id="report-head">
             <h2>
-                <span openlmis-message="report.title.aggregate.consumption.report"></span>
+                <span openlmis-message="report.title.facility.consumption.report"></span>
             </h2>
             <div class="box-icon">
                 <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
@@ -121,34 +121,7 @@
             </div>
             <div class="content-body">
 
-                <div class="box-header">
-
-
-                    <div class="form-cell span2">
-                        <div class="checkbox">
-                            <label for="allType"><input id="allType" class="checkbox" type="checkbox"
-                                                        value="allReportType"
-                                                        ng-change="selectAll()"
-                                                        ng-model="allReportType">
-                                <span openlmis-message="label.all"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div ng-repeat="r in reportTypes">
-                        <div class="form-cell span2">
-                            <div class="checkbox">
-                                <label for="emergency"><input id="emergency" class="checkbox" type="checkbox" value="{{r.value}}"
-                                                              ng-change="toggleSingle()" ng-checked="r.checked"
-                                                              ng-model="r.checked">
-                                    <span>{{r.label}}</span>
-                                </label>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                </div>
+               
 
                 <table class="table table-bordered" ng-show="data == undefined || data.length == 0">
                     <tr>
@@ -175,7 +148,7 @@
                             <td  ng-repeat="period in periods" ng-bind="row[period]">{{ row.no }}</td>
 
 
-                             
+                            
                         </tr>
                         </tbody>
                     </table>
