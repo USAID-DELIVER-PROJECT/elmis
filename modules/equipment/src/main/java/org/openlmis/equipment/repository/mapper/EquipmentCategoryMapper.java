@@ -42,4 +42,10 @@ public interface EquipmentCategoryMapper {
 
     @Update("update equipment_types set categoryid = null")
     void resetEquipmentTypecategoryAssociation();
+
+   @Update("update equipment_functional_test_types set equipmentcategoryid = null")
+    void resetEquipmentFunctionalTestTypeCategoryAssociation();
+
+    @Update("update equipment_functional_test_types set  equipmentcategoryid = #{equipmentCategoryId} where id = #{functionalTestTypeId}")
+    void associateFunctionalTestTypes(@Param("equipmentCategoryId") Long equipmentCategoryId, @Param("functionalTestTypeId") Long functionalTestTypeId);
 }

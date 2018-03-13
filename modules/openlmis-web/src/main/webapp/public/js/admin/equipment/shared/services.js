@@ -341,7 +341,6 @@ services.factory('EquipmentCategories', function ($resource) {
     return $resource('/equipmentCategory/:id', {id: '@_id'}, {
         update: {method: 'PUT' },
         associateEquipmentTypes : {method : 'PUT', url: '/equipmentCategories/associate/equipmentTypes'}
-
     });
 });
 

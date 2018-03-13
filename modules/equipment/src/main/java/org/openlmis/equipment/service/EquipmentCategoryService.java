@@ -1,9 +1,11 @@
 package org.openlmis.equipment.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openlmis.equipment.domain.EquipmentCategory;
+import org.openlmis.equipment.domain.EquipmentFunctionalTestTypes;
 import org.openlmis.equipment.repository.EquipmentCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,4 +39,5 @@ public class EquipmentCategoryService {
 
     public void associateEquipmentTypes(List<EquipmentCategory> categoryList) { repository.associateEquipmentTypes(categoryList);
     }
+
 }
