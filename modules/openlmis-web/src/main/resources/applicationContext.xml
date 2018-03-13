@@ -80,6 +80,7 @@
     <import resource="classpath:/springSecurityContext.xml"/>
     <import resource="classpath:/applicationContext-authentication.xml"/>
     <import resource="classpath:/applicationContext-core.xml"/>
+    <import resource="classpath:/applicationContext-migration.xml"/>
     <import resource="classpath:/applicationContext-restapi.xml"/>
     <import resource="classpath:/applicationContext-lookup-api.xml"/>
     <import resource="classpath:/applicationContext-shipment.xml"/>
