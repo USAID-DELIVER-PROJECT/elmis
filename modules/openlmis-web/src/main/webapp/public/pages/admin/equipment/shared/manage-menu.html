@@ -81,5 +81,20 @@
                 <span>Facility List</span>
             </a>
         </li>
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="equipmentCategorySelected">
+            <a href="/public/pages/admin/equipment/category/index.html">
+                <span id="equipment-category" openlmis-message="link.manage.equipment-category"></span>
+            </a>
+        </li>
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="equipmentFunctionalTestTypeSelected">
+            <a href="/public/pages/admin/equipment/functional-test-types/index.html">
+                <span id="equipment-functional-test-types" openlmis-message="link.manage.equipment-functional-test-types"></span>
+            </a>
+        </li>
+        <li ng-show="hasPermission('MANAGE_EQUIPMENT_SETTINGS')" ng-class="equipmentTestItemSelected">
+            <a href="/public/pages/admin/equipment/equipment-test-item/index.html">
+                <span id="equipment-test-items" openlmis-message="link.manage.equipment.test.items"></span>
+            </a>
+        </li>
     </ul>
 </div>

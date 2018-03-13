@@ -1338,6 +1338,7 @@ services.factory('FacilityConsumptionReport', function ($resource) {
     return $resource('/reports/reportdata/facilityConsumption.json', {}, {});
 });
 
+
 services.factory('DailyConsumption', function ($resource) {
     return $resource('/reports/reportdata/dailyConsumption.json', {}, {});
 });

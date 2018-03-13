@@ -12,6 +12,8 @@
 
 package org.openlmis.ivdform.repository.reports;
 
+import org.openlmis.core.domain.ConfigurationSetting;
+import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.GeographicZoneService;
 import org.openlmis.ivdform.domain.reports.DiseaseLineItem;
 import org.openlmis.ivdform.domain.reports.ReportStatus;
@@ -42,6 +44,9 @@ public class IvdFormRepository {
   @Autowired
   GeographicZoneService geographicZoneService;
 
+  @Autowired
+  ConfigurationSettingService configurationSettingService;
+
 
   public void insert(VaccineReport report, Long userId) {
     mapper.insert(report);
@@ -55,6 +60,9 @@ public class IvdFormRepository {
     lineItemService.saveCoverageLineItems(dbVersion, report.getCoverageLineItems(), report.getId(),userId);
     lineItemService.saveColdChainLIneItems(dbVersion, report.getColdChainLineItems(), report.getId(), userId);
     lineItemService.saveVitaminLineItems(dbVersion, report.getVitaminSupplementationLineItems(), report.getId(), userId);
+    if(report.getSource() !=null)
+    lineItemService.saveAdverseEffectLineItemsForInterfaceAPI(dbVersion, report.getAdverseEffectLineItems(), report.getId(), userId);
+    else
     lineItemService.saveAdverseEffectLineItems(dbVersion, report.getAdverseEffectLineItems(), report.getId(), userId);
     lineItemService.saveCampaignLineItems(dbVersion, report.getCampaignLineItems(), report.getId(), userId);
   }
