@@ -67,49 +67,18 @@
                     <form ng-submit="filterGrid()" name="filterForm" novalidate>
                         <div filter-container class="clearfix">
                             <program-filter class="form-cell horizontalFilters" required="true"></program-filter>
-                            <schedule-filter class="form-cell horizontalFilters" required="true"></schedule-filter>
-                            <year-filter class="form-cell horizontalFilters" required="true"></year-filter>
-                            <period-filter class="form-cell horizontalFilters" required="true"></period-filter>
 
                             <date-range-filter perioderror="error" year="staticYear" startdate="filter.periodStart"
                                                enddate="filter.periodEnd"
                                                class="form-cell horizontalFilters"></date-range-filter>
+                            <zone-filter class="form-cell horizontalFilters"></zone-filter>
+                            <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
+                            <facility-filter class="form-cell horizontalFilters"></facility-filter>
 
-<!--
-                            <date-range-filter perioderror="error" startdate="filter.periodStart"
-                                               enddate="filter.periodEnd"
-                                               class="form-cell horizontalFilters"></date-range-filter>-->
 
-                            <div class="form-cell horizontalFilters" style="padding-top: 20px;">
-
-                                <label class="checkbox">
-                                    <input class="checkbox" type="checkbox" ng-model="filter.disaggregated"
-                                           ng-change="searchReport()"/>
-
-                                    <span  style="color:#078f97;" openlmis-message="label.report.view.disaggregated"></span>
-                                </label>
-                            </div>
                             <div class="clearfix padding2px"></div>
-                            <div ng-hide="showMoreFilters" class="form-cell horizontalFilters">
-                                <br/>
-                                <a class="button" href="" ng-click="toggleMoreFilters()"
-                                   openlmis-message="link.report.show.more.filters"></a>
-                            </div>
 
-                            <div ng-hide="!showMoreFilters">
-                                <zone-filter class="form-cell horizontalFilters"></zone-filter>
-                                <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
-                                <facility-filter class="form-cell horizontalFilters"></facility-filter>
 
-                                <product-category-filter class="form-cell horizontalFilters"></product-category-filter>
-                                <product-multi-filter class="form-cell horizontalFilters"></product-multi-filter>
-
-                                <div class="clearfix form-cell horizontalFilters">
-                                    <br/>
-                                    <a class="button" href="javascript:void()" ng-click="toggleMoreFilters()">Less
-                                        Filters</a>
-                                </div>
-                            </div>
                             <div class="clearfix padding2px"></div>
                             <div>
     <span class="pull-right"><a ng-click="searchReport()" class="waves-effect waves-light btn">Search</a>
@@ -153,11 +122,7 @@
                         </tbody>
                     </table>
                     <div class="clearfix"></div>
-                    <div ng-show="datarows.length > 0" class="box">
-                        <div class="box-content">
-                            <span openlmis-message="report.message.aggregate.consumption"></span>
-                        </div>
-                    </div>
+
                 </div>
 
             </div>

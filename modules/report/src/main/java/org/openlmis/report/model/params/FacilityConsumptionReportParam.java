@@ -29,6 +29,7 @@ public class FacilityConsumptionReportParam
     @RequiredParam
     private Long program;
     private Long zone;
+    private Long facility;
     private String products;
     private Long productCategory;
     private String periodStart;

@@ -74,23 +74,22 @@ function FacilityConsumptionReportController($scope, $filter, $window, FacilityC
         $scope.data = $scope.datarows = [];
 
         $scope.filter.max = 10000;
-        if (allParams.period !== '' &&
-            allParams.schedule !== '' &&
-            allParams.products !== null &&
+        if (allParams.facility !== null &&
+            allParams.periodStart !== null &&
+            allParams.periodEnd !== null &&
             allParams.program !== null
         ) {
             FacilityConsumptionReport.get(allParams, function (data) {
                 if (data.pages !== undefined) {
                     var output = getPivotData(data.pages.rows, "periodName", "code");
-                    $scope.data=output.pivotData;
-                    $scope.periods=output.periods;
+                    $scope.data = output.pivotData;
+                    $scope.periods = output.periods;
 
                     $scope.paramsChanged($scope.tableParams);
                 }
             });
 
         }
-
 
 
     };
@@ -104,8 +103,6 @@ function FacilityConsumptionReportController($scope, $filter, $window, FacilityC
     $scope.toggleMoreFilters = function () {
         $scope.showMoreFilters = true;
     };
-
-
 
 
     function getPivotData(dataArray, colName, dataIndex) {
@@ -131,7 +128,7 @@ function FacilityConsumptionReportController($scope, $filter, $window, FacilityC
             pivotRow[dataArray[i][colName]] = dataArray[i].consumption;
         }
 
-        return {"periods": newCols,"pivotData":pivotData};
+        return {"periods": newCols, "pivotData": pivotData};
     }
 
 }
