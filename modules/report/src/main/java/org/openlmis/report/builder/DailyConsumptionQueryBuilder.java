@@ -43,6 +43,7 @@ public class DailyConsumptionQueryBuilder {
         SELECT("current_date -(select max(date)from daily_stock_status where facilityid=ds.facilityid) as daysAfterLastSubmission");
         FROM("daily_stock_status ds");
         INNER_JOIN("facilities f on f.id=ds.facilityid");
+        INNER_JOIN("vw_districts d on d.district_id = f.geographicZoneId ");
         INNER_JOIN("daily_stock_status_line_items dsl on ds.id=dsl.stockstatussubmissionid ");
         INNER_JOIN("products p on p.id=dsl.productid ");
 
@@ -57,7 +58,9 @@ public class DailyConsumptionQueryBuilder {
         WHERE(programIsFilteredBy("ds.programid"));
         WHERE(userHasPermissionOnFacilityBy("ds.facilityId"));
         WHERE(dateFilteredBy("ds.date", filter.getDate().trim()));
-
+        if (filter.getZone() != 0) {
+            WHERE(geoZoneIsFilteredBy("d"));
+        }
 //        if (filter.getZone() != 0) {
 //            WHERE(geoZoneIsFilteredBy("d"));
 //        }
