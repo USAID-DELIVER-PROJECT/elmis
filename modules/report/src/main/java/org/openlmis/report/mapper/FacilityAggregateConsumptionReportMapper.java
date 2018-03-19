@@ -30,7 +30,7 @@ public interface FacilityAggregateConsumptionReportMapper {
 
   @SelectProvider(type = FacilityAggregateConsumptionQueryBuilder.class, method = "getQuery")
   @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
-  public List<DistrictConsumptionReport> getAggregateConsumptionReport(
+   List<DistrictConsumptionReport> getAggregateConsumptionReport(
           @Param("filterCriteria") ReportParameter filterCriteria,
           @Param("SortCriteria") Map<String, String[]> sortCriteria,
           @Param("RowBounds") RowBounds rowBounds,

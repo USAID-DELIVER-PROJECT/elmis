@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 function FacilityConsumptionReportController($scope, $filter, $window, FacilityConsumptionReport) {
-
+    $scope.filter = {};
     $scope.reportTypes = [{name: 'EM', value: 'EM', label: 'Emergency'}, {name: 'RE', value: 'RE', label: 'Regular'}];
     $scope.isAll = false;
     $scope.selectAll = function () {
@@ -70,24 +70,26 @@ function FacilityConsumptionReportController($scope, $filter, $window, FacilityC
     $scope.searchReport = function () {
 
         var allParams = angular.extend($scope.filter, $scope.getSanitizedParameter());
-
+        var selectDisggregate = $scope.filter.disaggregated;
         $scope.data = $scope.datarows = [];
 
         $scope.filter.max = 10000;
-        if (allParams.facility !== null &&
+        if (
             allParams.periodStart !== null &&
             allParams.periodEnd !== null &&
             allParams.program !== null
         ) {
-            FacilityConsumptionReport.get(allParams, function (data) {
+           FacilityConsumptionReport.get(allParams, function (data) {
+
+            console.log(JSON.stringify(data))
                 if (data.pages !== undefined) {
-                    var output = getPivotData(data.pages.rows, "periodName", "code");
+                    var output = getPivotData(data.pages.rows, "periodName", "code", selectDisggregate);
                     $scope.data = output.pivotData;
                     $scope.periods = output.periods;
 
                     $scope.paramsChanged($scope.tableParams);
                 }
-            });
+           });
 
         }
 
@@ -105,8 +107,8 @@ function FacilityConsumptionReportController($scope, $filter, $window, FacilityC
     };
 
 
-    function getPivotData(dataArray, colName, dataIndex) {
-
+    function getPivotData(dataArray, colName, dataIndex, disaggregated) {
+console.log("value is : "+JSON.stringify(dataArray))
         var newCols = [];
         var pivotData = [];
         for (var i = 0; i < dataArray.length; i++) {
@@ -114,15 +116,28 @@ function FacilityConsumptionReportController($scope, $filter, $window, FacilityC
 
                 newCols.push(dataArray[i][colName]);
             }
-            var pivotRow = _.findWhere(pivotData, {code: dataArray[i][dataIndex]});
+            var pivotRow = {};
+            if (utils.isNullOrUndefined(disaggregated) || disaggregated === false || disaggregated === 'false') {
+                pivotRow = _.findWhere(pivotData, {code: dataArray[i][dataIndex]});
+            } else {
+                console.log("pivot row" + JSON.stringify(dataArray[i]))
+                pivotRow = _.findWhere(pivotData, {
+                    facilityId: dataArray[i].facilityId,
+                    code: dataArray[i][dataIndex]
+                });
+            }
             if (pivotRow === null || pivotRow === undefined) {
                 pivotRow = {
+                    "facility": dataArray[i].product,
+                    "facilityType": dataArray[i].facilityType,
+                    "facilityId": dataArray[i].facilityId,
                     "product": dataArray[i].product,
                     "code": dataArray[i].code,
                     "level": dataArray[i].level,
                     "district": dataArray[i].district
 
                 };
+console.log(JSON.stringify(" pivot row" + pivotRow))
                 pivotData.push(pivotRow);
             }
             pivotRow[dataArray[i][colName]] = dataArray[i].consumption;

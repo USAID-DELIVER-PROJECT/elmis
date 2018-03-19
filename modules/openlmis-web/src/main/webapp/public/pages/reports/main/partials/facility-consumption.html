@@ -76,6 +76,16 @@
                             <facility-filter class="form-cell horizontalFilters"></facility-filter>
 
 
+                                <div class="form-cell horizontalFilters" style="padding-top: 20px;">
+
+                                    <label class="checkbox">
+                                        <input class="checkbox" type="checkbox" ng-model="filter.disaggregated"
+                                               ng-change="searchReport()"/>
+
+                                        <span  style="color:#078f97;" openlmis-message="label.report.view.disaggregated"></span>
+                                    </label>
+                                </div>
+
                             <div class="clearfix padding2px"></div>
 
 
@@ -104,6 +114,8 @@
                            ng-table="tableParams">
 <thead>
 <tr>
+    <th ng-if="filter.disaggregated==true">Facility</th>
+    <th ng-if="filter.disaggregated==true">Facility Type</th>
     <th>Product Code</th>
     <th>Product Name</th>
 
@@ -112,6 +124,8 @@
 </thead>
                         <tbody>
                         <tr ng-repeat="row in data">
+                            <td ng-if="filter.disaggregated==true"  ng-bind="row.facility"></td>
+                            <td  ng-if="filter.disaggregated==true" ng-bind="row.facilityType"></td>
 <td ng-bind="row.code"></td>
                             <td ng-bind="row.product"></td>
                             <td  ng-repeat="period in periods" ng-bind="row[period]">{{ row.no }}</td>

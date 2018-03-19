@@ -49,74 +49,35 @@ public class FacilityAggregateConsumptionQueryBuilder {
         return SQL();
 
     }
-//    public static String getAggregateSelect(AggregateConsumptionReportParam filter) {
-//
-//
-//        BEGIN();
-//
-//        SELECT(" periodName");
-//        SELECT(" periodStart");
-//        SELECT("code");
-//        SELECT(" product");
-//        SELECT(" dispensed");
-//        SELECT("consumption");
-//        SELECT(" consumptionInPacks");
-//        SELECT(" adjustedConsumptionInPacks ");// FROM("vw_materialized_aggregate_consumption vw");
-//        FROM("mvw_facility_consumption");
-//
-//        WHERE(periodStartDateRangeFilteredBy("periodStart", filter.getPeriodStart().trim()));
-//        ORDER_BY("product,periodStart,periodName");
-//        return SQL();
-//
-//    }
-
-    //  public static String getDisAggregateSelect(AggregateConsumptionReportParam filter) {
-//
-//    BEGIN();
-//    SELECT("f.code facilityCode");
-//    SELECT("pp.name periodName");
-//    SELECT("pp.startdate startdate");
-//    SELECT("f.name facility");
-//    SELECT("ft.name facilityType ");
-//    SELECT("p.code");
-//    SELECT("p.primaryName || ' '|| coalesce(p.strength,'') ||' '|| coalesce(ds.code,'') || ' (' || coalesce(p.dispensingunit, '-') || ')' as product");
-//    SELECT("sum(li.quantityDispensed) dispensed");
-//    SELECT("sum(li.normalizedConsumption) consumption");
-//    SELECT("ceil(sum(li.quantityDispensed) / (sum(li.packsize)/count(li.productCode))::float) consumptionInPacks");
-//    SELECT("ceil(sum(li.normalizedConsumption) / (sum(li.packsize)/count(li.productCode))::float) adjustedConsumptionInPacks ");// FROM("vw_materialized_aggregate_consumption vw");
-//    FROM("requisition_line_items li");
-//    INNER_JOIN("requisitions r on r.id = li.rnrid");
-//    INNER_JOIN("facilities f on r.facilityId = f.id ");
-//    INNER_JOIN("vw_districts d on d.district_id = f.geographicZoneId ");
-//    INNER_JOIN("processing_periods pp on pp.id = r.periodId");
-//    INNER_JOIN("products p on p.code::text = li.productCode::text");
-//    INNER_JOIN("program_products ppg on ppg.programId = r.programId and ppg.productId = p.id");
-//    INNER_JOIN("facility_types ft ON ft.id =f.typeId");
-//    INNER_JOIN("dosage_units ds ON ds.id = p.dosageunitid");
-//    writePredicates(filter);
-//    GROUP_BY("p.code, p.primaryName, p.dispensingUnit, p.strength, ds.code,f.Code,f.name,ft.name ,pp.name");
-//    ORDER_BY("p.primaryName,pp.startdate,pp.name");
-//    return SQL();
-//
-//  }
     public static String getDisAggregateSelect(FacilityConsumptionReportParam filter) {
 
         BEGIN();
-        SELECT("facilityCode");
-        SELECT(" periodName");
-        SELECT(" startdate");
-        SELECT("facility");
-        SELECT(" facilityType ");
-        SELECT("code");
-        SELECT(" product");
-        SELECT(" dispensed");
-        SELECT("consumption");
-        SELECT(" consumptionInPacks");
-        SELECT(" adjustedConsumptionInPacks ");// FROM("vw_materialized_aggregate_consumption vw");
-        FROM("mvw_facility_consumption");
+        SELECT("p.code");
+        SELECT("pp.name periodName");
+        SELECT("pp.startdate periodStart");
+        SELECT("f.id facilityId");
+        SELECT("f.name facility");
+        SELECT("ft.name facilityType ");
+        SELECT("p.primaryName || ' '|| coalesce(p.strength,'') ||' '|| coalesce(ds.code,'') || ' (' || coalesce(p.dispensingunit, '-') || ')' as product");
+        SELECT("sum(li.quantityDispensed) dispensed");
+        SELECT("sum(li.normalizedConsumption) consumption");
+        SELECT("ceil(sum(li.quantityDispensed) / (sum(li.packsize)/count(li.productCode))::float) consumptionInPacks");
+        SELECT("ceil(sum(li.normalizedConsumption) / (sum(li.packsize)/count(li.productCode))::float) adjustedConsumptionInPacks ");
+        FROM("requisition_line_items li");
+        INNER_JOIN("requisitions r on r.id = li.rnrid");
+        INNER_JOIN("facilities f on r.facilityId = f.id ");
+        INNER_JOIN("vw_districts d on d.district_id = f.geographicZoneId ");
+        INNER_JOIN("processing_periods pp on pp.id = r.periodId");
+        INNER_JOIN("products p on p.code::text = li.productCode::text");
+        INNER_JOIN("program_products ppg on ppg.programId = r.programId and ppg.productId = p.id");
+        INNER_JOIN("facility_types ft ON ft.id =f.typeId");
+        INNER_JOIN("dosage_units ds ON ds.id = p.dosageunitid");
 
 
-        ORDER_BY("product,startdate,periodName");
+        writePredicates(filter);
+
+        GROUP_BY("f.id,f.name, ft.name,p.code, p.primaryName, p.dispensingUnit, p.strength, ds.code,pp.name,pp.startdate");
+        ORDER_BY("f.name,p.primaryName,pp.startdate");
         return SQL();
 
     }
@@ -124,19 +85,13 @@ public class FacilityAggregateConsumptionQueryBuilder {
     private static void writePredicates(FacilityConsumptionReportParam filter) {
 
         WHERE(programIsFilteredBy("r.programId"));
-        WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
+//        WHERE(userHasPermissionOnFacilityBy("r.facilityId"));
         WHERE(rnrStatusFilteredBy("r.status", filter.getAcceptedRnrStatuses()));
         WHERE(periodStartDateRangeFilteredBy("pp.startdate", filter.getPeriodStart().trim()));
         WHERE(periodEndDateRangeFilteredBy("pp.enddate", filter.getPeriodEnd().trim()));
-        WHERE(facilityIsFilteredBy("f.id"));
-        if (filter.getProductCategory() != 0) {
-            WHERE(productCategoryIsFilteredBy("ppg.productCategoryId"));
+        if(filter.getFacility()!=null&&filter.getFacility()!=0) {
+            WHERE(facilityIsFilteredBy("f.id"));
         }
-
-        if (multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer") != null) {
-            WHERE(multiProductFilterBy(filter.getProducts(), "p.id", "p.tracer"));
-        }
-
         if (filter.getZone() != 0) {
             WHERE(geoZoneIsFilteredBy("d"));
         }

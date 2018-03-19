@@ -37,6 +37,7 @@ public class DistrictConsumptionReport implements ResultRow {
   private String facilityCode;
   private String facility;
   private String facilityType;
+  private Long facilityId;
   private String periodName;
   private Date periodStart;
 
