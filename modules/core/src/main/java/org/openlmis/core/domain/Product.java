@@ -115,6 +115,8 @@ public class Product extends BaseModel implements Importable {
   @ImportField(type = "double", name = "Contraceptive CYP")
   private Double contraceptiveCYP;
 
+  @ImportField(type = "int", name = "MSL Pack Size")
+  private Integer mslPackSize;
   @ImportField(mandatory = true, type = "int", name = "Pack Size")
   private Integer packSize;
 
@@ -177,6 +179,9 @@ public class Product extends BaseModel implements Importable {
 
   public void validate() {
     if (this.packSize <= 0) {
+      throw new DataException("error.invalid.pack.size");
+    }
+    if (this.mslPackSize <= 0) {
       throw new DataException("error.invalid.pack.size");
     }
   }
