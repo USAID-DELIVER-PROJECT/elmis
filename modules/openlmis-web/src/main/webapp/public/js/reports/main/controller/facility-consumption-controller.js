@@ -81,7 +81,7 @@ function FacilityConsumptionReportController($scope, $filter, $window, FacilityC
         ) {
            FacilityConsumptionReport.get(allParams, function (data) {
 
-            console.log(JSON.stringify(data))
+
                 if (data.pages !== undefined) {
                     var output = getPivotData(data.pages.rows, "periodName", "code", selectDisggregate);
                     $scope.data = output.pivotData;
@@ -108,7 +108,7 @@ function FacilityConsumptionReportController($scope, $filter, $window, FacilityC
 
 
     function getPivotData(dataArray, colName, dataIndex, disaggregated) {
-console.log("value is : "+JSON.stringify(dataArray))
+
         var newCols = [];
         var pivotData = [];
         for (var i = 0; i < dataArray.length; i++) {
@@ -120,7 +120,7 @@ console.log("value is : "+JSON.stringify(dataArray))
             if (utils.isNullOrUndefined(disaggregated) || disaggregated === false || disaggregated === 'false') {
                 pivotRow = _.findWhere(pivotData, {code: dataArray[i][dataIndex]});
             } else {
-                console.log("pivot row" + JSON.stringify(dataArray[i]))
+
                 pivotRow = _.findWhere(pivotData, {
                     facilityId: dataArray[i].facilityId,
                     code: dataArray[i][dataIndex]
@@ -137,7 +137,7 @@ console.log("value is : "+JSON.stringify(dataArray))
                     "district": dataArray[i].district
 
                 };
-console.log(JSON.stringify(" pivot row" + pivotRow))
+
                 pivotData.push(pivotRow);
             }
             pivotRow[dataArray[i][colName]] = dataArray[i].consumption;
