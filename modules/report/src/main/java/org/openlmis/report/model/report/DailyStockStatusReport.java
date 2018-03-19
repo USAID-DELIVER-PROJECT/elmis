@@ -19,11 +19,21 @@ public class DailyStockStatusReport implements ResultRow {
     private Long programId;
     private Date date;
     private String source;
-    private String facilityName;
+    private String status;
+    private String dailyStatus;
+    private String district;
+    private String province;
+    private String facility;
     private Long productId;
-    private String productName;
+    private String product;
     private String productCode;
     private Long stockOnHand;
     private Long daysAfterFirstSubmission;
     private Long daysAfterLastSubmission;
+    private Long amc;
+    private Long mos;
+    private Long stockinhand;
+    private Date fistSubmissionDate;
+    private Date lastSubmissionDate;
+
 }

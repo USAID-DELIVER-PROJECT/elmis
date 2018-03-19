@@ -13,7 +13,7 @@ function DailyConsumptionReportController($scope, DailyConsumption,$window, $rou
     $scope.perioderror = "";
 
     $scope.allReportType = false;
-    $scope.OnFilterChanged = function () {
+    $scope.searchReport = function () {
 			$scope.filter.max=1000;
         DailyConsumption.get($scope.getSanitizedParameter(), function (data) {
             console.log(JSON.stringify(data.pages.rows));
@@ -24,12 +24,18 @@ function DailyConsumptionReportController($scope, DailyConsumption,$window, $rou
     };
 
     var generateParentChildReport = function(data) {
-       var val = _.uniq(data,false, function (item) { return item.facilityId; });
+       var val = _.uniq(data,false, function (item) { return item.facilityCode; });
         console.log('unique value is '+JSON.stringify( val));
         _.each(val, function(row){
-            row.lineItems = _.chain(data).where({facilityId: row.facilityId}).map(function(row){
-                return {'name': row.productName,
-                    stockOnHand:row.stockOnHand};
+            row.lineItems = _.chain(data).where({facilityCode: row.facilityCode}).map(function(row){
+                return {name: row.product,
+                    productCode:row.productCode,
+                    stockOnHand:row.stockinhand,
+                    stockOnDate:row.stockOnHand,
+                amc:row.amc,
+                mos:row.mos,
+                status:row.status,
+                dailyStatus:row.dailyStatus};
             }).value();
         });
         return val;

@@ -13,9 +13,7 @@
 package org.openlmis.report.mapper;
 
 
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.RowBounds;
 import org.openlmis.report.builder.DailyConsumptionQueryBuilder;
@@ -30,6 +28,23 @@ import java.util.Map;
 public interface DailyStockStatusReportMapper {
 
     @SelectProvider(type = DailyConsumptionQueryBuilder.class, method = "getQuery")
+    @Results(value={
+            @Result(property = "id", column = "id"),
+            @Result(property = "facilityCode", column = "facilityCode"),
+            @Result(property = "programId", column = "programId"),
+            @Result(property = "date", column = "date"),
+            @Result(property = "facility", column = "facility"),
+            @Result(property = "productId", column = "productId"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "stockOnHand", column = "stockOnHand"),
+            @Result(property = "daysAfterFirstSubmission", column = "daysAfterFirstSubmission"),
+            @Result(property = "daysAfterLastSubmission", column = "daysAfterLastSubmission"),
+            @Result(property = "amc", column = "amc"),
+            @Result(property = "mos", column = "mos"),
+            @Result(property = "stockinhand", column = "stockinhand"),
+            @Result(property = "fistSubmissionDate", column = "fistSubmissionDate"),
+            @Result(property = "lastSubmissionDate", column = "lastSubmissionDate")
+    })
     @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
      List<DailyStockStatusReport> getDailyConsumptionReport(
             @Param("filterCriteria") ReportParameter filterCriteria,

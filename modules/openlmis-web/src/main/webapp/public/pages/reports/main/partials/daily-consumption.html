@@ -47,7 +47,7 @@
                                 <facility-owner-filter class="form-cell horizontalFilters"></facility-owner-filter>
                             </filter-container>
 
-
+                            <span class="pull-right"><a ng-click="searchReport()" class="waves-effect waves-light btn">Search</a>
                         </div>
                     </form>
                     <div style="margin:2px !important;font-size:10px;" ng-show="perioderror" class="row">
@@ -80,14 +80,20 @@
                                         sortable="facilityCode">{{ row.facilityCode }}
                                     </td>
                                     <td style="width:150px" data-title="getLocalMessage('label.facility.name')"
-                                        sortable="facilityName">{{ row.facilityName }}
+                                               sortable="facilityName">{{ row.facility }}
+                                </td>
+                                    <td style="width:150px" data-title="getLocalMessage('label.district')"
+                                        sortable="district">{{ row.district}}
+                                    </td>
+                                    <td style="width:150px" data-title="getLocalMessage('label.zone')"
+                                        sortable="province">{{row.province }}
                                     </td>
                                     <td style="width:120px" data-title="getLocalMessage('label.daily.requisition.first.submission')"
-                                        sortable="submission">{{ row.daysAfterFirstSubmission }}
+                                        sortable="submission">{{ row.fistSubmissionDate | date : 'dd MMM, yyyy' }}
                                     </td>
                                     <td style="width:80px" data-title="getLocalMessage('label.daily.requisition.last.submission')"
                                         sortable="daysAfterLastSubmission">
-                                        {{ row.daysAfterLastSubmission }}
+                                        {{ row.lastSubmissionDate | date : 'dd MMM, yyyy' }}
                                     </td>
 
 
@@ -101,13 +107,29 @@
                                             <tr>
                                                 <th openlmis-message="rnr.header.product.name"></th>
                                                 <th openlmis-message="label.stock.on.hand"></th>
+                                                <th openlmis-message="label.daily.stock.on.hand"></th>
+                                                <th openlmis-message="label.amc"></th>
+                                                <th openlmis-message="label.mos"></th>
+                                                <th openlmis-message="label.status"></th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr  ng-repeat="p in row.lineItems">
                                                 <td>{{ p.name }}</td>
-                                                <td>{{  p.stockOnHand }}</td>
-
+                                                <td>{{ p.stockOnHand }}</td>
+                                                <td>{{ p.stockOnDate }}</td>
+                                                <td>{{p.amc}}</td>
+                                                <td>{{p.mos}}</td>                                <td>
+                                                    <div
+                                                            class="{{(p.dailyStatus == 'SO')?'red':(p.dailyStatus=='SP')?'green':(p.dailyStatus=='OS')?'blue':'yellow'}}">
+                      <span ng-show="p.amc == 0 || p.dailyStatus == 'UK'" class="icon-warning-sign"
+                            tooltip="AMC is 0, which indicates that there may not be enough data to interpret this status."></span>
+                                                        {{ (p.dailyStatus == 'SO') ?
+                                                        'Stocked Out' :
+                                                        (p.dailyStatus=='SP') ?
+                                                        'Adequately Stocked' : (p.dailyStatus=='OS') ? 'Over Stocked' : (p.dailyStatus =='US') ? 'Under Stocked' : 'No Demand (AMC=0)' }}
+                                                    </div>
+                                                </td>
                                             </tr>
                                             </tbody>
                                         </table>
