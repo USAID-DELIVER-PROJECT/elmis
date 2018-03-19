@@ -70,6 +70,7 @@ public class ProductServiceTest {
   public void shouldStoreProduct() throws Exception {
     Product product = new Product();
     product.setPackSize(5);
+    product.setMslPackSize(6);
     DosageUnit unit = new DosageUnit("code", 1);
     product.setDosageUnit(unit);
     DosageUnit newUnit = new DosageUnit("code", 40);
@@ -99,6 +100,7 @@ public class ProductServiceTest {
   public void shouldThrowExceptionIfDosageUnitReturnedIsNull() throws Exception {
     Product product = new Product();
     product.setPackSize(5);
+    product.setMslPackSize(6);
     product.setDosageUnit(new DosageUnit("code", 98));
 
     when(productGroupService.validateAndReturn(product.getProductGroup())).thenReturn(null);
@@ -119,6 +121,7 @@ public class ProductServiceTest {
     Product product = new Product();
     product.setCode("P1");
     product.setPackSize(5);
+    product.setMslPackSize(6);
     product.setDosageUnit(new DosageUnit(null, 23));
     when(productGroupService.validateAndReturn(product.getProductGroup())).thenReturn(null);
     when(productFormService.validateAndReturn(product.getForm())).thenReturn(null);
@@ -138,7 +141,7 @@ public class ProductServiceTest {
     product.setId(2L);
     product.setCode("proCode");
     product.setPackSize(5);
-
+    product.setMslPackSize(6);
     when(productGroupService.validateAndReturn(product.getProductGroup())).thenReturn(null);
     when(productFormService.validateAndReturn(product.getForm())).thenReturn(null);
     List<ProgramProduct> programProducts = new ArrayList<>();
@@ -159,7 +162,7 @@ public class ProductServiceTest {
     product.setCode(productCode);
     product.setId(2L);
     product.setPackSize(5);
-
+    product.setMslPackSize(6);
     final ProgramProduct existingProgramProduct = make(a(defaultProgramProduct, with(active, true), with(productActive, true)));
     when(productGroupService.validateAndReturn(product.getProductGroup())).thenReturn(null);
     when(productFormService.validateAndReturn(product.getForm())).thenReturn(null);
@@ -180,7 +183,7 @@ public class ProductServiceTest {
     product.setCode(productCode);
     product.setId(2L);
     product.setPackSize(5);
-
+    product.setMslPackSize(6);
     final ProgramProduct tbProduct = make(a(defaultProgramProduct, with(programCode, "TB"), with(active, true), with(productActive, false)));
     final ProgramProduct hivProduct = make(a(defaultProgramProduct, with(programCode, "HIV"), with(active, true), with(productActive, false)));
     when(productGroupService.validateAndReturn(product.getProductGroup())).thenReturn(null);
@@ -202,6 +205,7 @@ public class ProductServiceTest {
     product.setActive(true);
     product.setCode(productCode);
     product.setPackSize(5);
+    product.setMslPackSize(6);
     when(productGroupService.validateAndReturn(product.getProductGroup())).thenReturn(null);
     when(productFormService.validateAndReturn(product.getForm())).thenReturn(null);
     service.save(product);
@@ -220,7 +224,7 @@ public class ProductServiceTest {
     product.setCode(productCode);
     product.setId(2L);
     product.setPackSize(5);
-
+    product.setMslPackSize(6);
     when(productGroupService.validateAndReturn(product.getProductGroup())).thenReturn(null);
     when(productFormService.validateAndReturn(product.getForm())).thenReturn(null);
     final ProgramProduct existingProgramProduct = make(a(defaultProgramProduct, with(active, false), with(productActive, true)));
@@ -241,7 +245,7 @@ public class ProductServiceTest {
     product.setCode(productCode);
     product.setId(2L);
     product.setPackSize(5);
-
+    product.setMslPackSize(6);
     when(productGroupService.validateAndReturn(product.getProductGroup())).thenReturn(null);
     when(productFormService.validateAndReturn(product.getForm())).thenReturn(null);
     final ProgramProduct existingProgramProduct = make(a(defaultProgramProduct, with(active, false), with(productActive, false)));
