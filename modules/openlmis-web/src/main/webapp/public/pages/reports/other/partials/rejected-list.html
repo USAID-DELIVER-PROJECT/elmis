@@ -143,8 +143,8 @@
 
                 <form name="stockOnHandForm">
                     <div class="row">
-                        <div class="col-md-4">
-                            <div id="rejected"></div>
+                        <div class="col-md-4"  ng-show="data != undefined || data.length >= 0">
+                            <div id="rejected" style="height: 400px; margin: 0px auto"></div>
                         </div>
                         <div class="col-md-8 text-right">
 
@@ -185,12 +185,12 @@
                                             </div>
                                         </th>
 
-                                        <th class="span1">
+                                      <!--  <th class="span1">
                                             <div class="regimen-heading">
                                                 <span>Action</span>
                                             </div>
                                         </th>
-
+-->
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -207,12 +207,12 @@
                                             {{rejected.rejectedCount | number}}
                                         </td>
                                         <td class="cell-text  padding2px" style="text-align: center">
-                                    <span class="cell-text">
+                               <!--     <span class="cell-text">
                                           <a id="printButton"
                                              ui-sref="rejectionByZoneView({zone:rejected.zoneName,value:rejected.rejectedCount,status:{{status}},program:{{program}}})"
                                              class="btn btn-primary">View</a>
 
-                                    </span>
+                                    </span>-->
 
 
                                         </td>
