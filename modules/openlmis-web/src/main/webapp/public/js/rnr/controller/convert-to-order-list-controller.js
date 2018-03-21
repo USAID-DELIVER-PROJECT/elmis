@@ -91,7 +91,8 @@ function ConvertToOrderListController($scope, Orders, ReleaseWithoutOrders, Requ
     sortInfo: $scope.sortOptions,
     useExternalSorting: true,
     columnDefs: [
-      {field: 'programName', displayName: messageService.get("program.header") },
+        {field:'number', displayName:messageService.get("label.number"), cellTemplate: '<div style="text-align: center !important;">{{row.rowIndex + 1}}</div>', width:50},
+        {field: 'programName', displayName: messageService.get("program.header") },
       {field: 'facilityCode', displayName: messageService.get("option.value.facility.code")},
       {field: 'facilityName', displayName: messageService.get("option.value.facility.name")},
       {field: 'districtName', sortable:false, displayName: messageService.get("option.value.facility.district")},
