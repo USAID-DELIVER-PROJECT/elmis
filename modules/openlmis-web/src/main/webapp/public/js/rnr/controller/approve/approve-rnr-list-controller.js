@@ -11,6 +11,7 @@
 function ApproveRnrListController($scope, requisitionList, $location, messageService) {
   $scope.requisitions = requisitionList;
   $scope.filteredRequisitions = $scope.requisitions;
+  console.log(requisitionList);
   $scope.selectedItems = [];
 
   $scope.gridOptions = { data: 'filteredRequisitions',
@@ -26,6 +27,7 @@ function ApproveRnrListController($scope, requisitionList, $location, messageSer
     sortInfo: { fields: ['submittedDate'], directions: ['asc'] },
     showFilter: false,
     columnDefs: [
+      {field:'number', displayName:messageService.get("label.number"), cellTemplate: '<div style="text-align: center !important;">{{row.rowIndex + 1}}</div>', width:50},
       {field: 'programName', displayName: messageService.get("program.header") },
       {field: 'facilityCode', displayName: messageService.get("option.value.facility.code")},
       {field: 'facilityName', displayName: messageService.get("option.value.facility.name")},
