@@ -116,7 +116,7 @@ public class RequisitionPredicateHelper {
    */
   public static String periodEndDateRangeFilteredBy(String field, String endDate){
     return String.format("%1$s::date <= (select p.enddate::DATE from processing_periods p " +
-            "where p.enddate >= '%2$s' " +
+            "where p.enddate >= '%2$s::date' " +
             "order by p.enddate ASC  limit 1) ", field, endDate);
   }
 
