@@ -91,13 +91,11 @@ public class DailyStockStatusSubmissionService {
 
     @Async("myExecutor")
     public void saveMSDStockStatus(String dailyStockStatus, Long aLong) throws ParseException {
-        System.out.println("dadada");
         String username = settingService.getByKey(IL_USERNAME).getValue();
-        System.out.println(username);
+
         String password = settingService.getByKey(IL_PASSWORD).getValue();
-        System.out.println(password);
         String il_url = settingService.getByKey(IL_URL).getValue();
-        System.out.println(il_url);
+
 
         ObjectMapper mapper = new ObjectMapper();
 
