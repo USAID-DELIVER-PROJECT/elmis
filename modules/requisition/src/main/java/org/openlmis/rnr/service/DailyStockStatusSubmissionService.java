@@ -91,7 +91,7 @@ public class DailyStockStatusSubmissionService {
 
     @Async("myExecutor")
     public void saveMSDStockStatus(String dailyStockStatus, Long aLong) throws ParseException {
-
+        System.out.println("dadada");
         String username = settingService.getByKey(IL_USERNAME).getValue();
         System.out.println(username);
         String password = settingService.getByKey(IL_PASSWORD).getValue();
@@ -106,44 +106,26 @@ public class DailyStockStatusSubmissionService {
 
             int totalReceived = 0;
             int updated = 0;
-            int ignored =0;
+            int ignored = 0;
             int imported = 0;
-            String id ="";
+            String id = "";
 
             for (MSDStockStatusDTO dto : values) {
 
                 if (dto.getIlId() != null) {
 
-                    Facility facility = facilityService.getFacilityByCode(dto.getPlant());
-                    Product product = productService.getByCode(dto.getPartNum());
-                    dto.setFacilityId(facility.getId());
-                    dto.setProductId(product.getId());
-                    dto.setCreatedBy(aLong);
+                            dto.setCreatedBy(aLong);
+                            repository.clearStatusForFacilityProductDate(dto.getFacilityCode(), dto.getProductCode(), dto.getOnHandDate());
+                            Long trans = repository.saveMsdStockStatus(dto);
 
-                    MSDStockStatusDTO statusDTO1 = repository.getByTransactionId(dto.getIlId());
+                            if (trans == null) {
+                                dto.setStatus("Fail");
+                            } else {
+                                dto.setStatus("Success");
+                            }
+                            imported++;
 
-                    if (statusDTO1 == null) {
-                        Long trans = repository.saveMsdStockStatus(dto);
-                        if (trans == null) {
-                            dto.setStatus("Fail");
-
-                          /*  if (il_url != null && username != null && password != null)
-                                sendConfirmationMessage(username, password, il_url, dto.getStatus(), dto.getIlId());
-*/
-                        } else {
-                            dto.setStatus("Success");
-                            /*if (il_url != null && username != null && password != null)
-                               sendConfirmationMessage(username, password, il_url, dto.getStatus(), dto.getIlId());*/
-                        }
-                       imported++;
-                    }else {
-                        repository.updateMsdStockStatus(statusDTO1);
-                        updated++;
-                        if (il_url != null && username != null && password != null)
-                            dto.setStatus("Fail");
-                           // sendConfirmationMessage(username, password, il_url, dto.getStatus(), dto.getIlId());
-                    }
-                    id = dto.getIlId();
+                            id = dto.getIlId();
                 }
                 totalReceived++;
             }
@@ -153,25 +135,25 @@ public class DailyStockStatusSubmissionService {
             statusDTO.setIL_TransactionIDNumber(id);
             statusDTO.setImported(imported);
             statusDTO.setUpdated(updated);
-            if((imported+updated)<totalReceived)
-            statusDTO.setIgnored(totalReceived-(imported+updated));
+            if ((imported + updated) < totalReceived)
+                statusDTO.setIgnored(totalReceived - (imported + updated));
             else
-            statusDTO.setIgnored(ignored);
+                statusDTO.setIgnored(ignored);
             String jsonInString = mapper.writeValueAsString(statusDTO);
-             if (il_url != null && username != null && password != null)
-                 sendConfirmationMessage(username, password, il_url,jsonInString);
+            if (il_url != null && username != null && password != null)
+                sendConfirmationMessage(username, password, il_url, jsonInString);
 
         } catch (IOException e) {
 
-          //  if (il_url != null && username != null && password != null)
-              //  sendConfirmationMessage(username, password, il_url, dto.getStatus(), hfr.getIlIDNumber());
+            //  if (il_url != null && username != null && password != null)
+            //  sendConfirmationMessage(username, password, il_url, dto.getStatus(), hfr.getIlIDNumber());
 
             e.printStackTrace();
         }
 
     }
 
-    private void sendConfirmationMessage(String username, String password, String il_url,String jsonData) {
+    private void sendConfirmationMessage(String username, String password, String il_url, String jsonData) {
 
         URL obj = null;
         try {
