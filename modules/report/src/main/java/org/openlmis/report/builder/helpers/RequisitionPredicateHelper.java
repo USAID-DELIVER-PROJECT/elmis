@@ -104,7 +104,7 @@ public class RequisitionPredicateHelper {
    */
   public static String periodStartDateRangeFilteredBy(String field, String startDate){
     return String.format("%1$s::date >= (select p.startdate::DATE from processing_periods p\n" +
-            "where p.startdate <= '%2$s'\n" +
+            "where p.startdate <= '%2$s'::date \n" +
             "order by startdate desc limit 1)", field, startDate);
   }
 
@@ -116,7 +116,11 @@ public class RequisitionPredicateHelper {
    */
   public static String periodEndDateRangeFilteredBy(String field, String endDate){
     return String.format("%1$s::date <= (select p.enddate::DATE from processing_periods p " +
-            "where p.enddate >= '%2$s' " +
+            "where p.enddate >= '%2$s'::date " +
             "order by p.enddate ASC  limit 1) ", field, endDate);
+  }
+
+  public static String dateFilteredBy(String field, String date) {
+    return String.format("%1$s = '%2$s'::DATE ", field, date);
   }
 }

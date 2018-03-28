@@ -180,6 +180,26 @@
         </div>
         <div class="span2">
           <div class="form-cell">
+            <label id="productMslPackSizeLabel" for="product.packSize">
+              <span openlmis-message="label.msl.product.packSize"></span>
+              <span class="label-required"> *</span>
+            </label>
+
+            <div class="form-field">
+              <div class="position-relative">
+                <input ng-model="product.packSize" name="mslPackSize" id="product.mslPackSize" type="text"
+                       maxlength="5" class="right-justified"
+                       ng-required="true" numeric-validator="positiveInteger"/>
+                <span class="rnr-form-error" style="display:none;" id="mslPackSize"
+                      openlmis-message="error.number.only"></span>
+              </div>
+              <span class="field-error" ng-show="!product.dosesPerDispensingUnit && showError"
+                    openlmis-message="missing.value"></span>
+            </div>
+          </div>
+        </div>
+        <div class="span2">
+          <div class="form-cell">
             <label id="productPackSizeLabel" for="product.packSize">
               <span openlmis-message="label.product.packSize"></span>
               <span class="label-required"> *</span>
@@ -187,7 +207,7 @@
 
             <div class="form-field">
               <div class="position-relative">
-                <input ng-model="product.packSize" name="packSize" id="product.packSize" type="text"
+                <input ng-model="product.mslPackSize" name="packSize" id="product.packSize" type="text"
                        maxlength="5" class="right-justified"
                        ng-required="true" numeric-validator="positiveInteger"/>
                 <span class="rnr-form-error" style="display:none;" id="packSize"

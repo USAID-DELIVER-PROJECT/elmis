@@ -576,6 +576,33 @@
                     <property name="title" value="report.title.disaggregate.consumption.report"/>
                     <property name="version" value="1.0"/>
                 </bean>
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="facility_consumption"/>
+                    <property name="template" value="facility-pivot-consumption.jasper"/>
+                    <property name="reportDataProvider" ref="facilityConsumptionReportDataProvider"/>
+                    <property name="id" value="Facility_Consumption"/>
+                    <property name="name" value="Facility Consumption Report"/>
+                    <property name="title" value="report.title.facility.consumption.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="facility_consumption_disaggregated"/>
+                    <property name="template" value="facility_consumption__pivot_disaggregated.jasper"/>
+                    <property name="reportDataProvider" ref="facilityConsumptionReportDataProvider"/>
+                    <property name="id" value="Facility_Consumption"/>
+                    <property name="name" value="Facility Consumption Report"/>
+                    <property name="title" value="report.title.facility.consumption.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="daily_consumption"/>
+                    <property name="template" value="daily-consumption.jasper"/>
+                    <property name="reportDataProvider" ref="dailyConsumptionReportDataProvider"/>
+                    <property name="id" value="Daily_Consumption"/>
+                    <property name="name" value="Daily Consumption Report"/>
+                    <property name="title" value="report.title.daily.consumption.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

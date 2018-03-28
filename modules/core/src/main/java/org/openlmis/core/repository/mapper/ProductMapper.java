@@ -35,7 +35,7 @@ public interface ProductMapper {
     "primaryName," + "fullName," + "genericName," + "alternateName," + "description," +
     "strength," +
     "formId," +
-    "dosageUnitId, dispensingUnit, dosesPerDispensingUnit," +
+    "dosageUnitId, dispensingUnit, dosesPerDispensingUnit,mslpacksize," +
     "packSize," + "alternatePackSize," +
     "storeRefrigerated," + "storeRoomTemperature," + "hazardous," + "flammable," + "controlledSubstance," + "lightSensitive," + "approvedByWHO," +
     "contraceptiveCYP," +
@@ -57,7 +57,7 @@ public interface ProductMapper {
     "#{strength}," +
     "#{form.id}, " +
     "#{dosageUnit.id}," +
-    " #{dispensingUnit}, #{dosesPerDispensingUnit}," +
+    " #{dispensingUnit}, #{dosesPerDispensingUnit},#{mslPackSize}," +
     "#{packSize}," + "#{alternatePackSize}," +
     "#{storeRefrigerated}," + "#{storeRoomTemperature}," + "#{hazardous}," + "#{flammable}," + "#{controlledSubstance}," + "#{lightSensitive}," + "#{approvedByWHO}," +
     "#{contraceptiveCYP}," +
@@ -94,7 +94,7 @@ public interface ProductMapper {
     "manufacturerCode = #{manufacturerCode}, manufacturerBarcode = #{manufacturerBarCode}, mohBarcode = #{mohBarCode}, ",
     "gtin = #{gtin}, type = #{type}, primaryName = #{primaryName}, fullName = #{fullName}, genericName = #{genericName},",
     "alternateName=#{alternateName},description=#{description}, ", "strength=#{strength}, formId=#{form.id}, ", "dosageUnitId=#{dosageUnit.id}, dispensingUnit=#{dispensingUnit}, ",
-    "dosesPerDispensingUnit=#{dosesPerDispensingUnit}, ", "packSize=#{packSize},alternatePackSize=#{alternatePackSize}, ", "storeRefrigerated=#{storeRefrigerated},storeRoomTemperature=#{storeRoomTemperature}, ", "hazardous=#{hazardous},",
+    "dosesPerDispensingUnit=#{dosesPerDispensingUnit}, mslpacksize=#{mslPackSize}, ", "packSize=#{packSize},alternatePackSize=#{alternatePackSize}, ", "storeRefrigerated=#{storeRefrigerated},storeRoomTemperature=#{storeRoomTemperature}, ", "hazardous=#{hazardous},",
     "flammable=#{flammable},controlledSubstance=#{controlledSubstance},lightSensitive=#{lightSensitive},approvedByWHO=#{approvedByWHO}, ", "contraceptiveCYP=#{contraceptiveCYP},", "packLength=#{packLength},packWidth=#{packWidth},packHeight=#{packHeight},",
     "packWeight=#{packWeight},packsPerCarton=#{packsPerCarton},", "cartonLength=#{cartonLength},cartonWidth=#{cartonWidth},cartonHeight=#{cartonHeight},cartonsPerPallet=#{cartonsPerPallet},", "expectedShelfLife=#{expectedShelfLife},",
     "specialStorageInstructions=#{specialStorageInstructions},specialTransportInstructions=#{specialTransportInstructions},", "active=#{active},fullSupply=#{fullSupply},tracer=#{tracer},roundToZero=#{roundToZero},archived=#{archived},",
@@ -116,7 +116,7 @@ public interface ProductMapper {
   @Select("SELECT active FROM products WHERE LOWER(code) = LOWER(#{code})")
   boolean isActive(String code);
 
-  @Select({"SELECT id, fullSupply, code, primaryName, strength, dosageUnitId, dispensingUnit, packSize, active",
+  @Select({"SELECT id, fullSupply, code, primaryName, strength, dosageUnitId, dispensingUnit,mslpacksize, packSize, active",
     "FROM products WHERE id = #{id}"})
   @Results({
     @Result(property = "dosageUnit", column = "dosageUnitId", javaType = DosageUnit.class,

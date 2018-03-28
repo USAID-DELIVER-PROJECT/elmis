@@ -14,6 +14,7 @@ import com.wordnik.swagger.annotations.Api;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.restapi.domain.Report;
+import org.openlmis.restapi.request.RequisitionSearchRequest;
 import org.openlmis.restapi.response.RestResponse;
 import org.openlmis.restapi.service.RestRequisitionService;
 import org.openlmis.rnr.domain.Rnr;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.List;
 
 import static org.openlmis.restapi.response.RestResponse.*;
 import static org.springframework.http.HttpStatus.*;
@@ -44,6 +46,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class RestRequisitionController extends BaseController {
 
   public static final String RNR = "requisitionId";
+  public static final String RNRS= "requisitions";
 
   @Autowired
   private RestRequisitionService restRequisitionService;
@@ -115,4 +118,16 @@ public class RestRequisitionController extends BaseController {
       return error(e, BAD_REQUEST);
     }
   }
+
+
+    @RequestMapping(value = "/rest-api/requisitions/search", method = POST, headers = ACCEPT_JSON)
+    public ResponseEntity<RestResponse> searchRnr(@RequestBody RequisitionSearchRequest requisitionSearchRequest, Principal principal) {
+        try {
+            List<Rnr> rnrs = restRequisitionService.searchRnrs(requisitionSearchRequest,  loggedInUserId(principal));
+            ResponseEntity<RestResponse> response = response(RNRS, rnrs);
+            return response;
+        } catch (DataException e) {
+            return error(e, BAD_REQUEST);
+        }
+    }
 }

@@ -1,3 +1,6 @@
+bin/
+.project
+.settings
 *.log*
 .idea/
 *.iml
@@ -68,3 +71,6 @@ modules/vaccine/.sonar/
 modules/vaccine/src/main/.sonar/
 sshipment/
 test-modules/service-tests/
+
+.classpath
+/bin/
