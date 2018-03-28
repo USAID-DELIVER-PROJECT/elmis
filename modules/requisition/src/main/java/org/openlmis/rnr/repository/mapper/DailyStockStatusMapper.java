@@ -39,9 +39,9 @@ public interface DailyStockStatusMapper {
   void insertLineItem(DailyStockStatusLineItem lineItem);
 
   @Insert(" INSERT INTO public.msd_stock_statuses(\n" +
-          "             ilId, facilityId, productId, onHandDate, onHandQuantity, \n" +
+          "             ilId, facilityCode, productCode, onHandDate, onHandQuantity, \n" +
           "            mos, createdDate, createdBy)\n" +
-          "    VALUES ( #{ilId}, #{facilityId}, #{productId}, #{onHandDate}, #{onHandQuantity}, \n" +
+          "    VALUES ( #{ilId}, #{facilityCode}, #{productCode}, #{onHandDate}, #{onHandQuantity}, \n" +
           "            #{mos}, NOW(), #{createdBy}) ")
   @Options(useGeneratedKeys = true)
   Integer insertMSDStatus(MSDStockStatusDTO dto);
@@ -52,4 +52,7 @@ public interface DailyStockStatusMapper {
 @Update("update msd_stock_statuses set onHandDate = #{onHandDate},onHandQuantity=#{onHandQuantity} " +
         " ,mos =#{mos} WHERE ilId= #{ilId} ")
   void updateMsdStockStatus(MSDStockStatusDTO dto);
+
+ @Delete("DELETE FROM msd_stock_statuses WHERE facilityCode =#{facilityCode} and productCode = #{productCode} and onHandDate = #{onHandDate} ")
+ void clearStatusForFacilityProductDate(@Param("facilityCode") String facilityCode,@Param("productCode") String productCode,@Param("onHandDate") String onHandDate);
 }
