@@ -75,6 +75,9 @@
           <input id="approveButton" type="button" ng-click="approveRnr()" class="btn btn-primary submit-button"
                  openlmis-message="button.approve"
                  ng-disabled="!canApproveRnr"/>
+
+
+
           <input ng-class="{'btn-warning': rnrComments.length}" id="comments" type="button" ng-click="showCommentBox=!showCommentBox" class="btn comments-button"
                    openlmis-message="comments.header"/>
             <comment-box updatable="true" show="showCommentBox"></comment-box>
@@ -82,5 +85,10 @@
         <div class="toolbar-error" id="saveFailMessage" openlmis-message="error" ng-show="error"></div>
         <div class="toolbar-success" id="saveSuccessMsgDiv" ng-show="message" fade-out="3000"
              openlmis-message="message"></div>
+        <div class="toolbar-message">
+              <div ng-if="!rnr.period.enableOrder && !rnr.emergency">
+                NOTE: This report will <b>NOT</b> be converted to order.
+              </div>
+        </div>
     </div>
 </form>

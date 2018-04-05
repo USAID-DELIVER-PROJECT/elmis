@@ -50,6 +50,8 @@ public class ProcessingPeriod extends BaseModel {
   @JsonDeserialize(using = DateDeserializer.class)
   private Date endDate;
 
+  private Boolean enableOrder;
+
   public ProcessingPeriod(Long id) {
     this.id = id;
   }

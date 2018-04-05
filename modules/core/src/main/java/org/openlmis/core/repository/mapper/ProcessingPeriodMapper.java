@@ -29,8 +29,8 @@ public interface ProcessingPeriodMapper {
   List<ProcessingPeriod> getAll(Long scheduleId);
 
   @Insert({"INSERT INTO processing_periods",
-    "(name, description, startDate, endDate, scheduleId, numberOfMonths, createdBy,createdDate,modifiedDate,modifiedBy) VALUES(",
-    "#{name}, #{description}, #{startDate}, #{endDate}, #{scheduleId}, #{numberOfMonths},#{createdBy},COALESCE(#{createdDate},NOW()),COALESCE(#{modifiedDate},NOW()),#{modifiedBy})"})
+    "(name, description, startDate, endDate, scheduleId, numberOfMonths, enableOrder, createdBy,createdDate,modifiedDate,modifiedBy) VALUES(",
+    "#{name}, #{description}, #{startDate}, #{endDate}, #{scheduleId}, #{numberOfMonths}, #{enableOrder}, #{createdBy}, COALESCE(#{createdDate},NOW()),COALESCE(#{modifiedDate},NOW()),#{modifiedBy})"})
   @Options(useGeneratedKeys = true)
   Integer insert(ProcessingPeriod period);
 

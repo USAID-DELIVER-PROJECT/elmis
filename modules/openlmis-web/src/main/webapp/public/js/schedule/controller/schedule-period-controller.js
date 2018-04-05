@@ -10,7 +10,7 @@
 
 function SchedulePeriodController($scope, $routeParams, Periods, schedule, Period) {
 
-  ONE_DAY = 1000 * 60 * 60 * 24;
+  var ONE_DAY = 1000 * 60 * 60 * 24;
   $scope.schedule = schedule;
 
   function refreshPeriodList() {
@@ -23,10 +23,10 @@ function SchedulePeriodController($scope, $routeParams, Periods, schedule, Perio
 
   function prepareNewPeriod() {
     if ($scope.periodList.length === 0) {
-      $scope.newPeriod = {};
+      $scope.newPeriod = { enableOrder: true};
       return;
     }
-    $scope.newPeriod = {startDate: $scope.nextStartDate};
+    $scope.newPeriod = {startDate: $scope.nextStartDate, enableOrder: true};
     $scope.refreshEndDateOffset($scope.newPeriod.startDate);
   }
 
