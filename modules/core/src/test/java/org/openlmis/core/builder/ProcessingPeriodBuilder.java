@@ -63,6 +63,7 @@ public class ProcessingPeriodBuilder {
       period.setNumberOfMonths(lookup.valueOf(numberOfMonths, NUMBER_OF_MONTHS));
       period.setModifiedBy(lookup.valueOf(modifiedBy, MODIFIED_BY));
       period.setScheduleId(lookup.valueOf(scheduleId, SCHEDULE_ID));
+      period.setEnableOrder(true);
       period.setId(lookup.valueOf(id, nullLong));
       return period;
     }
