@@ -47,7 +47,7 @@ public class MSDStockStatusDTO extends BaseModel{
     public Integer mos;
 
     @JsonProperty("OnHandQty")
-    public Integer onHandQuantity;
+    public String onHandQuantity;
 
     public String status;
 
