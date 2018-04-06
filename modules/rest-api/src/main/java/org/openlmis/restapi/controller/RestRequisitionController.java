@@ -12,12 +12,14 @@ package org.openlmis.restapi.controller;
 
 import com.wordnik.swagger.annotations.Api;
 import lombok.NoArgsConstructor;
+import org.openlmis.core.domain.ProcessingPeriod;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.restapi.domain.Report;
 import org.openlmis.restapi.request.RequisitionSearchRequest;
 import org.openlmis.restapi.response.RestResponse;
 import org.openlmis.restapi.service.RestRequisitionService;
 import org.openlmis.rnr.domain.Rnr;
+import org.openlmis.rnr.search.criteria.RequisitionSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -47,7 +49,7 @@ public class RestRequisitionController extends BaseController {
 
   public static final String RNR = "requisitionId";
   public static final String RNRS= "requisitions";
-
+public static final String  PERIODS= "periods";
   @Autowired
   private RestRequisitionService restRequisitionService;
 
@@ -130,4 +132,21 @@ public class RestRequisitionController extends BaseController {
             return error(e, BAD_REQUEST);
         }
     }
+  @RequestMapping(value = "/rest-api/logistics/periods", method = POST, headers = ACCEPT_JSON)
+  public ResponseEntity<RestResponse> getAllPeriodsForInitiatingRequisitionWithRequisitionStatus(
+          @RequestBody  RequisitionSearchCriteria criteria, Principal principal) {
+
+    criteria.setUserId(loggedInUserId(principal));
+
+    try {
+      List<ProcessingPeriod> periodList = restRequisitionService.getProcessingPeriods(criteria);
+      List<Rnr> requisitions = restRequisitionService.getRequisitionsFor(criteria, periodList);
+      RestResponse response = new RestResponse(PERIODS, periodList);
+      response.addData(RNRS, requisitions);
+      response.addData("isEmergency", criteria.isEmergency());
+      return new ResponseEntity<>(response, OK);
+    } catch (DataException e) {
+      return error(e, CONFLICT);
+    }
+  }
 }
