@@ -1342,3 +1342,6 @@ services.factory('FacilityConsumptionReport', function ($resource) {
 services.factory('DailyConsumption', function ($resource) {
     return $resource('/reports/reportdata/dailyConsumption.json', {}, {});
 });
+services.factory('GeoZoneLevel', function ($resource) {
+    return $resource('/reports/geographic-zone/:zone.json', {zone:'@zone'}, {});
+});
