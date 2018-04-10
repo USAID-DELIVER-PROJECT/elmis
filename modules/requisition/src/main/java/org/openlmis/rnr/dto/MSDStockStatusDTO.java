@@ -27,16 +27,13 @@ public class MSDStockStatusDTO extends BaseModel{
     public String ilId;
 
     @JsonProperty("Plant")
-    public String plant;
+    public String facilityCode;
 
     @JsonProperty("PartNum")
-    public String partNum;
+    public String productCode;
 
     @JsonProperty("UOM")
     public String uom;
-
-    public Long facilityId;
-    public Long productId;
 
     @JsonProperty("PartDescription")
     public String partDescription;

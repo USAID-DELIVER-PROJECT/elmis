@@ -56,4 +56,8 @@ public class DailyStockStatusRepository {
   public void updateMsdStockStatus(MSDStockStatusDTO dto) {
      mapper.updateMsdStockStatus(dto);
   }
+
+    public void clearStatusForFacilityProductDate(String facilityCode, String productCode, String onHandDate) {
+       mapper.clearStatusForFacilityProductDate(facilityCode,productCode,onHandDate);
+    }
 }
