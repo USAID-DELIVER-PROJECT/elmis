@@ -17,10 +17,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.openlmis.report.builder.LabEquipmentStatusByLocationQueryBuilder;
 import org.openlmis.report.model.*;
-import org.openlmis.report.model.dto.FlatGeographicZone;
-import org.openlmis.report.model.dto.GeoZoneTree;
-import org.openlmis.report.model.dto.GeographicZone;
-import org.openlmis.report.model.dto.GeographicZoneJsonDto;
+import org.openlmis.report.model.dto.*;
 import org.openlmis.report.model.geo.GeoFacilityIndicator;
 import org.openlmis.report.model.geo.GeoStockStatusFacility;
 import org.openlmis.report.model.geo.GeoStockStatusProduct;
@@ -1022,7 +1019,8 @@ public interface GeographicZoneReportMapper {
 
         List<GeoZoneVaccineCoverage>getGeoZoneVaccineCoverage(@Param("userId") Long userId, @Param("productId") Long product,@Param("year") Long year, @Param("periodId") Long processingPeriodId,@Param("doseId")Long doseId);
 
-
-
-
+@Select("select gl.* as level from  geographic_levels gl \n" +
+        "inner join geographic_zones gz on gl.id=gz.levelid\n" +
+        "where gz.id=#{zoneId}")
+    GeographicLevel GeographicLevel(@Param("zoneId")  Long zoneId);
 }

@@ -25,7 +25,7 @@ import static org.openlmis.report.builder.helpers.RequisitionPredicateHelper.rep
 
 public class DailyConsumptionQueryBuilder {
 
-    public static String getQuery(Map params) {
+    public static String getDailyReportQuery(Map params) {
 
         FacilityConsumptionReportParam filter = (FacilityConsumptionReportParam) params.get("filterCriteria");
         String query = "with daily as \n" +
@@ -37,7 +37,9 @@ public class DailyConsumptionQueryBuilder {
                 "      p.code productcode,\n" +
                 "      p.id productid,\n" +
                 "      f.name as facility,\n" +
-                "      gz.district_name district,\n" +
+                "      gz.district_name district," +
+                "  gz.district_id as districtid," +
+                "  gz.region_id as provinceid,\n" +
                 "      gz.region_name province,\n" +
                 "      ds.programid as program,\n" +
                 "      ds.source as source,\n" +
@@ -93,8 +95,66 @@ public class DailyConsumptionQueryBuilder {
                 "   where\n" +
                 "      date = '"+filter.getDate()+"' :: date \n" +
                 getDailyPredicate(filter)+
-                ")\n" +
-                ",\n" +
+                ") ," +
+//               this is recent daily
+                "    \n" +
+                "recent_date as(\n" +
+                "select ds.facilityid,\n" +
+                "                                  productid ,                                     \n" +
+                "                                      max(ds.date )  as date                  \n" +
+                "                                   FROM  \n" +
+                "                                      daily_stock_status ds   \n" +
+                "                                      inner join  \n" +
+                "                                         daily_stock_status_line_items dsl   \n" +
+                "                                         on ds.id = dsl.stockstatussubmissionid   \n" +
+                "                                      \n" +
+                "                                      \n" +
+                "                                   \n" +
+                "                                       \n" +
+                "                                      --getDailyPredicate(filter) \n" +
+                "\n" +
+                "                                      group by 1,2\n" +
+
+                "                ) ,\n" +
+                "daily_recent as                 \n" +
+                "                (select\n" +
+                "                f.id as facilityId, \n" +
+                "                      f.code as facilitycode, \n" +
+                "                      ds.id dailyStockId, \n" +
+                "                      p.code productcode, \n" +
+                "                      p.id productid, \n" +
+                "                      f.name as facility,                       \n" +
+                "                      p.primaryname as product, \n" +
+                "                      dsl.stockonhand stockOnHand, \n" +
+                "                      ds.programid programid,\n" +
+                "                      rd.date   ,\n" +
+                "                      ds.source                   \n" +
+                "                   FROM \n" +
+                "                      daily_stock_status ds  \n" +
+                "                      inner join \n" +
+                "                         daily_stock_status_line_items dsl  \n" +
+                "                         on ds.id = dsl.stockstatussubmissionid  \n" +
+                "                      inner join \n" +
+                "                         facilities f  \n" +
+                "                         on f.id = ds.facilityId  \n" +
+                "                      JOIN \n" +
+                "                         facility_types ft  \n" +
+                "                         on ft.id = f.typeid  \n" +
+                "                      inner JOIN \n" +
+                "                         vw_districts gz  \n" +
+                "                         on gz.district_id = f.geographiczoneid  \n" +
+                "                      inner join \n" +
+                "                         products p  \n" +
+                "                         on p.id = dsl.productid  \n" +
+                "                      inner join \n" +
+                "                         programs pg  \n" +
+                "                         on pg.id = ds.programid  \n" +
+                "                      inner join recent_date rd  on rd.productid=p.id and rd.facilityid=f.id and rd.date=ds.date\n" +
+                "                         \n" +
+                "                       where pg.active=true " +
+                                    getDailyPredicate(filter) +
+                "                                \n" +
+                "                ) , "+
                 "period as\n" +
                 "(\n" +
                 "   select\n" +
@@ -107,8 +167,7 @@ public class DailyConsumptionQueryBuilder {
                 "         select\n" +
                 "            d.facilityid,\n" +
                 "            pp.id,\n" +
-                "            pp,\n" +
-                "            name,\n" +
+                "            pp.name,\n" +
                 "            pp.startdate,\n" +
                 "            min( '"+filter.getDate()+"' :: date - pp.startdate ) dif \n" +
                 "         from\n" +
@@ -240,8 +299,8 @@ public class DailyConsumptionQueryBuilder {
                 getMainPredicate(filter) +
                 ")\n" +
                 "select\n" +
-                "   d.facilityCode,\n" +
-                "   d.facilityid facilityId,\n" +
+                "   d.facilitycode,\n" +
+                "   d.facilityid facilityid,\n" +
                 "   d.program,\n" +
                 "   d.date,\n" +
                 "   d.source,\n" +
@@ -277,17 +336,15 @@ public class DailyConsumptionQueryBuilder {
                 "               'UK' :: text \n" +
                 "         END\n" +
                 "   END\n" +
-                "   AS dailyStatus, d.district, d. province, d. facility, d. productId, d.product, d.productCode, d.stockOnHand , \t-- daysAfterFirstSubmission,\n" +
-                "   -- daysAfterLastSubmission,\n" +
-                "   ms.amc, ms.mos, ms.stockinhand, d.fistSubmissionDate, d.lastSubmissionDate \n" +
+                "   AS dailystatus, d.district, d. province,d.provinceid,d.districtid, d. facility, d. productid, d.product, d.productcode, d.stockonhand , " +
+                " ds.date  recentdate, ds.stockonhand  recentstockonhand , " +
+                " p.name  periodname, p.id  periodid, \n" +
+                "   ms.amc, ms.mos, ms.stockinhand, d.fistSubmissiondate, d.lastsubmissiondate \n" +
                 "from\n" +
                 "   daily d \n" +
-                "   left outer join\n" +
-                "      period p \n" +
-                "      on d.facilityid = p.facilityid \n" +
-                "    left outer join\n" +
-                "      monthstock ms \n" +
-                "      on ms.productid = d.productid \n" +
+                "   inner join daily_recent ds on ds.facilityId=d.facilityid and ds.productid=d.productid" +
+                "   left outer join  period p       on d.facilityid = p.facilityid \n" +
+                "   left outer join    monthstock ms  on ms.productid = d.productid \n" +
                 "      and ms.facilityid = d.facilityid \n" +
                 "      and p.id = ms.periodid";
 
@@ -320,6 +377,12 @@ public class DailyConsumptionQueryBuilder {
         }
         if (filter.getZone() != 0) {
             predicate += " AND " + geoZoneIsFilteredBy("gz");
+        }
+        if(filter.getFacility()!=null&&filter.getFacility()!=0) {
+            predicate +=" AND " +facilityIsFilteredBy("f.id");
+        }
+        if(filter.getProduct()!=null&&!filter.getProduct().equals(0L)&&!filter.getProduct().equals(-1L)) {
+            predicate +=" AND " +productFilteredBy("p.id");
         }
 
         return predicate;

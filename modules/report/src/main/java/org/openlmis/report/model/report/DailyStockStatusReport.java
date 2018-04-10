@@ -22,6 +22,8 @@ public class DailyStockStatusReport implements ResultRow {
     private String status;
     private String dailyStatus;
     private String district;
+    private Long districtId;
+    private Long provinceId;
     private String province;
     private String facility;
     private Long productId;
@@ -35,5 +37,9 @@ public class DailyStockStatusReport implements ResultRow {
     private Long stockinhand;
     private Date fistSubmissionDate;
     private Date lastSubmissionDate;
+    private Date recentDate;
+    private Long recentStockOnHand;
+    private Long periodId;
+    private String periodName;
 
 }

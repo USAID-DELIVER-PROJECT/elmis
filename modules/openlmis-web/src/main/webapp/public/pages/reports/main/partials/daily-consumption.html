@@ -18,10 +18,10 @@
                 <span openlmis-message="report.title.daily.consumption.report"></span>
             </h2>
             <div class="box-icon">
-                <a id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"
-                   class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>
-                <a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"
-                   class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>
+                <!--<a style="" id="pdf-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('PDF')"-->
+                   <!--class='btn-small btn-info'><span openlmis-message="label.pdf"></span></a>-->
+                <!--<a id="xls-button" ng-show="filterForm.$valid" href="" ng-click="exportReport('XLS')"-->
+                   <!--class='btn-small btn-info'><span openlmis-message="label.excel"></span></a>-->
             </div>
         </div>
         <div class="row-fluid">
@@ -32,19 +32,23 @@
                             <filter-container no-required-param="true">
                                 <program-filter class="form-cell horizontalFilters"></program-filter>
                                 <zone-filter class="form-cell horizontalFilters"></zone-filter>
+                                <div style="margin-top: 10px;"  class="form-cell horizontalFilters">
+								<label  openlmis-message="label.date"></label>
 								
-								<label class="form-cell horizontalFilters" openlmis-message="label.date"></label>
-								
-                               <input class="form-cell horizontalFilters"
+                               <input
                    name="searchDate"
                    type="text"
                    ui-date="{dateFormat: 'dd/mm/yy', changeYear: true, maxDate:'today'}"
                    ng-model="filter.date"
                    ui-date-format="yy-mm-dd"/>
-				  
-				  
+                              </div>
+
+
                                 <facility-type-filter class="form-cell horizontalFilters"></facility-type-filter>
                                 <facility-owner-filter class="form-cell horizontalFilters"></facility-owner-filter>
+                                <facility-filter class="form-cell horizontalFilters"></facility-filter>
+                                <product-category-filter class="form-cell horizontalFilters"></product-category-filter>
+                                <product-filter class="form-cell horizontalFilters"></product-filter>
                             </filter-container>
 
                             <span class="pull-right"><a ng-click="searchReport()" class="waves-effect waves-light btn">Search</a>
@@ -60,8 +64,76 @@
             </div>
             <div class="content-body">
                 <div class="row-fluid">
+
                     <div class="span12 ">
-                        
+                        <div>
+                            <div class="box-header">
+
+
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="emergency"><input id="emergency" class="checkbox" type="checkbox" value="false"
+                                                                      ng-change="aggregateReport()" ng-model="aggregated">
+                                            <span openlmis-message="label.report.view.aggregated"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="box-header">
+
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="all"><input id="all" class="checkbox" type="checkbox" value="ALL"
+                                                                ng-change="onToggleAll()" ng-model="all">
+                                            <span openlmis-message="label.all"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="so"><input ng-checked="true" id="so" class="checkbox" type="checkbox" value="SO"
+                                                               ng-change="toggle()" ng-model="reportType.so">
+                                            <span openlmis-message="SO"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="us"><input id="us" class="checkbox" type="checkbox" value="US"
+                                                               ng-change="toggle()" ng-model="reportType.us">
+                                            <span  openlmis-message="US"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="sp">
+                                            <input id="sp" class="check-box" type="checkbox" value="SP"
+                                                   ng-change="toggle()" ng-model="reportType.as">
+                                            <span openlmis-message="SP"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="os"><input id="os" class="checkbox" type="checkbox" value="OS"
+                                                               ng-change="toggle()" ng-model="reportType.os">
+                                            <span openlmis-message="OS"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-cell span2">
+                                    <div class="checkbox">
+                                        <label for="uk"><input id="uk" class="checkbox" type="checkbox" value="UK"
+                                                               ng-change="toggle()" ng-model="reportType.uk">
+                                            <span openlmis-message="label.no.demand"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <table client-side-sort-pagination class="table table-bordered"
                                ng-show="data == undefined || data.length == 0">
                             <tr>
@@ -72,26 +144,45 @@
                             <div ng-if="datarows.length > 0" top-right-table-summary></div>
                             <table ng-show="datarows.length > 0" class="table-bordered table table-striped pull-right"
                                    ng-table="tableParams">
+                                <tr>
+                                    <th  >#</th>
+                                    <th ng-if="aggregated==undefined||!aggregated"  openlmis-message="label.facility.code"></th>
+                                    <th ng-if="aggregated==undefined||!aggregated"  openlmis-message="label.facility.name"></th>
+                                    <th  ng-if="aggregated==undefined||!aggregated||geoLevel.code!=='Country'"  openlmis-message="label.district"></th>
+                                    <th  openlmis-message="label.zone"></th>
+                                    <th  openlmis-message="label.daily.requisition.first.submission"></th>
+                                    <th  openlmis-message="label.daily.requisition.last.submission"></th>
+                                </tr>
 
                                 <tbody>
-                                <tr ng-repeat-start="row in datarows">
-                                    <td data-title="'#'" class="number" style="width:20px">{{ row.no }}</td>
-                                    <td style="width:80px" data-title="getLocalMessage('label.facility.code')"
+                                <tr ng-repeat-start="row in filtered">
+                                    <td class="number" style="width:40px">
+                                        <a ng-if="row.collapsed===undefined||row.collapsed===true" ng-click=" row.collapsed=false ">
+                                            <span ><i class="fa fa-plus"></i></span>
+                                            &nbsp;&nbsp;{{ row.no }}
+                                        </a>
+                                        <a ng-if="row.collapsed!==undefined&&row.collapsed===false" ng-click=" row.collapsed=true">
+                                            <span ><i class="fa fa-minus"></i></span>
+                                            &nbsp;&nbsp;{{ row.no }}
+                                        </a>
+                                       </td>
+
+                                    <td ng-if="aggregated==undefined||!aggregated" style="width:80px" "
                                         sortable="facilityCode">{{ row.facilityCode }}
                                     </td>
-                                    <td style="width:150px" data-title="getLocalMessage('label.facility.name')"
+                                    <td  ng-if="aggregated==undefined||!aggregated" style="width:150px"
                                                sortable="facilityName">{{ row.facility }}
                                 </td>
-                                    <td style="width:150px" data-title="getLocalMessage('label.district')"
+                                    <td  ng-if="aggregated==undefined||!aggregated||geoLevel.code!=='Country'" style="width:150px"
                                         sortable="district">{{ row.district}}
                                     </td>
-                                    <td style="width:150px" data-title="getLocalMessage('label.zone')"
+                                    <td style="width:150px"
                                         sortable="province">{{row.province }}
                                     </td>
-                                    <td style="width:120px" data-title="getLocalMessage('label.daily.requisition.first.submission')"
+                                    <td style="width:120px"
                                         sortable="submission">{{ row.fistSubmissionDate | date : 'dd MMM, yyyy' }}
                                     </td>
-                                    <td style="width:80px" data-title="getLocalMessage('label.daily.requisition.last.submission')"
+                                    <td style="width:80px"
                                         sortable="daysAfterLastSubmission">
                                         {{ row.lastSubmissionDate | date : 'dd MMM, yyyy' }}
                                     </td>
@@ -100,26 +191,86 @@
 
                                 </tr>
 
-                                <tr ng-repeat-end ng-show="row.lineItems.length>0" >
-                                    <td colspan="9" class="sub-report">
+                                <tr ng-repeat-end ng-show="row.collapsed!==undefined&&row.collapsed===false && row.lineItems.length>0" >
+                                    <td ng-if="aggregated===undefined||!aggregated"  colspan="9" class="sub-report">
                                         <table>
                                             <thead>
+
                                             <tr>
-                                                <th openlmis-message="rnr.header.product.name"></th>
-                                                <th openlmis-message="label.stock.on.hand"></th>
-                                                <th openlmis-message="label.daily.stock.on.hand"></th>
+                                                <th rowspan="2" openlmis-message="label.report.product.code"></th>
+                                                <th rowspan="2" openlmis-message="rnr.header.product.name"></th>
+                                                <th colspan="4" openlmis-message="label.previous.period.soh"></th>
+                                                <th colspan="3" openlmis-message="label.current.stock.status"></th>
+
+                                            </tr>
+                                            <tr>
+                                                <th openlmis-message="label.ivd.form.period"></th>
                                                 <th openlmis-message="label.amc"></th>
                                                 <th openlmis-message="label.mos"></th>
+                                                <th openlmis-message="header.status.soh"></th>
+
+                                                <th  openlmis-message="header.status.soh"></th>
                                                 <th openlmis-message="label.status"></th>
+                                                <th   openlmis-message="label.daily.requisition.last.submission"></th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr  ng-repeat="p in row.lineItems">
+                                                <td>{{ p.productCode }}</td>
                                                 <td>{{ p.name }}</td>
-                                                <td>{{ p.stockOnHand }}</td>
+                                                <td class="current-column">{{ p.periodName}}</td>
+                                                <td class="current-column">{{p.amc}}</td>
+                                                <td class="current-column">{{p.mos}}</td>
+                                                <td class="current-column"><span>{{ p.stockOnHand }}</span></td>
                                                 <td>{{ p.stockOnDate }}</td>
-                                                <td>{{p.amc}}</td>
-                                                <td>{{p.mos}}</td>                                <td>
+                                                                          <td>
+                                                    <div
+                                                            class="{{(p.dailyStatus == 'SO')?'red':(p.dailyStatus=='SP')?'green':(p.dailyStatus=='OS')?'blue':'yellow'}}">
+                      <span ng-show="p.amc == 0 || p.dailyStatus == 'UK'" class="icon-warning-sign"
+                            tooltip="AMC is 0, which indicates that there may not be enough data to interpret this status."></span>
+                                                        {{ (p.dailyStatus == 'SO') ?
+                                                        'Stocked Out' :
+                                                        (p.dailyStatus=='SP') ?
+                                                        'Adequately Stocked' : (p.dailyStatus=='OS') ? 'Over Stocked' : (p.dailyStatus =='US') ? 'Under Stocked' : 'No Demand (AMC=0)' }}
+                                                    </div>
+                                                </td>
+                                                <td style="width:80px" ng-class="{'after-recent-date':p.dif>0,'before-recent-date':p.dif<0}"
+                                                    >
+                                                   {{ p.recentDate | date : 'dd MMM, yyyy' }}
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td ng-if="aggregated"  colspan="9" class="sub-report">
+                                        <table>
+                                            <thead>
+
+                                            <tr>
+                                                <th rowspan="2" openlmis-message="label.report.product.code"></th>
+                                                <th rowspan="2" openlmis-message="rnr.header.product.name"></th>
+                                                <!--<th colspan="4" openlmis-message="label.previous.period.soh"></th>-->
+                                                <th colspan="3" openlmis-message="label.current.stock.status"></th>
+
+                                            </tr>
+                                            <tr style="height: 30px">
+                                                <!--<th openlmis-message="label.ivd.form.period"></th>-->
+                                                <!--<th openlmis-message="label.amc"></th>-->
+                                                <!--<th openlmis-message="label.mos"></th>-->
+                                                <!--<th openlmis-message="header.status.soh"></th>-->
+                                                <th  openlmis-message="header.status.soh"></th>
+                                                <th openlmis-message="label.status"></th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr   ng-repeat="p in row.aggregateItems">
+                                                <td>{{ p.productCode }}</td>
+                                                <td>{{ p.name }}</td>
+
+                                                <td>{{ p.stockOnDate }}</td>
+                                                <td>
                                                     <div
                                                             class="{{(p.dailyStatus == 'SO')?'red':(p.dailyStatus=='SP')?'green':(p.dailyStatus=='OS')?'blue':'yellow'}}">
                       <span ng-show="p.amc == 0 || p.dailyStatus == 'UK'" class="icon-warning-sign"
@@ -131,6 +282,7 @@
                                                     </div>
                                                 </td>
                                             </tr>
+
                                             </tbody>
                                         </table>
                                     </td>
@@ -160,5 +312,18 @@
         background-color:#f9f9f9;
     }
 
-    .sub-report
+  td .current-column{
+       background-color: #ebebeb !important;
+   }
+    .prev-column{
+
+    }
+    .after-recent-date{
+
+       color: #58ee2e !important;
+    }
+    .before-recent-date{
+        color: #ff3616 !important;
+
+    }
 </style>

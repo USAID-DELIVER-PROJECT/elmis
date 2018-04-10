@@ -89,6 +89,7 @@ public class ReportLookupController extends BaseController {
   private static final String FACILITY_OPERATORS = "facilityOperators";
   private static final String FACILITY_LEVELS_WITHOUT_PROGRAM = "facility_levels_without_programs";
   private static final String OWNERS="owners";
+  private static final String GEOLEVEL="geoLevel";
 
   @Autowired
   private ReportLookupService reportLookupService;
@@ -664,5 +665,11 @@ public class ReportLookupController extends BaseController {
     response.getBody().addData("pagination", pagination);
     return response;
   }
-
+  @RequestMapping(value = "/geographic-zone/{geoId}", method = GET, headers = BaseController.ACCEPT_JSON)
+  public ResponseEntity<OpenLmisResponse> getGeoLevel(
+          @PathVariable("geoId") Long zoneId,
+          HttpServletRequest request
+  ) {
+    return OpenLmisResponse.response(GEOLEVEL, reportLookupService.getGeoLevel(zoneId));
+  }
 }

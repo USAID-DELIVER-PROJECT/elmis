@@ -27,25 +27,31 @@ import java.util.Map;
 @Repository
 public interface DailyStockStatusReportMapper {
 
-    @SelectProvider(type = DailyConsumptionQueryBuilder.class, method = "getQuery")
+    @SelectProvider(type = DailyConsumptionQueryBuilder.class, method = "getDailyReportQuery")
+    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
     @Results(value={
             @Result(property = "id", column = "id"),
-            @Result(property = "facilityCode", column = "facilityCode"),
-            @Result(property = "programId", column = "programId"),
+            @Result(property = "facilityCode", column = "facilitycode"),
+            @Result(property = "programId", column = "program"),
             @Result(property = "date", column = "date"),
             @Result(property = "facility", column = "facility"),
-            @Result(property = "productId", column = "productId"),
+            @Result(property = "productId", column = "productid"),
             @Result(property = "product", column = "product"),
-            @Result(property = "stockOnHand", column = "stockOnHand"),
-            @Result(property = "daysAfterFirstSubmission", column = "daysAfterFirstSubmission"),
-            @Result(property = "daysAfterLastSubmission", column = "daysAfterLastSubmission"),
+            @Result(property = "stockOnHand", column = "stockonhand"),
             @Result(property = "amc", column = "amc"),
             @Result(property = "mos", column = "mos"),
             @Result(property = "stockinhand", column = "stockinhand"),
-            @Result(property = "fistSubmissionDate", column = "fistSubmissionDate"),
-            @Result(property = "lastSubmissionDate", column = "lastSubmissionDate")
-    })
-    @Options(resultSetType = ResultSetType.SCROLL_SENSITIVE, fetchSize = 10, timeout = 0, useCache = true, flushCache = true)
+            @Result(property = "fistSubmissionDate", column = "fistsubmissiodate"),
+            @Result(property = "lastSubmissionDate", column = "lastsubmissiondate"),
+            @Result(property = "district", column = "district"),
+            @Result(property = "districtId", column = "districtid"),
+            @Result(property = "province", column = "province"),
+            @Result(property = "provinceId", column = "provinceid"),
+            @Result(property = "periodId", column = "periodid"),
+            @Result(property = "periodName", column = "periodname"),
+            @Result(property = "recentDate", column = "recentdate"),
+            @Result(property = "recentStockOnHand", column = "recentstockonhand")   })
+
      List<DailyStockStatusReport> getDailyConsumptionReport(
             @Param("filterCriteria") ReportParameter filterCriteria,
             @Param("SortCriteria") Map<String, String[]> sortCriteria,

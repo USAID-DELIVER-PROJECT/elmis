@@ -27,6 +27,7 @@ import org.openlmis.report.mapper.lookup.*;
 import org.openlmis.report.model.dto.*;
 import org.openlmis.report.model.dto.Facility;
 import org.openlmis.report.model.dto.FacilityType;
+import org.openlmis.report.model.dto.GeographicLevel;
 import org.openlmis.report.model.dto.GeographicZone;
 import org.openlmis.report.model.dto.ProcessingPeriod;
 import org.openlmis.report.model.dto.Product;
@@ -784,4 +785,7 @@ public class ReportLookupService {
     return new Pagination(page, pageSize);
   }
 
+    public GeographicLevel getGeoLevel(Long zoneId) {
+    return this.geographicZoneMapper.GeographicLevel(zoneId);
+    }
 }

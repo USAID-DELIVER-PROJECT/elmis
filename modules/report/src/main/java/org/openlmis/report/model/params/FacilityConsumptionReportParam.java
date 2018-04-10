@@ -31,6 +31,7 @@ public class FacilityConsumptionReportParam
     private Long zone;
     private Long facility;
     private String products;
+    private Long product;
     private Long productCategory;
     private String periodStart;
     private String periodEnd;
