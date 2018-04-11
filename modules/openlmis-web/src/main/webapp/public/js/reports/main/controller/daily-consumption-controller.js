@@ -121,7 +121,7 @@ function DailyConsumptionReportController($scope, DailyConsumption, GeoZoneLevel
     $scope.aggregateReport = function () {
         console.log(JSON.stringify($scope.rowData));
         var data = JSON.parse(JSON.stringify($scope.rowData));
-        var data=filter(data);
+        data=filter(data);
         if ($scope.aggregated) {
             if ($scope.geoLevel.code === 'Country') {
                 $scope.data = generateProvinceAggeregatedReport(data);
