@@ -34,14 +34,14 @@ function DailyConsumptionReportController($scope, DailyConsumption, GeoZoneLevel
             uk: $scope.all
 
         };
+        $scope.aggregateReport();
     };
     $scope.toggle=function () {
-        filter();
+        $scope.aggregateReport();
     };
-    function filter(){
-        $scope.filtered=[];
+    function filter(data){
         var types= $scope.prepareTypeFilter();
-        $scope.filtered=  _.filter( $scope.data, function(a){
+        var filtered=  _.filter( data, function(a){
                 return _.some(this,function(b){
                     return b.status === a.dailyStatus;
                 });
@@ -49,6 +49,7 @@ function DailyConsumptionReportController($scope, DailyConsumption, GeoZoneLevel
 
         console.log("the row data is "+JSON.stringify(types));
         console.log(" the filtered data is " + JSON.stringify($scope.filtered));
+        return filtered;
     }
     $scope.prepareTypeFilter = function () {
         var filter = "";
@@ -120,6 +121,7 @@ function DailyConsumptionReportController($scope, DailyConsumption, GeoZoneLevel
     $scope.aggregateReport = function () {
         console.log(JSON.stringify($scope.rowData));
         var data = JSON.parse(JSON.stringify($scope.rowData));
+        var data=filter(data);
         if ($scope.aggregated) {
             if ($scope.geoLevel.code === 'Country') {
                 $scope.data = generateProvinceAggeregatedReport(data);
@@ -130,7 +132,7 @@ function DailyConsumptionReportController($scope, DailyConsumption, GeoZoneLevel
         } else {
             $scope.data = generateParentChildReport(data);
         }
-        filter();
+
         $scope.paramsChanged($scope.tableParams);
     };
     var generateProvinceAggeregatedReport = function (data) {
@@ -219,60 +221,7 @@ function DailyConsumptionReportController($scope, DailyConsumption, GeoZoneLevel
             .value();
         return result;
     };
-    $scope.statuses = [
-        {'name': 'Active', 'value': "true"},
-        {'name': 'Inactive', 'value': "false"}
-    ];
-    if (!utils.isEmpty($routeParams.reportType)) {
-        var reportTypes = $routeParams.reportType.split(',');
-        $scope.reportTypes = {};
-        reportTypes.forEach(function (reportType) {
-            $scope.reportTypes[reportType] = true;
-        });
 
-    } else {
-        $scope.reportTypes = {};
-        $scope.reportTypes.AC = true;
-    }
-    (function init() {
-
-
-        $routeParams.statusList = "AC";
-
-
-    })();
-    $scope.onToggleReportTypeAll = function () {
-        if ($scope.reportTypes === undefined) {
-            $scope.reportTypes = {};
-        }
-
-        $scope.reportTypes.AC = $scope.reportTypes.IN = $scope.allReportType;
-        $scope.onReportTypeCheckboxChanged();
-    };
-    $scope.onReportTypeCheckboxChanged = function () {
-
-        var reportType = getReportType();
-
-        $scope.applyUrl();
-        $scope.OnFilterChanged();
-    };
-    function getReportType() {
-        var reportType = null;
-        _.keys($scope.reportTypes).forEach(function (key) {
-            var value = $scope.reportTypes[key];
-            if (value === true && (key === 'AC' || key === 'IN')) {
-                utils.isNullOrUndefined(reportType) ? reportType = key : reportType += "," + key;
-            } else if (value === false) {
-                $scope.allReportType = false;
-            }
-        });
-        if ($scope.filter === undefined) {
-            $scope.filter = {statusList: reportType};
-        } else {
-            $scope.filter.statusList = reportType;
-        }
-        return reportType !== null ? reportType : "";
-    }
 
     $scope.exportReport = function (type) {
         $scope.filter.pdformat = 1;
