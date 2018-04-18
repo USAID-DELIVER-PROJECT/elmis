@@ -16,8 +16,10 @@ apply plugin: 'properties'
 apply plugin: 'org.sonarqube'
 
 
-idea.project.languageLevel = '1.7'
-idea.project.jdkName = '1.7'
+idea.project.languageLevel = '1.8'
+idea.project.jdkName = '1.8'
+
+
 
 repositories {
     jcenter()
@@ -57,7 +59,15 @@ subprojects {
     }
   }
 
+  compileJava   {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+  }
+
+
+
   [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+  [compileJava, compileTestJava]*.targetCompatibility = '1.8'
 
   repositories {
     mavenCentral()
