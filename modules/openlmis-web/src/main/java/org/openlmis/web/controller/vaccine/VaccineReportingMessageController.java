@@ -52,7 +52,7 @@ public class VaccineReportingMessageController {
 
     private void queueSimpleMail(MessageDto dto) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("teklutesfayeh@gmail.com");
+        message.setTo("alert.open.lmis@gmail.com");
         message.setSubject("Reporting rate notice");
         message.setText(dto.getMessage());
         LOGGER.info("here i am");
