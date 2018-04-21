@@ -13,15 +13,14 @@
 apply plugin: 'cobertura'
 
 dependencies {
+    compile 'org.mybatis:mybatis:3.2.8'
+    compile 'org.springframework:spring-context:4.1.5.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.1.4.RELEASE'
+    compile 'org.springframework:spring-beans:4.1.5.RELEASE'
+    testCompile 'org.mockito:mockito-all:1.10.19'
+    testCompile 'junit:junit-dep:4.8.1'
 
-    compile  'javax.activation:activation:1.1.1',
-            'org.springframework.integration:spring-integration-core:4.1.2.RELEASE',
-            'org.springframework.integration:spring-integration-jdbc:4.1.2.RELEASE',
-            'commons-collections:commons-collections:3.2.2',
-            'commons-lang:commons-lang:2.6',
-            project(':modules:db')
 
-    testCompile 'javax.activation:activation:1.1.1'
 
     configurations {
         testFixtures {
