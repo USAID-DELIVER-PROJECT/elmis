@@ -10,7 +10,7 @@
 
 package org.openlmis.web.controller;
 
-import com.wordnik.swagger.annotations.Api;
+import io.swagger.annotations.Api;
 import org.openlmis.core.domain.FacilityProgramProduct;
 import org.openlmis.core.domain.ProgramProductISA;
 import org.openlmis.core.service.FacilityProgramProductService;

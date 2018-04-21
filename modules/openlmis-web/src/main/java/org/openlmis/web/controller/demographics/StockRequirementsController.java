@@ -10,7 +10,7 @@
 
 package org.openlmis.web.controller.demographics;
 
-import com.wordnik.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiOperation;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.vaccine.dto.StockRequirementsDTO;
