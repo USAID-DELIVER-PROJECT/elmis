@@ -11,8 +11,8 @@
  */
 package org.openlmis.web.controller.vaccine;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.openlmis.core.domain.Facility;

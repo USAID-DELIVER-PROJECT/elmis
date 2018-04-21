@@ -12,10 +12,9 @@
 
 package org.openlmis.restapi.controller;
 
-import com.wordnik.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiOperation;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exception.DataException;
-import org.openlmis.core.service.ELMISInterfaceService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.rnr.domain.DailyStockStatus;
 import org.openlmis.rnr.service.DailyStockStatusSubmissionService;
