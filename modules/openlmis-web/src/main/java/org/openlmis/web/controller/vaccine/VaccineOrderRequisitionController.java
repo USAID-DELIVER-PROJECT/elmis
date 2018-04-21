@@ -1,6 +1,8 @@
 package org.openlmis.web.controller.vaccine;
 
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import org.openlmis.core.domain.*;
@@ -45,6 +47,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
 @RequestMapping(value = "/vaccine/orderRequisition/")
+@Api("Vaccine Order Requisition Rest APIs")
 public class VaccineOrderRequisitionController extends BaseController {
 
     private static final String PROGRAM_PRODUCT_LIST = "programProductList";
@@ -89,19 +92,22 @@ public class VaccineOrderRequisitionController extends BaseController {
         return idList == null ? "{}" : idList.toString().replace("[", "{").replace("]", "}");
     }
 
-    @RequestMapping(value = "periods/{facilityId}/{programId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"periods/{facilityId}/{programId}", "/rest-api/orderRequisition/periods/{facilityId}/{programId}"}, method = RequestMethod.GET)
+    @ApiOperation(position = 1, value = "Get Open Vaccine Order Requisition Periods for Facility")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> getPeriods(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
         return response("periods", service.getPeriodsFor(facilityId, programId, new Date()));
     }
 
-    @RequestMapping(value = "view-periods/{facilityId}/{programId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"view-periods/{facilityId}/{programId}", "/rest-api/orderRequisition/view-periods/{facilityId}/{programId}"}, method = RequestMethod.GET)
+    @ApiOperation(position = 2, value = "Get Periods for Which facility has Order Requisition Submissions")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> getViewPeriods(@PathVariable Long facilityId, @PathVariable Long programId, HttpServletRequest request) {
         return response("periods", service.getReportedPeriodsFor(facilityId, programId));
     }
 
     @RequestMapping(value = "initialize/{periodId}/{programId}/{facilityId}")
+    @ApiOperation(position = 3, value = "Initiate and Order Requisition form")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION, VIEW_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> initialize(
             @PathVariable Long periodId,
@@ -124,6 +130,7 @@ public class VaccineOrderRequisitionController extends BaseController {
     }
 
     @RequestMapping(value = "submit")
+    @ApiOperation(position = 5, value = "Submit Order Requisition form")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> submit(@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request) {
         service.submit(orderRequisition, loggedInUserId(request));
@@ -131,6 +138,7 @@ public class VaccineOrderRequisitionController extends BaseController {
     }
 
     @RequestMapping(value = "save")
+    @ApiOperation(position = 5, value = "Save Requisition form")
     @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_ORDER_REQUISITION')")
     public ResponseEntity<OpenLmisResponse> save(@RequestBody org.openlmis.vaccine.domain.VaccineOrderRequisition.VaccineOrderRequisition orderRequisition, HttpServletRequest request) {
         service.save(orderRequisition);
@@ -364,5 +372,47 @@ public class VaccineOrderRequisitionController extends BaseController {
         return response("message", distribution);
     }
 
+
+
+    @RequestMapping(value = "getOnTimeInFull", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getVaccineOnTimeInFull(
+            @RequestParam(value = "facilityId", required = false) Long facilityId,
+            @RequestParam(value = "orderId", required = false) Long orderId,
+            @RequestParam(value = "period", required = false) Long periodId, HttpServletRequest request
+            ) {
+
+        return response("OnTimeInFull", service.getOnTimeInFullData(facilityId,periodId,orderId));
+    }
+
+
+    @RequestMapping(value = "searchOnTimeReporting", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> searchOrderRequisitionForOIF(@RequestParam(value = "facility", required = false) Long facilityId,
+                                                       @RequestParam(value = "periodStartDate", required = false) String dateRangeStart,
+                                                       @RequestParam(value = "periodEndDate", required = false) String dateRangeEnd, HttpServletRequest request
+    ) {
+        return response(ORDER_REQUISITION_SEARCH, service.getSearchedDataForOnTimeReportingBy(facilityId, dateRangeStart, dateRangeEnd));
+
+    }
+
+
+    @RequestMapping(value = "receiveNotification", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getReceiveNotification(HttpServletRequest request
+    ) {
+        Facility facility = facilityService.getHomeFacility(loggedInUserId(request));
+        return response("receiveNotification", inventoryDistributionService.getReceiveNotification(facility.getId()));
+    }
+
+ @RequestMapping(value = "receiveDistributionAlert", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getReceiveDistributionAlert(HttpServletRequest request
+    ) {
+        Facility facility = facilityService.getHomeFacility(loggedInUserId(request));
+        return response("receiveNotification", inventoryDistributionService.getReceiveDistributionAlert(facility.getId()));
+    }
+@RequestMapping(value = "getMinimumStock", method = RequestMethod.GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getMinimumStockNotification(HttpServletRequest request
+    ) {
+        Facility facility = facilityService.getHomeFacility(loggedInUserId(request));
+        return response("minimumStock", inventoryDistributionService.getMinimumStockNotification(loggedInUserId(request), facility.getId()));
+    }
 
 }

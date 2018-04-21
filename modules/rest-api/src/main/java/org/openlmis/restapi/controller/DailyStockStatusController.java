@@ -12,7 +12,7 @@
 
 package org.openlmis.restapi.controller;
 
-import com.wordnik.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiOperation;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.core.web.OpenLmisResponse;

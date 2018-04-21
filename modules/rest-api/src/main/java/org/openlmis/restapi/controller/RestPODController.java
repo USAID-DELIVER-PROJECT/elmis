@@ -1,6 +1,6 @@
 package org.openlmis.restapi.controller;
 
-import com.wordnik.swagger.annotations.Api;
+import io.swagger.annotations.Api;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exception.DataException;
 import org.openlmis.pod.domain.OrderPOD;
