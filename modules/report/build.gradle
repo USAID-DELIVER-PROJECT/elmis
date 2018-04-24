@@ -13,12 +13,7 @@
 apply plugin: 'cobertura'
 
 dependencies {
-    compile project(':modules:equipment'),
-        project(':modules:email'),
-        project(':modules:sms'),
-        project(':modules:stock-management'),
-        project(':modules:requisition'),
-        project(':modules:shipment')
+    compile 'org.apache.poi:poi:3.13'
     compile 'org.apache.poi:poi-ooxml:3.13'
     compile 'org.springframework:spring-context:4.1.5.RELEASE'
     compile 'org.apache.commons:commons-lang3:3.1'
@@ -31,6 +26,15 @@ dependencies {
     compile 'javax.persistence:persistence-api:1.0.2'
     compile 'joda-time:joda-time:2.7'
     compile 'javax.activation:activation:1.1.1'
+
+    compile project(':modules:equipment')
+    compile project(':modules:core')
+    compile project(':modules:email')
+    compile project(':modules:sms')
+    compile project(':modules:stock-management')
+    compile project(':modules:requisition')
+    compile project(':modules:shipment')
+
     testCompile 'org.powermock:powermock-core:1.6.2'
     testCompile 'org.mockito:mockito-all:1.10.19'
     testCompile 'junit:junit-dep:4.8.1'

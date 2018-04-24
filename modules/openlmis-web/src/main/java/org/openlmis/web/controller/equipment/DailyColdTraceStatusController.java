@@ -12,7 +12,7 @@
 
 package org.openlmis.web.controller.equipment;
 
-import com.wordnik.swagger.annotations.Api;
+import io.swagger.annotations.Api;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.equipment.dto.DailyColdTraceStatusDTO;
 import org.openlmis.equipment.service.DailyColdTraceStatusService;
