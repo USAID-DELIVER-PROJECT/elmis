@@ -186,11 +186,8 @@ dependencies {
   compile 'log4j:log4j:1.2.15',
       'commons-fileupload:commons-fileupload:1.2.2',
       'com.itextpdf:itextpdf:5.4.0',
-
-      'io.swagger:swagger-annotations:1.5.18',
-      'io.swagger:swagger-models:1.5.18',
-      'io.springfox:springfox-swagger2:2.8.0',
-      'io.springfox:springfox-swagger-ui:2.8.0',
+      'io.springfox:springfox-swagger2:2.6.0',
+      'io.springfox:springfox-swagger-ui:2.6.0',
 
       project(':modules:upload'),
       project(':modules:email'),
