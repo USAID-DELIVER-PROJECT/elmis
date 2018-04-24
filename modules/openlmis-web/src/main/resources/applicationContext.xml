@@ -36,11 +36,16 @@
     <context:annotation-config  />
     <mvc:annotation-driven  />
     <aop:aspectj-autoproxy expose-proxy="false" />
-
-
-    <bean class="org.openlmis.config.MySwaggerConfig"></bean>
+    <mvc:default-servlet-handler/>
 
     <context:component-scan base-package="org.openlmis.web" />
+
+    <!-- Enables swgger ui-->
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
+
+    <!-- Include a swagger configuration-->
+    <bean name="/mySwaggerConfig" class="org.openlmis.config.MySwaggerConfig"/>
 
     <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 
@@ -402,29 +407,29 @@
 
     <!-- Start SMS polling configuration -->
 
-        <int:channel id="smsInputChannel">
-            <int:dispatcher task-executor="smsDispatcher"></int:dispatcher>
-        </int:channel>
+        <!--<int:channel id="smsInputChannel">-->
+            <!--<int:dispatcher task-executor="smsDispatcher"></int:dispatcher>-->
+        <!--</int:channel>-->
 
-        <int-jdbc:inbound-channel-adapter channel="smsInputChannel"
-                                          data-source="openlmisDataSource"
-                                          query="SELECT * FROM sms WHERE direction='O' and sent = false"
-                                          row-mapper="SMSRowMapper"
-                                          max-rows-per-poll="${sms.notification.rows.per.poll}"
-                                          update="UPDATE sms SET sent = true WHERE id IN (:id)"
-                                          update-per-row="true">
-            <int:poller fixed-rate="${sms.notification.polling.rate}">
-                <int:transactional/>
-            </int:poller>
-        </int-jdbc:inbound-channel-adapter>
+        <!--<int-jdbc:inbound-channel-adapter channel="smsInputChannel"-->
+                                          <!--data-source="openlmisDataSource"-->
+                                          <!--query="SELECT * FROM sms WHERE direction='O' and sent = false"-->
+                                          <!--row-mapper="SMSRowMapper"-->
+                                          <!--max-rows-per-poll="${sms.notification.rows.per.poll}"-->
+                                          <!--update="UPDATE sms SET sent = true WHERE id IN (:id)"-->
+                                          <!--update-per-row="true">-->
+            <!--<int:poller fixed-rate="${sms.notification.polling.rate}">-->
+                <!--<int:transactional/>-->
+            <!--</int:poller>-->
+        <!--</int-jdbc:inbound-channel-adapter>-->
 
-        <bean id="smsDispatcher" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-            <property name="corePoolSize" value="1"/>
-            <property name="maxPoolSize" value="1"/>
-            <property name="queueCapacity" value="-1"/>
-        </bean>
+        <!--<bean id="smsDispatcher" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
+            <!--<property name="corePoolSize" value="1"/>-->
+            <!--<property name="maxPoolSize" value="1"/>-->
+            <!--<property name="queueCapacity" value="-1"/>-->
+        <!--</bean>-->
 
-    <int:service-activator input-channel="smsInputChannel" ref="SMSService" method="ProcessSMS"/>
+    <!--<int:service-activator input-channel="smsInputChannel" ref="SMSService" method="ProcessSMS"/>-->
 
     <!-- End of SMS -->
 
