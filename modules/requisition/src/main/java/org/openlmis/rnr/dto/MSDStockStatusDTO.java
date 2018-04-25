@@ -2,15 +2,17 @@ package org.openlmis.rnr.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.domain.BaseModel;
 
 import java.util.Date;
+import java.util.List;
 
 @JsonPropertyOrder({
 
-        "IL_IDNumber",
         "Plant",
         "PartNum",
         "UOM",
@@ -22,9 +24,6 @@ import java.util.Date;
 @Setter
 @Getter
 public class MSDStockStatusDTO extends BaseModel{
-
-    @JsonProperty("IL_IDNumber")
-    public String ilId;
 
     @JsonProperty("Plant")
     public String facilityCode;
@@ -51,7 +50,5 @@ public class MSDStockStatusDTO extends BaseModel{
 
     public String status;
 
-    public String iL_TransactionIDNumber;
-
-
 }
+

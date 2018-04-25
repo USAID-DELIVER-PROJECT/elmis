@@ -18,6 +18,7 @@ import org.openlmis.core.exception.DataException;
 import org.openlmis.core.service.ELMISInterfaceService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.rnr.domain.DailyStockStatus;
+import org.openlmis.rnr.dto.MSDStockStatusCollectionDTO;
 import org.openlmis.rnr.service.DailyStockStatusSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,47 +30,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.sql.SQLException;
 
 @Controller
 @NoArgsConstructor
 public class DailyStockStatusController extends BaseController {
 
-  @Autowired
-  DailyStockStatusSubmissionService service;
+    @Autowired
+    DailyStockStatusSubmissionService service;
 
-  @ApiOperation(value = "Accepts Daily Stock Status!", httpMethod = "POST")
-  @RequestMapping(value = "/rest-api/daily-stock-status.json", method = RequestMethod.POST)
-  public ResponseEntity<OpenLmisResponse> submitDailyStockStatus(@RequestBody DailyStockStatus dailyStockStatus, BindingResult bindingResult, HttpServletRequest request) {
-    if (bindingResult.hasErrors()) {
-      return OpenLmisResponse.error(bindingResult.getGlobalError().toString(), HttpStatus.BAD_REQUEST);
-    }
-    dailyStockStatus.setCreatedBy(loggedInUserId(request.getUserPrincipal()));
-    try {
-      service.save(dailyStockStatus);
-    }catch(SQLException exception){
-      throw new DataException(exception.getMessage());
-    }
-    return OpenLmisResponse.success("Submission Accepted!");
-  }
-
-@ApiOperation(value = "Accepts Daily MSD Stock Status!", httpMethod = "POST")
-  @RequestMapping(value = "/rest-api/msd-stock-status.json", method = RequestMethod.POST)
-  public ResponseEntity<OpenLmisResponse> getMSDStockStatus(@RequestBody String dailyStockStatus, BindingResult bindingResult, HttpServletRequest request) {
-    if (bindingResult.hasErrors()) {
-      return OpenLmisResponse.error(bindingResult.getGlobalError().toString(), HttpStatus.BAD_REQUEST);
+    @ApiOperation(value = "Accepts Daily Stock Status!", httpMethod = "POST")
+    @RequestMapping(value = "/rest-api/daily-stock-status.json", method = RequestMethod.POST)
+    public ResponseEntity<OpenLmisResponse> submitDailyStockStatus(@RequestBody DailyStockStatus dailyStockStatus, BindingResult bindingResult, HttpServletRequest request) {
+        if (bindingResult.hasErrors()) {
+            return OpenLmisResponse.error(bindingResult.getGlobalError().toString(), HttpStatus.BAD_REQUEST);
+        }
+        dailyStockStatus.setCreatedBy(loggedInUserId(request.getUserPrincipal()));
+        try {
+            service.save(dailyStockStatus);
+        } catch (SQLException exception) {
+            throw new DataException(exception.getMessage());
+        }
+        return OpenLmisResponse.success("Submission Accepted!");
     }
 
-  System.out.println(dailyStockStatus);
-  System.out.println("reached Here");
-
-    try {
-      service.saveMSDStockStatus(dailyStockStatus,loggedInUserId(request.getUserPrincipal()));
-    }catch(Exception exception){
-      throw new DataException(exception.getMessage());
+    @ApiOperation(value = "Accepts Daily MSD Stock Status!", httpMethod = "POST")
+    @RequestMapping(value = "/rest-api/msd-stock-status.json", method = RequestMethod.POST, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getMSDStockStatus(@RequestBody MSDStockStatusCollectionDTO dailyStockStatus, Principal principal) {
+        service.save(dailyStockStatus, loggedInUserId(principal));
+        return OpenLmisResponse.success("Submission Accepted!");
     }
-  System.out.println("First Response");
-    return OpenLmisResponse.success("Submission Accepted!");
-  }
 
 }
