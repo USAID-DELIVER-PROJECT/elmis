@@ -17,5 +17,5 @@ public class MSDStockStatusCollectionDTO{
 
     @Getter
     @Setter
-    private String iLIDNumber;
+    private String ilNumber;
 }

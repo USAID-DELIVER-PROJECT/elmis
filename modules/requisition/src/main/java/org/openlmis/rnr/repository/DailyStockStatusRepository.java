@@ -44,8 +44,8 @@ public class DailyStockStatusRepository {
     mapper.clearStatusForFacilityDate(facilityId, programId, date);
   }
 @Transactional
-  public Long saveMsdStockStatus(MSDStockStatusDTO statusDTO,String IlIDNumber) {
-    mapper.insertMSDStatus(statusDTO,IlIDNumber);
+  public Long saveMsdStockStatus(MSDStockStatusDTO statusDTO,String ilNumber) {
+    mapper.insertMSDStatus(statusDTO,ilNumber);
     return statusDTO.getId();
   }
 
