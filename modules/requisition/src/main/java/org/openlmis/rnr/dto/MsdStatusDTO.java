@@ -9,6 +9,6 @@ public class MsdStatusDTO {
     public int updated;
     public int ignored;
     public String status;
-    public String iL_TransactionIDNumber;
+    public String ilNumber;
 
 }

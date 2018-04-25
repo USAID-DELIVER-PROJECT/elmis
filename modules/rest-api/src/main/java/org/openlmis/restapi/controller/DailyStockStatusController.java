@@ -19,6 +19,7 @@ import org.openlmis.core.service.ELMISInterfaceService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.rnr.domain.DailyStockStatus;
 import org.openlmis.rnr.dto.MSDStockStatusCollectionDTO;
+import org.openlmis.rnr.dto.MsdStatusDTO;
 import org.openlmis.rnr.service.DailyStockStatusSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -57,9 +59,8 @@ public class DailyStockStatusController extends BaseController {
 
     @ApiOperation(value = "Accepts Daily MSD Stock Status!", httpMethod = "POST")
     @RequestMapping(value = "/rest-api/msd-stock-status.json", method = RequestMethod.POST, headers = ACCEPT_JSON)
-    public ResponseEntity<OpenLmisResponse> getMSDStockStatus(@RequestBody MSDStockStatusCollectionDTO dailyStockStatus, Principal principal) {
-        service.save(dailyStockStatus, loggedInUserId(principal));
-        return OpenLmisResponse.success("Submission Accepted!");
+    public @ResponseBody MsdStatusDTO getMSDStockStatus(@RequestBody MSDStockStatusCollectionDTO dailyStockStatus, Principal principal) {
+        return service.save(dailyStockStatus, loggedInUserId(principal));
     }
 
 }

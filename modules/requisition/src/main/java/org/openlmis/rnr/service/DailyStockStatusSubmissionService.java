@@ -19,6 +19,7 @@ import org.openlmis.core.service.ProductService;
 import org.openlmis.rnr.domain.DailyStockStatus;
 import org.openlmis.rnr.dto.MSDStockStatusCollectionDTO;
 import org.openlmis.rnr.dto.MSDStockStatusDTO;
+import org.openlmis.rnr.dto.MsdStatusDTO;
 import org.openlmis.rnr.repository.DailyStockStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,13 +39,19 @@ public class DailyStockStatusSubmissionService {
         repository.insert(dailyStockStatus);
     }
 
-    private void saveMSDStatus(MSDStockStatusDTO status, Long userID,String IlIDNumber) {
+    private void saveMSDStatus(MSDStockStatusDTO status, Long userID,String ilNumber) {
         status.setCreatedBy(userID);
         repository.clearStatusForFacilityProductDate(status.getFacilityCode(), status.getProductCode(), status.getOnHandDate());
-        repository.saveMsdStockStatus(status,IlIDNumber);
+        repository.saveMsdStockStatus(status,ilNumber);
     }
 
-    public void save(MSDStockStatusCollectionDTO dailyStockStatus, Long userID) {
-        dailyStockStatus.getValues().forEach(s -> saveMSDStatus(s, userID,dailyStockStatus.getILIDNumber()));
+    public MsdStatusDTO save(MSDStockStatusCollectionDTO dailyStockStatus, Long userID) {
+
+        MsdStatusDTO statusDTO = new MsdStatusDTO();
+        statusDTO.setIlNumber(dailyStockStatus.getIlNumber());
+        statusDTO.setImported(dailyStockStatus.getValues().size());
+        statusDTO.setStatus("Success");
+        dailyStockStatus.getValues().forEach(s -> saveMSDStatus(s, userID,dailyStockStatus.getIlNumber()));
+         return statusDTO;
     }
 }

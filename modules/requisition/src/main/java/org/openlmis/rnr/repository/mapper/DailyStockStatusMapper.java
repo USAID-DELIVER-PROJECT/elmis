@@ -41,10 +41,10 @@ public interface DailyStockStatusMapper {
   @Insert(" INSERT INTO public.msd_stock_statuses(\n" +
           "             ilId, facilityCode, productCode, onHandDate, onHandQuantity, \n" +
           "            mos, createdDate, createdBy)\n" +
-          "    VALUES ( #{IlIDNumber}, #{status.facilityCode}, #{status.productCode}, #{status.onHandDate}, #{status.onHandQuantity}, \n" +
+          "    VALUES ( #{ilNumber}, #{status.facilityCode}, #{status.productCode}, #{status.onHandDate}, #{status.onHandQuantity}, \n" +
           "            #{status.mos}, NOW(), #{status.createdBy}) ")
   @Options(useGeneratedKeys = true, keyProperty = "status.id")
-  Integer insertMSDStatus(@Param("status") MSDStockStatusDTO dto,@Param("IlIDNumber") String IlIDNumber);
+  Integer insertMSDStatus(@Param("status") MSDStockStatusDTO dto,@Param("ilNumber") String ilNumber);
 
   @Select("select * from msd_stock_statuses where ilId=#{ilId} ")
   MSDStockStatusDTO getByMSDILId(@Param("ilId") String ilId);
