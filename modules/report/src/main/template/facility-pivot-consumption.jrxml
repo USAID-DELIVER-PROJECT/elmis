@@ -93,7 +93,6 @@
 		<band height="50">
 			<crosstab>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="802" height="50" uuid="2717f50b-9ac3-46cf-a1ff-13b64b748219"/>
-				<crosstabDataset isDataPreSorted="true"/>
 				<crosstabHeaderCell>
 					<cellContents backcolor="#3D9297" mode="Opaque">
 						<staticText>
