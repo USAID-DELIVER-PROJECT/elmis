@@ -73,5 +73,10 @@
            type="button" class="btn btn-primary submit-button" ng-click="rejectRnR();"
            openlmis-message="button.rnr.undo.approvals"/>
     <comment-box updatable="false" show="showCommentBox"></comment-box>
+    <div class="toolbar-message">
+      <div ng-if="!rnr.period.enableOrder && !rnr.emergency">
+        NOTE: This is a report only period. This report was <b>NOT</b> converted to order.
+      </div>
+    </div>
   </div>
 </div>

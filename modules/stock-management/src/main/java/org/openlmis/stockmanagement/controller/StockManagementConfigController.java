@@ -1,8 +1,8 @@
 package org.openlmis.stockmanagement.controller;
 
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.domain.StockAdjustmentReason;
 import org.openlmis.core.service.StockAdjustmentReasonService;

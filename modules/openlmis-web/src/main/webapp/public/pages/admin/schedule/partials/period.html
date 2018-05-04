@@ -95,10 +95,19 @@
                     </div>
                     <div class="form-cell">
                         <span openlmis-message="period.number.of.months"></span>
-            <span id="numberOfMonths" class="cell-text" ng-bind="calculateMonths()">
-            </span>
+                        <span id="numberOfMonths" class="cell-text" ng-bind="calculateMonths()">
+                        </span>
                     </div>
+
                 </div>
+              <div class="form-row">
+                <div class="form-cell">
+                  <label for="enableOrder">
+                  <span openlmis-message="period.header.is.ordering.period"></span>
+                  </label>
+                  <input id="enableOrder" type="checkbox" ng-model="newPeriod.enableOrder" />
+                </div>
+              </div>
                 <div class="form-cell button-row">
                     <input id="periodAdd" type="submit" class="btn btn-primary" openlmis-message="button.add"/>
                 </div>
@@ -122,6 +131,7 @@
                 <th><span openlmis-message="period.header.endDate"></span></th>
                 <th class="col-total-days"><span openlmis-message="period.header.totalDays"></span></th>
                 <th class="col-number-of-months"><span openlmis-message="period.header.numOfMonths"></span></th>
+                <th class="col-number-of-months"><span openlmis-message="period.header.is.ordering.period"></span></th>
                 <th class="col-delete-button">&nbsp;</th>
             </tr>
             </thead>
@@ -133,6 +143,9 @@
                 <td class="col-end-date" ng-bind="period.stringEndDate | date:'dd/MM/yyyy'"></td>
                 <td class="col-total-days" ng-bind="calculateDays(period.stringStartDate, period.stringEndDate)"></td>
                 <td class="col-number-of-months" ng-bind="period.numberOfMonths"></td>
+                <td class="col-number-of-months">
+                  <span ng-if="period.enableOrder">Yes</span>
+                </td>
                 <td class="col-delete-button">
                     <input ng-show="showDeleteButton($index)" type="button" ng-click="deletePeriod(period.id)"
                            class="btn btn-danger btn btn-mini" openlmis-message="button.delete"/>

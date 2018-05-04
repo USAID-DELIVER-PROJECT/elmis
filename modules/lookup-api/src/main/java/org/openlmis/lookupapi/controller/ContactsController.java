@@ -12,7 +12,7 @@
 
 package org.openlmis.lookupapi.controller;
 
-import com.wordnik.swagger.annotations.Api;
+import io.swagger.annotations.Api;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.lookupapi.model.Contact;

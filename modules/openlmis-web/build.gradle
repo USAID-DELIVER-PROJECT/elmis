@@ -12,223 +12,269 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.apache.tools.ant.taskdefs.condition.Os
 
+//import org.akhikhl.gretty.*
+
 apply plugin: 'jetty'
 apply plugin: 'war'
 apply plugin: 'cobertura'
+//apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+
+//gretty {
+//    httpPort = 9091
+//    contextPath = '/'
+//    scanInterval = 1
+//    jvmArgs = ['-DdefaultLocale=en']
+//    managedClassReload=false
+//    loggingLevel='DEBUG'
+//    servletContainer = 'jetty9'
+//    onScanFilesChanged {
+//        System.out.println('Change detected! reloading classes!')
+//    }
+//}
 
 task npm(type: Exec) {
-    group = "Build"
-    description = "Installs all Node.js dependencies defined in package.json"
-    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        commandLine 'cmd', '/c', 'npm', 'install'
-    } else {
-        commandLine 'npm', 'install'
-    }
-    inputs.file "package.json"
-    outputs.dir "node_modules"
+  group = "Build"
+  description = "Installs all Node.js dependencies defined in package.json"
+  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+    commandLine 'cmd', '/c', 'npm', 'install'
+  } else {
+    commandLine 'npm', 'install'
+  }
+  inputs.file "package.json"
+  outputs.dir "node_modules"
 }
 
 class GruntTask extends Exec {
-    private String gruntExecutable = Os.isFamily(Os.FAMILY_WINDOWS) ? "grunt.cmd" : "grunt"
-    private String switches = "--no-color"
+  private String gruntExecutable = Os.isFamily(Os.FAMILY_WINDOWS) ? "grunt.cmd" : "grunt"
+  private String switches = "--no-color"
 
-    String gruntArgs = ""
+  String gruntArgs = ""
 
-    public GruntTask() {
-        super()
-        this.setExecutable(gruntExecutable)
-    }
+  public GruntTask() {
+    super()
+    this.setExecutable(gruntExecutable)
+  }
 
-    public void setGruntArgs(String gruntArgs) {
-        this.args = "$switches $gruntArgs".trim().split(" ") as List
-    }
+  public void setGruntArgs(String gruntArgs) {
+    this.args = "$switches $gruntArgs".trim().split(" ") as List
+  }
 }
 
 task jsHint(type: GruntTask) {
-    description = 'Runs JSHint against all JS files and fails upon JSHint error'
-    workingDir '.'
-    gruntArgs = "jshint"
-    dependsOn npm
+  description = 'Runs JSHint against all JS files and fails upon JSHint error'
+  workingDir '.'
+  gruntArgs = "jshint"
+  dependsOn npm
 }
 
 task karmaRun(type: Exec) {
-    description = 'Runs jasmine specs and publishes js tests coverage report'
-    commandLine 'karma', 'start', 'karma.config.js'
+  description = 'Runs jasmine specs and publishes js tests coverage report'
+  commandLine 'karma', 'start', 'karma.config.js'
 }
 
 task lesslint(type: GruntTask) {
-    description = 'Runs LessLint against all LESS files'
-    workingDir '.'
-    gruntArgs = "lesslint --force"
-    dependsOn npm
+  description = 'Runs LessLint against all LESS files'
+  workingDir '.'
+  gruntArgs = "lesslint --force"
+  dependsOn npm
 }
 
 task less(type: GruntTask) {
-    description = 'Compiles all LESS files to CSS'
-    workingDir '.'
-    gruntArgs = "less"
-    dependsOn npm
+  description = 'Compiles all LESS files to CSS'
+  workingDir '.'
+  gruntArgs = "less"
+  dependsOn npm
 }
 
 task uglify(type: GruntTask) {
-    description = 'Minifies JS files'
-    workingDir '.'
-    gruntArgs = "uglify"
-    dependsOn npm
+  description = 'Minifies JS files'
+  workingDir '.'
+  gruntArgs = "uglify"
+  dependsOn npm
 }
 
 task lesswatch(type: GruntTask) {
-    description = 'Looks for changes in LESS and recompiles to CSS upon detecting change'
-    workingDir '.'
-    gruntArgs = 'watch'
-    ignoreExitValue = true
-    dependsOn npm
+  description = 'Looks for changes in LESS and recompiles to CSS upon detecting change'
+  workingDir '.'
+  gruntArgs = 'watch'
+  ignoreExitValue = true
+  dependsOn npm
 }
 
 buildscript {
-    repositories {
-        mavenCentral();
+  repositories {
+    mavenCentral();
 //        add(new org.apache.ivy.plugins.resolver.URLResolver()) {
 //            name = 'GitHub'
 //            addArtifactPattern 'http://cloud.github.com/downloads/[organisation]/[module]/[module]-[revision].[ext]'
 //        };
 
-    }
+  }
 }
 
 war {
-    exclude "public/less/"
-    exclude "public/css/"
-    exclude "public/fonts/"
-    exclude "public/images/"
-    exclude "public/js/"
-    exclude "public/lib/"
+  exclude "public/less/"
+  exclude "public/css/"
+  exclude "public/fonts/"
+  exclude "public/images/"
+  exclude "public/js/"
+  exclude "public/lib/"
 
-    doFirst {
-        prepareVersionedDirectory.execute();
-    }
+  doFirst {
+    prepareVersionedDirectory.execute();
+  }
 
-    doLast {
-        cleanWorkspace.execute()
-    }
+  doLast {
+    cleanWorkspace.execute()
+  }
 }
 
 task prepareVersionedDirectory(type: Copy) {
-    ext.currentTime = System.properties.get('version', new Date().getTime() + "");
-    from('src/main/webapp/public') {
-        exclude 'pages/**/*.*', 'v' + ext.currentTime + '**/*';
-    }
-    into 'src/main/webapp/public/v' + ext.currentTime;
-    includeEmptyDirs = false;
+  ext.currentTime = System.properties.get('version', new Date().getTime() + "");
+  from('src/main/webapp/public') {
+    exclude 'pages/**/*.*', 'v' + ext.currentTime + '**/*';
+  }
+  into 'src/main/webapp/public/v' + ext.currentTime;
+  includeEmptyDirs = false;
 }
 
 tasks.withType(War) {
-    eachFile { FileCopyDetails fileCopy ->
-        if (fileCopy.name.equals('services.js') || fileCopy.name.equals('offline.appcacheOFF')) {
-            fileCopy.filter(ReplaceTokens, tokens: [version: prepareVersionedDirectory.currentTime])
-        }
-        if (fileCopy.name.equals('offline.appcacheOFF')) {
-            fileCopy.setName('offline.appcache')
-        }
-        if (fileCopy.name.endsWith('html') || fileCopy.name.endsWith('css') || fileCopy.name.endsWith('appcache'))
-            fileCopy.filter { String line ->
-                if (!line.contains(".html"))
-                    line.replace('/public', '/public/v' + prepareVersionedDirectory.currentTime)
-                else
-                    "$line"
-            }
+  eachFile { FileCopyDetails fileCopy ->
+    if (fileCopy.name.equals('services.js') || fileCopy.name.equals('offline.appcacheOFF')) {
+      fileCopy.filter(ReplaceTokens, tokens: [version: prepareVersionedDirectory.currentTime])
     }
+    if (fileCopy.name.equals('offline.appcacheOFF')) {
+      fileCopy.setName('offline.appcache')
+    }
+    if (fileCopy.name.endsWith('html') || fileCopy.name.endsWith('css') || fileCopy.name.endsWith('appcache'))
+      fileCopy.filter { String line ->
+        if (!line.contains(".html"))
+          line.replace('/public', '/public/v' + prepareVersionedDirectory.currentTime)
+        else
+          "$line"
+      }
+  }
 }
 
 task cleanWorkspace(type: Delete) {
-    delete 'src/main/webapp/public/v' + prepareVersionedDirectory.currentTime + '/';
+  delete 'src/main/webapp/public/v' + prepareVersionedDirectory.currentTime + '/';
 }
 
 build.doLast {
 //    karmaRun.execute()
-    jsHint.execute()
-    cleanWorkspace.execute()
+  jsHint.execute()
+  cleanWorkspace.execute()
 }
 
 dependencies {
-    compile 'log4j:log4j:1.2.15',
-            'commons-fileupload:commons-fileupload:1.2.2',
-            'com.itextpdf:itextpdf:5.4.0',
+    compile 'io.springfox:springfox-spi:2.6.0'
+    compile 'com.google.guava:guava:18.0'
+    compile 'io.springfox:springfox-spring-web:2.6.0'
+    compile 'com.fasterxml:classmate:1.3.1'
+    compile 'io.swagger:swagger-annotations:1.5.18'
+    compile 'io.springfox:springfox-core:2.6.0'
+    compile 'io.springfox:springfox-spi:2.6.0'
+    compile 'com.google.guava:guava:18.0'
+    compile 'io.springfox:springfox-spring-web:2.6.0'
+    compile 'com.fasterxml:classmate:1.3.1'
+    compile 'io.swagger:swagger-annotations:1.5.18'
+    compile 'io.springfox:springfox-core:2.6.0'
+  compile 'org.springframework:spring-context:4.1.5.RELEASE'
+  compile 'net.sf.jasperreports:jasperreports:6.3.1'
+  compile 'org.apache.commons:commons-lang3:3.7'
+  compile 'org.springframework:spring-beans:4.1.5.RELEASE'
+  compile 'jdom:jdom:1.0'
+  compile 'rome:rome:1.0'
+  compile 'org.ict4h:atomfeed-server:1.9.4'
+  compile 'org.mybatis:mybatis:3.2.8'
+  compile 'org.slf4j:slf4j-api:1.7.24'
+  testCompile 'org.mockito:mockito-all:1.10.19'
+  testCompile 'junit:junit-dep:4.8.1'
+  testCompile 'org.powermock:powermock-core:1.6.2'
+  testCompile 'joda-time:joda-time:2.7'
+  testCompile 'org.aspectj:aspectjweaver:1.8.5'
+  testCompile 'org.hamcrest:hamcrest-core:1.3'
+  testCompile 'org.hamcrest:hamcrest-library:1.2'
+  compile 'log4j:log4j:1.2.15',
+      'commons-fileupload:commons-fileupload:1.2.2',
+      'com.itextpdf:itextpdf:5.4.0',
+      'io.springfox:springfox-swagger2:2.6.0',
+      'io.springfox:springfox-swagger-ui:2.6.0',
 
-            'com.wordnik:swagger-annotations:1.3.12',
-            'com.mangofactory:swagger-models:0.9.5',
-            'com.mangofactory:swagger-springmvc:0.9.5',
+      project(':modules:upload'),
+      project(':modules:email'),
+      project(':modules:db'),
+      project(':modules:migration'),
+      project(':modules:authentication'),
+      project(':modules:requisition'),
+      project(':modules:core'),
+      project(':modules:shipment'),
+      project(':modules:lookup-api'),
+      project(':modules:rest-api'),
+      project(':modules:reporting'),
+      project(':modules:report'),
+      project(':modules:distribution'),
+      project(':modules:equipment'),
+      project(':modules:demographics'),
+      project(':modules:ivd-form'),
+      project(':modules:vaccine'),
+      project(':modules:help'),
+      project(':modules:stock-management')
 
-            project(':modules:authentication'),
-            project(':modules:requisition'),
-            project(':modules:core'),
-            project(':modules:shipment'),
-            project(':modules:lookup-api'),
-            project(':modules:rest-api'),
-            project(':modules:reporting'),
-            project(':modules:report'),
-            project(':modules:distribution'),
-            project(':modules:equipment'),
-            project(':modules:demographics'),
-            project(':modules:ivd-form'),
-            project(':modules:vaccine'),
-            project(':modules:help'),
-            project(':modules:stock-management')
-
-    testCompile project(path: ':modules:core', configuration: 'testFixtures'),
-            project(path: ':modules:rest-api', configuration: 'testFixtures'),
-            project(path: ':modules:requisition', configuration: 'testFixtures'),
-            project(path: ':modules:shipment', configuration: 'testFixtures'),
-            project(path: ':modules:distribution', configuration: 'testFixtures'),
-            project(path: ':modules:report', configuration: 'testFixtures'),
-            project(path: ':modules:reporting', configuration: 'testFixtures')
+  testCompile project(path: ':modules:core', configuration: 'testFixtures'),
+      project(path: ':modules:rest-api', configuration: 'testFixtures'),
+      project(path: ':modules:requisition', configuration: 'testFixtures'),
+      project(path: ':modules:shipment', configuration: 'testFixtures'),
+      project(path: ':modules:distribution', configuration: 'testFixtures'),
+      project(path: ':modules:report', configuration: 'testFixtures'),
+      project(path: ':modules:reporting', configuration: 'testFixtures')
 }
 
 sonarqube {
-    properties {
-        properties["sonar.sources"] += 'src/main/webapp/public/js'
-        properties["sonar.sources"] += 'src/main/webapp/public/pages'
-        properties["sonar.sources"] += 'src/main/webapp/public/less'
-    }
+  properties {
+    properties["sonar.sources"] += 'src/main/webapp/public/js'
+    properties["sonar.sources"] += 'src/main/webapp/public/pages'
+    properties["sonar.sources"] += 'src/main/webapp/public/less'
+  }
 }
 
 jettyRun {
-    jettyRun.httpPort = 9091;
-    contextPath = ''
-    daemon = true;
-    jettyRun.scanIntervalSeconds = 1
-    System.properties.get('defaultLocale', 'en')
-    System.properties.get('jetty.host', '0.0.0.0')
+  jettyRun.httpPort = 9091;
+  contextPath = ''
+  daemon = true;
+  jettyRun.scanIntervalSeconds = 1
+  System.properties.get('defaultLocale', 'en')
+  System.properties.get('jetty.host', '0.0.0.0')
 }
 
 def configureHttps(keystore, password) {
-    ext.connectors = [jettyRun.class.classLoader.loadClass('org.mortbay.jetty.security.SslSocketConnector').newInstance()]
-    ext.connectors[0].port = 9091
-    ext.connectors[0].keystore = connectors[0].truststore = keystore
-    ext.connectors[0].keyPassword = connectors[0].trustPassword = password
-    ext.connectors[0].wantClientAuth = true
-    ext.connectors[0].needClientAuth = false
-    return ext.connectors;
+  ext.connectors = [jettyRun.class.classLoader.loadClass('org.mortbay.jetty.security.SslSocketConnector').newInstance()]
+  ext.connectors[0].port = 9091
+  ext.connectors[0].keystore = connectors[0].truststore = keystore
+  ext.connectors[0].keyPassword = connectors[0].trustPassword = password
+  ext.connectors[0].wantClientAuth = true
+  ext.connectors[0].needClientAuth = false
+  return ext.connectors;
 }
 
 task run(dependsOn: [jettyRun, lesswatch]) {
-    description = 'Runs the Jetty server and starts watching LESS files for changes'
+  description = 'Runs the Jetty server and starts watching LESS files for changes'
 }
 
 task explodedWar(type: Copy) {
-    description = 'Explodes WAR file'
-    into "$buildDir/exploded"
-    with war
+  description = 'Explodes WAR file'
+  into "$buildDir/exploded"
+  with war
 }
 
 task deployOpenLmis(type: GradleBuild) {
-    tasks = ['build']
-    tasks = ['cargoRedeployRemote']
+  tasks = ['build']
+  tasks = ['cargoRedeployRemote']
 }
 
 compileJava.dependsOn less
 
 cobertura {
-    coverageFormats << 'xml'
-    coverageIgnoreTrivial = true
+  coverageFormats << 'xml'
+  coverageIgnoreTrivial = true
 }

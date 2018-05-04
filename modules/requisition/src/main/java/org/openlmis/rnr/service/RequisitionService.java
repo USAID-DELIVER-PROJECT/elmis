@@ -140,12 +140,8 @@ public class RequisitionService {
     program = programService.getById(program.getId());
     ProcessingPeriod period = findPeriod(facility, program, emergency);
 
-    if (proposedPeriod != null) {
-      if (proposedPeriod.getId() != period.getId()) {
-        // take caution in this case.
-        // todo: log a warning here.
+    if (proposedPeriod != null && proposedPeriod.getId() != period.getId()) {
         period = proposedPeriod;
-      }
     }
 
     List<FacilityTypeApprovedProduct> facilityTypeApprovedProducts = facilityApprovedProductService.getFullSupplyFacilityApprovedProductByFacilityAndProgram(
@@ -207,12 +203,12 @@ public class RequisitionService {
     requisition.setEquipmentLineItems(new ArrayList<EquipmentLineItem>());
 
     EquipmentOperationalStatus obsoleteEquipmentStatus =
-            equipmentOperationalStatusService.getByCode(OBSOLETE);
+        equipmentOperationalStatusService.getByCode(OBSOLETE);
 
     //if the equipment status become obsolete on the previous Rnr,
     // ignore it for the current and the following Rnr
     for (EquipmentInventory inv : inventories) {
-      if(inv.getOperationalStatusId() == obsoleteEquipmentStatus.getId())
+      if (inv.getOperationalStatusId() == obsoleteEquipmentStatus.getId())
         continue;
 
       EquipmentLineItem lineItem = new EquipmentLineItem();
@@ -230,7 +226,7 @@ public class RequisitionService {
     }
   }
 
-  private void populateManualTests(Rnr requisition){
+  private void populateManualTests(Rnr requisition) {
     List<ManualTestesLineItem> generatedManualTestLineItem = manualTestMapper.getGeneratedEmptyManualTestLineItem();
     requisition.setManualTestLineItems(generatedManualTestLineItem);
   }
@@ -335,7 +331,11 @@ public class RequisitionService {
 
     boolean notifyStatusChange = true;
     if (parent == null) {
-      savedRnr.prepareForFinalApproval();
+      if (savedRnr.getPeriod().getEnableOrder() || savedRnr.isEmergency()) {
+        savedRnr.prepareForFinalApproval();
+      } else {
+        savedRnr.setStatus(RnrStatus.RELEASED_NO_ORDER);
+      }
     } else {
       if (savedRnr.getStatus() == IN_APPROVAL) {
         notifyStatusChange = false;
@@ -364,7 +364,7 @@ public class RequisitionService {
 
         List<RnrLineItem> lineItems = findSubscribedLineItems(savedRnr, subscription);
 
-        if (lineItems.size() > 0) {
+        if (!lineItems.isEmpty()) {
           ArrayList<RnrLineItem> newRnrLineItems = new ArrayList<>();
           for (RnrLineItem li : lineItems) {
             // clone the object
@@ -411,9 +411,7 @@ public class RequisitionService {
     //is there a subscription for this facility and program
     if (supplyPartnerService != null) {
       List<SupplyPartnerProgram> subscriptions = supplyPartnerService.getSubscriptions(savedRnr.getFacility().getId(), savedRnr.getProgram().getId());
-      if (subscriptions != null && subscriptions.size() > 0) {
-        return true;
-      }
+      return subscriptions != null && !subscriptions.isEmpty();
     }
     // iterate on each subscription
     return false;
@@ -503,7 +501,7 @@ public class RequisitionService {
 
     List<ProcessingPeriod> periods = processingScheduleService.getAllPeriodsAfterDateAndPeriod(facility.getId(), program.getId(), programStartDate, periodIdForLastRequisition);
 
-    if (periods.size() == 0) {
+    if (periods.isEmpty()) {
       throw new DataException("error.program.configuration.missing");
     }
     return periods.get(0);
@@ -530,15 +528,10 @@ public class RequisitionService {
     }
 
     // find the distinct list
-    Set<ProcessingPeriod> finalList = new HashSet<ProcessingPeriod>(periods);
-    periods = new ArrayList<ProcessingPeriod>(finalList);
+    Set<ProcessingPeriod> finalList = new HashSet<>(periods);
+    periods = new ArrayList<>(finalList);
     // sort the list of periods by start date
-    Collections.sort(periods, new Comparator<ProcessingPeriod>() {
-
-      public int compare(ProcessingPeriod o1, ProcessingPeriod o2) {
-        return o1.getStartDate().compareTo(o2.getStartDate());
-      }
-    });
+    Collections.sort(periods, Comparator.comparing(ProcessingPeriod::getStartDate));
 
     return periods;
   }
@@ -605,10 +598,6 @@ public class RequisitionService {
       requisitionEventService.notifyForStatusChange(requisition);
     }
 
-    // the function call above (notify for status implements sending of notificaiton email.
-    // the benefit of the above call is that the email template is being taken from the administrative settings.
-    // a call to the following method will do the same thing but takes the message template from the messages.properties file.
-    //send RequisitionStatusChangeMail ( requisition );
   }
 
   private void sendRequisitionStatusChangeMail(Rnr requisition) {
@@ -801,7 +790,7 @@ public class RequisitionService {
 
   public void releaseWithoutOrder(Rnr rnr, User user) {
     Rnr requisition = requisitionRepository.getById(rnr.getId());
-    if(requisition.getStatus().equals(RnrStatus.APPROVED)) {
+    if (requisition.getStatus().equals(RnrStatus.APPROVED)) {
       requisition.setStatus(RnrStatus.RELEASED_NO_ORDER);
       requisition.setModifiedBy(user.getId());
       requisitionRepository.update(requisition);
@@ -814,7 +803,7 @@ public class RequisitionService {
     return requisitionRepository.getUnreleasedPreviousRequisitions(rnr);
   }
 
-  public Map<String, Object> getLabEquipmentReferenceData(){
+  public Map<String, Object> getLabEquipmentReferenceData() {
     Map<String, Object> referenceData = new HashMap<>();
     referenceData.put(TESTTYPES, equipmentInventoryService.getBioChemistryEquipmentTestTypes());
     referenceData.put(MANUALTESTTYPES, equipmentInventoryService.getManualTestTypes());

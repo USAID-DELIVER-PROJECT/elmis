@@ -98,6 +98,11 @@
                  ng-show="message"></div>
             <div class="toolbar-success" id="submitSuccessMsgDiv" openlmis-message="submitMessage"
                  ng-show="submitMessage"></div>
+            <div class="toolbar-message">
+              <div ng-if="!rnr.period.enableOrder && !rnr.emergency">
+                NOTE: This is a report only period. This report will <b>NOT</b> be converted to order.
+              </div>
+            </div>
         </div>
     </form>
 </div>
