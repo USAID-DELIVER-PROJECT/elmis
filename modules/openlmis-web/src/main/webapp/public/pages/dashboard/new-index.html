@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html ng-app="new-dashboard">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!--
+        <link rel="stylesheet" href="/public/lib/angular-material/angular-material.css">
+    -->
+
+
+    <!-- CSS  -->
+
+    <title openlmis-message="app.title"></title>
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon"/>
+    <!-- library files-->
+    <script src="/public/lib/base2.js"></script>
+
+
+    <script src="/public/lib/leaflet/leaflet.js"></script>
+
+
+    <script type="text/javascript" src="/public/lib/material/js/jquery-2.1.4.min.js"></script>
+    <script src="/public/lib/jquery/floating-1.12.js"></script>
+
+    <script type="text/javascript" src="/public/lib/jquery.smartmenus.js"></script>
+    <script type="text/javascript" src="/public/lib/jquery/jquery.dimensions.min.js"></script>
+
+
+    <script src="/public/lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="/public/lib/angular-materialize/src/angular-materialize.js"></script>
+    <script src="/public/lib/material/js/materialize.min.js"></script>
+
+    <script src="/public/lib/angular/angular-route.min.js"></script>
+    <script src="/public/lib/angular/angular-cookies.js"></script>
+    <script src="/public/lib/angular/angular-resource.min.js"></script>
+    <script src="/public/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/public/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/public/lib/underscore/underscore-min.js"></script>
+    <script src="/public/lib/select2/select2.js"></script>
+    <link rel="stylesheet" href="/public/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/lib/select2/select2.css">
+    <script src="/public/lib/angular-ui/angular-ui.min.js"></script>
+    <script src="/public/lib/angular-ui/bootstrap/ui-bootstrap-0.1.0.min.js"></script>
+    <script src="/public/lib/angular-ui/bootstrap/ui-bootstrap-pagination-0.10.0.min.js"></script>
+
+    <script src="/public/lib/angular-ui/ng-grid/ng-grid-2.0.7.min.js"></script>
+
+    <script src="/public/lib/angular-breadcrumb/js/angular-breadcrumb.min.js"></script>
+    <script src="/public/lib/jquery/chosen.jquery.min.js"></script>
+
+
+    <link rel="stylesheet" href="/public/lib/angular-ui/angular-ui.min.css">
+
+    <!-- open-lmis shared files -->
+    <script src="/public/js/shared/util.js"></script>
+    <script src="/public/js/shared/accordion.js"></script>
+
+    <script src="/public/js/shared/services/services.js"></script>
+    <script src="/public/js/shared/services/extension-services.js"></script>
+    <script src="/public/js/shared/services/message-service.js"></script>
+    <script src="/public/js/shared/services/authorization-service.js"></script>
+    <script src="/public/js/shared/controller/header-controller.js"></script>
+    <script src="/public/js/shared/controller/login-controller.js"></script>
+    <script src="/public/js/shared/controller/locale-controller.js"></script>
+    <script src="/public/js/shared/controller/navigation-controller.js"></script>
+    <script src="/public/js/shared/app.js"></script>
+    <script type="text/javascript" src="/public/lib/highcharts/highcharts.js"></script>
+    <script src="/public/lib/highcharts/modules/exporting.js"></script>
+    <script src="/public/lib/highcharts/modules/map.js"></script>
+    <script src="/public/lib/highcharts/modules/data.js"></script>
+    <!--
+        <script src="https://code.highcharts.com/mapdata/countries/tz/tz-all.js"></script>
+    -->
+    <!--
+        <script src="http://code.highcharts.com/mapdata/custom/world.js"></script>
+    -->
+    <script src="/public/lib/highcharts/mapdata/countries/tz/tz-regions.js"></script>
+
+    <!--
+        <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    -->
+    <!--
+        <script src="/public/lib/highcharts/exporting.js"></script>
+    -->
+    <script src="/public/js/shared/services/navigate-back-service.js"></script>
+    <script src="/public/js/shared/app.js"></script>
+    <script type="text/javascript" src="/public/js/shared/services/authorization-service.js"></script>
+
+
+    <script src="/public/js/shared/services/map-helpers.js"></script>
+
+    <!-- App directives -->
+    <script src="/public/js/shared/directives/form-toolbar.js"></script>
+    <script src="/public/js/shared/directives/openlmis-message.js"></script>
+    <script src="/public/js/shared/directives/placeholder.js"></script>
+    <script src="/public/js/shared/directives/ui-nav.js"></script>
+    <script src="/public/js/shared/directives/tab-scroll.js"></script>
+<!--
+    <script src="/public/js/shared/directives/modal-events.js"></script>
+-->
+    <script src="/public/js/shared/directives/slider.js"></script>
+    <script src="/public/js/shared/directives/fade-out.js"></script>
+    <script src="/public/js/shared/directives/openlmis-pagination.js"></script>
+    <script src="/public/js/shared/directives/ng-grid-events.js"></script>
+    <script src="/public/js/shared/directives/fixed-table-header.js"></script>
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/public/lib/bootstrap-tree-view/css/bootstrap.3.3.7.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="/public/lib/bootstrap-tree-view/js/bootstrap.3.3.7.min.js"></script>
+
+    <link rel="stylesheet" href="/public/lib/bootstrap-tree-view/css/bootstrap-treeview.min.css">
+    <script src="/public/lib/bootstrap-tree-view/js/bootstrap-treeview.min.js"></script>
+    <script src="/public/lib/angular-breadcrumb/js/breadcrumbs.js"></script>
+    <script src="/public/lib/angular-breadcrumb/js/ng-breadcrumbs.min.js"></script>
+    <script src="/public/lib/angular-utils-ui-breadcrumbs/uiBreadcrumbs.js"></script>
+    <script src="/public/lib/angular/angular-combine.js"></script>
+    <script src="/public/js/reports/shared/directives/filters.js"></script>
+    <script src="/public/lib/angular-ui/ng-table/ng-table.js"></script>
+    <script src="/public/lib/tree-dropdown/tree-dropdown.js"></script>
+    <script src="/public/lib/angular-screen-full/screenfull.js"></script>
+    <script src="/public/lib/angular-screen-full/angular-screenfull.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/public/lib/angularjs-slider/rzslider.css"/>
+    <script src="/public/lib/angularjs-slider/rzslider.min.js"></script>
+    <script src="/public/js/rnr/directives/full-screen.js"></script>
+    <link rel="stylesheet" href="/public/lib/leaflet/leaflet.css">
+    <link rel="stylesheet" href="/public/lib/tree-dropdown/tree-dropdown.css">
+    <link rel="stylesheet" href="/public/css/app.css">
+    <link rel="stylesheet" href="/public/lib/angular-ui/ng-table/ng-table.css">
+
+    <!--User directives-->
+
+    <script src="/public/js/shared/open-lmis-dialog.js"></script>
+    <script src="/public/lib/localstorage/localStorage.js"></script>
+    <script src="/public/js/shared/localStorageKeys.js"></script>
+
+    <!-- page specific libaries/files -->
+    <script src="/public/js/dashboard/module/new-dashboard-module.js"></script>
+    <script src="/public/js/dashboard/controller/new-dashboard-controller.js"></script>
+    <script src="/public/lib/leaflet/angular-leaflet-directive.min.js"></script>
+    <script src="/public/lib/leaflet/chroma.min.js"></script>
+    <script src="/public/lib/leaflet/Google.js"></script>
+
+    <link type="text/css" rel="stylesheet" charset="UTF-8" href="/public/css/ng-grid.css">
+    <link href="/public/lib/material/css/materialize.min.css" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+
+    <link type="text/css" rel="stylesheet" charset="UTF-8" href="/public/css/app.css">
+
+
+    <!--[if IE 9]>
+    <link rel="stylesheet" href="/public/css/ie9.css"/>
+    <![endif]-->
+
+
+    <link href="/public/css/google.css" rel="stylesheet"/>
+    <link href="/public/css/new-dashboard.css" rel="stylesheet"/>
+
+
+</head>
+
+<body onunload="">
+<ng-include src="'/public/pages/header.html'"></ng-include>
+<ng-include src="'/public/pages/navigation.html'"></ng-include>
+<div class="content" style="background-color: #eef1f3 !important;">
+    <div ncy-breadcrumb=""></div>
+    <div ui-view></div>
+</div>
+
+</body>
+</html>
