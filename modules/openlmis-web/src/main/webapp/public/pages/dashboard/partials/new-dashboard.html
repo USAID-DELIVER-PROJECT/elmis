@@ -1,3 +1,13 @@
+<style>
+
+    #stock_status_map {
+        height: 400px;
+        margin: 0 auto;
+    }
+    #indicator{
+        margin-top: -1rem;
+    }
+</style>
 <div id="tab">
 
     <ul class="nav nav-pills">
@@ -15,7 +25,7 @@
 <!--
             Starting the dashlets by only adding rows and card
 -->
-            <div class="row">
+            <div class="row" ng-show="false">
                 <div class="col s12 m6 l6">
                     <div class="section grey lighten-5 card">
 
@@ -26,7 +36,53 @@
                 </div>
                 <div class="col s12 m6 l6">
                     <div class="section grey lighten-5 card">
-                        <span>{{data}}</span>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col s12 m6 l6">
+                    <div class="section grey lighten-5 card">
+                        <div id="stock_status_map"></div>
+                    </div>
+
+                </div>
+                <div class="col s12 m6 l6">
+                    <div class="section grey lighten-5 card">
+                        <table class="table" id="indicator"><tr><td bgcolor="#dd514c">Stocked Out</td><td bgcolor="#faa732">Under Stocked</td><td bgcolor="#4bb1cf">Over Stocked</td><td bgcolor="#5eb95e">Adequately Stocked</td></tr></table>
+                        <table class="table table-striped " style="height: 400px; margin: 0 auto;" >
+                            <thead>
+                            <tr>
+                                <th style="width:170px !important;">Product</th>
+                                <th style="width:70px !important;">Reported</th>
+                                <th style="width: 180px;">Status</th>
+                                <th style="width: 73px !important; height: 34px !important;">% Stocked Out</th>
+                                <th style="width: 45px;">Check</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="product in products | filter:expectedProductFilter">
+                                <td style="width:170px !important;" >{{product.primaryname}}</td>
+                                <td style="width:70px !important;" class="number">{{product.reported}}</td>
+                                <td style="width:180px !important;" class="number">
+                                    <div class="progress" style="margin-bottom:0px;width:180px;height: 20px">
+                                        <div class="bar bar-danger leaflet-clickable" ng-click="StockedOutProducts(product,this);" style="width: {{((product.stockedout / product.reported) * 100)}}%">{{product.stockedout}}</div>
+                                        <div class="bar bar-warning leaflet-clickable" ng-click="UnderStockedProducts(product, this)" style="width: {{((product.understocked / product.reported) * 100)}}%">{{product.understocked}}</div>
+                                        <div class="bar bar-info leaflet-clickable" ng-click="OverStockedProducts(product, this)" style="width: {{((product.overstocked / product.reported) * 100)}}%">{{product.overstocked}}</div>
+                                        <div class="bar bar-success leaflet-clickable" ng-click="AdequatelyStockedProducts(product, this)" style="width: {{(100 - (((product.stockedout + product.understocked + product.overstocked)/ product.reported) * 100))}}%">{{ (product.reported - (product.stockedout + product.understocked + product.overstocked)) }}</div>
+                                    </div>
+                                </td>
+                                <td style="width: 91px !important;" class="number">{{((product.stockedout / product.reported) * 100).toFixed(0)}} %</td>
+                                <td style="width:45px"><input type="checkbox" ng-model="product.selected" ng-change="productSelectChange(product.selected, product)" ></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
 
                     </div>
 
