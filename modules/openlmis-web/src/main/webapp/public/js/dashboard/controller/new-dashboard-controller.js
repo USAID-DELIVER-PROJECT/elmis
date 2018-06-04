@@ -1,6 +1,264 @@
 function DashboardControllerFunction($scope) {
-    $scope.data = "mamama";
 
+ function calculatePercentage(data){
+     var total = 0;
+     angular.forEach(data,function (da,index) {
+         total += da.current;
+     });
+     return parseInt(total/parseInt(data.length,10),10);
+ }
+
+$scope.orderFillRateByZone ={
+    "zones": [
+        {
+            "name": "North East",
+            "prev": 89,
+            "current": 90,
+            "status": "good"
+        },
+        {
+            "name": "Western",
+            "prev": 89,
+            "current": 89,
+            "status": "normal"
+        },
+        {
+            "name": "Southern",
+            "prev": 50,
+            "current": 69,
+            "status": "bad"
+        },{
+            "name": "North Western",
+            "prev": 70,
+            "current": 20,
+            "status": "bad"
+        },{
+            "name": "Northern",
+            "prev": 70,
+            "current": 60,
+            "status": "bad"
+        },{
+            "name": "Muchinga",
+            "prev": 70,
+            "current": 90,
+            "status": "bad"
+        },{
+            "name": "Luapula",
+            "prev": 70,
+            "current": 90,
+            "status": "bad"
+        },{
+            "name": "Copperbelt",
+            "prev": 70,
+            "current": 20,
+            "status": "bad"
+        },{
+            "name": "Central",
+            "prev": 70,
+            "current": 80,
+            "status": "bad"
+        },{
+            "name": "Lusaka Province",
+            "prev": 70,
+            "current": 85,
+            "status": "bad"
+        }
+    ]
+};
+
+$scope.stockAvailability ={
+    "zones": [
+        {
+            "name": "North East",
+            "prev": 75,
+            "current": 85,
+            "status": "good"
+        },
+        {
+            "name": "Western",
+            "prev": 80,
+            "current": 81,
+            "status": "normal"
+        },
+        {
+            "name": "Southern",
+            "prev": 61,
+            "current": 71,
+            "status": "bad"
+        },{
+            "name": "North Western",
+            "prev": 70,
+            "current": 75,
+            "status": "bad"
+        },{
+            "name": "Northern",
+            "prev": 50,
+            "current": 55,
+            "status": "bad"
+        },{
+            "name": "Muchinga",
+            "prev": 30,
+            "current": 79,
+            "status": "bad"
+        },{
+            "name": "Luapula",
+            "prev": 40,
+            "current": 79,
+            "status": "bad"
+        },{
+            "name": "Copperbelt",
+            "prev": 90,
+            "current": 85,
+            "status": "bad"
+        },{
+            "name": "Central",
+            "prev": 75,
+            "current": 86,
+            "status": "bad"
+        },{
+            "name": "Lusaka Province",
+            "prev": 89,
+            "current": 90,
+            "status": "bad"
+        }
+    ]
+};
+$scope.reportingRate ={
+    "zones": [
+        {
+            "name": "North East",
+            "prev": 60,
+            "current": 80,
+            "status": "good"
+        },
+        {
+            "name": "Western",
+            "prev": 89,
+            "current": 81,
+            "status": "normal"
+        },
+        {
+            "name": "Southern",
+            "prev": 81,
+            "current": 89,
+            "status": "bad"
+        },{
+            "name": "North Western",
+            "prev": 81,
+            "current": 90,
+            "status": "bad"
+        },{
+            "name": "Northern",
+            "prev": 76,
+            "current": 83,
+            "status": "bad"
+        },{
+            "name": "Muchinga",
+            "prev": 84,
+            "current": 98,
+            "status": "bad"
+        },{
+            "name": "Luapula",
+            "prev": 70,
+            "current": 80,
+            "status": "bad"
+        },{
+            "name": "Copperbelt",
+            "prev": 50,
+            "current": 50,
+            "status": "bad"
+        },{
+            "name": "Central",
+            "prev": 60,
+            "current": 79,
+            "status": "bad"
+        },{
+            "name": "Lusaka Province",
+            "prev": 75,
+            "current": 80,
+            "status": "bad"
+        }
+    ]
+};
+
+function borderColor(data){
+    return (data >= 80)?'green':(data<80 && data>70)?'orange':'red';
+
+}
+
+$scope.dynamicPerformanceChart = function(data,chartId,name,result)
+
+{
+
+        var gaugeOptions = {
+
+            chart: {
+                type: 'solidgauge',
+                margin: [0, 0, 0, 0],
+                backgroundColor: 'transparent'
+            },
+            title: null,
+            yAxis: {
+                min: 0,
+                max: 100,
+                minColor: borderColor(result),
+                maxColor: borderColor(result),
+                lineWidth: 0,
+                tickWidth: 0,
+                minorTickLength: 0,
+                // minTickInterval: 500,
+                labels: {
+                    enabled: false
+                }
+            },
+            pane: {
+                size: '100%',
+                center: ['50%', '50%'],
+                startAngle: 0,
+                endAngle: 360,
+                background: {
+                    borderWidth: 20,
+                    backgroundColor: '#DBDBDB',
+                    shape: 'arch',
+                    borderColor: '#DBDBDB',
+                    outerRadius: '80%',
+                    innerRadius: '80%'
+                }
+            },
+            tooltip: {
+                enabled: true
+            },
+            plotOptions: {
+                solidgauge: {
+                    borderColor: borderColor(result),
+                    borderWidth: 18,
+                    radius: 75,
+                    innerRadius: '80%',
+                    dataLabels: {
+                        borderWidth: 0,
+                        useHTML: true,
+                        enable: true
+                    }
+                }
+            },
+            series: [{
+                name: name,
+                data: [result],
+                dataLabels: {
+                    format: '<div style="Width: 30px;text-align:center"><span style="font-size:20px;color:"'+borderColor(data.ofr)+'"><br>{y}%</span></div>'
+                }
+
+            }],
+
+            credits: {
+                enabled: false
+            }
+        };
+        $(chartId).highcharts(gaugeOptions);
+    };
+    $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
+    $scope.dynamicPerformanceChart($scope.stockAvailability,'#stock-availability','StockAvailability',calculatePercentage($scope.stockAvailability.zones));
+    $scope.dynamicPerformanceChart($scope.reportingRate,'#reporting-rate','ReportingRate',calculatePercentage($scope.reportingRate.zones));
 
     var dataValues = [
         ['zm-lp', 0],
@@ -18,6 +276,7 @@ function DashboardControllerFunction($scope) {
     $scope.loadStockStatusByLocation = function (params) {
 
         $.getJSON('/gis/stock-status-products.json', params, function (data) {
+            console.log($scope.products);
             $scope.products = data.products;
         });
 
@@ -104,294 +363,6 @@ function DashboardControllerFunction($scope) {
         program: parseInt(3, 10)
     };
     $scope.loadStockStatusByLocation(defaultParam);
-
-    $scope.loadCoverageMap = function (params) {
-
-        GetCoverageMapInfo.get(params).then(function (data) {
-            var dataValues = [];
-            Highcharts.each(data, function (code, i) {
-                var colorV;
-                if (parseInt(code.value, 10) <= 0 || isNaN(code.value))
-                    colorV = 'black';
-
-                dataValues.push({
-                    code: code.code,
-                    value: parseInt(code.value, 10),
-                    color: colorV
-                    // color:interpolateCoverage(code.cumulative_vaccinated,code.monthly_district_target,code.coverageclassification.toLowerCase())
-
-                });
-            });
-            var small = $('#coverage_map').width() < 400;
-            var separators = Highcharts.geojson(Highcharts.maps['countries/tz/tz-all'], 'mapline');
-
-
-            Highcharts.mapChart('coverage_map', {
-                chart: {
-                    map: 'countries/tz/tz-all'
-                }, credits: {enabled: false},
-
-                title: {
-                    text: '<span style="font-size: 15px !important;color: #0c9083;text-align: center">' + params.productName + '-' + params.dose + ' Coverage By Region, ' + params.year + '</span>'
-                },
-
-                subtitle: {
-                    text: '',
-                    floating: true,
-                    align: 'right',
-                    y: 50,
-                    style: {
-                        fontSize: '16px'
-                    }
-                },
-
-                legend: {},
-
-                /*   colorAxis: {
-                       min: 0,
-                       minColor: '#FF0000',
-                       maxColor: '#52C552'
-                   },*/
-                colorAxis: {
-                    dataClasses: [{
-                        from: 0,
-                        to: 80,
-                        color: '#ff0d00',
-                        name: 'Below 80%'
-                    }, {
-                        from: 80,
-                        to: 90,
-                        color: '#ffdb00',
-                        name: '80% to 89%'
-                    }, {
-                        from: 90,
-                        color: '#006600',
-                        name: '90%+'
-
-                    }]
-                },
-
-                mapNavigation: {
-                    enabled: true,
-                    buttonOptions: {
-                        verticalAlign: 'bottom'
-                    }
-                },
-
-                plotOptions: {
-                    map: {
-                        states: {
-                            /* hover: {
-                                 color: '#EEDD66'
-                             }*/
-                        }
-                    }
-                },
-
-                series: [{
-                    data: dataValues,
-                    joinBy: ['hc-key', 'code'],
-                    name: 'Coverage',
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.properties.postal-code}'
-                    }, shadow: false
-                }/*, {
-                    type: 'mapline',
-                    data: separators,
-                    color: 'silver',
-                    enableMouseTracking: false,
-                    animation: {
-                        duration: 500
-                    }
-                }*/]/*,
-
-                drilldown: {
-                    activeDataLabelStyle: {
-                        color: '#FFFFFF',
-                        textDecoration: 'none',
-                        textOutline: '1px #000000'
-                    },
-                    drillUpButton: {
-                        relativeTo: 'spacingBox',
-                        position: {
-                            x: 0,
-                            y: 60
-                        }
-                    }
-                }*/
-            });
-
-
-            /*console.log(dataValues);
-                        var coverage = _.pluck(data,'value');
-                        var mapCode = _.pluck(data,'code');
-                        var mapData =_.zip(mapCode,coverage);
-            mapInfo(mapData,'coverage_map');
-                        console.log(mapData);*/
-
-
-            /*
-                        var data1 = Highcharts.geojson(Highcharts.maps['countries/tz/tz-all']),
-                            separators = Highcharts.geojson(Highcharts.maps['countries/tz/tz-all'], 'mapline'),
-                            // Some responsiveness
-                            small = $('#coverage_map').width() < 400;
-
-
-                        // Set drilldown pointers
-                        $.each(data1, function (i) {
-
-                            // this.drilldown = this.properties['hc-key'];
-
-                            this.value = i;
-
-
-                            // Non-random bogus data
-                        });
-            */
-
-
-            // Initiate the chart
-            /*
-                        $('#coverage_map').highcharts('Map', {
-
-                            chart: {
-                                /!*    events: {
-                                        drilldown: function (e) {
-                                            if (!e.seriesOptions) {
-                                                var chart = this,
-                                                    mapKey = 'countries/us/' + e.point.drilldown + '-all',
-                                                    // Handle error, the timeout is cleared on success
-                                                    fail = setTimeout(function () {
-                                                        if (!Highcharts.maps[mapKey]) {
-                                                            chart.showLoading('<i class="icon-frown"></i> Failed loading ' + e.point.name);
-                                                            fail = setTimeout(function () {
-                                                                chart.hideLoading();
-                                                            }, 1000);
-                                                        }
-                                                    }, 3000);
-
-                                                // Show the spinner
-                                                chart.showLoading('<i class="icon-spinner icon-spin icon-3x"></i>'); // Font Awesome spinner
-
-                                                // Load the drilldown map
-                                                $.getScript('https://code.highcharts.com/mapdata/' + mapKey + '.js', function () {
-
-                                                    data = Highcharts.geojson(Highcharts.maps[mapKey]);
-
-                                                    // Set a non-random bogus value
-                                                    $.each(data, function (i) {
-                                                        this.value = i;
-                                                    });
-
-                                                    // Hide loading and add series
-                                                    chart.hideLoading();
-                                                    clearTimeout(fail);
-                                                    chart.addSeriesAsDrilldown(e.point, {
-                                                        name: e.point.name,
-                                                        data: data,
-                                                        dataLabels: {
-                                                            enabled: true,
-                                                            format: '{point.name}'
-                                                        }
-                                                    });
-                                                });
-                                            }
-
-                                            this.setTitle(null, {text: e.point.name});
-                                        },
-                                        drillup: function () {
-                                            this.setTitle(null, {text: ''});
-                                        }
-                                    }*!/
-                            },
-                            credits: {
-                                enabled: false
-                            },
-                            title: {
-                                text: 'DTP3 Coverage By Region'
-                            },
-
-                            subtitle: {
-                                text: '',
-                                floating: true,
-                                align: 'right',
-                                y: 50,
-                                style: {
-                                    fontSize: '16px'
-                                }
-                            },
-
-                            legend: small ? {} : {
-                                layout: 'vertical',
-                                align: 'right',
-                                verticalAlign: 'middle'
-                            },
-
-                            colorAxis: {
-                                min: 0,
-                                minColor: '#E6E7E8',
-                                maxColor: '#005645'
-                            },
-
-                            mapNavigation: {
-                                enabled: true,
-                                buttonOptions: {
-                                    verticalAlign: 'bottom'
-                                }
-                            },
-
-                            plotOptions: {
-                                map: {
-                                    states: {
-                                        hover: {
-                                            color: '#EEDD66'
-                                        }
-                                    }
-                                }
-                            },
-
-                            series: [{
-                                data: mapData,
-                                mapData: data1,
-                                joinBy: ['hc-key', 'mapCode'],
-                                name: 'Region',
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '{point.properties.value}'
-                                }
-                            }, {
-                                type: 'mapline',
-                                data: separators,
-                                color: 'silver',
-                                enableMouseTracking: false,
-                                animation: {
-                                    duration: 500
-                                }
-                            }],
-
-                            drilldown: {
-                                activeDataLabelStyle: {
-                                    color: '#FFFFFF',
-                                    textDecoration: 'none',
-                                    textOutline: '1px #000000'
-                                },
-                                drillUpButton: {
-                                    relativeTo: 'spacingBox',
-                                    position: {
-                                        x: 0,
-                                        y: 60
-                                    }
-                                }
-                            }
-                        });
-            */
-
-
-        });
-
-    };
-
 
 }
 
