@@ -276,7 +276,6 @@ $scope.dynamicPerformanceChart = function(data,chartId,name,result)
     $scope.loadStockStatusByLocation = function (params) {
 
         $.getJSON('/gis/stock-status-products.json', params, function (data) {
-            console.log($scope.products);
             $scope.products = data.products;
         });
 
