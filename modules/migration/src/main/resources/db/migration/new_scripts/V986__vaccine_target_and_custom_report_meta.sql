@@ -1,9 +1,11 @@
+
 ALTER TABLE vaccine_product_doses
   ADD useForWastageCalculations BOOLEAN NOT NULL DEFAULT TRUE;
 
 ----------------   End  --------------------
+DROP TABLE IF EXISTS vaccine_product_targets;
 
-CREATE TABLE IF NOT EXISTS  vaccine_product_targets
+CREATE TABLE vaccine_product_targets
 (
   id                 SERIAL PRIMARY KEY,
   productId          INT   NOT NULL REFERENCES products (id),
@@ -38,19 +40,23 @@ INSERT INTO vaccine_product_targets (productId, targetWastageGood, targetWastage
 
 ----------------   End  --------------------
 
-ALTER TABLE custom_reports
+/*ALTER TABLE custom_reports
   DROP CONSTRAINT IF EXISTS unique_report_key;
 
 ALTER TABLE custom_reports
-  ADD CONSTRAINT  unique_report_key UNIQUE (reportkey);
-
-
-ALTER TABLE custom_reports
-  ADD IF NOT EXISTS meta VARCHAR(5000) NULL;
-
+  ADD CONSTRAINT  unique_report_key UNIQUE (reportkey);*/
 
 ALTER TABLE custom_reports
-  ADD IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT TRUE;
+DROP column if exists meta ;
+
+ALTER TABLE custom_reports
+  ADD column meta VARCHAR(5000) NULL;
+
+ALTER TABLE custom_reports
+DROP column if exists active ;
+
+ALTER TABLE custom_reports
+  ADD active BOOLEAN NOT NULL DEFAULT TRUE;
 
 UPDATE custom_reports
   SET active = true;

@@ -1,8 +1,50 @@
+<style>
+    .orderFillRate .col {
+        padding: 0px 0.25rem !important;
+    }
+
+    #stock_status_map {
+        height: 400px;
+        margin: 0 auto;
+    }
+
+    #indicator {
+        margin-top: -1rem;
+    }
+
+    i.icon-red {
+        color: red;
+    }
+
+    i.icon-yellow {
+        color: orange;
+    }
+
+    i.icon-green {
+        color: green;
+    }
+
+    .orderFillRate .col .section {
+        padding-right: 5px !important;
+        padding-left: 5px !important;
+    }
+
+    td, th {
+        padding: 7px 0px !important;
+        font-size: smaller;
+
+    }
+
+    .collection .collection-item {
+        width: 120px;
+        padding: 0px 0px !important;
+    }
+</style>
 <div id="tab">
 
     <ul class="nav nav-pills">
         <li class="active" ng-show="false">
-                        <a href="#summary" data-toggle="tab" ></a>
+            <a href="#summary" data-toggle="tab"></a>
         </li>
         <li class="active" ng-show="false">
             <a href="#otherTabs" data-toggle="tab"></a>
@@ -12,10 +54,10 @@
     <div class="tab-content clearfix">
 
         <div class="tab-pane active" id="summary">
-<!--
-            Starting the dashlets by only adding rows and card
--->
-            <div class="row">
+            <!--
+                        Starting the dashlets by only adding rows and card
+            -->
+            <div class="row" ng-show="false">
                 <div class="col s12 m6 l6">
                     <div class="section grey lighten-5 card">
 
@@ -26,6 +68,298 @@
                 </div>
                 <div class="col s12 m6 l6">
                     <div class="section grey lighten-5 card">
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="row orderFillRate" ng-show="orderFillRateByZone.zones.length >0">
+                <div class="col s12 m4 l4">
+
+                    <div class="section grey lighten-5 card">
+                        <h2><span style="font-size: x-small">National Supply Chain Indicator , June 2018</span></h2>
+
+                        <div class="col s12">
+
+
+                            <div class="section">
+                                 <!--  <span ng-show="true"><p style="font-size: x-small">Keys</p>
+
+                                    <a href="#!"><i class="tiny material-icons icon-green">lens</i></a><span
+                                               style="font-size: x-small"> Good >=80%</span>
+                                    <br><a href="#!"><i class="tiny material-icons icon-yellow">lens</i></a><span
+                                               style="font-size: x-small"> Normal >69%</span>
+                                   <br> <a href="#!"><i class="tiny material-icons icon-red">lens</i></a><span
+                                               style="font-size: x-small"> Bad <70%</span>
+
+
+
+                                    </span>-->
+
+                                <div id="container-order-fill-rate" style="height: 120px; margin:0 auto"></div>
+                                <span style="text-align:center;font-size: smaller;font-weight:bold;"
+                                      class="pull-left">National Order Fill Rate %</span>
+
+                            </div>
+
+                        </div>
+                        <div class="col s12">
+                            <div class="section grey lighten-3">
+
+                                <table class="striped bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Zone</th>
+                                        <th>Previous<br> Month</th>
+                                        <th>Current <br>Month</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="report in orderFillRateByZone.zones">
+                                        <td>{{report.name}}</td>
+                                        <td>{{report.prev}}%</td>
+                                        <td>{{report.current}}%</td>
+                                        <td ng-show="report.current >=80"><a href="#!"><i
+                                                class="tiny material-icons icon-green">lens</i></a>
+                                        </td>
+                                        <td ng-show="report.current >=60  && report.current <=79"><a href="#!"><i
+                                                class="tiny material-icons icon-yellow">lens</i></a></td>
+                                        <td ng-show="report.current < 60"><a href="#!"><i
+                                                class="tiny material-icons icon-red">lens</i></a>
+                                        </td>
+                                        <td ng-show="report.current > report.prev"><a href="#!"><i
+                                                class="tiny material-icons icon-green">trending_up</i></a></td>
+                                        <td ng-show="report.current == report.prev"><a href="#!"><i
+                                                class="tiny material-icons icon-yellow">forward</i></a></td>
+                                        <td ng-show="report.current < report.prev"><a href="#!"><i
+                                                class="tiny material-icons icon-red">trending_down</i></a>
+                                        </td>
+
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 m4 l4">
+                    <div class="section grey lighten-5 card">
+                        <h2><span ng-if="true" style="font-size: x-small;">.</span></h2>
+
+                        <div class="col s12">
+
+                            <div class="section">
+
+                                <div id="stock-availability" style="height: 120px; margin:0 auto"></div>
+                                <span style="text-align:center;font-size: smaller;font-weight:bold;"
+                                      class="pull-left">Stock Availability</span>
+
+                            </div>
+
+                        </div>
+                        <div class="col s12">
+                            <div class="section grey lighten-3">
+
+                                <table class="striped bordered">
+                                    <thead>
+                                    <tr>
+                                        <!--
+                                                                                <th>Zone</th>
+                                        -->
+                                        <th>Previous<br> Month</th>
+                                        <th>Current <br>Month</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="report in stockAvailability.zones">
+                                        <!--
+                                                                                <td>{{report.name}}</td>
+                                        -->
+                                        <td>{{report.prev}}%</td>
+                                        <td>{{report.current}}%</td>
+                                        <td ng-show="report.current >=80"><a href="#!"><i
+                                                class="tiny material-icons icon-green">lens</i></a>
+                                        </td>
+                                        <td ng-show="report.current >=60  && report.current <=79"><a href="#!"><i
+                                                class="tiny material-icons icon-yellow">lens</i></a></td>
+                                        <td ng-show="report.current < 60"><a href="#!"><i
+                                                class="tiny material-icons icon-red">lens</i></a>
+                                        </td>
+                                        <td ng-show="report.current > report.prev"><a href="#!"><i
+                                                class="tiny material-icons icon-green">trending_up</i></a></td>
+                                        <td ng-show="report.current == report.prev"><a href="#!"><i
+                                                class="tiny material-icons icon-yellow">forward</i></a></td>
+                                        <td ng-show="report.current < report.prev"><a href="#!"><i
+                                                class="tiny material-icons icon-red">trending_down</i></a>
+                                        </td>
+
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col s12 m4 l4">
+                    <div class="section grey lighten-5 card">
+                        <h2><span style="font-size: x-small">.</span></h2>
+
+                        <div class="col s12">
+
+                            <div class="section">
+                                <!--  <ul>
+                                      <li class="collection-item"><i class="tiny material-icons icon-green">lens</i>&nbsp;&nbsp;<span style="font-size: x-small">Good Performance</span> </li>
+                                      <li class="collection-item"><i class="tiny material-icons icon-yellow">lens</i>&nbsp;&nbsp;<span style="font-size: x-small">Good Performance</span> </li>
+                                      <li class="collection-item"><i class="tiny material-icons icon-red">lens</i>&nbsp;&nbsp;<span style="font-size: x-small">Bad Performance</span> </li>
+                                  </ul>-->
+                                <div id="reporting-rate" style="height: 120px; margin:0 auto"></div>
+                                <span style="text-align:center;font-size: smaller;font-weight:bold;"
+                                      class="pull-left">Reporting Rate</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col s12">
+                            <div class="section grey lighten-3">
+
+                                <table class="striped bordered">
+                                    <thead>
+                                    <tr>
+                                        <!--
+                                                                                <th>Zone</th>
+                                        -->
+                                        <th>Previous<br> Month</th>
+                                        <th>Current <br>Month</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="report in stockAvailability.zones">
+                                        <!--
+                                                                                <td>{{report.name}}</td>
+                                        -->
+                                        <td>{{report.prev}}%</td>
+                                        <td>{{report.current}}%</td>
+                                        <td ng-show="report.current >=80"><i
+                                                class="tiny material-icons icon-green">lens</i>
+                                        </td>
+                                        <td ng-show="report.current >=60  && report.current <=79"><i
+                                                class="tiny material-icons icon-yellow">lens</i></td>
+                                        <td ng-show="report.current < 60"><i
+                                                class="tiny material-icons icon-red">lens</i>
+                                        </td>
+                                        <td ng-show="report.current > report.prev"><i
+                                                class="tiny material-icons icon-green">trending_up</i></td>
+                                        <td ng-show="report.current == report.prev"><i
+                                                class="tiny material-icons icon-yellow">forward</i></td>
+                                        <td ng-show="report.current < report.prev"><i
+                                                class="tiny material-icons icon-red">trending_down</i>
+                                        </td>
+
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row" ng-show="false">
+                <div class="col s12 m6 l6">
+                    <div class="section grey lighten-5 card">
+                        <div id="stock_status_map"></div>
+                    </div>
+
+                </div>
+                <div class="col s12 m6 l6">
+                    <div class="section grey lighten-5 card">
+                        <table class="table" id="indicator">
+                            <tr>
+                                <td bgcolor="#dd514c">Stocked Out</td>
+                                <td bgcolor="#faa732">Under Stocked</td>
+                                <td bgcolor="#4bb1cf">Over Stocked</td>
+                                <td bgcolor="#5eb95e">Adequately Stocked</td>
+                            </tr>
+                        </table>
+                        <table class="table table-striped " style="height: 400px; margin: 0 auto;">
+                            <thead>
+                            <tr>
+                                <th style="width:170px !important;">Product</th>
+                                <th style="width:70px !important;">Reported</th>
+                                <th style="width: 180px;">Status</th>
+                                <th style="width: 73px !important; height: 34px !important;">% Stocked Out</th>
+                                <th style="width: 45px;">Check</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="product in products | filter:expectedProductFilter">
+                                <td style="width:170px !important;">{{product.primaryname}}</td>
+                                <td style="width:70px !important;" class="number">{{product.reported}}</td>
+                                <td style="width:180px !important;" class="number">
+                                    <div class="progress" style="margin-bottom:0px;width:180px;height: 20px">
+                                        <div class="bar bar-danger leaflet-clickable"
+                                             ng-click="StockedOutProducts(product,this);"
+                                             style="width: {{((product.stockedout / product.reported) * 100)}}%">
+                                            {{product.stockedout}}
+                                        </div>
+                                        <div class="bar bar-warning leaflet-clickable"
+                                             ng-click="UnderStockedProducts(product, this)"
+                                             style="width: {{((product.understocked / product.reported) * 100)}}%">
+                                            {{product.understocked}}
+                                        </div>
+                                        <div class="bar bar-info leaflet-clickable"
+                                             ng-click="OverStockedProducts(product, this)"
+                                             style="width: {{((product.overstocked / product.reported) * 100)}}%">
+                                            {{product.overstocked}}
+                                        </div>
+                                        <div class="bar bar-success leaflet-clickable"
+                                             ng-click="AdequatelyStockedProducts(product, this)"
+                                             style="width: {{(100 - (((product.stockedout + product.understocked + product.overstocked)/ product.reported) * 100))}}%">
+                                            {{ (product.reported - (product.stockedout + product.understocked +
+                                            product.overstocked)) }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 91px !important;" class="number">{{((product.stockedout /
+                                    product.reported) * 100).toFixed(0)}} %
+                                </td>
+                                <td style="width:45px"><input type="checkbox" ng-model="product.selected"
+                                                              ng-change="productSelectChange(product.selected, product)">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
 
                         <div id="container" style="min-width: 310px; max-width:480px; height: 500px; margin: 0 auto"></div>
                     </div>
@@ -76,10 +410,13 @@
                             </table>
                         </div>
 
-                    </div>
-
                 </div>
 
+            </div>
+
+
+
+        </div>
             </div>
 
 
