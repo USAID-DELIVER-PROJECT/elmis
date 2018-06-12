@@ -203,4 +203,7 @@ public class DashboardLookupService {
     public HashMap<String,Object>getStockColor(Long mos,Long levelId ){
         return msdStockStatusReportRepository.getStockColor(mos,levelId);
     }
+    public List<HashMap<String, Object>>getRnRejectionCount(){
+        return dashboardMapper.getRnRRejectionCount();
+    }
 }

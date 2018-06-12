@@ -319,4 +319,9 @@ public class DashboardController extends BaseController {
         return OpenLmisResponse.response("colors", this.lookupService.getStockColor(mos,levelId));
     }
 
+    @RequestMapping(value = "/getRejectionCount.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getRejectionStatus() {
+        return OpenLmisResponse.response("rejections", this.lookupService.getRnRejectionCount());
+    }
+
 }

@@ -1345,3 +1345,7 @@ services.factory('DailyConsumption', function ($resource) {
 services.factory('GeoZoneLevel', function ($resource) {
     return $resource('/reports/geographic-zone/:zone.json', {zone:'@zone'}, {});
 });
+
+services.factory('RejectionCount', function($resource){
+    return $resource('/dashboard/getRejectionCount.json',{}, {});
+});

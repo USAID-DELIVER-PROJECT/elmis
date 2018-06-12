@@ -1,14 +1,63 @@
-function DashboardControllerFunction($scope, leafletData,RnRStatusSummary,ExtraAnalyticDataForRnRStatus,$routeParams,messageService,ngTableParams,$filter) {
-    $scope.data = "mamama";
-    console.log("Reached Here");
-//year=2017&schedule=1&period=114&program=3
-$scope.filter={
-   period: "114",
-    program:"3",
-    schedule: 1,
-    year: "2017",
-    zoneId:18
-};
+function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatusSummary,ExtraAnalyticDataForRnRStatus,$routeParams,messageService,ngTableParams,$filter) {
+
+    $scope.loadRejectionChart = [];
+
+    RejectionCount.get({}, function (data) {
+        var reject = _.pluck(data.rejections,'Month');
+        var rejectionCount = _.pluck(data.rejections, 'Rejected Count');
+        loadTheChart(reject,rejectionCount);
+
+    });
+    function loadTheChart(reject, rejectionCount) {
+        Highcharts.chart('rejectionCountId', {
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'RnR Rejection Trends'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories:reject,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '<span>Rejection Count</span>'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Rejection Count',
+                data: rejectionCount
+
+            }]
+        });
+
+    }
+
+    $scope.filter={
+        period: "114",
+        program:"3",
+        schedule: 1,
+        year: "2017",
+        zoneId:18
+    };
     $scope.geojson = {};
 
     $scope.default_indicator = "period_over_expected";
@@ -62,12 +111,60 @@ $scope.filter={
     }
 
 
+    $scope.loadRnRStatusSummary = function (summary) {
+
+        var dataVal = [{name:'Status',  colorByPoint: false,data:summary}];
+
+        Highcharts.chart('rnrSummary', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie',
+                height: '350px'
+            },
+            credits:{
+                enabled:false
+            },
+            title: {
+                text: '<span style="font-size: 15px!important;color: #0c9083">R&R Status Summary</span>'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: false,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true
+                    },
+                    showInLegend: true,
+                    innerSize:"70%",
+                    size:150
+                }
+            },
+            series: dataVal
+        });
+
+    };
     //
     RnRStatusSummary.get({zoneId: $scope.filter.zoneId,
             periodId: $scope.filter.period,
             programId: $scope.filter.program
         },
         function (data) {
+
+            var dataValues =[];
+            var colors = {'RELEASED':'lightblue','IN_APPROVAL':'lightgreen','APPROVED':'#82A4EF','AUTHORIZED':'#FF558F'};
+            data.rnrStatus.forEach(function (d) {
+                if(d.status==='AUTHORIZED')
+                dataValues.push({sliced: true, selected: true,'name': messageService.get('label.rnr.status.summary.'+d.status),'y':d.totalStatus,color:colors[d.status]});
+                else
+                dataValues.push({'name': messageService.get('label.rnr.status.summary.'+d.status),'y':d.totalStatus,color:colors[d.status]});
+            });
+
+            $scope.loadRnRStatusSummary(dataValues);
             $scope.total = 0;
             $scope.RnRStatusPieChartData = [];
             $scope.dataRows = [];
@@ -91,7 +188,6 @@ $scope.filter={
                     var labelKey = 'label.rnr.status.summary.' + statusData[i];
                     var label = messageService.get(labelKey);
                     $scope.RnRStatusPieChartData[i] = {
-
                         label: label,
                         data: totalData[i],
                         color: color[statusData[i]]
@@ -151,7 +247,7 @@ $scope.filter={
         }
     ];
 
-    var initChart = function(_data) {
+    var initChart = function(data) {
         $('.chart').highcharts({
             chart: {
                 animation: false,
@@ -273,7 +369,7 @@ $scope.filter={
             var expArray=[{name:'expected',data:expected},
                 {name:'reported',data:reported}
             ];
-           var districtMap = _.groupBy($scope.features,'name');
+            var districtMap = _.groupBy($scope.features,'name');
             getExportDataFunction($scope.features);
             angular.forEach(districtMap,function () {
 
@@ -371,7 +467,7 @@ $scope.filter={
                         color: '#006600',
                         name:'Fully Reporting'
 
-                    },
+                    }
                         , {
                             from: 90,
                             color: '#000000',
@@ -438,195 +534,195 @@ $scope.filter={
 
 
 
- function calculatePercentage(data){
-     var total = 0;
-     angular.forEach(data,function (da,index) {
-         total += da.current;
-     });
-     return parseInt(total/parseInt(data.length,10),10);
- }
+    function calculatePercentage(data){
+        var total = 0;
+        angular.forEach(data,function (da,index) {
+            total += da.current;
+        });
+        return parseInt(total/parseInt(data.length,10),10);
+    }
 
-$scope.orderFillRateByZone ={
-    "zones": [
-        {
-            "name": "North East",
-            "prev": 89,
-            "current": 90,
-            "status": "good"
-        },
-        {
-            "name": "Western",
-            "prev": 89,
-            "current": 89,
-            "status": "normal"
-        },
-        {
-            "name": "Southern",
-            "prev": 50,
-            "current": 69,
-            "status": "bad"
-        },{
-            "name": "North Western",
-            "prev": 70,
-            "current": 20,
-            "status": "bad"
-        },{
-            "name": "Northern",
-            "prev": 70,
-            "current": 60,
-            "status": "bad"
-        },{
-            "name": "Muchinga",
-            "prev": 70,
-            "current": 90,
-            "status": "bad"
-        },{
-            "name": "Luapula",
-            "prev": 70,
-            "current": 90,
-            "status": "bad"
-        },{
-            "name": "Copperbelt",
-            "prev": 70,
-            "current": 20,
-            "status": "bad"
-        },{
-            "name": "Central",
-            "prev": 70,
-            "current": 80,
-            "status": "bad"
-        },{
-            "name": "Lusaka Province",
-            "prev": 70,
-            "current": 85,
-            "status": "bad"
-        }
-    ]
-};
+    $scope.orderFillRateByZone ={
+        "zones": [
+            {
+                "name": "North East",
+                "prev": 89,
+                "current": 90,
+                "status": "good"
+            },
+            {
+                "name": "Western",
+                "prev": 89,
+                "current": 89,
+                "status": "normal"
+            },
+            {
+                "name": "Southern",
+                "prev": 50,
+                "current": 69,
+                "status": "bad"
+            },{
+                "name": "North Western",
+                "prev": 70,
+                "current": 20,
+                "status": "bad"
+            },{
+                "name": "Northern",
+                "prev": 70,
+                "current": 60,
+                "status": "bad"
+            },{
+                "name": "Muchinga",
+                "prev": 70,
+                "current": 90,
+                "status": "bad"
+            },{
+                "name": "Luapula",
+                "prev": 70,
+                "current": 90,
+                "status": "bad"
+            },{
+                "name": "Copperbelt",
+                "prev": 70,
+                "current": 20,
+                "status": "bad"
+            },{
+                "name": "Central",
+                "prev": 70,
+                "current": 80,
+                "status": "bad"
+            },{
+                "name": "Lusaka Province",
+                "prev": 70,
+                "current": 85,
+                "status": "bad"
+            }
+        ]
+    };
 
-$scope.stockAvailability ={
-    "zones": [
-        {
-            "name": "North East",
-            "prev": 75,
-            "current": 85,
-            "status": "good"
-        },
-        {
-            "name": "Western",
-            "prev": 80,
-            "current": 81,
-            "status": "normal"
-        },
-        {
-            "name": "Southern",
-            "prev": 61,
-            "current": 71,
-            "status": "bad"
-        },{
-            "name": "North Western",
-            "prev": 70,
-            "current": 75,
-            "status": "bad"
-        },{
-            "name": "Northern",
-            "prev": 50,
-            "current": 55,
-            "status": "bad"
-        },{
-            "name": "Muchinga",
-            "prev": 30,
-            "current": 79,
-            "status": "bad"
-        },{
-            "name": "Luapula",
-            "prev": 40,
-            "current": 79,
-            "status": "bad"
-        },{
-            "name": "Copperbelt",
-            "prev": 90,
-            "current": 85,
-            "status": "bad"
-        },{
-            "name": "Central",
-            "prev": 75,
-            "current": 86,
-            "status": "bad"
-        },{
-            "name": "Lusaka Province",
-            "prev": 89,
-            "current": 90,
-            "status": "bad"
-        }
-    ]
-};
-$scope.reportingRate ={
-    "zones": [
-        {
-            "name": "North East",
-            "prev": 60,
-            "current": 80,
-            "status": "good"
-        },
-        {
-            "name": "Western",
-            "prev": 89,
-            "current": 81,
-            "status": "normal"
-        },
-        {
-            "name": "Southern",
-            "prev": 81,
-            "current": 89,
-            "status": "bad"
-        },{
-            "name": "North Western",
-            "prev": 81,
-            "current": 90,
-            "status": "bad"
-        },{
-            "name": "Northern",
-            "prev": 76,
-            "current": 83,
-            "status": "bad"
-        },{
-            "name": "Muchinga",
-            "prev": 84,
-            "current": 98,
-            "status": "bad"
-        },{
-            "name": "Luapula",
-            "prev": 70,
-            "current": 80,
-            "status": "bad"
-        },{
-            "name": "Copperbelt",
-            "prev": 50,
-            "current": 50,
-            "status": "bad"
-        },{
-            "name": "Central",
-            "prev": 60,
-            "current": 79,
-            "status": "bad"
-        },{
-            "name": "Lusaka Province",
-            "prev": 75,
-            "current": 80,
-            "status": "bad"
-        }
-    ]
-};
+    $scope.stockAvailability ={
+        "zones": [
+            {
+                "name": "North East",
+                "prev": 75,
+                "current": 85,
+                "status": "good"
+            },
+            {
+                "name": "Western",
+                "prev": 80,
+                "current": 81,
+                "status": "normal"
+            },
+            {
+                "name": "Southern",
+                "prev": 61,
+                "current": 71,
+                "status": "bad"
+            },{
+                "name": "North Western",
+                "prev": 70,
+                "current": 75,
+                "status": "bad"
+            },{
+                "name": "Northern",
+                "prev": 50,
+                "current": 55,
+                "status": "bad"
+            },{
+                "name": "Muchinga",
+                "prev": 30,
+                "current": 79,
+                "status": "bad"
+            },{
+                "name": "Luapula",
+                "prev": 40,
+                "current": 79,
+                "status": "bad"
+            },{
+                "name": "Copperbelt",
+                "prev": 90,
+                "current": 85,
+                "status": "bad"
+            },{
+                "name": "Central",
+                "prev": 75,
+                "current": 86,
+                "status": "bad"
+            },{
+                "name": "Lusaka Province",
+                "prev": 89,
+                "current": 90,
+                "status": "bad"
+            }
+        ]
+    };
+    $scope.reportingRate ={
+        "zones": [
+            {
+                "name": "North East",
+                "prev": 60,
+                "current": 80,
+                "status": "good"
+            },
+            {
+                "name": "Western",
+                "prev": 89,
+                "current": 81,
+                "status": "normal"
+            },
+            {
+                "name": "Southern",
+                "prev": 81,
+                "current": 89,
+                "status": "bad"
+            },{
+                "name": "North Western",
+                "prev": 81,
+                "current": 90,
+                "status": "bad"
+            },{
+                "name": "Northern",
+                "prev": 76,
+                "current": 83,
+                "status": "bad"
+            },{
+                "name": "Muchinga",
+                "prev": 84,
+                "current": 98,
+                "status": "bad"
+            },{
+                "name": "Luapula",
+                "prev": 70,
+                "current": 80,
+                "status": "bad"
+            },{
+                "name": "Copperbelt",
+                "prev": 50,
+                "current": 50,
+                "status": "bad"
+            },{
+                "name": "Central",
+                "prev": 60,
+                "current": 79,
+                "status": "bad"
+            },{
+                "name": "Lusaka Province",
+                "prev": 75,
+                "current": 80,
+                "status": "bad"
+            }
+        ]
+    };
 
-function borderColor(data){
-    return (data >= 80)?'green':(data<80 && data>70)?'orange':'red';
+    function borderColor(data){
+        return (data >= 80)?'green':(data<80 && data>70)?'orange':'red';
 
-}
+    }
 
-$scope.dynamicPerformanceChart = function(data,chartId,name,result)
+    $scope.dynamicPerformanceChart = function(data,chartId,name,result)
 
-{
+    {
 
         var gaugeOptions = {
 
@@ -714,6 +810,7 @@ $scope.dynamicPerformanceChart = function(data,chartId,name,result)
     $scope.loadStockStatusByLocation = function (params) {
 
         $.getJSON('/gis/stock-status-products.json', params, function (data) {
+            console.log($scope.products);
             $scope.products = data.products;
         });
 

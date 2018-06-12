@@ -291,6 +291,11 @@ public interface DashboardMapper {
             "order by 1,3,2")
     List<HashMap<String, Object>> getFacilityStockSummary(@Param("programId") Long programId, @Param("periodId") Long periodId, @Param("userId") Long userId);
 
-
+   @Select("select  to_char(createdDate, 'yyyy_mm') as \"Month\", count(*) \"Rejected Count\" from ( \n" +
+           "    select count(*), max(createdDate) as createdDate, rnrid from requisition_status_changes c where c.status = 'INITIATED' group by rnrid having count(*) > 1\n" +
+           ") a\n" +
+           "group by to_char(createdDate, 'yyyy_mm')\n" +
+           "order by to_char(createdDate, 'yyyy_mm')")
+    List<HashMap<String,Object>>getRnRRejectionCount();
 }
 
