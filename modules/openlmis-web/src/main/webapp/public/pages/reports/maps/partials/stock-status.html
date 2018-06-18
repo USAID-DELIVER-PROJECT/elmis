@@ -68,7 +68,7 @@
         </div>
 
         <div  style="border: 1px;">
-            <div style="" ng-show="features && (features | filter:expectedFilter).length > 0">
+            <div style="" ng-show="features && (features | filter:expectedFilter).length >= 0">
                 <p class="grey ">
                     You can click on the chart to see list of facilities
                 </p><br/>
@@ -112,7 +112,7 @@
 
 
     <div >
-        <div style="" ng-show="products && (products).length > 0">
+        <div style="" ng-show="products && (products).length >= 0">
             <b>You are viewing data for: {{ district_title }}</b>
             <div class="clearfix"><br /></div>
             <table class="pull-left table table-bordered"><tr><td bgcolor="#dd514c">Stocked Out</td><td bgcolor="#faa732">Under Stocked</td><td bgcolor="#4bb1cf">Over Stocked</td><td bgcolor="#5eb95e">Adequately Stocked</td></tr></table>
