@@ -323,5 +323,9 @@ public class DashboardController extends BaseController {
     public ResponseEntity<OpenLmisResponse> getRejectionStatus() {
         return OpenLmisResponse.response("rejections", this.lookupService.getRnRejectionCount());
     }
+   @RequestMapping(value = "/getNumberOfEmergency.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getNumberOfEmergency() {
+        return OpenLmisResponse.response("emergency", this.lookupService.getNumberOfEmergency());
+    }
 
 }

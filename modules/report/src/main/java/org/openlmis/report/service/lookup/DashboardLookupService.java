@@ -206,4 +206,7 @@ public class DashboardLookupService {
     public List<HashMap<String, Object>>getRnRejectionCount(){
         return dashboardMapper.getRnRRejectionCount();
     }
+    public List<HashMap<String, Object>>getNumberOfEmergency(){
+        return dashboardMapper.getNumberOfEmergency();
+    }
 }

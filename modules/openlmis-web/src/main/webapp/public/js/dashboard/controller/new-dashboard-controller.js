@@ -1,6 +1,63 @@
-function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatusSummary,ExtraAnalyticDataForRnRStatus,$routeParams,messageService,ngTableParams,$filter) {
+function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatusSummary,GetNumberOfEmergency,
+                                     ExtraAnalyticDataForRnRStatus,$routeParams,messageService,ngTableParams,$filter) {
 
     $scope.loadRejectionChart = [];
+
+    function loadPieChart(chartId,dataValues) {
+
+        var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo:chartId,
+                    type: 'pie'
+
+                },
+            credits:{
+                    enabled:false
+            },  title: {
+                    text:'<span style="font-size:20px">484 <br><span style="font-size:10px">Hassan</span></span>',
+                verticalAlign: 'middle',
+                floating: true
+            },
+
+                plotOptions: {
+                    pie: {
+                        innerSize: '60%'
+                    }
+                },
+                series: [{
+                    data:dataValues}]
+            }/*,
+
+            function(chart) { // on complete
+                var textX = chart.plotLeft + (chart.plotWidth  * 0.5);
+                var textY = chart.plotTop  + (chart.plotHeight * 0.5);
+
+                var span = '<span id="pieChartInfoText" style="position:absolute; text-align:center;">';
+                span += '<span style="font-size: 32px">Upper</span><br>';
+                span += '<span style="font-size: 16px">Lower</span>';
+                span += '</span>';
+
+                $("#addText").append(span);
+                span = $('#pieChartInfoText');
+                span.css('left', textX + (span.width() * -0.5));
+                span.css('top', textY + (span.height() * -0.5));
+            }*/);
+
+
+
+    }
+
+    GetNumberOfEmergency.get({}, function (data) {
+
+        var chartId = 'emergencyByRegion';
+        var data1 = _.pluck(data.emergency,'Number Of EOs');
+        var data2 = _.pluck(data.emergency,'Province');
+        var dataValues= _.zip(data2,data1);
+        console.log(dataValues);
+
+        loadPieChart(chartId,dataValues);
+
+    });
 
     RejectionCount.get({}, function (data) {
         var reject = _.pluck(data.rejections,'Month');

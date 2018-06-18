@@ -297,5 +297,17 @@ public interface DashboardMapper {
            "group by to_char(createdDate, 'yyyy_mm')\n" +
            "order by to_char(createdDate, 'yyyy_mm')")
     List<HashMap<String,Object>>getRnRRejectionCount();
+
+   @Select("SELECT d.region_name as \"Province\", SUM(1) \"Number Of EOs\"\n" +
+           "    FROM requisitions r\n" +
+           "         JOIN facilities f on f.id = r.facilityId \n" +
+           "         JOIN vw_districts d on d.district_id = f.geographiczoneid\n" +
+           "    WHERE r.emergency = true \n" +
+           "        \n" +
+           "        AND r.createdDate >= date_trunc('month', CURRENT_DATE) - INTERVAL '19 month'\n" +
+           "    GROUP BY d.region_name\n" +
+           "    ORDER BY SUM(1) DESC\n" +
+           "    LIMIT 100;")
+    List<HashMap<String,Object>>getNumberOfEmergency();
 }
 

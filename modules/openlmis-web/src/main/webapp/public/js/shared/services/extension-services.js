@@ -1349,3 +1349,6 @@ services.factory('GeoZoneLevel', function ($resource) {
 services.factory('RejectionCount', function($resource){
     return $resource('/dashboard/getRejectionCount.json',{}, {});
 });
+services.factory('GetNumberOfEmergency', function($resource){
+    return $resource('/dashboard/getNumberOfEmergency.json',{}, {});
+});
