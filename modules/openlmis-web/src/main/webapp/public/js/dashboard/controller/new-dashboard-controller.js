@@ -1,6 +1,6 @@
 function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatusSummary,GetNumberOfEmergencyData,GetEmergencyOrderByProgramData,GetPercentageOfEmergencyOrderByProgramData,
                                      ExtraAnalyticDataForRnRStatus,GetTrendOfEmergencyOrdersSubmittedPerMonthData,$routeParams,messageService,GetEmergencyOrderTrendsData,
-                                     ngTableParams,$filter,ReportingRate) {
+                                     ngTableParams,$filter,ReportingRate,StockStatusAvailaiblity) {
 
     $scope.reportingRate={};
 
@@ -706,120 +706,8 @@ function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatu
         ]
     };
 
-    $scope.stockAvailability ={
-        "zones": [
-            {
-                "name": "North East",
-                "prev": 75,
-                "current": 85,
-                "status": "good"
-            },
-            {
-                "name": "Western",
-                "prev": 80,
-                "current": 81,
-                "status": "normal"
-            },
-            {
-                "name": "Southern",
-                "prev": 61,
-                "current": 71,
-                "status": "bad"
-            },{
-                "name": "North Western",
-                "prev": 70,
-                "current": 75,
-                "status": "bad"
-            },{
-                "name": "Northern",
-                "prev": 50,
-                "current": 55,
-                "status": "bad"
-            },{
-                "name": "Muchinga",
-                "prev": 30,
-                "current": 79,
-                "status": "bad"
-            },{
-                "name": "Luapula",
-                "prev": 40,
-                "current": 79,
-                "status": "bad"
-            },{
-                "name": "Copperbelt",
-                "prev": 90,
-                "current": 85,
-                "status": "bad"
-            },{
-                "name": "Central",
-                "prev": 75,
-                "current": 86,
-                "status": "bad"
-            },{
-                "name": "Lusaka Province",
-                "prev": 89,
-                "current": 90,
-                "status": "bad"
-            }
-        ]
-    };
-    $scope.reportingRate ={
-        "zones": [
-            {
-                "name": "North East",
-                "prev": 60,
-                "current": 80,
-                "status": "good"
-            },
-            {
-                "name": "Western",
-                "prev": 89,
-                "current": 81,
-                "status": "normal"
-            },
-            {
-                "name": "Southern",
-                "prev": 81,
-                "current": 89,
-                "status": "bad"
-            },{
-                "name": "North Western",
-                "prev": 81,
-                "current": 90,
-                "status": "bad"
-            },{
-                "name": "Northern",
-                "prev": 76,
-                "current": 83,
-                "status": "bad"
-            },{
-                "name": "Muchinga",
-                "prev": 84,
-                "current": 98,
-                "status": "bad"
-            },{
-                "name": "Luapula",
-                "prev": 70,
-                "current": 80,
-                "status": "bad"
-            },{
-                "name": "Copperbelt",
-                "prev": 50,
-                "current": 50,
-                "status": "bad"
-            },{
-                "name": "Central",
-                "prev": 60,
-                "current": 79,
-                "status": "bad"
-            },{
-                "name": "Lusaka Province",
-                "prev": 75,
-                "current": 80,
-                "status": "bad"
-            }
-        ]
-    };
+
+
 
     ReportingRate.get({zoneId: $scope.filter.zoneId,
             periodId: $scope.filter.period,
@@ -829,11 +717,19 @@ function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatu
             $scope.reportingRate={"zones":data.reportingRate};
             console.log(JSON.stringify(data.reportingRate));
             $scope.dynamicPerformanceChart(data.reportingRate,'#reporting-rate','ReportingRate',calculatePercentage($scope.reportingRate.zones));
+
+        });
+
+    StockStatusAvailaiblity.get({zoneId: $scope.filter.zoneId,
+            periodId: $scope.filter.period,
+            programId: $scope.filter.program
+        },
+        function (data) {
+            $scope.stockAvailability={"zones":data.stockStatus};
+            console.log(JSON.stringify($scope.stockAvailability));
             $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
             $scope.dynamicPerformanceChart($scope.stockAvailability,'#stock-availability','StockAvailability',calculatePercentage($scope.stockAvailability.zones));
         });
-
-
     function borderColor(data){
         return (data >= 80)?'green':(data<80 && data>70)?'orange':'red';
 
@@ -909,9 +805,7 @@ function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatu
         };
         $(chartId).highcharts(gaugeOptions);
     };
-    $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
-    $scope.dynamicPerformanceChart($scope.stockAvailability,'#stock-availability','StockAvailability',calculatePercentage($scope.stockAvailability.zones));
-    $scope.dynamicPerformanceChart($scope.reportingRate,'#reporting-rate','ReportingRate',calculatePercentage($scope.reportingRate.zones));
+
 
     var dataValues = [
         ['zm-lp', 0],
@@ -1016,6 +910,54 @@ function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatu
         program: parseInt(3, 10)
     };
     $scope.loadStockStatusByLocation(defaultParam);
+    $scope.rnrStatusPieChartOptionFunction = function () {
+
+        $scope.rnRStatusPieChartOption = {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 1,
+                    label: {
+                        show: true,
+                        radius: 2 / 4,
+                        formatter: function (label, series) {
+                            return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">' + Math.round(series.percent) + '%</div>';
+                        },
+                        threshold: 0.1
+                    }
+
+                }
+            },
+            legend: {
+                show: true,
+                container: $("#rnrStatusReportLegend"),
+                noColumns: 0,
+                labelBoxBorderColor: "none"
+                //width: 20
+
+            },
+            grid: {
+                hoverable: true,
+                clickable: true,
+                borderWidth: 1,
+                borderColor: "#d6d6d6",
+                backgroundColor: {
+                    colors: ["#FFF", "#CCC", "#FFF", "#CCC"]
+                }
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: "%p.0%, %s",
+                shifts: {
+                    x: 20,
+                    y: 0
+                },
+                defaultTheme: false
+            }
+        };
+
+
+    };
 
 }
 
