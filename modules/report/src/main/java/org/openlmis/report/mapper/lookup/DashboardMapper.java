@@ -12,6 +12,7 @@
 
 package org.openlmis.report.mapper.lookup;
 
+import org.apache.camel.language.SpEL;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -309,5 +310,56 @@ public interface DashboardMapper {
            "    ORDER BY SUM(1) DESC\n" +
            "    LIMIT 100;")
     List<HashMap<String,Object>>getNumberOfEmergency();
+
+   @Select("SELECT  p.name as \"Program Name\",\n" +
+           "        100.0 * SUM(CASE WHEN emergency = true THEN 1 ELSE 0 END) / SUM(1) as \"Emergency\", \n" +
+           "        100.0 * SUM(CASE WHEN emergency != true THEN 1 ELSE 0 END) / SUM(1) as \"Regular\", \n" +
+           "        SUM(1) as \"Total\" \n" +
+           "        FROM requisitions r join programs p \n" +
+           "            ON r.programId = p.id\n" +
+           "        WHERE p.active = true and r.status = 'RELEASED'\n" +
+           "        GROUP BY p.name\n" +
+           "        ")
+    List<HashMap<String,Object>>getPercentageOfEmergencyOrderByProgram();
+
+
+   @Select(" SELECT  p.name as \"Program Name\",\n" +
+           "        SUM(CASE WHEN emergency = true THEN 1 ELSE 0 END) as \"Emergency\", \n" +
+           "        SUM(CASE WHEN emergency != true THEN 1 ELSE 0 END) as \"Regular\", \n" +
+           "        SUM(1) as \"Total\" \n" +
+           "       \n" +
+           "        FROM requisitions r join programs p \n" +
+           "            ON r.programId = p.id\n" +
+           "           and r.createdDate >= date_trunc('month', CURRENT_DATE) - INTERVAL '20 month'\n" +
+           "        WHERE p.active = true\n" +
+           "            AND r.status = 'RELEASED'\n" +
+           "        GROUP BY p.name\n" +
+           "        ")
+    List<HashMap<String,Object>>getEmergencyOrderByProgram();
+
+   @Select("SELECT  SUM(CASE WHEN emergency = true THEN 1 ELSE 0 END) as \"Emergency Requisitions\"\n" +
+           "    , SUM(CASE WHEN emergency != true THEN 1 ELSE 0 END) as \"Regular Requisitions\"\n" +
+           "    , to_char(createdDate, 'Mon') || '-' || extract(year from createdDate) as \"Month\" \n" +
+           "    ,to_char(createdDate, 'yyyy-mm') ym\n" +
+           "    from requisitions \n" +
+           "    WHERE status != 'INITIATED' and createdDate >=\n" +
+           "      date_trunc('month', CURRENT_DATE) - 2 * INTERVAL '1 year'\n" +
+           "group by  to_char(createdDate, 'Mon') || '-' || extract(year from createdDate), to_char(createdDate, 'yyyy-mm')\n" +
+           "    order by ym asc")
+    List<HashMap<String,Object>>getTrendOfEmergencyOrdersSubmittedPerMonth();
+
+    @Select(" SELECT  SUM(CASE WHEN emergency = true THEN 1 ELSE 0 END) as \"Emergency Requisitions\"\n" +
+            "    , SUM(CASE WHEN emergency != true THEN 1 ELSE 0 END) as \"Regular Requisitions\"\n" +
+            "    , to_char(createdDate, 'Mon') || '-' || extract(year from createdDate) as \"Month\" \n" +
+            "    ,to_char(createdDate, 'yyyy-mm') ym\n" +
+            "    from requisitions \n" +
+            "    WHERE status != 'INITIATED' and createdDate >=\n" +
+            "      date_trunc('month', CURRENT_DATE) - INTERVAL '2 year'\n" +
+            "group by  to_char(createdDate, 'Mon') || '-' || extract(year from createdDate), to_char(createdDate, 'yyyy-mm')\n" +
+            "    order by ym asc")
+    List<HashMap<String,Object>> emergencyOrderTrends();
+
+
+
 }
 

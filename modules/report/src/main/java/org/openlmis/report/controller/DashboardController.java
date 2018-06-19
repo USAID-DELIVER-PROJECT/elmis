@@ -328,4 +328,21 @@ public class DashboardController extends BaseController {
         return OpenLmisResponse.response("emergency", this.lookupService.getNumberOfEmergency());
     }
 
+    @RequestMapping(value = "/getPercentageOfEmergencyOrderByProgram.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getPercentageOfEmergencyOrderByProgram() {
+        return OpenLmisResponse.response("emergency", this.lookupService.getPercentageOfEmergencyOrderByProgram());
+    }
+    @RequestMapping(value = "/getEmergencyOrderByProgram.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getEmergencyOrderByProgram() {
+        return OpenLmisResponse.response("emergency", this.lookupService.getEmergencyOrderByProgram());
+    }
+    @RequestMapping(value = "/getTrendOfEmergencyOrdersSubmittedPerMonth.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getTrendOfEmergencyOrdersSubmittedPerMonth() {
+        return OpenLmisResponse.response("emergency", this.lookupService.getTrendOfEmergencyOrdersSubmittedPerMonth());
+    }
+  @RequestMapping(value = "/emergencyOrderTrends.json", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> emergencyOrderTrends() {
+        return OpenLmisResponse.response("emergency", this.lookupService.emergencyOrderTrends());
+    }
+
 }

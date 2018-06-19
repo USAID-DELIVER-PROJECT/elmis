@@ -1349,6 +1349,139 @@ services.factory('GeoZoneLevel', function ($resource) {
 services.factory('RejectionCount', function($resource){
     return $resource('/dashboard/getRejectionCount.json',{}, {});
 });
+
+
+
+
+//API for Zambia Dashboard
+services.factory('GetNumberOfEmergencyData', function ($q, $timeout, $resource,GetNumberOfEmergency) {
+    function get(params) {
+
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetNumberOfEmergency.get(params, function (data) {
+
+                var stocks ={};
+                if (data !== undefined) {
+                    stocks = data.emergency;
+                }
+                deferred.resolve(stocks);
+
+            });
+
+        }, 100);
+        return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+services.factory('GetPercentageOfEmergencyOrderByProgramData', function ($q, $timeout, $resource,GetPercentageOfEmergencyOrderByProgram) {
+    function get(params) {
+
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetPercentageOfEmergencyOrderByProgram.get(params, function (data) {
+
+                var stocks ={};
+                if (data !== undefined) {
+                    stocks = data.emergency;
+                }
+                deferred.resolve(stocks);
+
+            });
+
+        }, 100);
+        return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+services.factory('GetEmergencyOrderByProgramData', function ($q, $timeout, $resource,GetEmergencyOrderByProgram) {
+    function get(params) {
+
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetEmergencyOrderByProgram.get(params, function (data) {
+
+                var stocks ={};
+                if (data !== undefined) {
+                    stocks = data.emergency;
+                }
+                deferred.resolve(stocks);
+
+            });
+
+        }, 100);
+        return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+services.factory('GetTrendOfEmergencyOrdersSubmittedPerMonthData', function ($q, $timeout, $resource,GetTrendOfEmergencyOrdersSubmittedPerMonth) {
+    function get(params) {
+
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetTrendOfEmergencyOrdersSubmittedPerMonth.get(params, function (data) {
+
+                var stocks ={};
+                if (data !== undefined) {
+                    stocks = data.emergency;
+                }
+                deferred.resolve(stocks);
+
+            });
+
+        }, 100);
+        return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+services.factory('GetEmergencyOrderTrendsData', function ($q, $timeout, $resource,GetEmergencyOrderTrends) {
+    function get(params) {
+
+        var deferred = $q.defer();
+        $timeout(function () {
+            GetEmergencyOrderTrends.get(params, function (data) {
+
+                var stocks ={};
+                if (data !== undefined) {
+                    stocks = data.emergency;
+                }
+                deferred.resolve(stocks);
+
+            });
+
+        }, 100);
+        return deferred.promise;
+    }
+    return {
+        get: get
+    };
+
+});
+
 services.factory('GetNumberOfEmergency', function($resource){
     return $resource('/dashboard/getNumberOfEmergency.json',{}, {});
+});
+services.factory('GetPercentageOfEmergencyOrderByProgram', function($resource){
+    return $resource('/dashboard/getPercentageOfEmergencyOrderByProgram.json',{}, {});
+});
+services.factory('GetEmergencyOrderByProgram', function($resource){
+    return $resource('/dashboard/getEmergencyOrderByProgram.json',{}, {});
+});
+services.factory('GetTrendOfEmergencyOrdersSubmittedPerMonth', function($resource){
+    return $resource('/dashboard/getTrendOfEmergencyOrdersSubmittedPerMonth.json',{}, {});
+});
+services.factory('GetEmergencyOrderTrends', function($resource){
+    return $resource('/dashboard/emergencyOrderTrends.json',{}, {});
 });

@@ -208,5 +208,19 @@ public class DashboardLookupService {
     }
     public List<HashMap<String, Object>>getNumberOfEmergency(){
         return dashboardMapper.getNumberOfEmergency();
+
+    }
+    public List<HashMap<String, Object>>getPercentageOfEmergencyOrderByProgram(){
+        return dashboardMapper.getPercentageOfEmergencyOrderByProgram();
+    }
+
+    public List<HashMap<String, Object>>getEmergencyOrderByProgram(){
+        return dashboardMapper.getEmergencyOrderByProgram();
+    }
+    public List<HashMap<String, Object>>getTrendOfEmergencyOrdersSubmittedPerMonth(){
+        return dashboardMapper.getTrendOfEmergencyOrdersSubmittedPerMonth();
+    }
+    public List<HashMap<String, Object>>emergencyOrderTrends(){
+        return dashboardMapper.emergencyOrderTrends();
     }
 }
