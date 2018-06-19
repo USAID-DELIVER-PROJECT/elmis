@@ -1,72 +1,170 @@
-function DashboardControllerFunction($scope, leafletData,RnRStatusSummary,ExtraAnalyticDataForRnRStatus,$routeParams,messageService,ngTableParams,$filter,ReportingRate,StockStatusAvailaiblity) {
-    Highcharts.chart('container3', {
+function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatusSummary,GetNumberOfEmergencyData,GetEmergencyOrderByProgramData,GetPercentageOfEmergencyOrderByProgramData,
+                                     ExtraAnalyticDataForRnRStatus,GetTrendOfEmergencyOrdersSubmittedPerMonthData,$routeParams,messageService,GetEmergencyOrderTrendsData,
+                                     ngTableParams,$filter,ReportingRate) {
 
-        chart: {
-            type: 'area'
-        },
-        title: {
-            text: 'Reporting Rate'
-        },
-        subtitle: {
-            text: 'Source: Wikipedia.org'
-        },
-        xAxis: {
-            categories: ['1750', '1800', '1850', '1900', '1950', '1999', '2050'],
-            tickmarkPlacement: 'on',
-            title: {
-                enabled: false
-            }
-        },
-        yAxis: {
-            title: {
-                text: 'Percent'
-            }
-        },
-        tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} millions)<br/>',
-            split: true
-        },
-        plotOptions: {
-            area: {
-                stacking: 'percent',
-                lineColor: '#ffffff',
-                lineWidth: 1,
-                marker: {
-                    lineWidth: 1,
-                    lineColor: '#ffffff'
+    $scope.reportingRate={};
+
+    $scope.loadRejectionChart = [];
+//Provinces with Most Emergency Orders (Past 3 Months)
+    function loadPieChart(chartId,dataValues,total) {
+
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo:chartId,
+                type: 'pie'
+
+            },
+            credits:{
+                enabled:false
+            },  title: {
+                text:'<span style="font-size:20px">'+total+' <br><span style="font-size:10px">TOTAL</span></span>',
+                verticalAlign: 'middle',
+                floating: true
+            },
+
+            plotOptions: {
+                pie: {
+                    innerSize: '60%'
                 }
-            }
-        },
-        series: [{
-            name: 'Asia',
-            data: [502, 635, 809, 947, 1402, 3634, 5268]
-        }, {
-            name: 'Africa',
-            data: [106, 107, 111, 133, 221, 767, 1766]
-        }, {
-            name: 'Europe',
-            data: [163, 203, 276, 408, 547, 729, 628]
-        }, {
-            name: 'America',
-            data: [18, 31, 54, 156, 339, 818, 1201]
-        }, {
-            name: 'Oceania',
-            data: [2, 2, 2, 6, 13, 30, 46]
-        }]
+            },
+            series: [{
+                data:dataValues}]
+        }/*,
+
+            function(chart) { // on complete
+                var textX = chart.plotLeft + (chart.plotWidth  * 0.5);
+                var textY = chart.plotTop  + (chart.plotHeight * 0.5);
+
+                var span = '<span id="pieChartInfoText" style="position:absolute; text-align:center;">';
+                span += '<span style="font-size: 32px">Upper</span><br>';
+                span += '<span style="font-size: 16px">Lower</span>';
+                span += '</span>';
+
+                $("#addText").append(span);
+                span = $('#pieChartInfoText');
+                span.css('left', textX + (span.width() * -0.5));
+                span.css('top', textY + (span.height() * -0.5));
+            }*/);
+
+
+
+    }
+
+    GetNumberOfEmergencyData.get(null).then(function (data) {
+        var chartId = 'emergencyByRegion';
+        var data1 = _.pluck(data,'Number Of EOs');
+        var data2 = _.pluck(data,'Province');
+        var total = 0;
+        total= _.reduce(data1, function(memo, num){ return memo + num; }, 0);
+        var dataValues= _.zip(data2,data1);
+        loadPieChart(chartId,dataValues,total);
     });
 
-   // the end
-    $scope.data = "mamama";
-    console.log("Reached Here");
-//year=2017&schedule=1&period=114&program=3
-    $scope.reportingRate={};
-$scope.filter={
-   period: "114",
-    program:"3",
-    schedule: 1,
-    year: "2017",
-    zoneId:18
-};
+    RejectionCount.get({}, function (data) {
+        var reject = _.pluck(data.rejections,'Month');
+        var rejectionCount = _.pluck(data.rejections, 'Rejected Count');
+        loadTheChart(reject,rejectionCount,'rejectionCountId','line','Rejection Count','RnR Rejection Trends','Rejection Count');
+
+    });
+
+    GetPercentageOfEmergencyOrderByProgramData.get(null).then(function (data) {
+
+        var chartId = 'emergencyByProgram';
+        var category = _.pluck(data,'Program Name');
+        var value = _.pluck(data,'Emergency');
+        loadTheChart(category,value,chartId,'column','Program Name','Percentage of Emergency Orders by Program (all time)','Emergency');
+
+    });
+
+    GetEmergencyOrderByProgramData.get(null).then(function (data) {
+        console.log(data);
+
+        var chartId = 'emergencySubmittedByProgram';
+        var category = _.pluck(data,'Program Name');
+        var value = _.pluck(data,'Emergency');
+        loadTheChart(category,value,chartId,'column','Program Name','Emergency Orders by Program (Past 1 Month)','Emergency');
+
+
+    });
+    GetTrendOfEmergencyOrdersSubmittedPerMonthData.get(null).then(function (data) {
+
+        var chartId = 'trendOfEmergencyOrder';
+        var category = _.pluck(data,'ym');
+        var value = _.pluck(data,'Emergency Requisitions');
+        loadTheChart(category,value,chartId,'spline','Year and Month','Trend of Emergency Orders Submitted Per Month','# of requisitions');
+
+    });
+
+    GetEmergencyOrderTrendsData.get(null).then(function (data) {
+        var chartId = 'emergencyTrend';
+        var category = _.pluck(data,'Month');
+        var value = _.pluck(data,'Emergency Requisitions');
+        loadTheChart(category,value,chartId,'line','Year and Month','Emergency Order Trends (past 1 year)','# of requisitions');
+
+        console.log(data);
+    });
+    function loadTheChart(category, values,chartId,type,chartName,title,verticalTitle) {
+        Highcharts.chart(chartId, {
+            chart: {
+                type: type
+            },
+            title: {
+                text:' <h2><span style="font-size: x-small;color:#0c9083">'+title+'</span></h2>'
+            }, credits:{
+                enabled:false
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories:category,
+                crosshair: true
+            },
+            yAxis: {
+                lineWidth:1,
+                gridLineColor: '',
+                interval: 1,
+
+                tickWidth: 1,
+
+
+                min: 0,
+                title: {
+                    text: '<span style="font-size: x-small;color:#0c9083">'+verticalTitle+'</span>'
+                }
+            },
+            tooltip: {
+                /*
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                */
+                headerFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>{point.key}</b></td></tr><br/>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">'+verticalTitle+':</td>' + '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: chartName,
+                data: values
+
+            }]
+        });
+
+    }
+
+    $scope.filter={
+        period: "114",
+        program:"3",
+        schedule: 1,
+        year: "2017",
+        zoneId:18
+    };
     $scope.geojson = {};
 
     $scope.default_indicator = "period_over_expected";
@@ -120,12 +218,60 @@ $scope.filter={
     }
 
 
+    $scope.loadRnRStatusSummary = function (summary) {
+
+        var dataVal = [{name:'Status',  colorByPoint: false,data:summary}];
+
+        Highcharts.chart('rnrSummary', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie',
+                height: '350px'
+            },
+            credits:{
+                enabled:false
+            },
+            title: {
+                text: '<span style="font-size: x-small !important;color: #0c9083">R&R Status Summary</span>'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: false,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true
+                    },
+                    showInLegend: true,
+                    innerSize:"70%",
+                    size:150
+                }
+            },
+            series: dataVal
+        });
+
+    };
     //
     RnRStatusSummary.get({zoneId: $scope.filter.zoneId,
             periodId: $scope.filter.period,
             programId: $scope.filter.program
         },
         function (data) {
+
+            var dataValues =[];
+            var colors = {'RELEASED':'lightblue','IN_APPROVAL':'lightgreen','APPROVED':'#82A4EF','AUTHORIZED':'#FF558F'};
+            data.rnrStatus.forEach(function (d) {
+                if(d.status==='AUTHORIZED')
+                    dataValues.push({sliced: true, selected: true,'name': messageService.get('label.rnr.status.summary.'+d.status),'y':d.totalStatus,color:colors[d.status]});
+                else
+                    dataValues.push({'name': messageService.get('label.rnr.status.summary.'+d.status),'y':d.totalStatus,color:colors[d.status]});
+            });
+
+            $scope.loadRnRStatusSummary(dataValues);
             $scope.total = 0;
             $scope.RnRStatusPieChartData = [];
             $scope.dataRows = [];
@@ -149,7 +295,6 @@ $scope.filter={
                     var labelKey = 'label.rnr.status.summary.' + statusData[i];
                     var label = messageService.get(labelKey);
                     $scope.RnRStatusPieChartData[i] = {
-
                         label: label,
                         data: totalData[i],
                         color: color[statusData[i]]
@@ -209,7 +354,7 @@ $scope.filter={
         }
     ];
 
-    var initChart = function(_data) {
+    var initChart = function(data) {
         $('.chart').highcharts({
             chart: {
                 animation: false,
@@ -331,7 +476,7 @@ $scope.filter={
             var expArray=[{name:'expected',data:expected},
                 {name:'reported',data:reported}
             ];
-           var districtMap = _.groupBy($scope.features,'name');
+            var districtMap = _.groupBy($scope.features,'name');
             getExportDataFunction($scope.features);
             angular.forEach(districtMap,function () {
 
@@ -429,8 +574,7 @@ $scope.filter={
                         color: '#006600',
                         name:'Fully Reporting'
 
-                    },
-                        , {
+                    }, {
                             from: 90,
                             color: '#000000',
                             name:'Not Expected To'
@@ -496,72 +640,186 @@ $scope.filter={
 
 
 
- function calculatePercentage(data){
-     var total = 0;
-     angular.forEach(data,function (da,index) {
-         total += da.current;
-     });
-     return parseInt(total/parseInt(data.length,10),10);
- }
+    function calculatePercentage(data){
+        var total = 0;
+        angular.forEach(data,function (da,index) {
+            total += da.current;
+        });
+        return parseInt(total/parseInt(data.length,10),10);
+    }
 
-$scope.orderFillRateByZone ={
-    "zones": [
-        {
-            "name": "North East",
-            "prev": 89,
-            "current": 90,
-            "status": "good"
-        },
-        {
-            "name": "Western",
-            "prev": 89,
-            "current": 89,
-            "status": "normal"
-        },
-        {
-            "name": "Southern",
-            "prev": 50,
-            "current": 69,
-            "status": "bad"
-        },{
-            "name": "North Western",
-            "prev": 70,
-            "current": 20,
-            "status": "bad"
-        },{
-            "name": "Northern",
-            "prev": 70,
-            "current": 60,
-            "status": "bad"
-        },{
-            "name": "Muchinga",
-            "prev": 70,
-            "current": 90,
-            "status": "bad"
-        },{
-            "name": "Luapula",
-            "prev": 70,
-            "current": 90,
-            "status": "bad"
-        },{
-            "name": "Copperbelt",
-            "prev": 70,
-            "current": 20,
-            "status": "bad"
-        },{
-            "name": "Central",
-            "prev": 70,
-            "current": 80,
-            "status": "bad"
-        },{
-            "name": "Lusaka Province",
-            "prev": 70,
-            "current": 85,
-            "status": "bad"
-        }
-    ]
-};
+    $scope.orderFillRateByZone ={
+        "zones": [
+            {
+                "name": "North East",
+                "prev": 89,
+                "current": 90,
+                "status": "good"
+            },
+            {
+                "name": "Western",
+                "prev": 89,
+                "current": 89,
+                "status": "normal"
+            },
+            {
+                "name": "Southern",
+                "prev": 50,
+                "current": 69,
+                "status": "bad"
+            },{
+                "name": "North Western",
+                "prev": 70,
+                "current": 20,
+                "status": "bad"
+            },{
+                "name": "Northern",
+                "prev": 70,
+                "current": 60,
+                "status": "bad"
+            },{
+                "name": "Muchinga",
+                "prev": 70,
+                "current": 90,
+                "status": "bad"
+            },{
+                "name": "Luapula",
+                "prev": 70,
+                "current": 90,
+                "status": "bad"
+            },{
+                "name": "Copperbelt",
+                "prev": 70,
+                "current": 20,
+                "status": "bad"
+            },{
+                "name": "Central",
+                "prev": 70,
+                "current": 80,
+                "status": "bad"
+            },{
+                "name": "Lusaka Province",
+                "prev": 70,
+                "current": 85,
+                "status": "bad"
+            }
+        ]
+    };
 
+    $scope.stockAvailability ={
+        "zones": [
+            {
+                "name": "North East",
+                "prev": 75,
+                "current": 85,
+                "status": "good"
+            },
+            {
+                "name": "Western",
+                "prev": 80,
+                "current": 81,
+                "status": "normal"
+            },
+            {
+                "name": "Southern",
+                "prev": 61,
+                "current": 71,
+                "status": "bad"
+            },{
+                "name": "North Western",
+                "prev": 70,
+                "current": 75,
+                "status": "bad"
+            },{
+                "name": "Northern",
+                "prev": 50,
+                "current": 55,
+                "status": "bad"
+            },{
+                "name": "Muchinga",
+                "prev": 30,
+                "current": 79,
+                "status": "bad"
+            },{
+                "name": "Luapula",
+                "prev": 40,
+                "current": 79,
+                "status": "bad"
+            },{
+                "name": "Copperbelt",
+                "prev": 90,
+                "current": 85,
+                "status": "bad"
+            },{
+                "name": "Central",
+                "prev": 75,
+                "current": 86,
+                "status": "bad"
+            },{
+                "name": "Lusaka Province",
+                "prev": 89,
+                "current": 90,
+                "status": "bad"
+            }
+        ]
+    };
+    $scope.reportingRate ={
+        "zones": [
+            {
+                "name": "North East",
+                "prev": 60,
+                "current": 80,
+                "status": "good"
+            },
+            {
+                "name": "Western",
+                "prev": 89,
+                "current": 81,
+                "status": "normal"
+            },
+            {
+                "name": "Southern",
+                "prev": 81,
+                "current": 89,
+                "status": "bad"
+            },{
+                "name": "North Western",
+                "prev": 81,
+                "current": 90,
+                "status": "bad"
+            },{
+                "name": "Northern",
+                "prev": 76,
+                "current": 83,
+                "status": "bad"
+            },{
+                "name": "Muchinga",
+                "prev": 84,
+                "current": 98,
+                "status": "bad"
+            },{
+                "name": "Luapula",
+                "prev": 70,
+                "current": 80,
+                "status": "bad"
+            },{
+                "name": "Copperbelt",
+                "prev": 50,
+                "current": 50,
+                "status": "bad"
+            },{
+                "name": "Central",
+                "prev": 60,
+                "current": 79,
+                "status": "bad"
+            },{
+                "name": "Lusaka Province",
+                "prev": 75,
+                "current": 80,
+                "status": "bad"
+            }
+        ]
+    };
 
     ReportingRate.get({zoneId: $scope.filter.zoneId,
             periodId: $scope.filter.period,
@@ -569,31 +827,21 @@ $scope.orderFillRateByZone ={
         },
         function (data) {
             $scope.reportingRate={"zones":data.reportingRate};
-            console.log(JSON.stringify($scope.reportingRate));
-            $scope.dynamicPerformanceChart($scope.reportingRate,'#reporting-rate','ReportingRate',calculatePercentage($scope.reportingRate.zones));
-
-        });
-    StockStatusAvailaiblity.get({zoneId: $scope.filter.zoneId,
-            periodId: $scope.filter.period,
-            programId: $scope.filter.program
-        },
-        function (data) {
-            $scope.stockAvailability={"zones":data.stockStatus};
-            console.log(JSON.stringify($scope.stockAvailability));
-
+            console.log(JSON.stringify(data.reportingRate));
+            $scope.dynamicPerformanceChart(data.reportingRate,'#reporting-rate','ReportingRate',calculatePercentage($scope.reportingRate.zones));
             $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
             $scope.dynamicPerformanceChart($scope.stockAvailability,'#stock-availability','StockAvailability',calculatePercentage($scope.stockAvailability.zones));
         });
 
 
-function borderColor(data){
-    return (data >= 80)?'green':(data<80 && data>70)?'orange':'red';
+    function borderColor(data){
+        return (data >= 80)?'green':(data<80 && data>70)?'orange':'red';
 
-}
+    }
 
-$scope.dynamicPerformanceChart = function(data,chartId,name,result)
+    $scope.dynamicPerformanceChart = function(data,chartId,name,result)
 
-{
+    {
 
         var gaugeOptions = {
 
@@ -661,8 +909,9 @@ $scope.dynamicPerformanceChart = function(data,chartId,name,result)
         };
         $(chartId).highcharts(gaugeOptions);
     };
-
-
+    $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
+    $scope.dynamicPerformanceChart($scope.stockAvailability,'#stock-availability','StockAvailability',calculatePercentage($scope.stockAvailability.zones));
+    $scope.dynamicPerformanceChart($scope.reportingRate,'#reporting-rate','ReportingRate',calculatePercentage($scope.reportingRate.zones));
 
     var dataValues = [
         ['zm-lp', 0],
@@ -767,8 +1016,6 @@ $scope.dynamicPerformanceChart = function(data,chartId,name,result)
         program: parseInt(3, 10)
     };
     $scope.loadStockStatusByLocation(defaultParam);
-
-
 
 }
 

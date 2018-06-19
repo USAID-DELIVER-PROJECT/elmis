@@ -203,4 +203,24 @@ public class DashboardLookupService {
     public HashMap<String,Object>getStockColor(Long mos,Long levelId ){
         return msdStockStatusReportRepository.getStockColor(mos,levelId);
     }
+    public List<HashMap<String, Object>>getRnRejectionCount(){
+        return dashboardMapper.getRnRRejectionCount();
+    }
+    public List<HashMap<String, Object>>getNumberOfEmergency(){
+        return dashboardMapper.getNumberOfEmergency();
+
+    }
+    public List<HashMap<String, Object>>getPercentageOfEmergencyOrderByProgram(){
+        return dashboardMapper.getPercentageOfEmergencyOrderByProgram();
+    }
+
+    public List<HashMap<String, Object>>getEmergencyOrderByProgram(){
+        return dashboardMapper.getEmergencyOrderByProgram();
+    }
+    public List<HashMap<String, Object>>getTrendOfEmergencyOrdersSubmittedPerMonth(){
+        return dashboardMapper.getTrendOfEmergencyOrdersSubmittedPerMonth();
+    }
+    public List<HashMap<String, Object>>emergencyOrderTrends(){
+        return dashboardMapper.emergencyOrderTrends();
+    }
 }

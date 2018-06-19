@@ -39,6 +39,30 @@
         width: 120px;
         padding: 0px 0px !important;
     }
+
+    .row {
+        margin-left: auto !important;
+        margin-bottom: 0px !important;
+    }
+
+    #tab, ul {
+        padding: 0px 5px 0px !important;
+
+    }
+
+    .content {
+        padding: 0px 5px 0px !important;
+        margin: 0px 0px 0px !important;
+    }
+
+    .nav {
+        margin-bottom: 0px !important;
+    }
+
+    #order {
+        padding-bottom: 0px !important;
+
+    }
 </style>
 <div id="tab">
 
@@ -54,45 +78,51 @@
     <div class="tab-content clearfix">
 
         <div class="tab-pane active" id="summary">
-            <!--
-                        Starting the dashlets by only adding rows and card
-            -->
-            <div class="row" ng-show="true">
+
+            <div class="row orderFillRate" id="order" ng-show="true">
                 <div class="col s12 m6 l6">
                     <div class="section grey lighten-5 card">
-
-                        <div class="container">
-                            <div class="arrow"></div>
-                            <div class="chart"></div>
-                        </div>
-
+                        <div id="rnrSummary" style="margin:0 auto"></div>
                     </div>
 
                 </div>
-                <div class="col s12 m6 l6">
+                <div class="col  s12 m6 l6">
                     <div class="section grey lighten-5 card">
-                        <div ng-show="analyticData.length > 0">
+                        <div class="section grey lighten-3" ng-show="analyticData.length > 0">
 
-                            <table ng-show="analyticData.length > 0"
-                                   class="table table-striped table-scrollable pull-left"
-                                   ng-table="tableParams">
 
+                            <table class="striped bordered" style="height: 317px !important;">
+                                <thead>
+                                <tr>
+                                    <th>Pending at</th>
+                                    <th>Expected</th>
+                                    <th>Processed</th>
+                                    <th>% Processed</th>
+                                </tr>
+                                </thead>
                                 <tbody>
                                 <tr ng-repeat="feature in analyticData">
 
                                     <td style="text-align: left;" data-title="'Pending at'"><span
                                             openlmis-message="label.rnr.status.summary.{{feature.status}}"></span></td>
-                                    <td style="font-weight: bold;text-align: left;"  data-title="'Expected'">{{feature.expected}}</td>
-                                    <td style="font-weight: bold;text-align: left;"  data-title="'Processed'">{{feature.totalRnRStatus}}</td>
-                                    <td style="font-weight: bold;text-align: left;"  data-title="'% Processed'">
-                                        <div class="number" style="float:right;">{{((feature.totalRnRStatus / feature.expected) *
+                                    <td style="font-weight: bold;text-align: left;" data-title="'Expected'">
+                                        {{feature.expected}}
+                                    </td>
+                                    <td style="font-weight: bold;text-align: left;" data-title="'Processed'">
+                                        {{feature.totalRnRStatus}}
+                                    </td>
+                                    <td style="font-weight: bold;text-align: left;" data-title="'% Processed'">
+                                        <div class="number" style="float:right;">{{((feature.totalRnRStatus /
+                                            feature.expected) *
                                             100).toFixed(0)}} %
                                         </div>
                                         <div class="progress" style="margin-bottom:0px;width:80%">
-                                            <div class="bar bar-success leaflet-clickable" ng-click="onDetailClicked(feature, this)"
+                                            <div class="bar bar-success leaflet-clickable"
+                                                 ng-click="onDetailClicked(feature, this)"
                                                  style="width: {{((feature.totalRnRStatus / feature.expected) * 100).toFixed(2)}}%">
                                             </div>
-                                            <div class="bar bar-danger leaflet-clickable" ng-click="onDetailClicked(feature, this)"
+                                            <div class="bar bar-danger leaflet-clickable"
+                                                 ng-click="onDetailClicked(feature, this)"
                                                  style="width: {{(100 - ((feature.totalRnRStatus / feature.expected) * 100).toFixed(2))}}%">
                                             </div>
 
@@ -103,6 +133,47 @@
                                 </tr>
                                 </tbody>
                             </table>
+
+
+                            <!--
+                                                        <table ng-show="analyticData.length > 0"
+                                                               class="table table-striped table-scrollable pull-left"
+                                                               ng-table="tableParams">
+
+                                                            <tbody>
+                                                            <tr ng-repeat="feature in analyticData">
+
+                                                                <td style="text-align: left;" data-title="'Pending at'"><span
+                                                                        openlmis-message="label.rnr.status.summary.{{feature.status}}"></span></td>
+                                                                <td style="font-weight: bold;text-align: left;" data-title="'Expected'">
+                                                                    {{feature.expected}}
+                                                                </td>
+                                                                <td style="font-weight: bold;text-align: left;" data-title="'Processed'">
+                                                                    {{feature.totalRnRStatus}}
+                                                                </td>
+                                                                <td style="font-weight: bold;text-align: left;" data-title="'% Processed'">
+                                                                    <div class="number" style="float:right;">{{((feature.totalRnRStatus /
+                                                                        feature.expected) *
+                                                                        100).toFixed(0)}} %
+                                                                    </div>
+                                                                    <div class="progress" style="margin-bottom:0px;width:80%">
+                                                                        <div class="bar bar-success leaflet-clickable"
+                                                                             ng-click="onDetailClicked(feature, this)"
+                                                                             style="width: {{((feature.totalRnRStatus / feature.expected) * 100).toFixed(2)}}%">
+                                                                        </div>
+                                                                        <div class="bar bar-danger leaflet-clickable"
+                                                                             ng-click="onDetailClicked(feature, this)"
+                                                                             style="width: {{(100 - ((feature.totalRnRStatus / feature.expected) * 100).toFixed(2))}}%">
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </td>
+
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                            -->
                         </div>
 
                     </div>
@@ -111,6 +182,76 @@
 
             </div>
 
+
+            <div class="row orderFillRate" ng-show="true">
+                <div class="col s12 m4 l4">
+                    <div class="section grey lighten-5 card">
+                        <!--
+                                                <h2><span style="font-size: x-small"></span></h2>
+                        -->
+                        <div>
+                            <div id="trendOfEmergencyOrder" style="height: 300px;margin:0 auto "></div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="col s12 m4 l4">
+                    <div class="section grey lighten-5 card">
+                        <div>
+                            <div id="emergencySubmittedByProgram" style="height: 300px;margin:0 auto "></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col s12 m4 l4">
+                    <div class="section grey lighten-5 card">
+                        <div>
+
+                            <div id="emergencyTrend" style="height: 300px;margin:0 auto "></div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row orderFillRate" ng-show="true">
+                <div class="col s12 m4 l7">
+                    <div class="section grey lighten-5 card">
+                        <!--
+                                                <h2><span style="font-size: x-small"></span></h2>
+                        -->
+                        <div>
+                            <div id="emergencyByRegion" style="height: 300px;margin:0 auto "></div>
+                            <div id="addText" style="left:0px; top:0px;"></div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="col s12 m4 l5">
+                    <div class="section grey lighten-5 card">
+                        <div>
+                            <div id="emergencyByProgram" style="height: 300px;margin:0 auto "></div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row orderFillRate">
+                <div class="col s12 m6 l12">
+                    <div class="section grey lighten-5 card">
+                        <div id="rejectionCountId" style="height: 300px; margin:0 auto"></div>
+
+                    </div>
+                </div>
+
+            </div>
 
             <div class="row orderFillRate" ng-show="orderFillRateByZone.zones.length >0">
                 <div class="col s12 m4 l4">
@@ -122,18 +263,18 @@
 
 
                             <div class="section">
-                                 <!--  <span ng-show="true"><p style="font-size: x-small">Keys</p>
+                                <!--  <span ng-show="true"><p style="font-size: x-small">Keys</p>
 
-                                    <a href="#!"><i class="tiny material-icons icon-green">lens</i></a><span
-                                               style="font-size: x-small"> Good >=80%</span>
-                                    <br><a href="#!"><i class="tiny material-icons icon-yellow">lens</i></a><span
-                                               style="font-size: x-small"> Normal >69%</span>
-                                   <br> <a href="#!"><i class="tiny material-icons icon-red">lens</i></a><span
-                                               style="font-size: x-small"> Bad <70%</span>
+                                   <a href="#!"><i class="tiny material-icons icon-green">lens</i></a><span
+                                              style="font-size: x-small"> Good >=80%</span>
+                                   <br><a href="#!"><i class="tiny material-icons icon-yellow">lens</i></a><span
+                                              style="font-size: x-small"> Normal >69%</span>
+                                  <br> <a href="#!"><i class="tiny material-icons icon-red">lens</i></a><span
+                                              style="font-size: x-small"> Bad <70%</span>
 
 
 
-                                    </span>-->
+                                   </span>-->
 
                                 <div id="container-order-fill-rate" style="height: 120px; margin:0 auto"></div>
                                 <span style="text-align:center;font-size: smaller;font-weight:bold;"
@@ -328,7 +469,6 @@
 
             </div>
 
-
             <div class="row" ng-show="false">
                 <div class="col s12 m6 l6">
                     <div class="section grey lighten-5 card">
@@ -396,17 +536,17 @@
                         </table>
 
 
-
                     </div>
 
                 </div>
 
             </div>
-            <div class="row">
+            <div class="row" ng-show="false">
                 <div class="col s12 m6 l6">
                     <div class="section grey lighten-5 card">
 
-                        <div id="container1" style="height: 500px; min-width: 310px; max-width: 480px; margin: 0 auto"></div>
+                        <div id="container1"
+                             style="height: 500px; min-width: 310px; max-width: 480px; margin: 0 auto"></div>
 
                     </div>
 
@@ -415,7 +555,8 @@
                     <div class="section grey lighten-5 card">
                         <div style="" ng-show="features && (features | filter:expectedFilter).length > 0">
 
-                            <div id="container" style="min-width: 310px; max-width:480px; height: 500px; margin: 0 auto"></div>
+                            <div id="container"
+                                 style="min-width: 310px; max-width:480px; height: 500px; margin: 0 auto"></div>
                         </div>
 
                     </div>
@@ -423,13 +564,13 @@
                 </div>
 
 
-
             </div>
-            <div class="row">
+            <div class="row orderFillRate">
                 <div class="col s12 m6 l6">
                     <div class="section grey lighten-5 card">
 
-                        <leaflet id="map"  width="100%" height="600px" legend="legend" geojson="geojson" layers="layers"></leaflet>
+                        <leaflet width="100%" height="500px" legend="legend" geojson="geojson"
+                                 layers="layers"></leaflet>
 
                     </div>
 
@@ -438,13 +579,15 @@
                     <div class="section grey lighten-5 card">
                         <div style="" ng-show="features && (features | filter:expectedFilter).length > 0">
 
-                            <table class="table table-striped table-scrollable scroll">
+                            <table class="striped">
                                 <thead>
                                 <tr style="margin-bottom: 20px">
                                     <th style="width:35%" openlmis-message="label.district"></th>
                                     <th style="width:10%" class="number" openlmis-message="label.expected"></th>
-                                    <th style="width:10% !important;" class="number" openlmis-message="label.reported"></th>
-                                    <th style="width: 30%; text-align: right" openlmis-message="label.percent.reported"></th>
+                                    <th style="width:10% !important;" class="number"
+                                        openlmis-message="label.reported"></th>
+                                    <th style="width: 30%; text-align: right"
+                                        openlmis-message="label.percent.reported"></th>
                                 </tr>
                                 <!--<tr><th colspan="4">&nbsp;</th></tr>-->
                                 </thead>
@@ -454,50 +597,32 @@
                                     <td style="width:10% !important;" class="number">{{feature.expected}}</td>
                                     <td style="width:10% !important;" class="number">{{feature.period}}</td>
                                     <td style="width:30% !important;" class="number">
-                                        <div class="number" style="float:right;">{{((feature.period / feature.expected) * 100).toFixed(0)}} %</div>
+                                        <div class="number" style="float:right;">{{((feature.period / feature.expected)
+                                            * 100).toFixed(0)}} %
+                                        </div>
                                         <div class="progress" style="margin-bottom:0px;width:68%">
-                                            <div class="bar bar-success leaflet-clickable" ng-click="onDetailClicked(feature, this)"
+                                            <div class="bar bar-success leaflet-clickable"
+                                                 ng-click="onDetailClicked(feature, this)"
                                                  style="width: {{((feature.period / feature.expected) * 100).toFixed(2)}}%"></div>
-                                            <div class="bar bar-danger leaflet-clickable" ng-click="onDetailClicked(feature, this)"
+                                            <div class="bar bar-danger leaflet-clickable"
+                                                 ng-click="onDetailClicked(feature, this)"
                                                  style="width: {{(100 - ((feature.period / feature.expected) * 100).toFixed(2))}}%"></div>
                                         </div>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
+
                         </div>
 
+                    </div>
+
                 </div>
 
+
             </div>
-
-
 
         </div>
-
-            <!--stock status by location -->
-
-            <div class="row">
-                <div class="col s12 m6 l6">
-                    <div class="section grey lighten-5 card">
-
-                        <leaflet id="map1"  width="100%" height="600px" legend="legend" geojson="geojson" layers="layers"></leaflet>
-
-                    </div>
-
-                </div>
-                <div class="col s12 m6 l6">
-                    <div class="section grey lighten-5 card">
-
-                        <div id="container3" style="min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto"></div>
-                    </div>
-
-                </div>
-
-
-
-            </div>
-            </div>
 
 
     </div>
