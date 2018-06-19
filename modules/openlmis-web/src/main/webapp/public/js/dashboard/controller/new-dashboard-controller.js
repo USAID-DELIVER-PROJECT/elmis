@@ -1,4 +1,4 @@
-function DashboardControllerFunction($scope, leafletData,RnRStatusSummary,ExtraAnalyticDataForRnRStatus,$routeParams,messageService,ngTableParams,$filter,ReportingRate) {
+function DashboardControllerFunction($scope, leafletData,RnRStatusSummary,ExtraAnalyticDataForRnRStatus,$routeParams,messageService,ngTableParams,$filter,ReportingRate,StockStatusAvailaiblity) {
     Highcharts.chart('container3', {
 
         chart: {
@@ -562,63 +562,7 @@ $scope.orderFillRateByZone ={
     ]
 };
 
-$scope.stockAvailability ={
-    "zones": [
-        {
-            "name": "North East",
-            "prev": 75,
-            "current": 85,
-            "status": "good"
-        },
-        {
-            "name": "Western",
-            "prev": 80,
-            "current": 81,
-            "status": "normal"
-        },
-        {
-            "name": "Southern",
-            "prev": 61,
-            "current": 71,
-            "status": "bad"
-        },{
-            "name": "North Western",
-            "prev": 70,
-            "current": 75,
-            "status": "bad"
-        },{
-            "name": "Northern",
-            "prev": 50,
-            "current": 55,
-            "status": "bad"
-        },{
-            "name": "Muchinga",
-            "prev": 30,
-            "current": 79,
-            "status": "bad"
-        },{
-            "name": "Luapula",
-            "prev": 40,
-            "current": 79,
-            "status": "bad"
-        },{
-            "name": "Copperbelt",
-            "prev": 90,
-            "current": 85,
-            "status": "bad"
-        },{
-            "name": "Central",
-            "prev": 75,
-            "current": 86,
-            "status": "bad"
-        },{
-            "name": "Lusaka Province",
-            "prev": 89,
-            "current": 90,
-            "status": "bad"
-        }
-    ]
-};
+
     ReportingRate.get({zoneId: $scope.filter.zoneId,
             periodId: $scope.filter.period,
             programId: $scope.filter.program
@@ -627,6 +571,16 @@ $scope.stockAvailability ={
             $scope.reportingRate={"zones":data.reportingRate};
             console.log(JSON.stringify($scope.reportingRate));
             $scope.dynamicPerformanceChart($scope.reportingRate,'#reporting-rate','ReportingRate',calculatePercentage($scope.reportingRate.zones));
+
+        });
+    StockStatusAvailaiblity.get({zoneId: $scope.filter.zoneId,
+            periodId: $scope.filter.period,
+            programId: $scope.filter.program
+        },
+        function (data) {
+            $scope.stockAvailability={"zones":data.stockStatus};
+            console.log(JSON.stringify($scope.stockAvailability));
+
             $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
             $scope.dynamicPerformanceChart($scope.stockAvailability,'#stock-availability','StockAvailability',calculatePercentage($scope.stockAvailability.zones));
         });

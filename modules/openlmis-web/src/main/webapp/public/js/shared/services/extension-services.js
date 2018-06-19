@@ -1349,3 +1349,6 @@ services.factory('GeoZoneLevel', function ($resource) {
 services.factory('ReportingRate', function ($resource) {
     return $resource('/dashboard/reporting-rate.json', {}, {});
 });
+services.factory('StockStatusAvailaiblity', function ($resource) {
+    return $resource('/dashboard/stock-staus-availablity.json', {}, {});
+});
