@@ -1485,3 +1485,7 @@ services.factory('GetTrendOfEmergencyOrdersSubmittedPerMonth', function($resourc
 services.factory('GetEmergencyOrderTrends', function($resource){
     return $resource('/dashboard/emergencyOrderTrends.json',{}, {});
 });
+
+services.factory('ReportingRate', function ($resource) {
+    return $resource('/dashboard/reporting-rate.json', {}, {});
+});

@@ -1,6 +1,73 @@
 function DashboardControllerFunction($scope, RejectionCount, leafletData, RnRStatusSummary, GetNumberOfEmergencyData, GetEmergencyOrderByProgramData, GetPercentageOfEmergencyOrderByProgramData,
-                                     ExtraAnalyticDataForRnRStatus, GetTrendOfEmergencyOrdersSubmittedPerMonthData, $routeParams, messageService, GetEmergencyOrderTrendsData, ngTableParams, $filter) {
+                                     ExtraAnalyticDataForRnRStatus, GetTrendOfEmergencyOrdersSubmittedPerMonthData, $routeParams, messageService, GetEmergencyOrderTrendsData, ngTableParams, $filter,ReportingRate) {
+    Highcharts.chart('container3', {
 
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: 'Reporting Rate'
+        },
+        subtitle: {
+            text: 'Source: Wikipedia.org'
+        },
+        xAxis: {
+            categories: ['1750', '1800', '1850', '1900', '1950', '1999', '2050'],
+            tickmarkPlacement: 'on',
+            title: {
+                enabled: false
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Percent'
+            }
+        },
+        tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} millions)<br/>',
+            split: true
+        },
+        plotOptions: {
+            area: {
+                stacking: 'percent',
+                lineColor: '#ffffff',
+                lineWidth: 1,
+                marker: {
+                    lineWidth: 1,
+                    lineColor: '#ffffff'
+                }
+            }
+        },
+        series: [{
+            name: 'Asia',
+            data: [502, 635, 809, 947, 1402, 3634, 5268]
+        }, {
+            name: 'Africa',
+            data: [106, 107, 111, 133, 221, 767, 1766]
+        }, {
+            name: 'Europe',
+            data: [163, 203, 276, 408, 547, 729, 628]
+        }, {
+            name: 'America',
+            data: [18, 31, 54, 156, 339, 818, 1201]
+        }, {
+            name: 'Oceania',
+            data: [2, 2, 2, 6, 13, 30, 46]
+        }]
+    });
+
+    // the end
+    $scope.data = "mamama";
+    console.log("Reached Here");
+//year=2017&schedule=1&period=114&program=3
+    $scope.reportingRate={};
+    $scope.filter={
+        period: "114",
+        program:"3",
+        schedule: 1,
+        year: "2017",
+        zoneId:18
+    };
     $scope.loadRejectionChart = [];
 
 //Provinces with Most Emergency Orders (Past 3 Months)
@@ -347,7 +414,7 @@ function DashboardControllerFunction($scope, RejectionCount, leafletData, RnRSta
     var data = [
         {
             y: 300,
-            color: "#F7464A",
+            color:"#F7464A",
             name: "Red"
         },
         {
@@ -836,6 +903,75 @@ function DashboardControllerFunction($scope, RejectionCount, leafletData, RnRSta
             }
         ]
     };
+$scope.stockAvailability ={
+    "zones": [
+        {
+            "name": "North East",
+            "prev": 75,
+            "current": 85,
+            "status": "good"
+        },
+        {
+            "name": "Western",
+            "prev": 80,
+            "current": 81,
+            "status": "normal"
+        },
+        {
+            "name": "Southern",
+            "prev": 61,
+            "current": 71,
+            "status": "bad"
+        },{
+            "name": "North Western",
+            "prev": 70,
+            "current": 75,
+            "status": "bad"
+        },{
+            "name": "Northern",
+            "prev": 50,
+            "current": 55,
+            "status": "bad"
+        },{
+            "name": "Muchinga",
+            "prev": 30,
+            "current": 79,
+            "status": "bad"
+        },{
+            "name": "Luapula",
+            "prev": 40,
+            "current": 79,
+            "status": "bad"
+        },{
+            "name": "Copperbelt",
+            "prev": 90,
+            "current": 85,
+            "status": "bad"
+        },{
+            "name": "Central",
+            "prev": 75,
+            "current": 86,
+            "status": "bad"
+        },{
+            "name": "Lusaka Province",
+            "prev": 89,
+            "current": 90,
+            "status": "bad"
+        }
+    ]
+};
+    ReportingRate.get({zoneId: $scope.filter.zoneId,
+            periodId: $scope.filter.period,
+            programId: $scope.filter.program
+        },
+        function (data) {
+            $scope.reportingRate={"zones":data.reportingRate};
+            console.log(JSON.stringify($scope.reportingRate));
+            $scope.dynamicPerformanceChart($scope.reportingRate,'#reporting-rate','ReportingRate',calculatePercentage($scope.reportingRate.zones));
+            $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
+            $scope.dynamicPerformanceChart($scope.stockAvailability,'#stock-availability','StockAvailability',calculatePercentage($scope.stockAvailability.zones));
+        });
+
 
     function borderColor(data) {
         return (data >= 80) ? 'green' : (data < 80 && data > 70) ? 'orange' : 'red';
@@ -913,6 +1049,8 @@ function DashboardControllerFunction($scope, RejectionCount, leafletData, RnRSta
     $scope.dynamicPerformanceChart($scope.orderFillRateByZone, '#container-order-fill-rate', 'OrderFillRate', calculatePercentage($scope.orderFillRateByZone.zones));
     $scope.dynamicPerformanceChart($scope.stockAvailability, '#stock-availability', 'StockAvailability', calculatePercentage($scope.stockAvailability.zones));
     $scope.dynamicPerformanceChart($scope.reportingRate, '#reporting-rate', 'ReportingRate', calculatePercentage($scope.reportingRate.zones));
+
+
 
     var dataValues = [
         ['zm-lp', 0],
@@ -1017,6 +1155,8 @@ function DashboardControllerFunction($scope, RejectionCount, leafletData, RnRSta
         program: parseInt(3, 10)
     };
     $scope.loadStockStatusByLocation(defaultParam);
+
+
 
 }
 
