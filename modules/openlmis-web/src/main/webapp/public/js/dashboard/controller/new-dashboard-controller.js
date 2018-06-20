@@ -1,6 +1,6 @@
 function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatusSummary,GetNumberOfEmergencyData,GetEmergencyOrderByProgramData,GetPercentageOfEmergencyOrderByProgramData,
                                      ExtraAnalyticDataForRnRStatus,GetTrendOfEmergencyOrdersSubmittedPerMonthData,$routeParams,messageService,GetEmergencyOrderTrendsData,
-                                     ngTableParams,$filter,ReportingRate,StockStatusAvailaiblity) {
+                                     ngTableParams,$filter,ReportingRate,StockStatusAvailaiblity,ItemFillRate) {
 
     $scope.reportingRate={};
 
@@ -648,63 +648,7 @@ function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatu
         return parseInt(total/parseInt(data.length,10),10);
     }
 
-    $scope.orderFillRateByZone ={
-        "zones": [
-            {
-                "name": "North East",
-                "prev": 89,
-                "current": 90,
-                "status": "good"
-            },
-            {
-                "name": "Western",
-                "prev": 89,
-                "current": 89,
-                "status": "normal"
-            },
-            {
-                "name": "Southern",
-                "prev": 50,
-                "current": 69,
-                "status": "bad"
-            },{
-                "name": "North Western",
-                "prev": 70,
-                "current": 20,
-                "status": "bad"
-            },{
-                "name": "Northern",
-                "prev": 70,
-                "current": 60,
-                "status": "bad"
-            },{
-                "name": "Muchinga",
-                "prev": 70,
-                "current": 90,
-                "status": "bad"
-            },{
-                "name": "Luapula",
-                "prev": 70,
-                "current": 90,
-                "status": "bad"
-            },{
-                "name": "Copperbelt",
-                "prev": 70,
-                "current": 20,
-                "status": "bad"
-            },{
-                "name": "Central",
-                "prev": 70,
-                "current": 80,
-                "status": "bad"
-            },{
-                "name": "Lusaka Province",
-                "prev": 70,
-                "current": 85,
-                "status": "bad"
-            }
-        ]
-    };
+
 
 
 
@@ -727,8 +671,17 @@ function DashboardControllerFunction($scope,RejectionCount, leafletData,RnRStatu
         function (data) {
             $scope.stockAvailability={"zones":data.stockStatus};
             console.log(JSON.stringify($scope.stockAvailability));
-            $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
             $scope.dynamicPerformanceChart($scope.stockAvailability,'#stock-availability','StockAvailability',calculatePercentage($scope.stockAvailability.zones));
+        });
+    ItemFillRate.get({zoneId: $scope.filter.zoneId,
+            periodId: $scope.filter.period,
+            programId: $scope.filter.program
+        },
+        function (data) {
+            $scope.orderFillRateByZone={"zones":data.itemFillRate};
+            console.log(JSON.stringify("item fillrate" +$scope.orderFillRateByZone));
+            $scope.dynamicPerformanceChart($scope.orderFillRateByZone,'#container-order-fill-rate','OrderFillRate',calculatePercentage($scope.orderFillRateByZone.zones));
+
         });
     function borderColor(data){
         return (data >= 80)?'green':(data<80 && data>70)?'orange':'red';

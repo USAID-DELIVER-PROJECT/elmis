@@ -18,6 +18,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class NewDashboardController extends BaseController {
 private static final String REPORTING_RATE="reportingRate";
     private static final String STOCK_STATUS="stockStatus";
+    private static final String ITEM_FILL_RATE="itemFillRate";
     @Autowired
 private DashboardService dashboardService;
     @RequestMapping(value = "/reporting-rate", method = GET, headers = ACCEPT_JSON)
@@ -32,6 +33,12 @@ private DashboardService dashboardService;
                                                              @RequestParam("periodId") Long periodId,
                                                              @RequestParam("programId") Long programId) {
         return OpenLmisResponse.response(STOCK_STATUS, this.dashboardService.getStockStaus(zoneId, periodId, programId));
+    }
+    @RequestMapping(value = "/item-fill-rate", method = GET, headers = ACCEPT_JSON)
+    public ResponseEntity<OpenLmisResponse> getItemFillRate(@RequestParam("zoneId") Long zoneId,
+                                                                      @RequestParam("periodId") Long periodId,
+                                                                      @RequestParam("programId") Long programId) {
+        return OpenLmisResponse.response(ITEM_FILL_RATE, this.dashboardService.getItemFillRate(zoneId, periodId, programId));
     }
 
 }

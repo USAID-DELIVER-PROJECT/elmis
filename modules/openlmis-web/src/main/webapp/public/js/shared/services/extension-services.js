@@ -1492,3 +1492,6 @@ services.factory('ReportingRate', function ($resource) {
 services.factory('StockStatusAvailaiblity', function ($resource) {
     return $resource('/dashboard/stock-staus-availablity.json', {}, {});
 });
+services.factory('ItemFillRate', function ($resource) {
+    return $resource('/dashboard/item-fill-rate.json', {}, {});
+});
