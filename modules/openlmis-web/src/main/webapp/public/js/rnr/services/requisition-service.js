@@ -89,7 +89,7 @@ services.factory('requisitionService', function (messageService) {
 
   };
 
-  function getMappedVisibleColumns(rnrColumns, fixedColumns, skipped) {
+  function getMappedVisibleColumns(rnrColumns, fixedColumns, skipped, reportOnlyPeriod) {
     skipped = skipped || [];
     var filteredColumns = _.reject(rnrColumns, function (column) {
       return (skipped.indexOf(column.name) !== -1) || (column.visible !== true);
@@ -102,11 +102,19 @@ services.factory('requisitionService', function (messageService) {
       return 'scrollable';
     });
 
+    if(reportOnlyPeriod){
+      fullSupplyVisibleColumns = _.filter(fullSupplyVisibleColumns, function(column){
+        return _.contains(['skipped', 'product', 'productCode', 'dispensingUnit',
+          'beginningBalance', 'quantityReceived', 'quantityDispensed', 'lossesAndAdjustments',
+          'stockInHand','stockOutDays'], column.name);
+      });
+    }
+
     return {
       fullSupply: fullSupplyVisibleColumns,
       nonFullSupply: {
         fixed: _.filter(fullSupplyVisibleColumns.fixed, function (column) {
-          return _.contains(['product', 'productCode'], column.name);
+          return _.contains(['skipped', 'product', 'productCode'], column.name);
         }),
         scrollable: _.filter(fullSupplyVisibleColumns.scrollable, function (column) {
           return _.contains(RegularRnrLineItem.visibleForNonFullSupplyColumns, column.name);
