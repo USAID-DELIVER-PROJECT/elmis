@@ -103,7 +103,7 @@ services.factory('requisitionService', function (messageService) {
     });
 
     if(reportOnlyPeriod){
-      fullSupplyVisibleColumns = _.filter(fullSupplyVisibleColumns, function(column){
+      fullSupplyVisibleColumns.scrollable = _.filter(fullSupplyVisibleColumns.scrollable, function(column){
         return _.contains(['skipped', 'product', 'productCode', 'dispensingUnit',
           'beginningBalance', 'quantityReceived', 'quantityDispensed', 'lossesAndAdjustments',
           'stockInHand','stockOutDays'], column.name);
