@@ -100,6 +100,11 @@
                        maxlength="250"/>
               </span>
 
+              <span ng-switch-when="mos">
+                <span ng-bind='rnrLineItem.getMos() | number: 1' id="{{getId(column.name, $parent)}}"
+                      class="cell-text"></span>
+              </span>
+
               <span ng-switch-when="price">
                 <span ng-bind='rnrLineItem[column.name] | currency:currency' id="{{getId(column.name, $parent)}}"
                       class="cell-text"></span>

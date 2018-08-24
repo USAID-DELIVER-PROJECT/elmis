@@ -216,6 +216,13 @@ var RegularRnrLineItem = base2.Base.extend({
     }
   },
 
+  getMos: function(){
+    if(this.amc !== 0 && !isUndefined(this.amc)){
+      return this.stockInHand / this.amc;
+    }
+    return null;
+  },
+
   getCalcOption:function(columnName){
       var colOption = null;
       angular.forEach(this.programRnrColumnList, function(item){
