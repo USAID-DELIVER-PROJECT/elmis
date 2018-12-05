@@ -14,7 +14,6 @@ VALUES ('mos', 25, 'MOS', 'R', false, 'formula.column.mos', 'indicator.column.mo
 
 INSERT INTO program_rnr_columns
     (programid, mastercolumnid, label, visible, position, source, formulavalidationrequired, createdby, createddate)
-values
 select
-    distinct(programid), (select id from master_rnr_columns where name = 'mos'), 'MOS', true, 26, 'R', false, 1, now()
+    distinct(programid), (select max(id) from master_rnr_columns where name = 'mos'), 'MOS', true, 26, 'R', false, 1, now()
     from program_rnr_columns;

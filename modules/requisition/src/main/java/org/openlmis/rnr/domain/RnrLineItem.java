@@ -134,6 +134,12 @@ public class RnrLineItem extends LineItem {
     }
   }
 
+  public String getMos(){
+    if(amc != null && amc != 0 && stockInHand != null)
+      return new BigDecimal(stockInHand).divide(new BigDecimal(amc), 1,  BigDecimal.ROUND_HALF_UP).toString();
+    return null;
+  }
+
   public void setBeginningBalanceWhenPreviousStockInHandAvailable(RnrLineItem previousLineItem,
                                                                   Boolean beginningBalanceVisible) {
     if (previousLineItem == null || (!beginningBalanceVisible && previousLineItem.getSkipped())) {

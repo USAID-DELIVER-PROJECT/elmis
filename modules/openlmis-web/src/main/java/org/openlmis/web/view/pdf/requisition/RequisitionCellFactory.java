@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.openlmis.rnr.domain.Column;
 import org.openlmis.rnr.domain.ColumnType;
 import org.openlmis.rnr.domain.LineItem;
+import org.openlmis.rnr.domain.RnrLineItem;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -73,7 +74,9 @@ public class RequisitionCellFactory {
     List<PdfPCell> result = new ArrayList<>();
     for (Column column : visibleColumns) {
       ColumnType columnType = column.getColumnType();
-      String value = lineItem.getValue(column.getName());
+      String value = (column.getName().equalsIgnoreCase("mos"))?
+          ((RnrLineItem)lineItem).getMos():
+          lineItem.getValue(column.getName());
       createCell(result, columnType, value, currency);
     }
     return result;
@@ -94,7 +97,7 @@ public class RequisitionCellFactory {
         result.add(pdfPCell);
         break;
       case NUMERIC:
-        if(!columnValue.isEmpty() && NumberUtils.isNumber(columnValue))
+        if(columnValue != null && !columnValue.isEmpty() && NumberUtils.isNumber(columnValue))
           result.add(numberCell(formatter.format(Double.parseDouble(columnValue))));
         else
           result.add(numberCell(columnValue));
