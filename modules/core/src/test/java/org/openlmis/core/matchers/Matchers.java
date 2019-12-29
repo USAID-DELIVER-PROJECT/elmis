@@ -10,6 +10,8 @@
 
 package org.openlmis.core.matchers;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.experimental.categories.Category;
 import org.mockito.ArgumentMatcher;
@@ -22,38 +24,46 @@ import org.openlmis.db.categories.UnitTests;
 @Category(UnitTests.class)
 public class Matchers {
 
-  public static Matcher<Program> programMatcher(final Long id) {
+  public static ArgumentMatcher<Program> programMatcher(final Long id) {
     return new ArgumentMatcher<Program>() {
       @Override
-      public boolean matches(Object argument) {
+      public boolean matches(Program argument) {
         Program program = (Program) argument;
         return program.getId().equals(id);
       }
     };
   }
 
-  public static Matcher<ProcessingPeriod> periodMatcher(final Long id) {
+  public static ArgumentMatcher<ProcessingPeriod> periodMatcher(final Long id) {
     return new ArgumentMatcher<ProcessingPeriod>() {
       @Override
-      public boolean matches(Object argument) {
+      public boolean matches(ProcessingPeriod argument) {
         ProcessingPeriod period = (ProcessingPeriod) argument;
         return period.getId().equals(id);
       }
+
     };
   }
 
-  public static Matcher<Facility> facilityMatcher(final Long id) {
+  public static ArgumentMatcher<Facility> facilityMatcher(final Long id) {
     return new ArgumentMatcher<Facility>() {
+
       @Override
-      public boolean matches(Object argument) {
+      public boolean matches(Facility argument) {
         Facility facility = (Facility) argument;
         return facility.getId().equals(id);
       }
+
     };
   }
 
-  public static ArgumentMatcher<DataException> dataExceptionMatcher(final String code, final String... params) {
-    return new ArgumentMatcher<DataException>() {
+  public static Matcher<?> dataExceptionMatcher(final String code, final String... params) {
+    return new BaseMatcher<DataException>() {
+      @Override
+      public void describeTo(Description description) {
+
+      }
+
       @Override
       public boolean matches(Object argument) {
         DataException dataException = (DataException) argument;

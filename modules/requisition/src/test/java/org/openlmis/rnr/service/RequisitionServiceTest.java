@@ -60,6 +60,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.builder.FacilityBuilder.defaultFacility;
 import static org.openlmis.core.builder.ProcessingPeriodBuilder.defaultProcessingPeriod;
 import static org.openlmis.core.builder.ProcessingPeriodBuilder.numberOfMonths;
 import static org.openlmis.core.builder.ProductBuilder.defaultProduct;
@@ -145,6 +146,8 @@ public class RequisitionServiceTest {
 
   @Before
   public void setup() {
+    Facility mockFacility = make(a(defaultFacility));
+    when(facilityService.getById(any())).thenReturn(mockFacility);
     requisitionService.setRequisitionSearchStrategyFactory(requisitionSearchStrategyFactory);
     submittedRnr = make(a(RequisitionBuilder.defaultRequisition, with(status, SUBMITTED), with(modifiedBy, USER_ID)));
     initiatedRnr = make(a(RequisitionBuilder.defaultRequisition, with(status, INITIATED), with(modifiedBy, USER_ID)));
@@ -208,7 +211,7 @@ public class RequisitionServiceTest {
       PROGRAM.getId());
     verify(processingScheduleService).getPeriodById(PERIOD.getId());
     verify(requisitionRepository).insert(any(Rnr.class));
-    verify(requisitionRepository).logStatusChange(any(Rnr.class), anyString());
+    verify(requisitionRepository).logStatusChange(any(), any());
     verify(regimenColumnService).getRegimenTemplateByProgramId(PROGRAM.getId());
 
     assertThat(rnr, is(spyRequisition));

@@ -152,7 +152,7 @@ public class UploadControllerTest {
   private ArgumentMatcher<ModelClass> modelMatcher(final Class clazz) {
     return new ArgumentMatcher<ModelClass>() {
       @Override
-      public boolean matches(Object item) {
+      public boolean matches(ModelClass item) {
         ModelClass modelClass = (ModelClass) item;
         return modelClass.getClazz().equals(clazz);
       }

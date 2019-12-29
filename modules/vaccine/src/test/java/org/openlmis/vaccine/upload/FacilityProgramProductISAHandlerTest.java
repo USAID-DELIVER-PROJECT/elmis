@@ -18,13 +18,10 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.openlmis.core.builder.FacilityBuilder;
 import org.openlmis.core.builder.ProductBuilder;
-import org.openlmis.core.builder.ProgramBuilder;
-import org.openlmis.core.builder.ProgramProductBuilder;
 import org.openlmis.core.domain.*;
-import org.openlmis.demographics.domain.EstimateCategory;
 import org.openlmis.demographics.repository.EstimateCategoryRepository;
 import org.openlmis.demographics.service.PopulationService;
 import org.openlmis.demographics.test.FacilityTreeTest;
@@ -32,15 +29,12 @@ import org.openlmis.vaccine.dto.FacilityProgramProductISADTO;
 import org.openlmis.core.repository.*;
 import org.openlmis.db.categories.UnitTests;
 
-import java.util.Arrays;
-import java.util.Collections;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -135,7 +129,7 @@ public class FacilityProgramProductISAHandlerTest extends FacilityTreeTest
         when(facilityRepository.getByCode(any(String.class))).thenReturn(facility);
         when(programProductRepository.getByProgramAndProductCode(any(ProgramProduct.class))).thenReturn(programProduct);
         when(programRepository.getByCode(any(String.class))).thenReturn(program);
-        when(estimateCategoryRepository.getByName(any(String.class))).thenReturn(category);
+        when(estimateCategoryRepository.getByName(any())).thenReturn(category);
         when(supervisoryNodeRepository.getFor(any(Facility.class), any(Program.class))).thenReturn(null);
 
         ISA isa = new ISA();
@@ -166,7 +160,7 @@ public class FacilityProgramProductISAHandlerTest extends FacilityTreeTest
         when(facilityRepository.getByCode(any(String.class))).thenReturn(sdp1);
         when(programProductRepository.getByProgramAndProductCode(any(ProgramProduct.class))).thenReturn(programProduct);
         when(programRepository.getByCode(any(String.class))).thenReturn(program);
-        when(estimateCategoryRepository.getByName(any(String.class))).thenReturn(category);
+        when(estimateCategoryRepository.getByName(any())).thenReturn(category);
 
         ISA isa = new ISA();
         isa.setWhoRatio(whoRatio);

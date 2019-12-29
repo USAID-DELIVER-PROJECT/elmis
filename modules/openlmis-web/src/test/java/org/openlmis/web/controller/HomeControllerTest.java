@@ -23,6 +23,8 @@ import org.openlmis.core.service.ConfigurationSettingService;
 import org.openlmis.core.service.MessageService;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.core.web.OpenLmisResponse;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -40,7 +42,8 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @Category(UnitTests.class)
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({RequestContextUtils.class})
 public class HomeControllerTest {
 
   @Mock

@@ -10,6 +10,8 @@
 
 package org.openlmis.core.repository;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -256,12 +258,13 @@ public class ProgramSupportedRepositoryTest {
 
   }
 
-  private static Matcher<ProgramSupported> programSupportedMatcher(final Long facilityId, final Boolean active,
+  private static ArgumentMatcher<ProgramSupported> programSupportedMatcher(final Long facilityId, final Boolean active,
                                                                    final Date startDate, final Long modifiedBy,
                                                                    final Long createdBy) {
     return new ArgumentMatcher<ProgramSupported>() {
+
       @Override
-      public boolean matches(Object argument) {
+      public boolean matches(ProgramSupported argument) {
         ProgramSupported ps = (ProgramSupported) argument;
         return ps.getFacilityId() == facilityId && ps.getModifiedBy() == modifiedBy &&
           ps.getStartDate().equals(startDate) && ps.getActive().equals(active) && ps.getCreatedBy() == createdBy;

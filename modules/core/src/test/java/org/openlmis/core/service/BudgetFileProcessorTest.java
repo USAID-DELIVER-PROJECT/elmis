@@ -166,7 +166,7 @@ public class BudgetFileProcessorTest {
     verify(transformer).transform(lineItemDTO, dateFormat, 1);
     verify(budgetLineItem).setBudgetFileId(budgetFileInfo.getId());
     verify(budgetLineItemService).save(budgetLineItem);
-    verify(BudgetLineItemDTO.populate(csvRow, ediFileTemplate.getColumns()));
+    //verify(BudgetLineItemDTO.populate(csvRow, ediFileTemplate.getColumns()));
   }
 
   @Test
@@ -195,7 +195,7 @@ public class BudgetFileProcessorTest {
     budgetFileProcessor.process(message);
 
     verify(transformer).transform(lineItemDTO, null, 1);
-    verify(BudgetLineItemDTO.populate(csvRow, asList(defaultEDIColumn)));
+    //verify(BudgetLineItemDTO.populate(csvRow, asList(defaultEDIColumn)));
   }
 
   @Test
@@ -211,7 +211,7 @@ public class BudgetFileProcessorTest {
 
     verify(lineItemDTO).checkMandatoryFields();
     verify(transformer, never()).transform(lineItemDTO, null, 1);
-    verify(BudgetLineItemDTO.populate(csvRow, ediFileTemplate.getColumns()));
+    //verify(BudgetLineItemDTO.populate(csvRow, ediFileTemplate.getColumns()));
   }
 
   @Test
@@ -230,7 +230,7 @@ public class BudgetFileProcessorTest {
 
     verify(lineItemDTO).checkMandatoryFields();
     verify(transformer, never()).transform(lineItemDTO, null, 1);
-    verify(BudgetLineItemDTO.populate(csvRow, ediFileTemplate.getColumns()));
+    //verify(BudgetLineItemDTO.populate(csvRow, ediFileTemplate.getColumns()));
   }
 
   @Test
@@ -251,7 +251,7 @@ public class BudgetFileProcessorTest {
 
     verify(lineItemDTO).checkMandatoryFields();
     verify(transformer, never()).transform(lineItemDTO, null, 1);
-    verify(BudgetLineItemDTO.populate(csvRow, ediFileTemplate.getColumns()));
+    //verify(BudgetLineItemDTO.populate(csvRow, ediFileTemplate.getColumns()));
   }
 
   @Test

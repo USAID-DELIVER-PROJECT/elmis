@@ -18,14 +18,17 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openlmis.core.exception.DataException;
+import org.openlmis.core.service.MessageService;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.pod.domain.OrderPOD;
 import org.openlmis.restapi.response.RestResponse;
 import org.openlmis.restapi.service.RestPODService;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
@@ -41,14 +44,13 @@ import static org.springframework.http.HttpStatus.OK;
 @Category(UnitTests.class)
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
-@PrepareForTest(RestResponse.class)
+@PrepareForTest({RestResponse.class, Principal.class})
+@PowerMockIgnore("javax.security.*")
 public class RestPODControllerTest {
 
   @Mock
   RestPODService restPODService;
 
-  @Mock
-  Principal principal;
 
   @InjectMocks
   private RestPODController controller;
@@ -56,10 +58,12 @@ public class RestPODControllerTest {
   @Before
   public void setUp() throws Exception {
     mockStatic(RestResponse.class);
+
   }
 
   @Test
   public void shouldSavePOD() throws Exception {
+    Principal principal = mock(Principal.class);
     OrderPOD orderPod = new OrderPOD();
     when(principal.getName()).thenReturn("2");
     doNothing().when(restPODService).updatePOD(orderPod, 2L);
@@ -75,6 +79,7 @@ public class RestPODControllerTest {
 
   @Test
   public void shouldThrowErrorIfSaveUnSuccessFul() throws Exception {
+    Principal principal = mock(Principal.class);
     OrderPOD orderPod = new OrderPOD();
 
     when(principal.getName()).thenReturn("2");

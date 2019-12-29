@@ -10,7 +10,6 @@
 
 package org.openlmis.upload.processor;
 
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -79,10 +78,10 @@ public class ParseIntegerFromDoubleTest {
     parseIntegerFromDouble.execute("999,&999.99999999999999", context);
   }
 
-  private Matcher<Object> parsedValueMatcher(final Integer expected) {
-    return new ArgumentMatcher<Object>() {
+  private ArgumentMatcher<Integer> parsedValueMatcher(final Integer expected) {
+    return new ArgumentMatcher<Integer>() {
       @Override
-      public boolean matches(Object argument) {
+      public boolean matches(Integer argument) {
         Integer result = (Integer) argument;
         return result.equals(expected);
       }

@@ -80,7 +80,6 @@ public class PdfPageEventHandlerTest {
     verify(mockContentByte).beginText();
     verify(mockContentByte).showText("20/03/2013");
     verify(mockContentByte).showText("Page 3 of ");
-    verify(mockContentByte).addTemplate(any(PdfTemplate.class), anyFloat(), anyFloat());
     verify(mockContentByte).endText();
     verify(mockContentByte).restoreState();
   }

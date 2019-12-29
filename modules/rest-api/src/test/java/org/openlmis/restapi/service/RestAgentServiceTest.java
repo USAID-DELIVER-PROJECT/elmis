@@ -27,9 +27,11 @@ import org.openlmis.core.service.RequisitionGroupMemberService;
 import org.openlmis.core.service.UserService;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.restapi.domain.Agent;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import java.security.Principal;
 import java.util.Date;
@@ -46,7 +48,8 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @Category(UnitTests.class)
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
-@PrepareForTest(RestAgentService.class)
+@PrepareForTest({RestAgentService.class, Principal.class})
+@PowerMockIgnore("javax.security.*")
 public class RestAgentServiceTest {
 
   @Mock

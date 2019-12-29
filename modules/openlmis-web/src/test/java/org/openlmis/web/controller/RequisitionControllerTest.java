@@ -101,10 +101,10 @@ public class RequisitionControllerTest {
   @InjectMocks
   private RequisitionController controller;
 
-  public static Matcher<RequisitionSearchCriteria> criteriaMatcher(final Long facilityId, final Long programId, final Long periodId) {
+  public static ArgumentMatcher<RequisitionSearchCriteria> criteriaMatcher(final Long facilityId, final Long programId, final Long periodId) {
     return new ArgumentMatcher<RequisitionSearchCriteria>() {
       @Override
-      public boolean matches(Object argument) {
+      public boolean matches(RequisitionSearchCriteria argument) {
         RequisitionSearchCriteria searchCriteria = (RequisitionSearchCriteria) argument;
         return searchCriteria.getFacilityId().equals(facilityId) && searchCriteria.getProgramId().equals(programId) && searchCriteria.getPeriodId().equals(
           periodId);

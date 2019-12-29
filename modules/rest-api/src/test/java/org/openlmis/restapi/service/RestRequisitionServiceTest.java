@@ -55,6 +55,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.openlmis.core.builder.FacilityBuilder.*;
+import static org.openlmis.core.builder.ProgramBuilder.defaultProgram;
 import static org.openlmis.core.builder.ProgramSupportedBuilder.PROGRAM_ID;
 import static org.openlmis.core.builder.ProgramSupportedBuilder.defaultProgramSupported;
 import static org.openlmis.restapi.builder.ReportBuilder.*;
@@ -67,7 +68,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @Category(UnitTests.class)
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
-@PrepareForTest({RestRequisitionService.class, ReplenishmentDTO.class})
+@PrepareForTest({RestRequisitionService.class, ReplenishmentDTO.class, Base64.class})
 public class RestRequisitionServiceTest {
 
   @Rule
@@ -113,6 +114,7 @@ public class RestRequisitionServiceTest {
     String encodedCredentials = "1:correct token";
     requisition = new Rnr();
     requisition.setId(2L);
+    requisition.setProgram(make(a(defaultProgram)));
     user = new User();
     user.setId(1L);
     whenNew(User.class).withNoArguments().thenReturn(user);
@@ -184,7 +186,7 @@ public class RestRequisitionServiceTest {
     when(productService.getByCode(validProductCode)).thenReturn(new Product());
     Rnr reportedRequisition = mock(Rnr.class);
     whenNew(Rnr.class).withArguments(requisition.getId()).thenReturn(reportedRequisition);
-    when(rnrTemplateService.fetchProgramTemplateForRequisition(any(Long.class))).thenReturn(new ProgramRnrTemplate(new ArrayList<RnrColumn>()));
+    when(rnrTemplateService.fetchProgramTemplateForRequisition(any())).thenReturn(new ProgramRnrTemplate(new ArrayList<RnrColumn>()));
 
     when(requisitionService.submit(requisition)).thenReturn(requisition);
   }
@@ -278,10 +280,11 @@ public class RestRequisitionServiceTest {
     when(programService.getValidatedProgramByCode(DEFAULT_PROGRAM_CODE)).thenReturn(new Program(PROGRAM_ID));
 
     expectedException.expect(DataException.class);
-    doThrow(new DataException("rnr.error")).when(restRequisitionCalculator).validateCustomPeriod(any(Facility.class), any(Program.class), any(ProcessingPeriod.class), any(Long.class));
+    doThrow(new DataException("rnr.error")).when(restRequisitionCalculator).validateCustomPeriod(any(), any(), any(), any());
 
     ArrayList<ProcessingPeriod> array = new ArrayList<>();
-    when(requisitionService.getRequisitionsFor(any(RequisitionSearchCriteria.class), any(array.getClass()))).thenReturn(asList(new Rnr()));
+    when(requisitionService.getRequisitionsFor(any(RequisitionSearchCriteria.class), any())).thenReturn(asList(requisition));
+    when(requisitionService.getFullRequisitionById( any() )).thenReturn(requisition);
 
     service.submitSdpReport(report, 1L);
     verify(requisitionService, never()).initiate(any(Facility.class), any(Program.class), any(Long.class), any(Boolean.class), any(ProcessingPeriod.class), any(String.class));
@@ -290,6 +293,7 @@ public class RestRequisitionServiceTest {
 
   @Test
   public void shouldThrowErrorIfPeriodValidationFails() throws Exception {
+    setUpRequisitionReportBeforeSubmit();
     expectedException.expect(DataException.class);
     expectedException.expectMessage("rnr.error");
 
@@ -307,9 +311,9 @@ public class RestRequisitionServiceTest {
     expectedException.expect(DataException.class);
     expectedException.expectMessage("rnr.error");
     report.setPeriodId(2L);
-    when(programService.getValidatedProgramByCode(anyString())).thenReturn(new Program());
-    when(facilityService.getOperativeFacilityByCode(anyString())).thenReturn(new Facility());
-    doThrow(new DataException("rnr.error")).when(restRequisitionCalculator).validateCustomPeriod(any(Facility.class), any(Program.class), any(ProcessingPeriod.class), any(Long.class));
+    when(programService.getValidatedProgramByCode(any())).thenReturn(new Program());
+    when(facilityService.getOperativeFacilityByCode(any())).thenReturn(new Facility());
+    doThrow(new DataException("rnr.error")).when(restRequisitionCalculator).validateCustomPeriod(any(), any(), any(), any());
 
     service.submitSdpReport(report, 1l);
 
@@ -323,7 +327,7 @@ public class RestRequisitionServiceTest {
     expectedException.expect(DataException.class);
     expectedException.expectMessage("rnr.error");
 
-    doThrow(new DataException("rnr.error")).when(restRequisitionCalculator).validateProducts(any(List.class), any(Rnr.class));
+    doThrow(new DataException("rnr.error")).when(restRequisitionCalculator).validateProducts(any(), any());
 
     service.submitReport(report, 1L);
 

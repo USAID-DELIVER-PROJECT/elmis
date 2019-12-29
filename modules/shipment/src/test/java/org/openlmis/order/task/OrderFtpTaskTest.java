@@ -15,6 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openlmis.core.domain.Facility;
@@ -29,10 +30,10 @@ import org.openlmis.order.domain.Order;
 import org.openlmis.order.dto.OrderFileTemplateDTO;
 import org.openlmis.order.helper.OrderCsvHelper;
 import org.openlmis.order.service.OrderService;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -42,16 +43,14 @@ import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 import static org.openlmis.order.domain.OrderStatus.TRANSFER_FAILED;
 import static org.openlmis.order.task.OrderFtpTask.FTP_CREDENTIAL_MISSING_COMMENT;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @Category(UnitTests.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OrderFtpTask.class, ConfigurationSettingService.class})
+@PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
+@PrepareForTest({OrderFtpTask.class, ConfigurationSettingService.class, FileWriter.class, File.class})
 public class OrderFtpTaskTest {
 
-  @Rule
-  public PowerMockRule rule = new PowerMockRule();
 
   @Mock
   ConfigurationSettingService configurationSettingService;
@@ -109,10 +108,11 @@ public class OrderFtpTaskTest {
     orderFileTemplateDTO.setOrderConfiguration(orderConfiguration);
     orderConfiguration.setFilePrefix("Order");
     when(orderService.getOrderFileTemplateDTO()).thenReturn(orderFileTemplateDTO);
-    File file = mock(File.class);
+    when(facilityFtpDetails.getLocalFolderPath()).thenReturn(localFileDirectory);
+    File file = PowerMockito.mock(File.class);
     whenNew(File.class).withArguments(localFileDirectory).thenReturn(file);
     whenNew(File.class).withArguments(localFileDirectory + System.getProperty("file.separator") + "Order1.csv").thenReturn(file);
-    FileWriter fileWriter = mock(FileWriter.class);
+    FileWriter fileWriter = PowerMockito.mock(FileWriter.class);
     whenNew(FileWriter.class).withArguments(file).thenReturn(fileWriter);
 
     orderFtpTask.processOrder(orderList);

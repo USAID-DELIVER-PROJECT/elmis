@@ -87,10 +87,10 @@ public class UserServiceTest {
 
   }
 
-  private Matcher<SimpleMailMessage> emailMessageMatcher(final SimpleMailMessage that) {
+  private ArgumentMatcher<SimpleMailMessage> emailMessageMatcher(final SimpleMailMessage that) {
     return new ArgumentMatcher<SimpleMailMessage>() {
       @Override
-      public boolean matches(Object argument) {
+      public boolean matches(SimpleMailMessage argument) {
         SimpleMailMessage emailMessage = (SimpleMailMessage) argument;
         return emailMessage.equals(that);
       }

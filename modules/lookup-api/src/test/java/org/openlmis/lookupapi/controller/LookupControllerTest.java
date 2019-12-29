@@ -8,12 +8,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.openlmis.core.domain.FacilityTypeApprovedProduct;
 import org.openlmis.core.domain.ProgramProduct;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.lookupapi.service.LookupService;
 import org.openlmis.report.model.dto.*;
 import org.openlmis.restapi.response.RestResponse;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -31,10 +33,9 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @Category(UnitTests.class)
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
-@PrepareForTest(RestResponse.class)
+@PrepareForTest({RestResponse.class})
 public class LookupControllerTest {
 
-  Principal principal;
   RowBounds rowBounds = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
   @Mock
   private LookupService lookupService;
@@ -44,8 +45,6 @@ public class LookupControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    principal = mock(Principal.class);
-    when(principal.getName()).thenReturn("1");
     mockStatic(RestResponse.class);
   }
 

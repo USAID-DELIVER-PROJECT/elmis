@@ -10,14 +10,20 @@
 
 package org.openlmis.upload.matchers;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.mockito.ArgumentMatcher;
 import org.openlmis.upload.exception.UploadException;
 
 public class ExceptionMatcher {
 
   public static Matcher<UploadException> uploadExceptionMatcher(final String code, final String... params) {
-    return new ArgumentMatcher<UploadException>() {
+    return new BaseMatcher<UploadException>() {
+      @Override
+      public void describeTo(Description description) {
+
+      }
+
       @Override
       public boolean matches(Object argument) {
         UploadException uploadException = (UploadException) argument;

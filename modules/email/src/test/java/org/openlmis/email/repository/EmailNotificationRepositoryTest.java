@@ -12,6 +12,8 @@ import org.openlmis.email.domain.EmailMessage;
 import org.openlmis.email.repository.mapper.EmailNotificationMapper;
 import org.springframework.mail.SimpleMailMessage;
 
+import java.util.Random;
+
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -61,6 +63,7 @@ public class EmailNotificationRepositoryTest {
 
   private EmailMessage generateEmailMessage() {
     EmailMessage message = new EmailMessage();
+    message.setId(new Random().nextLong());
     message.setTo("test@dev.org");
     message.setText("The Test Message");
     message.setSubject("test");
@@ -69,6 +72,7 @@ public class EmailNotificationRepositoryTest {
 
   private EmailAttachment generateEmailAttachment() {
     EmailAttachment attachment = new EmailAttachment();
+    attachment.setId(new Random().nextLong());
     attachment.setAttachmentName("test file");
     attachment.setAttachmentPath("/path");
     return attachment;

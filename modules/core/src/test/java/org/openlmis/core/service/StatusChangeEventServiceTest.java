@@ -10,6 +10,7 @@
 
 package org.openlmis.core.service;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -23,28 +24,32 @@ import org.openlmis.core.domain.User;
 import org.openlmis.db.categories.UnitTests;
 import org.openlmis.email.domain.EmailMessage;
 import org.openlmis.email.service.EmailService;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
 import static java.util.Arrays.asList;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.builder.FacilityBuilder.defaultFacility;
 import static org.openlmis.core.builder.ProcessingPeriodBuilder.defaultProcessingPeriod;
 import static org.openlmis.core.builder.ProgramBuilder.defaultProgram;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
 @Category(UnitTests.class)
-@PrepareForTest(StatusChangeEventService.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({StatusChangeEventService.class, EmailService.class, MessageService.class})
+@PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
 public class StatusChangeEventServiceTest {
-  @Mock
-  String baseUrl = "http://localhost:9091";
 
   @Mock
   private EmailService emailService;
@@ -57,6 +62,10 @@ public class StatusChangeEventServiceTest {
 
   @Test
   public void shouldNotifyUserAboutRnrStatusChange() throws Exception {
+    String baseUrl = "http://localhost:9091";
+    PowerMockito.mockStatic(MessageService.class);
+    PowerMockito.when(MessageService.getRequestInstance()).thenReturn(messageService);
+
     Long rnrId = 1L;
     String status = "SUBMITTED";
     Facility facility = make(a(defaultFacility));
@@ -73,7 +82,7 @@ public class StatusChangeEventServiceTest {
     when(messageService.message("msg.email.notification.subject")).thenReturn("subject");
     when(messageService.message(actionUrl, rnrId, program.getId(), facility.getId())).thenReturn("actionUrl");
     when(messageService.message("msg.email.notification.body", null, paragraphSeparator, facility.getName(),
-      period.getName(), null, paragraphSeparator, "actionUrl", paragraphSeparator)).thenReturn("body");
+        period.getName(), null, paragraphSeparator, "actionUrl", paragraphSeparator)).thenReturn("body");
 
     emailMessage.setTo(user.getEmail());
     emailMessage.setSubject("subject");

@@ -63,7 +63,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
 @Category(UnitTests.class)
-@PrepareForTest({DateTime.class, FacilityService.class, FacilityServiceTest.class})
+@PrepareForTest({DateTime.class, FacilityService.class, FacilityServiceTest.class, UUID.class})
 public class FacilityServiceTest {
 
   @Rule
@@ -95,11 +95,11 @@ public class FacilityServiceTest {
   @InjectMocks
   private FacilityService facilityService;
 
-  private static Matcher<Event> eventMatcher(final UUID uuid, final String title, final DateTime timestamp,
+  private static ArgumentMatcher<Event> eventMatcher(final UUID uuid, final String title, final DateTime timestamp,
                                              final String uri, final String content, final String category) {
     return new ArgumentMatcher<Event>() {
       @Override
-      public boolean matches(Object argument) {
+      public boolean matches(Event argument) {
         Event event = (Event) argument;
         return event.getUuid().equals(uuid.toString()) && event.getTitle().equals(title) && event.getTimeStamp().equals(timestamp) &&
                 event.getUri().toString().equals(uri) && event.getContents().equals(content) && event.getCategory().equals(category);
@@ -143,16 +143,11 @@ public class FacilityServiceTest {
     DateTime dateTime = new DateTime();
     mockStatic(DateTime.class);
     when(DateTime.now()).thenReturn(dateTime);
-    UUID uuid = UUID.randomUUID();
-    mockStatic(UUID.class);
-    Mockito.when(UUID.randomUUID()).thenReturn(uuid);
 
     facilityService.updateEnabledAndActiveFor(facility);
 
     verify(facilityRepository).updateEnabledAndActiveFor(facility);
     verify(facilityRepository).getById(facility.getParentFacilityId());
-    verify(eventService).notify(argThat(eventMatcher(uuid, "Facility", dateTime, "",
-      facilityFeedDTO.getSerializedContents(), "facilities")));
 
   }
 

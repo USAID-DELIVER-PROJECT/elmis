@@ -25,6 +25,7 @@ import org.openlmis.db.categories.UnitTests;
 import org.openlmis.restapi.response.RestResponse;
 import org.openlmis.rnr.domain.DailyStockStatus;
 import org.openlmis.rnr.service.DailyStockStatusSubmissionService;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -47,6 +48,7 @@ import static org.powermock.api.mockito.PowerMockito.doNothing;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(BlockJUnit4ClassRunner.class)
 @PrepareForTest(RestResponse.class)
+@PowerMockIgnore("javax.security.*")
 public class DailyStockStatusControllerTest {
 
   @Mock
