@@ -12,12 +12,16 @@ var RegularRnrLineItem = base2.Base.extend({
   numberOfMonths: undefined,
   programRnrColumnList: undefined,
   rnrStatus: undefined,
+  daysInPeriod: undefined,
 
-  constructor: function (lineItem, numberOfMonths, programRnrColumnList, rnrStatus) {
+  constructor: function (lineItem, numberOfMonths, programRnrColumnList, rnrStatus, period) {
     $.extend(true, this, lineItem);
     this.numberOfMonths = numberOfMonths;
     this.rnrStatus = rnrStatus;
     this.programRnrColumnList = programRnrColumnList;
+    if(period !== undefined) {
+      this.daysInPeriod = Math.round((period.endDate - period.startDate) / 86400000) ;
+    }
     this.init();
     if (this.previousNormalizedConsumptions === undefined || this.previousNormalizedConsumptions === null)
       this.previousNormalizedConsumptions = [];
@@ -360,6 +364,10 @@ var RegularRnrLineItem = base2.Base.extend({
     return false;
   },
 
+  validateStockoutDays : function() {
+    return (!_.isNumber(this.stockOutDays) || this.daysInPeriod >= this.stockOutDays);
+  },
+
   validateRequiredFieldsForFullSupply: function () {
     var valid = true;
     var rnrLineItem = this;
@@ -403,7 +411,7 @@ var RegularRnrLineItem = base2.Base.extend({
   valid: function () {
     if (this.skipped) return true;
     if (this.rnrStatus == 'IN_APPROVAL' || this.rnrStatus == 'AUTHORIZED') return this.validateForApproval();
-    if (this.fullSupply) return this.validateRequiredFieldsForFullSupply() && this.formulaValid();
+    if (this.fullSupply) return this.validateRequiredFieldsForFullSupply() && this.validateStockoutDays() && this.formulaValid();
     return this.validateRequiredFieldsForNonFullSupply();
   },
 

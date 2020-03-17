@@ -275,7 +275,7 @@ var Rnr = function (rnr, programRnrColumns, numberOfMonths, operationalStatuses)
     function prepareLineItems(lineItems) {
       var regularLineItems = [];
       $(lineItems).each(function (i, lineItem) {
-        var regularLineItem = new RegularRnrLineItem(lineItem, thisRnr.numberOfMonths, programRnrColumns, thisRnr.status);
+        var regularLineItem = new RegularRnrLineItem(lineItem, thisRnr.numberOfMonths, programRnrColumns, thisRnr.status, rnr.period);
         regularLineItems.push(regularLineItem);
       });
       return regularLineItems;

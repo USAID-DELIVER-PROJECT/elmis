@@ -86,7 +86,7 @@ function CreateNonFullSupplyController($scope, messageService) {
 
   $scope.addNonFullSupplyProductsByCategory = function () {
     prepareNFSLineItemFields();
-    var rnrLineItem = new RegularRnrLineItem($scope.newNonFullSupply, $scope.rnr.period.numberOfMonths, $scope.programRnrColumnList, $scope.rnr.status);
+    var rnrLineItem = new RegularRnrLineItem($scope.newNonFullSupply, $scope.rnr.period.numberOfMonths, $scope.programRnrColumnList, $scope.rnr.status, rnr.period);
     $scope.addedNonFullSupplyProducts.push(rnrLineItem);
     $scope.updateNonFullSupplyProductsToDisplay();
     $scope.clearNonFullSupplyProductModalData();
