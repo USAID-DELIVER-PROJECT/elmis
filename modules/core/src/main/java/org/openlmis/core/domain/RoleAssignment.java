@@ -64,7 +64,7 @@ public class RoleAssignment extends BaseModel {
   }
 
   private void parseRoleIdsIntoList(String roleIds) {
-    roleIds = roleIds.replace("{", "").replace("}", "");
+    roleIds = roleIds.replace("{", "").replace("}", "").replace("\"","");
     String[] roleIdsArray = roleIds.split(",");
     for (String roleId : roleIdsArray) {
       Long id = Long.parseLong(roleId);
