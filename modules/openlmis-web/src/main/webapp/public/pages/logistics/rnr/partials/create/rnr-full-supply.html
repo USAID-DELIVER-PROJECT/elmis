@@ -260,7 +260,7 @@
           </span>
         </span>
 
-        <span ng-switch-when="stockOutDays" class="position-relative">
+        <span ng-switch-when="stockOutDays" class="position-relative" ng-class="getCellStockoutErrorClass(rnrLineItem)">
             <input ng-required="true"
                    ng-disabled="formDisabled || rnrLineItem.skipped"
                    id="{{getId(column.name, $parent)}}"

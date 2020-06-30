@@ -283,6 +283,10 @@ function CreateRequisitionController($scope, requisitionData, comments , pageSiz
     return !!rnrLineItem.getErrorMessage() ? 'cell-error-highlight' : '';
   };
 
+  $scope.getCellStockoutErrorClass = function(rnrLineItem) {
+    return (!rnrLineItem.validateStockoutDays()) ? 'cell-error-highlight': '';
+  }
+
   $scope.lineItemErrorMessage = function (rnrLineItem) {
     return rnrLineItem.getErrorMessage();
   };
