@@ -484,7 +484,7 @@ public class RnrLineItem extends LineItem {
     if (columnName.equals("cost")) {
       return this.calculateCost().toString();
     }
-    if (columnName.equals("price")) {
+    if (columnName.equals("price") && this.getPrice() != null) {
       return this.getPrice().toString();
     }
 
