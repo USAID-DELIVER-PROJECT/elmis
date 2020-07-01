@@ -443,7 +443,7 @@ public class RequisitionControllerTest {
     when(rnrTemplateService.fetchColumnsForRequisition(programId)).thenReturn(rnrTemplate);
     List<RegimenColumn> regimenTemplate = new ArrayList<>();
     when(regimenColumnService.getRegimenColumnsByProgramId(programId)).thenReturn(regimenTemplate);
-    ModelAndView modelAndView = controller.printRequisition(rnrId);
+    ModelAndView modelAndView = controller.printRequisition(rnrId, false);
 
     assertThat((Rnr) modelAndView.getModel().get(RNR), is(rnr));
     assertThat((ArrayList<LossesAndAdjustmentsType>) modelAndView.getModel().get(LOSSES_AND_ADJUSTMENT_TYPES), is(lossesAndAdjustmentTypes));
@@ -496,7 +496,7 @@ public class RequisitionControllerTest {
     when(requisitionService.getFullRequisitionById(1L)).thenReturn(rnr);
     when(requisitionService.findM(rnr.getPeriod())).thenReturn(numberOfMonths);
 
-    ModelAndView printModel = controller.printRequisition(1L);
+    ModelAndView printModel = controller.printRequisition(1L, false);
 
     assertThat((List<RequisitionStatusChange>) printModel.getModel().get(STATUS_CHANGES), is(statusChanges));
     assertThat((Integer) printModel.getModel().get(NUMBER_OF_MONTHS), is(numberOfMonths));
