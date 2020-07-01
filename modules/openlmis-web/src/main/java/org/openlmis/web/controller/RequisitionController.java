@@ -42,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.openlmis.core.domain.RightName.APPROVE_REQUISITION;
 import static org.openlmis.core.domain.RightName.CONVERT_TO_ORDER;
@@ -263,10 +264,19 @@ public class RequisitionController extends BaseController {
 
   @RequestMapping(value = "/requisitions/{id}/print", method = GET, headers = ACCEPT_PDF)
   @PostAuthorize("@requisitionPermissionService.hasPermission(principal, returnObject.model.get(\"rnr\"), 'VIEW_REQUISITION')")
-  public ModelAndView printRequisition(@PathVariable Long id) {
+  public ModelAndView printRequisition(@PathVariable Long id, @RequestParam(value = "unskipped", defaultValue = "false") Boolean unskipped) {
     ModelAndView modelAndView = new ModelAndView("requisitionPDF");
 
     Rnr requisition = requisitionService.getFullRequisitionById(id);
+
+    if(unskipped) {
+      requisition.setFullSupplyLineItems(requisition
+          .getFullSupplyLineItems()
+          .stream()
+          .filter(li -> !li.getSkipped())
+          .collect(Collectors.toList())
+      );
+    }
 
     modelAndView.addObject(RNR, requisition);
     modelAndView.addObject(LOSSES_AND_ADJUSTMENT_TYPES, requisitionService.getLossesAndAdjustmentsTypes());
@@ -276,6 +286,7 @@ public class RequisitionController extends BaseController {
     modelAndView.addObject(REGIMEN_TEMPLATE, regimenColumnService.getRegimenColumnsForPrintByProgramId(programId));
     modelAndView.addObject(STATUS_CHANGES, requisitionStatusChangeService.getByRnrId(id));
     modelAndView.addObject(NUMBER_OF_MONTHS, requisitionService.findM(requisition.getPeriod()));
+    modelAndView.addObject("UNSKIPPED", unskipped);
 
     return modelAndView;
   }
