@@ -86,7 +86,7 @@ function CreateNonFullSupplyController($scope, messageService) {
 
   $scope.addNonFullSupplyProductsByCategory = function () {
     prepareNFSLineItemFields();
-    var rnrLineItem = new RegularRnrLineItem($scope.newNonFullSupply, $scope.rnr.period.numberOfMonths, $scope.programRnrColumnList, $scope.rnr.status, rnr.period);
+    var rnrLineItem = new RegularRnrLineItem($scope.newNonFullSupply, $scope.rnr.period.numberOfMonths, $scope.programRnrColumnList, $scope.rnr.status, $scope.rnr.period);
     $scope.addedNonFullSupplyProducts.push(rnrLineItem);
     $scope.updateNonFullSupplyProductsToDisplay();
     $scope.clearNonFullSupplyProductModalData();
@@ -117,9 +117,9 @@ function CreateNonFullSupplyController($scope, messageService) {
       $scope.newNonFullSupply.productCode = product.code;
       $scope.newNonFullSupply.productName = product.primaryName;
       $scope.newNonFullSupply.product = (product.primaryName === null ? "" : (product.primaryName + " ")) +
-        (product.form.code === null ? "" : (product.form.code + " ")) +
+        (product.form === null || product.form === undefined || product.form.code === null ? "" : (product.form.code + " ")) +
         (product.strength === null ? "" : (product.strength + " ")) +
-        (product.dosageUnit.code === null ? "" : product.dosageUnit.code);
+        (product.dosageUnit === null || product.dosageUnit === undefined|| product.dosageUnit.code === null ? "" : product.dosageUnit.code);
       $(['dosesPerDispensingUnit', 'packSize', 'roundToZero', 'packRoundingThreshold', 'dispensingUnit', 'fullSupply']).each(function (index, field) {
         $scope.newNonFullSupply[field] = product[field];
       });

@@ -53,39 +53,62 @@ String connectionString = "$dbUrlPrefix$databaseHostName:$databasePort/$dbName"
 connectionString += (dbSslEnabled == 'true') ? "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory" : ""
 
 
-task setupDB << {
-    tasks.dropDB.execute()
-    tasks.createDB.execute()
+task dropDB {
+  doLast {
+    println("Dropping Database..")
+    if (!closeActiveConnections("procpid")) {
+      closeActiveConnections("pid")
+    }
+    executeSql("DROP DATABASE IF EXISTS $dbName")
+  }
+}
+
+task createDB {
+  dependsOn dropDB
+  doLast {
+    println("Creating Database..")
+    executeSql("create database $dbName")
+  }
+}
+
+
+task migrateDB {
+  doLast {
+    println("Migrating database..")
+    ext.flyway_classpath = files(sourceSets.main.resources.srcDirs) + files(configurations.flyway)
+    ant.taskdef(name: 'flywayMigrate', classname: 'com.googlecode.flyway.ant.MigrateTask', classpath: ext.flyway_classpath.asPath)
+    ant.flywayMigrate(driver: dbDriver, url: connectionString, user: dbUser, password: dbPassword, baseDir: '_db/migration')
+  }
+}
+
+task setupDB {
+  dependsOn createDB
+
+  doLast {
+
     executeSql('create schema atomfeed', true)
 
     ext.flyway_classpath = files(configurations.flyway)
     ant.taskdef(name: 'flywayInit', classname: 'com.googlecode.flyway.ant.InitTask', classpath: ext.flyway_classpath.asPath)
     ant.flywayInit(driver: dbDriver, url: connectionString, user: dbUser, password: dbPassword)
-
-    tasks.migrateDB.execute()
+  }
+  finalizedBy migrateDB
 }
 
-task createDB << {
-    println("Creating Database..")
-    executeSql("create database $dbName")
-}
 
-task dropDB << {
-    println("Dropping Database..")
-    if (!closeActiveConnections("procpid")) {
-        closeActiveConnections("pid")
-    }
-    executeSql("DROP DATABASE IF EXISTS $dbName")
-}
 
-task dropSchemas << {
+task dropSchemas {
+  doLast {
     executeSql('drop schema public cascade ', true)
     executeSql('drop schema atomfeed cascade ', true)
+  }
 }
 
-task createSchemas << {
+task createSchemas {
+  doLast {
     executeSql('create schema public', true)
     executeSql('create schema atomfeed', true)
+  }
 }
 
 def boolean closeActiveConnections(String pid) {
@@ -97,16 +120,6 @@ def boolean closeActiveConnections(String pid) {
     }
 }
 
-jar.doFirst {
-    tasks.migrateDB.execute()
-}
-
-task migrateDB() << {
-    println("Migrating database..")
-    ext.flyway_classpath = files(sourceSets.main.resources.srcDirs) + files(configurations.flyway)
-    ant.taskdef(name: 'flywayMigrate', classname: 'com.googlecode.flyway.ant.MigrateTask', classpath: ext.flyway_classpath.asPath)
-    ant.flywayMigrate(driver: dbDriver, url: connectionString, user: dbUser, password: dbPassword, baseDir: '_db/migration')
-}
 
 task testSeed(type: Exec) {
     environment("PGPASSWORD", dbPassword)

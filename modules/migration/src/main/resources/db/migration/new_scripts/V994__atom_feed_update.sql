@@ -44,18 +44,6 @@ CREATE TABLE atomfeed.databasechangelog
 ALTER TABLE atomfeed.databasechangelog
     OWNER TO postgres;
 
-CREATE TABLE atomfeed.databasechangeloglock
-(
-    id          integer NOT NULL,
-    locked      boolean NOT NULL,
-    lockgranted timestamp with time zone,
-    lockedby    character varying(255)
-);
-
-
-ALTER TABLE atomfeed.databasechangeloglock
-    OWNER TO postgres;
-
 DROP TABLE IF EXISTS atomfeed.event_records;
 
 CREATE TABLE atomfeed.event_records
