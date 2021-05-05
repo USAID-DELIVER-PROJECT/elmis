@@ -469,6 +469,6 @@ var RegularRnrLineItem = base2.Base.extend({
   }
 }, {
   visibleForNonFullSupplyColumns: ['dispensingUnit', 'quantityRequested', 'quantityApproved', 'reasonForRequestedQuantity', 'packsToShip', 'price', 'cost', 'remarks'],
-  frozenColumns: ['skipped', 'product', 'productCode']
+  frozenColumns: ['skipped', 'product', 'productCode', 'dispensingUnit']
 });
 
