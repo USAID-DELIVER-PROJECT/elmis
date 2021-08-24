@@ -131,6 +131,11 @@ public class OrderCsvHelper {
   }
 
   private void writeValue(Writer writer, Object columnValue) throws IOException {
+    // avoid null pointer exception.
+    if(columnValue == null) {
+      columnValue = "";
+    }
+
     if (encloseValuesWithQuotes) {
       writer.write("\"" + (columnValue).toString() + "\"");
     } else {
