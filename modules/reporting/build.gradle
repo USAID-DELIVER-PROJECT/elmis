@@ -15,10 +15,15 @@ dependencies {
     compile 'org.springframework:spring-context:4.1.5.RELEASE'
     compile 'org.apache.commons:commons-lang3:3.1'
     compile 'org.springframework:spring-beans:4.1.5.RELEASE'
-    compile ('net.sf.jasperreports:jasperreports:6.3.1'){
-        exclude group: 'org.apache.lucene'
-        exclude group: 'org.olap4j'
-    }
+    compile (files('../../libs/jasperreports-6.3.1.jar'))
+    compile (files('../../libs/jfreechart-1.0.19.jar'))
+
+
+    //    compile ('net.sf.jasperreports:jasperreports:6.4.1'){
+//        exclude group: 'org.olap4j'
+//        exclude group: 'org.apache.lucene'
+//        exclude group: 'org.olap4j'
+//    }
 
     compile project(':modules:core')
 
