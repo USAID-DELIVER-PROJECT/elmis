@@ -223,8 +223,8 @@
 
         <span ng-switch-when="newPatientCount" class="position-relative">
             <input ng-required="true"
-                   ng-disabled="formDisabled || rnrLineItem.skipped"
-                   id="{{getId(column.name, $parent)}}"
+                   ng-disabled="formDinsabled || rnrLineItem.skipped"
+                   id="{{getId(column.ame, $parent)}}"
                    type="text"
                    name="newPatientCount{{rnrLineItem['id']}}"
                    ng-model="rnrLineItem[column.name]"

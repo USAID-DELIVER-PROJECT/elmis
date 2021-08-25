@@ -380,6 +380,10 @@ var RegularRnrLineItem = base2.Base.extend({
     var rnrLineItem = this;
     var visibleColumns = _.where(this.programRnrColumnList, {"visible": true});
 
+    if (_.findWhere(this.programRnrColumnList, {name: 'newPatientCount'}).visible) {
+      valid = rnrLineItem.newPatientCountIsValid();
+    }
+
     $(visibleColumns).each(function (i, column) {
           var nonMandatoryColumns = ["reasonForRequestedQuantity", "remarks", "lossesAndAdjustments", "quantityApproved", "skipped"];
           if (column.source.name != 'USER_INPUT' || _.contains(nonMandatoryColumns, column.name)) return;
@@ -411,6 +415,9 @@ var RegularRnrLineItem = base2.Base.extend({
     return !isUndefined(this.expirationDate) && !regExp.test(this.expirationDate);
   },
 
+  newPatientCountIsValid : function() {
+    return isUndefined(this.newPatientCount) ? false : true;
+  },
   validateForApproval: function () {
     return isUndefined(this.quantityApproved) ? false : true;
   },
