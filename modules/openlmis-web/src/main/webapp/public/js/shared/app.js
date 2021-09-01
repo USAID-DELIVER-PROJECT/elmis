@@ -253,7 +253,7 @@ angular.module('angular-google-analytics', []).run(
         var ga = document.createElement('script');
         ga.type = 'text/javascript';
         ga.async = false;
-        ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        ga.src =  'https://www.googletagmanager.com/gtag/js?id=' + googleAccount;
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
       }
@@ -272,9 +272,16 @@ angular.module('angular-google-analytics', []).run(
       var path = $window.location.href;
       var user = localStorageService.get('USERNAME');
 
-      $window._gaq.push(['_setCustomVar',1, 'Who', user, 2]);
-      $window._gaq.push(['set','&uid',user]);
-      $window._gaq.push(['_trackPageview', path]);
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag(){window.dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', localStorageService.get('GOOGLE_ANALYTICS_TRACKING_CODE'), {
+        'custom_map': {'dimension<Index>': 'username'}
+      });
+
+      gtag('event', 'page_load', {'username': user});
     }
 
     $rootScope.$on('$viewContentLoaded', track);
