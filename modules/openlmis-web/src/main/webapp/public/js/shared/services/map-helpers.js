@@ -20,22 +20,12 @@ function initiateMap(scope) {
   angular.extend(scope, {
     layers: {
       baselayers: {
-        googleTerrain: {
-          name: 'Terrain',
-          layerType: 'TERRAIN',
-          type: 'google'
-        },
-        googleHybrid: {
-          name: 'Hybrid',
-          layerType: 'HYBRID',
-          type: 'google'
-        },
-        googleRoadmap: {
-          name: 'Streets',
-          layerType: 'ROADMAP',
-          type: 'google'
+          xyz: {
+            name: 'OpenStreetMap (XYZ)',
+              url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              type: 'xyz'
+          }
         }
-      }
     },
     legend: {
       position: 'bottomleft',
