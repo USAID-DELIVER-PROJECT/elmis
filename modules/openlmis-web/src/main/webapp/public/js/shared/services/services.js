@@ -43,6 +43,11 @@ services.factory("Facilities", function ($resource) {
   return $resource('/filter-facilities.json', {}, {});
 });
 
+services.factory("Trainings", function ($resource) {
+  return $resource('/trainings.json', {}, {});
+});
+
+
 services.factory("FacilityTypes", function ($resource) {
   return $resource('/facility-types.json', {}, {});
 });
