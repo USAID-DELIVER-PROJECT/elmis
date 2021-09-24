@@ -25,7 +25,7 @@ gretty {
     scanInterval = 1
     jvmArgs = ['-DdefaultLocale=en']
     managedClassReload=false
-    loggingLevel='INFO'
+    loggingLevel='ERROR'
     servletContainer = 'tomcat9'
     onScanFilesChanged {
         System.out.println('Change detected! reloading classes!')
